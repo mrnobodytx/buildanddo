@@ -1,0 +1,25 @@
+﻿# Local secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies / build
+node_modules/
+dist/
+
+# PocketBase runtime state
+apps/pocketbase/pb_data/
+apps/pocketbase/pb_snapshots/
+apps/pocketbase/pocketbase
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/*.local.json
+
+# Citadel local state
+state/
+evidence/**/private/
+evidence/**/secrets/

@@ -1,0 +1,91 @@
+import React from 'react';
+import { Activity, Mail } from 'lucide-react';
+
+const PRODUCT_LINKS = [
+    { label: 'At a glance', href: '#glance' },
+    { label: 'Challenge Desk', href: '#challenge-desk' },
+    { label: 'Evidence Ledger', href: '#evidence-ledger' },
+    { label: 'Daily Edition', href: '#daily-edition' },
+    { label: 'Field Manual', href: '#field-manual' },
+    { label: 'FAQ', href: '#faq' },
+];
+
+export default function Footer() {
+    const year = new Date().getFullYear();
+
+    return (
+        <footer className="border-t border-border/60 bg-background">
+            <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+                <div className="grid gap-10 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
+                    <div>
+                        <a
+                            href="#top"
+                            className="flex items-center gap-2.5"
+                            aria-label="BuildAndDo home"
+                        >
+                            <span className="flex h-8 w-8 items-center justify-center rounded-md border border-primary/40 bg-primary/10 text-primary">
+                                <Activity className="h-4 w-4" strokeWidth={2.4} />
+                            </span>
+                            <span className="font-display text-base font-semibold tracking-tight">
+                                BuildAndDo
+                            </span>
+                        </a>
+                        <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                            Early-stage software that helps small-business owners notice changes,
+                            understand them in plain language, approve a bounded mission, and verify
+                            what happened.
+                        </p>
+                    </div>
+
+                    <nav aria-label="Footer">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-foreground">
+                            Product
+                        </p>
+                        <ul className="mt-4 space-y-2.5">
+                            {PRODUCT_LINKS.map((link) => (
+                                <li key={link.href}>
+                                    <a
+                                        href={link.href}
+                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                    >
+                                        {link.label}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-foreground">
+                            Get involved
+                        </p>
+                        <ul className="mt-4 space-y-2.5">
+                            <li>
+                                <a
+                                    href="#early-access"
+                                    className="text-sm font-medium text-primary transition-colors hover:brightness-125"
+                                >
+                                    Join early access
+                                </a>
+                            </li>
+                            <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Mail className="h-4 w-4 shrink-0" />
+                                Contact — coming soon
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-border/60 pt-6 sm:flex-row sm:items-center">
+                    <p className="text-xs text-muted-foreground">
+                        © {year} BuildAndDo. All rights reserved.
+                    </p>
+                    <div className="flex items-center gap-5 text-xs text-muted-foreground/70">
+                        <span aria-disabled="true">Privacy — coming soon</span>
+                        <span aria-disabled="true">Terms — coming soon</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+}

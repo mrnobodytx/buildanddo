@@ -1,0 +1,12 @@
+﻿{
+    "schema_version":  1,
+    "product":  "BuildAndDo",
+    "source":  "Hostinger Horizons export",
+    "source_zip_sha256":  "247b879c7cb00cd2208f7aa52840fffd98b51adbd6c30520af67921eb8b948d5",
+    "imported_at":  "2026-09-04T00:39:41.6854193Z",
+    "canonical_public_scm":  "GitHub",
+    "internal_mirror_scm":  "GitLab",
+    "hostinger_deployment_source":  "GitHub public repository / Hostinger web app",
+    "ai_builder_project_retained_as_evidence":  true
+}
+

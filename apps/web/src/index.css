@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700;6..72,800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  BuildAndDo — editorial business-newspaper product identity.
+  Warm paper, black ink, restrained editorial red, muted green, ochre.
+  Strong serif headlines (Newsreader), neutral sans utility (Inter),
+  monospace evidence/receipt text (IBM Plex Mono). Sharp rules, double
+  rules for major divisions. Modern interactive software, not novelty vintage.
+*/
+
+@layer base {
+  :root {
+    --background: 42 30% 94%;
+    --foreground: 220 16% 12%;
+    --card: 40 18% 97%;
+    --card-foreground: 220 16% 12%;
+    --popover: 40 18% 97%;
+    --popover-foreground: 220 16% 12%;
+    --primary: 0 70% 40%;
+    --primary-foreground: 42 30% 95%;
+    --secondary: 40 16% 90%;
+    --secondary-foreground: 220 14% 18%;
+    --muted: 40 14% 90%;
+    --muted-foreground: 220 10% 38%;
+    --accent: 38 58% 40%;
+    --accent-foreground: 42 30% 95%;
+    --destructive: 0 70% 40%;
+    --destructive-foreground: 42 30% 95%;
+    --border: 220 12% 74%;
+    --input: 220 12% 80%;
+    --ring: 0 70% 40%;
+    --radius: 0px;
+    --success: 128 26% 34%;
+    --amber: 38 58% 40%;
+    --teal: 150 24% 34%;
+    --paper: 42 30% 94%;
+    --paper-foreground: 220 16% 12%;
+    --paper-muted: 220 10% 38%;
+    --paper-border: 220 12% 74%;
+    --paper-subtle: 40 16% 90%;
+    --ink: 220 16% 12%;
+    --sidebar-background: 40 18% 96%;
+    --sidebar-foreground: 220 16% 14%;
+    --sidebar-primary: 0 70% 40%;
+    --sidebar-primary-foreground: 42 30% 95%;
+    --sidebar-accent: 40 16% 90%;
+    --sidebar-accent-foreground: 220 14% 18%;
+    --sidebar-border: 220 12% 74%;
+    --sidebar-ring: 0 70% 40%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: hsl(var(--primary) / 0.18);
+    color: hsl(var(--foreground));
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-optical-sizing: auto;
+  }
+
+  .font-evidence {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  }
+
+  .text-success {
+    color: hsl(var(--success));
+  }
+
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+
+  .text-amber-warm {
+    color: hsl(var(--amber));
+  }
+
+  .text-teal {
+    color: hsl(var(--teal));
+  }
+
+  .bg-teal {
+    background-color: hsl(var(--teal));
+  }
+
+  .bg-paper {
+    background-color: hsl(var(--paper));
+  }
+
+  .bg-paper-subtle {
+    background-color: hsl(var(--paper-subtle));
+  }
+
+  .text-paper-fg {
+    color: hsl(var(--paper-foreground));
+  }
+
+  .text-paper-muted {
+    color: hsl(var(--paper-muted));
+  }
+
+  .border-paper {
+    border-color: hsl(var(--paper-border));
+  }
+
+  /* Thin editorial rule */
+  .rule-thin {
+    border-top: 1px solid hsl(var(--border));
+  }
+
+  /* Double rule for major divisions */
+  .rule-double {
+    border-top: 3px double hsl(var(--foreground) / 0.7);
+  }
+
+  .rule-thick {
+    border-top: 2px solid hsl(var(--foreground));
+  }
+
+  /* Subtle ink-on-paper grid for the broadsheet field */
+  .bg-grid {
+    background-image:
+      linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .bg-grid-paper {
+    background-image:
+      linear-gradient(hsl(var(--paper-foreground) / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--paper-foreground) / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  /* Drop-cap for editorial ledes */
+  .drop-cap::first-letter {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 700;
+    font-size: 3.4em;
+    line-height: 0.8;
+    float: left;
+    margin: 0.08em 0.12em 0 0;
+    color: hsl(var(--primary));
+  }
+}
+
+/* Marquee kept for compatibility (unused in editorial layout) */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-x 36s linear infinite;
+}
+
+@keyframes flow-pulse {
+  0% { left: 0%; opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { left: calc(100% - 8px); opacity: 0; }
+}
+.animate-flow-pulse {
+  animation: flow-pulse 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-marquee,
+  .animate-flow-pulse { animation: none; }
+}
