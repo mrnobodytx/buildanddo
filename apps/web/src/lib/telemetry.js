@@ -11,7 +11,8 @@ let initialized = false;
 export function initTelemetry() {
 	if (initialized || !KEY) return;
 	posthog.init(KEY, {
-		api_host: 'https://us.posthog.com',
+		api_host: 'https://us.i.posthog.com',
+		defaults: '2026-05-30',
 		person_profiles: 'identified_only',
 		capture_pageview: true,
 		capture_pageleave: true,
