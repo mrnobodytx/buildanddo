@@ -1,13 +1,13 @@
 {
   "authority": "candidate_only",
-  "generated_at": "2026-09-07T14:46:23.003399+00:00",
+  "generated_at": "2026-09-07T14:55:15.761791+00:00",
   "github_actor": null,
   "github_actor_id": null,
   "github_ref": null,
   "github_run_attempt": null,
   "github_run_id": null,
-  "manifest_sha256": "a7b06ae68ca8090b244b2053e6d679bf95cac7960b90d31bace97a285b0738a5",
-  "mirror_commit_before_provenance": "a67b3857b65d80c9d1eca682c6fe2e53929ea5fc",
+  "manifest_sha256": "4a72ce8ccbda908f4204b315c2bc0f921a9af5d55457587b1f989fa98f11bb5d",
+  "mirror_commit_before_provenance": "cf3262e51a7d3c6e6d0bf33d217f9bde92039dec",
   "production_authority": false,
   "schema_version": 1,
   "tracked_files": [
@@ -62,9 +62,9 @@
       "sha256": "a2c6c14110a317833ac8f2fbae7080ee844af7469b2aa702876548dcf4c58077"
     },
     {
-      "bytes": 39784,
+      "bytes": 39785,
       "path": "BUILDANDDO_CANDIDATE_PROVENANCE.json",
-      "sha256": "bdbb6f2e216b6cb0c6845633c0c4ec2838db3ed2cb929fa003486137b7d5a845"
+      "sha256": "fbc9d6a40a75b5f69c6cb520c2daf985df4ead4c5ef471dcca5c755183e8067a"
     },
     {
       "bytes": 479,
@@ -552,9 +552,9 @@
       "sha256": "f92d924b2a7ef317d85f96d1d8ff888e1b5dc9cc8e52f2dba490f750bba04ade"
     },
     {
-      "bytes": 4485,
+      "bytes": 5181,
       "path": "apps/web/src/components/site/Footer.jsx",
-      "sha256": "39a36fdd9d87887110c5893c4048b0d9e1e9183651045abb96bca1d4ffdd2438"
+      "sha256": "0ea3c6309c87d955cb0851f2b413b0b5e5689c1a0aef703052b97340a7a0e339"
     },
     {
       "bytes": 7316,
@@ -1072,12 +1072,12 @@
       "sha256": "578ebb74af6363596625e65238afc6d9a2e80cb8df88c99c5b795f77b6dea696"
     },
     {
-      "bytes": 11052,
+      "bytes": 11159,
       "path": "scripts/deploy/ship.py",
-      "sha256": "005f8d0b39e7ee40f6b46b046a20d4282b68b843f95c548d632d8feef8224cfc"
+      "sha256": "0c7952ca94684f407454ccd116a4a399b32e8ef12b3a2bf075b9f4d8ed66c568"
     }
   ],
   "upstream": "github",
   "upstream_repository": null,
-  "upstream_sha": "a67b3857b65d80c9d1eca682c6fe2e53929ea5fc"
+  "upstream_sha": "cf3262e51a7d3c6e6d0bf33d217f9bde92039dec"
 }

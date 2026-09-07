@@ -1,5 +1,7 @@
 import React from 'react';
-import { Activity, Mail } from 'lucide-react';
+import { Activity, Mail, MessageCircle } from 'lucide-react';
+
+const DISCORD_INVITE_URL = 'https://discord.gg/vTDZxmpHHC';
 
 const PRODUCT_LINKS = [
     { label: 'At a glance', href: '#glance' },
@@ -66,6 +68,17 @@ export default function Footer() {
                                     className="text-sm font-medium text-primary transition-colors hover:brightness-125"
                                 >
                                     Join early access
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={DISCORD_INVITE_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:brightness-125"
+                                >
+                                    <MessageCircle className="h-4 w-4 shrink-0" />
+                                    Join our Discord
                                 </a>
                             </li>
                             <li className="flex items-center gap-2 text-sm text-muted-foreground">
