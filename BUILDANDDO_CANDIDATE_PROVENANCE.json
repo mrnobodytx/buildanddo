@@ -1,13 +1,13 @@
 {
   "authority": "candidate_only",
-  "generated_at": "2026-09-07T15:20:46.436011+00:00",
+  "generated_at": "2026-09-07T16:50:32.079734+00:00",
   "github_actor": null,
   "github_actor_id": null,
   "github_ref": null,
   "github_run_attempt": null,
   "github_run_id": null,
-  "manifest_sha256": "a90043a0e24be74a5269d711383c61a664d37aa51721fb534a75f1b508cb42ce",
-  "mirror_commit_before_provenance": "d766b47d76431d265b5a1c8cc763888a66066a2c",
+  "manifest_sha256": "9cb5366bf2d6a61d690b65ec4edbe8d3fc929368591482c5bd9d3bc34d04e2c3",
+  "mirror_commit_before_provenance": "388331d060cf3713f96451e295883857a3c5ca11",
   "production_authority": false,
   "schema_version": 1,
   "tracked_files": [
@@ -47,9 +47,9 @@
       "sha256": "1233ff747756ca8ebd960dd6ad08623f6a58d8cc8ad84fd276a71352a5ff2e06"
     },
     {
-      "bytes": 1383,
+      "bytes": 1390,
       "path": ".gitignore",
-      "sha256": "eaac0520cb4d82cbaca94ea10f0b440a88095d91b912fdd490f89514e858af62"
+      "sha256": "238796b5efbcbb2d83800875da2d9cfce2d9185bbeb6bc06cf42312a3ac23c5f"
     },
     {
       "bytes": 574,
@@ -67,9 +67,9 @@
       "sha256": "a2c6c14110a317833ac8f2fbae7080ee844af7469b2aa702876548dcf4c58077"
     },
     {
-      "bytes": 39785,
+      "bytes": 40626,
       "path": "BUILDANDDO_CANDIDATE_PROVENANCE.json",
-      "sha256": "626a7805817a6fc48516da369fa3985d67cbf8c633590a223de1d77596cf89f1"
+      "sha256": "73161d21e688afeb71a16e99d0bab1a3095bd7e2589b95d74c444109d1469dd4"
     },
     {
       "bytes": 479,
@@ -100,11 +100,6 @@
       "bytes": 6054,
       "path": "apps/pocketbase/pb_hooks/custom-migrations-cmd.pb.js",
       "sha256": "b715d266d28795e97b23aa28e8d3d2ec90ad86fc71afa44e7157893f806bfb58"
-    },
-    {
-      "bytes": 941,
-      "path": "apps/pocketbase/pb_hooks/external-dashboard.pb.js",
-      "sha256": "f3d6ed177c8e4a4e133ccf8298e4c3cf798fa60041880a0b7c09cc853f9e00c7"
     },
     {
       "bytes": 2206,
@@ -155,6 +150,21 @@
       "bytes": 7602,
       "path": "apps/pocketbase/pb_migrations/1788477655_create_editorial_collections.js",
       "sha256": "b7dcebc6fe2427c6785d2b53df5643a163e758d85c195913d1b33f8dd404fdb9"
+    },
+    {
+      "bytes": 23899,
+      "path": "apps/pocketbase/pb_migrations/1788800000_create_praxis_evidence_fabric.js",
+      "sha256": "c1855a8118f7ceffc09f77939dece4620a8f4e2953d062feb965b486e32d7302"
+    },
+    {
+      "bytes": 4679,
+      "path": "apps/pocketbase/pb_migrations/1788900000_create_workspace_members_rbac.js",
+      "sha256": "4aa29d7cdb2fe102d174569fc6b0c9b2a4806858ae02f5b9c9fbabb48cd58464"
+    },
+    {
+      "bytes": 892,
+      "path": "apps/pocketbase/pb_migrations/1788910000_add_source_cites_relation.js",
+      "sha256": "8f6ca07f0896e527cb15797de2edf8843d7809225f79fd7472e9e79e60630f44"
     },
     {
       "bytes": 450,
@@ -512,9 +522,9 @@
       "sha256": "32d5a73a3fe46ddc48fb42d9d3f9a82cd05aa4fb156a1541d073f91e15aa3fff"
     },
     {
-      "bytes": 5332,
+      "bytes": 5447,
       "path": "apps/web/src/App.jsx",
-      "sha256": "b048d96ad583ac6555bafeff85439952650862a6c4fdcc7b927346aa79c54b12"
+      "sha256": "e76c6148db871008ad950ee9a3ec94e5fcab695411084953513a05cdecb286f9"
     },
     {
       "bytes": 1595,
@@ -557,9 +567,9 @@
       "sha256": "f92d924b2a7ef317d85f96d1d8ff888e1b5dc9cc8e52f2dba490f750bba04ade"
     },
     {
-      "bytes": 6487,
+      "bytes": 6616,
       "path": "apps/web/src/components/site/Footer.jsx",
-      "sha256": "3678a42cc16d1c290765d859fcf5b4ee80f51fe78911abeb9ddeff9d25603c9e"
+      "sha256": "e6dff7b3a16d00779ba54c4b12ad4d57e2b233b3d5ba07709ead51229482c994"
     },
     {
       "bytes": 7316,
@@ -1087,9 +1097,9 @@
       "sha256": "578ebb74af6363596625e65238afc6d9a2e80cb8df88c99c5b795f77b6dea696"
     },
     {
-      "bytes": 11159,
+      "bytes": 11748,
       "path": "scripts/deploy/ship.py",
-      "sha256": "0c7952ca94684f407454ccd116a4a399b32e8ef12b3a2bf075b9f4d8ed66c568"
+      "sha256": "97fdcf92712967df96a53895a31d9c46a1694adabad2b0386aa7ec6a8ad7961b"
     },
     {
       "bytes": 3416,
@@ -1100,9 +1110,94 @@
       "bytes": 19,
       "path": "scripts/discordbot/requirements.txt",
       "sha256": "1ee9e1fa0c1edc12abb1dae21d53b646a59321403f11d8de1cf382d4de75e1ce"
+    },
+    {
+      "bytes": 11135,
+      "path": "scripts/publish/activity_publish.py",
+      "sha256": "99243b84cb8464736b151a767e4d460434db5c09ceb5b486b5666228973479b8"
+    },
+    {
+      "bytes": 2127,
+      "path": "services/praxis_evidence/beliefs.py",
+      "sha256": "7d95dbc4dd0fe67dea2fa17687faaf406e26f810827071229c339a3dec353fed"
+    },
+    {
+      "bytes": 5791,
+      "path": "services/praxis_evidence/claims.py",
+      "sha256": "982609f89a358dcbcf241eea6fffcea50b6f534d42f2e784533e608a4fe41df4"
+    },
+    {
+      "bytes": 4237,
+      "path": "services/praxis_evidence/client.py",
+      "sha256": "1f7a66d4041c5da41e453b4433570f43d834ec0555db0eb728abd658a265d374"
+    },
+    {
+      "bytes": 2148,
+      "path": "services/praxis_evidence/logic.py",
+      "sha256": "d512b5173dc25cadfa62ce19c407ccd13e01f02fc2ed0645278dc4d163e953b4"
+    },
+    {
+      "bytes": 1430,
+      "path": "services/praxis_evidence/materials.py",
+      "sha256": "3e3f427a6954589e361075731b212adcfb58d16566d4490806f8d7e4bc6c438f"
+    },
+    {
+      "bytes": 1588,
+      "path": "services/praxis_evidence/methods.py",
+      "sha256": "7a66c4a8318b9f421914ae56f99b068fc2335e07faa723499b9ff7942d061937"
+    },
+    {
+      "bytes": 3673,
+      "path": "services/praxis_evidence/pricing.py",
+      "sha256": "13b04d16126ac4272baeca182c3ac3718f2726d1df448c912843b6518ba1ee9b"
+    },
+    {
+      "bytes": 1817,
+      "path": "services/praxis_evidence/registry.py",
+      "sha256": "52620afc8f8445678c023b32c166f08bb62289a9715cb83ca6bb8c7a04cc319f"
+    },
+    {
+      "bytes": 4163,
+      "path": "services/praxis_evidence/selftest.py",
+      "sha256": "006b4997b06548e361464a6ec4feb28656af846d8315050861250a5b9a929307"
+    },
+    {
+      "bytes": 2060,
+      "path": "services/praxis_evidence/selftest_beliefs.py",
+      "sha256": "36d5a77983959bb4e78cd215dae9cb3b74d45cb8162f9ea2217f36d5e85a7e2e"
+    },
+    {
+      "bytes": 2270,
+      "path": "services/praxis_evidence/selftest_lineage.py",
+      "sha256": "39b9d2a30fc432a8c98f739f4a23c1a0bb9e1e54a1dffe3d922d5497c36e321f"
+    },
+    {
+      "bytes": 2401,
+      "path": "services/praxis_evidence/selftest_logic.py",
+      "sha256": "a44d746c33faf9a358246f4c575befdcbe3ff9dc089cfc83d3cbb0febf08fdd5"
+    },
+    {
+      "bytes": 3272,
+      "path": "services/praxis_evidence/selftest_pricing.py",
+      "sha256": "104de62584ae3a981bb45120c1ef0209d331073f5bfe2905751533eed8dcb51f"
+    },
+    {
+      "bytes": 3082,
+      "path": "services/praxis_evidence/selftest_timing.py",
+      "sha256": "b35e7a5a61780da76c4f2bc5b9f71c511babbffb265810e3688e3666ef385355"
+    },
+    {
+      "bytes": 2735,
+      "path": "services/praxis_evidence/source_lineage.py",
+      "sha256": "f7cdc0da642d87f4e0b0f72a67bf48613b0d245264a7c659d889b551caeb1b40"
+    },
+    {
+      "bytes": 2975,
+      "path": "services/praxis_evidence/timing.py",
+      "sha256": "21ddb47ad58e90642db6b209b0ff2978f5b9bdf3211e28673294339254e0c07e"
     }
   ],
   "upstream": "github",
   "upstream_repository": null,
-  "upstream_sha": "d766b47d76431d265b5a1c8cc763888a66066a2c"
+  "upstream_sha": "388331d060cf3713f96451e295883857a3c5ca11"
 }

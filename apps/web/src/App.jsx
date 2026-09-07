@@ -9,6 +9,7 @@ import { Loader2 } from 'lucide-react';
 import ScrollToTop from './components/ScrollToTop';
 import HomePage from './pages/HomePage';
 import RoadmapPage from './pages/RoadmapPage';
+import PracticePage from './pages/PracticePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -63,6 +64,7 @@ function AppRoutes() {
             {/* Public marketing site */}
             <Route path="/" element={<HomePage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
+            <Route path="/practice" element={<PracticePage />} />
 
             {/* Authentication */}
             <Route
