@@ -132,6 +132,34 @@ def _write_roadmap_status() -> dict:
     return _run([sys.executable, str(ROOT / "scripts" / "deploy" / "roadmap_status.py")], cwd=ROOT, timeout=30)
 
 
+def _latest_commit() -> dict:
+    sha = _run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, timeout=15)
+    msg = _run(["git", "log", "-1", "--pretty=%s"], cwd=ROOT, timeout=15)
+    return {"sha": sha.get("stdout_tail", "").strip(), "message": msg.get("stdout_tail", "").strip()}
+
+
+def _notify_guildmasters(message: str) -> dict:
+    """Connects the guildmaster fleet to THIS repo's real build activity: posts as Forge
+    (builder guild - owns PAGE/SYSTEM edits per platform_edit_fabric's capability matrix) to
+    the same Discord webhook the fleet already speaks through (tools/cbf/guildmaster_speak.py's
+    _webhook_url() convention). Deliberately stdlib-only + fail-soft: a Discord outage must
+    never break the deploy pipeline, only be visible in the returned result."""
+    url = _SECRETS.get("DISCORD_WEBHOOK_URL")
+    if not url:
+        return {"ok": False, "reason": "DISCORD_WEBHOOK_URL not set (see secrets/deploy.local.env)"}
+    import urllib.error
+    payload = json.dumps({"username": "Forge", "content": message[:1900]}).encode("utf-8")
+    req = urllib.request.Request(url + "?wait=true", data=payload, method="POST",
+                                  headers={"Content-Type": "application/json",
+                                            "User-Agent": "BuildAndDo-Ship (https://buildanddo.com, 1.0)"})
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:  # noqa: S310 - fixed webhook URL from local secrets
+            body = json.loads(resp.read() or b"{}")
+            return {"ok": True, "message_id": body.get("id")}
+    except urllib.error.URLError as exc:
+        return {"ok": False, "reason": f"{type(exc).__name__}: {exc}"}
+
+
 def _build() -> dict:
     web_dir = ROOT / "apps" / "web"
     shutil.rmtree(DIST_DIR, ignore_errors=True)  # see integrity_regression_check.py - measured stale-cache bug
@@ -200,6 +228,15 @@ def main() -> int:
     prod_probe = _probe(PROD_URL)
     record["stages"]["prod_probe"] = prod_probe
     record["stopped_at"] = None if prod_probe["ok"] else "prod_probe"
+
+    if prod_probe["ok"]:
+        commit = _latest_commit()
+        notify = _notify_guildmasters(
+            f"BuildAndDo shipped to production — `{commit['sha']}` {commit['message']} "
+            f"({PROD_URL} verified live)"
+        )
+        record["stages"]["guildmaster_notify"] = notify
+
     _finish(record)
     return 0 if prod_probe["ok"] else 1
 

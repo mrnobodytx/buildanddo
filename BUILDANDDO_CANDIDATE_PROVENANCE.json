@@ -1,13 +1,13 @@
 {
   "authority": "candidate_only",
-  "generated_at": "2026-09-07T14:22:24.056340+00:00",
+  "generated_at": "2026-09-07T14:46:23.003399+00:00",
   "github_actor": null,
   "github_actor_id": null,
   "github_ref": null,
   "github_run_attempt": null,
   "github_run_id": null,
-  "manifest_sha256": "776ab9dfaad9d0d32f38841c89feba6277d480ac9ef5e95b637c62d4302d754d",
-  "mirror_commit_before_provenance": "047a6d494d079bfddb04b4646dfd481e1539cf0f",
+  "manifest_sha256": "a7b06ae68ca8090b244b2053e6d679bf95cac7960b90d31bace97a285b0738a5",
+  "mirror_commit_before_provenance": "a67b3857b65d80c9d1eca682c6fe2e53929ea5fc",
   "production_authority": false,
   "schema_version": 1,
   "tracked_files": [
@@ -15,6 +15,31 @@
       "bytes": 129,
       "path": ".env.example",
       "sha256": "0962b1a66272b8b0d1d193da014b65425f90e5c2d348918827767fc984ae0d6e"
+    },
+    {
+      "bytes": 87,
+      "path": ".github/CODEOWNERS",
+      "sha256": "3eb60f3054905e70bc0fd4fdf0d3196b9fb7736f5a2f2cb2327c3a0fb8a429d2"
+    },
+    {
+      "bytes": 896,
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "sha256": "3cd6d490687a517aef405df7803693699a65b2e616f0f58f318dcc1628d802cf"
+    },
+    {
+      "bytes": 572,
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "sha256": "d95f402519dd703fffcbdef5fd21714d5323aebca62c45430b3581d401644c79"
+    },
+    {
+      "bytes": 2686,
+      "path": ".github/workflows/candidate-to-gitlab.yml",
+      "sha256": "42c37536770cd35ae51648c4c2b3c4ffe1c5d773917531c2e5f7a7074bdf2f3e"
+    },
+    {
+      "bytes": 1351,
+      "path": ".github/workflows/pr-governance.yml",
+      "sha256": "1233ff747756ca8ebd960dd6ad08623f6a58d8cc8ad84fd276a71352a5ff2e06"
     },
     {
       "bytes": 908,
@@ -35,6 +60,11 @@
       "bytes": 3,
       "path": ".version",
       "sha256": "a2c6c14110a317833ac8f2fbae7080ee844af7469b2aa702876548dcf4c58077"
+    },
+    {
+      "bytes": 39784,
+      "path": "BUILDANDDO_CANDIDATE_PROVENANCE.json",
+      "sha256": "bdbb6f2e216b6cb0c6845633c0c4ec2838db3ed2cb929fa003486137b7d5a845"
     },
     {
       "bytes": 479,
@@ -872,6 +902,11 @@
       "sha256": "1b1dbd320e2ec40af0191bbf811f2aeeba01b386a45f60c9e83cd962f76ccbe2"
     },
     {
+      "bytes": 779,
+      "path": "apps/web/src/lib/telemetry.js",
+      "sha256": "a1b79edaa0fe891dc4cc595db85cbfb869beb6e491575fdb7d7acdb824126419"
+    },
+    {
       "bytes": 137,
       "path": "apps/web/src/lib/utils.js",
       "sha256": "4f73baba03348105b6f674c1a26e29e22e85988c375ef6f5b740c1c8aefd3dce"
@@ -902,9 +937,9 @@
       "sha256": "2d0cbdd55b50e4fc36db942223c62c2943d409ae7e8abafa5ecb0d2b5e4f3bbe"
     },
     {
-      "bytes": 21445,
+      "bytes": 22012,
       "path": "apps/web/src/pages/RoadmapPage.jsx",
-      "sha256": "caeb72348dbffca66ae6a780c081e97056738961f55b08d14fc248de761924a3"
+      "sha256": "b7cb7e44fc98aeae9d298f77bfd4984f7e18f72b512183929bf8511636049c09"
     },
     {
       "bytes": 8372,
@@ -1032,12 +1067,17 @@
       "sha256": "b7d16ede8a429081ebe8290e9d39b0d9fa9d57ab687a4eba81e4cb999a1450b9"
     },
     {
-      "bytes": 9177,
+      "bytes": 3640,
+      "path": "scripts/deploy/roadmap_status.py",
+      "sha256": "578ebb74af6363596625e65238afc6d9a2e80cb8df88c99c5b795f77b6dea696"
+    },
+    {
+      "bytes": 11052,
       "path": "scripts/deploy/ship.py",
-      "sha256": "fe2b5f34c186fa139432ff07417adf989a4cfd2298da2c99fac2e5e8f08414ff"
+      "sha256": "005f8d0b39e7ee40f6b46b046a20d4282b68b843f95c548d632d8feef8224cfc"
     }
   ],
   "upstream": "github",
   "upstream_repository": null,
-  "upstream_sha": "047a6d494d079bfddb04b4646dfd481e1539cf0f"
+  "upstream_sha": "a67b3857b65d80c9d1eca682c6fe2e53929ea5fc"
 }
