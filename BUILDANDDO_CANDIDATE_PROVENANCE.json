@@ -1,13 +1,13 @@
 {
   "authority": "candidate_only",
-  "generated_at": "2026-09-07T17:05:03.551377+00:00",
+  "generated_at": "2026-09-07T17:37:11.195801+00:00",
   "github_actor": null,
   "github_actor_id": null,
   "github_ref": null,
   "github_run_attempt": null,
   "github_run_id": null,
-  "manifest_sha256": "b38ef88832f99be56a8cfc21f445eacd9afc2bc0236c97acce489b8c2eda504e",
-  "mirror_commit_before_provenance": "88f7c4177a8814751e63676c9a57179b11809386",
+  "manifest_sha256": "9a252ab02426e8982f380229530eb421121276066296149ab51186aff26ba9b1",
+  "mirror_commit_before_provenance": "2963a6a84b8e6783a14060362f23b3023fe37457",
   "production_authority": false,
   "schema_version": 1,
   "tracked_files": [
@@ -67,14 +67,24 @@
       "sha256": "a2c6c14110a317833ac8f2fbae7080ee844af7469b2aa702876548dcf4c58077"
     },
     {
-      "bytes": 44097,
+      "bytes": 46676,
       "path": "BUILDANDDO_CANDIDATE_PROVENANCE.json",
-      "sha256": "17f840990d4a323d703a7b10958c14e35a4b9c87699f37a9839fe2332001ab93"
+      "sha256": "1ca2fc505bead611b30a6073d232328682ef0a30180c71df357028a4f3a012ce"
     },
     {
       "bytes": 479,
       "path": "BUILDANDDO_SOURCE_PROVENANCE.json",
       "sha256": "65815542a539c83c05993586442d27b6ca43b1b6dadb034b3fd981d3d3d6698c"
+    },
+    {
+      "bytes": 5035,
+      "path": "CONTRIBUTING.md",
+      "sha256": "50a7c92482f01107f50e54d237c3567026026e0ca6060c25ca8fc2e8eaad15c5"
+    },
+    {
+      "bytes": 2082,
+      "path": "README.md",
+      "sha256": "b9cc070c9115c2b1d927f60129010f2211f65830aa7df06057fcd19d884a25af"
     },
     {
       "bytes": 7,
@@ -170,6 +180,11 @@
       "bytes": 2443,
       "path": "apps/pocketbase/pb_migrations/1788920000_add_claim_authorship_and_reputation.js",
       "sha256": "d2c6ece9e52bda9ce21761fbcefd85a4f412eca15fdbbf596270aa9e8c1ef98a"
+    },
+    {
+      "bytes": 660,
+      "path": "apps/pocketbase/pb_migrations/1788930000_add_research_quest_question.js",
+      "sha256": "511dd68f70105d4a76954f77abd1184b327124ce728300d99d3bd63ffcca7008"
     },
     {
       "bytes": 450,
@@ -962,9 +977,9 @@
       "sha256": "c2001538de64f6194c9d09ca1a99006500aaf985d954229ddd11e0ebfb9efa1f"
     },
     {
-      "bytes": 22012,
+      "bytes": 29439,
       "path": "apps/web/src/pages/RoadmapPage.jsx",
-      "sha256": "b7cb7e44fc98aeae9d298f77bfd4984f7e18f72b512183929bf8511636049c09"
+      "sha256": "1e497aec8f31bc1f8f3fc392c2f1383f81c40814a3b5463d2b050580526d8e6e"
     },
     {
       "bytes": 8372,
@@ -1142,6 +1157,16 @@
       "sha256": "1f7a66d4041c5da41e453b4433570f43d834ec0555db0eb728abd658a265d374"
     },
     {
+      "bytes": 9062,
+      "path": "services/praxis_evidence/dogfood_pilots.py",
+      "sha256": "cca6463ee9fa4dd5bbca0673c9aa5d29b4f19bc7a7282c6ec040d414c3f3d142"
+    },
+    {
+      "bytes": 3479,
+      "path": "services/praxis_evidence/knowledge_health.py",
+      "sha256": "84b079aa744c60ba33a230fb9dce1558976782ca29f94658945920654ce56145"
+    },
+    {
       "bytes": 2148,
       "path": "services/praxis_evidence/logic.py",
       "sha256": "d512b5173dc25cadfa62ce19c407ccd13e01f02fc2ed0645278dc4d163e953b4"
@@ -1172,6 +1197,11 @@
       "sha256": "d0c825b82fb0a0a134226b912e0429b8618b4d044f2c6662a0695c7e04529a26"
     },
     {
+      "bytes": 4245,
+      "path": "services/praxis_evidence/research_quests.py",
+      "sha256": "f61b7ff116479966ae60d71ce7920b5229ae0f5441dd17e2d3d25d64d04488ab"
+    },
+    {
       "bytes": 1671,
       "path": "services/praxis_evidence/run_all_tests.py",
       "sha256": "121ab578248370c4f8e9bee01fb23c008319809de91066df2948e7180f5396e4"
@@ -1185,6 +1215,16 @@
       "bytes": 2060,
       "path": "services/praxis_evidence/selftest_beliefs.py",
       "sha256": "36d5a77983959bb4e78cd215dae9cb3b74d45cb8162f9ea2217f36d5e85a7e2e"
+    },
+    {
+      "bytes": 2530,
+      "path": "services/praxis_evidence/selftest_dogfood_pilots.py",
+      "sha256": "11640132868670bde02214e1376eef0c2fa0786bc1b1f7705cf5c3bfe58e3539"
+    },
+    {
+      "bytes": 3482,
+      "path": "services/praxis_evidence/selftest_knowledge_health.py",
+      "sha256": "d4fdde99fe1b2f9c58a199d810b0341bc323b7467b1436ddd24de3c9f28153d9"
     },
     {
       "bytes": 2270,
@@ -1207,6 +1247,11 @@
       "sha256": "9d6ed3163fdcfec59ad1915bf44fa6253769c521dbb72e7e1e140ef1448fe467"
     },
     {
+      "bytes": 3093,
+      "path": "services/praxis_evidence/selftest_research_quests.py",
+      "sha256": "2198c585e5c5b8fe26ddf5e8892aaa57a25509b2fded01800faedb484b8196ca"
+    },
+    {
       "bytes": 3082,
       "path": "services/praxis_evidence/selftest_timing.py",
       "sha256": "b35e7a5a61780da76c4f2bc5b9f71c511babbffb265810e3688e3666ef385355"
@@ -1224,5 +1269,5 @@
   ],
   "upstream": "github",
   "upstream_repository": null,
-  "upstream_sha": "88f7c4177a8814751e63676c9a57179b11809386"
+  "upstream_sha": "2963a6a84b8e6783a14060362f23b3023fe37457"
 }

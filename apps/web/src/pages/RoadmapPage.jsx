@@ -28,17 +28,87 @@ const FIELDS = [
 const SPRINT_DAYS = 21;
 
 const MILESTONES = [
-    { day: 1, title: 'Sprint kickoff — foundations', status: 'planned', value: 5 },
-    { day: 3, title: 'Auth & onboarding hardening', status: 'planned', value: 12 },
-    { day: 5, title: 'Workspace collections live', status: 'planned', value: 20 },
-    { day: 7, title: 'Signals pipeline MVP', status: 'planned', value: 30 },
-    { day: 9, title: 'Missions — bounded-action engine', status: 'planned', value: 40 },
-    { day: 11, title: 'Workflows editor', status: 'planned', value: 50 },
-    { day: 13, title: 'Service connectors (Firecrawl, n8n)', status: 'planned', value: 60 },
-    { day: 15, title: 'ERP foundation', status: 'planned', value: 70 },
-    { day: 17, title: 'Evidence ledger & verification', status: 'planned', value: 80 },
-    { day: 19, title: 'Daily edition & specialist desks', status: 'planned', value: 88 },
-    { day: 21, title: 'Sprint review — verified replay', status: 'planned', value: 100 },
+    {
+        day: 1, title: 'Sprint kickoff — foundations', status: 'planned', value: 5,
+        description: 'Repo, self-hosted deploy target, and the staging→production pipeline itself. '
+            + 'Nothing downstream works without a real, provable way to ship a change.',
+        deliverables: ['Self-hosted domain + TLS (no third-party site builder)', 'Staging environment, separate from production',
+            'Automated build → gate → staging-probe → promote pipeline', 'Public GitHub repo + private release mirror'],
+    },
+    {
+        day: 3, title: 'Auth & onboarding hardening', status: 'planned', value: 12,
+        description: 'A user can sign up, log in, and create a workspace without the flow silently failing. '
+            + 'Includes the real backend (not a mock) the rest of the product is built on.',
+        deliverables: ['Real backend auth (PocketBase)', 'Workspace creation flow, reproduced end-to-end and fixed when broken',
+            'Team roles per workspace (owner/admin/editor/viewer), not just single-owner'],
+    },
+    {
+        day: 5, title: 'Workspace collections live', status: 'planned', value: 20,
+        description: 'The actual data model behind every workspace panel — evidence, missions, signals, '
+            + 'workflows, roadmap items — backed by a real database with real access rules, not placeholders.',
+        deliverables: ['Backend deployed for real (was unused scaffolding until this sprint)',
+            'Role-aware access rules verified with real multi-user accounts, not assumed',
+            'Public/private boundary scan wired into CI so nothing internal leaks by accident'],
+    },
+    {
+        day: 7, title: 'Signals pipeline MVP', status: 'planned', value: 30,
+        description: 'Turning outside noise (community feedback, engagement, research gaps) into something '
+            + 'the product can act on, without letting one comment directly trigger a change.',
+        deliverables: ['A typed evidence/claim model with epistemic states (asserted → sourced → corroborated → verified)',
+            'A research-quest compiler: a disputed or stale signal becomes a tracked request for more evidence, never an auto-edit',
+            'Community audit actions with real reputation (XP/TP) settlement — never from self-review or raw volume'],
+    },
+    {
+        day: 9, title: 'Missions — bounded-action engine', status: 'planned', value: 40,
+        description: 'A concrete, boundable unit of work: a scoped edit contract, an isolated change, '
+            + 'independent verification, and a real rollback path — not an agent given unbounded authority.',
+        deliverables: ['A target/capability graph so an edit is scoped to one file and one mutation class',
+            'A first real, dogfooded end-to-end edit through that pipeline, verified live in production',
+            'Rollback strategy tracked as declared vs. materialized vs. verified — not assumed complete'],
+    },
+    {
+        day: 11, title: 'Workflows editor', status: 'planned', value: 50,
+        description: 'Letting a user compose a repeatable automation from the same building blocks the '
+            + 'platform itself uses, instead of a one-off script per business.',
+        deliverables: ['Workflow records with a real owner/workspace scope', 'A visual builder for the common cases',
+            'Connectors reusing the same evidence/audit model as everything else, not a parallel system'],
+    },
+    {
+        day: 13, title: 'Service connectors (Firecrawl, n8n)', status: 'planned', value: 60,
+        description: 'Real external integrations for research and automation — website/content extraction and '
+            + 'workflow orchestration — each with a stated data boundary, not blanket credential access.',
+        deliverables: ['Firecrawl for controlled web research', 'Self-hosted n8n for orchestration',
+            'Bounded adapter authority per connector, not a generic admin key'],
+    },
+    {
+        day: 15, title: 'ERP foundation', status: 'planned', value: 70,
+        description: 'The unglamorous backbone — contacts, objectives, tasks — that every other workspace '
+            + 'feature (missions, signals, evidence) actually needs to point at something real.',
+        deliverables: ['Contacts/objectives/tasks with the same RBAC model as the rest of the workspace',
+            'Cross-links from missions/signals into ERP records, not a disconnected module'],
+    },
+    {
+        day: 17, title: 'Evidence ledger & verification', status: 'planned', value: 80,
+        description: 'A claim is never true just because it was written down. Sources, audits, disputes, and '
+            + 'a promotion ladder from asserted to independently verified — the same discipline applied to the product itself.',
+        deliverables: ['Source-lineage collapsing (100 copies of one origin ≠ 100 independent sources)',
+            'Real self-audit rejection by actual authorship, not a caller-honesty flag',
+            'Per-dimension knowledge health — never one averaged fake score'],
+    },
+    {
+        day: 19, title: 'Daily edition & specialist desks', status: 'planned', value: 88,
+        description: 'Surfacing what actually happened — real commits, real deploys, real verified claims — '
+            + 'as a readable daily record, not a marketing summary.',
+        deliverables: ['A canonical release event compiled once, projected consistently to wiki/Discord/community channels',
+            'Self-hosted wiki as the durable public record', 'Specialist desk views scoped by role, not one firehose'],
+    },
+    {
+        day: 21, title: 'Sprint review — verified replay', status: 'planned', value: 100,
+        description: 'Every milestone above gets replayed against its own stated evidence bar, in public — '
+            + 'not summarized as "done," but shown with what was actually verified and what wasn’t.',
+        deliverables: ['Public test suite results, not just a green checkmark', 'An honest list of what remains open',
+            'This roadmap updated to reflect what actually happened, not the original plan'],
+    },
 ];
 
 // Full per-day trajectory: milestones plus interpolated working days,
@@ -279,15 +349,32 @@ export default function RoadmapPage() {
                 {/* active milestone readout */}
                 <div className="mt-4 min-h-[3.5rem]">
                     {activeMilestone ? (
-                        <Card className="flex flex-wrap items-center gap-3 p-4">
-                            <span className="font-evidence text-[11px] uppercase tracking-[0.14em] text-primary">
-                Day {activeMilestone.day}
-                            </span>
-                            <span className="font-display text-lg font-semibold">{activeMilestone.title}</span>
-                            <StatePill state={activeMilestone.status} />
-                            <span className="font-evidence text-[11px] text-muted-foreground">
-                planned completion {activeMilestone.value}%
-                            </span>
+                        <Card className="p-4">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <span className="font-evidence text-[11px] uppercase tracking-[0.14em] text-primary">
+                    Day {activeMilestone.day}
+                                </span>
+                                <span className="font-display text-lg font-semibold">{activeMilestone.title}</span>
+                                <StatePill state={activeMilestone.status} />
+                                <span className="font-evidence text-[11px] text-muted-foreground">
+                    planned completion {activeMilestone.value}%
+                                </span>
+                            </div>
+                            {activeMilestone.description && (
+                                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                                    {activeMilestone.description}
+                                </p>
+                            )}
+                            {activeMilestone.deliverables?.length > 0 && (
+                                <ul className="mt-3 space-y-1.5">
+                                    {activeMilestone.deliverables.map((d) => (
+                                        <li key={d} className="flex gap-2 text-sm text-foreground/90">
+                                            <span className="text-primary">·</span>
+                                            <span>{d}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </Card>
                     ) : (
                         <p className="px-1 text-sm text-muted-foreground">
@@ -311,15 +398,32 @@ export default function RoadmapPage() {
 
                 <Card className="mt-6 divide-y divide-border">
                     {MILESTONES.map((m) => (
-                        <div key={m.day} className="grid grid-cols-12 items-center gap-3 p-4">
-                            <div className="col-span-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-primary sm:col-span-1">
-                D{m.day}
+                        <div key={m.day} className="p-4">
+                            <div className="grid grid-cols-12 items-center gap-3">
+                                <div className="col-span-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-primary sm:col-span-1">
+                    D{m.day}
+                                </div>
+                                <div className="col-span-7 text-sm font-medium sm:col-span-8">{m.title}</div>
+                                <div className="col-span-3 flex items-center justify-end gap-2">
+                                    <span className="font-evidence text-[11px] text-muted-foreground">{m.value}%</span>
+                                    <StatePill state={m.status} />
+                                </div>
                             </div>
-                            <div className="col-span-7 text-sm font-medium sm:col-span-8">{m.title}</div>
-                            <div className="col-span-3 flex items-center justify-end gap-2">
-                                <span className="font-evidence text-[11px] text-muted-foreground">{m.value}%</span>
-                                <StatePill state={m.status} />
-                            </div>
+                            {m.description && (
+                                <p className="mt-2 pl-0 text-sm leading-relaxed text-muted-foreground sm:pl-[calc(8.33%+0.75rem)]">
+                                    {m.description}
+                                </p>
+                            )}
+                            {m.deliverables?.length > 0 && (
+                                <ul className="mt-2 space-y-1 pl-0 sm:pl-[calc(8.33%+0.75rem)]">
+                                    {m.deliverables.map((d) => (
+                                        <li key={d} className="flex gap-2 text-xs text-foreground/80">
+                                            <span className="text-primary">·</span>
+                                            <span>{d}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     ))}
                 </Card>
