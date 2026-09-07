@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { Gauge, ArrowRight, Info, TrendingUp } from 'lucide-react';
+import { Gauge, ArrowRight, Info, TrendingUp, GitCommit } from 'lucide-react';
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import Seo from '@/components/Seo';
 import { Section, SectionLabel, Card, StatePill, Button } from '@/components/site/ui';
+import { trackEvent } from '@/lib/telemetry';
 
 const STATUSES = ['proposed', 'planned', 'in_progress', 'blocked', 'verified', 'archived'];
 
@@ -71,7 +72,7 @@ const PAD_B = 52;
 const xFor = (day) => PAD_L + ((day - 1) / (SPRINT_DAYS - 1)) * (CHART_W - PAD_L - PAD_R);
 const yFor = (value) => PAD_T + (1 - value / 100) * (CHART_H - PAD_T - PAD_B);
 
-function MarketPlot({ activeDay, onHover }) {
+function MarketPlot({ activeDay, onHover, live }) {
     const linePath = TRAJECTORY.map((p, i) => `${i === 0 ? 'M' : 'L'} ${xFor(p.day).toFixed(1)} ${yFor(p.value).toFixed(1)}`).join(' ');
     const areaPath = `${linePath} L ${xFor(SPRINT_DAYS).toFixed(1)} ${yFor(0).toFixed(1)} L ${xFor(1).toFixed(1)} ${yFor(0).toFixed(1)} Z`;
 
@@ -146,6 +147,27 @@ function MarketPlot({ activeDay, onHover }) {
                 <circle key={p.day} cx={xFor(p.day)} cy={yFor(p.value)} r="1.6" fill="hsl(var(--muted-foreground) / 0.5)" />
             ))}
 
+            {/* actual progress marker - real data only, drawn from roadmap-status.json */}
+            {live && Number.isFinite(live.sprint_day) && Number.isFinite(live.actual_pct) && (
+                <g>
+                    <line
+                        x1={xFor(live.sprint_day)} y1={PAD_T}
+                        x2={xFor(live.sprint_day)} y2={CHART_H - PAD_B}
+                        stroke="hsl(var(--foreground) / 0.35)" strokeWidth="1" strokeDasharray="3 3"
+                    />
+                    <circle
+                        cx={xFor(live.sprint_day)} cy={yFor(live.actual_pct)}
+                        r="5.5" fill="hsl(var(--destructive, 0 84% 60%))" stroke="hsl(var(--card))" strokeWidth="1.5"
+                    />
+                    <text
+                        x={xFor(live.sprint_day)} y={yFor(live.actual_pct) - 14}
+                        textAnchor="middle" className="font-evidence" fontSize="10" fill="hsl(var(--foreground))"
+                    >
+                        ACTUAL {live.actual_pct}%
+                    </text>
+                </g>
+            )}
+
             {/* frame */}
             <rect x="0.5" y="0.5" width={CHART_W - 1} height={CHART_H - 1} fill="none" stroke="hsl(var(--foreground) / 0.7)" strokeWidth="1" />
         </svg>
@@ -154,10 +176,29 @@ function MarketPlot({ activeDay, onHover }) {
 
 export default function RoadmapPage() {
     const [activeDay, setActiveDay] = useState(null);
+    const [live, setLive] = useState(null);
+    const [liveError, setLiveError] = useState(false);
     const activeMilestone = useMemo(
         () => MILESTONES.find((m) => m.day === activeDay) || null,
         [activeDay],
     );
+
+    useEffect(() => {
+        let cancelled = false;
+        fetch('/roadmap-status.json', { cache: 'no-store' })
+            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
+            .then((data) => { if (!cancelled) setLive(data); })
+            .catch(() => { if (!cancelled) setLiveError(true); });
+        return () => { cancelled = true; };
+    }, []);
+
+    const handleHover = (day) => {
+        setActiveDay(day);
+        if (day) {
+            const m = MILESTONES.find((x) => x.day === day);
+            trackEvent('roadmap_milestone_hover', { day, title: m?.title });
+        }
+    };
 
     return (
         <div className="min-h-screen bg-background text-foreground">
@@ -212,7 +253,7 @@ export default function RoadmapPage() {
                 </div>
 
                 <Card className="mt-6 overflow-hidden p-0">
-                    <MarketPlot activeDay={activeDay} onHover={setActiveDay} />
+                    <MarketPlot activeDay={activeDay} onHover={handleHover} live={live} />
                 </Card>
 
                 {/* ticker / readout strip */}
@@ -223,6 +264,13 @@ export default function RoadmapPage() {
                         <span>· {MILESTONES.length} MILESTONES</span>
                         <span>· STATUS: PLANNED</span>
                         <span className="text-primary">· CURVE = PLAN, NOT RESULTS</span>
+                        {live && (
+                            <span>· LIVE ACTUAL: {live.actual_pct}% (day {live.sprint_day})</span>
+                        )}
+                        {live?.gate_state && (
+                            <span>· LAST GATE: {live.gate_state}</span>
+                        )}
+                        {liveError && <span>· LIVE DATA: UNKNOWN (fetch failed)</span>}
                     </div>
                 </div>
 
@@ -272,6 +320,44 @@ export default function RoadmapPage() {
                             </div>
                         </div>
                     ))}
+                </Card>
+            </Section>
+
+            {/* Recent build activity - real GitHub commit log, refreshed every deploy */}
+            <Section className="border-t border-foreground/80 py-12 sm:py-16">
+                <SectionLabel icon={GitCommit}>Build in public</SectionLabel>
+                <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                    Recent build activity.
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                    Pulled live from the public GitHub repository at build time. Not
+                    a summary or a curated highlight reel — the real commit log.
+                </p>
+                <Card className="mt-6 divide-y divide-border">
+                    {live?.recent_commits?.length ? (
+                        live.recent_commits.map((c) => (
+                            c.error ? (
+                                <div key="err" className="p-4 text-sm text-muted-foreground">Unknown — {c.error}</div>
+                            ) : (
+                                <a
+                                    key={c.sha}
+                                    href={c.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    onClick={() => trackEvent('roadmap_commit_click', { sha: c.sha })}
+                                    className="flex flex-wrap items-center gap-3 p-4 text-sm hover:bg-secondary/40"
+                                >
+                                    <span className="font-evidence text-[11px] text-primary">{c.sha}</span>
+                                    <span className="flex-1 truncate">{c.message}</span>
+                                    <span className="font-evidence text-[11px] text-muted-foreground">{c.date}</span>
+                                </a>
+                            )
+                        ))
+                    ) : (
+                        <div className="p-4 text-sm text-muted-foreground">
+                            {liveError ? 'Unknown — live commit feed unavailable.' : 'Loading…'}
+                        </div>
+                    )}
                 </Card>
             </Section>
 

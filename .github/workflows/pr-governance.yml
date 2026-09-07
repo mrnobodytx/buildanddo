@@ -1,0 +1,54 @@
+name: BuildAndDo PR Governance
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: buildanddo-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  govern:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Enforce public/private boundary and contributor visibility
+        run: python scripts/ci/verify_public_boundary.py --github-event "$GITHUB_EVENT_PATH"
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint if present
+        run: npm run lint --if-present
+
+      - name: Test if present
+        run: npm test --if-present
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify expected web artifact
+        run: test -d dist/apps/web && test -f dist/apps/web/index.html
+
+      - name: Upload governance evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-governance-${{ github.event.pull_request.number }}
+          path: |
+            .buildanddo/public/boundary-report.json
+            dist/apps/web
+          retention-days: 14

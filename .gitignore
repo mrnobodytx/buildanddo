@@ -4,6 +4,7 @@
 !.env.example
 *.pem
 *.key
+secrets/
 
 # Dependencies / build
 node_modules/
@@ -19,7 +20,20 @@ apps/pocketbase/pocketbase
 Thumbs.db
 .vscode/*.local.json
 
-# Citadel local state
+# Local-only operational state / internal ops scripts (never public)
 state/
 evidence/**/private/
 evidence/**/secrets/
+.buildanddo/
+scripts/ci/sprint_cycle.py
+scripts/ci/run_sprint_cycle.ps1
+
+# Private GitLab-mirror CI config - names an internal project path, must
+# never land in the public GitHub repo. See .github/workflows/candidate-to-gitlab.yml
+# for the sanctioned (secrets-only, no hardcoded path) public mirror mechanism.
+/.gitlab-ci.yml
+
+# Generated at build time by scripts/deploy/roadmap_status.py - never hand-edited
+# or committed as source, it's build output like dist/.
+apps/web/public/roadmap-status.json
+__pycache__/

@@ -19,7 +19,7 @@ def git_files(root: Path) -> list[str]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
-    ap.add_argument("--policy", default=".citadel/public/path-policy.json")
+    ap.add_argument("--policy", default=".buildanddo/public/path-policy.json")
     ap.add_argument("--github-event")
     args = ap.parse_args()
 
@@ -66,7 +66,7 @@ def main() -> int:
         }
 
     report = {"state":"FAIL" if failures else "PASS","files_checked":len(files),"failures":failures,"actor":actor}
-    out = root/".citadel/public/boundary-report.json"
+    out = root/".buildanddo/public/boundary-report.json"
     out.parent.mkdir(parents=True,exist_ok=True)
     out.write_text(json.dumps(report,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     print(json.dumps(report,indent=2))

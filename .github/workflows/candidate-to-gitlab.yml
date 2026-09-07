@@ -1,0 +1,87 @@
+name: BuildAndDo Candidate to GitLab
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: buildanddo-main-candidate
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GITLAB_REPO_URL: ${{ secrets.GITLAB_INGEST_REPO_URL }}
+      GITLAB_INGEST_USER: ${{ secrets.GITLAB_INGEST_USER }}
+      GITLAB_INGEST_TOKEN: ${{ secrets.GITLAB_INGEST_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Public boundary
+        run: python scripts/ci/verify_public_boundary.py
+
+      - name: Install, test, build
+        run: |
+          npm ci
+          npm run lint --if-present
+          npm test --if-present
+          npm run build
+          test -d dist/apps/web
+          test -f dist/apps/web/index.html
+
+      - name: Generate candidate provenance
+        run: python scripts/ci/candidate_manifest.py
+
+      - name: Upload GitHub candidate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: buildanddo-candidate-${{ github.sha }}
+          path: |
+            BUILDANDDO_CANDIDATE_PROVENANCE.json
+            .buildanddo/public/boundary-report.json
+            dist/apps/web
+          retention-days: 30
+
+      - name: Mirror candidate to private GitLab intake
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${GITLAB_REPO_URL:-}" ] || [ -z "${GITLAB_INGEST_USER:-}" ] || [ -z "${GITLAB_INGEST_TOKEN:-}" ]; then
+            echo "HOLD: GitLab ingest secrets are not configured."
+            exit 1
+          fi
+
+          git config user.name "BuildAndDo Candidate Bot"
+          git config user.email "buildanddo-candidate@users.noreply.github.com"
+          git add -f BUILDANDDO_CANDIDATE_PROVENANCE.json
+          git commit -m "ci: candidate provenance for ${GITHUB_SHA}" || true
+
+          cat > "$RUNNER_TEMP/git-askpass.sh" <<'EOF'
+          #!/usr/bin/env sh
+          case "$1" in
+            *Username*) printf '%s\n' "$GITLAB_INGEST_USER" ;;
+            *Password*) printf '%s\n' "$GITLAB_INGEST_TOKEN" ;;
+            *) printf '\n' ;;
+          esac
+          EOF
+          chmod 700 "$RUNNER_TEMP/git-askpass.sh"
+          export GIT_ASKPASS="$RUNNER_TEMP/git-askpass.sh"
+          export GIT_TERMINAL_PROMPT=0
+
+          git remote remove gitlab-intake 2>/dev/null || true
+          git remote add gitlab-intake "$GITLAB_REPO_URL"
+          git push --force-with-lease gitlab-intake HEAD:refs/heads/buildanddo-source

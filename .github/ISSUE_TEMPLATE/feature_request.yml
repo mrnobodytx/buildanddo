@@ -1,0 +1,40 @@
+name: Feature request
+description: Propose a public BuildAndDo feature or customer-visible improvement
+title: "[FEATURE] "
+labels: ["feature"]
+body:
+  - type: dropdown
+    id: actor
+    attributes:
+      label: Submitter type
+      options:
+        - Human
+        - Agent
+        - Mixed human + agent
+    validations:
+      required: true
+  - type: input
+    id: mission
+    attributes:
+      label: Mission / objective
+      placeholder: BDO-04 / MISSION-...
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Customer problem
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence / telemetry that should prove it worked
+    validations:
+      required: true

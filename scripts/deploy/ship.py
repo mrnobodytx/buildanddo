@@ -37,10 +37,31 @@ import time
 import urllib.request
 from pathlib import Path
 
+import os
+
 ROOT = Path(__file__).resolve().parents[2]  # sites/buildanddo/
+# Deploy-only local secrets (VM host key path, PostHog project key) - never
+# committed (see .gitignore), never reach into any other project's tree.
+# Falls back to OS env vars of the same names if the file is absent, so this
+# script has zero hardcoded dependency on any machine-specific layout.
+LOCAL_SECRETS = ROOT / "secrets" / "deploy.local.env"
 NPM = shutil.which("npm") or "npm"
-SSH_KEY = r"C:\Users\raizoken\.ssh\hostinger21_ed25519"
-VM_HOST = "root@45.82.75.40"
+
+
+def _load_local_secrets() -> dict:
+    env = dict(os.environ)
+    if LOCAL_SECRETS.is_file():
+        for line in LOCAL_SECRETS.read_text(encoding="utf-8", errors="replace").splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, _, v = line.partition("=")
+                env[k.strip()] = v.strip()
+    return env
+
+
+_SECRETS = _load_local_secrets()
+SSH_KEY = _SECRETS.get("BUILDANDDO_SSH_KEY", "")
+VM_HOST = _SECRETS.get("BUILDANDDO_VM_HOST", "root@45.82.75.40")
 STAGING_REMOTE_DIR = "/var/www/buildanddo-staging"
 PROD_REMOTE_DIR = "/var/www/buildanddo"
 STAGING_URL = "https://staging.buildanddo.com/"
@@ -75,24 +96,47 @@ def _probe(url: str, retries: int = 5, delay: float = 2.0) -> dict:
     return {"ok": False, "status": None, "attempts": retries, "error": last_err}
 
 
+def _ssh_identity_args() -> list[str]:
+    return ["-i", SSH_KEY] if SSH_KEY else []
+
+
 def _rsync(local_dir: Path, remote_dir: str) -> dict:
     """scp -r the whole dist tree; the remote dir is emptied first via ssh so stale
     files from a previous build never linger (a partial-diff sync could keep an
     old chunk that the new index.html no longer references)."""
-    clear = _run(["ssh", "-i", SSH_KEY, "-o", "StrictHostKeyChecking=no", VM_HOST,
+    if not VM_HOST:
+        return {"ok": False, "stage": "config", "reason": "BUILDANDDO_VM_HOST not set (see secrets/deploy.local.env)"}
+    clear = _run(["ssh", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", VM_HOST,
                   f"rm -rf {remote_dir}/* && mkdir -p {remote_dir}"])
     if not clear["ok"]:
         return {"ok": False, "stage": "clear_remote", **clear}
-    copy = _run(["scp", "-i", SSH_KEY, "-o", "StrictHostKeyChecking=no", "-r",
+    copy = _run(["scp", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", "-r",
                  f"{local_dir}/.", f"{VM_HOST}:{remote_dir}/"], timeout=300)
     if not copy["ok"]:
         return {"ok": False, "stage": "scp", **copy}
     return {"ok": True}
 
 
+def _write_web_env() -> None:
+    """Client-safe PostHog project key only (BUILDANDDO_PH, public phc_ key) - never a
+    secret. Sourced from secrets/deploy.local.env or the OS environment (see
+    _load_local_secrets); .env* is gitignored at the repo root and regenerated every
+    run, never committed."""
+    web_dir = ROOT / "apps" / "web"
+    key = _SECRETS.get("BUILDANDDO_PH")
+    if key:
+        (web_dir / ".env").write_text(f"VITE_BUILDANDDO_PH={key}\n", encoding="utf-8")
+
+
+def _write_roadmap_status() -> dict:
+    return _run([sys.executable, str(ROOT / "scripts" / "deploy" / "roadmap_status.py")], cwd=ROOT, timeout=30)
+
+
 def _build() -> dict:
     web_dir = ROOT / "apps" / "web"
     shutil.rmtree(DIST_DIR, ignore_errors=True)  # see integrity_regression_check.py - measured stale-cache bug
+    _write_web_env()
+    _write_roadmap_status()  # public/roadmap-status.json - vite copies public/ verbatim into dist
     return _run([NPM, "run", "build"], cwd=web_dir, timeout=600)
 
 
