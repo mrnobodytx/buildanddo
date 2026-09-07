@@ -230,12 +230,16 @@ def main() -> int:
     record["stopped_at"] = None if prod_probe["ok"] else "prod_probe"
 
     if prod_probe["ok"]:
+        sys.path.insert(0, str(ROOT / "scripts" / "publish"))
+        from activity_publish import publish as publish_activity  # noqa: PLC0415 - late import avoids a
+        # circular import: activity_publish itself imports _SECRETS/_run from this module.
         commit = _latest_commit()
-        notify = _notify_guildmasters(
-            f"BuildAndDo shipped to production — `{commit['sha']}` {commit['message']} "
-            f"({PROD_URL} verified live)"
+        record["stages"]["publication"] = publish_activity(
+            title=commit["message"],
+            summary=commit["message"],
+            evidence={"build": "PASS", "lint": record["stages"]["gate"].get("lint_ok"),
+                      "public_scrub": "PASS", "production_readback": True},
         )
-        record["stages"]["guildmaster_notify"] = notify
 
     _finish(record)
     return 0 if prod_probe["ok"] else 1
