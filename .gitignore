@@ -28,6 +28,8 @@ evidence/**/secrets/
 !.buildanddo/public/
 !.buildanddo/public/**
 .buildanddo/public/boundary-report.json
+__pycache__/
+*.pyc
 # .buildanddo/public/path-policy.json is a public-safe allow/deny path list consumed by
 # scripts/ci/verify_public_boundary.py - NOT sensitive, and it must ship to every clone
 # (real bug found 2026-09-07: the blanket .buildanddo/ ignore above silently starved the
@@ -43,4 +45,3 @@ scripts/ci/run_sprint_cycle.ps1
 # Generated at build time by scripts/deploy/roadmap_status.py - never hand-edited
 # or committed as source, it's build output like dist/.
 apps/web/public/roadmap-status.json
-__pycache__/
