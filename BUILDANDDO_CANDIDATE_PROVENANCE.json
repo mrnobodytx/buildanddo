@@ -1,16 +1,21 @@
 {
   "authority": "candidate_only",
-  "generated_at": "2026-09-07T14:55:15.761791+00:00",
+  "generated_at": "2026-09-07T15:20:46.436011+00:00",
   "github_actor": null,
   "github_actor_id": null,
   "github_ref": null,
   "github_run_attempt": null,
   "github_run_id": null,
-  "manifest_sha256": "4a72ce8ccbda908f4204b315c2bc0f921a9af5d55457587b1f989fa98f11bb5d",
-  "mirror_commit_before_provenance": "cf3262e51a7d3c6e6d0bf33d217f9bde92039dec",
+  "manifest_sha256": "a90043a0e24be74a5269d711383c61a664d37aa51721fb534a75f1b508cb42ce",
+  "mirror_commit_before_provenance": "d766b47d76431d265b5a1c8cc763888a66066a2c",
   "production_authority": false,
   "schema_version": 1,
   "tracked_files": [
+    {
+      "bytes": 1232,
+      "path": ".buildanddo/public/path-policy.json",
+      "sha256": "5b611b431a199e94b75ff79a4a007e2430ac3e862ebd8cb10b7f50e4d1edf636"
+    },
     {
       "bytes": 129,
       "path": ".env.example",
@@ -42,14 +47,14 @@
       "sha256": "1233ff747756ca8ebd960dd6ad08623f6a58d8cc8ad84fd276a71352a5ff2e06"
     },
     {
-      "bytes": 908,
+      "bytes": 1383,
       "path": ".gitignore",
-      "sha256": "c51b177f5185f32eed6561464915bd43590a42ebd36eebc952e2a55408cf8026"
+      "sha256": "eaac0520cb4d82cbaca94ea10f0b440a88095d91b912fdd490f89514e858af62"
     },
     {
-      "bytes": 403,
+      "bytes": 574,
       "path": ".npmrc",
-      "sha256": "c541b37408862a61484b3b8a7ca1a30812f2bf3771ea6a00543e346bf72f93b3"
+      "sha256": "eea889b77561d7bd1a3503e99a3dcc462a07348647f4a8edf327f9c108787bb6"
     },
     {
       "bytes": 3,
@@ -64,7 +69,7 @@
     {
       "bytes": 39785,
       "path": "BUILDANDDO_CANDIDATE_PROVENANCE.json",
-      "sha256": "fbc9d6a40a75b5f69c6cb520c2daf985df4ead4c5ef471dcca5c755183e8067a"
+      "sha256": "626a7805817a6fc48516da369fa3985d67cbf8c633590a223de1d77596cf89f1"
     },
     {
       "bytes": 479,
@@ -182,9 +187,9 @@
       "sha256": "a267448bdc900cd09635bed753e15bf39d4659ed7e85772ff2da8ded46529c37"
     },
     {
-      "bytes": 3020,
+      "bytes": 2888,
       "path": "apps/web/package.json",
-      "sha256": "5edcb34bcff27d05f5bac40221fe437396e23aab7115e73b1fc07995f077c4bc"
+      "sha256": "38426e2e2b863cabe1d315f8d58c0fade0920b56cc9f9b68902c87e0fc5a78fe"
     },
     {
       "bytes": 12834,
@@ -552,9 +557,9 @@
       "sha256": "f92d924b2a7ef317d85f96d1d8ff888e1b5dc9cc8e52f2dba490f750bba04ade"
     },
     {
-      "bytes": 5181,
+      "bytes": 6487,
       "path": "apps/web/src/components/site/Footer.jsx",
-      "sha256": "0ea3c6309c87d955cb0851f2b413b0b5e5689c1a0aef703052b97340a7a0e339"
+      "sha256": "3678a42cc16d1c290765d859fcf5b4ee80f51fe78911abeb9ddeff9d25603c9e"
     },
     {
       "bytes": 7316,
@@ -1027,9 +1032,19 @@
       "sha256": "5478382e50d913fba50082f63a427de6d770f52a19f481cab9d359b878a5a53f"
     },
     {
+      "bytes": 1098,
+      "path": "apps/web/tools/build.mjs",
+      "sha256": "bde3239f5fc901e4c873cf8f0a73c894505af9a72ecbcc2dbb276c52e9daf789"
+    },
+    {
       "bytes": 5304,
       "path": "apps/web/tools/generate-llms.js",
       "sha256": "e9f9c295eae09ff17eb1fd12db831048a88b1d743652404e72cd42101482d5c3"
+    },
+    {
+      "bytes": 1185,
+      "path": "apps/web/tools/lint.mjs",
+      "sha256": "35b8385b41f5d6e80f098a480db4c1a58afd2fd8347c11d8cef735eb6e0a3c8e"
     },
     {
       "bytes": 11374,
@@ -1075,9 +1090,19 @@
       "bytes": 11159,
       "path": "scripts/deploy/ship.py",
       "sha256": "0c7952ca94684f407454ccd116a4a399b32e8ef12b3a2bf075b9f4d8ed66c568"
+    },
+    {
+      "bytes": 3416,
+      "path": "scripts/discordbot/bot.py",
+      "sha256": "a3faeb37606489ae0b888c2a5868f548cbde8eba3754d04f010ce64bf1ccfe2e"
+    },
+    {
+      "bytes": 19,
+      "path": "scripts/discordbot/requirements.txt",
+      "sha256": "1ee9e1fa0c1edc12abb1dae21d53b646a59321403f11d8de1cf382d4de75e1ce"
     }
   ],
   "upstream": "github",
   "upstream_repository": null,
-  "upstream_sha": "cf3262e51a7d3c6e6d0bf33d217f9bde92039dec"
+  "upstream_sha": "d766b47d76431d265b5a1c8cc763888a66066a2c"
 }

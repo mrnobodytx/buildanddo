@@ -1,7 +1,9 @@
 import React from 'react';
-import { Activity, Mail, MessageCircle } from 'lucide-react';
+import { Activity, Mail, MessageCircle, BookOpen, Users } from 'lucide-react';
 
 const DISCORD_INVITE_URL = 'https://discord.gg/vTDZxmpHHC';
+const WIKI_URL = 'https://wiki.buildanddo.com';
+const FORUM_URL = 'https://forum.buildanddo.com';
 
 const PRODUCT_LINKS = [
     { label: 'At a glance', href: '#glance' },
@@ -79,6 +81,28 @@ export default function Footer() {
                                 >
                                     <MessageCircle className="h-4 w-4 shrink-0" />
                                     Join our Discord
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={FORUM_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    <Users className="h-4 w-4 shrink-0" />
+                                    Community forum
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={WIKI_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    <BookOpen className="h-4 w-4 shrink-0" />
+                                    Wiki
                                 </a>
                             </li>
                             <li className="flex items-center gap-2 text-sm text-muted-foreground">
