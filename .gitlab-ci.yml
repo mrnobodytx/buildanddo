@@ -9,7 +9,9 @@ integrity_gate:
   tags:
     - buildanddo
   script:
-    - npm ci --prefix apps/web
+    # npm workspaces: the lockfile is at the repo root (apps/*), not inside apps/web -
+    # `npm ci --prefix apps/web` fails EUSAGE looking for a lockfile that isn't there.
+    - npm ci
     - python3 scripts/ci/integrity_regression_check.py
     - python3 scripts/ci/verify_public_boundary.py --root .
   rules:
