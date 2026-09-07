@@ -69,6 +69,8 @@ passed = sum(1 for _, ok in checks if ok)
 for name, ok in checks:
     print(f"{'PASS' if ok else 'FAIL'}  {name}")
 print(f"\n{passed}/{len(checks)} passed")
-print(f"\nLive records created: source={source['id']} claim={claim['id']} "
-      f"(view at {client.base_url}/_/#/collections/knowledge_claims/records/{claim['id']})")
+
+client._request("DELETE", f"/api/collections/knowledge_claims/records/{claim['id']}")  # noqa: SLF001
+client._request("DELETE", f"/api/collections/knowledge_sources/records/{source['id']}")  # noqa: SLF001
+print("cleaned up test source + claim")
 sys.exit(0 if passed == len(checks) else 1)

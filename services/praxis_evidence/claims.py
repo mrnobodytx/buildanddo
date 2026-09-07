@@ -45,7 +45,7 @@ def create_source(client: PocketBaseClient, *, url: str = "", title: str = "", p
 def create_claim(client: PocketBaseClient, *, subject: str, predicate: str, object_: str,
                   domain: str, context: dict | None = None, initial_state: str = "USER_ASSERTED",
                   confidence: float = 0.3, supporting_source_ids: list[str] | None = None,
-                  observed_at: str | None = None) -> dict:
+                  observed_at: str | None = None, submitted_by: str | None = None) -> dict:
     """A claim NEVER starts above SOURCE_BACKED unless real sources are attached -
     enforced here, not left to the caller's honesty."""
     if initial_state not in EPISTEMIC_STATES:
@@ -58,9 +58,15 @@ def create_claim(client: PocketBaseClient, *, subject: str, predicate: str, obje
         "display_id": display_id, "subject": subject, "predicate": predicate, "object": object_,
         "domain": domain, "context": context or {}, "epistemic_state": initial_state,
         "confidence": confidence, "supporting_sources": supporting_source_ids or [],
-        "observed_at": observed_at or _now(),
+        "observed_at": observed_at or _now(), "submitted_by": submitted_by,
     }
     return client.create("knowledge_claims", record)
+
+
+AUDIT_ACTIONS = ["CORROBORATE", "CONTRADICT", "REPRODUCE", "FAIL_TO_REPRODUCE", "PRICE_CONFIRM",
+                  "PRICE_UPDATE", "MATERIAL_VERIFY", "METHOD_TRIAL", "TIMING_REPORT", "SOURCE_CHECK",
+                  "LOGIC_FALSIFIER", "EXPERT_REVIEW", "CONTEXT_CORRECTION", "TRANSLATION_REVIEW",
+                  "SAFETY_FLAG", "OUTDATED_FLAG"]
 
 
 def audit_claim(client: PocketBaseClient, *, claim_id: str, auditor_user_id: str, action: str,
@@ -68,15 +74,17 @@ def audit_claim(client: PocketBaseClient, *, claim_id: str, auditor_user_id: str
                  independent: bool = True) -> dict:
     """Records an audit AND applies the promotion/demotion it earns. Hard rule:
     an auditor may not audit a claim they themselves authored - self-verification
-    can never settle promotion (doc rule + Phase 12). We don't track claim
-    authorship explicitly yet (no created_by field wired), so this enforces the
-    weaker-but-real check available today: `independent` must be explicitly
-    asserted true by the caller, and a caller-asserted False is honored as a
-    real self-audit marker, never silently overridden to True."""
+    can never settle promotion (doc rule + Phase 12). Enforced against the REAL
+    submitted_by field now (not just a caller-asserted flag) - a caller cannot
+    pass independent=True to bypass genuine self-authorship, closing the gap
+    the earlier caller-honesty-only version had."""
+    if action not in AUDIT_ACTIONS:
+        raise ValueError(f"unknown audit action {action!r}, expected one of {AUDIT_ACTIONS}")
     claim = client.get("knowledge_claims", claim_id)
-    if not independent:
+    is_actual_self_audit = bool(claim.get("submitted_by")) and claim["submitted_by"] == auditor_user_id
+    if is_actual_self_audit or not independent:
         raise PocketBaseError(f"self-audit rejected: claim {claim['display_id']} audit by "
-                               f"{auditor_user_id} was marked non-independent")
+                               f"{auditor_user_id} is the claim's own submitter or was marked non-independent")
 
     audit_display_id = next_display_id("governance_audits", client)
     audit_record = {
@@ -100,7 +108,12 @@ def audit_claim(client: PocketBaseClient, *, claim_id: str, auditor_user_id: str
         client._request("PATCH", f"/api/collections/knowledge_claims/records/{claim_id}",  # noqa: SLF001
                          {"epistemic_state": new_state})
 
-    return {"audit": audit, "claim_state_before": current_state, "claim_state_after": new_state}
+    from reputation import settle_audit_reputation  # noqa: PLC0415 - avoids a module-load cycle
+    reputation_result = settle_audit_reputation(client, auditor_user_id=auditor_user_id, domain=claim["domain"],
+                                                  audit_result=result, was_independent=independent)
+
+    return {"audit": audit, "claim_state_before": current_state, "claim_state_after": new_state,
+            "reputation": reputation_result}
 
 
 def _now() -> str:
