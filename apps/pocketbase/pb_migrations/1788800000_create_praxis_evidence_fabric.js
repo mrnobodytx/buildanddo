@@ -155,8 +155,11 @@ migrate(
         { name: "advantages_evidence", type: "relation", collectionId: kclaim.id, maxSelect: 999 },
         { name: "disadvantages_evidence", type: "relation", collectionId: kclaim.id, maxSelect: 999 },
         { name: "outcome_metrics", type: "json" },
-        { name: "community_attempts", type: "number", required: true },
-        { name: "community_verified_successes", type: "number", required: true },
+        // NOT required: PocketBase's "required" validator rejects literal 0 as
+        // "blank" for number fields (measured 2026-09-07) - these are counters
+        // that legitimately start at zero.
+        { name: "community_attempts", type: "number" },
+        { name: "community_verified_successes", type: "number" },
         { name: "knowledge_state", type: "select", required: true, maxSelect: 1,
           values: ["PROPOSED", "COMMUNITY_TESTED", "VERIFIED", "DISPUTED", "DEPRECATED"] },
         { name: "created", type: "autodate", onCreate: true, onUpdate: false },
@@ -213,9 +216,9 @@ migrate(
       fields: [
         { name: "display_id", type: "text", required: true, max: 40 },
         { name: "material", type: "relation", collectionId: pmat.id, maxSelect: 1, required: true },
-        { name: "amount", type: "number", required: true },
+        { name: "amount", type: "number" },
         { name: "currency", type: "text", required: true, max: 8 },
-        { name: "quantity_value", type: "number", required: true },
+        { name: "quantity_value", type: "number" },
         { name: "quantity_unit", type: "text", required: true, max: 40 },
         { name: "vendor", type: "text", max: 200 },
         { name: "country", type: "text", max: 4 },
@@ -251,7 +254,7 @@ migrate(
         { name: "display_id", type: "text", required: true, max: 40 },
         { name: "praxis_method", type: "relation", collectionId: pmethod.id, maxSelect: 1, required: true },
         { name: "activity", type: "text", required: true, max: 300 },
-        { name: "duration_value", type: "number", required: true },
+        { name: "duration_value", type: "number" },
         { name: "duration_unit", type: "select", required: true, maxSelect: 1,
           values: ["MINUTES", "HOURS", "DAYS", "WEEKS", "SESSIONS"] },
         { name: "sessions", type: "number" },
