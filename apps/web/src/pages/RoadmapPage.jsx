@@ -230,7 +230,9 @@ export default function RoadmapPage() {
                     is a milestone in the sprint. The curve is a plan, not
                     telemetry — it shows intended cumulative completion, not real
                     results. An item is never marked Verified from a prompt
-                    alone; Verified still requires an evidence record.
+                    alone; Verified still requires an evidence record. The
+                    red ACTUAL marker on the chart, where present, is live
+                    build/deploy telemetry, not another plan line.
                 </p>
 
                 <div className="mt-8 flex flex-wrap gap-2">
