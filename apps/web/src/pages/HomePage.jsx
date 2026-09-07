@@ -594,6 +594,9 @@ export default function HomePage() {
                 <FieldManual />
                 <EarlyAccess />
                 <Faq />
+                <p className="mx-auto max-w-6xl px-4 pb-2 text-center text-[10px] text-muted-foreground/40 sm:px-6">
+                    build v2 — edit-proof-20260907b
+                </p>
             </main>
             <Footer />
         </div>
