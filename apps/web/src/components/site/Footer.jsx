@@ -1,9 +1,11 @@
 import React from 'react';
-import { Activity, Mail, MessageCircle, BookOpen, Users } from 'lucide-react';
+import { Activity, Mail, MessageCircle, BookOpen, Users, Github } from 'lucide-react';
 
 const DISCORD_INVITE_URL = 'https://discord.gg/vTDZxmpHHC';
 const WIKI_URL = 'https://wiki.buildanddo.com';
 const FORUM_URL = 'https://forum.buildanddo.com';
+const GITHUB_URL = 'https://github.com/mrnobodytx/buildanddo';
+const CONTRIBUTING_URL = 'https://github.com/mrnobodytx/buildanddo/blob/main/CONTRIBUTING.md';
 
 const PRODUCT_LINKS = [
     { label: 'At a glance', href: '#glance' },
@@ -103,6 +105,27 @@ export default function Footer() {
                                 >
                                     <BookOpen className="h-4 w-4 shrink-0" />
                                     Wiki
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={GITHUB_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    <Github className="h-4 w-4 shrink-0" />
+                                    GitHub
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={CONTRIBUTING_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    How to contribute
                                 </a>
                             </li>
                             <li className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -1,13 +1,13 @@
 {
   "authority": "candidate_only",
-  "generated_at": "2026-09-07T16:50:32.079734+00:00",
+  "generated_at": "2026-09-07T17:05:03.551377+00:00",
   "github_actor": null,
   "github_actor_id": null,
   "github_ref": null,
   "github_run_attempt": null,
   "github_run_id": null,
-  "manifest_sha256": "9cb5366bf2d6a61d690b65ec4edbe8d3fc929368591482c5bd9d3bc34d04e2c3",
-  "mirror_commit_before_provenance": "388331d060cf3713f96451e295883857a3c5ca11",
+  "manifest_sha256": "b38ef88832f99be56a8cfc21f445eacd9afc2bc0236c97acce489b8c2eda504e",
+  "mirror_commit_before_provenance": "88f7c4177a8814751e63676c9a57179b11809386",
   "production_authority": false,
   "schema_version": 1,
   "tracked_files": [
@@ -67,9 +67,9 @@
       "sha256": "a2c6c14110a317833ac8f2fbae7080ee844af7469b2aa702876548dcf4c58077"
     },
     {
-      "bytes": 40626,
+      "bytes": 44097,
       "path": "BUILDANDDO_CANDIDATE_PROVENANCE.json",
-      "sha256": "73161d21e688afeb71a16e99d0bab1a3095bd7e2589b95d74c444109d1469dd4"
+      "sha256": "17f840990d4a323d703a7b10958c14e35a4b9c87699f37a9839fe2332001ab93"
     },
     {
       "bytes": 479,
@@ -165,6 +165,11 @@
       "bytes": 892,
       "path": "apps/pocketbase/pb_migrations/1788910000_add_source_cites_relation.js",
       "sha256": "8f6ca07f0896e527cb15797de2edf8843d7809225f79fd7472e9e79e60630f44"
+    },
+    {
+      "bytes": 2443,
+      "path": "apps/pocketbase/pb_migrations/1788920000_add_claim_authorship_and_reputation.js",
+      "sha256": "d2c6ece9e52bda9ce21761fbcefd85a4f412eca15fdbbf596270aa9e8c1ef98a"
     },
     {
       "bytes": 450,
@@ -522,9 +527,9 @@
       "sha256": "32d5a73a3fe46ddc48fb42d9d3f9a82cd05aa4fb156a1541d073f91e15aa3fff"
     },
     {
-      "bytes": 5447,
+      "bytes": 5591,
       "path": "apps/web/src/App.jsx",
-      "sha256": "e76c6148db871008ad950ee9a3ec94e5fcab695411084953513a05cdecb286f9"
+      "sha256": "b5fab082866e6194ffc048ae9d75ba3a176784d9f137774cec5a2d170dea2017"
     },
     {
       "bytes": 1595,
@@ -567,9 +572,9 @@
       "sha256": "f92d924b2a7ef317d85f96d1d8ff888e1b5dc9cc8e52f2dba490f750bba04ade"
     },
     {
-      "bytes": 6616,
+      "bytes": 7908,
       "path": "apps/web/src/components/site/Footer.jsx",
-      "sha256": "e6dff7b3a16d00779ba54c4b12ad4d57e2b233b3d5ba07709ead51229482c994"
+      "sha256": "9f0506f041c54fcfa3c8ccc8f75c328ac4b651aa164088b06f4ecab0988fc3d9"
     },
     {
       "bytes": 7316,
@@ -952,6 +957,11 @@
       "sha256": "2d0cbdd55b50e4fc36db942223c62c2943d409ae7e8abafa5ecb0d2b5e4f3bbe"
     },
     {
+      "bytes": 5281,
+      "path": "apps/web/src/pages/PracticePage.jsx",
+      "sha256": "c2001538de64f6194c9d09ca1a99006500aaf985d954229ddd11e0ebfb9efa1f"
+    },
+    {
       "bytes": 22012,
       "path": "apps/web/src/pages/RoadmapPage.jsx",
       "sha256": "b7cb7e44fc98aeae9d298f77bfd4984f7e18f72b512183929bf8511636049c09"
@@ -1122,9 +1132,9 @@
       "sha256": "7d95dbc4dd0fe67dea2fa17687faaf406e26f810827071229c339a3dec353fed"
     },
     {
-      "bytes": 5791,
+      "bytes": 6776,
       "path": "services/praxis_evidence/claims.py",
-      "sha256": "982609f89a358dcbcf241eea6fffcea50b6f534d42f2e784533e608a4fe41df4"
+      "sha256": "2588ede890c8a5e1042b7e547d02c9acef338dc53a113341836ee2ca969c28ef"
     },
     {
       "bytes": 4237,
@@ -1157,9 +1167,19 @@
       "sha256": "52620afc8f8445678c023b32c166f08bb62289a9715cb83ca6bb8c7a04cc319f"
     },
     {
-      "bytes": 4163,
+      "bytes": 2654,
+      "path": "services/praxis_evidence/reputation.py",
+      "sha256": "d0c825b82fb0a0a134226b912e0429b8618b4d044f2c6662a0695c7e04529a26"
+    },
+    {
+      "bytes": 1671,
+      "path": "services/praxis_evidence/run_all_tests.py",
+      "sha256": "121ab578248370c4f8e9bee01fb23c008319809de91066df2948e7180f5396e4"
+    },
+    {
+      "bytes": 4243,
       "path": "services/praxis_evidence/selftest.py",
-      "sha256": "006b4997b06548e361464a6ec4feb28656af846d8315050861250a5b9a929307"
+      "sha256": "003c3a901df37f0b80724d1f6d84ac74eb66d8b6f7268787df07ce486e7be029"
     },
     {
       "bytes": 2060,
@@ -1182,6 +1202,11 @@
       "sha256": "104de62584ae3a981bb45120c1ef0209d331073f5bfe2905751533eed8dcb51f"
     },
     {
+      "bytes": 4103,
+      "path": "services/praxis_evidence/selftest_reputation.py",
+      "sha256": "9d6ed3163fdcfec59ad1915bf44fa6253769c521dbb72e7e1e140ef1448fe467"
+    },
+    {
       "bytes": 3082,
       "path": "services/praxis_evidence/selftest_timing.py",
       "sha256": "b35e7a5a61780da76c4f2bc5b9f71c511babbffb265810e3688e3666ef385355"
@@ -1199,5 +1224,5 @@
   ],
   "upstream": "github",
   "upstream_repository": null,
-  "upstream_sha": "388331d060cf3713f96451e295883857a3c5ca11"
+  "upstream_sha": "88f7c4177a8814751e63676c9a57179b11809386"
 }
