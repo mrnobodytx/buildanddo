@@ -1,0 +1,61 @@
+{
+  "actor_labels": [
+    "actor:human",
+    "actor:agent",
+    "actor:mixed"
+  ],
+  "authority_model": {
+    "github": "public collaboration and submission plane",
+    "gitlab": "private golden, infrastructure, release and deployment authority"
+  },
+  "forbidden_file_names": [
+    ".env",
+    ".env.local",
+    "id_rsa",
+    "id_ed25519",
+    "credentials.json"
+  ],
+  "public_allowed_prefixes": [
+    ".github/",
+    "apps/",
+    "docs/",
+    "features/",
+    "missions/",
+    "tests/",
+    "scripts/ci/",
+    ".buildanddo/public/",
+    "package.json",
+    "package-lock.json",
+    "knip.json",
+    ".gitignore",
+    ".gitattributes",
+    ".nvmrc",
+    ".version",
+    "BUILDANDDO_SOURCE_PROVENANCE.json",
+    ".env.example",
+    ".gitlab-ci.yml"
+  ],
+  "public_forbidden_prefixes": [
+    "golden/",
+    "infra/",
+    "private/",
+    "secrets/",
+    "ops/private/",
+    "sops/",
+    "terraform/",
+    "tofu/",
+    "ansible/",
+    "helm/",
+    "flux/",
+    "state/",
+    "evidence/private/",
+    "ci/buildanddo/"
+  ],
+  "required_pr_fields": [
+    "Feature / mission ID",
+    "Actor type",
+    "Risk / authority",
+    "Acceptance evidence"
+  ],
+  "schema_version": 1
+}

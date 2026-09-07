@@ -24,7 +24,14 @@ Thumbs.db
 state/
 evidence/**/private/
 evidence/**/secrets/
-.buildanddo/
+.buildanddo/*
+!.buildanddo/public/
+!.buildanddo/public/**
+.buildanddo/public/boundary-report.json
+# .buildanddo/public/path-policy.json is a public-safe allow/deny path list consumed by
+# scripts/ci/verify_public_boundary.py - NOT sensitive, and it must ship to every clone
+# (real bug found 2026-09-07: the blanket .buildanddo/ ignore above silently starved the
+# scanner on every fresh checkout, including this repo's own GitLab CI runner).
 scripts/ci/sprint_cycle.py
 scripts/ci/run_sprint_cycle.ps1
 
