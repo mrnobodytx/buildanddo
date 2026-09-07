@@ -78,7 +78,8 @@ export default function Footer() {
 
                 <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-border/60 pt-6 sm:flex-row sm:items-center">
                     <p className="text-xs text-muted-foreground">
-                        © {year} BuildAndDo. All rights reserved.
+                        © {year} BuildAndDo. All rights reserved.{' '}
+                        <span className="text-muted-foreground/40">(edit-proof-20260907)</span>
                     </p>
                     <div className="flex items-center gap-5 text-xs text-muted-foreground/70">
                         <span aria-disabled="true">Privacy — coming soon</span>
