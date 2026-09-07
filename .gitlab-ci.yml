@@ -1,0 +1,16 @@
+# Private CI for the buildanddo GitLab intake mirror (gitlab.citadel-nexus.com/root/buildanddo).
+# GitHub (mrnobodytx/buildanddo) is the public collaboration/submission plane; this project
+# runs the private release pipeline on a dedicated shell runner (tag: buildanddo).
+stages:
+  - verify
+
+integrity_gate:
+  stage: verify
+  tags:
+    - buildanddo
+  script:
+    - npm ci --prefix apps/web
+    - python3 scripts/ci/integrity_regression_check.py
+    - python3 scripts/ci/verify_public_boundary.py --root .
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
