@@ -594,9 +594,14 @@ export default function HomePage() {
                 <FieldManual />
                 <EarlyAccess />
                 <Faq />
-                <p className="mx-auto max-w-6xl px-4 pb-2 text-center text-[10px] text-muted-foreground/40 sm:px-6">
-                    build v2 — edit-proof-20260907b
-                </p>
+                <div className="mx-auto max-w-6xl px-4 pb-4 text-center text-[10px] text-muted-foreground/40 sm:px-6">
+                    <p className="font-evidence uppercase tracking-[0.14em]">Version log</p>
+                    <ul className="mt-1 space-y-0.5">
+                        <li>v3 — self-hosted deploy pipeline proof (2026-09-07)</li>
+                        <li>v2 — edit-proof-20260907b</li>
+                        <li>v1 — edit-proof-20260907</li>
+                    </ul>
+                </div>
             </main>
             <Footer />
         </div>
