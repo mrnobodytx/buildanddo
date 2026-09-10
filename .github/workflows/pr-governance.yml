@@ -44,6 +44,15 @@ jobs:
       - name: Verify expected web artifact
         run: test -d dist/apps/web && test -f dist/apps/web/index.html
 
+      - name: Report to Datadog CI Visibility
+        if: always()
+        uses: ./.github/actions/datadog-ci-report
+        with:
+          dd-api-key: ${{ secrets.DD_API_KEY }}
+          dd-site: ${{ secrets.DD_SITE || 'us5.datadoghq.com' }}
+          service: buildanddo-web
+          env: ci
+
       - name: Upload governance evidence
         uses: actions/upload-artifact@v4
         with:
