@@ -259,6 +259,19 @@ def boundary_metrics(report: Path) -> dict[str, float]:
     }
 
 
+def governance_metrics(lock: Path) -> dict[str, float]:
+    """Agent-context findings from scripts/ci/agent_context.py, trended like any other metric."""
+    data = load_json(lock)
+    if not isinstance(data, dict):
+        return {}
+    summary = data.get("summary") or {}
+    return {
+        f"governance.{key}": int(summary[key])
+        for key in ("findings", "findings_high", "unwired_gates", "srs_open", "srs_total")
+        if isinstance(summary.get(key), (int, float))
+    }
+
+
 def pipeline_metrics(started_at: str | None, status: str | None, now: dt.datetime) -> dict[str, float]:
     out: dict[str, float] = {"pipeline.runs": 1}
     attempt = os.environ.get("GITHUB_RUN_ATTEMPT")
@@ -283,6 +296,7 @@ def main() -> int:
     ap.add_argument("--eslint-report", default="reports/eslint.json")
     ap.add_argument("--knip-report", default="reports/knip.json")
     ap.add_argument("--boundary-report", default=".buildanddo/public/boundary-report.json")
+    ap.add_argument("--context-lock", default=".bits/context.lock.json")
     ap.add_argument("--base-ref", default="", help="ref to diff against for change-size metrics")
     ap.add_argument("--pipeline", default="local", help="pr | main | local")
     ap.add_argument("--pipeline-started-at", default="", help="ISO-8601 workflow run start")
@@ -301,6 +315,7 @@ def main() -> int:
     metrics.update(eslint_metrics(root / args.eslint_report))
     metrics.update(knip_metrics(root / args.knip_report))
     metrics.update(boundary_metrics(root / args.boundary_report))
+    metrics.update(governance_metrics(root / args.context_lock))
     metrics.update(pipeline_metrics(args.pipeline_started_at or None, args.job_status or None, now))
     if args.base_ref:
         metrics.update(change_metrics(root, args.base_ref))

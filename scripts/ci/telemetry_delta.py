@@ -39,6 +39,8 @@ THRESHOLDS: dict[str, tuple[float, float, str]] = {
     "tests.failed": (0, 0.0, "up"),
     "tests.total": (0, 0.0, "down"),
     "boundary.failures": (0, 0.0, "up"),
+    "governance.findings_high": (0, 0.0, "up"),
+    "governance.unwired_gates": (0, 0.0, "up"),
 }
 
 # Metrics that describe a single run rather than the state of the codebase.
@@ -72,6 +74,10 @@ SUMMARY_ORDER = [
     "tests.total",
     "tests.failed",
     "tests.duration_seconds",
+    "governance.findings",
+    "governance.findings_high",
+    "governance.unwired_gates",
+    "governance.srs_open",
 ]
 
 BYTE_METRICS = {m for m in SUMMARY_ORDER if m.endswith("_bytes")}

@@ -66,6 +66,7 @@ All under the `buildanddo.ci.` prefix, tagged
 | `lint.`    | `errors`, `warnings`, `files_with_findings`, `files_scanned`                                |
 | `knip.`    | `unused_files`, `unused_dependencies`, `unused_exports`, `unlisted_dependencies`            |
 | `boundary.`| `files_checked`, `failures`, `passed`                                                       |
+| `governance.`| `findings`, `findings_high`, `unwired_gates`, `srs_open`, `srs_total` (from `.bits/context.lock.json`) |
 | `pipeline.`| `runs`, `succeeded`, `duration_seconds`, `attempt`                                          |
 
 Deployments publish `buildanddo.cd.deployment.count`, `.duration_seconds` and
@@ -96,6 +97,8 @@ an absolute and a relative tolerance, so routine drift stays quiet:
 | `tests.failed`               | 0        | 0%       | up            |
 | `tests.total`                | 0        | 0%       | down          |
 | `boundary.failures`          | 0        | 0%       | up            |
+| `governance.findings_high`   | 0        | 0%       | up            |
+| `governance.unwired_gates`   | 0        | 0%       | up            |
 
 Regressions surface as GitHub warning annotations, a job-summary section, a
 `warning` Datadog event and `warn`-level logs. They do **not** fail the build:
