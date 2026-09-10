@@ -34,6 +34,13 @@ deploys to a staging environment, probes it live, and only then promotes the
 same build to production. Nothing is deployed on trust — every stage is a real
 HTTP check against the live site, not a simulated pass.
 
+## Observability
+
+CI pipelines, test results and DORA deployment events report to Datadog
+(us5.datadoghq.com). Required GitHub Actions secrets — `DD_API_KEY` and
+`DD_SITE` — and the one-time Datadog GitHub App setup are documented in
+[docs/observability/datadog-ci.md](./docs/observability/datadog-ci.md).
+
 ## Public/private boundary
 
 GitHub is the public collaboration plane. Golden infrastructure, deployment

@@ -1,0 +1,69 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/actions/datadog-ci-report/action.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-CI-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-10
+# Depends:     .github/workflows/pr-governance.yml, .github/workflows/candidate-to-gitlab.yml
+# EnumType:    Workflow
+# EnumEdges:   PRODUCES datadog.ci.git_metadata; PRODUCES datadog.ci.test_visibility
+# Intent:      Share one Datadog CI reporting step between the PR and main pipelines.
+# ───────────────────────────────────────────────────────────────
+
+name: Datadog CI report
+description: Upload git metadata and JUnit test reports to Datadog CI Visibility.
+
+inputs:
+  dd-api-key:
+    description: Datadog API key. When empty the action is a no-op so pipelines stay green before secrets exist.
+    required: false
+    default: ''
+  dd-site:
+    description: Datadog site to report to.
+    required: false
+    default: us5.datadoghq.com
+  service:
+    description: Datadog service name reported with test results.
+    required: false
+    default: buildanddo
+  env:
+    description: Datadog environment tag reported with test results.
+    required: false
+    default: ci
+  junit-path:
+    description: Directory scanned for JUnit XML test reports.
+    required: false
+    default: reports/junit
+
+runs:
+  using: composite
+  steps:
+    - name: Report to Datadog CI Visibility
+      shell: bash
+      env:
+        DD_API_KEY: ${{ inputs.dd-api-key }}
+        DD_SITE: ${{ inputs.dd-site }}
+        DD_SERVICE: ${{ inputs.service }}
+        DD_ENV: ${{ inputs.env }}
+        JUNIT_PATH: ${{ inputs.junit-path }}
+      run: |
+        set -euo pipefail
+
+        if [ -z "${DD_API_KEY}" ]; then
+          echo "SKIP: DD_API_KEY is not configured; no Datadog CI data reported."
+          exit 0
+        fi
+
+        npx --yes @datadog/datadog-ci@^2 git-metadata upload
+
+        if [ -d "${JUNIT_PATH}" ] && [ -n "$(find "${JUNIT_PATH}" -name '*.xml' -print -quit)" ]; then
+          npx --yes @datadog/datadog-ci@^2 junit upload \
+            --service "${DD_SERVICE}" \
+            --env "${DD_ENV}" \
+            "${JUNIT_PATH}"
+        else
+          echo "SKIP: no JUnit XML found under ${JUNIT_PATH}; test visibility upload not attempted."
+        fi
