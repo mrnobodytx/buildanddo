@@ -3,7 +3,9 @@ import { Target, Plus, Loader2, AlertCircle, Info } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { usePreviousWork } from '@/hooks/usePreviousWork';
 import EmptyState from '@/components/workspace/EmptyState';
+import PreviousWorkNote from '@/components/workspace/PreviousWorkNote';
 import {
     PageHeader,
     StatusBadge,
@@ -37,6 +39,10 @@ export default function MissionsPage() {
     const { records, loading, refresh } = useWorkspaceRecords('missions', {
         sort: '-created',
     });
+    const { history } = usePreviousWork(
+        'mission',
+        records.map((m) => m.id),
+    );
     const [open, setOpen] = useState(false);
     const [form, setForm] = useState({ title: '', description: '' });
     const [saving, setSaving] = useState(false);
@@ -182,6 +188,7 @@ export default function MissionsPage() {
                                         </div>
                                         <StatusBadge map={MISSION_STATUS} value={m.status} />
                                     </div>
+                                    <PreviousWorkNote history={history[m.id]} />
                                     {canAdvance && (
                                         <div className="mt-4 border-t border-border/60 pt-3">
                                             <Button

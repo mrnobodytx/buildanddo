@@ -1,0 +1,158 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/ISSUE_TEMPLATE/good_first_issue.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-COMMUNITY-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-10
+# Depends:     .bits/srs_registry.yml, AGENTS.md
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES .github/PULL_REQUEST_TEMPLATE.md; GATES bits/SRS-* branches
+# Intent:      Force a maintainer to publish scope, acceptance and difficulty before calling a task beginner-friendly.
+# ───────────────────────────────────────────────────────────────
+name: Good first issue
+description: Maintainers only — publish a scoped, self-contained first contribution
+title: "[GOOD FIRST ISSUE] "
+labels: ["good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        This form is for maintainers. A task is only a good first issue if a
+        newcomer can finish it without asking what "done" means. Every field
+        below exists because leaving it out is what turns a first contribution
+        into an abandoned branch.
+
+  - type: textarea
+    id: task
+    attributes:
+      label: The task, in one paragraph
+      description: What should be different after this is merged.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: Difficulty
+      description: >-
+        Rated by how much of the codebase you must understand, not by line count.
+      options:
+        - 1 — Cosmetic. Copy, spacing, or a single prop. No new concepts.
+          Under an hour.
+        - 2 — Single file. Follow an existing pattern in a sibling file.
+          One to three hours.
+        - 3 — Two or three files. Touches a hook, a page, and a component
+          together. Half a day.
+        - 4 — Crosses a boundary. Needs a PocketBase migration, a CI change, or
+          new telemetry. A day or more, and worth pairing on.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Risk / authority tier
+      description: >-
+        A0–A2 are normal contributor territory. A3 mutates shared or staging
+        state and needs explicit human approval before work starts, so it is
+        never a good first issue.
+      options:
+        - A0 — Documentation, templates, or governance text only
+        - A1 — Application code, no schema and no shared state
+        - A2 — Schema migration or CI pipeline change
+    validations:
+      required: true
+
+  - type: input
+    id: srs
+    attributes:
+      label: SRS code
+      description: >-
+        Must already exist in `.bits/srs_registry.yml`. If the work needs a new
+        code, propose the spec first — do not send a contributor at an
+        unregistered code.
+      placeholder: SRS-BUILDANDDO-COMMUNITY-001
+    validations:
+      required: true
+
+  - type: textarea
+    id: files
+    attributes:
+      label: Files to change
+      description: Exact repository paths. List every file you expect to be touched.
+      value: |
+        - apps/web/src/
+    validations:
+      required: true
+
+  - type: textarea
+    id: pattern
+    attributes:
+      label: Existing pattern to copy
+      description: >-
+        Point at the file that already does this correctly. A first contribution
+        should be imitation, not invention.
+      placeholder: apps/web/src/pages/workspace/MissionsPage.jsx is the reference CRUD page
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: >-
+        Checkboxes a reviewer can tick off without judgement calls. If a
+        criterion needs an opinion to evaluate, rewrite it.
+      value: |
+        - [ ]
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: How the contributor proves it works
+      description: >-
+        Runnable commands. "It builds" is not proof a feature works.
+      value: |
+        ```bash
+        npm run lint --prefix apps/web
+        npm run build
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Explicitly out of scope
+      description: >-
+        The adjacent things a contributor will be tempted to fix. Naming them
+        keeps the pull request reviewable and keeps the contributor unblocked.
+    validations:
+      required: true
+
+  - type: input
+    id: mentor
+    attributes:
+      label: Who to ask when stuck
+      placeholder: "@mrnobodytx"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: maintainer_checks
+    attributes:
+      label: Maintainer confirmation
+      options:
+        - label: The SRS code above exists in `.bits/srs_registry.yml`
+          required: true
+        - label: I have verified the task is self-contained and does not need private-plane access
+          required: true
+        - label: The acceptance criteria can be evaluated without asking me a question
+          required: true

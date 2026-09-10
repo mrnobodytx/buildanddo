@@ -12,15 +12,18 @@ import {
     ArrowRight,
     Info,
     ShieldAlert,
+    Users,
 } from 'lucide-react';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { useSeatFeed } from '@/hooks/useSeatFeed';
 import EmptyState from '@/components/workspace/EmptyState';
 import {
     PageHeader,
     StatCard,
     StatusBadge,
     MISSION_STATUS,
+    SEAT_EVENT,
     SIGNAL_TYPE,
 } from '@/components/workspace/workspaceHelpers';
 import { Button, Card } from '@/components/site/ui';
@@ -50,6 +53,7 @@ export default function OverviewPage() {
     const { records: evidence } = useWorkspaceRecords('evidence', {
         extraFilter: 'type = "verified"',
     });
+    const { events: seatEvents, live: seatLive } = useSeatFeed({ limit: 6 });
 
     const activeMissions = missions.filter((m) =>
         ['approved', 'running', 'needs_attention'].includes(m.status),
@@ -290,6 +294,48 @@ export default function OverviewPage() {
                     )}
                 </section>
             </div>
+
+            {/* Seat activity */}
+            <section>
+                <div className="mb-3 flex items-center justify-between">
+                    <h2 className="font-display text-lg font-semibold tracking-tight">
+                        Seat activity
+                    </h2>
+                    <span className="font-evidence text-[11px] text-muted-foreground">
+                        {seatLive ? 'realtime connected' : 'history only'}
+                    </span>
+                </div>
+                {seatEvents.length === 0 ? (
+                    <EmptyState
+                        icon={Users}
+                        title="No seat activity recorded"
+                        description="When more than one person or agent seat works this workspace, they announce joining, progress, completion, blockage, and handoff here. An empty feed means nothing has been announced — not that nothing happened."
+                    />
+                ) : (
+                    <ul className="space-y-2.5">
+                        {seatEvents.map((e) => (
+                            <li key={e.id}>
+                                <Card className="p-4">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <p className="truncate text-sm font-medium">
+                                                {e.summary}
+                                            </p>
+                                            <p className="mt-0.5 font-evidence text-[11px] text-muted-foreground">
+                                                {e.seat} ({e.actorType})
+                                                {e.subjectType ? ` · ${e.subjectType}` : ''}
+                                                {e.handoffTo ? ` → ${e.handoffTo}` : ''} ·{' '}
+                                                {timeAgo(e.createdAt)}
+                                            </p>
+                                        </div>
+                                        <StatusBadge map={SEAT_EVENT} value={e.event} />
+                                    </div>
+                                </Card>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </section>
 
             {/* Quick actions */}
             <section>

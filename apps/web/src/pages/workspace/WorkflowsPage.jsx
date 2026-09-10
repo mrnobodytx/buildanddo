@@ -3,7 +3,9 @@ import { Workflow, Plus, Loader2, AlertCircle, Info } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { usePreviousWork } from '@/hooks/usePreviousWork';
 import EmptyState from '@/components/workspace/EmptyState';
+import PreviousWorkNote from '@/components/workspace/PreviousWorkNote';
 import {
     PageHeader,
     StatusBadge,
@@ -28,6 +30,10 @@ export default function WorkflowsPage() {
     const { records, loading, refresh } = useWorkspaceRecords('workflows', {
         sort: '-created',
     });
+    const { history } = usePreviousWork(
+        'workflow',
+        records.map((w) => w.id),
+    );
     const [open, setOpen] = useState(false);
     const [form, setForm] = useState({ name: '', description: '' });
     const [saving, setSaving] = useState(false);
@@ -176,6 +182,7 @@ export default function WorkflowsPage() {
                                         <StatusBadge map={WORKFLOW_STATUS} value={w.status} />
                                     </div>
                                 </div>
+                                <PreviousWorkNote history={history[w.id]} />
                                 <div className="mt-4 border-t border-border/60 pt-3">
                                     <Button
                                         variant="secondary"

@@ -81,3 +81,9 @@ srs:
     status: proposed
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-SUPPLY-001.md
+
+  - code: SRS-BUILDANDDO-COMMUNITY-001
+    title: Community contributor infrastructure, component catalogue and seat protocol
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md
