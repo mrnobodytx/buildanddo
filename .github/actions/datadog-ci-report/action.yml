@@ -7,18 +7,24 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
-# Depends:     .github/workflows/pr-governance.yml, .github/workflows/candidate-to-gitlab.yml
+# Depends:     scripts/ci/telemetry_snapshot.py, scripts/ci/telemetry_delta.py,
+#              scripts/ci/datadog_publish.py
 # EnumType:    Workflow
-# EnumEdges:   PRODUCES datadog.ci.git_metadata; PRODUCES datadog.ci.test_visibility
-# Intent:      Share one Datadog CI reporting step between the PR and main pipelines.
+# EnumEdges:   CONSUMES scripts/ci/telemetry_snapshot.py; CONSUMES scripts/ci/telemetry_delta.py;
+#              PRODUCES datadog.ci.metrics; PRODUCES datadog.ci.git_metadata;
+#              PRODUCES datadog.ci.test_visibility
+# Intent:      Give both pipelines one step that measures the run, diffs it against main, and ships it.
 # ───────────────────────────────────────────────────────────────
 
 name: Datadog CI report
-description: Upload git metadata and JUnit test reports to Datadog CI Visibility.
+description: >-
+  Collect build, dependency, source, test and static-analysis telemetry for a run,
+  compare it with the last main-branch baseline, and publish metrics, events, logs,
+  git metadata and test results to Datadog.
 
 inputs:
   dd-api-key:
-    description: Datadog API key. When empty the action is a no-op so pipelines stay green before secrets exist.
+    description: Datadog API key. When empty every Datadog call is skipped so pipelines stay green before secrets exist.
     required: false
     default: ''
   dd-site:
@@ -26,23 +32,172 @@ inputs:
     required: false
     default: us5.datadoghq.com
   service:
-    description: Datadog service name reported with test results.
+    description: Datadog service name for all published telemetry.
     required: false
-    default: buildanddo
+    default: buildanddo-web
   env:
-    description: Datadog environment tag reported with test results.
+    description: Datadog environment tag.
     required: false
     default: ci
+  pipeline:
+    description: Pipeline identity, "pr" or "main". Controls branch-tag cardinality and baseline handling.
+    required: false
+    default: pr
+  dist-path:
+    description: Build output directory measured for bundle telemetry.
+    required: false
+    default: dist/apps/web
   junit-path:
     description: Directory scanned for JUnit XML test reports.
     required: false
     default: reports/junit
+  base-ref:
+    description: Ref used for change-size metrics. Empty disables them.
+    required: false
+    default: ''
+  baseline-artifact:
+    description: Artifact name holding the main-branch telemetry baseline. Empty disables delta reporting.
+    required: false
+    default: buildanddo-telemetry-main
+  artifact-name:
+    description: Name to publish this run's telemetry under. Empty skips the upload.
+    required: false
+    default: ''
+  static-analysis:
+    description: Run best-effort eslint and knip JSON reports to feed lint and dead-code telemetry.
+    required: false
+    default: 'true'
+  job-status:
+    description: Status of the calling job, normally ${{ job.status }}.
+    required: false
+    default: success
+  github-token:
+    description: Token used to read the workflow run start time and the baseline artifact.
+    required: false
+    default: ''
 
 runs:
   using: composite
   steps:
-    - name: Report to Datadog CI Visibility
+    - name: Static analysis reports
+      if: inputs.static-analysis == 'true'
       shell: bash
+      working-directory: ${{ github.workspace }}
+      run: |
+        set -uo pipefail
+        mkdir -p reports
+
+        if [ -d apps/web/node_modules ] || [ -d node_modules ]; then
+          # Both passes are informational telemetry sources; the authoritative
+          # lint gate is the pipeline's own lint step, so failures never propagate.
+          ( cd apps/web && timeout 300 npx --no-install eslint . --format json --output-file "${GITHUB_WORKSPACE}/reports/eslint.json" ) || true
+          timeout 300 npx --no-install knip --reporter json > reports/knip.json 2>/dev/null || true
+        else
+          echo "SKIP: node_modules absent; lint and dead-code telemetry not collected."
+        fi
+
+        for report in reports/eslint.json reports/knip.json; do
+          if [ ! -s "$report" ]; then rm -f "$report"; fi
+        done
+
+    - name: Resolve run start time
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        set -uo pipefail
+        started=""
+        if [ -n "${GH_TOKEN}" ]; then
+          started="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --jq '.run_started_at' 2>/dev/null || true)"
+        fi
+        echo "PIPELINE_STARTED_AT=${started}" >> "$GITHUB_ENV"
+
+    - name: Download telemetry baseline
+      if: inputs.baseline-artifact != ''
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        BASELINE_ARTIFACT: ${{ inputs.baseline-artifact }}
+      run: |
+        set -uo pipefail
+        mkdir -p reports/telemetry
+
+        if [ -z "${GH_TOKEN}" ]; then
+          echo "SKIP: no token provided; delta reporting runs without a baseline."
+          exit 0
+        fi
+
+        artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=${BASELINE_ARTIFACT}&per_page=50" \
+          --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | last | .id' 2>/dev/null || true)"
+
+        if [ -z "${artifact_id}" ] || [ "${artifact_id}" = "null" ]; then
+          echo "No ${BASELINE_ARTIFACT} artifact found; this run establishes the first baseline."
+          exit 0
+        fi
+
+        if gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "${RUNNER_TEMP}/baseline.zip" 2>/dev/null; then
+          unzip -o -q "${RUNNER_TEMP}/baseline.zip" -d "${RUNNER_TEMP}/baseline" || true
+          found="$(find "${RUNNER_TEMP}/baseline" -name 'snapshot.json' -print -quit 2>/dev/null || true)"
+          if [ -n "${found}" ]; then
+            cp "${found}" reports/telemetry/baseline.json
+            echo "Baseline restored from artifact ${artifact_id}."
+          else
+            echo "Artifact ${artifact_id} contained no snapshot.json; continuing without a baseline."
+          fi
+        else
+          echo "Baseline download failed; continuing without a baseline."
+        fi
+
+    - name: Collect telemetry snapshot
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: |
+        set -euo pipefail
+        python scripts/ci/telemetry_snapshot.py \
+          --dist "${{ inputs.dist-path }}" \
+          --junit-dir "${{ inputs.junit-path }}" \
+          --pipeline "${{ inputs.pipeline }}" \
+          --base-ref "${{ inputs.base-ref }}" \
+          --job-status "${{ inputs.job-status }}" \
+          --pipeline-started-at "${PIPELINE_STARTED_AT:-}" \
+          --output reports/telemetry/snapshot.json > /dev/null
+
+    - name: Compare against baseline
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: |
+        set -euo pipefail
+        baseline=""
+        if [ -f reports/telemetry/baseline.json ]; then baseline="reports/telemetry/baseline.json"; fi
+
+        python scripts/ci/telemetry_delta.py \
+          --current reports/telemetry/snapshot.json \
+          --baseline "${baseline}" \
+          --output reports/telemetry/delta.json \
+          --markdown-output reports/telemetry/delta.md > /dev/null
+
+        cat reports/telemetry/delta.md >> "$GITHUB_STEP_SUMMARY"
+        cat reports/telemetry/delta.md
+
+    - name: Publish telemetry to Datadog
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        DD_API_KEY: ${{ inputs.dd-api-key }}
+        DD_SITE: ${{ inputs.dd-site }}
+      run: |
+        set -uo pipefail
+        python scripts/ci/datadog_publish.py \
+          --snapshot reports/telemetry/snapshot.json \
+          --delta reports/telemetry/delta.json \
+          --summary-markdown reports/telemetry/delta.md \
+          --service "${{ inputs.service }}" \
+          --env "${{ inputs.env }}" \
+          --pipeline "${{ inputs.pipeline }}"
+
+    - name: Upload git metadata and test results
+      shell: bash
+      working-directory: ${{ github.workspace }}
       env:
         DD_API_KEY: ${{ inputs.dd-api-key }}
         DD_SITE: ${{ inputs.dd-site }}
@@ -50,20 +205,47 @@ runs:
         DD_ENV: ${{ inputs.env }}
         JUNIT_PATH: ${{ inputs.junit-path }}
       run: |
-        set -euo pipefail
+        set -uo pipefail
 
         if [ -z "${DD_API_KEY}" ]; then
-          echo "SKIP: DD_API_KEY is not configured; no Datadog CI data reported."
+          echo "SKIP: DD_API_KEY is not configured; no Datadog CI Visibility upload."
           exit 0
         fi
 
-        npx --yes @datadog/datadog-ci@^2 git-metadata upload
+        npx --yes @datadog/datadog-ci@^2 git-metadata upload || echo "::warning title=Datadog git metadata::upload failed"
 
         if [ -d "${JUNIT_PATH}" ] && [ -n "$(find "${JUNIT_PATH}" -name '*.xml' -print -quit)" ]; then
           npx --yes @datadog/datadog-ci@^2 junit upload \
             --service "${DD_SERVICE}" \
             --env "${DD_ENV}" \
-            "${JUNIT_PATH}"
+            "${JUNIT_PATH}" || echo "::warning title=Datadog test visibility::upload failed"
         else
           echo "SKIP: no JUnit XML found under ${JUNIT_PATH}; test visibility upload not attempted."
         fi
+
+        # Attach headline numbers to the pipeline span itself. This only lands once the
+        # Datadog GitHub App is installed, so it is best-effort by design.
+        measures="$(python - <<'PY'
+        import json, pathlib
+        try:
+            m = json.loads(pathlib.Path("reports/telemetry/snapshot.json").read_text())["metrics"]
+        except Exception:
+            raise SystemExit(0)
+        wanted = ["bundle.gzip_bytes", "bundle.total_bytes", "source.code_lines", "deps.locked_packages", "lint.errors"]
+        print(" ".join(f"--measures {k.replace('.', '_')}:{int(m[k])}" for k in wanted if isinstance(m.get(k), (int, float))))
+        PY
+        )"
+        if [ -n "${measures}" ]; then
+          npx --yes @datadog/datadog-ci@^2 measure --level pipeline ${measures} || true
+        fi
+        npx --yes @datadog/datadog-ci@^2 tag --level pipeline \
+          --tags "buildanddo_pipeline:${{ inputs.pipeline }}" --tags "buildanddo_service:${DD_SERVICE}" || true
+
+    - name: Upload telemetry evidence
+      if: inputs.artifact-name != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: reports/telemetry
+        retention-days: 30
+        if-no-files-found: warn

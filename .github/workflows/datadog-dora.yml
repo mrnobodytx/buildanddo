@@ -67,3 +67,36 @@ jobs:
             --finished-at "${FINISHED_AT}" \
             --git-repository-url "${REPOSITORY_URL}" \
             --git-commit-sha "${COMMIT_SHA}"
+
+      - name: Publish deployment metrics
+        if: always()
+        shell: bash
+        env:
+          DD_API_KEY: ${{ secrets.DD_API_KEY }}
+          DD_SITE: ${{ secrets.DD_SITE || 'us5.datadoghq.com' }}
+          STARTED_AT: ${{ github.event.workflow_run.run_started_at }}
+          FINISHED_AT: ${{ github.event.workflow_run.updated_at }}
+          COMMIT_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          set -uo pipefail
+
+          started=$(date -u -d "${STARTED_AT}" +%s)
+          finished=$(date -u -d "${FINISHED_AT}" +%s)
+          authored=$(git show -s --format=%ct "${COMMIT_SHA}")
+          duration=$(( finished - started ))
+          # Lead time for changes: authorship of the deployed commit to deployment completion.
+          lead_time=$(( finished - authored ))
+
+          python scripts/ci/datadog_publish.py \
+            --service buildanddo-web \
+            --env production \
+            --pipeline main \
+            --metric "buildanddo.cd.deployment.count=1" \
+            --metric "buildanddo.cd.deployment.duration_seconds=${duration}" \
+            --metric "buildanddo.cd.deployment.lead_time_seconds=${lead_time}" \
+            --tag "deployment_target:production" \
+            --event-title "BuildAndDo deployment ${COMMIT_SHA:0:12}" \
+            --event-text "Candidate pipeline succeeded on main. Duration ${duration}s, lead time ${lead_time}s. Run: ${RUN_URL}" \
+            --alert-type success \
+            --log-message "BuildAndDo deployment ${COMMIT_SHA:0:12} completed in ${duration}s (lead time ${lead_time}s)"
