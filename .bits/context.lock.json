@@ -15,11 +15,25 @@
       "statement": "services/praxis_evidence/run_all_tests.py is never executed by GitHub Actions"
     },
     {
+      "area": "tests",
+      "evidence": "114 source files under apps/web/src, 0 test files",
+      "severity": "high",
+      "srs": "SRS-BUILDANDDO-TEST-001",
+      "statement": "the web app has no JavaScript test runner"
+    },
+    {
       "area": "observability",
       "evidence": ".env.example declares them; no build or deploy script writes them, so RUM reports them empty",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-RELEASE-TAG-001",
       "statement": "RUM variables VITE_DD_ENV are documented but no tracked build path sets them"
+    },
+    {
+      "area": "observability",
+      "evidence": "the CI report action uploads reports/junit/*.xml; nothing writes there",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-TEST-001",
+      "statement": "no JUnit output is produced, so Datadog test visibility stays empty"
     },
     {
       "area": "governance",
@@ -75,7 +89,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-10T15:34:37.436892+00:00",
+  "generated_at": "2026-09-10T15:07:06.809336+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -142,8 +156,15 @@
         "code": "SRS-BUILDANDDO-TEST-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-TEST-001.md",
+        "status": "proposed",
+        "title": "Web unit test runner emitting JUnit for test visibility"
+      },
+      {
+        "code": "SRS-BUILDANDDO-WORKSPACE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WORKSPACE-001.md",
         "status": "in_progress",
-        "title": "Web test runner emitting JUnit, with workspace component suites"
+        "title": "Functional workspace pages backed by a real data layer"
       }
     ]
   },
@@ -233,16 +254,16 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 293,
-    "web_source_files": 124
+    "tracked_files": 282,
+    "web_source_files": 114
   },
   "schema_version": 1,
   "summary": {
     "findings": 4,
     "findings_high": 2,
     "pipelines": 4,
-    "srs_open": 5,
-    "srs_total": 8,
+    "srs_open": 6,
+    "srs_total": 9,
     "unwired_gates": 2
   },
   "tests": {
