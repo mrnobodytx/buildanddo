@@ -124,14 +124,26 @@ def _write_web_env() -> None:
     secrets/deploy.local.env or the OS environment (see _load_local_secrets);
     .env* is gitignored at the repo root and regenerated every run, never
     committed. Missing values are simply omitted, which disables that
-    integration at runtime rather than failing the ship."""
+    integration at runtime rather than failing the ship.
+
+    VITE_DD_VERSION is derived from the commit being shipped, not configured:
+    it is what makes a Datadog release comparison (and the browser-side delta
+    baselines, which reset per release) line up with an actual deploy."""
     web_dir = ROOT / "apps" / "web"
     names = {
         "BUILDANDDO_PH": "VITE_BUILDANDDO_PH",
         "BUILDANDDO_DD_APPLICATION_ID": "VITE_DD_APPLICATION_ID",
         "BUILDANDDO_DD_CLIENT_TOKEN": "VITE_DD_CLIENT_TOKEN",
+        "BUILDANDDO_DD_SESSION_SAMPLE_RATE": "VITE_DD_SESSION_SAMPLE_RATE",
+        "BUILDANDDO_DD_REPLAY_SAMPLE_RATE": "VITE_DD_REPLAY_SAMPLE_RATE",
+        "BUILDANDDO_DD_TRACE_SAMPLE_RATE": "VITE_DD_TRACE_SAMPLE_RATE",
     }
     lines = [f"{var}={_SECRETS[key]}\n" for key, var in names.items() if _SECRETS.get(key)]
+
+    sha = _run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, timeout=15).get("stdout_tail", "").strip()
+    if sha:
+        lines.append(f"VITE_DD_VERSION={sha}\n")
+
     if lines:
         (web_dir / ".env").write_text("".join(lines), encoding="utf-8")
 

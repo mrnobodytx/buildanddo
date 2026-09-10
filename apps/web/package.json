@@ -8,7 +8,8 @@
 		"build": "node tools/build.mjs",
 		"start": "vite preview --outDir ../../dist/apps/web --host :: --port 3000",
 		"lint": "node tools/lint.mjs",
-		"lint:warn": "eslint ."
+		"lint:warn": "eslint .",
+		"smoke": "node tools/observability-smoke.mjs"
 	},
 	"dependencies": {
 		"@datadog/browser-logs": "^6.6.0",
