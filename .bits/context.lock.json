@@ -259,18 +259,20 @@
   },
   "schema_version": 1,
   "summary": {
-    "findings": 6,
-    "findings_high": 3,
+    "findings": 4,
+    "findings_high": 2,
     "pipelines": 4,
     "srs_open": 6,
     "srs_total": 9,
     "unwired_gates": 2
   },
   "tests": {
-    "js_runners": [],
-    "js_test_files": 0,
-    "js_test_script": false,
-    "junit_configured": false,
+    "js_runners": [
+      "vitest"
+    ],
+    "js_test_files": 7,
+    "js_test_script": true,
+    "junit_configured": true,
     "python_suite_entrypoints": [
       "services/praxis_evidence/run_all_tests.py"
     ],

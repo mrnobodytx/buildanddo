@@ -65,8 +65,8 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-WORKSPACE-001.md
 
   - code: SRS-BUILDANDDO-TEST-001
-    title: Web unit test runner emitting JUnit for test visibility
-    status: proposed
+    title: Web test runner emitting JUnit, with workspace component suites
+    status: in_progress
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-TEST-001.md
 
