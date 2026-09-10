@@ -118,14 +118,22 @@ def _rsync(local_dir: Path, remote_dir: str) -> dict:
 
 
 def _write_web_env() -> None:
-    """Client-safe PostHog project key only (BUILDANDDO_PH, public phc_ key) - never a
-    secret. Sourced from secrets/deploy.local.env or the OS environment (see
-    _load_local_secrets); .env* is gitignored at the repo root and regenerated every
-    run, never committed."""
+    """Client-safe frontend identifiers only - the PostHog project key
+    (BUILDANDDO_PH, public phc_ key) and the Datadog RUM application id and
+    client token (intake-scoped, no read access) - never a secret. Sourced from
+    secrets/deploy.local.env or the OS environment (see _load_local_secrets);
+    .env* is gitignored at the repo root and regenerated every run, never
+    committed. Missing values are simply omitted, which disables that
+    integration at runtime rather than failing the ship."""
     web_dir = ROOT / "apps" / "web"
-    key = _SECRETS.get("BUILDANDDO_PH")
-    if key:
-        (web_dir / ".env").write_text(f"VITE_BUILDANDDO_PH={key}\n", encoding="utf-8")
+    names = {
+        "BUILDANDDO_PH": "VITE_BUILDANDDO_PH",
+        "BUILDANDDO_DD_APPLICATION_ID": "VITE_DD_APPLICATION_ID",
+        "BUILDANDDO_DD_CLIENT_TOKEN": "VITE_DD_CLIENT_TOKEN",
+    }
+    lines = [f"{var}={_SECRETS[key]}\n" for key, var in names.items() if _SECRETS.get(key)]
+    if lines:
+        (web_dir / ".env").write_text("".join(lines), encoding="utf-8")
 
 
 def _write_roadmap_status() -> dict:
