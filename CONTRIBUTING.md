@@ -18,11 +18,20 @@ below; nothing bypasses it.
 1. **Fork or branch**, make your change.
 2. **Run the build and lint locally**: `npm ci && npm run build && npm run lint`
    (from `apps/web` — see the root `package.json` workspaces).
-3. **Run the public-boundary scan**: `python scripts/ci/verify_public_boundary.py`.
+3. **Run the web tests**: `npm test` (from the repository root, or
+   `npm run test --prefix apps/web`). This is a required PR check — the same
+   command runs in CI and the PR fails if it does. Vitest with jsdom and
+   `@testing-library/react`; suites live next to what they cover in
+   `apps/web/src/**/__tests__/`, and shared fixtures are in
+   `apps/web/src/test/`. Use `npm run test:watch --prefix apps/web` while
+   working and `npm run test:coverage --prefix apps/web` to see what is
+   uncovered. A run writes `reports/junit/web.xml`, which is what feeds Datadog
+   test visibility — if you add a test file, expect to see it there.
+4. **Run the public-boundary scan**: `python scripts/ci/verify_public_boundary.py`.
    This is the same check that runs in CI; it fails on secrets, private paths,
    internal hostnames, or anything outside the public allowlist
    (`.buildanddo/public/path-policy.json`).
-4. If your change touches the evidence fabric (`services/praxis_evidence/`),
+5. If your change touches the evidence fabric (`services/praxis_evidence/`),
    run `python services/praxis_evidence/run_all_tests.py` — real tests against
    a live PocketBase instance, not mocks.
 
@@ -51,7 +60,9 @@ Use the PR template (auto-filled). It requires:
 On every PR (`BuildAndDo PR Governance` workflow):
 
 1. Public/private boundary scan (fails closed on any violation).
-2. `npm ci`, lint (if present), test (if present).
+2. `npm ci`, lint (if present), then `npm test` — required, and the run must
+   leave a JUnit report at `reports/junit/web.xml`; a green suite that produced
+   no report fails the check.
 3. Full production build, verified by checking the real build artifact exists
    (`dist/apps/web/index.html`), not just that the build command exited 0.
 4. Governance evidence (boundary report + build output) uploaded as an artifact

@@ -58,4 +58,41 @@ export default [
 		rules: { 'horizons/no-unicode-escapes-in-jsx': 'warn' },
 	},
 	{ files: ['tools/**/*.js', 'tailwind.config.js'], languageOptions: { globals: globals.node } },
+	{
+		// Vitest suites. `globals: true` in vitest.config.js puts the test API on
+		// globalThis, which ESLint cannot infer - without these, 'no-undef' fires
+		// on every describe/it/expect.
+		files: [
+			'vitest.config.js',
+			'src/test/**/*.js',
+			'src/test/**/*.jsx',
+			'src/**/__tests__/**/*.js',
+			'src/**/__tests__/**/*.jsx',
+			'src/**/*.test.js',
+			'src/**/*.test.jsx',
+		],
+		languageOptions: {
+			globals: {
+				afterAll: 'readonly',
+				afterEach: 'readonly',
+				beforeAll: 'readonly',
+				beforeEach: 'readonly',
+				describe: 'readonly',
+				expect: 'readonly',
+				it: 'readonly',
+				suite: 'readonly',
+				test: 'readonly',
+				vi: 'readonly',
+			},
+		},
+		rules: {
+			// vitest and @testing-library ship "exports" subpaths
+			// (vitest/config, @testing-library/jest-dom/vitest) that
+			// eslint-import-resolver-node cannot follow. The resolver, not the
+			// import, is what is out of date - so neither the path nor the named
+			// bindings behind it can be checked here.
+			'import/no-unresolved': 'off',
+			'import/named': 'off',
+		},
+	},
 ];
