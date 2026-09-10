@@ -51,6 +51,12 @@ jobs:
           dd-site: ${{ secrets.DD_SITE || 'us5.datadoghq.com' }}
           service: buildanddo-web
           env: ci
+          pipeline: main
+          base-ref: HEAD~1
+          baseline-artifact: buildanddo-telemetry-main
+          artifact-name: buildanddo-telemetry-main
+          job-status: ${{ job.status }}
+          github-token: ${{ github.token }}
 
       - name: Generate candidate provenance
         run: python scripts/ci/candidate_manifest.py

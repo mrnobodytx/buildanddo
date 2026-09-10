@@ -10,6 +10,10 @@ secrets/
 node_modules/
 dist/
 
+# CI telemetry, lint and dead-code reports produced by scripts/ci/telemetry_snapshot.py
+# and consumed by the Datadog publisher. Build output, never source.
+reports/
+
 # PocketBase runtime state
 apps/pocketbase/pb_data/
 apps/pocketbase/pb_snapshots/

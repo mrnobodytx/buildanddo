@@ -36,9 +36,15 @@ HTTP check against the live site, not a simulated pass.
 
 ## Observability
 
-CI pipelines, test results and DORA deployment events report to Datadog
-(us5.datadoghq.com). Required GitHub Actions secrets — `DD_API_KEY` and
-`DD_SITE` — and the one-time Datadog GitHub App setup are documented in
+Every CI run measures itself — bundle size, dependency count, source volume,
+tests, lint and dead-code findings, boundary-scan results, pipeline duration —
+compares it against the last successful `main` build, and publishes the values,
+their deltas, events and structured logs to Datadog (us5.datadoghq.com).
+Deployments emit DORA events with lead time. Regressions against the baseline
+appear in the PR job summary as warnings; they do not block the build.
+
+Required GitHub Actions secrets — `DD_API_KEY` and `DD_SITE` — the metric
+catalog, thresholds and the one-time Datadog GitHub App setup are documented in
 [docs/observability/datadog-ci.md](./docs/observability/datadog-ci.md).
 
 ## Public/private boundary
