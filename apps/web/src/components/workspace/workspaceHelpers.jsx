@@ -65,6 +65,18 @@ export const SIGNAL_STATE = {
     dismissed: { label: 'Dismissed', tone: 'neutral' },
 };
 
+// Mirrors the `status` select on the roadmap_items collection. Object order is
+// the lifecycle order the roadmap page renders and charts in, so reordering it
+// changes what the page shows.
+export const ROADMAP_STATUS = {
+    proposed: { label: 'Proposed', tone: 'neutral' },
+    planned: { label: 'Planned', tone: 'neutral' },
+    in_progress: { label: 'In progress', tone: 'violet' },
+    blocked: { label: 'Blocked', tone: 'amber' },
+    verified: { label: 'Verified', tone: 'teal' },
+    archived: { label: 'Archived', tone: 'neutral' },
+};
+
 export const OPERATION_STATUS = {
     idle: { label: 'Idle', tone: 'neutral' },
     running: { label: 'Running', tone: 'violet' },
