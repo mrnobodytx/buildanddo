@@ -1,0 +1,430 @@
+{
+  "description": "Evidence epochs for buildanddo.tech: one chained Merkle root per merge and per production deploy, alongside the DORA and build-health signals from the same pipelines. An epoch is evidence, never authority - nothing here gates a deploy. Source: scripts/ci/evidence_dashboard.json (SRS-BUILDANDDO-EPOCH-001). Import with: datadog-ci dashboard upsert, or Dashboards > New > Import JSON. Note on the event and log widgets: 'source' is a reserved field in both event and log search (source_type_name and ddsource respectively), so it cannot reliably select the source:evidence_epoch tag. The event widget therefore matches source_type_name buildanddo OR the tag, and the log widget filters on the unreserved trigger tag instead. Widgets stay empty until DD_API_KEY exists as a GitHub Actions secret.",
+  "layout_type": "ordered",
+  "notify_list": [],
+  "reflow_type": "fixed",
+  "template_variables": [
+    {
+      "available_values": [],
+      "default": "buildanddo-web",
+      "name": "service",
+      "prefix": "service"
+    },
+    {
+      "available_values": [],
+      "default": "*",
+      "name": "trigger",
+      "prefix": "trigger"
+    }
+  ],
+  "title": "BuildAndDo Evidence Epochs",
+  "widgets": [
+    {
+      "definition": {
+        "background_color": "vivid_blue",
+        "content": "Every merge to main and every production deploy produces one evidence epoch: a SHA-256 Merkle root over the run's build output, provenance manifests, lockfile and boundary verdict, chained to the previous root.\n\nRecompute any root from its manifest:  python scripts/ci/evidence_epoch.py --verify EPOCH-YYYYMMDD-NN.json\nChain head (committed, verifiable from git history):  scripts/ci/epoch_chain.json\n\nAuthority effect: NONE. A missing or failed epoch never blocks a build or a deploy.",
+        "font_size": "14",
+        "has_padding": true,
+        "show_tick": false,
+        "text_align": "left",
+        "tick_edge": "left",
+        "type": "note",
+        "vertical_align": "top"
+      },
+      "id": 1,
+      "layout": { "height": 3, "width": 12, "x": 0, "y": 0 }
+    },
+    {
+      "definition": {
+        "autoscale": true,
+        "precision": 0,
+        "requests": [
+          {
+            "conditional_formats": [
+              {
+                "comparator": "<",
+                "palette": "white_on_red",
+                "value": 1
+              },
+              {
+                "comparator": ">=",
+                "palette": "white_on_green",
+                "value": 1
+              }
+            ],
+            "formulas": [{ "formula": "query1" }],
+            "queries": [
+              {
+                "aggregator": "last",
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "max:buildanddo.epoch.verified{$service,$trigger}"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ],
+        "title": "Latest epoch self-verified (1 = root recomputes)",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "query_value"
+      },
+      "id": 2,
+      "layout": { "height": 3, "width": 3, "x": 0, "y": 3 }
+    },
+    {
+      "definition": {
+        "autoscale": true,
+        "precision": 0,
+        "requests": [
+          {
+            "formulas": [{ "formula": "query1" }],
+            "queries": [
+              {
+                "aggregator": "last",
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "max:buildanddo.epoch.chain_length{$service}"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ],
+        "title": "Chain length (epochs recorded)",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "query_value"
+      },
+      "id": 3,
+      "layout": { "height": 3, "width": 3, "x": 3, "y": 3 }
+    },
+    {
+      "definition": {
+        "autoscale": true,
+        "precision": 0,
+        "requests": [
+          {
+            "formulas": [{ "formula": "query1" }],
+            "queries": [
+              {
+                "aggregator": "sum",
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "sum:buildanddo.epoch.root_created{$service,$trigger}.as_count()"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ],
+        "title": "Epochs created in window",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "query_value"
+      },
+      "id": 4,
+      "layout": { "height": 3, "width": 3, "x": 6, "y": 3 }
+    },
+    {
+      "definition": {
+        "autoscale": true,
+        "custom_unit": "artifacts",
+        "precision": 0,
+        "requests": [
+          {
+            "formulas": [{ "formula": "query1" }],
+            "queries": [
+              {
+                "aggregator": "last",
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "max:buildanddo.epoch.artifacts{$service,$trigger}"
+              }
+            ],
+            "response_format": "scalar"
+          }
+        ],
+        "title": "Artifacts in latest epoch",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "query_value"
+      },
+      "id": 5,
+      "layout": { "height": 3, "width": 3, "x": 9, "y": 3 }
+    },
+    {
+      "definition": {
+        "requests": [
+          {
+            "columns": [
+              { "field": "timestamp", "width": "auto" },
+              { "field": "content", "width": "auto" },
+              { "field": "service", "width": "auto" }
+            ],
+            "query": {
+              "data_source": "event_stream",
+              "event_size": "l",
+              "indexes": [],
+              "query_string": "(source:buildanddo OR source:evidence_epoch) $trigger"
+            },
+            "response_format": "event_list"
+          }
+        ],
+        "title": "Epoch timeline (every root, newest first)",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "list_stream"
+      },
+      "id": 6,
+      "layout": { "height": 6, "width": 6, "x": 0, "y": 6 }
+    },
+    {
+      "definition": {
+        "legend_layout": "auto",
+        "markers": [],
+        "requests": [
+          {
+            "display_type": "bars",
+            "formulas": [{ "alias": "artifacts", "formula": "query1" }],
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "max:buildanddo.epoch.artifacts{$service,$trigger} by {trigger}"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "line_type": "solid",
+              "line_width": "normal",
+              "palette": "dog_classic"
+            }
+          }
+        ],
+        "show_legend": true,
+        "title": "Artifact count per epoch over time",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "timeseries",
+        "yaxis": { "include_zero": true, "scale": "linear" }
+      },
+      "id": 7,
+      "layout": { "height": 6, "width": 6, "x": 6, "y": 6 }
+    },
+    {
+      "definition": {
+        "legend_layout": "auto",
+        "markers": [
+          {
+            "display_type": "error dashed",
+            "label": "unverified root",
+            "value": "y = 0.5"
+          }
+        ],
+        "requests": [
+          {
+            "display_type": "line",
+            "formulas": [{ "alias": "self-verified", "formula": "query1" }],
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "min:buildanddo.epoch.verified{$service,$trigger}"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "line_type": "solid",
+              "line_width": "normal",
+              "palette": "green"
+            }
+          },
+          {
+            "display_type": "bars",
+            "formulas": [{ "alias": "epochs created", "formula": "query2" }],
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query2",
+                "query": "sum:buildanddo.epoch.root_created{$service,$trigger}.as_count()"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "line_type": "solid",
+              "line_width": "normal",
+              "palette": "grey"
+            }
+          }
+        ],
+        "show_legend": true,
+        "title": "Verification status against epoch creation",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "timeseries",
+        "yaxis": { "include_zero": true, "max": "1.2", "scale": "linear" }
+      },
+      "id": 8,
+      "layout": { "height": 4, "width": 6, "x": 0, "y": 12 }
+    },
+    {
+      "definition": {
+        "legend_layout": "auto",
+        "markers": [],
+        "requests": [
+          {
+            "display_type": "bars",
+            "formulas": [{ "alias": "deployments", "formula": "query1" }],
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "sum:buildanddo.cd.deployment.count{$service,env:production}.as_count()"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "line_type": "solid",
+              "line_width": "normal",
+              "palette": "purple"
+            }
+          },
+          {
+            "display_type": "bars",
+            "formulas": [{ "alias": "epochs", "formula": "query2" }],
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query2",
+                "query": "sum:buildanddo.epoch.root_created{$service}.as_count()"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "line_type": "solid",
+              "line_width": "normal",
+              "palette": "cool"
+            }
+          },
+          {
+            "display_type": "line",
+            "formulas": [{ "alias": "lead time (s)", "formula": "query3" }],
+            "on_right_yaxis": true,
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query3",
+                "query": "avg:buildanddo.cd.deployment.lead_time_seconds{$service,env:production}"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "line_type": "solid",
+              "line_width": "normal",
+              "palette": "orange"
+            }
+          }
+        ],
+        "show_legend": true,
+        "title": "DORA deployments and lead time against epochs (a deployment without an epoch is a gap)",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "timeseries",
+        "yaxis": { "include_zero": true, "scale": "linear" }
+      },
+      "id": 9,
+      "layout": { "height": 4, "width": 6, "x": 6, "y": 12 }
+    },
+    {
+      "definition": {
+        "legend_layout": "auto",
+        "markers": [],
+        "requests": [
+          {
+            "display_type": "line",
+            "formulas": [{ "alias": "pipeline success rate", "formula": "query1" }],
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "avg:buildanddo.ci.pipeline.succeeded{$service,pipeline:main}"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "line_type": "solid",
+              "line_width": "normal",
+              "palette": "green"
+            }
+          },
+          {
+            "display_type": "line",
+            "formulas": [{ "alias": "boundary failures", "formula": "query2" }],
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query2",
+                "query": "max:buildanddo.ci.boundary.failures{$service,pipeline:main}"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "line_type": "solid",
+              "line_width": "normal",
+              "palette": "red"
+            }
+          },
+          {
+            "display_type": "bars",
+            "formulas": [{ "alias": "epochs", "formula": "query3" }],
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query3",
+                "query": "sum:buildanddo.epoch.root_created{$service}.as_count()"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "line_type": "solid",
+              "line_width": "normal",
+              "palette": "grey"
+            }
+          }
+        ],
+        "show_legend": true,
+        "title": "Build health correlated with epoch creation",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "timeseries",
+        "yaxis": { "include_zero": true, "scale": "linear" }
+      },
+      "id": 10,
+      "layout": { "height": 4, "width": 8, "x": 0, "y": 16 }
+    },
+    {
+      "definition": {
+        "requests": [
+          {
+            "columns": [
+              { "field": "timestamp", "width": "auto" },
+              { "field": "message", "width": "auto" }
+            ],
+            "query": {
+              "data_source": "logs_stream",
+              "indexes": [],
+              "query_string": "service:buildanddo-web trigger:(merge OR production_deploy OR manual)",
+              "storage": "hot"
+            },
+            "response_format": "event_list"
+          }
+        ],
+        "title": "Epoch publication log (root, artifact count, verification)",
+        "title_align": "left",
+        "title_size": "16",
+        "type": "list_stream"
+      },
+      "id": 11,
+      "layout": { "height": 4, "width": 4, "x": 8, "y": 16 }
+    }
+  ]
+}

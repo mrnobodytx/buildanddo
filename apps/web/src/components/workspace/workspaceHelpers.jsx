@@ -65,6 +65,18 @@ export const SIGNAL_STATE = {
     dismissed: { label: 'Dismissed', tone: 'neutral' },
 };
 
+// Mirrors the `status` select on the roadmap_items collection. Object order is
+// the lifecycle order the roadmap page renders and charts in, so reordering it
+// changes what the page shows.
+export const ROADMAP_STATUS = {
+    proposed: { label: 'Proposed', tone: 'neutral' },
+    planned: { label: 'Planned', tone: 'neutral' },
+    in_progress: { label: 'In progress', tone: 'violet' },
+    blocked: { label: 'Blocked', tone: 'amber' },
+    verified: { label: 'Verified', tone: 'teal' },
+    archived: { label: 'Archived', tone: 'neutral' },
+};
+
 export const OPERATION_STATUS = {
     idle: { label: 'Idle', tone: 'neutral' },
     running: { label: 'Running', tone: 'violet' },
@@ -90,6 +102,25 @@ export const DOMAIN_STATUS = {
     analyzing: { label: 'Analyzing', tone: 'violet' },
     verified: { label: 'Verified', tone: 'teal' },
     needs_attention: { label: 'Needs attention', tone: 'amber' },
+};
+
+export const SEAT_EVENT = {
+    joined: { label: 'Joined', tone: 'neutral' },
+    progress: { label: 'Progress', tone: 'violet' },
+    completed: { label: 'Completed', tone: 'teal' },
+    blocked: { label: 'Blocked', tone: 'amber' },
+    handoff: { label: 'Handoff', tone: 'amber' },
+};
+
+// Derived, not stored: workHistory.js collapses a seat event list into one of
+// these. `blocked` sits above `in_progress` because a blocked subject is the
+// one a new seat most needs to see before starting.
+export const WORK_STATE = {
+    not_started: { label: 'Not started', tone: 'neutral' },
+    in_progress: { label: 'In progress', tone: 'violet' },
+    blocked: { label: 'Blocked', tone: 'amber' },
+    handed_off: { label: 'Handed off', tone: 'amber' },
+    completed: { label: 'Completed', tone: 'teal' },
 };
 
 export function statusMeta(map, key) {

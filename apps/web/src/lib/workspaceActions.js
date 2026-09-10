@@ -41,6 +41,8 @@ export const WORKSPACE_ACTIONS = Object.freeze({
 	SIGNAL_DISMISSED: 'workspace.signal.dismissed',
 	OPERATION_CREATED: 'workspace.operation.created',
 	OPERATION_RUN_LOGGED: 'workspace.operation.run_logged',
+	ROADMAP_ITEM_CREATED: 'workspace.roadmap_item.created',
+	ROADMAP_ITEM_UPDATED: 'workspace.roadmap_item.updated',
 	EVIDENCE_RECORDED: 'workspace.evidence.recorded',
 	ROADMAP_ITEM_CREATED: 'workspace.roadmap.item_created',
 	ROADMAP_ITEM_UPDATED: 'workspace.roadmap.item_updated',

@@ -26,7 +26,9 @@ import ErpPage from './pages/workspace/ErpPage';
 import OperationsPage from './pages/workspace/OperationsPage';
 import EvidencePage from './pages/workspace/EvidencePage';
 import DailyEditionPage from './pages/workspace/DailyEditionPage';
-import SpecialistDeskPage from './pages/workspace/SpecialistDeskPage';
+// Capability Passport viewer; file path retained from the former desks page so
+// existing /app/desks bookmarks keep resolving (SRS-BUILDANDDO-WITNESS-001).
+import CapabilityPassportPage from './pages/workspace/SpecialistDeskPage';
 import CorrectionsPage from './pages/workspace/CorrectionsPage';
 import SupportRevenuePage from './pages/workspace/SupportRevenuePage';
 import CommunitySocialPage from './pages/workspace/CommunitySocialPage';

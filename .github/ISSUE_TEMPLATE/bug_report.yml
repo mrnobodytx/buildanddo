@@ -1,0 +1,141 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/ISSUE_TEMPLATE/bug_report.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-COMMUNITY-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-10
+# Depends:     .github/ISSUE_TEMPLATE/feature_request.yml
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES .github/PULL_REQUEST_TEMPLATE.md
+# Intent:      Give a bug report the same structured front door a feature request already has.
+# ───────────────────────────────────────────────────────────────
+name: Bug report
+description: Report something in BuildAndDo that behaves differently than it should
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Report what you observed, not what you concluded. A reproduction someone
+        else can run is worth more than a diagnosis. If you cannot reproduce it,
+        say so — an intermittent report with real timestamps is still useful.
+
+  - type: dropdown
+    id: actor
+    attributes:
+      label: Submitter type
+      options:
+        - Human
+        - Agent
+        - Mixed human + agent
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where it happened
+      options:
+        - Public site (marketing pages)
+        - Workspace (/app)
+        - Authentication (login / signup / onboarding)
+        - PocketBase backend
+        - Build / CI pipeline
+        - Evidence fabric (services/praxis_evidence)
+        - Somewhere else / not sure
+    validations:
+      required: true
+
+  - type: input
+    id: route
+    attributes:
+      label: Route or file
+      description: The URL path or repository path where the problem shows up.
+      placeholder: /app/missions
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps, starting from a state someone else can reach.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: >-
+        Include the exact error text, console output, or failing command output.
+        Paste it as text rather than describing it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or recordings
+      description: >-
+        Optional. Redact anything account-specific before attaching. Never
+        attach a screenshot containing a token, key, or session cookie.
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      value: |
+        - Browser / version:
+        - Operating system:
+        - Node version (`node --version`):
+        - Branch or commit:
+        - Environment: local / preview / production
+    validations:
+      required: true
+
+  - type: input
+    id: frequency
+    attributes:
+      label: How often does it happen
+      placeholder: Every time / roughly 1 in 5 attempts / saw it once
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence already gathered
+      description: >-
+        Anything that narrows this down — a failing test, a Datadog RUM session,
+        a network response, a log line with its timestamp. Write "none" if you
+        have not gathered any; that is an honest answer.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and this is not already reported
+          required: true
+        - label: This report contains no secrets, tokens, keys, or `.env` contents
+          required: true

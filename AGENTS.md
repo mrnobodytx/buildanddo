@@ -1,7 +1,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        AGENTS.md
 # Stage:       04_HYPOTHESIZE
-# SRS:         SRS-BUILDANDDO-BOOTSTRAP-001
+# SRS:         SRS-BUILDANDDO-BOOTSTRAP-001, SRS-BUILDANDDO-COMMUNITY-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -79,6 +79,59 @@ Dispatch: <DISPATCH_ID>
 Types: `feat | fix | docs | refactor | test | chore | ci`. Scopes:
 `web | pocketbase | evidence | ci | deploy | docs | governance`. One PR per SRS
 code. Fill in the PR template; do not remove its sections.
+
+## Seat communication protocol
+
+Several seats — human contributors and agent seats — can hold the same workspace
+at once. Announce, do not assume. Publishing through
+`apps/web/src/lib/seatComms.js` writes an append-only row to the `seat_events`
+collection and fans it out over PocketBase realtime, so every other seat on that
+workspace sees it without polling.
+
+| Event            | Publish it when                                                        |
+|------------------|------------------------------------------------------------------------|
+| `seat.joined`    | You take a workspace, before touching anything. Claims the ground.     |
+| `seat.progress`  | A phase of your task table finishes. Carries what changed, not intent. |
+| `seat.completed` | The subject is done and its evidence exists. Terminal.                 |
+| `seat.blocked`   | You cannot continue. Say what is missing, not that you are stuck.      |
+| `seat.handoff`   | Another seat must continue. Set `handoffTo` to the target seat.        |
+
+Rules that make the protocol worth having:
+
+- **Check before you claim.** `apps/web/src/lib/workHistory.js` answers "has
+  anyone worked this" from `seat_events` plus the mission's `evidence` records.
+  Missions and Workflows both render it as a *Previous work* panel. Read it
+  before starting; duplicated effort is the failure this exists to prevent.
+- **`seat.completed` is terminal.** Later chatter on finished work is commentary.
+  Reopening is a new mission, not a new event on the old one.
+- **A blocked event names the blocker.** "Waiting on schema for X" is useful;
+  "blocked" is not.
+- **A handoff is not a push.** It records the request; the cross-seat artefact
+  still goes in `.bits/handoffs/<DATE>-<FROM>-<TO>.md`.
+- **Seat identity beats account identity.** An agent seat sets
+  `VITE_BUILDANDDO_SEAT` so its events attribute to the seat, not to whichever
+  account it authenticated as.
+- Seat events stay on the public plane inside PocketBase. Bridging them to
+  `citadel.bits.*` on NATS is private-stack work — write a handoff and stop.
+
+## Progression pipeline tags
+
+`apps/web/src/components/workspace/ProgressionPipeline.jsx` is the single source
+for the contribution flow, and the tags below are what each automated step
+reports under. A step with no tag is human work with no automated gate, and the
+component says so rather than implying a check exists.
+
+| Tag                          | Step             | What it actually checks                                     |
+|------------------------------|------------------|-------------------------------------------------------------|
+| `ci:test`                    | Test             | Lint, and the verification commands named in the issue      |
+| `ci:build`                   | Pull request     | `npm run build` produces `dist/apps/web/index.html`         |
+| `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, one actor label, `agent_context.py --check` |
+| `deploy:staging-probe`       | Staging deploy   | Candidate mirror to the private plane succeeds on `main`    |
+| `deploy:production`          | Production       | Release visible in RUM, no new error signature from the deploy |
+
+Steps `Idea`, `Issue`, `Fork / branch`, `Code` and `Review` carry no tag. When you
+add a gate, add its tag to the step in that component and to this table in the
+same change — a tag that exists in one place only is a lie in the other.
 
 ## Hard NO
 
