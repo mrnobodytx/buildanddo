@@ -28,6 +28,7 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/site/ui';
 import { StatusBadge, DOMAIN_STATUS } from './workspaceHelpers';
+import { DemoModeBanner } from './WorkspaceNotices';
 
 const NAV = [
     { to: '/app', label: 'Front Page', icon: LayoutDashboard, end: true },
@@ -263,7 +264,11 @@ export default function WorkspaceLayout() {
                 </header>
 
                 <main className="px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="mx-auto max-w-6xl">
+                    <div className="mx-auto max-w-6xl space-y-6">
+                        {/* Rendered by the shell, not by each page, so a page
+                            that forgets it cannot present demonstration data
+                            as the operator's own. */}
+                        <DemoModeBanner />
                         <Outlet />
                     </div>
                 </main>

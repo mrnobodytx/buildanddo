@@ -38,6 +38,29 @@ import {
     useWorkspace,
 } from '@/contexts/WorkspaceContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import PageBoundary from '@/components/workspace/PageBoundary';
+
+// Each workspace page is mounted inside its own error boundary. The root
+// TelemetryBoundary still catches everything, but a root catch replaces the
+// whole screen — one broken page would take the navigation with it and leave
+// the operator with nothing but a reload.
+const WORKSPACE_ROUTES = [
+    { index: true, label: 'Front Page', element: OverviewPage },
+    { path: 'signals', label: 'Signals', element: SignalsPage },
+    { path: 'missions', label: 'Challenge Desk', element: MissionsPage },
+    { path: 'workflows', label: 'Workflows', element: WorkflowsPage },
+    { path: 'tutorials', label: 'Field Manual', element: TutorialsPage },
+    { path: 'erp', label: 'ERP', element: ErpPage },
+    { path: 'operations', label: 'Operations', element: OperationsPage },
+    { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
+    { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
+    { path: 'desks', label: 'Specialist Desks', element: SpecialistDeskPage },
+    { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
+    { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },
+    { path: 'community', label: 'Community & Social', element: CommunitySocialPage },
+    { path: 'roadmap', label: 'Roadmap', element: WorkspaceRoadmapPage },
+    { path: 'settings', label: 'Settings', element: SettingsPage },
+];
 
 // Redirect already-authenticated users away from the auth screens.
 function RedirectIfAuthed({ children }) {
@@ -108,21 +131,18 @@ function AppRoutes() {
                     </ProtectedRoute>
                 }
             >
-                <Route index element={<OverviewPage />} />
-                <Route path="signals" element={<SignalsPage />} />
-                <Route path="missions" element={<MissionsPage />} />
-                <Route path="workflows" element={<WorkflowsPage />} />
-                <Route path="tutorials" element={<TutorialsPage />} />
-                <Route path="erp" element={<ErpPage />} />
-                <Route path="operations" element={<OperationsPage />} />
-                <Route path="evidence" element={<EvidencePage />} />
-                <Route path="edition" element={<DailyEditionPage />} />
-                <Route path="desks" element={<SpecialistDeskPage />} />
-                <Route path="corrections" element={<CorrectionsPage />} />
-                <Route path="support" element={<SupportRevenuePage />} />
-                <Route path="community" element={<CommunitySocialPage />} />
-                <Route path="roadmap" element={<WorkspaceRoadmapPage />} />
-                <Route path="settings" element={<SettingsPage />} />
+                {WORKSPACE_ROUTES.map(({ path, index, label, element: Element }) => (
+                    <Route
+                        key={label}
+                        index={index}
+                        path={path}
+                        element={
+                            <PageBoundary name={label}>
+                                <Element />
+                            </PageBoundary>
+                        }
+                    />
+                ))}
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

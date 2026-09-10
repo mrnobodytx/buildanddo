@@ -89,7 +89,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-10T15:44:42.016481+00:00",
+  "generated_at": "2026-09-10T15:07:06.809336+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -165,6 +165,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-TEST-001.md",
         "status": "proposed",
         "title": "Web unit test runner emitting JUnit for test visibility"
+      },
+      {
+        "code": "SRS-BUILDANDDO-WORKSPACE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WORKSPACE-001.md",
+        "status": "in_progress",
+        "title": "Functional workspace pages backed by a real data layer"
       }
     ]
   },
@@ -259,18 +266,20 @@
   },
   "schema_version": 1,
   "summary": {
-    "findings": 6,
-    "findings_high": 3,
+    "findings": 4,
+    "findings_high": 2,
     "pipelines": 4,
     "srs_open": 6,
     "srs_total": 9,
     "unwired_gates": 2
   },
   "tests": {
-    "js_runners": [],
-    "js_test_files": 0,
-    "js_test_script": false,
-    "junit_configured": false,
+    "js_runners": [
+      "vitest"
+    ],
+    "js_test_files": 7,
+    "js_test_script": true,
+    "junit_configured": true,
     "python_suite_entrypoints": [
       "services/praxis_evidence/run_all_tests.py"
     ],
