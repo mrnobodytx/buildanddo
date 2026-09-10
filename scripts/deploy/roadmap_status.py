@@ -1,4 +1,20 @@
 #!/usr/bin/env python3
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        scripts/deploy/roadmap_status.py
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-ROADMAP-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-10
+# Depends:     scripts/ci/sprint_cycle.py
+# EnumType:    Service
+# EnumEdges:   CONSUMES scripts/ci/sprint_cycle.py;
+#              PRODUCES apps/web/public/roadmap-status.json
+# Intent:      Project the canonical sprint state into the one file the public
+#              roadmap page reads, or say UNMEASURED rather than nothing.
+# ───────────────────────────────────────────────────────────────
 """
 roadmap_status.py - writes apps/web/public/roadmap-status.json before every
 build, so RoadmapPage.jsx can render REAL data (actual %, recent commits,
@@ -61,16 +77,18 @@ def _last_gate_and_deploy() -> dict:
 
 
 def main() -> int:
-    today = dt.datetime.now(dt.timezone.utc).date()
-    sprint_day = (today - sprint_cycle.SPRINT_START).days + 1
+    sprint_day = sprint_cycle.sprint_day()  # clamped to [1, SPRINT_DAYS]
     state = sprint_cycle._load_state()  # noqa: SLF001 - intentional reuse, this IS the interface
 
     report = {
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "state": "MEASURED",
         "campaign_id": sprint_cycle.CAMPAIGN_ID,
         "sprint_day": sprint_day,
+        "sprint_days": sprint_cycle.SPRINT_DAYS,
         "planned_pct": round(sprint_cycle._planned_pct(sprint_day), 1),  # noqa: SLF001
         "actual_pct": round(sprint_cycle._actual_pct(state), 1),  # noqa: SLF001
+        "milestone_state_source": state["source"],
         "milestones": state["milestones"],
         "recent_commits": _recent_commits(),
         **_last_gate_and_deploy(),

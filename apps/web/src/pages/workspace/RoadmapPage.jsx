@@ -81,6 +81,40 @@ const statusOf = (item) => (STATUS_KEYS.includes(item.status) ? item.status : 'p
 
 const CHART_CONFIG = { count: { label: 'Items', color: 'hsl(var(--primary))' } };
 
+// Archived items are deliberately excluded from the completion denominator:
+// an item withdrawn from the plan is neither done nor outstanding, and
+// counting it either way misstates the number.
+const COUNTED_STATUSES = STATUSES.filter((status) => status !== 'archived');
+
+const STATUS_LABEL = (status) => status.replace(/_/g, ' ');
+
+const BAR_FILL = {
+    verified: 'hsl(var(--primary))',
+    blocked: 'hsl(var(--destructive, 0 84% 60%))',
+};
+
+const EMPTY_FORM = {
+    title: '', description: '', status: 'proposed',
+    owner_role: '', evidence_ref: '', dependency: '', next_action: '',
+};
+
+const VERIFY_WITHOUT_EVIDENCE =
+    'A roadmap item cannot be marked Verified without an evidence reference.';
+
+/**
+ * Reports whether an item counts as complete.
+ *
+ * Status alone is not enough. `verified` with an empty `evidence_ref` is an
+ * assertion, and this page refuses to count assertions - the same rule the
+ * create form and the public roadmap projection apply.
+ *
+ * @param {object} record A roadmap_items record.
+ * @returns {boolean} True when the item is verified and names its evidence.
+ */
+function isVerified(record) {
+    return record.status === 'verified' && Boolean(String(record.evidence_ref || '').trim());
+}
+
 export default function WorkspaceRoadmapPage() {
     const {
         records,
@@ -319,7 +353,7 @@ export default function WorkspaceRoadmapPage() {
 
             {showCreate && (
                 <Card className="p-5">
-                    <form onSubmit={submit} className="space-y-4">
+                    <form onSubmit={submitCreate} className="space-y-4">
                         <div className="grid gap-2">
                             <Label htmlFor="rm-title">Title</Label>
                             <Input

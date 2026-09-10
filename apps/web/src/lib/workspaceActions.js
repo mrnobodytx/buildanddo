@@ -44,6 +44,8 @@ export const WORKSPACE_ACTIONS = Object.freeze({
 	ROADMAP_ITEM_CREATED: 'workspace.roadmap_item.created',
 	ROADMAP_ITEM_UPDATED: 'workspace.roadmap_item.updated',
 	EVIDENCE_RECORDED: 'workspace.evidence.recorded',
+	ROADMAP_ITEM_CREATED: 'workspace.roadmap.item_created',
+	ROADMAP_ITEM_UPDATED: 'workspace.roadmap.item_updated',
 	EDITION_PUBLISHED: 'workspace.edition.published',
 	QUICK_ACTION: 'workspace.quick_action',
 	DEMO_MODE_TOGGLED: 'workspace.demo_mode.toggled',

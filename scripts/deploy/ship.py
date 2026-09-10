@@ -158,6 +158,31 @@ def _write_roadmap_status() -> dict:
     return _run([sys.executable, str(ROOT / "scripts" / "deploy" / "roadmap_status.py")], cwd=ROOT, timeout=30)
 
 
+def _write_unmeasured_roadmap_status(result: dict) -> None:
+    """Replace roadmap-status.json with an explicit UNMEASURED marker.
+
+    A failed projection previously left the previous build's file in place, so
+    the public page kept drawing a stale ACTUAL marker as if it were current.
+    Overwriting with UNMEASURED makes the page say it does not know, which is
+    the honest answer and the one the page is written to handle.
+
+    The projection failing never fails the ship: observability must not be able
+    to break the build it observes (.bits/context.md invariant).
+    """
+    status_path = ROOT / "apps" / "web" / "public" / "roadmap-status.json"
+    payload = {
+        "state": "UNMEASURED",
+        "error": "projection_failed",
+        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "detail": result.get("reason") or (result.get("stderr_tail") or "")[-500:],
+    }
+    try:
+        status_path.parent.mkdir(parents=True, exist_ok=True)
+        status_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    except OSError as exc:
+        print(f"WARN roadmap-status.json could not be written: {type(exc).__name__}: {exc}")
+
+
 def _latest_commit() -> dict:
     sha = _run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, timeout=15)
     msg = _run(["git", "log", "-1", "--pretty=%s"], cwd=ROOT, timeout=15)
@@ -266,7 +291,12 @@ def _build() -> dict:
     web_dir = ROOT / "apps" / "web"
     shutil.rmtree(DIST_DIR, ignore_errors=True)  # see integrity_regression_check.py - measured stale-cache bug
     _write_web_env()
-    _write_roadmap_status()  # public/roadmap-status.json - vite copies public/ verbatim into dist
+    # public/roadmap-status.json - vite copies public/ verbatim into dist.
+    roadmap = _write_roadmap_status()
+    if not roadmap["ok"]:
+        print(f"WARN roadmap projection failed (rc={roadmap.get('returncode')}); "
+              "shipping an UNMEASURED status file instead of stale data")
+        _write_unmeasured_roadmap_status(roadmap)
     return _run([NPM, "run", "build"], cwd=web_dir, timeout=600)
 
 
