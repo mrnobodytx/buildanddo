@@ -11,11 +11,46 @@ source for [buildanddo.com](https://buildanddo.com).
 - **Forum:** https://forum.buildanddo.com
 - **Discord:** https://discord.gg/vTDZxmpHHC
 
+## Quick start
+
+The whole stack — frontend, PocketBase, and the real migrations — runs locally
+in Docker. No production access, no credentials, no hand-built database.
+
+```bash
+git clone https://github.com/mrnobodytx/buildanddo.git && cd buildanddo
+docker compose up -d
+open http://localhost:3000
+```
+
+Or use the setup script, which checks prerequisites, creates `.env`, waits for
+a real PocketBase health response instead of assuming one, and prints the URLs:
+
+```bash
+./scripts/dev-setup.sh          # add --seed for a demo workspace
+.\scripts\dev-setup.ps1         # Windows
+```
+
+| Service | URL | Notes |
+|---|---|---|
+| Web app | http://localhost:3000 | Vite dev server, hot reload |
+| PocketBase API | http://localhost:8090 | same schema as production |
+| PocketBase admin | http://localhost:8090/_/ | credentials from `.env` |
+
+Requires Docker with Compose v2. Node is not needed to run the stack, but is
+for `npm run lint` and `npm run build`; `.nvmrc` pins the version.
+
+Everything the stack reads is documented in `.env.example` — copy it to `.env`
+to change ports or enable Datadog RUM locally. The API surface is documented in
+[docs/api/README.md](./docs/api/README.md), extracted from the migrations.
+
 ## What's in this repo
 
 ```
 apps/web/          React + Vite frontend (the actual site)
 apps/pocketbase/   PocketBase backend - migrations, hooks, the real app database
+docker-compose.yml Local full stack (web + PocketBase + migration step)
+docs/api/          API reference, extracted from the migrations
+scripts/dev-setup* One-command local environment setup (bash + PowerShell)
 services/          Backend services (praxis_evidence: the community-audited evidence fabric)
 scripts/deploy/    The real staging -> production deploy pipeline (ship.py)
 scripts/ci/        Build/lint/public-boundary gates, run in CI on every push
