@@ -17,6 +17,7 @@
   ],
   "public_allowed_prefixes": [
     ".github/",
+    ".bits/",
     "apps/",
     "docs/",
     "features/",

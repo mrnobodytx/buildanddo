@@ -1,0 +1,271 @@
+{
+  "findings": [
+    {
+      "area": "ci",
+      "evidence": "referenced by: scripts/deploy/ship.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/integrity_regression_check.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "SRS-BUILDANDDO-EVIDENCE-CI-001",
+      "statement": "services/praxis_evidence/run_all_tests.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "tests",
+      "evidence": "105 source files under apps/web/src, 0 test files",
+      "severity": "high",
+      "srs": "SRS-BUILDANDDO-TEST-001",
+      "statement": "the web app has no JavaScript test runner"
+    },
+    {
+      "area": "observability",
+      "evidence": ".env.example declares them; no build or deploy script writes them, so RUM reports them empty",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-RELEASE-TAG-001",
+      "statement": "RUM variables VITE_DD_ENV, VITE_DD_VERSION are documented but no tracked build path sets them"
+    },
+    {
+      "area": "observability",
+      "evidence": "the CI report action uploads reports/junit/*.xml; nothing writes there",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-TEST-001",
+      "statement": "no JUnit output is produced, so Datadog test visibility stays empty"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue holds only templates; agents must ask for a dispatch ID before coding",
+      "severity": "info",
+      "srs": "",
+      "statement": "no dispatch is queued"
+    }
+  ],
+  "gates": [
+    {
+      "path": "scripts/ci/agent_context.py",
+      "referenced_by": [],
+      "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/candidate_manifest.py",
+      "referenced_by": [],
+      "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/datadog_publish.py",
+      "referenced_by": [],
+      "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/integrity_regression_check.py",
+      "referenced_by": [
+        "scripts/deploy/ship.py"
+      ],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/telemetry_delta.py",
+      "referenced_by": [],
+      "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/telemetry_snapshot.py",
+      "referenced_by": [],
+      "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/verify_public_boundary.py",
+      "referenced_by": [
+        "scripts/publish/activity_publish.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "path": "services/praxis_evidence/run_all_tests.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    }
+  ],
+  "generated_at": "2026-09-10T01:24:09.430404+00:00",
+  "governance": {
+    "files": {
+      ".bits/context.md": true,
+      ".bits/srs_registry.yml": true,
+      ".buildanddo/public/path-policy.json": true,
+      ".github/CODEOWNERS": true,
+      ".github/PULL_REQUEST_TEMPLATE.md": true,
+      "AGENTS.md": true,
+      "CLAUDE.md": true,
+      "CONTRIBUTING.md": true,
+      "README.md": true
+    },
+    "srs": [
+      {
+        "code": "SRS-BUILDANDDO-AGENTCTX-001",
+        "risk": "A0",
+        "spec": ".bits/srs/SRS-BUILDANDDO-AGENTCTX-001.md",
+        "status": "in_progress",
+        "title": "Durable agent context layer with a measured repository lock"
+      },
+      {
+        "code": "SRS-BUILDANDDO-BOOTSTRAP-001",
+        "risk": "A0",
+        "spec": "",
+        "status": "delivered",
+        "title": "Machine-facing governance bootstrap"
+      },
+      {
+        "code": "SRS-BUILDANDDO-CI-001",
+        "risk": "A1",
+        "spec": "",
+        "status": "delivered",
+        "title": "CI Visibility, DORA, build telemetry and baseline deltas"
+      },
+      {
+        "code": "SRS-BUILDANDDO-EVIDENCE-CI-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-EVIDENCE-CI-001.md",
+        "status": "proposed",
+        "title": "Run the Praxis evidence suite in public CI"
+      },
+      {
+        "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-RELEASE-TAG-001.md",
+        "status": "proposed",
+        "title": "Stamp build version so RUM, CI and DORA describe one release"
+      },
+      {
+        "code": "SRS-BUILDANDDO-RUM-001",
+        "risk": "A1",
+        "spec": "",
+        "status": "delivered",
+        "title": "Datadog RUM and browser log instrumentation"
+      },
+      {
+        "code": "SRS-BUILDANDDO-SUPPLY-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SUPPLY-001.md",
+        "status": "proposed",
+        "title": "Dependency vulnerability and supply-chain telemetry"
+      },
+      {
+        "code": "SRS-BUILDANDDO-TEST-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-TEST-001.md",
+        "status": "proposed",
+        "title": "Web unit test runner emitting JUnit for test visibility"
+      }
+    ]
+  },
+  "pipelines": [
+    {
+      "file": ".github/workflows/candidate-to-gitlab.yml",
+      "kind": "workflow",
+      "local_actions": [
+        ".github/actions/datadog-ci-report"
+      ],
+      "name": "BuildAndDo Candidate to GitLab",
+      "npm_scripts": [
+        "build",
+        "lint"
+      ],
+      "scripts": [
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ]
+    },
+    {
+      "file": ".github/workflows/datadog-dora.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "Datadog DORA Deployment",
+      "npm_scripts": [],
+      "scripts": [
+        "scripts/ci/datadog_publish.py"
+      ],
+      "triggers": [
+        "workflow_run"
+      ]
+    },
+    {
+      "file": ".github/workflows/pr-governance.yml",
+      "kind": "workflow",
+      "local_actions": [
+        ".github/actions/datadog-ci-report"
+      ],
+      "name": "BuildAndDo PR Governance",
+      "npm_scripts": [
+        "build",
+        "lint"
+      ],
+      "scripts": [
+        "scripts/ci/agent_context.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "triggers": [
+        "pull_request"
+      ]
+    },
+    {
+      "file": ".github/actions/datadog-ci-report/action.yml",
+      "kind": "action",
+      "local_actions": [],
+      "name": "Datadog CI report",
+      "npm_scripts": [],
+      "scripts": [
+        "scripts/ci/datadog_publish.py",
+        "scripts/ci/telemetry_delta.py",
+        "scripts/ci/telemetry_snapshot.py"
+      ],
+      "triggers": []
+    }
+  ],
+  "repo": {
+    "apps": [
+      "pocketbase",
+      "web"
+    ],
+    "build_scripts": [
+      "apps/web/tools/build.mjs",
+      "apps/web/tools/generate-llms.js",
+      "apps/web/tools/lint.mjs",
+      "apps/web/vite.config.js",
+      "scripts/deploy/roadmap_status.py",
+      "scripts/deploy/ship.py"
+    ],
+    "migrations": 13,
+    "python_files": 36,
+    "services": [
+      "praxis_evidence"
+    ],
+    "tracked_files": 272,
+    "web_source_files": 105
+  },
+  "schema_version": 1,
+  "summary": {
+    "findings": 6,
+    "findings_high": 3,
+    "pipelines": 4,
+    "srs_open": 5,
+    "srs_total": 8,
+    "unwired_gates": 2
+  },
+  "tests": {
+    "js_runners": [],
+    "js_test_files": 0,
+    "js_test_script": false,
+    "junit_configured": false,
+    "python_suite_entrypoints": [
+      "services/praxis_evidence/run_all_tests.py"
+    ],
+    "python_suites": 11
+  }
+}

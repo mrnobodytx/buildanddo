@@ -21,6 +21,7 @@ scripts/deploy/    The real staging -> production deploy pipeline (ship.py)
 scripts/ci/        Build/lint/public-boundary gates, run in CI on every push
 scripts/publish/   Canonical release-event publication (wiki + Discord + Reddit)
 scripts/discordbot/ The development-aid Discord bot
+.bits/             Agent working memory - durable brief, SRS backlog, measured context lock
 ```
 
 ## How it's built and shipped

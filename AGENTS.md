@@ -28,6 +28,14 @@ read `CONTRIBUTING.md` first.
 - GitHub is the public collaboration plane; the private GitLab mirror holds
   golden, infrastructure, release and deployment authority.
 
+## Start here
+
+Run `python scripts/ci/agent_context.py`. It reports which pipelines exist,
+which gate scripts CI actually runs, the real test surface, the open SRS codes
+and every current finding with its evidence — measured from the repository, not
+remembered. Then read `.bits/context.md` for intent, invariants and the current
+plan, and `.bits/srs/<CODE>.md` for the spec your dispatch names.
+
 ## Authorization
 
 1. **A VCC Dispatch ID is required before any code change.** No dispatch, no

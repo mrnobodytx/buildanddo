@@ -30,6 +30,9 @@ jobs:
       - name: Enforce public/private boundary and contributor visibility
         run: python scripts/ci/verify_public_boundary.py --github-event "$GITHUB_EVENT_PATH"
 
+      - name: Verify agent context lock is current
+        run: python scripts/ci/agent_context.py --check
+
       - name: Install
         run: npm ci
 
