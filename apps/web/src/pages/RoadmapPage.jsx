@@ -1,3 +1,21 @@
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/pages/RoadmapPage.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-ROADMAP-001
+// CAPS:        pending
+// CK:          pending
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-10
+// Depends:     scripts/ci/sprint_cycle.py,
+//              scripts/deploy/roadmap_status.py
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/public/roadmap-status.json;
+//              VALIDATES scripts/ci/sprint_cycle.py
+// Intent:      Draw the sprint plan and, separately, whatever the projection
+//              actually measured - including saying it measured nothing.
+// ───────────────────────────────────────────────────────────────
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
@@ -20,14 +38,21 @@ const FIELDS = [
 ];
 
 /**
- * 21-day development sprint — planned trajectory.
- * Each milestone is a planned deliverable, not a verified result.
- * The curve is a plan, not telemetry: it shows intended cumulative
- * completion, with minor variance drawn only to read as a market plot.
+ * 21-day development sprint — the planned defaults.
+ *
+ * These entries mirror MILESTONES in scripts/ci/sprint_cycle.py, which is the
+ * canonical plan. They exist here as the fallback the page renders before, or
+ * instead of, roadmap-status.json: day, title, planned percentage and copy.
+ *
+ * Status is `planned` for every entry on purpose. A milestone only renders as
+ * verified when the projection says so — see mergeLiveStatus below. Nothing on
+ * this page can promote a milestone by editing this array.
  */
 const SPRINT_DAYS = 21;
 
-const MILESTONES = [
+const STALE_AFTER_MS = 48 * 60 * 60 * 1000;
+
+const PLANNED_MILESTONES = [
     {
         day: 1, title: 'Sprint kickoff — foundations', status: 'planned', value: 5,
         description: 'Repo, self-hosted deploy target, and the staging→production pipeline itself. '
@@ -111,26 +136,42 @@ const MILESTONES = [
     },
 ];
 
-// Full per-day trajectory: milestones plus interpolated working days,
-// with small downward ticks to read like a market plot. Plan only.
-const TRAJECTORY = (() => {
-    const pts = [];
-    for (let d = 1; d <= SPRINT_DAYS; d += 1) {
-        const ms = MILESTONES.find((m) => m.day === d);
-        if (ms) {
-            pts.push({ day: d, value: ms.value, milestone: true });
-        } else {
-            // interpolate between surrounding milestones
-            const prev = [...MILESTONES].reverse().find((m) => m.day < d);
-            const next = MILESTONES.find((m) => m.day > d);
-            const base = prev.value + ((next.value - prev.value) * (d - prev.day)) / (next.day - prev.day);
-            // small deterministic wiggle (plan variance, not real data)
-            const wiggle = ((d * 7) % 5) - 2;
-            pts.push({ day: d, value: Math.max(0, Math.round(base + wiggle)), milestone: false });
-        }
-    }
-    return pts;
-})();
+// The plan curve is exactly the milestone points, joined by straight segments.
+// It used to carry a deterministic per-day "wiggle" so it read like a market
+// plot; that drew variance nobody measured and this page tells readers the
+// curve is a plan. A dashed straight line says "planned, interpolated" without
+// implying a daily reading exists.
+const TRAJECTORY = PLANNED_MILESTONES.map((m) => ({ day: m.day, value: m.value }));
+
+/**
+ * Overlays projection status onto the planned milestones.
+ *
+ * The plan owns which milestones exist and what they are worth; the projection
+ * may only report status and evidence for a day already in the plan. A live
+ * entry for an unknown day is ignored rather than inventing a milestone.
+ *
+ * @param {Array<object>} live Milestone entries from roadmap-status.json.
+ * @returns {Array<object>} Planned milestones with live status merged in.
+ */
+function mergeLiveStatus(live) {
+    if (!Array.isArray(live) || live.length === 0) return PLANNED_MILESTONES;
+    const byDay = new Map(live.filter((m) => m && typeof m.day === 'number').map((m) => [m.day, m]));
+    return PLANNED_MILESTONES.map((m) => {
+        const entry = byDay.get(m.day);
+        if (!entry) return m;
+        const evidence = String(entry.evidence || '').trim();
+        // Same rule as _actual_pct in sprint_cycle.py: verified without an
+        // evidence reference is an assertion, and this page does not render
+        // assertions as verified.
+        const claimsVerified = entry.status === 'verified';
+        return {
+            ...m,
+            status: claimsVerified && !evidence ? m.status : (entry.status || m.status),
+            evidence,
+            verifiedAt: entry.verified_at || null,
+        };
+    });
+}
 
 const CHART_W = 1040;
 const CHART_H = 440;
@@ -142,7 +183,7 @@ const PAD_B = 52;
 const xFor = (day) => PAD_L + ((day - 1) / (SPRINT_DAYS - 1)) * (CHART_W - PAD_L - PAD_R);
 const yFor = (value) => PAD_T + (1 - value / 100) * (CHART_H - PAD_T - PAD_B);
 
-function MarketPlot({ activeDay, onHover, live }) {
+function MarketPlot({ activeDay, onHover, live, milestones, actual }) {
     const linePath = TRAJECTORY.map((p, i) => `${i === 0 ? 'M' : 'L'} ${xFor(p.day).toFixed(1)} ${yFor(p.value).toFixed(1)}`).join(' ');
     const areaPath = `${linePath} L ${xFor(SPRINT_DAYS).toFixed(1)} ${yFor(0).toFixed(1)} L ${xFor(1).toFixed(1)} ${yFor(0).toFixed(1)} Z`;
 
@@ -188,14 +229,24 @@ function MarketPlot({ activeDay, onHover, live }) {
             {/* area fill */}
             <path d={areaPath} fill="hsl(var(--primary) / 0.06)" stroke="none" />
 
-            {/* trajectory line */}
-            <path d={linePath} fill="none" stroke="hsl(var(--primary))" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            {/* trajectory line - dashed, because every point between two
+                milestones is interpolated plan, not a daily reading */}
+            <path
+                d={linePath}
+                fill="none"
+                stroke="hsl(var(--primary))"
+                strokeWidth="2"
+                strokeDasharray="6 4"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+            />
 
-            {/* milestone markers */}
-            {MILESTONES.map((m) => {
+            {/* milestone markers - filled only where the projection says verified */}
+            {milestones.map((m) => {
                 const x = xFor(m.day);
                 const y = yFor(m.value);
                 const isActive = activeDay === m.day;
+                const isVerified = m.status === 'verified';
                 return (
                     <g
                         key={m.day}
@@ -204,7 +255,14 @@ function MarketPlot({ activeDay, onHover, live }) {
                         style={{ cursor: 'pointer' }}
                     >
                         {isActive && <circle cx={x} cy={y} r="9" fill="hsl(var(--primary) / 0.18)" />}
-                        <circle cx={x} cy={y} r="4.5" fill="hsl(var(--card))" stroke="hsl(var(--primary))" strokeWidth="2" />
+                        <circle
+                            cx={x}
+                            cy={y}
+                            r={isVerified ? 5.5 : 4.5}
+                            fill={isVerified ? 'hsl(var(--primary))' : 'hsl(var(--card))'}
+                            stroke="hsl(var(--primary))"
+                            strokeWidth="2"
+                        />
                         <text x={x} y={y - 12} textAnchor="middle" className="font-evidence" fontSize="10" fill="hsl(var(--foreground))">
                             D{m.day}
                         </text>
@@ -212,30 +270,37 @@ function MarketPlot({ activeDay, onHover, live }) {
                 );
             })}
 
-            {/* working-day dots */}
-            {TRAJECTORY.filter((p) => !p.milestone).map((p) => (
-                <circle key={p.day} cx={xFor(p.day)} cy={yFor(p.value)} r="1.6" fill="hsl(var(--muted-foreground) / 0.5)" />
-            ))}
-
-            {/* actual progress marker - real data only, drawn from roadmap-status.json */}
-            {live && Number.isFinite(live.sprint_day) && Number.isFinite(live.actual_pct) && (
+            {/* actual progress marker - drawn only from a fresh, measured
+                projection. An UNMEASURED or missing file draws nothing at all
+                rather than a marker at a number nobody computed. */}
+            {actual && (
                 <g>
                     <line
-                        x1={xFor(live.sprint_day)} y1={PAD_T}
-                        x2={xFor(live.sprint_day)} y2={CHART_H - PAD_B}
+                        x1={xFor(actual.day)} y1={PAD_T}
+                        x2={xFor(actual.day)} y2={CHART_H - PAD_B}
                         stroke="hsl(var(--foreground) / 0.35)" strokeWidth="1" strokeDasharray="3 3"
                     />
                     <circle
-                        cx={xFor(live.sprint_day)} cy={yFor(live.actual_pct)}
+                        cx={xFor(actual.day)} cy={yFor(actual.pct)}
                         r="5.5" fill="hsl(var(--destructive, 0 84% 60%))" stroke="hsl(var(--card))" strokeWidth="1.5"
                     />
                     <text
-                        x={xFor(live.sprint_day)} y={yFor(live.actual_pct) - 14}
+                        x={xFor(actual.day)} y={yFor(actual.pct) - 14}
                         textAnchor="middle" className="font-evidence" fontSize="10" fill="hsl(var(--foreground))"
                     >
-                        ACTUAL {live.actual_pct}%
+                        ACTUAL {actual.pct}%
                     </text>
                 </g>
+            )}
+
+            {/* live data unavailable - say so on the chart itself */}
+            {live && !actual && (
+                <text
+                    x={CHART_W - PAD_R} y={PAD_T - 14} textAnchor="end"
+                    className="font-evidence" fontSize="10" fill="hsl(var(--muted-foreground))" letterSpacing="1.5"
+                >
+                    ACTUAL: UNKNOWN
+                </text>
             )}
 
             {/* frame */}
@@ -248,10 +313,39 @@ export default function RoadmapPage() {
     const [activeDay, setActiveDay] = useState(null);
     const [live, setLive] = useState(null);
     const [liveError, setLiveError] = useState(false);
-    const activeMilestone = useMemo(
-        () => MILESTONES.find((m) => m.day === activeDay) || null,
-        [activeDay],
+
+    const milestones = useMemo(() => mergeLiveStatus(live?.milestones), [live]);
+    const verifiedCount = useMemo(
+        () => milestones.filter((m) => m.status === 'verified').length,
+        [milestones],
     );
+    const activeMilestone = useMemo(
+        () => milestones.find((m) => m.day === activeDay) || null,
+        [milestones, activeDay],
+    );
+
+    // A projection is only quoted when it says it measured something. An
+    // UNMEASURED file is a deliberate signal from ship.py that the projection
+    // failed, and must not be read as "zero progress".
+    const measured = Boolean(live) && live.state !== 'UNMEASURED';
+
+    const generatedAt = useMemo(() => {
+        const parsed = live?.generated_at ? new Date(live.generated_at) : null;
+        return parsed && !Number.isNaN(parsed.getTime()) ? parsed : null;
+    }, [live]);
+
+    const stale = Boolean(generatedAt) && Date.now() - generatedAt.getTime() > STALE_AFTER_MS;
+
+    // sprint_day is clamped here as well as in sprint_cycle.py: a status file
+    // written after D21, or by an older projection, must not plot off-chart.
+    const actual = useMemo(() => {
+        if (!measured) return null;
+        if (!Number.isFinite(live.sprint_day) || !Number.isFinite(live.actual_pct)) return null;
+        return {
+            day: Math.max(1, Math.min(live.sprint_day, SPRINT_DAYS)),
+            pct: Math.max(0, Math.min(live.actual_pct, 100)),
+        };
+    }, [measured, live]);
 
     useEffect(() => {
         let cancelled = false;
@@ -265,7 +359,7 @@ export default function RoadmapPage() {
     const handleHover = (day) => {
         setActiveDay(day);
         if (day) {
-            const m = MILESTONES.find((x) => x.day === day);
+            const m = milestones.find((x) => x.day === day);
             trackEvent('roadmap_milestone_hover', { day, title: m?.title });
         }
     };
@@ -325,24 +419,36 @@ export default function RoadmapPage() {
                 </div>
 
                 <Card className="mt-6 overflow-hidden p-0">
-                    <MarketPlot activeDay={activeDay} onHover={handleHover} live={live} />
+                    <MarketPlot
+                        activeDay={activeDay}
+                        onHover={handleHover}
+                        live={live}
+                        milestones={milestones}
+                        actual={actual}
+                    />
                 </Card>
 
                 {/* ticker / readout strip */}
                 <div className="mt-4 border border-border bg-secondary/40 px-4 py-3">
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-1 font-evidence text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                         <span>SPRINT 01</span>
-                        <span>· 21 DAYS</span>
-                        <span>· {MILESTONES.length} MILESTONES</span>
-                        <span>· STATUS: PLANNED</span>
+                        <span>· {SPRINT_DAYS} DAYS</span>
+                        <span>· {milestones.length} MILESTONES</span>
+                        <span>· {verifiedCount} VERIFIED</span>
                         <span className="text-primary">· CURVE = PLAN, NOT RESULTS</span>
-                        {live && (
-                            <span>· LIVE ACTUAL: {live.actual_pct}% (day {live.sprint_day})</span>
+                        {actual && (
+                            <span>· LIVE ACTUAL: {actual.pct}% (day {actual.day})</span>
                         )}
+                        {live && !measured && <span>· LIVE DATA UNAVAILABLE</span>}
                         {live?.gate_state && (
                             <span>· LAST GATE: {live.gate_state}</span>
                         )}
-                        {liveError && <span>· LIVE DATA: UNKNOWN (fetch failed)</span>}
+                        {stale && (
+                            <span className="text-amber-warm">
+                                · DATA MAY BE STALE (GENERATED {generatedAt.toISOString().slice(0, 10)})
+                            </span>
+                        )}
+                        {liveError && <span>· LIVE DATA: UNKNOWN (FETCH FAILED)</span>}
                     </div>
                 </div>
 
@@ -397,7 +503,7 @@ export default function RoadmapPage() {
                 </p>
 
                 <Card className="mt-6 divide-y divide-border">
-                    {MILESTONES.map((m) => (
+                    {milestones.map((m) => (
                         <div key={m.day} className="p-4">
                             <div className="grid grid-cols-12 items-center gap-3">
                                 <div className="col-span-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-primary sm:col-span-1">
@@ -409,6 +515,12 @@ export default function RoadmapPage() {
                                     <StatePill state={m.status} />
                                 </div>
                             </div>
+                            {m.status === 'verified' && m.evidence && (
+                                <p className="font-evidence mt-2 pl-0 text-[11px] text-muted-foreground sm:pl-[calc(8.33%+0.75rem)]">
+                                    Evidence: {m.evidence}
+                                    {m.verifiedAt ? ` · verified ${m.verifiedAt}` : ''}
+                                </p>
+                            )}
                             {m.description && (
                                 <p className="mt-2 pl-0 text-sm leading-relaxed text-muted-foreground sm:pl-[calc(8.33%+0.75rem)]">
                                     {m.description}
@@ -501,9 +613,9 @@ export default function RoadmapPage() {
             The live, editable roadmap lives in your workspace.
                     </p>
                     <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-            Verified milestones appear once they are backed by evidence
-            records. This public chart is the planned sprint, not a record
-            of completed work.
+            The dashed curve is the planned sprint. A milestone renders as
+            verified here only when the sprint projection reports it verified
+            with an evidence reference — never from this page&rsquo;s own defaults.
                     </p>
                     <div className="mt-5 flex justify-center gap-2">
                         <Link to="/app/roadmap"><Button size="sm">Open workspace roadmap <ArrowRight className="h-4 w-4" /></Button></Link>

@@ -83,6 +83,38 @@ Required GitHub Actions secrets — `DD_API_KEY` and `DD_SITE` — the metric
 catalog, thresholds and the one-time Datadog GitHub App setup are documented in
 [docs/observability/datadog-ci.md](./docs/observability/datadog-ci.md).
 
+## Roadmap
+
+The 21-day sprint plan lives in [scripts/ci/sprint_cycle.py](./scripts/ci/sprint_cycle.py)
+and nowhere else. `scripts/deploy/roadmap_status.py` projects it into
+`apps/web/public/roadmap-status.json` on every build; the public page reads
+that file.
+
+| Day | Milestone | Planned % |
+|----:|-----------|----------:|
+| 1  | Sprint kickoff — foundations           | 5   |
+| 3  | Auth and onboarding hardening          | 12  |
+| 5  | Workspace collections live             | 20  |
+| 7  | Signals pipeline MVP                   | 30  |
+| 9  | Missions — bounded-action engine       | 40  |
+| 11 | Workflows editor                       | 50  |
+| 13 | Service connectors (Firecrawl, n8n)    | 60  |
+| 15 | ERP foundation                         | 70  |
+| 17 | Evidence ledger and verification       | 80  |
+| 19 | Daily edition and specialist desks     | 88  |
+| 21 | Sprint review — verified replay        | 100 |
+
+Planned % is cumulative intended completion, not measured progress. A milestone
+counts towards actual progress only when it is recorded as `verified` **and**
+carries an evidence reference; there is no field anywhere that lets progress be
+asserted directly. Milestones with no verified state contribute nothing, so a
+fresh checkout reports 0%.
+
+The interactive version, with the live projection drawn against the plan, is at
+[buildanddo.com/roadmap](https://buildanddo.com/roadmap). When the projection
+fails, the build ships an `UNMEASURED` status file and the page says the live
+data is unavailable rather than redrawing the previous run's numbers.
+
 ## Public/private boundary
 
 GitHub is the public collaboration plane. Golden infrastructure, deployment

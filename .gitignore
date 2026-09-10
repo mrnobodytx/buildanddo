@@ -38,7 +38,13 @@ __pycache__/
 # scripts/ci/verify_public_boundary.py - NOT sensitive, and it must ship to every clone
 # (real bug found 2026-09-07: the blanket .buildanddo/ ignore above silently starved the
 # scanner on every fresh checkout, including this repo's own GitLab CI runner).
-scripts/ci/sprint_cycle.py
+# scripts/ci/sprint_cycle.py used to be ignored here. It is now tracked: it is
+# the canonical sprint plan consumed by scripts/deploy/roadmap_status.py, it
+# carries only data the public roadmap page already renders, and scripts/ci/ is
+# a public_allowed_prefix in path-policy.json. Ignoring it made every clean
+# checkout fail on `import sprint_cycle` (same class of bug as the line above).
+# The PowerShell runner below stays ignored - it is a local operator convenience
+# and nothing tracked imports it.
 scripts/ci/run_sprint_cycle.ps1
 
 # Private GitLab-mirror CI config - names an internal project path, must

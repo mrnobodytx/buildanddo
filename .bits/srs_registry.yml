@@ -64,6 +64,13 @@ srs:
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-WORKSPACE-001.md
 
+  - code: SRS-BUILDANDDO-ROADMAP-001
+    title: One sprint plan, projected honestly to the public roadmap
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-ROADMAP-001.md
+    notes: Fixes the missing scripts/ci/sprint_cycle.py import on clean checkouts
+
   - code: SRS-BUILDANDDO-TEST-001
     title: Web unit test runner emitting JUnit for test visibility
     status: proposed
