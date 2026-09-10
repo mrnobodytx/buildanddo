@@ -58,6 +58,12 @@ srs:
     risk: A0
     spec: .bits/srs/SRS-BUILDANDDO-AGENTCTX-001.md
 
+  - code: SRS-BUILDANDDO-WORKSPACE-001
+    title: Functional workspace pages backed by a real data layer
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-WORKSPACE-001.md
+
   - code: SRS-BUILDANDDO-TEST-001
     title: Web unit test runner emitting JUnit for test visibility
     status: proposed
