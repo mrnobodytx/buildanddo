@@ -81,3 +81,17 @@ srs:
     status: proposed
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-SUPPLY-001.md
+
+  - code: SRS-BUILDANDDO-RUM-ACTIONS-001
+    title: Workspace actions, per-page error scope and interaction timing
+    status: proposed
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-RUM-ACTIONS-001.md
+    notes: Uses the existing browser observability layer; adds no dependency
+
+  - code: SRS-BUILDANDDO-PB-METRICS-001
+    title: Server-side CRUD, latency and error telemetry from PocketBase hooks
+    status: proposed
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md
+    notes: Blocked on a metrics sink - see .bits/handoffs/2026-09-10-bits-codegen-ide1.md
