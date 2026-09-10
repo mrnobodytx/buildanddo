@@ -13,18 +13,82 @@ enforced by a real check, not just a convention people are trusted to follow.
 A PR merged here goes through the real staging → production pipeline described
 below; nothing bypasses it.
 
+## Running it locally
+
+You do not need production access, and you should not use it. The full stack —
+frontend, PocketBase, and the same migrations production applies — runs in
+Docker from a clone:
+
+```bash
+./scripts/dev-setup.sh            # bash; --seed adds a demo workspace
+.\scripts\dev-setup.ps1           # PowerShell, same behaviour
+```
+
+Or `docker compose up -d` if you already have a `.env`. Both bring up:
+
+- `web` — Vite dev server on http://localhost:3000, hot reload against your
+  working tree.
+- `pocketbase` — the API on http://localhost:8090 and the admin UI at
+  http://localhost:8090/_/, with an admin account created from `.env`.
+- `pocketbase-migrate` — a one-shot step that applies
+  `apps/pocketbase/pb_migrations/` before the API serves anything, so your
+  local schema cannot drift from the deployed one.
+
+Useful commands:
+
+| Command | Effect |
+|---|---|
+| `docker compose logs -f web` | follow the frontend |
+| `docker compose restart pocketbase-migrate` | apply a migration you just wrote |
+| `docker compose down` | stop, keep the database |
+| `docker compose down -v` | stop and delete the database volume (full reset) |
+
+`.env.example` documents every variable, required and optional, with its local
+default. Datadog RUM stays off locally unless you set both
+`VITE_DD_APPLICATION_ID` and `VITE_DD_CLIENT_TOKEN` — an empty client token
+disables browser telemetry rather than failing the boot, so local sessions do
+not reach the Datadog org by accident.
+
+The API surface — collections, fields, relations, access rules, and the auth
+flow — is documented in [docs/api/README.md](./docs/api/README.md), extracted
+from the migrations. Read it before adding a collection.
+
 ## Before you open a PR
 
 1. **Fork or branch**, make your change.
 2. **Run the build and lint locally**: `npm ci && npm run build && npm run lint`
    (from `apps/web` — see the root `package.json` workspaces).
-3. **Run the public-boundary scan**: `python scripts/ci/verify_public_boundary.py`.
+3. **Run the web tests**: `npm test` (from the repository root, or
+   `npm run test --prefix apps/web`). This is a required PR check — the same
+   command runs in CI and the PR fails if it does. Vitest with jsdom and
+   `@testing-library/react`; suites live next to what they cover in
+   `apps/web/src/**/__tests__/`, and shared fixtures are in
+   `apps/web/src/test/`. Use `npm run test:watch --prefix apps/web` while
+   working and `npm run test:coverage --prefix apps/web` to see what is
+   uncovered. A run writes `reports/junit/web.xml`, which is what feeds Datadog
+   test visibility — if you add a test file, expect to see it there.
+4. **Run the public-boundary scan**: `python scripts/ci/verify_public_boundary.py`.
    This is the same check that runs in CI; it fails on secrets, private paths,
    internal hostnames, or anything outside the public allowlist
    (`.buildanddo/public/path-policy.json`).
-4. If your change touches the evidence fabric (`services/praxis_evidence/`),
+5. If your change touches the evidence fabric (`services/praxis_evidence/`),
    run `python services/praxis_evidence/run_all_tests.py` — real tests against
-   a live PocketBase instance, not mocks.
+   a live PocketBase instance, not mocks. Point it at your local stack:
+
+   ```bash
+   export PB_API_URL=http://localhost:8090
+   export PB_SUPERUSER_EMAIL=admin@buildanddo.local
+   export PB_SUPERUSER_PASSWORD=localdev-change-me   # your .env values
+   python services/praxis_evidence/run_all_tests.py
+   ```
+
+   The suite writes real records, so run it against the container database —
+   never a deployed one. `docker compose down -v` resets it.
+5. **Test an authenticated surface as a user, not just as an admin.** Every
+   product collection is owner-scoped, and several are additionally scoped by
+   `workspace_members` role; a change that works for the record's owner can
+   still be denied for a `viewer`. `./scripts/dev-setup.sh --seed` creates a
+   demo user and workspace to click through.
 
 ## Opening a pull request
 
@@ -51,7 +115,9 @@ Use the PR template (auto-filled). It requires:
 On every PR (`BuildAndDo PR Governance` workflow):
 
 1. Public/private boundary scan (fails closed on any violation).
-2. `npm ci`, lint (if present), test (if present).
+2. `npm ci`, lint (if present), then `npm test` — required, and the run must
+   leave a JUnit report at `reports/junit/web.xml`; a green suite that produced
+   no report fails the check.
 3. Full production build, verified by checking the real build artifact exists
    (`dist/apps/web/index.html`), not just that the build command exited 0.
 4. Governance evidence (boundary report + build output) uploaded as an artifact
@@ -91,7 +157,9 @@ If staging's gate or probe fails, production is never touched.
   `tools/lint.mjs`). Don't reintroduce shell-specific chaining.
 - **PocketBase migrations** are the only way schema changes ship — never hand-edit
   the running database. See `apps/pocketbase/pb_migrations/` for the pattern
-  (idempotent `ensure()`-style checks, explicit down-migrations).
+  (idempotent `ensure()`-style checks, explicit down-migrations). Apply yours
+  locally with `docker compose restart pocketbase-migrate`, verify it in the
+  admin UI, and update `docs/api/README.md` in the same PR.
 - **Evidence, not assertions.** The Praxis Evidence Fabric's own rule applies to
   this repo's development process too: a claim that something works needs a
   real test or a real observed result, not just a description of intent.

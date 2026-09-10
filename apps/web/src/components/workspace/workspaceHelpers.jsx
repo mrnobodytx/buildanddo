@@ -41,11 +41,74 @@ export const WORKFLOW_STATUS = {
     paused: { label: 'Paused', tone: 'amber' },
 };
 
+// Added with SRS-BUILDANDDO-WORKSPACE-001. Ordering matters for the two maps
+// below: the page sorts by the key's index, so the object order is the
+// priority order and reordering it changes behaviour.
+export const MISSION_PRIORITY = {
+    urgent: { label: 'Urgent', tone: 'amber' },
+    high: { label: 'High', tone: 'amber' },
+    normal: { label: 'Normal', tone: 'neutral' },
+    low: { label: 'Low', tone: 'neutral' },
+};
+
+export const SIGNAL_SEVERITY = {
+    critical: { label: 'Critical', tone: 'amber' },
+    high: { label: 'High', tone: 'amber' },
+    medium: { label: 'Medium', tone: 'violet' },
+    low: { label: 'Low', tone: 'neutral' },
+    info: { label: 'Info', tone: 'neutral' },
+};
+
+export const SIGNAL_STATE = {
+    new: { label: 'New', tone: 'violet' },
+    acknowledged: { label: 'Acknowledged', tone: 'teal' },
+    dismissed: { label: 'Dismissed', tone: 'neutral' },
+};
+
+export const OPERATION_STATUS = {
+    idle: { label: 'Idle', tone: 'neutral' },
+    running: { label: 'Running', tone: 'violet' },
+    healthy: { label: 'Healthy', tone: 'teal' },
+    degraded: { label: 'Degraded', tone: 'amber' },
+    blocked: { label: 'Blocked', tone: 'amber' },
+};
+
+export const RUN_RESULT = {
+    succeeded: { label: 'Succeeded', tone: 'teal' },
+    partial: { label: 'Partial', tone: 'amber' },
+    failed: { label: 'Failed', tone: 'amber' },
+    skipped: { label: 'Skipped', tone: 'neutral' },
+};
+
+export const EDITION_STATUS = {
+    draft: { label: 'Draft', tone: 'neutral' },
+    published: { label: 'Published', tone: 'teal' },
+};
+
 export const DOMAIN_STATUS = {
     selected: { label: 'Selected', tone: 'neutral' },
     analyzing: { label: 'Analyzing', tone: 'violet' },
     verified: { label: 'Verified', tone: 'teal' },
     needs_attention: { label: 'Needs attention', tone: 'amber' },
+};
+
+export const SEAT_EVENT = {
+    joined: { label: 'Joined', tone: 'neutral' },
+    progress: { label: 'Progress', tone: 'violet' },
+    completed: { label: 'Completed', tone: 'teal' },
+    blocked: { label: 'Blocked', tone: 'amber' },
+    handoff: { label: 'Handoff', tone: 'amber' },
+};
+
+// Derived, not stored: workHistory.js collapses a seat event list into one of
+// these. `blocked` sits above `in_progress` because a blocked subject is the
+// one a new seat most needs to see before starting.
+export const WORK_STATE = {
+    not_started: { label: 'Not started', tone: 'neutral' },
+    in_progress: { label: 'In progress', tone: 'violet' },
+    blocked: { label: 'Blocked', tone: 'amber' },
+    handed_off: { label: 'Handed off', tone: 'amber' },
+    completed: { label: 'Completed', tone: 'teal' },
 };
 
 export function statusMeta(map, key) {
@@ -99,6 +162,36 @@ export function PageHeader({ title, description, actions, children }) {
                 {actions && <div className="flex shrink-0 gap-2">{actions}</div>}
             </div>
             {children}
+        </div>
+    );
+}
+
+/**
+ * A labelled progress bar. Renders nothing when there is no value to show,
+ * because a zeroed bar reads as "no progress" when the truth is "not tracked".
+ */
+export function ProgressMeter({ value, label = 'Progress', className }) {
+    if (value == null || Number.isNaN(Number(value))) return null;
+    const pct = Math.max(0, Math.min(100, Math.round(Number(value))));
+    return (
+        <div className={cn('w-full', className)}>
+            <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <span>{label}</span>
+                <span>{pct}%</span>
+            </div>
+            <div
+                className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-secondary"
+                role="progressbar"
+                aria-valuenow={pct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={label}
+            >
+                <div
+                    className="h-full rounded-full bg-primary transition-[width] duration-300"
+                    style={{ width: `${pct}%` }}
+                />
+            </div>
         </div>
     );
 }

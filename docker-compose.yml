@@ -1,0 +1,157 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        docker-compose.yml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-DEVENV-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-10
+# Depends:     apps/web/Dockerfile.dev, apps/pocketbase/Dockerfile, .env.example
+# EnumType:    ConfigDoc
+# EnumEdges:   CONSUMES .env.example; TRIGGERS apps/pocketbase/pb_migrations;
+#              PRODUCES http://localhost:3000; PRODUCES http://localhost:8090
+# Intent:      Run the whole BuildAndDo stack locally from a clone, with the same
+#              migrations production applies, so local schema cannot drift.
+# ───────────────────────────────────────────────────────────────
+#
+# Usage:
+#   ./scripts/dev-setup.sh          # prerequisites, .env, up, health probe
+#   docker compose up -d            # if .env already exists
+#   docker compose logs -f web
+#   docker compose down             # stop;   add -v to also drop the database
+#
+# Every variable below has a local default, so `docker compose config` and
+# `docker compose up` work with no .env at all. .env only overrides.
+
+name: buildanddo
+
+services:
+  # One-shot: applies apps/pocketbase/pb_migrations against the shared volume
+  # and exits. `pocketbase` waits for a clean exit, so the API never serves a
+  # half-migrated schema. Migrations are idempotent, so re-running is safe.
+  pocketbase-migrate:
+    build:
+      context: ./apps/pocketbase
+      dockerfile: Dockerfile
+      args:
+        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.28.4}
+    image: buildanddo/pocketbase:local
+    command: ["migrate", "up", "--dir=/pb/pb_data", "--migrationsDir=/pb/pb_migrations"]
+    environment:
+      # Read by pb_migrations/1764579159_create_superuser.js. Local-only values.
+      PB_SUPERUSER_EMAIL: ${PB_SUPERUSER_EMAIL:-admin@buildanddo.local}
+      PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD:-localdev-change-me}
+      NODE_ENV: development
+    volumes:
+      - pocketbase_data:/pb/pb_data
+      # Bind the migrations so an edit is applied by a restart, not a rebuild.
+      - ./apps/pocketbase/pb_migrations:/pb/pb_migrations:ro
+    restart: "no"
+    networks: [buildanddo]
+
+  pocketbase:
+    build:
+      context: ./apps/pocketbase
+      dockerfile: Dockerfile
+      args:
+        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.28.4}
+    image: buildanddo/pocketbase:local
+    command:
+      - "serve"
+      - "--http=0.0.0.0:8090"
+      - "--dir=/pb/pb_data"
+      - "--migrationsDir=/pb/pb_migrations"
+      - "--hooksDir=/pb/pb_hooks"
+      - "--hooksWatch=false"
+    environment:
+      PB_SUPERUSER_EMAIL: ${PB_SUPERUSER_EMAIL:-admin@buildanddo.local}
+      PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD:-localdev-change-me}
+      # pb_hooks/logs-forwarder.pb.js writes _logs rows to stdout INSTEAD of the
+      # database when this is "production"; "development" persists them, so
+      # they stay readable in the admin UI's Logs view.
+      NODE_ENV: ${PB_NODE_ENV:-development}
+      # Optional outbound integrations used by pb_hooks. Left unset locally:
+      # the mail hook only runs when PocketBase SMTP is disabled AND something
+      # sends mail, and the CRM hook logs and swallows its own failure, so an
+      # unconfigured integration degrades rather than breaking a local flow.
+      # See docs/api/README.md, "Server-side hooks", for exact behaviour.
+      BUILDER_MAILER_API_URL: ${BUILDER_MAILER_API_URL:-}
+      BUILDER_MAILER_API_KEY: ${BUILDER_MAILER_API_KEY:-}
+      BUILDER_MAILER_SENDER_ADDRESS: ${BUILDER_MAILER_SENDER_ADDRESS:-}
+      REACH_API_URL: ${REACH_API_URL:-}
+      REACH_API_TOKEN: ${REACH_API_TOKEN:-}
+    ports:
+      - "${POCKETBASE_PORT:-8090}:8090"
+    volumes:
+      - pocketbase_data:/pb/pb_data
+      - ./apps/pocketbase/pb_migrations:/pb/pb_migrations:ro
+      - ./apps/pocketbase/pb_hooks:/pb/pb_hooks:ro
+    healthcheck:
+      # PocketBase's own liveness endpoint, not a port check: a listening
+      # socket is not the same as an application that can answer.
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8090/api/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    depends_on:
+      pocketbase-migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    networks: [buildanddo]
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.dev
+    image: buildanddo/web:local-dev
+    working_dir: /workspace/apps/web
+    # Vite is invoked directly rather than through `npm run dev`, whose script
+    # binds `--host ::`. A container without an IPv6 stack cannot bind that
+    # address and the dev server exits at startup; 0.0.0.0 is the equivalent
+    # inside a container, where the published port does the exposing.
+    command: ["npx", "vite", "--host", "0.0.0.0", "--port", "3000"]
+    environment:
+      # The browser resolves this, not the container, so it is localhost on the
+      # host — not http://pocketbase:8090, which only exists inside the network.
+      VITE_POCKETBASE_API_URL: ${VITE_POCKETBASE_API_URL:-http://localhost:${POCKETBASE_PORT:-8090}}
+      # Datadog RUM: public client-side identifiers. Empty disables RUM
+      # entirely (apps/web/src/lib/datadogRum.js returns early), which is the
+      # intended local default — no local session should reach the Datadog org.
+      VITE_DD_APPLICATION_ID: ${VITE_DD_APPLICATION_ID:-}
+      VITE_DD_CLIENT_TOKEN: ${VITE_DD_CLIENT_TOKEN:-}
+      VITE_DD_ENV: ${VITE_DD_ENV:-local}
+      VITE_DD_VERSION: ${VITE_DD_VERSION:-}
+      VITE_DD_SESSION_SAMPLE_RATE: ${VITE_DD_SESSION_SAMPLE_RATE:-}
+      VITE_DD_REPLAY_SAMPLE_RATE: ${VITE_DD_REPLAY_SAMPLE_RATE:-}
+      VITE_DD_TRACE_SAMPLE_RATE: ${VITE_DD_TRACE_SAMPLE_RATE:-}
+      VITE_BUILDANDDO_PH: ${VITE_BUILDANDDO_PH:-}
+      # Bind-mount file events are not delivered natively on Docker Desktop
+      # (macOS/Windows). Set CHOKIDAR_USEPOLLING=true in .env if hot reload
+      # stops firing; it costs CPU, so it is off by default.
+      CHOKIDAR_USEPOLLING: ${CHOKIDAR_USEPOLLING:-false}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    volumes:
+      - ./apps/web:/workspace/apps/web
+      - ./package.json:/workspace/package.json:ro
+      - ./package-lock.json:/workspace/package-lock.json:ro
+      # Named volumes keep the image's Linux-built node_modules from being
+      # shadowed by the host's (possibly macOS/Windows) tree.
+      - web_root_modules:/workspace/node_modules
+      - web_app_modules:/workspace/apps/web/node_modules
+    depends_on:
+      pocketbase:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: [buildanddo]
+
+volumes:
+  pocketbase_data:
+  web_root_modules:
+  web_app_modules:
+
+networks:
+  buildanddo:
+    driver: bridge
