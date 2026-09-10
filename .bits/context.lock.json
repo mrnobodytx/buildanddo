@@ -16,7 +16,7 @@
     },
     {
       "area": "tests",
-      "evidence": "114 source files under apps/web/src, 0 test files",
+      "evidence": "120 source files under apps/web/src, 0 test files",
       "severity": "high",
       "srs": "SRS-BUILDANDDO-TEST-001",
       "statement": "the web app has no JavaScript test runner"
@@ -98,7 +98,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-10T15:07:06.809336+00:00",
+  "generated_at": "2026-09-10T16:30:23.107646+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -127,6 +127,13 @@
         "title": "Machine-facing governance bootstrap"
       },
       {
+        "code": "SRS-BUILDANDDO-CHANGELOG-001",
+        "risk": "A0",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CHANGELOG-001.md",
+        "status": "in_progress",
+        "title": "Public record - generated changelog, release summary, README roadmap mirror"
+      },
+      {
         "code": "SRS-BUILDANDDO-CI-001",
         "risk": "A1",
         "spec": "",
@@ -148,6 +155,13 @@
         "title": "Run the Praxis evidence suite in public CI"
       },
       {
+        "code": "SRS-BUILDANDDO-PB-METRICS-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md",
+        "status": "proposed",
+        "title": "Server-side CRUD, latency and error telemetry from PocketBase hooks"
+      },
+      {
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-RELEASE-TAG-001.md",
@@ -160,6 +174,13 @@
         "spec": "",
         "status": "delivered",
         "title": "Datadog RUM and browser log instrumentation"
+      },
+      {
+        "code": "SRS-BUILDANDDO-RUM-ACTIONS-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-RUM-ACTIONS-001.md",
+        "status": "proposed",
+        "title": "Workspace actions, per-page error scope and interaction timing"
       },
       {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
@@ -249,6 +270,7 @@
       ],
       "scripts": [
         "scripts/ci/agent_context.py",
+        "scripts/ci/changelog_gen.py",
         "scripts/ci/verify_public_boundary.py"
       ],
       "triggers": [
@@ -288,16 +310,16 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 282,
-    "web_source_files": 114
+    "tracked_files": 302,
+    "web_source_files": 120
   },
   "schema_version": 1,
   "summary": {
     "findings": 4,
     "findings_high": 2,
     "pipelines": 4,
-    "srs_open": 6,
-    "srs_total": 9,
+    "srs_open": 10,
+    "srs_total": 13,
     "unwired_gates": 2
   },
   "tests": {

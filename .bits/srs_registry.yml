@@ -94,6 +94,13 @@ srs:
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-DEVENV-001.md
 
+  - code: SRS-BUILDANDDO-CHANGELOG-001
+    title: Public record - generated changelog, release summary, README roadmap mirror
+    status: in_progress
+    risk: A0
+    spec: .bits/srs/SRS-BUILDANDDO-CHANGELOG-001.md
+    notes: Summary lands in state/ - run output, never committed
+
   - code: SRS-BUILDANDDO-SUPPLY-001
     title: Dependency vulnerability and supply-chain telemetry
     status: proposed
