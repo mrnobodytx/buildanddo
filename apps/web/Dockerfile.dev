@@ -1,0 +1,51 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/web/Dockerfile.dev
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-DEVENV-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-10
+# Depends:     package.json, package-lock.json, apps/web/package.json, .nvmrc
+# EnumType:    ConfigDoc
+# EnumEdges:   CONSUMES package-lock.json; PRODUCES http://localhost:3000
+# Intent:      Run the Vite dev server with hot reload against the local
+#              PocketBase, without requiring a host Node toolchain.
+# ───────────────────────────────────────────────────────────────
+#
+# Development only - it installs devDependencies and runs `vite`, never a
+# production build. The shipped bundle is built by scripts/deploy/ship.py.
+#
+# Node 22 tracks .nvmrc. Node 18 cannot run this toolchain: Vite 7 requires
+# Node ^20.19 || >=22.12, and npm workspaces here are resolved from the root.
+
+FROM node:22-alpine
+
+# The repo is an npm workspace root: apps/* dependencies hoist to the root
+# node_modules, so the install must run from the root, not from apps/web.
+WORKDIR /workspace
+
+# Only the manifests, so a source edit does not invalidate the install layer.
+COPY package.json package-lock.json ./
+COPY apps/web/package.json apps/web/package.json
+COPY apps/pocketbase/package.json apps/pocketbase/package.json
+
+# `npm ci` needs every workspace manifest present; it installs the whole tree
+# from the lockfile, which is what keeps the container's versions identical to
+# the ones CI resolves.
+RUN npm ci --no-audit --no-fund
+
+# Source arrives as a bind mount at runtime (docker-compose.yml) so edits are
+# picked up by HMR. Copying it here keeps `docker run` on this image usable on
+# its own and gives the image a working tree if the mount is omitted.
+COPY . .
+
+EXPOSE 3000
+
+# Vite must bind 0.0.0.0, not the loopback, or the published port answers
+# nothing. apps/web's `dev` script binds `--host ::`, which fails outright in a
+# container with no IPv6 stack - so the server is started directly here and in
+# docker-compose.yml. Both stay in step; change them together.
+WORKDIR /workspace/apps/web
+CMD ["npx", "vite", "--host", "0.0.0.0", "--port", "3000"]
