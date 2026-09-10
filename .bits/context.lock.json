@@ -56,7 +56,16 @@
     },
     {
       "path": "scripts/ci/datadog_publish.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "scripts/deploy/ship.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/evidence_epoch.py",
+      "referenced_by": [
+        "scripts/deploy/ship.py"
+      ],
       "wired_into_ci": true
     },
     {
@@ -132,11 +141,11 @@
         "title": "CI Visibility, DORA, build telemetry and baseline deltas"
       },
       {
-        "code": "SRS-BUILDANDDO-DEVENV-001",
+        "code": "SRS-BUILDANDDO-COMMUNITY-001",
         "risk": "A1",
-        "spec": ".bits/srs/SRS-BUILDANDDO-DEVENV-001.md",
+        "spec": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md",
         "status": "in_progress",
-        "title": "Reproducible local development environment and API documentation"
+        "title": "Community contributor infrastructure, component catalogue and seat protocol"
       },
       {
         "code": "SRS-BUILDANDDO-EVIDENCE-CI-001",
@@ -231,6 +240,24 @@
       ]
     },
     {
+      "file": ".github/workflows/evidence-epoch.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo Evidence Epoch",
+      "npm_scripts": [
+        "build"
+      ],
+      "scripts": [
+        "scripts/ci/datadog_publish.py",
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ]
+    },
+    {
       "file": ".github/workflows/pr-governance.yml",
       "kind": "workflow",
       "local_actions": [
@@ -278,8 +305,8 @@
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py"
     ],
-    "migrations": 14,
-    "python_files": 36,
+    "migrations": 13,
+    "python_files": 37,
     "services": [
       "praxis_evidence"
     ],
@@ -288,18 +315,20 @@
   },
   "schema_version": 1,
   "summary": {
-    "findings": 6,
-    "findings_high": 3,
+    "findings": 4,
+    "findings_high": 2,
     "pipelines": 4,
     "srs_open": 10,
     "srs_total": 13,
     "unwired_gates": 2
   },
   "tests": {
-    "js_runners": [],
-    "js_test_files": 0,
-    "js_test_script": false,
-    "junit_configured": false,
+    "js_runners": [
+      "vitest"
+    ],
+    "js_test_files": 7,
+    "js_test_script": true,
+    "junit_configured": true,
     "python_suite_entrypoints": [
       "services/praxis_evidence/run_all_tests.py"
     ],

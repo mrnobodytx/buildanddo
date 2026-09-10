@@ -46,8 +46,15 @@ jobs:
       - name: Lint if present
         run: npm run lint --if-present
 
-      - name: Test if present
-        run: npm test --if-present
+      # Required, not `--if-present`: a missing test script must fail the PR
+      # rather than pass silently, which is what the old no-op step did.
+      - name: Test
+        run: npm test
+
+      # The suite can pass while producing no report (wrong reporter, wrong
+      # path), which would leave Datadog test visibility empty and green.
+      - name: Verify JUnit test report was produced
+        run: test -s reports/junit/web.xml
 
       - name: Build
         run: npm run build
@@ -76,5 +83,6 @@ jobs:
           name: pr-governance-${{ github.event.pull_request.number }}
           path: |
             .buildanddo/public/boundary-report.json
+            reports/junit
             dist/apps/web
           retention-days: 14

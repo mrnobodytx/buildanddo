@@ -83,38 +83,47 @@ Required GitHub Actions secrets — `DD_API_KEY` and `DD_SITE` — the metric
 catalog, thresholds and the one-time Datadog GitHub App setup are documented in
 [docs/observability/datadog-ci.md](./docs/observability/datadog-ci.md).
 
-## Roadmap
+## Provenance & verification
 
-A 21-day development sprint with eleven milestones. Every row below is a
-*planned* deliverable and the percentage is intended cumulative completion, not
-measured progress. The status column changes only when the work behind it has
-been replayed against its own evidence bar.
+BuildAndDo keeps an internal hash-linked evidence chain: every receipt contains
+the digest of the record before it, so altering old history breaks the chain.
+That proves internal consistency — and nothing more, because the records, the
+clock and the verifier all belong to us. A skeptic can reasonably ask: could you
+have rewritten all of that yesterday and dated it September 10?
 
-| Day | Milestone | Status | Planned cumulative |
-|---|---|---|---|
-| 1 | Sprint kickoff — foundations | planned | 5% |
-| 3 | Auth & onboarding hardening | planned | 12% |
-| 5 | Workspace collections live | planned | 20% |
-| 7 | Signals pipeline MVP | planned | 30% |
-| 9 | Missions — bounded-action engine | planned | 40% |
-| 11 | Workflows editor | planned | 50% |
-| 13 | Service connectors (Firecrawl, n8n) | planned | 60% |
-| 15 | ERP foundation | planned | 70% |
-| 17 | Evidence ledger & verification | planned | 80% |
-| 19 | Daily edition & specialist desks | planned | 88% |
-| 21 | Sprint review — verified replay | planned | 100% |
+So BuildAndDo periodically publishes cryptographic fingerprints of its verified
+evidence — a single 32-byte root digest per evidence epoch — to a public network
+it does not control. Anyone can then recompute the fingerprint from the evidence
+and check the history independently, instead of taking our word for it.
 
-The interactive version — per-milestone deliverables, the plotted trajectory,
-and the live commit and deployment overlay — is at
-[buildanddo.com/roadmap](https://buildanddo.com/roadmap). This table is the
-static mirror of the same `MILESTONES` list in
-[apps/web/src/pages/RoadmapPage.jsx](./apps/web/src/pages/RoadmapPage.jsx).
+What an anchor proves:
 
-A milestone reaches `verified` only when an evidence record backs it — a test
-result, a probe against the live site, a deployment event. A claim in a commit
-message, a pull request description, or this table is not evidence. Until that
-record exists the status stays `planned`, `in_progress` or `blocked`, however
-finished the work looks.
+- the fingerprint existed no later than the public timestamp
+- the evidence read today still matches the fingerprint that was anchored
+
+What it does not prove:
+
+- that any underlying claim is true — verification does that, and a publicly
+  witnessed false claim is still false
+- that anything is authorised; a public anchor carries no authority at all
+
+No private data crosses the boundary: only a digest is published — never PII,
+secrets, customer content, source documents or knowledge-graph contents.
+
+The architecture, the control specification (`NEXUS-AUD-002`), the epoch model,
+the anchor triggers and the `buildanddo.public-anchor/v1` schema are documented
+in [docs/architecture/EVIDENCE_WITNESS.md](./docs/architecture/EVIDENCE_WITNESS.md).
+The user-facing record for a single capability — source lineage, SBOM, TEVV
+verification, public witness — is
+[docs/architecture/CAPABILITY_PASSPORT.md](./docs/architecture/CAPABILITY_PASSPORT.md).
+
+Attribution: this design came out of the BuildAndDo Discord. **ErichG** proposed
+publicly notarising evidence roots rather than moving anything onto a chain;
+**Fabi** argued for learning by doing, which is the same principle applied to our
+own claims; **delphianQ** argued that LLMs need a structural, GPL-equivalent
+foundation, which verifiable provenance is a prerequisite for. Recording that is
+part of the point — a project asking to be judged on verifiable records should be
+able to show where its own designs came from.
 
 ## Public/private boundary
 
