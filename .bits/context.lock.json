@@ -56,7 +56,16 @@
     },
     {
       "path": "scripts/ci/datadog_publish.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "scripts/deploy/ship.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/evidence_epoch.py",
+      "referenced_by": [
+        "scripts/deploy/ship.py"
+      ],
       "wired_into_ci": true
     },
     {
@@ -89,7 +98,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-10T15:37:39.208575+00:00",
+  "generated_at": "2026-09-10T15:07:06.809336+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -123,6 +132,13 @@
         "spec": "",
         "status": "delivered",
         "title": "CI Visibility, DORA, build telemetry and baseline deltas"
+      },
+      {
+        "code": "SRS-BUILDANDDO-COMMUNITY-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md",
+        "status": "in_progress",
+        "title": "Community contributor infrastructure, component catalogue and seat protocol"
       },
       {
         "code": "SRS-BUILDANDDO-EVIDENCE-CI-001",
@@ -160,11 +176,11 @@
         "title": "Web unit test runner emitting JUnit for test visibility"
       },
       {
-        "code": "SRS-BUILDANDDO-WITNESS-001",
+        "code": "SRS-BUILDANDDO-WORKSPACE-001",
         "risk": "A1",
-        "spec": ".bits/srs/SRS-BUILDANDDO-WITNESS-001.md",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WORKSPACE-001.md",
         "status": "in_progress",
-        "title": "Capability Passport and External Evidence Witness"
+        "title": "Functional workspace pages backed by a real data layer"
       }
     ]
   },
@@ -200,6 +216,24 @@
       ],
       "triggers": [
         "workflow_run"
+      ]
+    },
+    {
+      "file": ".github/workflows/evidence-epoch.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo Evidence Epoch",
+      "npm_scripts": [
+        "build"
+      ],
+      "scripts": [
+        "scripts/ci/datadog_publish.py",
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
       ]
     },
     {
@@ -250,7 +284,7 @@
       "scripts/deploy/ship.py"
     ],
     "migrations": 13,
-    "python_files": 36,
+    "python_files": 37,
     "services": [
       "praxis_evidence"
     ],
@@ -259,18 +293,20 @@
   },
   "schema_version": 1,
   "summary": {
-    "findings": 6,
-    "findings_high": 3,
+    "findings": 4,
+    "findings_high": 2,
     "pipelines": 4,
     "srs_open": 6,
     "srs_total": 9,
     "unwired_gates": 2
   },
   "tests": {
-    "js_runners": [],
-    "js_test_files": 0,
-    "js_test_script": false,
-    "junit_configured": false,
+    "js_runners": [
+      "vitest"
+    ],
+    "js_test_files": 7,
+    "js_test_script": true,
+    "junit_configured": true,
     "python_suite_entrypoints": [
       "services/praxis_evidence/run_all_tests.py"
     ],

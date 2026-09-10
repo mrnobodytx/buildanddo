@@ -1,0 +1,43 @@
+# Build context exclusions for apps/web/Dockerfile.dev and
+# apps/pocketbase/Dockerfile. Keeps the context small and, more importantly,
+# keeps local secrets and host-built binaries out of every image layer.
+# SRS-BUILDANDDO-DEVENV-001. Owner: Citadel Nexus Inc.
+
+# Dependencies and build output - reinstalled/rebuilt inside the image
+node_modules
+**/node_modules
+dist
+**/dist
+
+# Version control and CI metadata
+.git
+.github
+.gitignore
+
+# Local secrets. .env.example is deliberately NOT excluded: the image never
+# reads it, but keeping the pattern explicit documents the intent.
+.env
+.env.*
+!.env.example
+secrets
+*.pem
+*.key
+
+# PocketBase runtime state - the container owns its own pb_data volume, and a
+# host-built binary is the wrong architecture inside the image.
+apps/pocketbase/pb_data
+apps/pocketbase/pb_snapshots
+apps/pocketbase/pocketbase
+
+# Generated reports and caches
+reports
+state
+__pycache__
+**/__pycache__
+*.pyc
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.vscode
+.idea

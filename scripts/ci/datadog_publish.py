@@ -2,7 +2,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/datadog_publish.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-CI-001
+# SRS:         SRS-BUILDANDDO-CI-001, SRS-BUILDANDDO-EPOCH-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -32,6 +32,7 @@ import argparse, datetime as dt, json, os, sys, time, urllib.error, urllib.reque
 from pathlib import Path
 
 GAUGE = 3
+COUNT = 1
 DEFAULT_SITE = "us5.datadoghq.com"
 
 
@@ -76,7 +77,10 @@ def base_tags(args, context: dict) -> list[str]:
     pipeline = args.pipeline or context.get("pipeline") or "local"
     # Branch is deliberately collapsed for pull requests: per-branch metric tags
     # are unbounded cardinality. The real branch stays on the event and the log.
-    branch = context.get("branch") or ""
+    # --branch exists for callers that publish without a telemetry snapshot: with
+    # no context to read, a main-branch run would otherwise be tagged
+    # branch:local, which is not low cardinality, just wrong.
+    branch = args.branch or context.get("branch") or ""
     branch_tag = branch if pipeline == "main" and branch else "pull-request" if pipeline == "pr" else "local"
     tags = [
         f"service:{args.service}",
@@ -98,14 +102,20 @@ def base_tags(args, context: dict) -> list[str]:
 def build_series(args, snapshot: dict | None, delta: dict | None, tags: list[str], ts: int) -> list[dict]:
     series: list[dict] = []
 
-    def add(name: str, value: float, extra_tags: list[str] | None = None) -> None:
-        series.append({
+    def add(name: str, value: float, extra_tags: list[str] | None = None,
+            metric_type: int = GAUGE) -> None:
+        point = {
             "metric": name,
-            "type": GAUGE,
+            "type": metric_type,
             "points": [{"timestamp": ts, "value": float(value)}],
             "tags": sorted(set(tags + (extra_tags or []))),
             "resources": [{"name": args.service, "type": "service"}],
-        })
+        }
+        if metric_type == COUNT:
+            # A count without an interval is rate-normalised by the backend and
+            # then a "how many happened" question cannot be answered from it.
+            point["interval"] = 60
+        series.append(point)
 
     if snapshot:
         for metric, value in (snapshot.get("metrics") or {}).items():
@@ -124,6 +134,13 @@ def build_series(args, snapshot: dict | None, delta: dict | None, tags: list[str
             add(name.strip(), float(value))
         except ValueError:
             print(f"WARN: --metric {raw} is not name=number; skipped", file=sys.stderr)
+
+    for raw in args.count or []:
+        name, _, value = raw.partition("=")
+        try:
+            add(name.strip(), float(value), metric_type=COUNT)
+        except ValueError:
+            print(f"WARN: --count {raw} is not name=number; skipped", file=sys.stderr)
 
     return series
 
@@ -158,7 +175,7 @@ def build_event(args, snapshot: dict | None, delta: dict | None, tags: list[str]
         "title": title[:120],
         "text": f"%%%\n{text}\n%%%"[:4000],
         "alert_type": alert,
-        "source_type_name": "github",
+        "source_type_name": args.source_type_name,
         "aggregation_key": f"buildanddo-ci-{context.get('pipeline', 'run')}",
         "tags": sorted(set(event_tags)),
     }
@@ -220,7 +237,13 @@ def main() -> int:
     ap.add_argument("--pipeline", default="")
     ap.add_argument("--metric-prefix", default="buildanddo.ci")
     ap.add_argument("--metric", action="append", help="extra gauge as name=value, repeatable")
+    ap.add_argument("--count", action="append",
+                    help="extra count as name=value, repeatable (sums over time; use for occurrences)")
     ap.add_argument("--tag", action="append", help="extra tag as key:value, repeatable")
+    ap.add_argument("--branch", default="",
+                    help="branch tag override for callers publishing without a snapshot")
+    ap.add_argument("--source-type-name", default="github",
+                    help="Datadog event source (default github; use buildanddo for first-party events)")
     ap.add_argument("--event-title", default="")
     ap.add_argument("--event-text", default="")
     ap.add_argument("--alert-type", default="", choices=["", "info", "success", "warning", "error"])

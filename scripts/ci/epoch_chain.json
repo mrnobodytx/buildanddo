@@ -1,0 +1,9 @@
+{
+  "history": [],
+  "history_note": "genesis; scripts/ci/evidence_epoch.py appends one entry per epoch and .github/workflows/evidence-epoch.yml commits the result",
+  "latest": null,
+  "length": 0,
+  "root_algorithm": "sha256-merkle-v1",
+  "schema": "buildanddo.epoch-chain/v1",
+  "updated_at": null
+}
