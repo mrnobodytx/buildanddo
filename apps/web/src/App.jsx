@@ -26,7 +26,9 @@ import ErpPage from './pages/workspace/ErpPage';
 import OperationsPage from './pages/workspace/OperationsPage';
 import EvidencePage from './pages/workspace/EvidencePage';
 import DailyEditionPage from './pages/workspace/DailyEditionPage';
-import SpecialistDeskPage from './pages/workspace/SpecialistDeskPage';
+// Capability Passport viewer; file path retained from the former desks page so
+// existing /app/desks bookmarks keep resolving (SRS-BUILDANDDO-WITNESS-001).
+import CapabilityPassportPage from './pages/workspace/SpecialistDeskPage';
 import CorrectionsPage from './pages/workspace/CorrectionsPage';
 import SupportRevenuePage from './pages/workspace/SupportRevenuePage';
 import CommunitySocialPage from './pages/workspace/CommunitySocialPage';
@@ -117,7 +119,8 @@ function AppRoutes() {
                 <Route path="operations" element={<OperationsPage />} />
                 <Route path="evidence" element={<EvidencePage />} />
                 <Route path="edition" element={<DailyEditionPage />} />
-                <Route path="desks" element={<SpecialistDeskPage />} />
+                <Route path="passport" element={<CapabilityPassportPage />} />
+                <Route path="desks" element={<Navigate to="/app/passport" replace />} />
                 <Route path="corrections" element={<CorrectionsPage />} />
                 <Route path="support" element={<SupportRevenuePage />} />
                 <Route path="community" element={<CommunitySocialPage />} />
