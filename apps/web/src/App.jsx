@@ -7,6 +7,8 @@ import {
 } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import ScrollToTop from './components/ScrollToTop';
+import RouteTelemetry from './components/observability/RouteTelemetry';
+import TelemetryBoundary from './components/observability/TelemetryBoundary';
 import HomePage from './pages/HomePage';
 import RoadmapPage from './pages/RoadmapPage';
 import PracticePage from './pages/PracticePage';
@@ -130,14 +132,17 @@ function AppRoutes() {
 
 function App() {
     return (
-        <Router>
-            <AuthProvider>
-                <WorkspaceProvider>
-                    <ScrollToTop />
-                    <AppRoutes />
-                </WorkspaceProvider>
-            </AuthProvider>
-        </Router>
+        <TelemetryBoundary>
+            <Router>
+                <AuthProvider>
+                    <WorkspaceProvider>
+                        <ScrollToTop />
+                        <RouteTelemetry />
+                        <AppRoutes />
+                    </WorkspaceProvider>
+                </AuthProvider>
+            </Router>
+        </TelemetryBoundary>
     );
 }
 

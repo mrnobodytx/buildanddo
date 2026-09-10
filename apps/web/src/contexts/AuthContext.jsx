@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import pb from '@/lib/pocketbaseClient';
+import { trackAuthIdentity } from '@/lib/observability/runtime';
 
 const AuthContext = createContext(null);
 
@@ -7,6 +8,8 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(pb.authStore.record);
 
     useEffect(() => pb.authStore.onChange((_token, record) => setUser(record)), []);
+
+    useEffect(() => { trackAuthIdentity(user); }, [user]);
 
     const value = useMemo(
         () => ({
