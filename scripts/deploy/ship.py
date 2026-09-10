@@ -17,7 +17,13 @@ Flow, every run:
   4. PROMOTE    only if staging gate + staging probe both pass: rsync the SAME
                 build (not a rebuild - promote what was actually gated) to
                 /var/www/buildanddo (production), probe https://buildanddo.com.
-  5. RECORD     append one state/deploy/history.jsonl line with every stage's
+  5. EPOCH      only after a passing production probe: fingerprint the exact
+                artifact set that is now serving production into one chained
+                Merkle root and publish it to Datadog (evidence_epoch.py,
+                SRS-BUILDANDDO-EPOCH-001). A deploy is the one moment where
+                "these bytes are live" is a checkable claim; an epoch is what
+                makes it still checkable after the artifacts are gone.
+  6. RECORD     append one state/deploy/history.jsonl line with every stage's
                 real outcome - never a "deployed" claim without the probe result
                 that backs it.
 
@@ -180,6 +186,82 @@ def _notify_guildmasters(message: str) -> dict:
         return {"ok": False, "reason": f"{type(exc).__name__}: {exc}"}
 
 
+def _evidence_epoch() -> dict:
+    """Fingerprint the shipped artifact set and publish the root to Datadog.
+
+    Deliberately fail-soft in both halves. The epoch describes a deploy that has
+    already happened and been probed; failing the ship because a fingerprint or a
+    metric submission failed would discard a good deploy over bookkeeping, and
+    would also let observability break the thing it observes (this repo's own
+    invariant). Every outcome lands in the deploy record either way.
+    """
+    epoch_script = ROOT / "scripts" / "ci" / "evidence_epoch.py"
+    if not epoch_script.is_file():
+        return {"ok": False, "reason": "scripts/ci/evidence_epoch.py is missing"}
+
+    created = _run([sys.executable, str(epoch_script), "--trigger", "production_deploy"],
+                   cwd=ROOT, timeout=300)
+    if not created["ok"]:
+        return {"ok": False, "stage": "create", "stderr_tail": created.get("stderr_tail", "")}
+
+    try:
+        epoch = json.loads(created.get("stdout_tail") or "{}")
+    except ValueError:
+        epoch = {}
+    epoch_id = epoch.get("epoch_id", "")
+    root_digest = epoch.get("root_digest", "")
+    artifact_count = epoch.get("artifact_count", 0)
+    verified = 1 if epoch.get("state") == "PASS" else 0
+
+    result = {"ok": True, "stage": "create", "epoch_id": epoch_id,
+              "root_digest": root_digest, "artifact_count": artifact_count,
+              "verified": bool(verified)}
+
+    if not epoch_id:
+        result.update(ok=False, reason="epoch script produced no epoch_id")
+        return result
+
+    # datadog_publish.py already prints SKIP and exits 0 without DD_API_KEY, so
+    # a machine with no Datadog key ships normally and simply records no publish.
+    published = _run([
+        sys.executable, str(ROOT / "scripts" / "ci" / "datadog_publish.py"),
+        "--service", "buildanddo-web",
+        "--env", "production",
+        "--pipeline", "deploy",
+        "--branch", "main",
+        "--source-type-name", "buildanddo",
+        "--metric", f"buildanddo.epoch.artifacts={artifact_count}",
+        "--metric", f"buildanddo.epoch.verified={verified}",
+        "--metric", f"buildanddo.epoch.chain_length={epoch.get('chain_length', 0)}",
+        "--count", "buildanddo.epoch.root_created=1",
+        "--tag", f"epoch_id:{epoch_id}",
+        "--tag", f"git_sha:{epoch.get('git_sha', '')}",
+        "--tag", "trigger:production_deploy",
+        "--tag", "source:evidence_epoch",
+        "--tag", "deploy:production",
+        "--tag", "anchor:pending",
+        "--event-title", f"Evidence Epoch Created: {epoch_id}",
+        "--event-text", (
+            f"Root: {root_digest}\n"
+            f"Previous: {epoch.get('previous_epoch') or 'none'} ({epoch.get('previous_root') or 'none'})\n"
+            f"Artifacts: {artifact_count}\n"
+            f"Commit: {epoch.get('git_sha', '')}\n"
+            f"Trigger: production_deploy\n"
+            f"Self-verified: {verified}\n"
+            f"Production readback: 200 from {PROD_URL}"
+        ),
+        "--alert-type", "info",
+        "--log-message", (
+            f"Evidence epoch {epoch_id} root {root_digest} over {artifact_count} "
+            f"artifacts after a production deploy (verified={verified})"
+        ),
+    ], cwd=ROOT, timeout=120)
+    result["published"] = published["ok"]
+    if not published["ok"]:
+        result["publish_error"] = published.get("stderr_tail", "")
+    return result
+
+
 def _build() -> dict:
     web_dir = ROOT / "apps" / "web"
     shutil.rmtree(DIST_DIR, ignore_errors=True)  # see integrity_regression_check.py - measured stale-cache bug
@@ -250,6 +332,9 @@ def main() -> int:
     record["stopped_at"] = None if prod_probe["ok"] else "prod_probe"
 
     if prod_probe["ok"]:
+        # The artifact set that just answered 200 is the one worth fingerprinting.
+        record["stages"]["evidence_epoch"] = _evidence_epoch()
+
         sys.path.insert(0, str(ROOT / "scripts" / "publish"))
         from activity_publish import publish as publish_activity  # noqa: PLC0415 - late import avoids a
         # circular import: activity_publish itself imports _SECRETS/_run from this module.

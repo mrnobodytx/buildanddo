@@ -1,0 +1,221 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/workflows/evidence-epoch.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-EPOCH-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-10
+# Depends:     scripts/ci/evidence_epoch.py, scripts/ci/datadog_publish.py,
+#              scripts/ci/verify_public_boundary.py, scripts/ci/epoch_chain.json
+# EnumType:    Workflow
+# EnumEdges:   CONSUMES scripts/ci/evidence_epoch.py;
+#              CONSUMES scripts/ci/datadog_publish.py;
+#              PRODUCES scripts/ci/epoch_chain.json;
+#              PRODUCES datadog.metrics.buildanddo_epoch;
+#              PRODUCES datadog.events.evidence_epoch
+# Intent:      Fingerprint every merge's evidence set and publish the root where it
+#              outlives the 30-day artifact retention window.
+# ───────────────────────────────────────────────────────────────
+
+name: BuildAndDo Evidence Epoch
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      trigger:
+        description: Epoch trigger recorded in the manifest
+        required: false
+        default: manual
+        type: choice
+        options: [manual, merge, scheduled]
+
+permissions:
+  contents: write   # the chain head is committed back to main; nothing else is written
+
+# Epochs are a chain, so they must be built one at a time. Two concurrent runs
+# would both read the same head and produce two epochs claiming the same
+# predecessor. Cancelling is worse than queueing here: a cancelled run leaves a
+# gap in the chain, so in-progress runs are always allowed to finish.
+concurrency:
+  group: buildanddo-evidence-epoch
+  cancel-in-progress: false
+
+jobs:
+  epoch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Checkout the branch, not the detached SHA: this job commits the
+          # chain head back and needs a branch to push.
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # The epoch fingerprints evidence, so the evidence has to exist first. The
+      # build is repeated rather than pulled from the candidate pipeline's
+      # artifact on purpose: a root over "whatever a sibling workflow happened to
+      # upload" is a weaker claim than a root over a tree this job built from the
+      # commit it is describing.
+      - name: Public boundary scan
+        run: python scripts/ci/verify_public_boundary.py
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+          test -d dist/apps/web
+          test -f dist/apps/web/index.html
+
+      - name: Create evidence epoch
+        id: epoch
+        run: python scripts/ci/evidence_epoch.py --trigger "${{ inputs.trigger || 'merge' }}"
+
+      # This one does fail the job. A root that does not recompute from its own
+      # manifest is a defect in the epoch script, and publishing it as evidence
+      # would be worse than publishing nothing.
+      - name: Self-verify the epoch root
+        run: python scripts/ci/evidence_epoch.py --verify state/epochs/latest.json --recheck-files
+
+      - name: Publish epoch to Datadog
+        if: always() && steps.epoch.outputs.epoch_id != ''
+        env:
+          DD_API_KEY: ${{ secrets.DD_API_KEY }}
+          DD_SITE: ${{ secrets.DD_SITE || 'us5.datadoghq.com' }}
+        run: |
+          set -uo pipefail
+
+          EPOCH_ID='${{ steps.epoch.outputs.epoch_id }}'
+          ROOT='${{ steps.epoch.outputs.root_digest }}'
+          PREV_EPOCH='${{ steps.epoch.outputs.previous_epoch }}'
+          PREV_ROOT='${{ steps.epoch.outputs.previous_root }}'
+          COUNT='${{ steps.epoch.outputs.artifact_count }}'
+          BYTES='${{ steps.epoch.outputs.artifact_bytes }}'
+          CHAIN_LEN='${{ steps.epoch.outputs.chain_length }}'
+          GIT_SHA='${{ steps.epoch.outputs.git_sha }}'
+          TRIGGER='${{ steps.epoch.outputs.trigger }}'
+          VERIFIED='${{ steps.epoch.outputs.verified }}'
+          RUN_URL='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+
+          EVENT_TEXT=$(printf '%s\n' \
+            "Root: ${ROOT}" \
+            "Previous: ${PREV_EPOCH:-none} (${PREV_ROOT:-none})" \
+            "Artifacts: ${COUNT} (${BYTES} bytes)" \
+            "Chain length: ${CHAIN_LEN}" \
+            "Commit: ${GIT_SHA}" \
+            "Trigger: ${TRIGGER}" \
+            "Self-verified: ${VERIFIED}" \
+            "Recompute: python scripts/ci/evidence_epoch.py --verify ${EPOCH_ID}.json" \
+            "Run: ${RUN_URL}")
+
+          # Every epoch this repository can produce is unanchored: publishing the
+          # root to an external witness needs a funded key, which is deployment
+          # authority and lives on the private mirror. Tagging only deploys with
+          # anchor:pending would imply the other epochs were anchored, so the tag
+          # is carried by all of them until an anchor step exists.
+          python scripts/ci/datadog_publish.py \
+            --service buildanddo-web \
+            --env production \
+            --pipeline main \
+            --branch "${{ github.ref_name }}" \
+            --source-type-name buildanddo \
+            --metric "buildanddo.epoch.artifacts=${COUNT}" \
+            --metric "buildanddo.epoch.artifact_bytes=${BYTES}" \
+            --metric "buildanddo.epoch.verified=${VERIFIED}" \
+            --metric "buildanddo.epoch.chain_length=${CHAIN_LEN}" \
+            --count "buildanddo.epoch.root_created=1" \
+            --tag "epoch_id:${EPOCH_ID}" \
+            --tag "git_sha:${GIT_SHA}" \
+            --tag "trigger:${TRIGGER}" \
+            --tag "source:evidence_epoch" \
+            --tag "anchor:pending" \
+            --event-title "Evidence Epoch Created: ${EPOCH_ID}" \
+            --event-text "${EVENT_TEXT}" \
+            --alert-type info \
+            --log-message "Evidence epoch ${EPOCH_ID} root ${ROOT} over ${COUNT} artifacts (verified=${VERIFIED})"
+
+      - name: Upload epoch manifest
+        if: always() && steps.epoch.outputs.epoch_id != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: buildanddo-epoch-${{ steps.epoch.outputs.epoch_id }}
+          path: |
+            state/epochs/${{ steps.epoch.outputs.epoch_id }}.json
+            scripts/ci/epoch_chain.json
+          # Longer than the 30-day candidate retention: the manifest is the only
+          # copy of the artifact list the root was computed over, and its whole
+          # purpose is to outlive the artifacts themselves.
+          retention-days: 90
+
+      - name: Commit chain head
+        if: steps.epoch.outputs.epoch_id != '' && github.event_name != 'pull_request'
+        env:
+          EPOCH_ID: ${{ steps.epoch.outputs.epoch_id }}
+          ROOT_DIGEST: ${{ steps.epoch.outputs.root_digest }}
+        run: |
+          set -uo pipefail
+
+          if git diff --quiet -- scripts/ci/epoch_chain.json; then
+            echo "chain head unchanged; nothing to commit."
+            exit 0
+          fi
+
+          git config user.name "BuildAndDo Evidence Bot"
+          git config user.email "buildanddo-evidence@users.noreply.github.com"
+          git add scripts/ci/epoch_chain.json
+
+          # [skip ci] plus the fact that GITHUB_TOKEN pushes do not start new
+          # workflow runs: without both, this push would retrigger this workflow
+          # and the candidate pipeline on every epoch, forever.
+          git commit -m "ci(bits): record ${EPOCH_ID} in the evidence chain [skip ci]" \
+            -m "Root ${ROOT_DIGEST}. Written by .github/workflows/evidence-epoch.yml so the epoch chain is reconstructable from git history alone." \
+            -m "SRS: SRS-BUILDANDDO-EPOCH-001"
+
+          # A lost push costs one link, never an invalid root: the next epoch
+          # links to whatever head is committed. So this warns instead of
+          # failing - evidence collection must not break the branch it observes.
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              echo "chain head pushed on attempt ${attempt}."
+              exit 0
+            fi
+            echo "push rejected; rebasing onto the current head (attempt ${attempt})."
+            git pull --rebase --autostash origin "${{ github.ref_name }}" || break
+          done
+
+          echo "::warning title=Evidence chain head not pushed::${EPOCH_ID} exists as an artifact but is not recorded in scripts/ci/epoch_chain.json. The chain has a gap; no root is invalid."
+
+      - name: Summarise
+        if: always()
+        run: |
+          {
+            echo "## Evidence epoch"
+            echo
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| Epoch | \`${{ steps.epoch.outputs.epoch_id }}\` |"
+            echo "| Root | \`${{ steps.epoch.outputs.root_digest }}\` |"
+            echo "| Previous | \`${{ steps.epoch.outputs.previous_epoch || 'none' }}\` |"
+            echo "| Artifacts | ${{ steps.epoch.outputs.artifact_count }} |"
+            echo "| Chain length | ${{ steps.epoch.outputs.chain_length }} |"
+            echo "| Self-verified | ${{ steps.epoch.outputs.verified }} |"
+            echo
+            echo "Recompute this root from the manifest artifact:"
+            echo
+            echo '```bash'
+            echo "python scripts/ci/evidence_epoch.py --verify ${{ steps.epoch.outputs.epoch_id }}.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

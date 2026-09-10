@@ -56,7 +56,16 @@
     },
     {
       "path": "scripts/ci/datadog_publish.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "scripts/deploy/ship.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/evidence_epoch.py",
+      "referenced_by": [
+        "scripts/deploy/ship.py"
+      ],
       "wired_into_ci": true
     },
     {
@@ -210,6 +219,24 @@
       ]
     },
     {
+      "file": ".github/workflows/evidence-epoch.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo Evidence Epoch",
+      "npm_scripts": [
+        "build"
+      ],
+      "scripts": [
+        "scripts/ci/datadog_publish.py",
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ]
+    },
+    {
       "file": ".github/workflows/pr-governance.yml",
       "kind": "workflow",
       "local_actions": [
@@ -257,7 +284,7 @@
       "scripts/deploy/ship.py"
     ],
     "migrations": 13,
-    "python_files": 36,
+    "python_files": 37,
     "services": [
       "praxis_evidence"
     ],
