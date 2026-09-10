@@ -33,6 +33,13 @@ jobs:
       - name: Verify agent context lock is current
         run: python scripts/ci/agent_context.py --check
 
+      # Verify-only while the changelog is new: a stale changelog is worth
+      # reporting, not worth failing a build over until every contributor has
+      # the regeneration step in muscle memory.
+      - name: Verify changelog matches main history
+        continue-on-error: true
+        run: python scripts/ci/changelog_gen.py --check
+
       - name: Install
         run: npm ci
 

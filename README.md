@@ -83,6 +83,39 @@ Required GitHub Actions secrets — `DD_API_KEY` and `DD_SITE` — the metric
 catalog, thresholds and the one-time Datadog GitHub App setup are documented in
 [docs/observability/datadog-ci.md](./docs/observability/datadog-ci.md).
 
+## Roadmap
+
+A 21-day development sprint with eleven milestones. Every row below is a
+*planned* deliverable and the percentage is intended cumulative completion, not
+measured progress. The status column changes only when the work behind it has
+been replayed against its own evidence bar.
+
+| Day | Milestone | Status | Planned cumulative |
+|---|---|---|---|
+| 1 | Sprint kickoff — foundations | planned | 5% |
+| 3 | Auth & onboarding hardening | planned | 12% |
+| 5 | Workspace collections live | planned | 20% |
+| 7 | Signals pipeline MVP | planned | 30% |
+| 9 | Missions — bounded-action engine | planned | 40% |
+| 11 | Workflows editor | planned | 50% |
+| 13 | Service connectors (Firecrawl, n8n) | planned | 60% |
+| 15 | ERP foundation | planned | 70% |
+| 17 | Evidence ledger & verification | planned | 80% |
+| 19 | Daily edition & specialist desks | planned | 88% |
+| 21 | Sprint review — verified replay | planned | 100% |
+
+The interactive version — per-milestone deliverables, the plotted trajectory,
+and the live commit and deployment overlay — is at
+[buildanddo.com/roadmap](https://buildanddo.com/roadmap). This table is the
+static mirror of the same `MILESTONES` list in
+[apps/web/src/pages/RoadmapPage.jsx](./apps/web/src/pages/RoadmapPage.jsx).
+
+A milestone reaches `verified` only when an evidence record backs it — a test
+result, a probe against the live site, a deployment event. A claim in a commit
+message, a pull request description, or this table is not evidence. Until that
+record exists the status stays `planned`, `in_progress` or `blocked`, however
+finished the work looks.
+
 ## Public/private boundary
 
 GitHub is the public collaboration plane. Golden infrastructure, deployment
