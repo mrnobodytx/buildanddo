@@ -125,6 +125,13 @@
         "title": "CI Visibility, DORA, build telemetry and baseline deltas"
       },
       {
+        "code": "SRS-BUILDANDDO-COMMUNITY-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md",
+        "status": "in_progress",
+        "title": "Community contributor infrastructure, component catalogue and seat protocol"
+      },
+      {
         "code": "SRS-BUILDANDDO-EVIDENCE-CI-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-EVIDENCE-CI-001.md",

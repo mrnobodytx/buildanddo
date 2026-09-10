@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import {
     GraduationCap,
     Clock,
@@ -15,6 +15,13 @@ import {
     StatusBadge,
 } from '@/components/workspace/workspaceHelpers';
 import { Button, Card } from '@/components/site/ui';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+// The catalogue imports most of components/ui, so it is code-split: a reader
+// who only wants a lesson does not download every Radix primitive.
+const ComponentCatalog = lazy(() =>
+    import('@/components/workspace/ComponentCatalog'),
+);
 
 const PROGRESS_TONE = {
     not_started: { label: 'Not started', tone: 'neutral' },
@@ -22,7 +29,7 @@ const PROGRESS_TONE = {
     completed: { label: 'Completed', tone: 'teal' },
 };
 
-export default function TutorialsPage() {
+function LessonsTab() {
     const { records: tutorials, loading } = useRecords('tutorials', {
         sort: 'order',
     });
@@ -75,12 +82,7 @@ export default function TutorialsPage() {
     const completedCount = progress.filter((p) => p.status === 'completed').length;
 
     return (
-        <div className="space-y-8">
-            <PageHeader
-                title="Tutorials"
-                description="Short, task-based lessons that teach the Observe → Understand → Act → Verify loop and each part of your workspace. Your progress is saved per account."
-            />
-
+        <div className="space-y-6">
             <Card className="flex items-center gap-4 p-5">
                 <span className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-secondary text-primary">
                     <BookOpen className="h-5 w-5" />
@@ -201,6 +203,38 @@ export default function TutorialsPage() {
                 and your progress is tracked. Deeper interactive walkthroughs
                 arrive as the product grows.
             </p>
+        </div>
+    );
+}
+
+export default function TutorialsPage() {
+    return (
+        <div className="space-y-8">
+            <PageHeader
+                title="Field Manual"
+                description="Two references in one place: the live catalogue of every UI primitive this codebase already ships, and the task-based lessons that teach the Observe → Understand → Act → Verify loop. Start from the catalogue before writing a component; start from the lessons before running a mission."
+            />
+
+            <Tabs defaultValue="catalog">
+                <TabsList>
+                    <TabsTrigger value="catalog">Component catalogue</TabsTrigger>
+                    <TabsTrigger value="lessons">Lessons</TabsTrigger>
+                </TabsList>
+                <TabsContent value="catalog" className="mt-6">
+                    <Suspense
+                        fallback={
+                            <Card className="p-8 text-center text-sm text-muted-foreground">
+                                <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                            </Card>
+                        }
+                    >
+                        <ComponentCatalog />
+                    </Suspense>
+                </TabsContent>
+                <TabsContent value="lessons" className="mt-6">
+                    <LessonsTab />
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

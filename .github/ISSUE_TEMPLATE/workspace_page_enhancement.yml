@@ -1,0 +1,144 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/ISSUE_TEMPLATE/workspace_page_enhancement.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-COMMUNITY-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-10
+# Depends:     apps/web/src/components/workspace/WorkspaceLayout.jsx
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES apps/web/src/pages/workspace; USES_TEMPLATE .github/ISSUE_TEMPLATE/good_first_issue.yml
+# Intent:      Turn "this page is still a shell" into a scoped, checkbox-verifiable task.
+# ───────────────────────────────────────────────────────────────
+name: Workspace page enhancement
+description: Bring one workspace shell page up to the standard set by Overview and ERP
+title: "[PAGE] "
+labels: ["enhancement", "workspace-page", "good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Several workspace routes render a header, a short description, and
+        little else. Each one is a self-contained contribution: one page, one
+        pull request, one reviewer pass. The reference implementations are
+        `OverviewPage.jsx` (read-only dashboard) and `ErpPage.jsx` (tabbed CRUD
+        with per-tab `workspaceId` props). Copy one of them rather than
+        inventing a third layout.
+
+  - type: dropdown
+    id: page
+    attributes:
+      label: Which page
+      description: >-
+        Shell candidates below, ordered by how little they currently do. The
+        ordering is measured from source size, not a judgement about importance.
+      options:
+        - /app/support — SupportRevenuePage.jsx
+        - /app/corrections — CorrectionsPage.jsx
+        - /app/desks — SpecialistDeskPage.jsx
+        - /app/edition — DailyEditionPage.jsx
+        - /app/roadmap — RoadmapPage.jsx
+        - /app/operations — OperationsPage.jsx
+        - /app/evidence — EvidencePage.jsx
+        - /app/settings — SettingsPage.jsx
+        - Another workspace page (name it below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: actor
+    attributes:
+      label: Submitter type
+      options:
+        - Human
+        - Agent
+        - Mixed human + agent
+    validations:
+      required: true
+
+  - type: input
+    id: srs
+    attributes:
+      label: SRS code
+      description: Must exist in `.bits/srs_registry.yml` before work starts.
+      placeholder: SRS-BUILDANDDO-COMMUNITY-001
+    validations:
+      required: true
+
+  - type: textarea
+    id: gap
+    attributes:
+      label: What the page is missing
+      description: >-
+        Describe the current state factually — what renders today, and what a
+        user cannot do as a result.
+    validations:
+      required: true
+
+  - type: textarea
+    id: collections
+    attributes:
+      label: PocketBase collections involved
+      description: >-
+        Name the collections this page should read and write. If the collection
+        does not exist yet, say so — that raises this to risk tier A2 because it
+        needs a migration.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: >-
+        The house standard for an enhanced workspace page. Tick what applies;
+        untick anything genuinely not relevant and explain why in the notes.
+      options:
+        - label: "Page renders a single `<div className=\"space-y-8\">` root with `PageHeader` as its first child"
+        - label: "Reads real records through `useWorkspaceRecords` (or `useRecords` for a shared catalog) — no hard-coded arrays"
+        - label: "Loading state renders the spinner card, not a blank region"
+        - label: "Empty state uses `EmptyState` with an honest description and a primary action"
+        - label: "Status values render through `StatusBadge` or `StatePill` using a map in `workspaceHelpers.jsx`"
+        - label: "Create and update paths set both `workspace: active.id` and `owner: pb.authStore.record.id`"
+        - label: "Form submission errors surface inline with `role=\"alert\"`, never only in the console"
+        - label: "`Button` and `Card` are imported from `@/components/site/ui`; other primitives from `@/components/ui/*`"
+        - label: "No invented metrics, counts, or activity — an unconnected source reads as unconnected"
+        - label: "Closing footnote states honestly what the page does not yet do"
+        - label: "A `previous work` lookup is shown if the page acts on missions or workflows"
+        - label: "`npm run lint --prefix apps/web` passes"
+        - label: "`npm run build` passes and the route still renders after the build"
+
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Risk / authority tier
+      options:
+        - A1 — Page code only, existing collections
+        - A2 — Needs a new collection or a schema migration
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence that will prove it worked
+      description: >-
+        Commands, screenshots of the real rendered page, or a RUM action name
+        the page emits. "It builds" is not proof a feature works.
+      value: |
+        ```bash
+        npm run lint --prefix apps/web
+        npm run build
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything a reviewer should know, including criteria you unticked.
+    validations:
+      required: false

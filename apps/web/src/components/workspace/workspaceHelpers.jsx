@@ -92,6 +92,25 @@ export const DOMAIN_STATUS = {
     needs_attention: { label: 'Needs attention', tone: 'amber' },
 };
 
+export const SEAT_EVENT = {
+    joined: { label: 'Joined', tone: 'neutral' },
+    progress: { label: 'Progress', tone: 'violet' },
+    completed: { label: 'Completed', tone: 'teal' },
+    blocked: { label: 'Blocked', tone: 'amber' },
+    handoff: { label: 'Handoff', tone: 'amber' },
+};
+
+// Derived, not stored: workHistory.js collapses a seat event list into one of
+// these. `blocked` sits above `in_progress` because a blocked subject is the
+// one a new seat most needs to see before starting.
+export const WORK_STATE = {
+    not_started: { label: 'Not started', tone: 'neutral' },
+    in_progress: { label: 'In progress', tone: 'violet' },
+    blocked: { label: 'Blocked', tone: 'amber' },
+    handed_off: { label: 'Handed off', tone: 'amber' },
+    completed: { label: 'Completed', tone: 'teal' },
+};
+
 export function statusMeta(map, key) {
     return map[key] || { label: key || '—', tone: 'neutral' };
 }
