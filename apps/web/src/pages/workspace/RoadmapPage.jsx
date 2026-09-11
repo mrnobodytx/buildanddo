@@ -333,7 +333,11 @@ export default function WorkspaceRoadmapPage() {
 
             {showCreate && (
                 <Card className="p-5">
-                    <form onSubmit={submitCreate} className="space-y-4">
+                    {/* Renamed submitCreate -> submit (line 162) during the roadmap de-duplication;
+                        this binding kept the old name, so submitting the create form threw a
+                        ReferenceError. Build does not catch an undefined identifier; the lint
+                        gate that would have was itself crashing. */}
+                    <form onSubmit={submit} className="space-y-4">
                         <div className="grid gap-2">
                             <Label htmlFor="rm-title">Title</Label>
                             <Input

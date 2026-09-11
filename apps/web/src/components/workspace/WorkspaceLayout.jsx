@@ -21,6 +21,7 @@ import {
     ShieldCheck,
     Coins,
     MessageCircle,
+    Network,
     Gauge,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -38,6 +39,7 @@ const NAV = [
     { to: '/app/workflows', label: 'Workflows', icon: Workflow },
     { to: '/app/evidence', label: 'Evidence Ledger', icon: FileSearch },
     { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },
+    { to: '/app/rooms/organization', label: 'Living Rooms', icon: Network },
     { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },
     { to: '/app/corrections', label: 'Corrections', icon: Scale },
     { to: '/app/tutorials', label: 'Field Manual', icon: GraduationCap },

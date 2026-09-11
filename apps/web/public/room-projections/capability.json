@@ -1,0 +1,250 @@
+{
+  "schema": "buildanddo.room-projection/v1",
+  "projection": "capability",
+  "generated_at": "2026-09-11T15:50:27.577543+00:00",
+  "state": "MEASURED",
+  "nodes": [
+    {
+      "id": "CAP-BND-SIGNALS",
+      "type": "capability",
+      "title": "Observe workspace signals",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:BUILDER",
+      "type": "guild",
+      "title": "Builder Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "CAP-BND-MISSIONS",
+      "type": "capability",
+      "title": "Compile bounded missions",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "CAP-BND-EVIDENCE",
+      "type": "capability",
+      "title": "Inspect evidence and replay",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:GOVERNANCE",
+      "type": "guild",
+      "title": "Governance Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "CAP-BND-LEARNING",
+      "type": "capability",
+      "title": "Track learn-by-doing progression",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:TEACHING",
+      "type": "guild",
+      "title": "Teaching Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "CAP-BND-COLLAB",
+      "type": "capability",
+      "title": "Coordinate human and AI seats",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:COMMUNITY",
+      "type": "guild",
+      "title": "Community Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "CAP-BND-PASSPORT",
+      "type": "capability",
+      "title": "Present capability provenance",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "CAP-BND-ROOMS",
+      "type": "capability",
+      "title": "Render living organization/capability/development rooms",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "CAP-BND-SFU",
+      "type": "capability",
+      "title": "Realtime room collaboration",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:OPERATIONS",
+      "type": "guild",
+      "title": "Operations Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "CAP-BND-MOQ",
+      "type": "capability",
+      "title": "Experimental room object transport",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "CAP-BND-CONTENT",
+      "type": "capability",
+      "title": "Evidence-backed content generation",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "SRS:SRS-BUILDANDDO-LIVE-UTILIZATION-001",
+      "type": "srs",
+      "title": "Living Rooms visual substrate plus AgentOps content and A2A contracts",
+      "state": "OBSERVED",
+      "attributes": {
+        "status": "in_progress"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "GUILD:BUILDER|OWNS|CAP-BND-SIGNALS",
+      "source": "GUILD:BUILDER",
+      "relation": "OWNS",
+      "target": "CAP-BND-SIGNALS",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:BUILDER|OWNS|CAP-BND-MISSIONS",
+      "source": "GUILD:BUILDER",
+      "relation": "OWNS",
+      "target": "CAP-BND-MISSIONS",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:GOVERNANCE|OWNS|CAP-BND-EVIDENCE",
+      "source": "GUILD:GOVERNANCE",
+      "relation": "OWNS",
+      "target": "CAP-BND-EVIDENCE",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:TEACHING|OWNS|CAP-BND-LEARNING",
+      "source": "GUILD:TEACHING",
+      "relation": "OWNS",
+      "target": "CAP-BND-LEARNING",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:COMMUNITY|OWNS|CAP-BND-COLLAB",
+      "source": "GUILD:COMMUNITY",
+      "relation": "OWNS",
+      "target": "CAP-BND-COLLAB",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:GOVERNANCE|OWNS|CAP-BND-PASSPORT",
+      "source": "GUILD:GOVERNANCE",
+      "relation": "OWNS",
+      "target": "CAP-BND-PASSPORT",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:TEACHING|OWNS|CAP-BND-ROOMS",
+      "source": "GUILD:TEACHING",
+      "relation": "OWNS",
+      "target": "CAP-BND-ROOMS",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:OPERATIONS|OWNS|CAP-BND-SFU",
+      "source": "GUILD:OPERATIONS",
+      "relation": "OWNS",
+      "target": "CAP-BND-SFU",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:OPERATIONS|OWNS|CAP-BND-MOQ",
+      "source": "GUILD:OPERATIONS",
+      "relation": "OWNS",
+      "target": "CAP-BND-MOQ",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:COMMUNITY|OWNS|CAP-BND-CONTENT",
+      "source": "GUILD:COMMUNITY",
+      "relation": "OWNS",
+      "target": "CAP-BND-CONTENT",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "SRS:SRS-BUILDANDDO-LIVE-UTILIZATION-001|IMPLEMENTS|CAP-BND-SFU",
+      "source": "SRS:SRS-BUILDANDDO-LIVE-UTILIZATION-001",
+      "relation": "IMPLEMENTS",
+      "target": "CAP-BND-SFU",
+      "state": "observed",
+      "attributes": {}
+    },
+    {
+      "id": "SRS:SRS-BUILDANDDO-LIVE-UTILIZATION-001|IMPLEMENTS|CAP-BND-MOQ",
+      "source": "SRS:SRS-BUILDANDDO-LIVE-UTILIZATION-001",
+      "relation": "IMPLEMENTS",
+      "target": "CAP-BND-MOQ",
+      "state": "observed",
+      "attributes": {}
+    },
+    {
+      "id": "SRS:SRS-BUILDANDDO-LIVE-UTILIZATION-001|IMPLEMENTS|CAP-BND-CONTENT",
+      "source": "SRS:SRS-BUILDANDDO-LIVE-UTILIZATION-001",
+      "relation": "IMPLEMENTS",
+      "target": "CAP-BND-CONTENT",
+      "state": "observed",
+      "attributes": {}
+    },
+    {
+      "id": "SRS:SRS-BUILDANDDO-LIVE-UTILIZATION-001|IMPLEMENTS|CAP-BND-ROOMS",
+      "source": "SRS:SRS-BUILDANDDO-LIVE-UTILIZATION-001",
+      "relation": "IMPLEMENTS",
+      "target": "CAP-BND-ROOMS",
+      "state": "observed",
+      "attributes": {}
+    }
+  ],
+  "layout": {
+    "algorithm": "focus-shell",
+    "direction": "radial-deterministic",
+    "version": "rooms-v1.1"
+  },
+  "sources": [
+    "settings:guildmasters.yaml",
+    "srs_registry"
+  ],
+  "rules": {
+    "room_owns_truth": false,
+    "missing_is_unmeasured": true,
+    "inference_is_not_verification": true
+  }
+}

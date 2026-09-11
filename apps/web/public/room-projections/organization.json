@@ -1,0 +1,252 @@
+{
+  "schema": "buildanddo.room-projection/v1",
+  "projection": "organization",
+  "generated_at": "2026-09-11T15:50:27.576235+00:00",
+  "state": "MEASURED",
+  "nodes": [
+    {
+      "id": "ORG:BUILDANDDO",
+      "type": "organization",
+      "title": "BuildAndDo",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:BUILDER",
+      "type": "guild",
+      "title": "Builder Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "AGENT:GM-BUILDER",
+      "type": "agent",
+      "title": "GM-BUILDER",
+      "state": "DECLARED",
+      "attributes": {
+        "authority_max": "A2",
+        "duties": [
+          "implementation_lineage",
+          "branch_hygiene",
+          "capability_implementation"
+        ]
+      }
+    },
+    {
+      "id": "GUILD:RESEARCH",
+      "type": "guild",
+      "title": "Research Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "AGENT:GM-RESEARCH",
+      "type": "agent",
+      "title": "GM-RESEARCH",
+      "state": "DECLARED",
+      "attributes": {
+        "authority_max": "A1",
+        "duties": [
+          "hypothesis_falsification",
+          "standards_research",
+          "source_provenance"
+        ]
+      }
+    },
+    {
+      "id": "GUILD:GOVERNANCE",
+      "type": "guild",
+      "title": "Governance Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "AGENT:GM-GOVERNANCE",
+      "type": "agent",
+      "title": "GM-GOVERNANCE",
+      "state": "DECLARED",
+      "attributes": {
+        "authority_max": "A2",
+        "duties": [
+          "authority_check",
+          "policy_check",
+          "evidence_adequacy"
+        ]
+      }
+    },
+    {
+      "id": "GUILD:COMMUNITY",
+      "type": "guild",
+      "title": "Community Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "AGENT:GM-COMMUNITY",
+      "type": "agent",
+      "title": "GM-COMMUNITY",
+      "state": "DECLARED",
+      "attributes": {
+        "authority_max": "A1",
+        "duties": [
+          "forum_draft",
+          "contributor_context",
+          "unblocker_triage"
+        ]
+      }
+    },
+    {
+      "id": "GUILD:TEACHING",
+      "type": "guild",
+      "title": "Teaching Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "AGENT:GM-TEACHING",
+      "type": "agent",
+      "title": "GM-TEACHING",
+      "state": "DECLARED",
+      "attributes": {
+        "authority_max": "A1",
+        "duties": [
+          "lesson_projection",
+          "prerequisite_graph",
+          "rubric_projection"
+        ]
+      }
+    },
+    {
+      "id": "GUILD:SYSTEMS",
+      "type": "guild",
+      "title": "Systems Guild",
+      "state": "DECLARED",
+      "attributes": {}
+    },
+    {
+      "id": "AGENT:GM-SYSTEMS",
+      "type": "agent",
+      "title": "GM-SYSTEMS",
+      "state": "DECLARED",
+      "attributes": {
+        "authority_max": "A2",
+        "duties": [
+          "topology_projection",
+          "observability_context",
+          "operational_health"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "ORG:BUILDANDDO|OWNS|GUILD:BUILDER",
+      "source": "ORG:BUILDANDDO",
+      "relation": "OWNS",
+      "target": "GUILD:BUILDER",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:BUILDER|HAS_GUILDMASTER|AGENT:GM-BUILDER",
+      "source": "GUILD:BUILDER",
+      "relation": "HAS_GUILDMASTER",
+      "target": "AGENT:GM-BUILDER",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "ORG:BUILDANDDO|OWNS|GUILD:RESEARCH",
+      "source": "ORG:BUILDANDDO",
+      "relation": "OWNS",
+      "target": "GUILD:RESEARCH",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:RESEARCH|HAS_GUILDMASTER|AGENT:GM-RESEARCH",
+      "source": "GUILD:RESEARCH",
+      "relation": "HAS_GUILDMASTER",
+      "target": "AGENT:GM-RESEARCH",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "ORG:BUILDANDDO|OWNS|GUILD:GOVERNANCE",
+      "source": "ORG:BUILDANDDO",
+      "relation": "OWNS",
+      "target": "GUILD:GOVERNANCE",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:GOVERNANCE|HAS_GUILDMASTER|AGENT:GM-GOVERNANCE",
+      "source": "GUILD:GOVERNANCE",
+      "relation": "HAS_GUILDMASTER",
+      "target": "AGENT:GM-GOVERNANCE",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "ORG:BUILDANDDO|OWNS|GUILD:COMMUNITY",
+      "source": "ORG:BUILDANDDO",
+      "relation": "OWNS",
+      "target": "GUILD:COMMUNITY",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:COMMUNITY|HAS_GUILDMASTER|AGENT:GM-COMMUNITY",
+      "source": "GUILD:COMMUNITY",
+      "relation": "HAS_GUILDMASTER",
+      "target": "AGENT:GM-COMMUNITY",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "ORG:BUILDANDDO|OWNS|GUILD:TEACHING",
+      "source": "ORG:BUILDANDDO",
+      "relation": "OWNS",
+      "target": "GUILD:TEACHING",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:TEACHING|HAS_GUILDMASTER|AGENT:GM-TEACHING",
+      "source": "GUILD:TEACHING",
+      "relation": "HAS_GUILDMASTER",
+      "target": "AGENT:GM-TEACHING",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "ORG:BUILDANDDO|OWNS|GUILD:SYSTEMS",
+      "source": "ORG:BUILDANDDO",
+      "relation": "OWNS",
+      "target": "GUILD:SYSTEMS",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "GUILD:SYSTEMS|HAS_GUILDMASTER|AGENT:GM-SYSTEMS",
+      "source": "GUILD:SYSTEMS",
+      "relation": "HAS_GUILDMASTER",
+      "target": "AGENT:GM-SYSTEMS",
+      "state": "declared",
+      "attributes": {}
+    }
+  ],
+  "layout": {
+    "algorithm": "layered",
+    "direction": "TB",
+    "version": "rooms-v1.1"
+  },
+  "sources": [
+    "settings:guildmasters.yaml"
+  ],
+  "rules": {
+    "room_owns_truth": false,
+    "missing_is_unmeasured": true,
+    "inference_is_not_verification": true
+  }
+}

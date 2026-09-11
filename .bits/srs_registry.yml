@@ -141,3 +141,10 @@ srs:
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-SIGNALS-001.md
     notes: Repo-side half only; the collector tools/citadel_roadmap_signals.py lives in the controller estate (seat C-ONE)
+
+  - code: SRS-BUILDANDDO-LIVE-UTILIZATION-001
+    title: Living Rooms visual substrate plus AgentOps content and A2A contracts
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-LIVE-UTILIZATION-001.md
+    notes: Deterministic read projections; publication and production mutation remain separate

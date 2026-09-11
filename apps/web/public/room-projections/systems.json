@@ -1,0 +1,117 @@
+{
+  "schema": "buildanddo.room-projection/v1",
+  "projection": "systems",
+  "generated_at": "2026-09-11T15:50:27.697681+00:00",
+  "state": "MEASURED",
+  "nodes": [
+    {
+      "id": "PLANE:BUILDANDDO",
+      "type": "plane",
+      "title": "BuildAndDo application plane",
+      "state": "OBSERVED",
+      "attributes": {}
+    },
+    {
+      "id": "SERVICE:ROOMS",
+      "type": "service",
+      "title": "Living Rooms",
+      "state": "OBSERVED",
+      "attributes": {}
+    },
+    {
+      "id": "SERVICE:SFU",
+      "type": "service",
+      "title": "Cloudflare Realtime SFU",
+      "state": "UNMEASURED",
+      "attributes": {
+        "classification": "PRIMARY_REALTIME"
+      }
+    },
+    {
+      "id": "SERVICE:MOQ",
+      "type": "service",
+      "title": "Cloudflare MoQ",
+      "state": "UNMEASURED",
+      "attributes": {
+        "classification": "EXPERIMENTAL"
+      }
+    },
+    {
+      "id": "SERVICE:CONTENT",
+      "type": "service",
+      "title": "Content Factory",
+      "state": "OBSERVED",
+      "attributes": {}
+    }
+  ],
+  "edges": [
+    {
+      "id": "PLANE:BUILDANDDO|RUNS|SERVICE:ROOMS",
+      "source": "PLANE:BUILDANDDO",
+      "relation": "RUNS",
+      "target": "SERVICE:ROOMS",
+      "state": "observed",
+      "attributes": {}
+    },
+    {
+      "id": "SERVICE:ROOMS|USES|SERVICE:SFU",
+      "source": "SERVICE:ROOMS",
+      "relation": "USES",
+      "target": "SERVICE:SFU",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "SERVICE:ROOMS|EXPERIMENTS_WITH|SERVICE:MOQ",
+      "source": "SERVICE:ROOMS",
+      "relation": "EXPERIMENTS_WITH",
+      "target": "SERVICE:MOQ",
+      "state": "declared",
+      "attributes": {}
+    },
+    {
+      "id": "SERVICE:ROOMS|PRODUCES_TO|SERVICE:CONTENT",
+      "source": "SERVICE:ROOMS",
+      "relation": "PRODUCES_TO",
+      "target": "SERVICE:CONTENT",
+      "state": "declared",
+      "attributes": {}
+    }
+  ],
+  "layout": {
+    "algorithm": "plane-host-service",
+    "direction": "LR",
+    "version": "rooms-v1.1"
+  },
+  "sources": [
+    "state:inventory"
+  ],
+  "rules": {
+    "room_owns_truth": false,
+    "missing_is_unmeasured": true,
+    "inference_is_not_verification": true
+  },
+  "utilization": [
+    {
+      "id": "sfu",
+      "title": "SFU",
+      "levels": [],
+      "evidence_ref": null
+    },
+    {
+      "id": "moq",
+      "title": "MoQ (experimental)",
+      "levels": [],
+      "evidence_ref": null
+    },
+    {
+      "id": "content",
+      "title": "Content Factory",
+      "levels": [
+        "EXISTS",
+        "CONFIGURED"
+      ],
+      "evidence_ref": null
+    }
+  ]
+}

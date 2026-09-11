@@ -5,7 +5,15 @@ import globals from 'globals';
 import unicodeEscapePlugin from './eslint.unicode-escapes-plugin.mjs';
 
 export default [
-	{ ignores: ['node_modules/**', 'dist/**', 'build/**', 'vite.config.js'] },
+	{
+		// vite.config.js was already ignored; vitest.config.js needs the same
+		// treatment for the same reason. `import/namespace` walks vitest/config,
+		// which re-exports from vite, and eslint-import-resolver-alias then tries
+		// to reach `vite/internal` -- a subpath Vite 7 no longer exports. That
+		// throws ERR_PACKAGE_PATH_NOT_EXPORTED and aborts the WHOLE lint run, so
+		// the gate reported nothing about application code at all.
+		ignores: ['node_modules/**', 'dist/**', 'build/**', 'vite.config.js', 'vitest.config.js'],
+	},
 	{
 		files: ['**/*.js', '**/*.jsx'],
 		plugins: { react, 'react-hooks': reactHooks, 'import': importPlugin },

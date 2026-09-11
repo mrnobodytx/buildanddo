@@ -34,6 +34,9 @@ import SupportRevenuePage from './pages/workspace/SupportRevenuePage';
 import CommunitySocialPage from './pages/workspace/CommunitySocialPage';
 import WorkspaceRoadmapPage from './pages/workspace/RoadmapPage';
 import SettingsPage from './pages/workspace/SettingsPage';
+import RoomsPage from './pages/workspace/RoomsPage';
+import SystemsRoomPage from './pages/workspace/SystemsRoomPage';
+import LiveExperimentRoomPage from './pages/workspace/LiveExperimentRoomPage';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import {
     WorkspaceProvider,
@@ -56,10 +59,18 @@ const WORKSPACE_ROUTES = [
     { path: 'operations', label: 'Operations', element: OperationsPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
-    { path: 'desks', label: 'Specialist Desks', element: SpecialistDeskPage },
+    // Renamed to SpecialistDeskPage in dab412f; the route kept the old symbol, which
+    // was never imported and never existed as a file. WORKSPACE_ROUTES is MODULE-SCOPE,
+    // so that dangling reference threw a ReferenceError on load and the whole app —
+    // including the Living Rooms routes below — failed to boot. Build does not catch
+    // this; the lint gate that would have was itself crashing.
+    { path: 'passport', label: 'Capability Passport', element: SpecialistDeskPage },
     { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
     { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },
     { path: 'community', label: 'Community & Social', element: CommunitySocialPage },
+    { path: 'rooms/:room?', label: 'Living Rooms', element: RoomsPage },
+    { path: 'rooms/systems', label: 'Systems Room', element: SystemsRoomPage },
+    { path: 'rooms/live', label: 'Live Experiment', element: LiveExperimentRoomPage },
     { path: 'roadmap', label: 'Roadmap', element: WorkspaceRoadmapPage },
     { path: 'settings', label: 'Settings', element: SettingsPage },
 ];
@@ -145,6 +156,7 @@ function AppRoutes() {
                         }
                     />
                 ))}
+                <Route path="desks" element={<Navigate to="/app/passport" replace />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />
