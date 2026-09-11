@@ -72,7 +72,7 @@ for (const file of files) {
 }
 
 const last = files[files.length - 1];
-if (last !== "1789100000_ocn_seat_users.js") problems.push(`last migration is ${last}, expected 1789100000_ocn_seat_users.js`);
+if (last !== "1789100001_ocn_seat_users_extend.js") problems.push(`last migration is ${last}, expected 1789100001_ocn_seat_users_extend.js`);
 // The 18 production imports: every slot 1788950001..18 must exist and name a collection created above.
 for (let i = 1; i <= 18; i++) {
   const prefix = `17889500${String(i).padStart(2, "0")}_updated_`;

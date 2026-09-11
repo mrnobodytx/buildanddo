@@ -149,3 +149,11 @@ on the rig that holds `BUILDANDDO_CK_PRIVATE_KEY_FILE`:
 | `LOGIN_OCN_E2E` from rig1 | rig1 has no seat seed at `BUILDANDDO_CK_PRIVATE_KEY_FILE`; this repository generates no keys | VCC issues the rig1 seat seed and registers its public key in Citadel Nexus |
 | Seat rows in `1789100000_ocn_seat_users.js` match real Citadel Nexus seat ids | `rig1, forge, c-one, bits-codegen, datadog-bits` were declared, not read from the registry | registry copy arrives; any seat absent from it stays `seat_not_provisioned` (403) at login, which is DEGRADED, not a security failure |
 | Registry row shape | assumed `seat_id, agent_id, rig, pubkey_fp, env, revoked_at` **plus** `pubkey_hex` (or `pubkey`/`public_key`/`pubkey_b64u`); a row without a raw public key is loaded as `usable:false` and refused with `registry row … is unusable` | the delivered file is inspected; the loader accepts list, `{seats:[…]}`, `{seat_keypairs:[…]}` and `{seat_id: row}` shapes |
+
+
+## Seat extension (2026-09-11)
+
+Measured on staging: seats `C-TWO` and `vcc` produced valid envelopes (verifier 200) but `/api/ocn/login` answered 403
+`seat_not_provisioned`. Migration `1789100001_ocn_seat_users_extend.js` provisions `c-two` and `vcc` with the same convention.
+An applied migration is never edited; extending the seat list is always a new migration. Rig1 seat list measured: `c-one`, `rig1` PASS;
+`c-two`, `vcc` provisioned by 1789100001 (deploy with `citadel-staging-backend.ps1 sync-backend -AllowWrite -AckAuthority A2`).
