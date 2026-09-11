@@ -1,4 +1,4 @@
-﻿# Local secrets
+# Local secrets
 .env
 .env.*
 !.env.example
@@ -55,3 +55,8 @@ scripts/ci/run_sprint_cycle.ps1
 # Generated at build time by scripts/deploy/roadmap_status.py - never hand-edited
 # or committed as source, it's build output like dist/.
 apps/web/public/roadmap-status.json
+
+# Local sensitive working area. NOT ignored before 2026-09-11: a bare
+# `git add .` staged vault/temp/SESSION_JOURNAL.md into this repo, which
+# pushes to PUBLIC github.com/mrnobodytx/buildanddo.
+vault/
