@@ -11,6 +11,17 @@ import { spawnSync } from "node:child_process";
 
 spawnSync(process.execPath, ["tools/generate-llms.js"], { stdio: "inherit" }); // best-effort, ignore result
 
+// public/fleet-status.json + public/platform-health.json - vite copies public/
+// verbatim into dist, so the Fleet and Platform Health pages read a file that
+// this build produced. Best-effort like generate-llms.js above: a report
+// generator must never be able to fail the build it only describes. When it
+// does not run, both pages say the projection is missing rather than drawing
+// stale or invented numbers.
+for (const python of ["python3", "python"]) {
+	const result = spawnSync(python, ["../../scripts/ci/fleet_report.py"], { stdio: "inherit" });
+	if (result.status === 0) break;
+}
+
 const vite = spawnSync("vite", ["build", "--outDir", "../../dist/apps/web"], {
 	stdio: "inherit",
 	shell: process.platform === "win32", // Windows needs shell:true to resolve vite.cmd; POSIX doesn't

@@ -22,6 +22,8 @@ import {
     Coins,
     MessageCircle,
     Gauge,
+    Network,
+    Plug,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -46,6 +48,8 @@ const NAV = [
     { to: '/app/community', label: 'Community & Social', icon: MessageCircle },
     { to: '/app/roadmap', label: 'Roadmap', icon: Gauge },
     { to: '/app/operations', label: 'Operations Desk', icon: Server },
+    { to: '/app/fleet', label: 'Fleet', icon: Network },
+    { to: '/app/platforms', label: 'Platform Health', icon: Plug },
     { to: '/app/settings', label: 'Settings', icon: Settings },
 ];
 

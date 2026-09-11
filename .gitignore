@@ -55,3 +55,8 @@ scripts/ci/run_sprint_cycle.ps1
 # Generated at build time by scripts/deploy/roadmap_status.py - never hand-edited
 # or committed as source, it's build output like dist/.
 apps/web/public/roadmap-status.json
+# Generated at build time by scripts/ci/fleet_report.py - build output, same as
+# roadmap-status.json above. The Fleet and Platform Health pages state that the
+# projection is missing rather than drawing stale data when it was not written.
+apps/web/public/fleet-status.json
+apps/web/public/platform-health.json
