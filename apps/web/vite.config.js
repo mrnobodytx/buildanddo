@@ -388,6 +388,15 @@ export default defineConfig({
 			'.app-preview.com',
 			'.app-preview.io',
 		],
+		// Living Rooms: the SPA reads /api/rooms/* same-origin. In production nginx
+		// fronts the rooms sidecar (infra/nginx/buildanddo-rooms-api.location.conf);
+		// in dev this proxy plays that role so the browser never signs anything.
+		proxy: {
+			'/api/rooms': {
+				target: process.env.BUILDANDDO_ROOMS_DEV_UPSTREAM || 'http://127.0.0.1:8092',
+				changeOrigin: false,
+			},
+		},
 		fs: {
 			strict: true,
 			allow: [
