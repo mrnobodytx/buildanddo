@@ -31,6 +31,12 @@ the entry.
 
 ### Added
 
+- ci: generate the changelog from the commits that landed (`90623d7`, SRS-BUILDANDDO-CHANGELOG-001)
+- web: make the workspace roadmap answer how far along it is (`658d397`, SRS-BUILDANDDO-WORKSPACE-001)
+- ci: chain evidence epochs into CI and Datadog (`76d1b66`, SRS-BUILDANDDO-EPOCH-001)
+- web: add community contributor infrastructure (`d05a314`, SRS-BUILDANDDO-COMMUNITY-001)
+- web: Capability Passport UI and evidence witness architecture (`dab412f`, SRS-BUILDANDDO-WITNESS-001)
+- web: add vitest harness and workspace page suites (`cebaf44`, SRS-BUILDANDDO-TEST-001)
 - ci: add local docker development environment (`06a5ecb`, SRS-BUILDANDDO-DEVENV-001)
 - web: make the workspace pages functional (`3170e84`, SRS-BUILDANDDO-WORKSPACE-001)
 - governance: add measured agent context layer (`dc0e685`, SRS-BUILDANDDO-AGENTCTX-001)
@@ -42,6 +48,10 @@ the entry.
 - governance: propose observability SRS specs and metrics-sink handoff (`691e58d`, SRS-BUILDANDDO-PB-METRICS-001, SRS-BUILDANDDO-RUM-ACTIONS-001)
 - ci: measure every run and diff it against main (`bee3d37`, SRS-BUILDANDDO-CI-001)
 - ci: report pipelines and DORA to Datadog (`b622617`, SRS-BUILDANDDO-CI-001)
+
+### Fixed
+
+- ci: restore the sprint plan the roadmap projection imports (`a64a1d8`, SRS-BUILDANDDO-ROADMAP-001, SRS-BUILDANDDO-WORKSPACE-001)
 
 ## 2026-09-09
 

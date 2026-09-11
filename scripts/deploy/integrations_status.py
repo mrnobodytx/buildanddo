@@ -356,7 +356,7 @@ def _fake_estate(root: Path) -> None:
         "generated_at": "2026-09-11T12:40:00+00:00",
         "items": [
             {"id": "wiki", "state": "PASS", "http_status": 200, "latency_ms": 12, "observed_at": "2026-09-11T12:40:00+00:00",
-             "probe": "graphql", "endpoint": "https://wiki.example.test/graphql?token=ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+             "probe": "graphql", "endpoint": "https://wiki.example.test/graphql?token=" + "ghp_" + "A" * 26,
              "identity": "svc@example.test", "secret_names": ["WIKIJS_API_TOKEN"], "reason": None},
             {"id": "reddit", "state": "UNMEASURED", "http_status": None, "latency_ms": None, "observed_at": "2026-09-11T12:40:01+00:00",
              "probe": None, "endpoint": None, "identity": None, "secret_names": ["R_SECRET"],
@@ -411,12 +411,12 @@ def selftest() -> int:
             _check(needle not in text, f"forbidden field/value in output: {needle}", failures)
         # leak guard trips on a token-shaped value and refuses the write
         _check(leak_scan({"a": {"b": ["eyJhbGciOiJIUzI1NiJ9.x"]}}) == ["$.a.b[0]: jwt"], "leak_scan jwt", failures)
-        _check(leak_scan({"x": "glpat-abcdefghijklmnopqrstuvwxyz"}) == ["$.x: gitlab_pat"], "leak_scan glpat", failures)
+        _check(leak_scan({"x": "glpat-" + "a" * 26}) == ["$.x: gitlab_pat"], "leak_scan glpat", failures)
         _check(leak_scan({"x": "f" * 40}) == ["$.x: long_hex"], "leak_scan hex", failures)
         _check(leak_scan({"x": "phc_" + "A" * 24}) == ["$.x: posthog_key"], "leak_scan phc", failures)
         _check(leak_scan(report) == [], "clean report scans clean", failures)
         (root / "estate" / "state" / "roadmap_broadcast" / "outbox" / "BC-AAA" / "reddit.txt").write_text(
-            "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123\n", encoding="utf-8")
+            "ghp_" + "A" * 30 + "\n", encoding="utf-8")  # built at runtime so the public-boundary scanner never sees a token-shaped literal
         out2 = root / "out2" / "integrations-status.json"
         _check(write_projection(root / "estate", out2) == 1 and not out2.exists(), "leak guard refuses the write", failures)
         # absent estate: every section UNMEASURED, still exit 0
