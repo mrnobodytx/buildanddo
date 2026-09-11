@@ -221,6 +221,46 @@ def _write_unmeasured_roadmap_status(result: dict) -> None:
         print(f"WARN roadmap-status.json could not be written: {type(exc).__name__}: {exc}")
 
 
+RELEASE_MANIFEST_REL = Path("apps") / "web" / "public" / ".well-known" / "citadel-release.json"
+
+
+def _write_release_manifest(stage_only: bool) -> dict:
+    """Write public/.well-known/citadel-release.json so the shipped dist carries its own
+    release identity (vite copies public/ verbatim into dist; nginx serves the path as JSON).
+
+    Measured 2026-09-11: the staging readback gate (tools/citadel_staging_error_corpus.py,
+    class RELEASE_MANIFEST_MISSING) expected this file "published by ship.py", but nothing
+    wrote it, so every stage ended HOLD on a contract no build could satisfy. Facts only:
+    commit, branch, package version, build time, target. No secrets, no hostnames.
+    A failure here never fails the ship (observability must not break the build it observes).
+    """
+    path = ROOT / RELEASE_MANIFEST_REL
+    commit = _latest_commit()
+    branch = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=ROOT, timeout=15).get("stdout_tail", "").strip()
+    try:
+        version = json.loads((ROOT / "apps" / "web" / "package.json").read_text(encoding="utf-8")).get("version")
+    except (OSError, ValueError):
+        version = None
+    payload = {
+        "schema": "citadel.release-manifest/v1",
+        "tenant_id": "buildanddo",
+        "commit": commit.get("sha"),
+        "commit_message": commit.get("message"),
+        "branch": branch,
+        "package_version": version,
+        "built_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "target": "staging" if stage_only else "staging+production",
+        "shipped_by": "scripts/deploy/ship.py",
+    }
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+        return {"ok": True, "path": str(RELEASE_MANIFEST_REL), "commit": payload["commit"]}
+    except OSError as exc:
+        print(f"WARN release manifest could not be written: {type(exc).__name__}: {exc}")
+        return {"ok": False, "reason": f"{type(exc).__name__}: {exc}"}
+
+
 def _latest_commit() -> dict:
     sha = _run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, timeout=15)
     msg = _run(["git", "log", "-1", "--pretty=%s"], cwd=ROOT, timeout=15)
@@ -325,10 +365,12 @@ def _evidence_epoch() -> dict:
     return result
 
 
-def _build() -> dict:
+def _build(stage_only: bool = False) -> dict:
     web_dir = ROOT / "apps" / "web"
     shutil.rmtree(DIST_DIR, ignore_errors=True)  # see integrity_regression_check.py - measured stale-cache bug
     _write_web_env()
+    # public/.well-known/citadel-release.json - the release identity the readback gates verify.
+    _write_release_manifest(stage_only)
     # public/roadmap-status.json - vite copies public/ verbatim into dist.
     roadmap = _write_roadmap_status()
     if not roadmap["ok"]:
@@ -370,8 +412,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.stage_only:
         record["stage_only"] = True
 
-    build = _build()
+    build = _build(stage_only=bool(args.stage_only))
     record["stages"]["build"] = {"ok": build["ok"]}
+    manifest_path = ROOT / RELEASE_MANIFEST_REL
+    record["stages"]["release_manifest"] = {"ok": manifest_path.is_file(), "path": str(RELEASE_MANIFEST_REL)}
     if not build["ok"]:
         record["stopped_at"] = "build"
         _finish(record, args.json_path)
