@@ -81,26 +81,6 @@ const statusOf = (item) => (STATUS_KEYS.includes(item.status) ? item.status : 'p
 
 const CHART_CONFIG = { count: { label: 'Items', color: 'hsl(var(--primary))' } };
 
-// Archived items are deliberately excluded from the completion denominator:
-// an item withdrawn from the plan is neither done nor outstanding, and
-// counting it either way misstates the number.
-const COUNTED_STATUSES = STATUSES.filter((status) => status !== 'archived');
-
-const STATUS_LABEL = (status) => status.replace(/_/g, ' ');
-
-const BAR_FILL = {
-    verified: 'hsl(var(--primary))',
-    blocked: 'hsl(var(--destructive, 0 84% 60%))',
-};
-
-const EMPTY_FORM = {
-    title: '', description: '', status: 'proposed',
-    owner_role: '', evidence_ref: '', dependency: '', next_action: '',
-};
-
-const VERIFY_WITHOUT_EVIDENCE =
-    'A roadmap item cannot be marked Verified without an evidence reference.';
-
 /**
  * Reports whether an item counts as complete.
  *
