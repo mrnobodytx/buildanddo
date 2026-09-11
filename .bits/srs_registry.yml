@@ -147,4 +147,4 @@ srs:
     status: in_progress
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-LIVE-UTILIZATION-001.md
-    notes: Deterministic read projections served LIVE by the rooms sidecar (services/buildanddo_visual_substrate, signed CitadelKey boundary to Citadel Nexus); OCN login (seats sign in with a CitadelKey via pb_hooks/ocn-login.pb.js + sidecar POST /api/rooms/verify, docs/architecture/BUILDANDDO_OCN_LOGIN.md); publication and production mutation remain separate
+    notes: Deterministic read projections served LIVE by the rooms sidecar (services/buildanddo_visual_substrate, signed CitadelKey boundary to Citadel Nexus); OCN login (seats sign in with a CitadelKey via pb_hooks/ocn-login.pb.js + sidecar POST /api/rooms/verify, docs/architecture/BUILDANDDO_OCN_LOGIN.md); publication and production mutation remain separate; PocketBase migrations reconciled with production disk 2026-09-11 (18 admin-UI migrations imported as 1788950001..18, fresh-install order fixed, guarded by apps/pocketbase/tools/check_migration_order.mjs, docs/architecture/POCKETBASE_MIGRATION_DRIFT_2026-09-11.md)

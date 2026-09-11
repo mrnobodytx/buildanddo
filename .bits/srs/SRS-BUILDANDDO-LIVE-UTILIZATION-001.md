@@ -82,3 +82,38 @@ Acceptance additions:
     public key), the rig1 seat seed, and confirmation that the five declared seat
     ids exist in `seat_keypairs.json`.
 
+## Amendment 2026-09-11 (C-ONE): PocketBase migrations reconciled with production disk
+Production (KVM1 `/opt/buildanddo-pocketbase/pb_migrations`, 31 files) and the
+repository (17 files) had drifted, and production's own directory cannot build a
+fresh database: 18 admin-UI generated `updated_*` migrations numbered
+`1788798503..1788799326` reference `@collection.workspace_members` (created by
+`1788900000`) or look up praxis collections (created by `1788800000`) and sort
+before them, so a new instance fails with `failed to load collection`. Full
+per-file analysis: docs/architecture/POCKETBASE_MIGRATION_DRIFT_2026-09-11.md.
+
+- The 18 production-only migrations are imported verbatim under
+  `1788950001..1788950018` (relative order preserved, headers name the original
+  file), after every collection they touch and before `1789000000` / `1789100000`.
+  Each only rewrites rules or field `required` flags via `app.save`, so production
+  re-applying them under the new names is an idempotent no-op; `down()` is symmetric.
+- Of the 5 files reported as differing, 4 differ only by CRLF in the Windows
+  working copy (git index matches production byte-for-byte). The one real
+  difference, `1788800000` `required: true` on five counter fields, is kept in its
+  repository form because production itself reverted it in the admin UI (the three
+  imported praxis files) and the end schema is identical either way.
+- The 4 repository-only migrations (`1788940000_*` x2, `1789000000`, `1789100000`)
+  have never run on production and are unchanged; `1789100000_ocn_seat_users.js`
+  stays last.
+- `apps/pocketbase/tools/check_migration_order.mjs` (`npm run pb:check-migrations`)
+  statically asserts, without PocketBase, that every `@collection.<name>` reference
+  and `findCollectionByNameOrId` lookup (including hard-coded `pbc_` ids, which are
+  `"pbc_" + crc32("base" + name)`) resolves to a collection created by an earlier
+  migration. It reports 37 failures against a copy of production's directory and
+  `35 migrations, 0 problem(s)` against the repository.
+
+Acceptance additions:
+17. `npm run pb:check-migrations` exits 0 on the repository and exits 1 against
+    `%TEMP%\kvm1_migrations` (the production copy).
+18. A fresh PocketBase started from `apps/pocketbase/pb_migrations` applies all 35
+    migrations without `failed to load collection` (UNMEASURED here: no PocketBase
+    binary in this seat; the staging instance is the live probe).

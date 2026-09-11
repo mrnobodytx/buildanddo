@@ -9,6 +9,7 @@
 		"migrations:up": "./pocketbase horizons migrations:up --encryptionEnv=PB_ENCRYPTION_KEY --dir=./pb_data --migrationsDir=./pb_migrations --hooksDir=./pb_hooks --hooksWatch=false",
 		"migrations:revert": "./pocketbase horizons migrations:revert --encryptionEnv=PB_ENCRYPTION_KEY --dir=./pb_data --migrationsDir=./pb_migrations --hooksDir=./pb_hooks --hooksWatch=false",
 		"migrations:snapshot": "mkdir -p ./pb_snapshots && echo 'y' | ./pocketbase migrate collections --encryptionEnv=PB_ENCRYPTION_KEY --dir=./pb_data --migrationsDir=./pb_snapshots",
-		"update": "./pocketbase update --encryptionEnv=PB_ENCRYPTION_KEY --backup=0"
+		"update": "./pocketbase update --encryptionEnv=PB_ENCRYPTION_KEY --backup=0",
+		"pb:check-migrations": "node tools/check_migration_order.mjs"
 	}
 }
