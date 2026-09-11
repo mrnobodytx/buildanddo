@@ -24,9 +24,10 @@ Additive v2 fields (2026-09-11), all read from environment NAMES, never from
 network calls:
   executor         CITADEL_EXECUTOR, else "github-actions" when GITHUB_ACTIONS is set,
                    else "local".
-  github_readback  {"sha": CITADEL_GITHUB_READBACK_SHA, "observed_at":
+  github_readback  {"sha": CITADEL_GITHUB_READBACK_SHA (else CITADEL_GITHUB_SHA, the
+                   name the golden executor exports), "observed_at":
                    CITADEL_GITHUB_READBACK_AT} - what the executor read back from the
-                   public control plane before stamping; both null when unset.
+                   public control plane before stamping; null when unset.
   lane_version     CITADEL_LANE_VERSION or null.
 authority stays "candidate_only" and production_authority stays False; the file
 hashing and every existing key are unchanged.
@@ -54,7 +55,9 @@ def executor_name() -> str:
     return _env("CITADEL_EXECUTOR") or ("github-actions" if _env("GITHUB_ACTIONS") else "local")
 
 def github_readback() -> dict:
-    return {"sha":_env("CITADEL_GITHUB_READBACK_SHA"),"observed_at":_env("CITADEL_GITHUB_READBACK_AT")}
+    # CITADEL_GITHUB_READBACK_SHA is the controller's name (mirror step); CITADEL_GITHUB_SHA
+    # is the golden executor's name (emulated CI env). Either proves the same readback.
+    return {"sha":_env("CITADEL_GITHUB_READBACK_SHA") or _env("CITADEL_GITHUB_SHA"),"observed_at":_env("CITADEL_GITHUB_READBACK_AT")}
 
 def main() -> int:
     ap=argparse.ArgumentParser()
