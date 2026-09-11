@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# CGRF: SRS=SRS-BUILDANDDO-PUBLIC-RECORD-001 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/deploy/ship.py
 # Stage:       11_COMMIT
@@ -196,6 +197,27 @@ def _write_roadmap_status() -> dict:
     return _run([sys.executable, str(ROOT / "scripts" / "deploy" / "roadmap_status.py")], cwd=ROOT, timeout=30)
 
 
+def _write_integrations_status() -> dict:
+    return _run([sys.executable, str(ROOT / "scripts" / "deploy" / "integrations_status.py")], cwd=ROOT, timeout=30)
+
+
+def _write_unmeasured_integrations_status(result: dict) -> None:
+    """Same contract as _write_unmeasured_roadmap_status for the public-record
+    projection: a failed (or leak-guard-refused) projection must never leave a
+    previous build's file in place, and must never fail the ship."""
+    status_path = ROOT / "apps" / "web" / "public" / "integrations-status.json"
+    payload = {
+        "schema": "buildanddo.integrations-status/v1",
+        "state": "UNMEASURED",
+        "error": "projection_failed",
+        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "detail": result.get("reason") or (result.get("stderr_tail") or result.get("stdout_tail") or "")[-500:],
+        "sections": {}, "channels": {}, "tutorials": [], "validity": [],
+    }
+    status_path.parent.mkdir(parents=True, exist_ok=True)
+    status_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
 def _write_unmeasured_roadmap_status(result: dict) -> None:
     """Replace roadmap-status.json with an explicit UNMEASURED marker.
 
@@ -377,6 +399,12 @@ def _build(stage_only: bool = False) -> dict:
         print(f"WARN roadmap projection failed (rc={roadmap.get('returncode')}); "
               "shipping an UNMEASURED status file instead of stale data")
         _write_unmeasured_roadmap_status(roadmap)
+    # public/integrations-status.json - the public-record bridge, same contract.
+    integrations = _write_integrations_status()
+    if not integrations["ok"]:
+        print(f"WARN integrations projection failed (rc={integrations.get('returncode')}); "
+              "shipping an UNMEASURED integrations-status file instead of stale data")
+        _write_unmeasured_integrations_status(integrations)
     return _run([NPM, "run", "build"], cwd=web_dir, timeout=600)
 
 

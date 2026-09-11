@@ -1,3 +1,4 @@
+# CGRF: SRS=SRS-BUILDANDDO-PUBLIC-RECORD-001 | CAPS=B | Seat=C-ONE
 # Local secrets
 .env
 .env.*
@@ -55,6 +56,8 @@ scripts/ci/run_sprint_cycle.ps1
 # Generated at build time by scripts/deploy/roadmap_status.py - never hand-edited
 # or committed as source, it's build output like dist/.
 apps/web/public/roadmap-status.json
+# Same for scripts/deploy/integrations_status.py (public-record bridge).
+apps/web/public/integrations-status.json
 apps/web/public/.well-known/citadel-release.json
 
 # Local sensitive working area. NOT ignored before 2026-09-11: a bare

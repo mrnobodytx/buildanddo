@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-PUBLIC-RECORD-001 | CAPS=B | Seat=C-ONE
 import React, { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import {
     GraduationCap,
@@ -14,8 +15,16 @@ import {
     PageHeader,
     StatusBadge,
 } from '@/components/workspace/workspaceHelpers';
-import { Button, Card } from '@/components/site/ui';
+import { Badge, Button, Card } from '@/components/site/ui';
+import EmptyState from '@/components/workspace/EmptyState';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+    integrationsStateOf,
+    isIntegrationsStale,
+    tutorialsOf,
+    useIntegrationsStatus,
+} from '@/lib/integrationsStatus';
+import { timeAgo } from '@/lib/format';
 
 // The catalogue imports most of components/ui, so it is code-split: a reader
 // who only wants a lesson does not download every Radix primitive.
@@ -207,6 +216,116 @@ function LessonsTab() {
     );
 }
 
+/* Failure tutorials --------------------------------------------------------- */
+/* Public-safe lessons the estate wrote from real staging/production failures, */
+/* read from the build-time projection. A lesson links to its wiki page only   */
+/* when the estate's delivery receipts prove that page was published.         */
+
+const SEVERITY_TONE = { P0: 'red', P1: 'amber', P2: 'neutral' };
+
+function FailureTutorialsTab() {
+    const { status, error } = useIntegrationsStatus();
+    const tutorials = tutorialsOf(status);
+    const stale = isIntegrationsStale(status);
+
+    if (!status && !error) {
+        return (
+            <Card className="p-8 text-center text-sm text-muted-foreground">
+                <Loader2 className="mx-auto h-5 w-5 animate-spin" aria-label="Loading failure tutorials" />
+            </Card>
+        );
+    }
+
+    if (!tutorials) {
+        const reason = error
+            ? 'integrations-status.json was not served with this build.'
+            : `The estate's tutorial corpus was ${status?.sections?.tutorials?.reason || (integrationsStateOf(status) === 'MEASURED' ? 'not projected' : 'not readable')} at build time.`;
+        return (
+            <EmptyState
+                icon={GraduationCap}
+                title="Failure tutorials UNMEASURED"
+                description={`${reason} Nothing is invented in its place.`}
+            />
+        );
+    }
+
+    return (
+        <section className="space-y-6" aria-labelledby="failure-tutorials-heading">
+            <div>
+                <h2 id="failure-tutorials-heading" className="font-display text-lg font-semibold tracking-tight">
+                    Failures on staging become documented lessons
+                </h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    When a gate fails on staging or production, the estate records the error class, what it
+                    probed, and how to verify the fix, then publishes the public-safe version to the wiki
+                    and forum. Only lessons marked public-safe appear here.
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                    Projected {timeAgo(status.generated_at)}
+                    {stale && <span className="ml-2 font-semibold text-amber-warm">· DATA MAY BE STALE</span>}
+                </p>
+            </div>
+
+            {tutorials.length === 0 ? (
+                <EmptyState
+                    icon={GraduationCap}
+                    title="No public-safe failure tutorials yet"
+                    description="The estate has not published a lesson it considers safe to read. That is the measured answer, not a placeholder."
+                />
+            ) : (
+                <ul className="grid gap-4 sm:grid-cols-2" aria-label="Failure tutorials">
+                    {tutorials.map((t) => (
+                        <li key={t.lesson_id}>
+                            <Card className="flex h-full flex-col p-5">
+                                <div className="flex items-start justify-between gap-3">
+                                    <div className="min-w-0">
+                                        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                                            {t.env || 'env unknown'}
+                                        </p>
+                                        <h3 className="mt-1 break-words font-display text-base font-semibold tracking-tight">
+                                            {t.error_class || t.lesson_id}
+                                        </h3>
+                                    </div>
+                                    <Badge tone={SEVERITY_TONE[t.severity] || 'neutral'}>
+                                        <span className="sr-only">Severity </span>
+                                        {t.severity || '—'}
+                                    </Badge>
+                                </div>
+
+                                <dl className="mt-4 space-y-1.5 border-t border-border/60 pt-3 text-xs text-muted-foreground">
+                                    <div className="flex items-start gap-2">
+                                        <BookOpen className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                                        <span>{t.lesson_id}</span>
+                                    </div>
+                                    <div className="flex items-start gap-2">
+                                        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                                        <span>Channels: {(t.channels || []).join(', ') || 'none'}</span>
+                                    </div>
+                                </dl>
+
+                                <div className="mt-4 text-sm">
+                                    {t.wiki_url ? (
+                                        <a
+                                            href={t.wiki_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-primary underline-offset-2 hover:underline"
+                                        >
+                                            Read the wiki lesson
+                                        </a>
+                                    ) : (
+                                        <span className="text-muted-foreground">Wiki page not yet published</span>
+                                    )}
+                                </div>
+                            </Card>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </section>
+    );
+}
+
 export default function TutorialsPage() {
     return (
         <div className="space-y-8">
@@ -219,6 +338,7 @@ export default function TutorialsPage() {
                 <TabsList>
                     <TabsTrigger value="catalog">Component catalogue</TabsTrigger>
                     <TabsTrigger value="lessons">Lessons</TabsTrigger>
+                    <TabsTrigger value="failures">Failure tutorials</TabsTrigger>
                 </TabsList>
                 <TabsContent value="catalog" className="mt-6">
                     <Suspense
@@ -233,6 +353,9 @@ export default function TutorialsPage() {
                 </TabsContent>
                 <TabsContent value="lessons" className="mt-6">
                     <LessonsTab />
+                </TabsContent>
+                <TabsContent value="failures" className="mt-6">
+                    <FailureTutorialsTab />
                 </TabsContent>
             </Tabs>
         </div>
