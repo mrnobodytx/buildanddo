@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-WORKSPACE-001 | CAPS=B | Seat=C-ONE
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -583,7 +584,7 @@ export default function HomePage() {
             />
 
             <Header />
-            <main>
+            <main id="main-content" tabIndex={-1} className="outline-none">
                 <Masthead />
                 <FrontPageHero />
                 <BusinessAtAGlance />

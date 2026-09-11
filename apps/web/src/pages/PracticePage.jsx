@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-WORKSPACE-001 | CAPS=B | Seat=C-ONE
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { BookOpen, Info, Users } from 'lucide-react';
@@ -39,6 +40,7 @@ export default function PracticePage() {
             <Seo title="BuildAndDo — Practice library" siteName="BuildAndDo" type="website" />
 
             <Header />
+            <main id="main-content" tabIndex={-1} className="outline-none">
             <div className="rule-double" />
 
             <Section className="py-14 sm:py-20">
@@ -91,6 +93,7 @@ export default function PracticePage() {
                 Knowledge state reflects real audit history, not popularity. A method with
                 zero attempts is honestly labeled &ldquo;proposed,&rdquo; not hidden.
             </p>
+            </main>
 
             <Footer />
         </div>

@@ -1,4 +1,6 @@
+// CGRF: SRS=SRS-BUILDANDDO-WORKSPACE-001 | CAPS=B | Seat=C-ONE
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 /**
@@ -35,6 +37,7 @@ export function Button({
     variant = 'primary',
     size = 'md',
     href,
+    to,
     className,
     children,
     ...props
@@ -56,6 +59,15 @@ export function Button({
             'border border-[hsl(var(--paper-border))] bg-transparent text-[hsl(var(--paper-foreground))] hover:bg-[hsl(var(--paper-subtle))]',
     };
     const cls = cn(base, sizes[size], variants[variant], className);
+    // `to` is an in-app route (react-router navigation, keeps hash targets on
+    // other pages working); `href` is a plain anchor for same-page or external.
+    if (to) {
+        return (
+            <Link to={to} className={cls} {...props}>
+                {children}
+            </Link>
+        );
+    }
     if (href) {
         return (
             <a href={href} className={cls} {...props}>
