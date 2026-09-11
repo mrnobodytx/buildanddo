@@ -1,11 +1,13 @@
+// CGRF: SRS=SRS-BUILDANDDO-ROADMAP-001 | CAPS=B | Seat=C-ONE
 import React from 'react';
 import { Activity, Mail, MessageCircle, BookOpen, Users, Github } from 'lucide-react';
+import { PUBLIC_LINKS } from '@/lib/publicLinks';
 
-const DISCORD_INVITE_URL = 'https://discord.gg/vTDZxmpHHC';
-const WIKI_URL = 'https://wiki.buildanddo.com';
-const FORUM_URL = 'https://forum.buildanddo.com';
-const GITHUB_URL = 'https://github.com/mrnobodytx/buildanddo';
-const CONTRIBUTING_URL = 'https://github.com/mrnobodytx/buildanddo/blob/main/CONTRIBUTING.md';
+const DISCORD_INVITE_URL = PUBLIC_LINKS.discord;
+const WIKI_URL = PUBLIC_LINKS.wiki;
+const FORUM_URL = PUBLIC_LINKS.forum;
+const GITHUB_URL = PUBLIC_LINKS.github;
+const CONTRIBUTING_URL = PUBLIC_LINKS.contributing;
 
 const PRODUCT_LINKS = [
     { label: 'At a glance', href: '#glance' },
