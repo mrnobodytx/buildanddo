@@ -126,7 +126,11 @@ def _probe(url: str, retries: int = 5, delay: float = 2.0) -> dict:
     last_err = None
     for attempt in range(1, retries + 1):
         try:
-            with urllib.request.urlopen(url, timeout=10) as resp:  # noqa: S310 - fixed https URL, not user input
+            # Cloudflare's bot rule returns 403 to Python's default user agent (measured 2026-09-11 on
+            # staging); a named UA is required or every probe fails while the site is actually serving.
+            req = urllib.request.Request(url, headers={"User-Agent": "BuildAndDo-Ship-Probe (https://buildanddo.com, 1.0)",
+                                                       "Accept": "text/html,application/json"})
+            with urllib.request.urlopen(req, timeout=10) as resp:  # noqa: S310 - fixed https URL, not user input
                 body = resp.read(200)
                 return {"ok": resp.status == 200, "status": resp.status, "attempt": attempt,
                         "body_prefix": body.decode("utf-8", errors="replace")[:120]}
