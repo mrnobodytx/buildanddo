@@ -40,6 +40,7 @@ import {
     createMockSignal,
     createMockWorkflow,
     createMockWorkspace,
+    isoMinutesAgo,
     renderWithProviders,
     screen,
     setupUser,
@@ -60,11 +61,29 @@ const statCard = (label) => {
     return labelNode.parentElement.parentElement;
 };
 
-const seed = ({ signals = [], missions = [], workflows = [], evidence = [] } = {}) => {
+/**
+ * The feed, the missions panel and the quick actions repeat the same titles
+ * and button labels, so every list assertion is scoped to its own section via
+ * the section heading.
+ */
+const section = (heading) => {
+    const node = screen.getByRole('heading', { name: heading, level: 2 }).closest('section');
+    if (!node) throw new Error(`No section headed "${heading}"`);
+    return within(node);
+};
+
+const seed = ({
+    signals = [],
+    missions = [],
+    workflows = [],
+    evidence = [],
+    editions = [],
+} = {}) => {
     pb.__setRecords('signals', signals);
     pb.__setRecords('missions', missions);
     pb.__setRecords('workflows', workflows);
     pb.__setRecords('evidence', evidence);
+    pb.__setRecords('daily_editions', editions);
 };
 
 describe('OverviewPage', () => {
@@ -81,16 +100,23 @@ describe('OverviewPage', () => {
             await screen.findByRole('heading', { name: 'Front Page', level: 1 }),
         ).toBeInTheDocument();
         expect(
-            screen.getByRole('heading', { name: 'What changed', level: 2 }),
+            screen.getByRole('heading', { name: 'Recent activity', level: 2 }),
         ).toBeInTheDocument();
         expect(
             screen.getByRole('heading', { name: 'Active missions', level: 2 }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: 'Quick actions', level: 2 }),
         ).toBeInTheDocument();
     });
 
     it('derives every stat card from the loaded records', async () => {
         seed({
-            signals: [createMockSignal(), createMockSignal()],
+            signals: [
+                createMockSignal(),
+                createMockSignal({ state: 'new' }),
+                createMockSignal({ state: 'acknowledged' }),
+            ],
             missions: [
                 createMockMission({ status: 'running' }),
                 createMockMission({ status: 'needs_attention' }),
@@ -109,28 +135,38 @@ describe('OverviewPage', () => {
         // One waitFor for all four: the collections resolve independently, so
         // asserting the later cards outside it would race the slowest query.
         await waitFor(() => {
-            expect(within(statCard('Business signals')).getByText('2')).toBeInTheDocument();
+            // A signal with no state predates the field and counts as new;
+            // an acknowledged one is collected but no longer awaiting triage.
+            const signals = within(statCard('Signals awaiting triage'));
+            expect(signals.getByText('2')).toBeInTheDocument();
+            expect(signals.getByText('3 collected in total')).toBeInTheDocument();
             // approved | running | needs_attention only — proposed and verified
             // are not "active".
             expect(within(statCard('Active missions')).getByText('2')).toBeInTheDocument();
-            expect(within(statCard('Workflow health')).getByText('1')).toBeInTheDocument();
-            expect(
-                within(statCard('Workflow health')).getByText('3 workflows total'),
-            ).toBeInTheDocument();
+            const workflowsCard = within(statCard('Workflows active'));
+            expect(workflowsCard.getByText('1')).toBeInTheDocument();
+            expect(workflowsCard.getByText('3 workflows defined')).toBeInTheDocument();
             expect(within(statCard('Verified outcomes')).getByText('3')).toBeInTheDocument();
         });
     });
 
-    it('counts verified outcomes from evidence filtered server-side', async () => {
-        seed({ evidence: [createMockEvidence()] });
+    it('counts only verified evidence, not every evidence row', async () => {
+        seed({
+            evidence: [
+                createMockEvidence({ type: 'verified' }),
+                createMockEvidence({ type: 'observed' }),
+                createMockEvidence({ type: 'attempted' }),
+            ],
+        });
         renderWithProviders(<OverviewPage />);
 
         await waitFor(() =>
-            expect(pb.__collection('evidence').getFullList).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    filter: 'workspace = "ws_test" && type = "verified"',
-                }),
-            ),
+            expect(within(statCard('Verified outcomes')).getByText('1')).toBeInTheDocument(),
+        );
+        // The whole evidence list is loaded (it also feeds the activity feed);
+        // the verified count is derived client-side from `type`.
+        expect(pb.__collection('evidence').getFullList).toHaveBeenCalledWith(
+            expect.objectContaining({ filter: 'workspace = "ws_test"' }),
         );
     });
 
@@ -140,7 +176,7 @@ describe('OverviewPage', () => {
 
         await waitFor(() => {
             expect(
-                within(statCard('Business signals')).getByText('No signals collected yet'),
+                within(statCard('Signals awaiting triage')).getByText('No signals collected yet'),
             ).toBeInTheDocument();
             expect(
                 within(statCard('Active missions')).getByText('No missions running'),
@@ -190,34 +226,76 @@ describe('OverviewPage', () => {
         expect(screen.queryByText('example-plumbing.com')).not.toBeInTheDocument();
     });
 
-    it('lists at most five signals in the activity feed, newest first', async () => {
+    it('merges collections into one feed of at most eight items, newest first', async () => {
         seed({
-            signals: Array.from({ length: 6 }, (_, i) =>
-                createMockSignal({ title: `Signal ${i + 1}` }),
+            // Nine signals, one created per minute; the eight newest survive.
+            signals: Array.from({ length: 9 }, (_, i) =>
+                createMockSignal({ title: `Signal ${i + 1}`, created: isoMinutesAgo(i + 1) }),
             ),
+            missions: [
+                createMockMission({
+                    title: 'Mission just now',
+                    status: 'proposed',
+                    created: isoMinutesAgo(0),
+                }),
+            ],
         });
         renderWithProviders(<OverviewPage />);
 
-        expect(await screen.findByText('Signal 1')).toBeInTheDocument();
-        expect(screen.getByText('Signal 5')).toBeInTheDocument();
-        expect(screen.queryByText('Signal 6')).not.toBeInTheDocument();
+        await waitFor(() => expect(screen.getByText('Mission just now')).toBeInTheDocument());
+        const feed = section('Recent activity');
+        const items = feed.getAllByRole('listitem');
+        expect(items).toHaveLength(8);
+        expect(items[0]).toHaveTextContent('Mission just now');
+        expect(items[0]).toHaveTextContent('Mission proposed');
+        expect(items[1]).toHaveTextContent('Signal 1');
+        expect(items[7]).toHaveTextContent('Signal 7');
+        expect(feed.queryByText('Signal 8')).not.toBeInTheDocument();
+        expect(feed.queryByText('Signal 9')).not.toBeInTheDocument();
     });
 
-    it('invites the user to connect a source when no signals exist', async () => {
+    it('lists at most four untriaged signals in the triage panel', async () => {
+        seed({
+            signals: [
+                ...Array.from({ length: 5 }, (_, i) =>
+                    createMockSignal({ title: `Open ${i + 1}`, created: isoMinutesAgo(i + 1) }),
+                ),
+                createMockSignal({
+                    title: 'Already seen',
+                    state: 'acknowledged',
+                    created: isoMinutesAgo(0),
+                }),
+            ],
+        });
+        renderWithProviders(<OverviewPage />);
+
+        const triage = within(
+            (await screen.findByRole('heading', { name: 'Awaiting triage', level: 2 }))
+                .parentElement,
+        );
+        const items = triage.getAllByRole('listitem');
+        expect(items).toHaveLength(4);
+        expect(items[0]).toHaveTextContent('Open 1');
+        expect(triage.queryByText('Open 5')).not.toBeInTheDocument();
+        expect(triage.queryByText('Already seen')).not.toBeInTheDocument();
+    });
+
+    it('invites the user to connect a source when nothing has been recorded', async () => {
+        const user = setupUser();
         seed();
         renderWithProviders(<OverviewPage />);
 
-        // Scoped to the feed's empty state — the signals stat card carries the
-        // same sentence as its hint.
+        // Scoped to the feed's empty state — the quick actions carry a
+        // "Connect a source" button too.
         expect(
             await screen.findByRole('heading', {
-                name: 'No signals collected yet',
+                name: 'Nothing has happened here yet',
                 level: 3,
             }),
         ).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: /Connect a source/ }),
-        ).toBeInTheDocument();
+        const feed = section('Recent activity');
+        await user.click(feed.getByRole('button', { name: 'Connect a source' }));
+        expect(navigateMock).toHaveBeenCalledWith('/app/operations');
     });
 
     it('shows only in-flight missions in the active missions panel', async () => {
@@ -230,12 +308,18 @@ describe('OverviewPage', () => {
         });
         renderWithProviders(<OverviewPage />);
 
-        expect(await screen.findByText('Running work')).toBeInTheDocument();
-        expect(screen.queryByText('Proposed work')).not.toBeInTheDocument();
-        expect(screen.queryByText('Verified work')).not.toBeInTheDocument();
+        // All three appear in the activity feed; only the running one belongs
+        // in the missions panel.
+        await waitFor(() => expect(screen.getAllByText('Running work')).toHaveLength(2));
+        const panel = section('Active missions');
+        expect(panel.getByText('Running work')).toBeInTheDocument();
+        expect(panel.getByText('Running')).toBeInTheDocument();
+        expect(panel.queryByText('Proposed work')).not.toBeInTheDocument();
+        expect(panel.queryByText('Verified work')).not.toBeInTheDocument();
+        expect(section('Recent activity').getByText('Proposed work')).toBeInTheDocument();
     });
 
-    it('routes the quick actions and the feed links', async () => {
+    it('routes the quick actions and the section links', async () => {
         const user = setupUser();
         seed();
         renderWithProviders(<OverviewPage />);
@@ -247,9 +331,11 @@ describe('OverviewPage', () => {
         );
         expect(navigateMock).toHaveBeenCalledWith('/app/missions');
 
-        const viewAll = screen.getAllByRole('button', { name: 'View all' });
-        await user.click(viewAll[0]);
-        expect(navigateMock).toHaveBeenCalledWith('/app/signals');
+        await user.click(screen.getByRole('button', { name: 'View the ledger' }));
+        expect(navigateMock).toHaveBeenLastCalledWith('/app/evidence');
+
+        await user.click(screen.getByRole('button', { name: 'View all' }));
+        expect(navigateMock).toHaveBeenLastCalledWith('/app/missions');
     });
 
     it('still renders the page when a collection fails to load', async () => {
@@ -263,8 +349,13 @@ describe('OverviewPage', () => {
         ).toBeInTheDocument();
         await waitFor(() =>
             expect(
-                within(statCard('Business signals')).getByText('0'),
+                within(statCard('Signals awaiting triage')).getByText('0'),
             ).toBeInTheDocument(),
         );
+        // The zero is announced as a lower bound, not passed off as a total.
+        expect(screen.getByRole('status')).toHaveTextContent(
+            'Could not read signals. Every number below is a lower bound, not a total.',
+        );
+        expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument();
     });
 });

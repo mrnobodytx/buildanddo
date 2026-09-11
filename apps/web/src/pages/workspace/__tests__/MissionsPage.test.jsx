@@ -43,7 +43,7 @@ describe('MissionsPage', () => {
         pb.__reset();
     });
 
-    it('renders the desk header and the full stage legend', async () => {
+    it('renders the desk header and explains what each stage means', async () => {
         pb.__setRecords('missions', []);
         renderWithProviders(<MissionsPage />);
 
@@ -51,16 +51,12 @@ describe('MissionsPage', () => {
             await screen.findByRole('heading', { name: 'Challenge Desk', level: 1 }),
         ).toBeInTheDocument();
 
-        for (const label of [
-            'Proposed',
-            'Approved',
-            'Running',
-            'Needs attention',
-            'Verified',
-            'Failed',
-        ]) {
-            expect(screen.getAllByText(label).length).toBeGreaterThan(0);
-        }
+        // The stage legend is now a footnote rather than a list of badges; it
+        // must still say that nothing runs before approval.
+        expect(
+            screen.getByText(/'Proposed' and 'approved' mean nothing has run yet/),
+        ).toBeInTheDocument();
+        expect(screen.getByText(/'Verified' means the outcome was checked/)).toBeInTheDocument();
     });
 
     it('does not flash an empty state while records are still loading', () => {
@@ -147,6 +143,9 @@ describe('MissionsPage', () => {
                 title: 'Cut no-shows',
                 description: 'Reminder texts only.',
                 status: 'proposed',
+                priority: 'normal',
+                progress: null,
+                due_date: null,
                 workspace: 'ws_test',
                 owner: 'user_test',
             }),

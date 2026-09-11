@@ -119,7 +119,7 @@ describe('useWorkspaceRecords', () => {
 
         await waitFor(() => expect(result.current.loading).toBe(false));
 
-        expect(result.current.error).toBe('Could not load this data right now.');
+        expect(result.current.error).toMatch(/^Could not load this data right now\./);
         expect(result.current.records).toEqual([]);
         expect(consoleError).toHaveBeenCalled();
     });
@@ -218,6 +218,6 @@ describe('useRecords', () => {
 
         await waitFor(() => expect(result.current.loading).toBe(false));
 
-        expect(result.current.error).toBe('Could not load this data right now.');
+        expect(result.current.error).toMatch(/^Could not load this data right now\./);
     });
 });

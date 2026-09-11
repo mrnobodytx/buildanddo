@@ -63,7 +63,7 @@ const fixture = () => ({
 });
 
 const mockFetch = (body) => {
-    global.fetch = vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve(body) }));
+    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve(body) }));
 };
 
 describe('RoadmapPage live sources panel', () => {
@@ -72,7 +72,7 @@ describe('RoadmapPage live sources panel', () => {
     });
     afterEach(() => {
         vi.unstubAllGlobals();
-        delete global.fetch;
+        delete globalThis.fetch;
     });
 
     it('renders one tile per source with its state badge and metrics', async () => {
