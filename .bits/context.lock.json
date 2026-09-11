@@ -117,7 +117,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-11T13:44:20.760579+00:00",
+  "generated_at": "2026-09-11T14:55:25.706053+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -214,6 +214,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-RUM-ACTIONS-001.md",
         "status": "proposed",
         "title": "Workspace actions, per-page error scope and interaction timing"
+      },
+      {
+        "code": "SRS-BUILDANDDO-SIGNALS-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SIGNALS-001.md",
+        "status": "in_progress",
+        "title": "Roadmap signals - live source tiles embedded in the projection, drawn as signals never results"
       },
       {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
@@ -358,8 +365,8 @@
     "findings": 7,
     "findings_high": 5,
     "pipelines": 5,
-    "srs_open": 13,
-    "srs_total": 16,
+    "srs_open": 14,
+    "srs_total": 17,
     "unwired_gates": 3
   },
   "tests": {

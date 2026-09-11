@@ -134,3 +134,10 @@ srs:
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-TENANT-RAIL-001.md
     notes: Repo-side half only; rail tool and tenant contract live in the controller estate (seat C-ONE)
+
+  - code: SRS-BUILDANDDO-SIGNALS-001
+    title: Roadmap signals - live source tiles embedded in the projection, drawn as signals never results
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-SIGNALS-001.md
+    notes: Repo-side half only; the collector tools/citadel_roadmap_signals.py lives in the controller estate (seat C-ONE)
