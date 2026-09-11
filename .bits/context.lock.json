@@ -124,7 +124,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-11T21:42:56.927022+00:00",
+  "generated_at": "2026-09-11T21:48:06.967668+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -370,11 +370,12 @@
       "apps/web/tools/lint.mjs",
       "apps/web/tools/observability-smoke.mjs",
       "apps/web/vite.config.js",
+      "scripts/deploy/integrations_status.py",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py"
     ],
     "migrations": 36,
-    "python_files": 55,
+    "python_files": 56,
     "services": [
       "buildanddo_mcp",
       "buildanddo_runtime",
@@ -382,8 +383,8 @@
       "buildanddo_visual_substrate",
       "praxis_evidence"
     ],
-    "tracked_files": 426,
-    "web_source_files": 164
+    "tracked_files": 433,
+    "web_source_files": 169
   },
   "schema_version": 1,
   "summary": {
@@ -398,7 +399,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 14,
+    "js_test_files": 18,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
