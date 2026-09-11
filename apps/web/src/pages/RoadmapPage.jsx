@@ -5,7 +5,8 @@
 // SRS:         SRS-BUILDANDDO-ROADMAP-001, SRS-BUILDANDDO-SIGNALS-001
 // CAPS:        pending
 // CK:          pending
-// Seat:        BITS-CODEGEN, C-ONE (live sources panel, interaction layer)
+// Seat:        BITS-CODEGEN, C-ONE (live sources panel, interaction layer,
+//              2026-09-11 sprint-day-3 replay of what actually landed)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     scripts/ci/sprint_cycle.py,
@@ -68,28 +69,43 @@ const STALE_AFTER_MS = 48 * 60 * 60 * 1000;
 
 const HIGHLIGHT_MS = 2500;
 
-const PLANNED_MILESTONES = [
+export const PLANNED_MILESTONES = [
     {
         day: 1, title: 'Sprint kickoff — foundations', status: 'planned', value: 5,
         description: 'Repo, self-hosted deploy target, and the staging→production pipeline itself. '
-            + 'Nothing downstream works without a real, provable way to ship a change.',
+            + 'Nothing downstream works without a real, provable way to ship a change. '
+            + 'What landed: staging and production on one self-hosted KVM behind nginx, and ship.py running '
+            + 'build → gate → staging sync → staging probe → promote, writing a release manifest the staging '
+            + 'readback gate checks (commit d2d5f83). The rail keeps its receipts in the controller estate, '
+            + 'outside this repository.',
         deliverables: ['Self-hosted domain + TLS (no third-party site builder)', 'Staging environment, separate from production',
-            'Automated build → gate → staging-probe → promote pipeline', 'Public GitHub repo + private release mirror'],
+            'Automated build → gate → staging-probe → promote pipeline, with a release manifest per build (ship.py)',
+            'Public GitHub repo + private release mirror'],
     },
     {
         day: 3, title: 'Auth & onboarding hardening', status: 'planned', value: 12,
-        description: 'A user can sign up, log in, and create a workspace without the flow silently failing. '
-            + 'Includes the real backend (not a mock) the rest of the product is built on.',
-        deliverables: ['Real backend auth (PocketBase)', 'Workspace creation flow, reproduced end-to-end and fixed when broken',
-            'Team roles per workspace (owner/admin/editor/viewer), not just single-owner'],
+        description: 'A person — or a Citadel Nexus seat — can sign in and reach a workspace without the flow '
+            + 'silently failing, on the real backend (not a mock) the rest of the platform is built on. '
+            + 'What landed: PocketBase auth, and seat sign-in over OCN — a CitadelKey Ed25519 envelope posted to '
+            + '/api/ocn/login, verified by the rooms sidecar on loopback, never a shared password '
+            + '(pb_hooks/ocn-login.pb.js, apps/web/src/lib/ocnLogin.js, docs/architecture/BUILDANDDO_OCN_LOGIN.md). '
+            + 'Measured on staging 2026-09-11: seat c-one signed in and could read 23 of 24 collections. '
+            + 'Not yet measured: a workspace created end-to-end through onboarding — the staging audit shows zero workspaces.',
+        deliverables: ['Real backend auth (PocketBase)', 'Seat sign-in over OCN with a CitadelKey, so guilds and agents log in the same way people do',
+            'Team roles per workspace (owner/admin/editor/viewer) as a migration; multi-user behaviour still to be measured',
+            'Workspace creation through onboarding, end-to-end — open'],
     },
     {
         day: 5, title: 'Workspace collections live', status: 'planned', value: 20,
         description: 'The actual data model behind every workspace panel — evidence, missions, signals, '
-            + 'workflows, roadmap items — backed by a real database with real access rules, not placeholders.',
-        deliverables: ['Backend deployed for real (was unused scaffolding until this sprint)',
-            'Role-aware access rules verified with real multi-user accounts, not assumed',
-            'Public/private boundary scan wired into CI so nothing internal leaks by accident'],
+            + 'workflows, roadmap items — backed by a real database with real access rules, not placeholders. '
+            + 'What landed: 35 migrations reconciled against the production disk and made safe for a fresh install '
+            + '(docs/architecture/POCKETBASE_MIGRATION_DRIFT_2026-09-11.md, apps/pocketbase/tools/check_migration_order.mjs, '
+            + 'commit 2510ac6), and a staging backend proxied on its own path and isolated from production data.',
+        deliverables: ['Backend deployed for real, on staging and production, from the same migration set',
+            'Migration order checked by a tool, not by hoping production applied them first',
+            'Public/private boundary scan wired into CI (scripts/ci/verify_public_boundary.py)',
+            'Role-aware access rules verified with real multi-user accounts — open'],
     },
     {
         day: 7, title: 'Signals pipeline MVP', status: 'planned', value: 30,
@@ -112,21 +128,26 @@ const PLANNED_MILESTONES = [
         description: 'Letting a user compose a repeatable automation from the same building blocks the '
             + 'platform itself uses, instead of a one-off script per project.',
         deliverables: ['Workflow records with a real owner/workspace scope', 'A visual builder for the common cases',
-            'Connectors reusing the same evidence/audit model as everything else, not a parallel system'],
+            'Steps that reuse the same evidence/audit model as everything else, so a learner’s workflow is verified the same way the platform’s own is'],
     },
     {
-        day: 13, title: 'Service connectors (Firecrawl, n8n)', status: 'planned', value: 60,
-        description: 'Real external integrations for research and automation — website/content extraction and '
-            + 'workflow orchestration — each with a stated data boundary, not blanket credential access.',
-        deliverables: ['Firecrawl for controlled web research', 'Self-hosted n8n for orchestration',
-            'Bounded adapter authority per connector, not a generic admin key'],
+        day: 13, title: 'Living Rooms and public-record bridges', status: 'planned', value: 60,
+        description: 'Where people and Citadel Nexus guilds actually work together: Living Rooms that project '
+            + 'live guild activity into a workspace, and bridges that carry the verified record out to the public '
+            + 'surfaces (wiki, forum, Discord, Reddit) — each with a stated data boundary, not blanket credential access. '
+            + 'The rooms sidecar and RoomsPage exist in the repository, but the projection route is not mounted on '
+            + 'staging, so nothing here is verified yet.',
+        deliverables: ['Living Rooms reading live projections on staging (route mounted and probed, not just present in the repo)',
+            'Public-record bridges: wiki, forum, Discord, Reddit — one canonical event, projected outward',
+            'Bounded authority per bridge, not a generic admin key'],
     },
     {
-        day: 15, title: 'ERP foundation', status: 'planned', value: 70,
-        description: 'The unglamorous backbone — contacts, objectives, tasks — that every other workspace '
-            + 'feature (missions, signals, evidence) actually needs to point at something real.',
-        deliverables: ['Contacts/objectives/tasks with the same RBAC model as the rest of the workspace',
-            'Cross-links from missions/signals into ERP records, not a disconnected module'],
+        day: 15, title: 'Objectives, tasks and guild contacts', status: 'planned', value: 70,
+        description: 'The unglamorous backbone of learning by doing — the objective a learner picks, the bounded tasks '
+            + 'it breaks into, and the guild members and agents working it — so missions, signals and evidence '
+            + 'point at something real rather than a disconnected module.',
+        deliverables: ['Objectives, tasks and guild contacts with the same RBAC model as the rest of the workspace',
+            'Cross-links from missions and signals into those records, so a receipt always names the objective it served'],
     },
     {
         day: 17, title: 'Evidence ledger & verification', status: 'planned', value: 80,
@@ -146,7 +167,9 @@ const PLANNED_MILESTONES = [
     {
         day: 21, title: 'Sprint review — verified replay', status: 'planned', value: 100,
         description: 'Every milestone above gets replayed against its own stated evidence bar, in public — '
-            + 'not summarized as "done," but shown with what was actually verified and what wasn’t.',
+            + 'not summarized as "done," but shown with what was actually verified and what wasn’t. '
+            + 'The first replay happened on sprint day 3 (2026-09-11): days 1, 3 and 5 recorded with evidence, '
+            + 'everything else left as the plan it still is.',
         deliverables: ['Public test suite results, not just a green checkmark', 'An honest list of what remains open',
             'This roadmap updated to reflect what actually happened, not the original plan'],
     },
