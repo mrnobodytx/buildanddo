@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-PURPOSE-001 | CAPS=B | Seat=C-ONE
 import React from 'react';
 import { Section, SectionLabel } from '@/components/site/ui';
 import {
@@ -11,12 +12,12 @@ export const FAQ_ITEMS = [
     {
         question: 'What is BuildAndDo?',
         answer:
-            'BuildAndDo is early-stage software for small-business owners. It helps you notice important changes in your business, understand them in plain language, approve a bounded mission, and verify what happened — so you get operational help without automation jargon.',
+            'BuildAndDo is an educational, collaborative platform. You learn by doing real, verified work together with Citadel Nexus guilds and agents: pick an objective, work it in bounded steps, and keep a receipt for what was actually verified. It is early-stage software, and it says so wherever a feature is not there yet.',
     },
     {
         question: 'Is BuildAndDo a chatbot?',
         answer:
-            'No. You describe problems in plain English, but BuildAndDo is not an open-ended chatbot. It turns what you describe into a bounded mission with a clear goal and scope, and it shows you the evidence when the mission is done.',
+            'No. You describe what you want to learn or build in plain English, but BuildAndDo is not an open-ended chatbot. It turns what you describe into a bounded mission with a clear goal and scope, works it with you and your guild, and shows you the evidence when the mission is done.',
     },
     {
         question: 'Does it take actions automatically?',
@@ -26,22 +27,22 @@ export const FAQ_ITEMS = [
     {
         question: 'Who is BuildAndDo for?',
         answer:
-            'Primarily small-business owners and operators — especially appointment-based and service businesses like salons, consultants, and local providers. Beginners and vibe coders can also use the same loop to turn plain-English ideas into structured, testable workflows.',
+            'Learners, builders and collaborators who want to practise real work with real feedback — students, self-taught developers, researchers, and anyone joining a Citadel Nexus guild. Beginners can use the same loop to turn a plain-English idea into a structured, testable piece of work.',
     },
     {
-        question: 'Do I need technical skills?',
+        question: 'Do I need technical skills to start?',
         answer:
-            'No. BuildAndDo is designed for nontechnical operators. You describe the problem in plain English and it handles the structure underneath. There is nothing to code and no AI terminology to learn.',
+            'No. You describe the objective in plain English and BuildAndDo handles the structure underneath. What you learn along the way — including code, if that is what your objective needs — is the point; there is no AI terminology to learn first.',
     },
     {
-        question: 'What happens to my business data?',
+        question: 'What happens to my data and my work?',
         answer:
             'BuildAndDo is an early MVP and we are still finalizing our data practices, so we won\u2019t make claims we can\u2019t back up yet. The product is designed around observable state — you can see what it knows and what it did. We will publish full privacy details before launch, and early-access sign-ups are only used to contact you about the product.',
     },
     {
         question: 'Is BuildAndDo available now?',
         answer:
-            'BuildAndDo is in early access. We are working with a first group of small-business owners to shape the product around real problems. Join the early-access list and describe the repetitive task you would want help with.',
+            'BuildAndDo is in early access. We are working with a first group of learners and guild collaborators to shape the platform around real objectives. Join the early-access list and describe what you want to learn to do.',
     },
 ];
 
@@ -55,7 +56,7 @@ export default function Faq() {
                         Direct answers, no hype
                     </h2>
                     <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                        The questions a first-time business owner would actually ask.
+                        The questions a first-time learner or collaborator would actually ask.
                     </p>
                 </div>
 

@@ -2,6 +2,7 @@
 import React from 'react';
 import { Activity, Mail, MessageCircle, BookOpen, Users, Github } from 'lucide-react';
 import { PUBLIC_LINKS } from '@/lib/publicLinks';
+import { PURPOSE } from '@/lib/purpose';
 
 const DISCORD_INVITE_URL = PUBLIC_LINKS.discord;
 const WIKI_URL = PUBLIC_LINKS.wiki;
@@ -9,13 +10,16 @@ const FORUM_URL = PUBLIC_LINKS.forum;
 const GITHUB_URL = PUBLIC_LINKS.github;
 const CONTRIBUTING_URL = PUBLIC_LINKS.contributing;
 
+// Absolute routes so the footer works from /roadmap and /practice too.
 const PRODUCT_LINKS = [
-    { label: 'At a glance', href: '#glance' },
-    { label: 'Challenge Desk', href: '#challenge-desk' },
-    { label: 'Evidence Ledger', href: '#evidence-ledger' },
-    { label: 'Daily Edition', href: '#daily-edition' },
-    { label: 'Field Manual', href: '#field-manual' },
-    { label: 'FAQ', href: '#faq' },
+    { label: 'At a glance', href: '/#glance' },
+    { label: 'Challenge Desk', href: '/#challenge-desk' },
+    { label: 'Evidence Ledger', href: '/#evidence-ledger' },
+    { label: 'Daily Edition', href: '/#daily-edition' },
+    { label: 'Field Manual', href: '/#field-manual' },
+    { label: 'Practice library', href: '/practice' },
+    { label: 'Roadmap', href: '/roadmap' },
+    { label: 'FAQ', href: '/#faq' },
 ];
 
 export default function Footer() {
@@ -39,9 +43,10 @@ export default function Footer() {
                             </span>
                         </a>
                         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                            Early-stage software that helps small-business owners notice changes,
-                            understand them in plain language, approve a bounded mission, and verify
-                            what happened.
+                            {PURPOSE.subhead}
+                        </p>
+                        <p className="mt-2 max-w-sm font-evidence text-[11px] uppercase tracking-[0.14em] text-muted-foreground/80">
+                            {PURPOSE.tagline}
                         </p>
                     </div>
 
@@ -70,7 +75,7 @@ export default function Footer() {
                         <ul className="mt-4 space-y-2.5">
                             <li>
                                 <a
-                                    href="#early-access"
+                                    href="/#early-access"
                                     className="text-sm font-medium text-primary transition-colors hover:brightness-125"
                                 >
                                     Join early access

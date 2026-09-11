@@ -124,7 +124,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-11T17:53:15.996783+00:00",
+  "generated_at": "2026-09-11T19:22:21.625295+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -200,6 +200,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md",
         "status": "proposed",
         "title": "Server-side CRUD, latency and error telemetry from PocketBase hooks"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PURPOSE-001",
+        "risk": "A0",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PURPOSE-001.md",
+        "status": "in_progress",
+        "title": "One canonical purpose statement - educational collaborative platform, read by every public surface"
       },
       {
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
@@ -366,7 +373,7 @@
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py"
     ],
-    "migrations": 17,
+    "migrations": 35,
     "python_files": 55,
     "services": [
       "buildanddo_mcp",
@@ -375,23 +382,23 @@
       "buildanddo_visual_substrate",
       "praxis_evidence"
     ],
-    "tracked_files": 394,
-    "web_source_files": 154
+    "tracked_files": 422,
+    "web_source_files": 162
   },
   "schema_version": 1,
   "summary": {
     "findings": 8,
     "findings_high": 7,
     "pipelines": 5,
-    "srs_open": 15,
-    "srs_total": 18,
+    "srs_open": 16,
+    "srs_total": 19,
     "unwired_gates": 3
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 11,
+    "js_test_files": 13,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

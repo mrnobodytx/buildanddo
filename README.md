@@ -1,8 +1,10 @@
 # BuildAndDo
 
-Early-stage software that turns "I want X" into a bounded, verified next step —
-build, code, or a real-world objective. This repo is the public build-in-public
-source for [buildanddo.com](https://buildanddo.com).
+BuildAndDo is an educational, collaborative platform: people learn by doing
+real, verified work together with Citadel Nexus guilds and agents. You pick an
+objective — build, code, research, or a real-world goal — work it in bounded
+steps with a guild, and keep a receipt for what was actually verified. This repo
+is the public build-in-public source for [buildanddo.com](https://buildanddo.com).
 
 - **Live site:** https://buildanddo.com
 - **Roadmap:** https://buildanddo.com/roadmap
@@ -10,6 +12,21 @@ source for [buildanddo.com](https://buildanddo.com).
 - **Wiki** (canonical development record): https://wiki.buildanddo.com
 - **Forum:** https://forum.buildanddo.com
 - **Discord:** https://discord.gg/vTDZxmpHHC
+
+## What BuildAndDo is
+
+- **An educational platform.** The point is what you learn by doing the work,
+  not a service that does the work for you.
+- **Collaborative.** Objectives are worked with Citadel Nexus guilds — people
+  and agents — and every step is recorded so others can audit and learn from it.
+- **Verified, or labelled otherwise.** Nothing here is invented. A claim is
+  verified only when evidence exists; until then it says proposed, pending, or
+  Unknown. The [roadmap](https://buildanddo.com/roadmap) applies the same rule
+  to the product itself.
+
+The canonical wording lives in `apps/web/src/lib/purpose.js`; every public
+surface reads it from there, and `purpose.test.js` keeps the site's
+`index.html` in step with it.
 
 ## Quick start
 

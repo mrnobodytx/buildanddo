@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-PURPOSE-001 | CAPS=B | Seat=C-ONE
 import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
@@ -16,6 +17,7 @@ import {
     PaperCard,
     EvidenceChip,
 } from '@/components/site/ui';
+import { PURPOSE } from '@/lib/purpose';
 
 const fade = (delay = 0, reduce) => ({
     initial: { opacity: 0, y: reduce ? 0 : 14 },
@@ -29,36 +31,36 @@ const FLOW = [
         icon: Radar,
         label: 'Observe',
         tone: 'amber',
-        title: 'Friday no-shows rose to 25%',
-        detail: 'Six unused slots over three weeks — about half a day of lost chair time.',
-        chip: 'Signal log · 3 weeks',
+        title: 'The API has no tests and no deploy',
+        detail: 'A learner wants to ship one endpoint properly. Known: the code runs locally. Unknown: whether it works anywhere else.',
+        chip: 'Objective · declared'
     },
     {
         key: 'understand',
         icon: MessageSquareText,
         label: 'Understand',
         tone: 'violet',
-        title: 'Long waits make cancellations likelier',
-        detail: 'Known: booking records. Assumed: no Friday reminders were sent.',
-        chip: 'Known vs assumed',
+        title: 'Guild review names the gap',
+        detail: 'Known: no test suite, no staging target. Assumed: a real deploy would fail. The guild scopes the first step.',
+        chip: 'Known vs assumed'
     },
     {
         key: 'act',
         icon: Target,
         label: 'Act',
         tone: 'violet',
-        title: "Remind next Friday's 6 bookings",
-        detail: 'Owner reviews the wording, then approves. Scope: this Friday only.',
-        chip: 'Awaiting approval',
+        title: 'Write tests, then ship to staging',
+        detail: 'The learner approves the plan before anything runs. Scope: one endpoint, one staging deploy.',
+        chip: 'Awaiting approval'
     },
     {
         key: 'verify',
         icon: BadgeCheck,
         label: 'Verify',
         tone: 'teal',
-        title: '8 of 10 clients confirmed',
-        detail: 'Two cancelled slots refilled from the waitlist within an hour.',
-        chip: 'Recorded outcome',
+        title: 'Tests green, staging probe passed',
+        detail: 'The receipt links the test run and the probe. Without both, the step would say pending, not done.',
+        chip: 'Recorded outcome'
     },
 ];
 
@@ -90,7 +92,7 @@ function CockpitHero({ reduce }) {
                     <span className="h-2 w-2 rounded-full bg-[hsl(var(--paper-border))]" />
                 </div>
                 <p className="text-xs font-medium text-paper-muted">
-                    BuildAndDo · Luna Nail Studio
+                    BuildAndDo · a learner and their guild
                 </p>
                 <Badge tone="paper" className="ml-auto">
                     Illustrative demo
@@ -100,7 +102,7 @@ function CockpitHero({ reduce }) {
             <div className="space-y-5 p-4 sm:p-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="font-display text-sm font-semibold text-paper-fg">
-                        Mission · Reduce Friday no-shows
+                        Mission · Ship one endpoint, verified
                     </p>
                     <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-paper-muted">
                         <StatusDot tone="violet" pulse={!reduce} />
@@ -192,8 +194,8 @@ function CockpitHero({ reduce }) {
                 </div>
 
                 <p className="text-[11px] leading-relaxed text-paper-muted">
-                    Fictional sample for a fictional salon. Not a live integration or customer
-                    result — open the demo below to step through the full mission.
+                    Fictional sample of a learning mission. Not a live integration or a real
+                    result — open the demo below to step through the full loop.
                 </p>
             </div>
         </PaperCard>
@@ -219,7 +221,7 @@ export default function Hero() {
                     <motion.div {...fade(0, reduce)}>
                         <Badge tone="violet">
                             <StatusDot tone="violet" pulse={!reduce} />
-                            Early access · small-business operating help
+                            Early access · learn by doing, with a guild
                         </Badge>
                     </motion.div>
 
@@ -227,16 +229,15 @@ export default function Hero() {
                         {...fade(0.08, reduce)}
                         className="mt-5 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl"
                     >
-                        Turn a business problem into a verified next step.
+                        {PURPOSE.headline}
                     </motion.h1>
 
                     <motion.p
                         {...fade(0.16, reduce)}
                         className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
                     >
-                        BuildAndDo helps small-business owners notice important changes,
-                        understand them in plain language, create a bounded mission, and verify
-                        what happened. You approve every step before anything runs.
+                        {PURPOSE.subhead} You approve every step before anything runs, and
+                        a step only counts as verified when the evidence exists.
                     </motion.p>
 
                     <motion.div
@@ -248,7 +249,7 @@ export default function Hero() {
                             <ArrowRight className="h-4 w-4" />
                         </Button>
                         <Button href="#demo" variant="secondary" size="lg">
-                            See the demo
+                            See an illustrative mission
                             <ArrowDown className="h-4 w-4" />
                         </Button>
                     </motion.div>
@@ -257,7 +258,8 @@ export default function Hero() {
                         {...fade(0.32, reduce)}
                         className="mt-5 text-xs leading-relaxed text-muted-foreground/80"
                     >
-                        No automation jargon. No black box. You stay in control of every action.
+                        No automation jargon. No black box. You stay in control of every action,
+                        and nothing on this site presents an invented result as real.
                     </motion.p>
                 </div>
 

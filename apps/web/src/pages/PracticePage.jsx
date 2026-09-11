@@ -40,7 +40,7 @@ export default function PracticePage() {
             <Seo title="BuildAndDo — Practice library" siteName="BuildAndDo" type="website" />
 
             <Header />
-            <main id="main-content" tabIndex={-1} className="outline-none">
+            <main id="main-content" tabIndex={-1} className="pt-14 outline-none">
             <div className="rule-double" />
 
             <Section className="py-14 sm:py-20">

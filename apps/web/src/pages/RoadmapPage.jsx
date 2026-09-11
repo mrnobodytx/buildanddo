@@ -515,7 +515,7 @@ export default function RoadmapPage() {
 
             <Header />
 
-            <main id="main-content" tabIndex={-1} className="outline-none">
+            <main id="main-content" tabIndex={-1} className="pt-14 outline-none">
             <div className="rule-double" />
             <Section className="py-14 sm:py-20">
                 <SectionLabel icon={Gauge}>Operational Roadmap</SectionLabel>
@@ -523,7 +523,8 @@ export default function RoadmapPage() {
                     A 21-day sprint, plotted like a market chart.
                 </h1>
                 <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                    BuildAndDo&rsquo;s near-term roadmap is a planned development
+                    BuildAndDo is an educational, collaborative platform built in
+                    public, and this is its near-term roadmap: a planned development
                     sprint, drawn as an old-school stock-market plot. Each marker
                     is a milestone in the sprint. The curve is a plan, not
                     telemetry — it shows intended cumulative completion, not real

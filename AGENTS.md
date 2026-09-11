@@ -21,6 +21,12 @@ read `CONTRIBUTING.md` first.
 
 ## What this repo is
 
+BuildAndDo is an educational, collaborative platform: people learn by doing
+real, verified work together with Citadel Nexus guilds and agents. It is not a
+tool that sets up or runs a company on someone's behalf. The canonical purpose
+statement is `apps/web/src/lib/purpose.js`; copy that describes the product
+reads it from there (SRS-BUILDANDDO-PURPOSE-001).
+
 - `apps/web` — React + Vite + TypeScript frontend (public site).
 - `apps/pocketbase` — PocketBase backend, schema shipped via `pb_migrations/`.
 - `services/praxis_evidence` — evidence fabric, tested against a live backend.
