@@ -16,7 +16,8 @@
 #              VERIFIED_BY python -m services.buildanddo_visual_substrate --selftest
 # Intent:      Entry point: --serve runs the sidecar, --health prints custody without
 #              secrets, --selftest proves every negative control offline against an
-#              in-process verifier that checks envelopes exactly as Citadel Nexus does.
+#              in-process verifier that checks envelopes exactly as Citadel Nexus does,
+#              plus the OCN login verify route (valid / unknown / replay / audience / revoked).
 # ───────────────────────────────────────────────────────────────
 """``python -m services.buildanddo_visual_substrate {--serve|--selftest|--health}``
 
@@ -40,13 +41,15 @@ import os
 import sys
 import tempfile
 import threading
+import time
 from pathlib import Path
 from typing import Any
 
 from .bridge_client import BridgeClient, UpstreamResponse
-from .citadelkey import (AUDIENCE, HAVE_CRYPTO, KEY_FILE_ENV, Identity, Signer,
-                         b64u_decode, custody_status, load_private_key, payload_bytes,
-                         pubkey_fp, sha256_hex, signed_message, signed_obj)
+from .citadelkey import (AUDIENCE, HAVE_CRYPTO, KEY_FILE_ENV, LOGIN_AUDIENCE, Identity,
+                         NonceStore, PeerRegistry, Signer, b64u_decode, custody_status,
+                         load_private_key, payload_bytes, pubkey_fp, sha256_hex,
+                         signed_message, signed_obj)
 from .server import RoomsState, build_state, make_server, serve_forever
 
 
@@ -178,10 +181,130 @@ def _http_get(port: int, path: str) -> tuple[int, dict[str, Any] | None, bytes]:
         return resp.status, None, raw
 
 
+def _http_post(port: int, path: str, body: dict[str, Any]) -> tuple[int, dict[str, Any] | None]:
+    raw = json.dumps(body).encode("utf-8")
+    conn = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+    conn.request("POST", path, body=raw, headers={"Content-Type": "application/json",
+                                                  "Content-Length": str(len(raw))})
+    resp = conn.getresponse()
+    data = resp.read()
+    conn.close()
+    try:
+        return resp.status, json.loads(data.decode("utf-8"))
+    except ValueError:
+        return resp.status, None
+
+
 def _serve_in_thread(state: RoomsState) -> tuple[Any, int]:
     httpd = make_server(state, ("127.0.0.1", 0))
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     return httpd, httpd.server_address[1]
+
+
+def _login_payload() -> dict[str, Any]:
+    return {"login": "buildanddo", "ts_bucket": time.strftime("%Y-%m-%dT%H", time.gmtime())}
+
+
+def selftest_ocn_login(check: Any, tmp: Path, fake: FakeCitadelNexus, tenant_signer: Signer) -> None:
+    """OCN login verify route: the sidecar is now a verifier for SEAT envelopes.
+
+    Keys are ephemeral (generated here, never written anywhere but the temp
+    registry copy as PUBLIC keys). The nonce ledger is a temp file so the replay
+    control also proves persistence across a NonceStore reload.
+    """
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+    rig1 = Signer(Ed25519PrivateKey.generate(), Identity("rig1", "rig1", "rig1-operator"))
+    forge = Signer(Ed25519PrivateKey.generate(), Identity("forge", "rig2", "forge-guildmaster"))
+    stranger = Signer(Ed25519PrivateKey.generate(), Identity("intruder", "nowhere", "nobody"))
+    rows = [
+        {"seat_id": "rig1", "agent_id": "rig1-operator", "rig": "rig1", "env": None,
+         "pubkey_hex": rig1.pubkey_hex, "pubkey_fp": rig1.pubkey_fp, "revoked_at": None},
+        {"seat_id": "forge", "agent_id": "forge-guildmaster", "rig": "rig2", "env": None,
+         "pubkey_hex": forge.pubkey_hex, "pubkey_fp": forge.pubkey_fp,
+         "revoked_at": "2026-09-01T00:00:00Z"},
+    ]
+    registry_file = tmp / "seat_keypairs.public.json"
+    registry_file.write_text(json.dumps({"seats": rows}), encoding="utf-8")
+    registry = PeerRegistry.from_env(str(registry_file))
+    nonce_file = tmp / "rooms" / "seen_nonces.jsonl"
+    state = build_state(client=BridgeClient(tenant_signer, "https://fake.invalid", fake),
+                        custody={"custody": "PASS"}, registry=registry, nonces=NonceStore(nonce_file))
+    httpd, port = _serve_in_thread(state)
+    payload = _login_payload()
+
+    def verify(header: str, aud: str = LOGIN_AUDIENCE, pl: Any = payload) -> tuple[int, dict[str, Any] | None]:
+        return _http_post(port, "/api/rooms/verify", {"header": header, "payload": pl, "audience": aud})
+
+    valid = rig1.header(payload, LOGIN_AUDIENCE)
+    status, body = verify(valid)
+    check("ocn verify: valid seat -> 200 ok with seat identity",
+          status == 200 and (body or {}).get("ok") is True and body.get("seat_id") == "rig1"
+          and body.get("pubkey_fp") == rig1.pubkey_fp and body.get("rig") == "rig1",
+          {"status": status, "body": body})
+    status, body = verify(valid)
+    check("ocn verify: replayed envelope -> 401 replay",
+          status == 401 and (body or {}).get("ok") is False and "replay" in str(body.get("reason")),
+          {"status": status, "body": body})
+    status, body = verify(stranger.header(payload, LOGIN_AUDIENCE))
+    check("ocn verify: unknown seat -> 401 unknown seat",
+          status == 401 and "unknown seat" in str((body or {}).get("reason")),
+          {"status": status, "body": body})
+    status, body = verify(rig1.header(payload, AUDIENCE))
+    check("ocn verify: wrong audience -> 401 audience mismatch",
+          status == 401 and "audience mismatch" in str((body or {}).get("reason")),
+          {"status": status, "body": body})
+    status, body = verify(forge.header(payload, LOGIN_AUDIENCE))
+    check("ocn verify: revoked seat -> 401 revoked",
+          status == 401 and "revoked" in str((body or {}).get("reason")),
+          {"status": status, "body": body})
+    imposter = Signer(stranger._priv, Identity("rig1", "rig1", "rig1-operator"))  # claims rig1, wrong key
+    status, body = verify(imposter.header(payload, LOGIN_AUDIENCE))
+    check("ocn verify: right seat, wrong private key -> 401",
+          status == 401 and str((body or {}).get("reason")) in ("bad signature", "pubkey_fp mismatch (key rotated?)"),
+          {"status": status, "body": body})
+    status, body = verify(rig1.header({"login": "buildanddo", "ts_bucket": "1999-01-01T00"}, LOGIN_AUDIENCE))
+    check("ocn verify: payload signed for another bucket -> 401 payload hash mismatch",
+          status == 401 and "payload hash" in str((body or {}).get("reason")),
+          {"status": status, "body": body})
+    status, body = verify("not-base64url!!", LOGIN_AUDIENCE)
+    check("ocn verify: malformed header -> 401 malformed",
+          status == 401 and "malformed" in str((body or {}).get("reason")),
+          {"status": status, "body": body})
+    status, body = verify(rig1.header(payload, LOGIN_AUDIENCE), "citadel-nexus-rooms")
+    check("ocn verify: audience not served -> 400", status == 400, {"status": status, "body": body})
+    status, body, _ = _http_get(port, "/api/rooms/health")
+    check("health reports verifier READY with public registry facts only",
+          status == 200 and body["verifier"]["state"] == "READY"
+          and body["verifier"]["registry"]["seats"] == 2 and body["verifier"]["registry"]["revoked"] == 1
+          and rig1.pubkey_hex not in json.dumps(body),
+          {"verifier": body["verifier"]})
+    httpd.shutdown()
+
+    # nonce ledger persistence: a fresh NonceStore over the same file still refuses the replay
+    reloaded = NonceStore(nonce_file)
+    state = build_state(client=BridgeClient(tenant_signer, "https://fake.invalid", fake),
+                        custody={"custody": "PASS"}, registry=registry, nonces=reloaded)
+    httpd, port = _serve_in_thread(state)
+    status, body = verify(valid)
+    check("ocn verify: replay refused after nonce ledger reload",
+          status == 401 and "replay" in str((body or {}).get("reason")) and len(reloaded) >= 1,
+          {"status": status, "body": body, "ledger": len(reloaded)})
+    httpd.shutdown()
+
+    # no registry copy: the verifier is UNMEASURED and fails closed
+    state = build_state(client=BridgeClient(tenant_signer, "https://fake.invalid", fake),
+                        custody={"custody": "PASS"}, registry=None, nonces=NonceStore(None))
+    state.registry = None
+    httpd, port = _serve_in_thread(state)
+    status, body = verify(rig1.header(payload, LOGIN_AUDIENCE))
+    check("ocn verify: no peer registry -> 503 peer_registry_unmeasured",
+          status == 503 and (body or {}).get("reason") == "peer_registry_unmeasured",
+          {"status": status, "body": body})
+    status, body, _ = _http_get(port, "/api/rooms/health")
+    check("health reports verifier UNMEASURED without a registry copy",
+          status == 200 and body["verifier"]["state"] == "UNMEASURED",
+          {"verifier": body["verifier"]})
+    httpd.shutdown()
 
 
 def selftest() -> int:
@@ -318,6 +441,9 @@ def selftest() -> int:
         status, body, _ = _http_get(port, "/api/rooms/projection/nope")
         check("unknown room -> 404 locally", status == 404, {"status": status, "body": body})
         httpd.shutdown()
+
+        # 10. OCN login: the sidecar verifies SEAT envelopes with public keys only
+        selftest_ocn_login(check, Path(tmp), fake, tenant_signer)
 
     all_pass = all(r["pass"] for r in results)
     print(json.dumps({"srs": "SRS-BUILDANDDO-LIVE-UTILIZATION-001", "selftest": "simulated",
