@@ -5,7 +5,7 @@
 # SRS:         SRS-BUILDANDDO-ROADMAP-001
 # CAPS:        pending
 # CK:          pending
-# Seat:        BITS-CODEGEN, C-ONE (verify CLI, 2026-09-11 reframe)
+# Seat:        BITS-CODEGEN, C-ONE (verify CLI, 2026-09-11 reframe; plan-clock split)
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
 # Depends:     none
@@ -40,6 +40,26 @@ The file is git-ignored (state/ is local operational state), so the projection
 only shows a milestone as verified on the clone that recorded it - the ship
 rail's clone. The evidence string is public: it is rendered on /roadmap.
 
+Two clocks, one of them canonical
+---------------------------------
+
+``SPRINT_START`` is the PLAN clock: calendar days counted from the strategy
+window start (2026-09-03, which is also the first commit of this repository).
+It exists so the plan curve can be read on any checkout with nothing but a
+calendar. It is NOT the canonical sprint day.
+
+The CANONICAL day comes from the estate's development-continuity projection
+(``state/development_continuity/sprint_progression/latest.json``), whose
+``day_index_rule`` is operator-declared and anchored differently (day 8 is
+anchored to 2026-09-08). ``scripts/deploy/roadmap_status.py`` consumes that
+projection and, when the two clocks disagree, the public page shows BOTH and
+flags the disagreement rather than picking one silently.
+
+The verified-milestone figure this module computes is published as
+``plan_verified_pct`` - milestone evidence against the plan curve. It is never
+the measured progression (verified acceptance criteria), which only the
+continuity projection can report. PLAN != REALITY; the two are never averaged.
+
 Standard library only, matching the rest of scripts/ci/.
 """
 from __future__ import annotations
@@ -52,7 +72,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 CAMPAIGN_ID = "citadel-21-day-2026-09"
-SPRINT_START = dt.date(2026, 9, 9)
+# Plan clock only (strategy window start == first repository commit 351559a).
+# The canonical sprint day is read from the continuity projection, not here.
+SPRINT_START = dt.date(2026, 9, 3)
 SPRINT_DAYS = 21
 
 STATE_PATH = ROOT / "state" / "roadmap" / "sprint.json"
@@ -230,7 +252,10 @@ def _actual_pct(state: dict) -> float:
 
 
 def sprint_day(today: dt.date | None = None) -> int:
-    """Return the 1-based sprint day, clamped to the sprint window.
+    """Return the 1-based PLAN-clock sprint day, clamped to the sprint window.
+
+    Calendar days from ``SPRINT_START``. This is the plan day, not the
+    canonical day (see the module docstring).
 
     Args:
         today: Date to measure from; defaults to the current UTC date.
@@ -257,7 +282,8 @@ def _projection(state: dict, day: int) -> dict:
         "sprint_start": SPRINT_START.isoformat(),
         "sprint_day": day,
         "planned_pct": round(_planned_pct(day), 1),
-        "actual_pct": _actual_pct(state),
+        # Milestone evidence against the plan curve - never measured progression.
+        "plan_verified_pct": _actual_pct(state),
         "verified_milestones": sum(1 for m in state["milestones"] if _is_verified(m)),
         "total_milestones": len(MILESTONES),
         "state_source": state["source"],

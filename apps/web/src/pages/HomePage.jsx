@@ -22,6 +22,7 @@ import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import EarlyAccess from '@/components/site/EarlyAccess';
 import Faq, { FAQ_ITEMS } from '@/components/site/Faq';
+import RoadmapPulse from '@/components/roadmap/RoadmapPulse';
 import Seo from '@/components/Seo';
 import pb from '@/lib/pocketbaseClient';
 import { useAuth } from '@/contexts/AuthContext';
@@ -588,6 +589,8 @@ export default function HomePage() {
             <main id="main-content" tabIndex={-1} className="pt-14 outline-none">
                 <Masthead />
                 <FrontPageHero />
+                {/* Roadmap pulse - measured progression for anonymous visitors, UNMEASURED-safe */}
+                <RoadmapPulse />
                 <BusinessAtAGlance />
                 <ChallengeDesk />
                 <EvidenceLedger />

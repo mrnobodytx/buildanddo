@@ -4,7 +4,7 @@
 # SRS:         SRS-BUILDANDDO-ROADMAP-001
 # CAPS:        pending
 # CK:          pending
-# Seat:        BITS-CODEGEN
+# Seat:        BITS-CODEGEN, C-ONE (2026-09-11 progression consumer addendum)
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
 # Depends:     scripts/deploy/roadmap_status.py, scripts/deploy/ship.py,
@@ -112,3 +112,80 @@ ship.
    `grep -n wiggle apps/web/src/pages/RoadmapPage.jsx` returns nothing.
 6. Public boundary is clean.
    `python scripts/ci/verify_public_boundary.py`
+
+## Addendum 2026-09-11 — the roadmap is a consumer, not a second engine
+
+**Request:** `.bits/queue/REQ-20260911-ROADMAP-TRUTH-001.md` (dispatch request,
+awaiting VCC issuance). **Risk:** A2.
+
+The public roadmap used to carry its own progression clock (`SPRINT_START =
+2026-09-09`) and its own "actual" percentage, so the estate's canonical
+progression and the site could drift apart with no way to tell which was
+right. `roadmap_status.py` now CONSUMES the estate's development-continuity
+projection (`state/development_continuity/sprint_progression/latest.json`, env
+NAME `BUILDANDDO_PROGRESSION_FILE`) and the campaign day-index config
+(`config/campaign_21_day_progression_v1.yaml`, env NAME
+`BUILDANDDO_CAMPAIGN_CONFIG`) through a strict public-safe allowlist, and the
+page renders each axis as its own row. Nothing on the site computes
+progression any more.
+
+### Axes — independent, never averaged
+
+| Axis | Field | Source | What it is | What it is not |
+|------|-------|--------|------------|----------------|
+| Calendar elapsed | `progression.calendar_pct` | estate `summary.schedule_elapsed_percent` | share of the strategy window that has passed | work |
+| Plan target | `progression.planned_pct` | `sprint_cycle._planned_pct` at the canonical day when FRESH, else at the plan day | the plan curve's value | a result |
+| Measured progression | `progression.measured_pct` | estate `summary.verified_to_date_percent` | verified acceptance criteria to date, by the estate's rule | milestone evidence, the plan |
+| Verified · milestone evidence | `verified_pct` (alias `actual_pct`) | `sprint_cycle._actual_pct` | plan milestones recorded with an evidence reference | measured progression |
+| Full system | `progression.full_pct` | estate `summary.full_campaign_percent` | verified share of the whole campaign | the to-date figure |
+| Pace | `progression.pace` | estate `summary.pace_state` | the estate's pace word | a percentage |
+
+The honesty invariants the tests encode (`tests/roadmap/`, `apps/web/src/lib/__tests__/roadmapStatus.test.js`,
+`apps/web/src/components/roadmap/__tests__/ProgressionPanel.test.jsx`):
+PLAN != REALITY; MATERIALIZED != TESTED; TESTED != VERIFIED; UNKNOWN != ZERO
+(absent or unreadable input renders UNMEASURED with no number, never 0);
+SEQUENCE != CAUSE (the panel never says a milestone caused a percentage);
+MEASUREMENT-CONTRACT-CHANGE != PROGRESSION (`measurement_contract` = sha256 of
+the estate's `rule` + `day_index_rule` texts; `baseline_epoch` = the
+projection's `generated_at`; a changed hash is rendered as "contract changed",
+and a moved number under a changed hash is not progression).
+
+### The anchor contradiction — two clocks, shown side by side
+
+- The **plan clock** counts calendar days from `sprint_cycle.SPRINT_START =
+  2026-09-03`, the strategy window start and the first commit of this
+  repository (351559a). On 2026-09-11 it reads **plan day 9**.
+- The **canonical rule** (`day_index_rule`, from the campaign config) anchors
+  **day 8 to 2026-09-08** and increments by local calendar day. Applied on
+  2026-09-11 it gives **day 11**. The projection file, however, reports the day
+  it was last computed for (`sprint_day`, `current_date`), which on 2026-09-11
+  was day 9 for 2026-09-09 — the file was STALE.
+
+The page does not pick one. It shows the canonical day from the projection
+(`progression.day`), the plan day (`progression.plan_day`), the anchor facts
+(`progression.day_anchor`: `canonical_anchor_day`, `canonical_anchor_date`,
+`plan_window_start`, and `anchor_rule_day` derived at build time), and flags
+`day_disagreement` when the two clocks differ. `freshness` is FRESH only when
+the projection's `current_date` equals the build date; otherwise STALE with
+`stale_days`, and the plan target is read at the plan clock so it cannot be
+pinned to an old day. Reconciling the anchors is an operator decision, not
+something the site may do.
+
+### Public-safe allowlist
+
+Only these cross from the estate files: `campaign_id`, `day`, `total_days`,
+`current_date`, `generated_at`, the five summary numbers and counts,
+`next_hard_milestone{title,date,days_until,past}`,
+`current_focus{day,title,state}`, `day_index_rule`, `window_start`,
+`window_end`, `source_title`, and from the campaign config `anchor_day`,
+`anchor_date`, `strategy_window_start/end`, `hostinger_deadline`, `rule`. File
+paths, bars, hostnames, secret names, evidence refs and PDF references never
+cross; any string carrying a path-like fragment is dropped, and the leak-guard
+test asserts the output contains no `D:\`, `state/` or `HOSTINGER_COMP`.
+
+### Acceptance evidence (addendum)
+
+7. `py -3.13 -m unittest tests.roadmap.test_roadmap_status_progression` — 15 tests, fake estate in a temp dir.
+8. `py -3.13 scripts/deploy/roadmap_status.py` exits 0 and writes a `progression` block; with the estate absent the block is `{"state": "UNMEASURED", "reason": "PROGRESSION_FILE_ABSENT", ...}` and the build still succeeds.
+9. `npm test` in `apps/web` passes with the progression, panel and pulse suites.
+10. `py -3.13 scripts/ci/verify_public_boundary.py` — PASS.

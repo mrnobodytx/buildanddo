@@ -6,7 +6,8 @@
 // CAPS:        pending
 // CK:          pending
 // Seat:        BITS-CODEGEN, C-ONE (live sources panel, interaction layer,
-//              2026-09-11 sprint-day-3 replay of what actually landed)
+//              2026-09-11 sprint-day-3 replay of what actually landed;
+//              2026-09-11 progression consumer - axes never averaged)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     scripts/ci/sprint_cycle.py,
@@ -18,6 +19,10 @@
 //              VALIDATES scripts/ci/sprint_cycle.py
 // Intent:      Draw the sprint plan and, separately, whatever the projection
 //              actually measured - including saying it measured nothing. The
+//              Progression panel CONSUMES the estate's canonical progression
+//              (calendar, plan, measured, milestone evidence, full campaign)
+//              as separate axes that are never averaged. The plot's ACTUAL
+//              marker is milestone evidence, not measured progression. The
 //              live sources panel shows SIGNALS from each connected system,
 //              never results, and says UNMEASURED per tile when it must.
 //              Every milestone marker is a real button: mouse, touch and
@@ -34,10 +39,11 @@ import Footer from '@/components/site/Footer';
 import Seo from '@/components/Seo';
 import { Section, SectionLabel, Card, StatePill, Button } from '@/components/site/ui';
 import LiveSourcesPanel from '@/components/roadmap/LiveSourcesPanel';
+import ProgressionPanel from '@/components/roadmap/ProgressionPanel';
 import MilestoneDetailCard from '@/components/roadmap/MilestoneDetailCard';
 import StatusLegendFilter from '@/components/roadmap/StatusLegendFilter';
 import { dayForKey, ledgerId, markerId, milestoneLabel } from '@/components/roadmap/milestoneA11y';
-import { useRoadmapStatus } from '@/lib/roadmapStatus';
+import { useRoadmapStatus, progressionOf } from '@/lib/roadmapStatus';
 import { trackEvent } from '@/lib/telemetry';
 import { cn } from '@/lib/utils';
 
@@ -359,7 +365,7 @@ function MarketPlot({ activeDay, pinnedDay, onHover, onPin, live, milestones, ac
                 projection. An UNMEASURED or missing file draws nothing at all
                 rather than a marker at a number nobody computed. */}
             {actual && (
-                <g aria-label={`Actual measured progress ${actual.pct}% on day ${actual.day}`} role="img">
+                <g aria-label={`Milestone evidence ${actual.pct}% of the plan on plan day ${actual.day} - not measured progression`} role="img">
                     <line
                         x1={xFor(actual.day)} y1={PAD_T}
                         x2={xFor(actual.day)} y2={CHART_H - PAD_B}
@@ -373,7 +379,7 @@ function MarketPlot({ activeDay, pinnedDay, onHover, onPin, live, milestones, ac
                         x={xFor(actual.day)} y={yFor(actual.pct) - 14}
                         textAnchor="middle" className="font-evidence" fontSize="10" fill="hsl(var(--foreground))"
                     >
-                        ACTUAL {actual.pct}%
+                        ACTUAL (EVIDENCE) {actual.pct}%
                     </text>
                 </g>
             )}
@@ -452,14 +458,21 @@ export default function RoadmapPage() {
 
     // sprint_day is clamped here as well as in sprint_cycle.py: a status file
     // written after D21, or by an older projection, must not plot off-chart.
+    // The marker is MILESTONE EVIDENCE (verified_pct from sprint_cycle), never
+    // the measured progression the Progression panel quotes from the estate.
     const actual = useMemo(() => {
         if (!measured) return null;
-        if (!Number.isFinite(live.sprint_day) || !Number.isFinite(live.actual_pct)) return null;
+        const evidencePct = live.verified_pct ?? live.actual_pct;
+        if (!Number.isFinite(live.sprint_day) || !Number.isFinite(evidencePct)) return null;
         return {
             day: Math.max(1, Math.min(live.sprint_day, SPRINT_DAYS)),
-            pct: Math.max(0, Math.min(live.actual_pct, 100)),
+            pct: Math.max(0, Math.min(evidencePct, 100)),
         };
     }, [measured, live]);
+
+    // Canonical progression, consumed from the estate through the projection.
+    // Absent or unmeasured renders as UNMEASURED - never as zero.
+    const progression = useMemo(() => progressionOf(live), [live]);
 
     const handleHover = (day) => {
         setHoverDay(day);
@@ -553,8 +566,9 @@ export default function RoadmapPage() {
                     telemetry — it shows intended cumulative completion, not real
                     results. An item is never marked Verified from a prompt
                     alone; Verified still requires an evidence record. The
-                    red ACTUAL marker on the chart, where present, is live
-                    build/deploy telemetry, not another plan line.
+                    red ACTUAL marker on the chart, where present, is milestone
+                    evidence against the plan - not measured progression, which
+                    the Progression panel quotes separately from the estate.
                 </p>
 
                 <div className="mt-8">
@@ -569,6 +583,11 @@ export default function RoadmapPage() {
                         onClear={clearStatus}
                     />
                 </div>
+            </Section>
+
+            {/* Progression - consumed from the estate, one row per axis, never averaged */}
+            <Section className="border-t border-foreground/80 py-12 sm:py-16">
+                <ProgressionPanel progression={progression} fetchFailed={liveError} />
             </Section>
 
             {/* Market plot */}
@@ -618,8 +637,11 @@ export default function RoadmapPage() {
                         <TickerChip href="#milestone-ledger" data-testid="ticker-verified">· {verifiedCount} VERIFIED</TickerChip>
                         <span className="text-primary">· CURVE = PLAN, NOT RESULTS</span>
                         {actual && (
-                            <span>· LIVE ACTUAL: {actual.pct}% (day {actual.day})</span>
+                            <span data-testid="ticker-actual">· ACTUAL = MILESTONE EVIDENCE: {actual.pct}% (plan day {actual.day})</span>
                         )}
+                        <TickerChip href="#progression" data-testid="ticker-progression">
+                            · MEASURED PROGRESSION: {progression.state === 'UNMEASURED' ? 'UNMEASURED' : `${progression.measuredPct}%`}
+                        </TickerChip>
                         {live && !measured && <span>· LIVE DATA UNAVAILABLE</span>}
                         {live?.gate_state && (
                             <TickerChip href="#build-activity">· LAST GATE: {live.gate_state}</TickerChip>
@@ -799,9 +821,12 @@ export default function RoadmapPage() {
                         The live, editable roadmap lives in your workspace.
                     </p>
                     <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                        The dashed curve is the planned sprint. A milestone renders as
-                        verified here only when the sprint projection reports it verified
-                        with an evidence reference — never from this page&rsquo;s own defaults.
+                        The dashed curve is the plan. The ACTUAL marker is milestone
+                        evidence against that plan; a milestone renders as verified here
+                        only when the sprint projection reports it verified with an
+                        evidence reference — never from this page&rsquo;s own defaults.
+                        Measured progression is a separate axis, quoted above from the
+                        estate and never averaged with the plan.
                     </p>
                     <div className="mt-5 flex justify-center gap-2">
                         <Link to="/app/roadmap"><Button size="sm">Open workspace roadmap <ArrowRight className="h-4 w-4" /></Button></Link>
