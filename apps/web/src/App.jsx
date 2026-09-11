@@ -24,6 +24,8 @@ import WorkflowsPage from './pages/workspace/WorkflowsPage';
 import TutorialsPage from './pages/workspace/TutorialsPage';
 import ErpPage from './pages/workspace/ErpPage';
 import OperationsPage from './pages/workspace/OperationsPage';
+import FleetPage from './pages/workspace/FleetPage';
+import PlatformHealthPage from './pages/workspace/PlatformHealthPage';
 import EvidencePage from './pages/workspace/EvidencePage';
 import DailyEditionPage from './pages/workspace/DailyEditionPage';
 // Capability Passport viewer; file path retained from the former desks page so
@@ -54,6 +56,8 @@ const WORKSPACE_ROUTES = [
     { path: 'tutorials', label: 'Field Manual', element: TutorialsPage },
     { path: 'erp', label: 'ERP', element: ErpPage },
     { path: 'operations', label: 'Operations', element: OperationsPage },
+    { path: 'fleet', label: 'Fleet', element: FleetPage },
+    { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
     { path: 'desks', label: 'Specialist Desks', element: SpecialistDeskPage },
