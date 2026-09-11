@@ -127,3 +127,10 @@ srs:
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md
     notes: Blocked on a metrics sink - see .bits/handoffs/2026-09-10-bits-codegen-ide1.md
+
+  - code: SRS-BUILDANDDO-TENANT-RAIL-001
+    title: Citadel tenant rail - stage-only ship mode, controller pointer, manifest-derived CODEOWNERS
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-TENANT-RAIL-001.md
+    notes: Repo-side half only; rail tool and tenant contract live in the controller estate (seat C-ONE)

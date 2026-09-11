@@ -9,17 +9,31 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: scripts/deploy/roadmap_status.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/sprint_cycle.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "SRS-BUILDANDDO-EVIDENCE-CI-001",
       "statement": "services/praxis_evidence/run_all_tests.py is never executed by GitHub Actions"
     },
     {
-      "area": "tests",
-      "evidence": "120 source files under apps/web/src, 0 test files",
+      "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md is unregistered, so no branch may claim it",
       "severity": "high",
-      "srs": "SRS-BUILDANDDO-TEST-001",
-      "statement": "the web app has no JavaScript test runner"
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-COMMUNITY-001 has a spec but is not in the registry"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-WITNESS-001.md is unregistered, so no branch may claim it",
+      "severity": "high",
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-WITNESS-001 has a spec but is not in the registry"
     },
     {
       "area": "observability",
@@ -27,13 +41,6 @@
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-RELEASE-TAG-001",
       "statement": "RUM variables VITE_DD_ENV are documented but no tracked build path sets them"
-    },
-    {
-      "area": "observability",
-      "evidence": "the CI report action uploads reports/junit/*.xml; nothing writes there",
-      "severity": "medium",
-      "srs": "SRS-BUILDANDDO-TEST-001",
-      "statement": "no JUnit output is produced, so Datadog test visibility stays empty"
     },
     {
       "area": "governance",
@@ -55,6 +62,11 @@
       "wired_into_ci": true
     },
     {
+      "path": "scripts/ci/changelog_gen.py",
+      "referenced_by": [],
+      "wired_into_ci": true
+    },
+    {
       "path": "scripts/ci/datadog_publish.py",
       "referenced_by": [
         "scripts/deploy/ship.py"
@@ -72,6 +84,13 @@
       "path": "scripts/ci/integrity_regression_check.py",
       "referenced_by": [
         "scripts/deploy/ship.py"
+      ],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/sprint_cycle.py",
+      "referenced_by": [
+        "scripts/deploy/roadmap_status.py"
       ],
       "wired_into_ci": false
     },
@@ -98,7 +117,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-10T16:30:23.107646+00:00",
+  "generated_at": "2026-09-11T13:42:12.450404+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -141,11 +160,18 @@
         "title": "CI Visibility, DORA, build telemetry and baseline deltas"
       },
       {
-        "code": "SRS-BUILDANDDO-COMMUNITY-001",
+        "code": "SRS-BUILDANDDO-DEVENV-001",
         "risk": "A1",
-        "spec": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DEVENV-001.md",
         "status": "in_progress",
-        "title": "Community contributor infrastructure, component catalogue and seat protocol"
+        "title": "Reproducible local development environment and API documentation"
+      },
+      {
+        "code": "SRS-BUILDANDDO-EPOCH-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-EPOCH-001.md",
+        "status": "in_progress",
+        "title": "Evidence epochs with a chained Merkle root published to Datadog"
       },
       {
         "code": "SRS-BUILDANDDO-EVIDENCE-CI-001",
@@ -197,11 +223,18 @@
         "title": "Dependency vulnerability and supply-chain telemetry"
       },
       {
+        "code": "SRS-BUILDANDDO-TENANT-RAIL-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-TENANT-RAIL-001.md",
+        "status": "in_progress",
+        "title": "Citadel tenant rail - stage-only ship mode, controller pointer, manifest-derived CODEOWNERS"
+      },
+      {
         "code": "SRS-BUILDANDDO-TEST-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-TEST-001.md",
-        "status": "proposed",
-        "title": "Web unit test runner emitting JUnit for test visibility"
+        "status": "in_progress",
+        "title": "Web test runner emitting JUnit, with workspace component suites"
       },
       {
         "code": "SRS-BUILDANDDO-WORKSPACE-001",
@@ -312,22 +345,22 @@
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py"
     ],
-    "migrations": 13,
-    "python_files": 37,
+    "migrations": 16,
+    "python_files": 39,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 302,
-    "web_source_files": 120
+    "tracked_files": 342,
+    "web_source_files": 140
   },
   "schema_version": 1,
   "summary": {
-    "findings": 4,
-    "findings_high": 2,
-    "pipelines": 4,
-    "srs_open": 10,
-    "srs_total": 13,
-    "unwired_gates": 2
+    "findings": 7,
+    "findings_high": 5,
+    "pipelines": 5,
+    "srs_open": 13,
+    "srs_total": 16,
+    "unwired_gates": 3
   },
   "tests": {
     "js_runners": [

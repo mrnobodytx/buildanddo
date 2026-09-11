@@ -1,4 +1,24 @@
 #!/usr/bin/env python3
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        scripts/deploy/ship.py
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-TENANT-RAIL-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        C-ONE
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-07
+# Depends:     scripts/ci/integrity_regression_check.py, scripts/ci/evidence_epoch.py,
+#              scripts/ci/datadog_publish.py, scripts/publish/activity_publish.py,
+#              secrets/deploy.local.env (key names only)
+# EnumType:    Service
+# EnumEdges:   CONSUMES scripts/ci/integrity_regression_check.py;
+#              CONSUMES scripts/ci/evidence_epoch.py;
+#              PRODUCES state/deploy/history.jsonl; PRODUCES state/deploy/latest.json;
+#              DRIVEN_BY tools/citadel_tenant_rail.py (controller estate)
+# Intent:      One command that builds, gates, stages, probes, promotes and records -
+#              and, with --stage-only, stops at staging so the controller can stage at A2.
+# ───────────────────────────────────────────────────────────────
 """
 ship.py - the staging -> production deploy line for buildanddo.com.
 
@@ -32,8 +52,22 @@ failed gate. This is the whole gate: build+lint clean AND both live domains
 answer 200 after their respective syncs. No feature flags, no rollback logic
 yet - out of scope until this loop itself is proven (this repo's own "prove
 it" standard).
+
+Modes (argparse, added 2026-09-11 for the Citadel tenant rail,
+SRS-BUILDANDDO-TENANT-RAIL-001). The flag-less run is the line above, unchanged:
+  (no flags)     BUILD -> GATE -> STAGING -> PROMOTE -> EPOCH -> RECORD.
+  --stage-only   BUILD -> GATE -> STAGING -> RECORD. Stops after the staging
+                 probe with stopped_at="stage_only"; exits 0 on a staging 200
+                 and 1 otherwise. Production, the epoch and the publication
+                 never run. This is the A2 (local, reversible) half that the
+                 controller's `citadel_tenant_rail.py stage` drives; `promote`
+                 runs the flag-less line under an explicit A3 acknowledgement.
+  --json PATH    also write the final deploy record to PATH (the same JSON as
+                 state/deploy/latest.json) so a caller has a receipt without
+                 parsing stdout. Never changes what is deployed or recorded.
 """
 from __future__ import annotations
+import argparse
 import datetime as dt
 import json
 import shutil
@@ -311,50 +345,74 @@ def _gate() -> dict:
             "build_ok": report.get("build", {}).get("ok"), "lint_ok": report.get("lint", {}).get("ok")}
 
 
-def main() -> int:
+def _parse_args(argv: list[str] | None) -> argparse.Namespace:
+    ap = argparse.ArgumentParser(
+        prog="ship.py",
+        description="BuildAndDo staging -> production deploy line (build, gate, stage, "
+                    "promote, epoch, record). No flags = the full line.")
+    ap.add_argument("--stage-only", action="store_true",
+                    help="stop after the staging probe (stopped_at=stage_only); exit 0 on a "
+                         "staging 200, 1 otherwise; production is never touched")
+    ap.add_argument("--json", dest="json_path", metavar="PATH", default=None,
+                    help="also write the final deploy record to PATH (same JSON as "
+                         "state/deploy/latest.json)")
+    return ap.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _parse_args(argv)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     record: dict = {"started_at": dt.datetime.now(dt.timezone.utc).isoformat(), "stages": {}}
+    if args.stage_only:
+        record["stage_only"] = True
 
     build = _build()
     record["stages"]["build"] = {"ok": build["ok"]}
     if not build["ok"]:
         record["stopped_at"] = "build"
-        _finish(record)
+        _finish(record, args.json_path)
         return 1
 
     gate = _gate()
     record["stages"]["gate"] = gate
     if not gate["ok"]:
         record["stopped_at"] = "gate"
-        _finish(record)
+        _finish(record, args.json_path)
         return 1
 
     if not DIST_DIR.is_dir():
         record["stages"]["staging_sync"] = {"ok": False, "reason": "dist dir missing after a passing build"}
         record["stopped_at"] = "staging_sync"
-        _finish(record)
+        _finish(record, args.json_path)
         return 1
 
     staging_sync = _rsync(DIST_DIR, STAGING_REMOTE_DIR)
     record["stages"]["staging_sync"] = staging_sync
     if not staging_sync["ok"]:
         record["stopped_at"] = "staging_sync"
-        _finish(record)
+        _finish(record, args.json_path)
         return 1
 
     staging_probe = _probe(STAGING_URL)
     record["stages"]["staging_probe"] = staging_probe
     if not staging_probe["ok"]:
         record["stopped_at"] = "staging_probe"
-        _finish(record)
+        _finish(record, args.json_path)
         return 1
+
+    if args.stage_only:
+        # Staging is serving the gated build; the controller decides (A3) whether
+        # it is promoted. Nothing below this line runs in this mode.
+        record["stopped_at"] = "stage_only"
+        _finish(record, args.json_path)
+        return 0
 
     # Gate + live staging probe both pass -> promote the SAME build to production.
     prod_sync = _rsync(DIST_DIR, PROD_REMOTE_DIR)
     record["stages"]["prod_sync"] = prod_sync
     if not prod_sync["ok"]:
         record["stopped_at"] = "prod_sync"
-        _finish(record)
+        _finish(record, args.json_path)
         return 1
 
     prod_probe = _probe(PROD_URL)
@@ -376,18 +434,25 @@ def main() -> int:
                       "public_scrub": "PASS", "production_readback": True},
         )
 
-    _finish(record)
+    _finish(record, args.json_path)
     return 0 if prod_probe["ok"] else 1
 
 
-def _finish(record: dict) -> None:
+def _finish(record: dict, json_path: str | None = None) -> None:
     record["finished_at"] = dt.datetime.now(dt.timezone.utc).isoformat()
     record["promoted_to_production"] = record["stopped_at"] is None
     history_path = STATE_DIR / "history.jsonl"
     with history_path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(record, default=str) + "\n")
-    (STATE_DIR / "latest.json").write_text(json.dumps(record, indent=2, default=str), encoding="utf-8")
-    print(json.dumps(record, indent=2, default=str))
+    latest = json.dumps(record, indent=2, default=str)
+    (STATE_DIR / "latest.json").write_text(latest, encoding="utf-8")
+    if json_path:
+        # --json receipt: the identical record, at the caller's path. Written after
+        # history so a receipt never exists for a run the ledger does not know about.
+        out = Path(json_path)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(latest, encoding="utf-8")
+    print(latest)
 
 
 if __name__ == "__main__":

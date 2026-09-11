@@ -1,4 +1,64 @@
-* @mrnobodytx
-/.github/ @mrnobodytx
-/.buildanddo/ @mrnobodytx
-/scripts/ci/ @mrnobodytx
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/CODEOWNERS
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-TENANT-RAIL-001
+# CAPS:        pending
+# CK:          pending
+# Seat:        C-ONE
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-11
+# Depends:     config/tenants/buildanddo.collaborators.json (controller estate),
+#              .citadel/tenant.json
+# EnumType:    ConfigDoc
+# EnumEdges:   DERIVED_FROM config/tenants/buildanddo.collaborators.json;
+#              GATES pull requests on mrnobodytx/buildanddo
+# Intent:      Route review to the seats the tenant contract names, without ever
+#              listing a login GitHub cannot resolve.
+# ───────────────────────────────────────────────────────────────
+#
+# Regenerated from the controller's collaborators manifest
+# (config/tenants/buildanddo.collaborators.json, tenant_id buildanddo,
+# controller citadel-nexus). Seats and their state at generation time:
+#
+#   seat_id                   kind         github_login   state       codeowner_paths
+#   mrnobodytx                human        mrnobodytx     ACTIVE      * (owner, admin)
+#   datadog-bits              bot          datadog-bits   ACTIVE      scripts/ci/**, .github/**
+#   buildanddo-source-bridge  bridge       (null)         DECLARED    - (rig1 mirror identity, no review role)
+#   forge                     guildmaster  (null)         UNRESOLVED  apps/web/src/pages/**, apps/web/src/components/**
+#   bits-codegen              seat         (null)         UNRESOLVED  scripts/ci/**, services/**
+#   c-one                     seat         (null)         UNRESOLVED  docs/**, .citadel/**
+#
+# Rules this file follows:
+#   - Only logins GitHub can resolve appear as owners. An UNRESOLVED seat is
+#     written as a comment on its path so the intent is visible and the file
+#     stays valid; resolve the login in the manifest, then regenerate.
+#   - @mrnobodytx stays co-owner on every line, so a review requirement never
+#     depends on a bot or on a seat that cannot review.
+#   - No invite is ever sent by tooling. Adding a login here does not grant
+#     access; the owner grants it in GitHub (Settings > Collaborators), then
+#     `citadel-tenant-rail collaborators` verifies it.
+#   - Later lines win, so the specific paths follow the fallback.
+
+# Fallback: the owner reviews everything not claimed below.
+*                               @mrnobodytx
+
+# datadog-bits (bot, Datadog GitHub App): CI gates and workflow definitions.
+/scripts/ci/                    @mrnobodytx @datadog-bits
+/.github/                       @mrnobodytx @datadog-bits
+
+# Legacy owner-only path kept from the previous file.
+/.buildanddo/                   @mrnobodytx
+
+# forge (guildmaster, builder guild) - UNRESOLVED github_login.
+# When resolved, append the login to these two lines:
+/apps/web/src/pages/            @mrnobodytx
+/apps/web/src/components/       @mrnobodytx
+
+# bits-codegen (seat, data_dog_private owner) - UNRESOLVED github_login.
+# When resolved, append the login to /scripts/ci/ above and to:
+/services/                      @mrnobodytx
+
+# c-one (seat, Citadel C-ONE) - UNRESOLVED github_login.
+# When resolved, append the login to:
+/docs/                          @mrnobodytx
+/.citadel/                      @mrnobodytx
