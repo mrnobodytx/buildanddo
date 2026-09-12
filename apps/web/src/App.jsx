@@ -37,6 +37,7 @@ import SettingsPage from './pages/workspace/SettingsPage';
 import RoomsPage from './pages/workspace/RoomsPage';
 import SystemsRoomPage from './pages/workspace/SystemsRoomPage';
 import LiveExperimentRoomPage from './pages/workspace/LiveExperimentRoomPage';
+import ClassroomPage from './pages/workspace/ClassroomPage';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import {
     WorkspaceProvider,
@@ -71,6 +72,7 @@ const WORKSPACE_ROUTES = [
     { path: 'rooms/:room?', label: 'Living Rooms', element: RoomsPage },
     { path: 'rooms/systems', label: 'Systems Room', element: SystemsRoomPage },
     { path: 'rooms/live', label: 'Live Experiment', element: LiveExperimentRoomPage },
+    { path: 'classroom', label: 'Classroom', element: ClassroomPage },
     { path: 'roadmap', label: 'Roadmap', element: WorkspaceRoadmapPage },
     { path: 'settings', label: 'Settings', element: SettingsPage },
 ];
