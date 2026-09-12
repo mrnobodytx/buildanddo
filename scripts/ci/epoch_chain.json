@@ -1,9 +1,27 @@
 {
-  "history": [],
-  "history_note": "genesis; scripts/ci/evidence_epoch.py appends one entry per epoch and .github/workflows/evidence-epoch.yml commits the result",
-  "latest": null,
-  "length": 0,
+  "history": [
+    {
+      "artifact_count": 23,
+      "created_at": "2026-09-11T22:37:43Z",
+      "epoch_id": "EPOCH-20260911-01",
+      "git_sha": "0b9faeb7ec4bb95a42ce6b1fa8ba3907333314ac",
+      "previous_root": null,
+      "root_digest": "b2e1353ed46aab8dc61460b4fb548f960684cc9160fbe2874eac1a8d7927ae48",
+      "trigger": "production_deploy"
+    }
+  ],
+  "history_note": "last 50 epochs; earlier entries are in this file's git history",
+  "latest": {
+    "artifact_count": 23,
+    "created_at": "2026-09-11T22:37:43Z",
+    "epoch_id": "EPOCH-20260911-01",
+    "git_sha": "0b9faeb7ec4bb95a42ce6b1fa8ba3907333314ac",
+    "previous_root": null,
+    "root_digest": "b2e1353ed46aab8dc61460b4fb548f960684cc9160fbe2874eac1a8d7927ae48",
+    "trigger": "production_deploy"
+  },
+  "length": 1,
   "root_algorithm": "sha256-merkle-v1",
   "schema": "buildanddo.epoch-chain/v1",
-  "updated_at": null
+  "updated_at": "2026-09-11T22:37:43Z"
 }

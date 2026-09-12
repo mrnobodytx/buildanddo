@@ -1,13 +1,13 @@
 {
   "authority": "candidate_only",
-  "generated_at": "2026-09-11T21:50:19.098007+00:00",
+  "generated_at": "2026-09-11T22:36:50.711546+00:00",
   "github_actor": null,
   "github_actor_id": null,
   "github_ref": null,
   "github_run_attempt": null,
   "github_run_id": null,
-  "manifest_sha256": "6c848855454ba71f531efa21ae8f935580600965c6063f0c7cd0ac88ada58aba",
-  "mirror_commit_before_provenance": "535e6dbbb8e747c96d4b8b9b51bb23373608485f",
+  "manifest_sha256": "ad2f8090bd421182cbbaf97b8262f4aa162fa3cca52433dd465c942463c98d48",
+  "mirror_commit_before_provenance": "0b9faeb7ec4bb95a42ce6b1fa8ba3907333314ac",
   "production_authority": false,
   "schema_version": 1,
   "tracked_files": [
@@ -19,7 +19,7 @@
     {
       "bytes": 12611,
       "path": ".bits/context.lock.json",
-      "sha256": "e6fe10ee3a77704173ef15678e4c579fb0095d2a6514a4bfb2afba16e4de8b02"
+      "sha256": "57c56e4dad3543b0c2d8005b3576a41f0e4e526baef060b5aef3ee1d80dcc1eb"
     },
     {
       "bytes": 5339,
@@ -40,6 +40,11 @@
       "bytes": 2205,
       "path": ".bits/queue/BITS-WO-20260911-4D7004E9.md",
       "sha256": "04f5fbcb2c4c15323435648f50f54f050128313a918025684afda68e4895c69c"
+    },
+    {
+      "bytes": 5709,
+      "path": ".bits/queue/REQ-20260911-ROADMAP-TRUTH-001.md",
+      "sha256": "9d6437df697c30048004decd0a531bcc80a8a27efabbcf25a05e900ed75de4a4"
     },
     {
       "bytes": 1932,
@@ -112,9 +117,9 @@
       "sha256": "233969cf9450109a03d06f12e1d6865461e667bd49c7859e45ab6c1f98c2b9d0"
     },
     {
-      "bytes": 6024,
+      "bytes": 11255,
       "path": ".bits/srs/SRS-BUILDANDDO-ROADMAP-001.md",
-      "sha256": "c02e92b3e07e708991726cc0e3234a73a89e3d50c963d850f3061bd195798343"
+      "sha256": "338b4f630cf0307874e1bdec1118ef39fce0121467027a5b609d57aca480ca98"
     },
     {
       "bytes": 6001,
@@ -267,9 +272,9 @@
       "sha256": "e18f0fec3c670ee40fedb8b71f258697c4292b5b4914ce5b0e50a4bc936d8353"
     },
     {
-      "bytes": 78626,
+      "bytes": 82059,
       "path": "BUILDANDDO_CANDIDATE_PROVENANCE.json",
-      "sha256": "9f7d86b36b2b498ff7998bac6869a01970571ab6dc82aec433c53778a6d43dbe"
+      "sha256": "53d951cb21ed1f6fc9957834e0d217f48b219d0d41a178c1b940ee5f54cc6217"
     },
     {
       "bytes": 479,
@@ -277,9 +282,9 @@
       "sha256": "65815542a539c83c05993586442d27b6ca43b1b6dadb034b3fd981d3d3d6698c"
     },
     {
-      "bytes": 4376,
+      "bytes": 5101,
       "path": "CHANGELOG.md",
-      "sha256": "3b9efa8663698ef0da7e20473bc69885a3e938543321ba024f811a70cc57440f"
+      "sha256": "83cd97d7a2325f557298fb5149cc7269f39e647611952eb6a650605dd275c9f1"
     },
     {
       "bytes": 3182,
@@ -982,9 +987,24 @@
       "sha256": "da7e17ef50a3451e006351bfc70dfa6586bd583fc61921cf700e8cfec9401bf8"
     },
     {
+      "bytes": 11017,
+      "path": "apps/web/src/components/roadmap/ProgressionPanel.jsx",
+      "sha256": "53308cb8f6742e97bc622f53c337c14ea7c30c164b81018aa717d1bc93894bca"
+    },
+    {
+      "bytes": 5404,
+      "path": "apps/web/src/components/roadmap/RoadmapPulse.jsx",
+      "sha256": "40c9fb79d355904eb14a6fd5c95f1cb2e9f0bd9a801aa13437387f29bc791c43"
+    },
+    {
       "bytes": 3348,
       "path": "apps/web/src/components/roadmap/StatusLegendFilter.jsx",
       "sha256": "4b0744b681c208c73c97e8ffcaca0834dc3d6ad8a6dfe395f7834c82f1c692c9"
+    },
+    {
+      "bytes": 8643,
+      "path": "apps/web/src/components/roadmap/__tests__/ProgressionPanel.test.jsx",
+      "sha256": "1f40dd76aaa5612260c079bd12e8c17d3d7bb6272e771b615f9dc007b0685406"
     },
     {
       "bytes": 2893,
@@ -1452,6 +1472,11 @@
       "sha256": "33866ba23001fc518c3b24e98dc576a312c4e26b289dcc2a87c0f2a2586b4e7b"
     },
     {
+      "bytes": 6400,
+      "path": "apps/web/src/lib/__tests__/roadmapStatus.test.js",
+      "sha256": "0e4c45ffe133f22fedd2240cb2be0448aa97f7d7357be14d1002cf99a1e7747b"
+    },
+    {
       "bytes": 7161,
       "path": "apps/web/src/lib/datadogRum.js",
       "sha256": "0520461201cdf8d7627f6b28a0edd86751b6a7234c6744cbd1290ff830da08bb"
@@ -1527,9 +1552,9 @@
       "sha256": "8e99f23c028bf60d907d27a04bf60a3ae09d086d77e09b5cf67ee7ca666e054e"
     },
     {
-      "bytes": 2727,
+      "bytes": 9806,
       "path": "apps/web/src/lib/roadmapStatus.js",
-      "sha256": "177bba97e7e6887e12da34cba1b87ee1e4b797e2201ba0a4cddde7b2007252c2"
+      "sha256": "ff84c52fd376bfd16bd0d7d4439cf99ecb94de6034ca5484062642d52dcc0978"
     },
     {
       "bytes": 2765,
@@ -1577,9 +1602,9 @@
       "sha256": "987794a248ac2ce49db7e332afd36bcad95c7508c818431326679f8ec8c548c7"
     },
     {
-      "bytes": 28310,
+      "bytes": 29120,
       "path": "apps/web/src/pages/HomePage.jsx",
-      "sha256": "8960d6c1ef36a073c009b99c6ea6d92955bbacab4efecccb012e4f62cba86842"
+      "sha256": "eb0621b1bd55f9474bee3d58a1085ecb08a74c8bd12d506e4649ae60888fa1c9"
     },
     {
       "bytes": 9792,
@@ -1597,9 +1622,9 @@
       "sha256": "ac9553e01bf4b726c0db7b5e46fcdc4c69540106d226728f5f3d41d2da1a73e6"
     },
     {
-      "bytes": 47287,
+      "bytes": 49173,
       "path": "apps/web/src/pages/RoadmapPage.jsx",
-      "sha256": "30771ae764c7ec98bcc2c0efe96187945391e52ad677361a6088a1fa5de06b5c"
+      "sha256": "7c2aac178653a65a634091e6ddb6d8ac2afd4666bfaf424a7e5073af8a6ba11a"
     },
     {
       "bytes": 8372,
@@ -1615,6 +1640,11 @@
       "bytes": 3722,
       "path": "apps/web/src/pages/__tests__/RoadmapPage.planMirror.test.jsx",
       "sha256": "2e4d31857ad3c5e58b04cadc166b3e27e800dabfb0bc8823036ac7f202d4cb7f"
+    },
+    {
+      "bytes": 5002,
+      "path": "apps/web/src/pages/__tests__/RoadmapPage.progression.test.jsx",
+      "sha256": "be4d28cbfc4af96332050e228bbcf7113948eeb67cb812ea9bd122d46c77b648"
     },
     {
       "bytes": 7922,
@@ -1745,6 +1775,11 @@
       "bytes": 9783,
       "path": "apps/web/src/test/pocketbaseMock.js",
       "sha256": "708bd28157904b92d062eb4757dffacca4e2983daf3dc14c5063a113d0ae835c"
+    },
+    {
+      "bytes": 3118,
+      "path": "apps/web/src/test/roadmapFixtures.js",
+      "sha256": "2dea1184741a038976a7cfeb4ba66d6699c4abab11d3d90af8797e80fc9b4f89"
     },
     {
       "bytes": 3313,
@@ -1902,9 +1937,9 @@
       "sha256": "0f452526234d6caeb961e30b151f56ab5727c9da1e9b3313a3a31e04f7141a17"
     },
     {
-      "bytes": 13852,
+      "bytes": 14972,
       "path": "scripts/ci/sprint_cycle.py",
-      "sha256": "fd7950b7f96fbecfb58c0c9d65ba5457bdb10d5db6b1affb56038cc0b6ace108"
+      "sha256": "f70642c3e2fc6f77e5750e0823656b7259a5d9c897513295c92f54c0b02a3745"
     },
     {
       "bytes": 10564,
@@ -1922,14 +1957,14 @@
       "sha256": "b7d16ede8a429081ebe8290e9d39b0d9fa9d57ab687a4eba81e4cb999a1450b9"
     },
     {
-      "bytes": 26046,
+      "bytes": 26092,
       "path": "scripts/deploy/integrations_status.py",
-      "sha256": "5a3ed631bfe49c2371cd9895c1bc43b2d7fd9d072f8a7b5def118ed8f4049b62"
+      "sha256": "da4f96cfb13756cfd5b98918c3599c06d735e75df8cc3bdc33b80a0f40dbc1c5"
     },
     {
-      "bytes": 7209,
+      "bytes": 20388,
       "path": "scripts/deploy/roadmap_status.py",
-      "sha256": "0d5eea70c24834e888e96241ff5450f6924bf5783f8233fefe45e82edc9b0602"
+      "sha256": "62e1f7644bb0904f54c09f758c54d464256a7e5377edfa955e91c6de88058d21"
     },
     {
       "bytes": 26740,
@@ -2175,9 +2210,24 @@
       "bytes": 2975,
       "path": "services/praxis_evidence/timing.py",
       "sha256": "21ddb47ad58e90642db6b209b0ff2978f5b9bdf3211e28673294339254e0c07e"
+    },
+    {
+      "bytes": 121,
+      "path": "tests/__init__.py",
+      "sha256": "08c34c47e4327a753d7e2a9795933024007b5f08f0ab7279d3ba4b3c8f35c6e9"
+    },
+    {
+      "bytes": 93,
+      "path": "tests/roadmap/__init__.py",
+      "sha256": "98d1d99af88cbf85743ddf287239d9c18cef368a68f4d989f2440fcabfa8ddd6"
+    },
+    {
+      "bytes": 13342,
+      "path": "tests/roadmap/test_roadmap_status_progression.py",
+      "sha256": "33a4cdb3a0e34cc9cbdb4ab8a9a16bf2bbf22fb74a9c63e0fff9c074021a2773"
     }
   ],
   "upstream": "github",
   "upstream_repository": null,
-  "upstream_sha": "535e6dbbb8e747c96d4b8b9b51bb23373608485f"
+  "upstream_sha": "0b9faeb7ec4bb95a42ce6b1fa8ba3907333314ac"
 }
