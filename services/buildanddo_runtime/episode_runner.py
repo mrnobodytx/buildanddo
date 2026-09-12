@@ -28,8 +28,13 @@ def simulate_sfu(run_id: str, n: int = 100) -> EvidenceRecord:
         'media_tracks_received': 1,
         'mode': 'SIMULATED_SELFTEST',
     }
+    # DECLARED, not VERIFIED: this is a simulation. utilization.yaml sets
+    # verified_requires_evidence: true, and a selftest has no provider evidence.
+    # NOTE payload_hash_match is tautological here (received is a copy of sent) and
+    # proves the SHAPE of the receipt, never delivery. Only the observed harness may
+    # raise this record to VERIFIED.
     return EvidenceRecord.create(evidence_id=f'EVD-{run_id}-SFU', kind='SFU_UTILIZATION',
-        state='VERIFIED', verdict='PASS', source='selftest', payload=payload)
+        state='DECLARED', verdict='PASS', source='selftest', payload=payload)
 
 
 def simulate_moq(run_id: str, n: int = 100) -> EvidenceRecord:
@@ -42,8 +47,10 @@ def simulate_moq(run_id: str, n: int = 100) -> EvidenceRecord:
         'classification': 'EXPERIMENTAL',
         'mode': 'SIMULATED_SELFTEST',
     }
+    # DECLARED, not VERIFIED — same reason as the SFU record. digest_match is a
+    # hardcoded literal in this path, so it asserts rather than measures.
     return EvidenceRecord.create(evidence_id=f'EVD-{run_id}-MOQ', kind='MOQ_UTILIZATION',
-        state='VERIFIED', verdict='PASS', source='selftest', payload=payload)
+        state='DECLARED', verdict='PASS', source='selftest', payload=payload)
 
 
 def build_episode(root: Path, run_id: str, selftest: bool) -> dict[str, Any]:
@@ -59,12 +66,15 @@ def build_episode(root: Path, run_id: str, selftest: bool) -> dict[str, Any]:
     for ev in evidence:
         _write_json(evdir / f'{ev.evidence_id}.json', ev.to_dict())
     facts = (
-        {'state': 'VERIFIED', 'text': 'SFU canary selftest delivered 100/100 deterministic messages and one synthetic media track.'},
-        {'state': 'VERIFIED', 'text': 'MoQ canary selftest preserved 100/100 ordered objects.'},
+        {'state': 'DECLARED', 'text': 'SFU canary selftest exercised the receipt path with 100/100 simulated messages and one synthetic media track. No provider was contacted.'},
+        {'state': 'DECLARED', 'text': 'MoQ canary selftest exercised the receipt path with 100/100 simulated ordered objects. No provider was contacted.'},
         {'state': 'UNMEASURED', 'text': 'External provider runtime is not claimed by the package selftest.'},
     )
     episode = UtilizationEpisode(run_id=run_id, tenant_id='buildanddo', workspace_id='selftest',
-        capability='live-room-utilization', state='VERIFIED', verdict='PASS', started_at=started,
+        # UNMEASURED: no provider runtime was observed. The dispatch constraint is
+        # explicit -- "No selftest result may be represented as real provider usage" --
+        # and episode.json's structured state is what dashboards read, not the prose.
+        capability='live-room-utilization', state='UNMEASURED', verdict='PASS', started_at=started,
         completed_at=utc(), evidence_refs=tuple(e.evidence_id for e in evidence), facts=facts)
     out = episode.to_dict()
     _write_json(root / 'state' / 'buildanddo_utilization' / run_id / 'episode.json', out)
