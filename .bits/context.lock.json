@@ -23,6 +23,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-CLASSROOM-001.md is unregistered, so no branch may claim it",
+      "severity": "high",
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-CLASSROOM-001 has a spec but is not in the registry"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md is unregistered, so no branch may claim it",
       "severity": "high",
       "srs": "",
@@ -127,7 +134,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-12T01:11:53.448650+00:00",
+  "generated_at": "2026-09-12T23:25:01.003267+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -273,6 +280,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-WORKSPACE-001.md",
         "status": "in_progress",
         "title": "Functional workspace pages backed by a real data layer"
+      },
+      {
+        "code": "SRS-BUILDANDDO-WRITING-JOURNEY-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WRITING-JOURNEY-001.md",
+        "status": "in_progress",
+        "title": "Public educational writing journey with honest claim separation"
       }
     ]
   },
@@ -377,7 +391,7 @@
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py"
     ],
-    "migrations": 36,
+    "migrations": 37,
     "python_files": 62,
     "services": [
       "buildanddo_mcp",
@@ -386,23 +400,23 @@
       "buildanddo_visual_substrate",
       "praxis_evidence"
     ],
-    "tracked_files": 451,
-    "web_source_files": 178
+    "tracked_files": 456,
+    "web_source_files": 182
   },
   "schema_version": 1,
   "summary": {
-    "findings": 8,
-    "findings_high": 7,
+    "findings": 9,
+    "findings_high": 8,
     "pipelines": 5,
-    "srs_open": 16,
-    "srs_total": 19,
+    "srs_open": 17,
+    "srs_total": 20,
     "unwired_gates": 3
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 21,
+    "js_test_files": 23,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

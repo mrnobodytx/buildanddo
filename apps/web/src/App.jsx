@@ -12,6 +12,7 @@ import TelemetryBoundary from './components/observability/TelemetryBoundary';
 import HomePage from './pages/HomePage';
 import RoadmapPage from './pages/RoadmapPage';
 import PracticePage from './pages/PracticePage';
+import WritingChallengePage from './pages/WritingChallengePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -105,6 +106,8 @@ function AppRoutes() {
             <Route path="/" element={<HomePage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/practice" element={<PracticePage />} />
+            {/* Public educational writing journey — SRS-CN-BUILDANDDO-EDUCATION-API-001. */}
+            <Route path="/write" element={<WritingChallengePage />} />
 
             {/* Authentication */}
             <Route
