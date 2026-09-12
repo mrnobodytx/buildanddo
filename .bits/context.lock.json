@@ -9,7 +9,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/deploy/roadmap_status.py",
+      "evidence": "referenced by: scripts/deploy/roadmap_status.py, tests/roadmap/test_roadmap_status_progression.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is never executed by GitHub Actions"
@@ -65,7 +65,9 @@
     },
     {
       "path": "scripts/ci/candidate_manifest.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/deploy/test_ship_manifest.py"
+      ],
       "wired_into_ci": true
     },
     {
@@ -97,7 +99,8 @@
     {
       "path": "scripts/ci/sprint_cycle.py",
       "referenced_by": [
-        "scripts/deploy/roadmap_status.py"
+        "scripts/deploy/roadmap_status.py",
+        "tests/roadmap/test_roadmap_status_progression.py"
       ],
       "wired_into_ci": false
     },
@@ -124,7 +127,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-11T22:26:49.417918+00:00",
+  "generated_at": "2026-09-12T01:11:53.448650+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -375,7 +378,7 @@
       "scripts/deploy/ship.py"
     ],
     "migrations": 36,
-    "python_files": 56,
+    "python_files": 62,
     "services": [
       "buildanddo_mcp",
       "buildanddo_runtime",
@@ -383,8 +386,8 @@
       "buildanddo_visual_substrate",
       "praxis_evidence"
     ],
-    "tracked_files": 433,
-    "web_source_files": 169
+    "tracked_files": 451,
+    "web_source_files": 178
   },
   "schema_version": 1,
   "summary": {
@@ -399,7 +402,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 18,
+    "js_test_files": 21,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

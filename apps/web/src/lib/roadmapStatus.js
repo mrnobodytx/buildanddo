@@ -120,6 +120,43 @@ const str = (v) => (typeof v === 'string' && v.trim() ? v.trim() : null);
  * @param {{knownContract?: string|null, now?: number}} [options]
  * @returns {object} The normalised progression.
  */
+/**
+ * The sprint day counted LIVE from the operator anchor rule (day 8 = 2026-09-08,
+ * one day per UTC calendar day), clamped to the sprint window. A calendar fact,
+ * never a measurement: it advances daily with no rebuild and no estate file.
+ *
+ * @param {{anchorDay?: number|null, anchorDate?: string|null}|null} anchor
+ * @param {number} [now] Epoch ms (test seam).
+ * @param {number} [total] Sprint length in days.
+ * @returns {number|null} 1..total, or null when the anchor is unknown.
+ */
+export const CAMPAIGN_TZ = 'America/Chicago';
+
+/** Y-M-D of `now` on the campaign calendar (the operator's, never the viewer's or UTC). */
+function campaignYmd(now, timeZone) {
+    try {
+        const parts = new Intl.DateTimeFormat('en-CA', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(now));
+        const get = (t) => Number(parts.find((x) => x.type === t)?.value);
+        return { y: get('year'), m: get('month'), d: get('day') };
+    } catch {
+        // No Intl time zone data: the sprint sits inside CDT (UTC-5).
+        const shifted = new Date(now - 5 * 3600 * 1000);
+        return { y: shifted.getUTCFullYear(), m: shifted.getUTCMonth() + 1, d: shifted.getUTCDate() };
+    }
+}
+
+export function liveSprintDay(anchor, now = Date.now(), total = 21) {
+    if (!anchor || !Number.isFinite(anchor.anchorDay) || typeof anchor.anchorDate !== 'string') return null;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(anchor.anchorDate);
+    if (!m || !Number.isFinite(now)) return null;
+    const anchorUtc = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    const t = campaignYmd(now, anchor.timezone || CAMPAIGN_TZ);
+    const todayUtc = Date.UTC(t.y, t.m - 1, t.d);
+    if (!Number.isFinite(anchorUtc) || !Number.isFinite(todayUtc)) return null;
+    const day = anchor.anchorDay + Math.round((todayUtc - anchorUtc) / 86400000);
+    return Math.max(1, Math.min(day, total));
+}
+
 export function progressionOf(status, options = {}) {
     const { knownContract = null, now = Date.now() } = options;
     const p = status?.progression;
@@ -133,19 +170,27 @@ export function progressionOf(status, options = {}) {
         anchorDay: num(anchor.canonical_anchor_day),
         anchorDate: str(anchor.canonical_anchor_date),
         anchorRuleDay: num(anchor.anchor_rule_day),
+        timezone: str(anchor.day_timezone) || CAMPAIGN_TZ,
         windowStart: str(anchor.window_start),
         windowEnd: str(anchor.window_end),
         hostingerDeadline: str(anchor.hostinger_deadline),
         rule: str(anchor.rule),
     } : null;
     const contract = str(p?.measurement_contract);
+    const totalDays = num(p?.total_days) ?? num(status?.sprint_days) ?? 21;
+    // The day is a calendar fact counted live from the operator anchor, never
+    // read from the projection: a stale file must not make the page say D09
+    // on the 11th. Without an anchor the day is unknown, not the build's day.
+    const liveDay = dayAnchor && dayAnchor.state === 'MEASURED' ? liveSprintDay(dayAnchor, now, totalDays) : null;
     const base = {
         state: 'UNMEASURED',
         reason: str(p?.reason) || (p ? 'NO_MEASUREMENT' : 'PROGRESSION_ABSENT'),
         owner: str(p?.owner) || 'Citadel Development Continuity + repository bridge',
         campaignId: str(p?.campaign_id),
-        day: null,
-        totalDays: num(p?.total_days) ?? num(status?.sprint_days) ?? 21,
+        day: liveDay,
+        projectionDay: null,
+        projectionBehindDays: null,
+        totalDays,
         currentDate: null,
         observedAt: null,
         ageMs: null,
@@ -167,8 +212,8 @@ export function progressionOf(status, options = {}) {
         windowEnd: null,
         sourceTitle: null,
         planDay,
-        daySource: str(p?.day_source) || 'calendar',
-        dayDisagreement: null,
+        daySource: liveDay !== null ? 'anchor-rule' : (str(p?.day_source) || 'calendar'),
+        dayDisagreement: liveDay !== null && planDay !== null ? planDay !== liveDay : null,
         dayAnchor,
         freshness: 'UNMEASURED',
         staleDays: null,
@@ -180,8 +225,9 @@ export function progressionOf(status, options = {}) {
     if (!p || p.state !== 'MEASURED') return base;
 
     const measuredPct = num(p.measured_pct);
-    const day = num(p.day);
-    if (measuredPct === null || day === null) return { ...base, reason: 'PROGRESSION_SCHEMA_MISMATCH' };
+    const projectionDay = num(p.projection_day) ?? num(p.day);
+    if (measuredPct === null) return { ...base, reason: 'PROGRESSION_SCHEMA_MISMATCH' };
+    const day = liveDay ?? projectionDay;
 
     const observed = str(p.generated_at) ? new Date(p.generated_at) : null;
     const observedMs = observed && !Number.isNaN(observed.getTime()) ? observed.getTime() : null;
@@ -197,6 +243,8 @@ export function progressionOf(status, options = {}) {
         state: stale ? 'STALE' : 'MEASURED',
         reason: null,
         day,
+        projectionDay,
+        projectionBehindDays: day !== null && projectionDay !== null ? day - projectionDay : null,
         currentDate: str(p.current_date),
         observedAt: observedMs === null ? null : observed.toISOString(),
         ageMs,
@@ -220,7 +268,7 @@ export function progressionOf(status, options = {}) {
         windowStart: str(p.window_start),
         windowEnd: str(p.window_end),
         sourceTitle: str(p.source_title),
-        dayDisagreement: typeof p.day_disagreement === 'boolean' ? p.day_disagreement : (planDay !== null ? planDay !== day : null),
+        dayDisagreement: day !== null && planDay !== null ? planDay !== day : null,
         freshness: buildFresh ? 'FRESH' : 'STALE',
         staleDays: buildFresh ? 0 : staleDays,
     };

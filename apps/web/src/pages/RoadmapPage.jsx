@@ -460,19 +460,23 @@ export default function RoadmapPage() {
     // written after D21, or by an older projection, must not plot off-chart.
     // The marker is MILESTONE EVIDENCE (verified_pct from sprint_cycle), never
     // the measured progression the Progression panel quotes from the estate.
+    // Canonical progression, consumed from the estate through the projection.
+    // Absent or unmeasured renders as UNMEASURED - never as zero. The day it
+    // carries is counted live from the operator anchor at view time.
+    const progression = useMemo(() => progressionOf(live), [live]);
+
     const actual = useMemo(() => {
         if (!measured) return null;
         const evidencePct = live.verified_pct ?? live.actual_pct;
-        if (!Number.isFinite(live.sprint_day) || !Number.isFinite(evidencePct)) return null;
+        // Today's day comes from the live anchor count; the build-time
+        // sprint_day is only the fallback when the anchor is unknown.
+        const day = progression.day ?? live.sprint_day;
+        if (!Number.isFinite(day) || !Number.isFinite(evidencePct)) return null;
         return {
-            day: Math.max(1, Math.min(live.sprint_day, SPRINT_DAYS)),
+            day: Math.max(1, Math.min(day, SPRINT_DAYS)),
             pct: Math.max(0, Math.min(evidencePct, 100)),
         };
-    }, [measured, live]);
-
-    // Canonical progression, consumed from the estate through the projection.
-    // Absent or unmeasured renders as UNMEASURED - never as zero.
-    const progression = useMemo(() => progressionOf(live), [live]);
+    }, [measured, live, progression]);
 
     const handleHover = (day) => {
         setHoverDay(day);

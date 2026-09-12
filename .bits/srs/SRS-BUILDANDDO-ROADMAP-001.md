@@ -189,3 +189,23 @@ test asserts the output contains no `D:\`, `state/` or `HOSTINGER_COMP`.
 8. `py -3.13 scripts/deploy/roadmap_status.py` exits 0 and writes a `progression` block; with the estate absent the block is `{"state": "UNMEASURED", "reason": "PROGRESSION_FILE_ABSENT", ...}` and the build still succeeds.
 9. `npm test` in `apps/web` passes with the progression, panel and pulse suites.
 10. `py -3.13 scripts/ci/verify_public_boundary.py` — PASS.
+
+## Addendum 2026-09-11 (evening): the day is a calendar fact, counted live
+
+Operator decision: the sprint index is the operator-declared anchor (day 8 = 2026-09-08, so day N is
+September N). The public roadmap showed D09 on the 11th because it copied the day from the estate's
+continuity projection, which is stale (last computed for 2026-09-09) and has no active producer. That
+also proved the page was not self-updating.
+
+Changes:
+- `scripts/ci/sprint_cycle.py`: `SPRINT_START` is DERIVED from the anchor (2026-09-01); one clock, not two.
+- `scripts/deploy/roadmap_status.py`: `progression.day` is counted from the anchor at build time;
+  `projection_day` / `projection_behind_days` report what the estate file was computed for.
+- `apps/web/src/lib/roadmapStatus.js`: `liveSprintDay()` recounts the day in the browser at view time,
+  so /roadmap, /app/roadmap and the homepage pulse advance daily with no rebuild and no estate file.
+  Only the MEASURED numbers still come from the projection and stay labelled STALE until its producer runs.
+- Tests pin: 2026-09-11 is day 11; the same file two days later reads day 13; an absent or stale file
+  never sets the day; UNKNOWN != ZERO still holds for every measured axis.
+
+Still open (estate side): restore the writer of `state/development_continuity/sprint_progression/latest.json`
+so measured progression moves again; until then the page says STALE honestly.

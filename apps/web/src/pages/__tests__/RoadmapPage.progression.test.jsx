@@ -38,8 +38,11 @@ const mockFetch = (body) => {
 describe('RoadmapPage progression panel', () => {
     beforeEach(() => {
         vi.stubGlobal('scrollTo', vi.fn());
+        vi.useFakeTimers({ shouldAdvanceTime: true, toFake: ['Date'] });
+        vi.setSystemTime(new Date('2026-09-11T12:00:00Z'));
     });
     afterEach(() => {
+        vi.useRealTimers();
         vi.unstubAllGlobals();
         delete globalThis.fetch;
     });
@@ -57,8 +60,8 @@ describe('RoadmapPage progression panel', () => {
         expect(within(screen.getByTestId('progression-verified')).getByText('20%')).toBeInTheDocument();
         expect(screen.getByTestId('ticker-progression')).toHaveTextContent('MEASURED PROGRESSION: 56.8%');
         // the ACTUAL marker is milestone evidence at the plan day, never the measured figure
-        expect(screen.getByTestId('ticker-actual')).toHaveTextContent('ACTUAL = MILESTONE EVIDENCE: 20% (plan day 9)');
-        expect(screen.getByRole('img', { name: /Milestone evidence 20% of the plan on plan day 9/ })).toBeInTheDocument();
+        expect(screen.getByTestId('ticker-actual')).toHaveTextContent('ACTUAL = MILESTONE EVIDENCE: 20% (plan day 11)');
+        expect(screen.getByRole('img', { name: /Milestone evidence 20% of the plan on plan day 11/ })).toBeInTheDocument();
         expect(screen.getByText(/ACTUAL \(EVIDENCE\) 20%/)).toBeInTheDocument();
     });
 
@@ -72,7 +75,12 @@ describe('RoadmapPage progression panel', () => {
 });
 
 describe('HomePage roadmap pulse', () => {
+    beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true, toFake: ['Date'] });
+        vi.setSystemTime(new Date('2026-09-11T12:00:00Z'));
+    });
     afterEach(() => {
+        vi.useRealTimers();
         delete globalThis.fetch;
     });
 

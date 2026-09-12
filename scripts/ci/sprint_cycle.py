@@ -40,20 +40,22 @@ The file is git-ignored (state/ is local operational state), so the projection
 only shows a milestone as verified on the clone that recorded it - the ship
 rail's clone. The evidence string is public: it is rendered on /roadmap.
 
-Two clocks, one of them canonical
----------------------------------
+One clock: the operator-declared sprint index
+---------------------------------------------
 
-``SPRINT_START`` is the PLAN clock: calendar days counted from the strategy
-window start (2026-09-03, which is also the first commit of this repository).
-It exists so the plan curve can be read on any checkout with nothing but a
-calendar. It is NOT the canonical sprint day.
+The sprint day is the operator-declared index from the estate's campaign
+config (``config/campaign_21_day_progression_v1.yaml``): day 8 is anchored to
+2026-09-08 and the index increments by calendar day, so day N falls on
+September N. ``SPRINT_START`` is DERIVED from that anchor (2026-09-01) and is
+the same clock, not a second one. The strategy window (2026-09-03 onward,
+also the first commit of this repository) is a window, not day 1.
 
-The CANONICAL day comes from the estate's development-continuity projection
-(``state/development_continuity/sprint_progression/latest.json``), whose
-``day_index_rule`` is operator-declared and anchored differently (day 8 is
-anchored to 2026-09-08). ``scripts/deploy/roadmap_status.py`` consumes that
-projection and, when the two clocks disagree, the public page shows BOTH and
-flags the disagreement rather than picking one silently.
+Operator decision 2026-09-11: the public page showed D09 on the 11th because
+it copied the day from a stale estate projection. The day is a calendar fact,
+so it is now counted LIVE from the anchor at view time (apps/web/src/lib/
+roadmapStatus.js ``liveSprintDay``) and never read from a file. Only the
+MEASURED progression still comes from the continuity projection, and it stays
+labelled STALE until that producer runs again.
 
 The verified-milestone figure this module computes is published as
 ``plan_verified_pct`` - milestone evidence against the plan curve. It is never
@@ -72,9 +74,33 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 CAMPAIGN_ID = "citadel-21-day-2026-09"
-# Plan clock only (strategy window start == first repository commit 351559a).
-# The canonical sprint day is read from the continuity projection, not here.
-SPRINT_START = dt.date(2026, 9, 3)
+# Operator-declared sprint index (config/campaign_21_day_progression_v1.yaml):
+# day 8 is anchored to 2026-09-08, so day 1 is 2026-09-01 and day N is Sept N.
+SPRINT_ANCHOR_DAY = 8
+SPRINT_ANCHOR_DATE = dt.date(2026, 9, 8)
+SPRINT_START = SPRINT_ANCHOR_DATE - dt.timedelta(days=SPRINT_ANCHOR_DAY - 1)  # 2026-09-01
+# "increments by local calendar day": the operator's calendar, not UTC. Measured
+# 2026-09-11: at 01:08Z on the 12th the operator's clock still said the 11th and
+# a UTC count printed D12. The whole sprint sits inside CDT (UTC-5); if the
+# zoneinfo database is unavailable that fixed offset stands in.
+CAMPAIGN_TZ = "America/Chicago"
+_CAMPAIGN_TZ_FALLBACK = dt.timezone(dt.timedelta(hours=-5), "CDT")
+
+
+def _campaign_zone() -> dt.tzinfo:
+    try:
+        from zoneinfo import ZoneInfo
+        return ZoneInfo(CAMPAIGN_TZ)
+    except Exception:  # noqa: BLE001 - no tz database on this host
+        return _CAMPAIGN_TZ_FALLBACK
+
+
+def campaign_date(moment: dt.datetime | None = None) -> dt.date:
+    """The operator's calendar date for ``moment`` (default: now), in CAMPAIGN_TZ."""
+    m = moment or dt.datetime.now(dt.timezone.utc)
+    if m.tzinfo is None:
+        m = m.replace(tzinfo=dt.timezone.utc)
+    return m.astimezone(_campaign_zone()).date()
 SPRINT_DAYS = 21
 
 STATE_PATH = ROOT / "state" / "roadmap" / "sprint.json"
@@ -252,18 +278,19 @@ def _actual_pct(state: dict) -> float:
 
 
 def sprint_day(today: dt.date | None = None) -> int:
-    """Return the 1-based PLAN-clock sprint day, clamped to the sprint window.
+    """Return the 1-based sprint day, clamped to the sprint window.
 
-    Calendar days from ``SPRINT_START``. This is the plan day, not the
-    canonical day (see the module docstring).
+    Calendar days from ``SPRINT_START``, which is derived from the operator
+    anchor (day 8 = 2026-09-08), so this IS the operator-declared index.
 
     Args:
-        today: Date to measure from; defaults to the current UTC date.
+        today: Date to measure from; defaults to today on the operator's
+            calendar (``campaign_date``), never the UTC date.
 
     Returns:
         A day between 1 and SPRINT_DAYS inclusive.
     """
-    day = today or dt.datetime.now(dt.timezone.utc).date()
+    day = today or campaign_date()
     return max(1, min((day - SPRINT_START).days + 1, SPRINT_DAYS))
 
 

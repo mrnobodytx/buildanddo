@@ -50,9 +50,12 @@ and secret names never cross. The axes are independent and never averaged:
   verified_pct   milestone evidence against the plan (sprint_cycle)
   full_pct       whole-campaign verified share (estate rule)
 
-Two clocks are reported side by side: `plan_day` (calendar from
-sprint_cycle.SPRINT_START) and `day` (canonical, from the projection file).
-`day_disagreement` flags when they differ. A projection whose `current_date`
+`day` is the operator-declared sprint index counted from the campaign anchor
+at build time (day 8 = 2026-09-08); the browser recounts it live at view time.
+`projection_day` is the day the estate projection was last computed for and
+`projection_behind_days` how far behind it is. `plan_day` is the same clock
+(SPRINT_START is derived from the anchor); `day_disagreement` flags any
+drift between the two. A projection whose `current_date`
 is not the build date is STALE and the day falls back to the plan clock for
 the plan target only - the canonical numbers are still shown, labelled.
 
@@ -229,6 +232,7 @@ def _campaign_anchor(build_date: dt.date) -> dict:
     """
     base = {
         "plan_window_start": sprint_cycle.SPRINT_START.isoformat(),
+        "day_timezone": sprint_cycle.CAMPAIGN_TZ,
         "canonical_anchor_day": None,
         "canonical_anchor_date": None,
         "anchor_rule_day": None,
@@ -266,21 +270,38 @@ def _campaign_anchor(build_date: dt.date) -> dict:
     }
 
 
+def _anchor_day(anchor: dict, plan_day: int) -> int:
+    """The sprint day counted from the operator anchor at build time.
+
+    The day is a calendar fact, never a measurement: it is derived from the
+    campaign anchor (day 8 = 2026-09-08) and clamped to the sprint window.
+    When the campaign config cannot be read the plan clock (derived from the
+    same anchor) stands in, so the day never depends on a stale projection.
+    """
+    rule_day = anchor.get("anchor_rule_day")
+    if anchor.get("state") == "MEASURED" and isinstance(rule_day, int):
+        return max(1, min(rule_day, sprint_cycle.SPRINT_DAYS))
+    return plan_day
+
+
 def _unmeasured_progression(reason: str, plan_day: int, anchor: dict) -> dict:
     """The honest shape when the estate projection cannot be consumed.
 
     UNKNOWN != ZERO: no measured number is emitted at all. The plan clock
     facts are still reported because they are computed locally.
     """
+    day = _anchor_day(anchor, plan_day)
     return {
         "state": "UNMEASURED",
         "reason": reason,
         "owner": PROGRESSION_OWNER,
-        "day": None,
+        "day": day,
+        "projection_day": None,
+        "projection_behind_days": None,
         "plan_day": plan_day,
-        "day_source": "calendar",
-        "day_disagreement": None,
-        "planned_pct": round(sprint_cycle._planned_pct(plan_day), 1),  # noqa: SLF001
+        "day_source": "anchor-rule" if anchor.get("state") == "MEASURED" else "calendar",
+        "day_disagreement": plan_day != day,
+        "planned_pct": round(sprint_cycle._planned_pct(day), 1),  # noqa: SLF001
         "day_anchor": anchor,
         "freshness": "UNMEASURED",
         "stale_days": None,
@@ -298,7 +319,7 @@ def _progression(build_date: dt.date | None = None) -> dict:
     Returns:
         The `progression` block for roadmap-status.json. Never raises.
     """
-    today = build_date or dt.datetime.now(dt.timezone.utc).date()
+    today = build_date or sprint_cycle.campaign_date()
     plan_day = sprint_cycle.sprint_day(today)
     anchor = _campaign_anchor(today)
     path = Path(os.environ.get(PROGRESSION_ENV) or PROGRESSION_DEFAULT)
@@ -328,11 +349,12 @@ def _progression(build_date: dt.date | None = None) -> dict:
     source_state = data.get("state") if data.get("state") in ("MEASURED", "DEGRADED", "UNMEASURED") else "UNMEASURED"
     fresh = current_date == today
     stale_days = (today - current_date).days
-    # The plan target is read at the canonical day only while the projection
-    # is for today; a stale file's day is still reported, but the plan is
-    # read at the plan clock so the target cannot be pinned to an old day.
-    day_source = "canonical" if fresh else "calendar"
-    target_day = canonical_day if fresh else plan_day
+    # The day is counted from the operator anchor at build time (the browser
+    # recounts it live); the projection's own day is reported beside it so a
+    # stale file is visible as "computed for day X, N days behind".
+    day = _anchor_day(anchor, plan_day)
+    day_source = "anchor-rule" if anchor.get("state") == "MEASURED" else "calendar"
+    target_day = day
     next_hard = data.get("next_hard_milestone") if isinstance(data.get("next_hard_milestone"), dict) else {}
     focus = data.get("current_focus") if isinstance(data.get("current_focus"), dict) else {}
     source = data.get("source") if isinstance(data.get("source"), dict) else {}
@@ -343,7 +365,9 @@ def _progression(build_date: dt.date | None = None) -> dict:
         "source_state": source_state,
         "owner": PROGRESSION_OWNER,
         "campaign_id": _public_str(data["campaign_id"]),
-        "day": canonical_day,
+        "day": day,
+        "projection_day": canonical_day,
+        "projection_behind_days": day - canonical_day,
         "total_days": total_days,
         "current_date": current_date.isoformat(),
         "generated_at": generated_at,
@@ -374,7 +398,7 @@ def _progression(build_date: dt.date | None = None) -> dict:
         "planned_pct": round(sprint_cycle._planned_pct(target_day), 1),  # noqa: SLF001
         "plan_day": plan_day,
         "day_source": day_source,
-        "day_disagreement": canonical_day != plan_day,
+        "day_disagreement": day != plan_day,
         "day_anchor": anchor,
         "freshness": "FRESH" if fresh else "STALE",
         "stale_days": 0 if fresh else stale_days,
@@ -385,7 +409,7 @@ def _progression(build_date: dt.date | None = None) -> dict:
 
 def build_report(build_date: dt.date | None = None) -> dict:
     """Assemble roadmap-status.json without writing it."""
-    today = build_date or dt.datetime.now(dt.timezone.utc).date()
+    today = build_date or sprint_cycle.campaign_date()
     sprint_day = sprint_cycle.sprint_day(today)  # plan clock, clamped to [1, SPRINT_DAYS]
     state = sprint_cycle._load_state()  # noqa: SLF001 - intentional reuse, this IS the interface
     plan_verified = round(sprint_cycle._actual_pct(state), 1)  # noqa: SLF001

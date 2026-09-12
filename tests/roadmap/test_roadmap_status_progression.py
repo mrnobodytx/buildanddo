@@ -116,16 +116,26 @@ class ProgressionConsumerTests(unittest.TestCase):
         self.projection.write_text(json.dumps(data), encoding="utf-8")
 
     # ── plan clock ────────────────────────────────────────────────────────
-    def test_sprint_start_is_the_strategy_window_start(self) -> None:
+    def test_sprint_start_is_derived_from_the_operator_anchor(self) -> None:
+        # Operator decision 2026-09-11: day 8 = 2026-09-08, day N = September N.
+        self.assertEqual(sprint_cycle.SPRINT_ANCHOR_DAY, 8)
+        self.assertEqual(sprint_cycle.SPRINT_ANCHOR_DATE, dt.date(2026, 9, 8))
         start = sprint_cycle.SPRINT_START
         self.assertIsInstance(start, dt.date)
-        self.assertEqual(start.isoformat(), "2026-09-03")
+        self.assertEqual(start.isoformat(), "2026-09-01")
         self.assertNotEqual(start, dt.date(2026, 9, 9), "the old plan-only start must be gone")
 
-    def test_2026_09_11_is_plan_day_9(self) -> None:
-        plan_day = sprint_cycle.sprint_day(BUILD_DATE)
-        self.assertEqual(plan_day, 9)
-        self.assertEqual(sprint_cycle.sprint_day(dt.date(2026, 9, 3)), 1)
+    def test_day_counts_on_the_operator_calendar_not_utc(self) -> None:
+        self.assertEqual(sprint_cycle.CAMPAIGN_TZ, "America/Chicago")
+        late_utc = dt.datetime(2026, 9, 12, 1, 8, tzinfo=dt.timezone.utc)  # 20:08 on the 11th in Chicago
+        self.assertEqual(sprint_cycle.campaign_date(late_utc), dt.date(2026, 9, 11))
+        self.assertEqual(sprint_cycle.campaign_date(dt.datetime(2026, 9, 12, 5, 0, tzinfo=dt.timezone.utc)), dt.date(2026, 9, 12))
+        self.assertEqual(sprint_cycle.sprint_day(sprint_cycle.campaign_date(late_utc)), 11)
+
+    def test_2026_09_11_is_day_11(self) -> None:
+        self.assertEqual(sprint_cycle.sprint_day(BUILD_DATE), 11)
+        self.assertEqual(sprint_cycle.sprint_day(dt.date(2026, 9, 1)), 1)
+        self.assertEqual(sprint_cycle.sprint_day(dt.date(2026, 9, 8)), 8, "the anchor itself")
         self.assertEqual(sprint_cycle.sprint_day(dt.date(2026, 12, 1)), sprint_cycle.SPRINT_DAYS, "clamped")
 
     def test_projection_field_is_named_plan_verified_pct(self) -> None:
@@ -139,9 +149,13 @@ class ProgressionConsumerTests(unittest.TestCase):
         self.assertEqual(block["state"], "UNMEASURED")
         self.assertEqual(block["reason"], "PROGRESSION_FILE_ABSENT")
         self.assertNotIn("measured_pct", block)
-        self.assertIsNone(block["day"])
-        self.assertEqual(block["plan_day"], 9)
-        self.assertEqual(block["planned_pct"], 40.0)
+        # The day is a calendar fact: known even when nothing is measured.
+        self.assertEqual(block["day"], 11)
+        self.assertEqual(block["day_source"], "anchor-rule")
+        self.assertIsNone(block["projection_day"])
+        self.assertEqual(block["plan_day"], 11)
+        self.assertFalse(block["day_disagreement"])
+        self.assertEqual(block["planned_pct"], 50.0)
 
     def test_schema_mismatch_is_unmeasured(self) -> None:
         self.write(fake_projection(summary={"verified_to_date_percent": "56.8"}))
@@ -154,22 +168,25 @@ class ProgressionConsumerTests(unittest.TestCase):
         block = roadmap_status._progression(BUILD_DATE)  # noqa: SLF001
         self.assertEqual(block["state"], "UNMEASURED")
 
-    # ── canonical day comes from the file, never the calendar ─────────────
-    def test_canonical_day_is_read_from_the_projection(self) -> None:
+    # ── the day is counted from the anchor; the file's own day is reported beside it ──
+    def test_day_is_counted_from_the_anchor_never_read_from_the_projection(self) -> None:
         self.write(fake_projection(sprint_day=11))
         block = roadmap_status._progression(BUILD_DATE)  # noqa: SLF001
         self.assertEqual(block["state"], "MEASURED")
         self.assertEqual(block["day"], 11)
-        self.assertEqual(block["plan_day"], 9)
-        self.assertTrue(block["day_disagreement"])
-        self.assertEqual(block["day_source"], "canonical")
-        self.assertEqual(block["planned_pct"], 50.0)  # plan curve read at the canonical day
+        self.assertEqual(block["projection_day"], 11)
+        self.assertEqual(block["projection_behind_days"], 0)
+        self.assertEqual(block["plan_day"], 11)
+        self.assertFalse(block["day_disagreement"])
+        self.assertEqual(block["day_source"], "anchor-rule")
+        self.assertEqual(block["planned_pct"], 50.0)  # plan curve read at today's day
         self.assertEqual(block["measured_pct"], 56.8)
         self.assertEqual(block["calendar_pct"], 42.9)
         anchor = block["day_anchor"]
         self.assertEqual(anchor["canonical_anchor_day"], 8)
         self.assertEqual(anchor["canonical_anchor_date"], "2026-09-08")
-        self.assertEqual(anchor["plan_window_start"], "2026-09-03")
+        self.assertEqual(anchor["plan_window_start"], "2026-09-01")  # derived from the anchor: day 8 = Sep 8
+        self.assertEqual(anchor["day_timezone"], "America/Chicago")
         self.assertEqual(anchor["anchor_rule_day"], 11)
 
     def test_axes_are_independent_never_averaged(self) -> None:
@@ -193,9 +210,21 @@ class ProgressionConsumerTests(unittest.TestCase):
         self.assertEqual(block["state"], "MEASURED")  # numbers still shown, labelled
         self.assertEqual(block["freshness"], "STALE")
         self.assertEqual(block["stale_days"], 2)
-        self.assertEqual(block["day"], 9)  # still the file's day, not recomputed
-        self.assertEqual(block["day_source"], "calendar")
+        self.assertEqual(block["day"], 11)  # today's day, counted from the anchor
+        self.assertEqual(block["projection_day"], 9)  # what the stale file was computed for
+        self.assertEqual(block["projection_behind_days"], 2)
+        self.assertEqual(block["day_source"], "anchor-rule")
         self.assertEqual(block["measured_pct"], 56.8)
+
+    def test_day_never_depends_on_the_projection_file(self) -> None:
+        absent = roadmap_status._progression(BUILD_DATE)  # noqa: SLF001
+        self.write(fake_projection(current_date="2026-09-09", sprint_day=9))
+        stale = roadmap_status._progression(BUILD_DATE)  # noqa: SLF001
+        self.write(fake_projection(sprint_day=11))
+        fresh = roadmap_status._progression(BUILD_DATE)  # noqa: SLF001
+        self.assertEqual((absent["day"], stale["day"], fresh["day"]), (11, 11, 11))
+        later = roadmap_status._progression(dt.date(2026, 9, 13))  # noqa: SLF001
+        self.assertEqual(later["day"], 13)
 
     # ── MEASUREMENT-CONTRACT-CHANGE != PROGRESSION ────────────────────────
     def test_contract_hash_changes_when_rule_text_changes(self) -> None:
@@ -239,6 +268,9 @@ class ProgressionConsumerTests(unittest.TestCase):
         self.assertEqual(block["day_anchor"]["state"], "UNMEASURED")
         self.assertEqual(block["day_anchor"]["reason"], "CAMPAIGN_CONFIG_ABSENT")
         self.assertIsNone(block["day_anchor"]["canonical_anchor_day"])
+        # Without the config the plan clock (same anchor, derived) stands in.
+        self.assertEqual(block["day"], 11)
+        self.assertEqual(block["day_source"], "calendar")
 
 
 if __name__ == "__main__":

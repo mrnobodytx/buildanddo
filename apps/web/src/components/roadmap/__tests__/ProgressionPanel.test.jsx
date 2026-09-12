@@ -23,7 +23,7 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render, screen, within, waitFor } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest';
 
 import ProgressionPanel from '@/components/roadmap/ProgressionPanel';
 import RoadmapPulse, { RoadmapPulseView } from '@/components/roadmap/RoadmapPulse';
@@ -39,7 +39,9 @@ describe('ProgressionPanel', () => {
         const panel = screen.getByTestId('progression-panel');
         expect(panel).toHaveAttribute('data-state', 'MEASURED');
         expect(screen.getByTestId('progression-day-label')).toHaveTextContent('D11 / 21');
-        expect(screen.getByTestId('progression-day-disagreement')).toHaveTextContent('plan day 9 ≠ canonical day 11');
+        expect(screen.queryByTestId('progression-day-disagreement')).toBeNull();
+        expect(screen.queryByTestId('progression-day-behind')).toBeNull();
+        expect(row('progression-day').getByText(/Counted live from the operator anchor rule/)).toBeInTheDocument();
         expect(row('progression-day').getByText(/Rule: Operator-declared sprint index/)).toBeInTheDocument();
         expect(row('progression-calendar').getByText('42.9%')).toBeInTheDocument();
         expect(row('progression-plan').getByText('50%')).toBeInTheDocument();
@@ -57,6 +59,14 @@ describe('ProgressionPanel', () => {
         // no averaged figure anywhere: the mean of the five axes never appears
         const mean = ((42.9 + 50 + 56.8 + 20 + 32.1) / 5).toFixed(1);
         expect(panel.textContent).not.toContain(`${mean}%`);
+    });
+
+    it('flags a plan-clock disagreement and a projection computed for an older day', () => {
+        render(<ProgressionPanel progression={progressionOf(statusFixture(progressionFixture({ plan_day: 9, projection_day: 9, current_date: '2026-09-09', freshness: 'STALE', stale_days: 2 })), { now: NOW })} />);
+        expect(screen.getByTestId('progression-day-label')).toHaveTextContent('D11 / 21');
+        expect(screen.getByTestId('progression-day-disagreement')).toHaveTextContent('plan day 9 ≠ anchor day 11');
+        expect(screen.getByTestId('progression-day-behind')).toHaveTextContent('projection computed for day 9');
+        expect(row('progression-day').getByText(/2 days behind today/)).toBeInTheDocument();
     });
 
     it('renders UNMEASURED with Unknown rows, never zero, when the block is absent', () => {
@@ -94,6 +104,8 @@ describe('ProgressionPanel', () => {
 });
 
 describe('RoadmapPulse', () => {
+    beforeEach(() => { vi.useFakeTimers({ shouldAdvanceTime: true, toFake: ['Date'] }); vi.setSystemTime(new Date('2026-09-11T12:00:00Z')); });
+    afterEach(() => { vi.useRealTimers(); });
     afterEach(() => {
         delete globalThis.fetch;
     });

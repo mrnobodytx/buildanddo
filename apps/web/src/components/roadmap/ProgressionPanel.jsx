@@ -52,7 +52,7 @@ export default function ProgressionPanel({ progression: p, fetchFailed = false }
     const measured = p.state !== 'UNMEASURED';
     const tone = STATE_TONE[p.state] || 'neutral';
     const anchor = p.dayAnchor;
-    const anchorDiffers = anchor?.anchorRuleDay !== null && anchor?.anchorRuleDay !== undefined && p.day !== null && anchor.anchorRuleDay !== p.day;
+    const behind = typeof p.projectionBehindDays === 'number' && p.projectionBehindDays > 0 ? p.projectionBehindDays : 0;
 
     return (
         <section
@@ -90,23 +90,27 @@ export default function ProgressionPanel({ progression: p, fetchFailed = false }
                     <Row
                         label="Day"
                         testId="progression-day"
-                        note={measured
-                            ? [
-                                p.dayDisagreement ? `Plan clock says day ${p.planDay} (calendar from ${anchor?.planWindowStart || 'window start'}); canonical day ${p.day} wins and the disagreement is flagged.` : null,
-                                anchorDiffers ? `The day-index rule applied at build time gives day ${anchor.anchorRuleDay}; the projection was last computed for day ${p.day}.` : null,
-                                p.dayIndexRule ? `Rule: ${p.dayIndexRule}` : null,
-                            ].filter(Boolean).join(' ')
-                            : `Canonical day unknown (${p.reason}). Plan clock day ${p.planDay ?? 'Unknown'} is a calendar count, not a measurement.`}
+                        note={[
+                            p.day !== null ? 'Counted live from the operator anchor rule at view time, never read from a file.' : `Anchor rule unknown (${p.reason}); the day cannot be counted.`,
+                            p.dayDisagreement ? `Plan clock says day ${p.planDay} (from ${anchor?.planWindowStart || 'the plan start'}); the anchor rule gives day ${p.day}.` : null,
+                            behind ? `The measured projection was last computed for day ${p.projectionDay}, ${behind} day${behind === 1 ? '' : 's'} behind today; its numbers are quoted as STALE, the day is not.` : null,
+                            p.dayIndexRule || anchor?.rule ? `Rule: ${p.dayIndexRule || anchor.rule}` : null,
+                        ].filter(Boolean).join(' ')}
                     >
                         <span className="font-evidence text-base" data-testid="progression-day-label">{dayLabel(p.day, p.totalDays)}</span>
-                        {measured && p.dayDisagreement && (
+                        {p.dayDisagreement && (
                             <span className="ml-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-amber-warm" data-testid="progression-day-disagreement">
-                                · plan day {p.planDay} ≠ canonical day {p.day}
+                                · plan day {p.planDay} ≠ anchor day {p.day}
                             </span>
                         )}
-                        {measured && !p.dayDisagreement && p.planDay !== null && (
+                        {p.day !== null && !p.dayDisagreement && p.planDay !== null && (
                             <span className="ml-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                                 · plan day {p.planDay} agrees
+                            </span>
+                        )}
+                        {behind > 0 && (
+                            <span className="ml-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-amber-warm" data-testid="progression-day-behind">
+                                · projection computed for day {p.projectionDay}
                             </span>
                         )}
                     </Row>
