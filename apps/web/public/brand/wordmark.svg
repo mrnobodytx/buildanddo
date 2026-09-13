@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64" width="260" height="64" role="img" aria-label="BuildAndDo">
+	<title>BuildAndDo</title>
+	<!--
+		Horizontal lockup: the mark plus the wordmark, matching Header.jsx's Brand()
+		exactly - mark, 10px gap, "BuildAndDo" in the display face at semibold with
+		tight tracking.
+
+		The text is LIVE TEXT, not outlines, and names the same stack index.css uses
+		(.font-display -> "Newsreader", Georgia, "Times New Roman", serif). Newsreader
+		is a Google font the site loads; anywhere it is absent this degrades to Georgia
+		rather than to something unrelated. Converting to paths would render identically
+		everywhere but would stop the wordmark being selectable, searchable or
+		restyleable, and would freeze a font choice the site may change.
+	-->
+	<rect x="1" y="1" width="62" height="62" rx="12" fill="#AD1F1F" fill-opacity="0.10"/>
+	<rect x="1" y="1" width="62" height="62" rx="12" fill="none" stroke="#AD1F1F" stroke-opacity="0.40" stroke-width="2"/>
+	<g transform="translate(16 16) scale(1.3333)" fill="none" stroke="#AD1F1F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+	</g>
+	<text x="84" y="41" font-family="Newsreader, Georgia, 'Times New Roman', serif" font-size="30" font-weight="600" letter-spacing="-0.4" fill="#1A1D23">BuildAndDo</text>
+</svg>
