@@ -28,7 +28,11 @@ function Logo() {
     );
 }
 
-export default function Header() {
+export default function Header({
+    navLinks = NAV_LINKS,
+    ctaHref = '#early-access',
+    ctaLabel = 'Join early access',
+}) {
     const [open, setOpen] = useState(false);
     const { isAuthed } = useAuth();
 
@@ -38,7 +42,7 @@ export default function Header() {
                 <Logo />
 
                 <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
-                    {NAV_LINKS.map((link) =>
+                    {navLinks.map((link) =>
                         link.href.startsWith('/') ? (
                             <Link
                                 key={link.href}
@@ -77,11 +81,11 @@ export default function Header() {
                                 Sign in
                             </Link>
                             <Button
-                                href="#early-access"
+                                href={ctaHref}
                                 size="sm"
                                 className="hidden sm:inline-flex"
                             >
-                                Join early access
+                                {ctaLabel}
                             </Button>
                         </>
                     )}
@@ -96,7 +100,7 @@ export default function Header() {
                         <SheetContent side="right" className="w-72 border-border bg-card">
                             <SheetTitle className="sr-only">Menu</SheetTitle>
                             <div className="mt-8 flex flex-col gap-1">
-                                {NAV_LINKS.map((link) =>
+                                {navLinks.map((link) =>
                                     link.href.startsWith('/') ? (
                                         <Link
                                             key={link.href}
@@ -135,11 +139,11 @@ export default function Header() {
                                             Sign in
                                         </Link>
                                         <Button
-                                            href="#early-access"
+                                            href={ctaHref}
                                             onClick={() => setOpen(false)}
                                             className="mt-2 w-full"
                                         >
-                                            Join early access
+                                            {ctaLabel}
                                         </Button>
                                     </>
                                 )}

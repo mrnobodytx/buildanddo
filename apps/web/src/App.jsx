@@ -12,6 +12,7 @@ import TelemetryBoundary from './components/observability/TelemetryBoundary';
 import HomePage from './pages/HomePage';
 import RoadmapPage from './pages/RoadmapPage';
 import PracticePage from './pages/PracticePage';
+import PlatformPage from './pages/PlatformPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -96,6 +97,7 @@ function AppRoutes() {
             <Route path="/" element={<HomePage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/practice" element={<PracticePage />} />
+            <Route path="/platform" element={<PlatformPage />} />
 
             {/* Authentication */}
             <Route
