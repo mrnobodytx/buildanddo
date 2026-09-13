@@ -714,7 +714,16 @@ def _gate() -> dict:
     # close the staging line for a defect nobody has evidence of; treating it as a pass
     # would let an unproven tree reach production. So it does neither: HOLD stages, and
     # `promotable` is what the production line must consult.
-    return {"ok": state in ("PASS", "HOLD"), "promotable": state == "PASS", "state": state,
+    # Corrected after measuring: an earlier version of this made a lint FAIL stop the
+    # line before staging, and that is the wrong cut. apps/web/plugins/visual-editor
+    # imports eight state/*.js modules that were NEVER committed - real errors, present
+    # on main, in dev-only plugin code vite never bundles. The build is green; only
+    # lint sees them. Blocking staging on that means the one surface built for review
+    # cannot be reviewed.
+    # So: the BUILD decides whether a thing can be staged. LINT decides whether it can
+    # be promoted. A build that compiles may be looked at; only a measured-clean tree
+    # may ship to production.
+    return {"ok": bool(report.get("build", {}).get("ok")), "promotable": state == "PASS", "state": state,
             "build_ok": report.get("build", {}).get("ok"), "lint_ok": report.get("lint", {}).get("ok"),
             "lint_state": report.get("lint", {}).get("state"),
             "returncode": r.get("returncode")}
