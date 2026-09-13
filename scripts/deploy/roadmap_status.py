@@ -139,6 +139,110 @@ def _last_gate_and_deploy() -> dict:
     }
 
 
+_SIGNAL_STATES = ("MEASURED", "DEGRADED", "UNMEASURED", "PENDING", "HOLD")
+# Per-source keys that may cross into a PUBLIC document. Everything else is dropped.
+# Deliberately an allowlist, not a denylist: a denylist silently publishes whatever key
+# the estate collector adds next, and the collector is not owned by this repo.
+_SIGNAL_SOURCE_KEYS = ("state", "reason", "freshness", "basis")
+_REASON_RX = re.compile(r"^[A-Z][A-Z0-9_]{0,63}$")
+
+
+def _signal_metrics(value: object) -> dict:
+    """Counts only. A metric value that is not a number is a label, and labels are how
+    identifiers (project ids, hostnames, repo slugs) travel."""
+    if not isinstance(value, dict):
+        return {}
+    out = {}
+    for key, item in value.items():
+        if not isinstance(key, str) or not _REASON_RX.match(key.upper().replace("-", "_")):
+            continue
+        number = _num(item)
+        if number is not None:
+            out[key] = number
+    return out
+
+
+def _public_signal_source(value: object) -> dict | None:
+    """One connected system, reduced to what a stranger may safely read.
+
+    WHY THIS EXISTS. This module's own docstring promises that "file paths, bars,
+    hostnames and secret names never cross" into roadmap-status.json. _progression()
+    honours that - every field goes through _public_str/_num/_int. _signals() did not:
+    it assigned `data["sources"]` verbatim, so the estate collector's internal keys went
+    straight into a world-readable file served at /roadmap-status.json on staging AND
+    production.
+
+    Measured on the live staging bundle before this change, the public document named
+    twelve credentials by their exact environment-variable names - among them
+    BUILDANDDO_REDDIT_CLIENT_SECRET, DD_API_KEY, GITHUB_TOKEN and POSTHOG_API_KEY -
+    plus the PostHog host and project-id key name and the GitHub repo slug, via the
+    per-source keys `secret_names`, `token_name`, `key_name`, `project_id_name`, `host`,
+    `repo` and `source_file`.
+
+    No secret VALUE ever leaked and the file's own truth_boundary block correctly said
+    secret_values_persisted: 0. But an exact inventory of which credentials exist, under
+    their real names, is reconnaissance: it tells an attacker precisely what to phish for
+    and what to grep for in any future dump. The estate states the rule; this function is
+    the only thing that can enforce it here.
+    """
+    if not isinstance(value, dict):
+        return None
+    state = value.get("state")
+    out: dict = {"state": state if state in _SIGNAL_STATES else "UNMEASURED"}
+    for key in _SIGNAL_SOURCE_KEYS:
+        if key == "state":
+            continue
+        raw = value.get(key)
+        if key == "reason":
+            # Reason codes are uppercase tokens (CENSUS_DEGRADED, FORUM_LIVE_BUT_EMPTY).
+            # Anything else is prose that could carry a path, a host or a name.
+            out[key] = raw if isinstance(raw, str) and _REASON_RX.match(raw) else None
+        else:
+            out[key] = _public_str(raw, 120)
+    metrics = _signal_metrics(value.get("metrics"))
+    if metrics:
+        out["metrics"] = metrics
+    return out
+
+
+def _public_signals(data: dict) -> dict:
+    """The signals block, reduced to the public allowlist."""
+    sources = {}
+    for name, value in (data.get("sources") or {}).items():
+        if not isinstance(name, str) or not _REASON_RX.match(name.upper().replace("-", "_")):
+            continue
+        reduced = _public_signal_source(value)
+        if reduced is not None:
+            sources[name] = reduced
+    failures = []
+    for entry in (data.get("failures") or [])[:24]:
+        if not isinstance(entry, dict):
+            continue
+        reason = entry.get("reason")
+        failures.append({
+            "source": _public_str(entry.get("source"), 64),
+            "state": entry.get("state") if entry.get("state") in _SIGNAL_STATES else "UNMEASURED",
+            "reason": reason if isinstance(reason, str) and _REASON_RX.match(reason) else None,
+            "observed_at": _public_str(entry.get("observed_at"), 40),
+        })
+    boundary = data.get("truth_boundary") or {}
+    return {
+        "schema": _public_str(data.get("schema"), 64),
+        "generated_at": _public_str(data.get("generated_at"), 40),
+        "state": data.get("state") if data.get("state") in _SIGNAL_STATES else "UNMEASURED",
+        "sources": sources,
+        "failures": failures,
+        # Scalars only - the same block previously spread verbatim.
+        "truth_boundary": {
+            "signals_are": _public_str(boundary.get("signals_are"), 64),
+            "authority_effect": _public_str(boundary.get("authority_effect"), 64),
+            "secret_values_persisted": _int(boundary.get("secret_values_persisted")) or 0,
+            "presentation_only": True,
+            "remote_writes": 0,
+        },
+    }
+
+
 def _signals() -> dict:
     """Embed the estate's roadmap signals, or say UNMEASURED - never invent a tile."""
     path = Path(os.environ.get(SIGNALS_ENV) or SIGNALS_DEFAULT)
@@ -153,14 +257,7 @@ def _signals() -> dict:
     if not isinstance(data, dict) or data.get("schema") != SIGNALS_SCHEMA or not isinstance(data.get("sources"), dict):
         return {"signals_state": "UNMEASURED", "signals_reason": "SIGNALS_SCHEMA_MISMATCH",
                 "signals_generated_at": None, "signals": None}
-    signals = {
-        "schema": data["schema"],
-        "generated_at": data.get("generated_at"),
-        "state": data.get("state"),
-        "sources": data["sources"],
-        "failures": data.get("failures") or [],
-        "truth_boundary": {**(data.get("truth_boundary") or {}), "presentation_only": True, "remote_writes": 0},
-    }
+    signals = _public_signals(data)
     measured = data.get("state") in ("MEASURED", "DEGRADED")
     return {"signals_state": "MEASURED" if measured else "UNMEASURED",
             "signals_reason": None if measured else "NO_SOURCE_MEASURED",
