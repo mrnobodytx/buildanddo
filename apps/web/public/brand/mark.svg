@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="BuildAndDo">
+	<title>BuildAndDo</title>
+	<!--
+		The BuildAndDo mark, taken from the one place it already existed: the Brand()
+		component in apps/web/src/components/site/Header.jsx. That is a rounded square
+		with a primary/40 border and a primary/10 wash, holding the lucide "Activity"
+		pulse at strokeWidth 2.4. Nothing here is invented - this file only makes that
+		mark exist as an asset, because the repo shipped no logo file at all and the
+		wiki, forum and Discord each need one.
+
+		Colours are the resolved brand tokens from apps/web/src/index.css:
+		  --primary 0 70% 40%    -> #AD1F1F
+		  --paper   42 30% 94%   -> #F4F2EB
+		Geometry is the header's 32px box scaled x2, so the proportions match: 6px
+		radius -> 12, 1px border -> 2, 16px glyph -> 32.
+	-->
+	<rect x="1" y="1" width="62" height="62" rx="12" fill="#AD1F1F" fill-opacity="0.10"/>
+	<rect x="1" y="1" width="62" height="62" rx="12" fill="none" stroke="#AD1F1F" stroke-opacity="0.40" stroke-width="2"/>
+	<!-- lucide Activity, 24-unit grid translated to the centre of the 64 box -->
+	<g transform="translate(16 16) scale(1.3333)" fill="none" stroke="#AD1F1F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+	</g>
+</svg>

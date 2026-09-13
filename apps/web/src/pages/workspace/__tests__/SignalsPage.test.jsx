@@ -130,7 +130,10 @@ describe('SignalsPage', () => {
         expect(dialog.getByLabelText('Description')).toBeInTheDocument();
         expect(dialog.getByLabelText('Source')).toBeInTheDocument();
         expect(dialog.getByLabelText(/Confidence/)).toBeInTheDocument();
-        expect(dialog.getByRole('combobox')).toBeInTheDocument();
+        // Two selects: provenance type and triage severity.
+        expect(dialog.getByRole('combobox', { name: 'Type' })).toBeInTheDocument();
+        expect(dialog.getByRole('combobox', { name: 'Severity' })).toBeInTheDocument();
+        expect(dialog.getAllByRole('combobox')).toHaveLength(2);
     });
 
     it('refuses to save a signal without a title', async () => {
@@ -147,7 +150,7 @@ describe('SignalsPage', () => {
         expect(pb.__collection('signals').create).not.toHaveBeenCalled();
     });
 
-    it('saves a signal as a fact with a numeric confidence', async () => {
+    it('saves a signal as a new medium-severity fact with a numeric confidence', async () => {
         const user = setupUser();
         pb.__setRecords('signals', []);
         renderWithProviders(<SignalsPage />);
@@ -165,6 +168,8 @@ describe('SignalsPage', () => {
                 description: 'Four missed visits.',
                 source: 'Appointment calendar',
                 type: 'fact',
+                severity: 'medium',
+                state: 'new',
                 confidence: 72,
                 workspace: 'ws_test',
                 owner: 'user_test',

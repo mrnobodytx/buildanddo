@@ -1,30 +1,51 @@
+// CGRF: SRS=SRS-BUILDANDDO-ROADMAP-001 | CAPS=B | Seat=C-ONE
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/RoadmapPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-ROADMAP-001
+// SRS:         SRS-BUILDANDDO-ROADMAP-001, SRS-BUILDANDDO-SIGNALS-001
 // CAPS:        pending
 // CK:          pending
-// Seat:        BITS-CODEGEN
+// Seat:        BITS-CODEGEN, C-ONE (live sources panel, interaction layer,
+//              2026-09-11 sprint-day-3 replay of what actually landed;
+//              2026-09-11 progression consumer - axes never averaged)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     scripts/ci/sprint_cycle.py,
-//              scripts/deploy/roadmap_status.py
+//              scripts/deploy/roadmap_status.py,
+//              apps/web/src/components/roadmap/*,
+//              apps/web/src/lib/roadmapStatus.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/public/roadmap-status.json;
 //              VALIDATES scripts/ci/sprint_cycle.py
 // Intent:      Draw the sprint plan and, separately, whatever the projection
-//              actually measured - including saying it measured nothing.
+//              actually measured - including saying it measured nothing. The
+//              Progression panel CONSUMES the estate's canonical progression
+//              (calendar, plan, measured, milestone evidence, full campaign)
+//              as separate axes that are never averaged. The plot's ACTUAL
+//              marker is milestone evidence, not measured progression. The
+//              live sources panel shows SIGNALS from each connected system,
+//              never results, and says UNMEASURED per tile when it must.
+//              Every milestone marker is a real button: mouse, touch and
+//              keyboard can pin one, and the ledger and chart point at each
+//              other by day.
 // ───────────────────────────────────────────────────────────────
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { Gauge, ArrowRight, Info, TrendingUp, GitCommit } from 'lucide-react';
+import { Gauge, ArrowRight, ArrowUp, Info, TrendingUp, GitCommit } from 'lucide-react';
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import Seo from '@/components/Seo';
 import { Section, SectionLabel, Card, StatePill, Button } from '@/components/site/ui';
+import LiveSourcesPanel from '@/components/roadmap/LiveSourcesPanel';
+import ProgressionPanel from '@/components/roadmap/ProgressionPanel';
+import MilestoneDetailCard from '@/components/roadmap/MilestoneDetailCard';
+import StatusLegendFilter from '@/components/roadmap/StatusLegendFilter';
+import { dayForKey, ledgerId, markerId, milestoneLabel } from '@/components/roadmap/milestoneA11y';
+import { useRoadmapStatus, progressionOf } from '@/lib/roadmapStatus';
 import { trackEvent } from '@/lib/telemetry';
+import { cn } from '@/lib/utils';
 
 const STATUSES = ['proposed', 'planned', 'in_progress', 'blocked', 'verified', 'archived'];
 
@@ -52,28 +73,45 @@ const SPRINT_DAYS = 21;
 
 const STALE_AFTER_MS = 48 * 60 * 60 * 1000;
 
-const PLANNED_MILESTONES = [
+const HIGHLIGHT_MS = 2500;
+
+export const PLANNED_MILESTONES = [
     {
         day: 1, title: 'Sprint kickoff — foundations', status: 'planned', value: 5,
         description: 'Repo, self-hosted deploy target, and the staging→production pipeline itself. '
-            + 'Nothing downstream works without a real, provable way to ship a change.',
+            + 'Nothing downstream works without a real, provable way to ship a change. '
+            + 'What landed: staging and production on one self-hosted KVM behind nginx, and ship.py running '
+            + 'build → gate → staging sync → staging probe → promote, writing a release manifest the staging '
+            + 'readback gate checks (commit d2d5f83). The rail keeps its receipts in the controller estate, '
+            + 'outside this repository.',
         deliverables: ['Self-hosted domain + TLS (no third-party site builder)', 'Staging environment, separate from production',
-            'Automated build → gate → staging-probe → promote pipeline', 'Public GitHub repo + private release mirror'],
+            'Automated build → gate → staging-probe → promote pipeline, with a release manifest per build (ship.py)',
+            'Public GitHub repo + private release mirror'],
     },
     {
         day: 3, title: 'Auth & onboarding hardening', status: 'planned', value: 12,
-        description: 'A user can sign up, log in, and create a workspace without the flow silently failing. '
-            + 'Includes the real backend (not a mock) the rest of the product is built on.',
-        deliverables: ['Real backend auth (PocketBase)', 'Workspace creation flow, reproduced end-to-end and fixed when broken',
-            'Team roles per workspace (owner/admin/editor/viewer), not just single-owner'],
+        description: 'A person — or a Citadel Nexus seat — can sign in and reach a workspace without the flow '
+            + 'silently failing, on the real backend (not a mock) the rest of the platform is built on. '
+            + 'What landed: PocketBase auth, and seat sign-in over OCN — a CitadelKey Ed25519 envelope posted to '
+            + '/api/ocn/login, verified by the rooms sidecar on loopback, never a shared password '
+            + '(pb_hooks/ocn-login.pb.js, apps/web/src/lib/ocnLogin.js, docs/architecture/BUILDANDDO_OCN_LOGIN.md). '
+            + 'Measured on staging 2026-09-11: seat c-one signed in and could read 23 of 24 collections. '
+            + 'Not yet measured: a workspace created end-to-end through onboarding — the staging audit shows zero workspaces.',
+        deliverables: ['Real backend auth (PocketBase)', 'Seat sign-in over OCN with a CitadelKey, so guilds and agents log in the same way people do',
+            'Team roles per workspace (owner/admin/editor/viewer) as a migration; multi-user behaviour still to be measured',
+            'Workspace creation through onboarding, end-to-end — open'],
     },
     {
         day: 5, title: 'Workspace collections live', status: 'planned', value: 20,
         description: 'The actual data model behind every workspace panel — evidence, missions, signals, '
-            + 'workflows, roadmap items — backed by a real database with real access rules, not placeholders.',
-        deliverables: ['Backend deployed for real (was unused scaffolding until this sprint)',
-            'Role-aware access rules verified with real multi-user accounts, not assumed',
-            'Public/private boundary scan wired into CI so nothing internal leaks by accident'],
+            + 'workflows, roadmap items — backed by a real database with real access rules, not placeholders. '
+            + 'What landed: 35 migrations reconciled against the production disk and made safe for a fresh install '
+            + '(docs/architecture/POCKETBASE_MIGRATION_DRIFT_2026-09-11.md, apps/pocketbase/tools/check_migration_order.mjs, '
+            + 'commit 2510ac6), and a staging backend proxied on its own path and isolated from production data.',
+        deliverables: ['Backend deployed for real, on staging and production, from the same migration set',
+            'Migration order checked by a tool, not by hoping production applied them first',
+            'Public/private boundary scan wired into CI (scripts/ci/verify_public_boundary.py)',
+            'Role-aware access rules verified with real multi-user accounts — open'],
     },
     {
         day: 7, title: 'Signals pipeline MVP', status: 'planned', value: 30,
@@ -94,23 +132,28 @@ const PLANNED_MILESTONES = [
     {
         day: 11, title: 'Workflows editor', status: 'planned', value: 50,
         description: 'Letting a user compose a repeatable automation from the same building blocks the '
-            + 'platform itself uses, instead of a one-off script per business.',
+            + 'platform itself uses, instead of a one-off script per project.',
         deliverables: ['Workflow records with a real owner/workspace scope', 'A visual builder for the common cases',
-            'Connectors reusing the same evidence/audit model as everything else, not a parallel system'],
+            'Steps that reuse the same evidence/audit model as everything else, so a learner’s workflow is verified the same way the platform’s own is'],
     },
     {
-        day: 13, title: 'Service connectors (Firecrawl, n8n)', status: 'planned', value: 60,
-        description: 'Real external integrations for research and automation — website/content extraction and '
-            + 'workflow orchestration — each with a stated data boundary, not blanket credential access.',
-        deliverables: ['Firecrawl for controlled web research', 'Self-hosted n8n for orchestration',
-            'Bounded adapter authority per connector, not a generic admin key'],
+        day: 13, title: 'Living Rooms and public-record bridges', status: 'planned', value: 60,
+        description: 'Where people and Citadel Nexus guilds actually work together: Living Rooms that project '
+            + 'live guild activity into a workspace, and bridges that carry the verified record out to the public '
+            + 'surfaces (wiki, forum, Discord, Reddit) — each with a stated data boundary, not blanket credential access. '
+            + 'The rooms sidecar and RoomsPage exist in the repository, but the projection route is not mounted on '
+            + 'staging, so nothing here is verified yet.',
+        deliverables: ['Living Rooms reading live projections on staging (route mounted and probed, not just present in the repo)',
+            'Public-record bridges: wiki, forum, Discord, Reddit — one canonical event, projected outward',
+            'Bounded authority per bridge, not a generic admin key'],
     },
     {
-        day: 15, title: 'ERP foundation', status: 'planned', value: 70,
-        description: 'The unglamorous backbone — contacts, objectives, tasks — that every other workspace '
-            + 'feature (missions, signals, evidence) actually needs to point at something real.',
-        deliverables: ['Contacts/objectives/tasks with the same RBAC model as the rest of the workspace',
-            'Cross-links from missions/signals into ERP records, not a disconnected module'],
+        day: 15, title: 'Objectives, tasks and guild contacts', status: 'planned', value: 70,
+        description: 'The unglamorous backbone of learning by doing — the objective a learner picks, the bounded tasks '
+            + 'it breaks into, and the guild members and agents working it — so missions, signals and evidence '
+            + 'point at something real rather than a disconnected module.',
+        deliverables: ['Objectives, tasks and guild contacts with the same RBAC model as the rest of the workspace',
+            'Cross-links from missions and signals into those records, so a receipt always names the objective it served'],
     },
     {
         day: 17, title: 'Evidence ledger & verification', status: 'planned', value: 80,
@@ -130,7 +173,9 @@ const PLANNED_MILESTONES = [
     {
         day: 21, title: 'Sprint review — verified replay', status: 'planned', value: 100,
         description: 'Every milestone above gets replayed against its own stated evidence bar, in public — '
-            + 'not summarized as "done," but shown with what was actually verified and what wasn’t.',
+            + 'not summarized as "done," but shown with what was actually verified and what wasn’t. '
+            + 'The first replay happened on sprint day 3 (2026-09-11): days 1, 3 and 5 recorded with evidence, '
+            + 'everything else left as the plan it still is.',
         deliverables: ['Public test suite results, not just a green checkmark', 'An honest list of what remains open',
             'This roadmap updated to reflect what actually happened, not the original plan'],
     },
@@ -142,6 +187,58 @@ const PLANNED_MILESTONES = [
 // curve is a plan. A dashed straight line says "planned, interpolated" without
 // implying a daily reading exists.
 const TRAJECTORY = PLANNED_MILESTONES.map((m) => ({ day: m.day, value: m.value }));
+
+/**
+ * Plan percentage at a given day, interpolated between milestone points.
+ *
+ * Used only to say what the plan expected beside what was measured; the plan curve
+ * itself is still drawn straight from TRAJECTORY, so there is one source for the line.
+ *
+ * @param {number} day Sprint day.
+ * @returns {number|null} Planned cumulative percent, or null outside the sprint.
+ */
+function plannedPctFor(day) {
+    if (!Number.isFinite(day)) return null;
+    let prev = TRAJECTORY[0];
+    for (const point of TRAJECTORY) {
+        if (point.day === day) return point.value;
+        if (point.day > day) {
+            const span = point.day - prev.day;
+            if (span <= 0) return point.value;
+            return Math.round((prev.value + ((point.value - prev.value) * (day - prev.day)) / span) * 10) / 10;
+        }
+        prev = point;
+    }
+    return prev.value;
+}
+
+/**
+ * Segments of the measured curve, split wherever measurement stops.
+ *
+ * The achieved line is drawn segment by segment rather than as one path because a day
+ * nobody measured contributes no verified weight, so the cumulative value runs FLAT
+ * across it - and a flat solid line is indistinguishable from "we worked and achieved
+ * nothing". Splitting lets the unmeasured spans render as a broken ghost line, which
+ * says "not measured" instead of claiming a result. Days 9-14 of this campaign are
+ * exactly that case.
+ *
+ * @param {Array<object>} series Per-day progression rows from the estate projection.
+ * @returns {Array<{d: string, measured: boolean}>} SVG path segments.
+ */
+function achievedSegments(series) {
+    const out = [];
+    for (let i = 1; i < series.length; i += 1) {
+        const a = series[i - 1];
+        const b = series[i];
+        out.push({
+            d: `M ${xFor(a.day).toFixed(1)} ${yFor(a.cum_pct).toFixed(1)} `
+                + `L ${xFor(b.day).toFixed(1)} ${yFor(b.cum_pct).toFixed(1)}`,
+            measured: b.state !== 'UNMEASURED',
+        });
+    }
+    return out;
+}
+
 
 /**
  * Overlays projection status onto the planned milestones.
@@ -180,29 +277,54 @@ const PAD_R = 32;
 const PAD_T = 36;
 const PAD_B = 52;
 
+// Invisible hit circle around each marker. At the chart's native width one
+// viewBox unit is one CSS pixel, so r=22 is a 44px touch target; the visible
+// dot stays small because the size of the dot is not data.
+const HIT_R = 22;
+
 const xFor = (day) => PAD_L + ((day - 1) / (SPRINT_DAYS - 1)) * (CHART_W - PAD_L - PAD_R);
 const yFor = (value) => PAD_T + (1 - value / 100) * (CHART_H - PAD_T - PAD_B);
 
-function MarketPlot({ activeDay, onHover, live, milestones, actual }) {
+/**
+ * The market-style plot. Markers are focusable buttons: hover previews,
+ * click / tap / Enter / Space pins, arrow keys walk between milestones,
+ * Escape unpins (handled by the page).
+ */
+function MarketPlot({ activeDay, pinnedDay, onHover, onPin, live, milestones, actual,
+    achieved, campaignMilestones }) {
     const linePath = TRAJECTORY.map((p, i) => `${i === 0 ? 'M' : 'L'} ${xFor(p.day).toFixed(1)} ${yFor(p.value).toFixed(1)}`).join(' ');
     const areaPath = `${linePath} L ${xFor(SPRINT_DAYS).toFixed(1)} ${yFor(0).toFixed(1)} L ${xFor(1).toFixed(1)} ${yFor(0).toFixed(1)} Z`;
 
     const yTicks = [0, 25, 50, 75, 100];
     const xTicks = [1, 5, 9, 13, 17, 21];
+    const days = milestones.map((m) => m.day);
+
+    const handleKeyDown = (event, day) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onPin(day, 'keyboard');
+            return;
+        }
+        const next = dayForKey(event.key, days, day);
+        if (next === null) return;
+        event.preventDefault();
+        document.getElementById(markerId(next))?.focus();
+        onPin(next, 'keyboard');
+    };
 
     return (
         <svg
             viewBox={`0 0 ${CHART_W} ${CHART_H}`}
             className="block h-auto w-full"
-            role="img"
-            aria-label="Planned 21-day development sprint trajectory, plotted as a market-style line chart."
+            role="group"
+            aria-label="Planned 21-day development sprint trajectory, plotted as a market-style line chart. Each milestone marker is a button."
         >
             {/* paper background */}
             <rect x="0" y="0" width={CHART_W} height={CHART_H} fill="hsl(var(--card))" />
 
             {/* grid */}
             {yTicks.map((t) => (
-                <g key={`y${t}`}>
+                <g key={`y${t}`} aria-hidden="true">
                     <line x1={PAD_L} y1={yFor(t)} x2={CHART_W - PAD_R} y2={yFor(t)} stroke="hsl(var(--border))" strokeWidth="1" />
                     <text x={PAD_L - 10} y={yFor(t) + 4} textAnchor="end" className="font-evidence" fontSize="11" fill="hsl(var(--muted-foreground))">
                         {t}
@@ -210,7 +332,7 @@ function MarketPlot({ activeDay, onHover, live, milestones, actual }) {
                 </g>
             ))}
             {xTicks.map((t) => (
-                <g key={`x${t}`}>
+                <g key={`x${t}`} aria-hidden="true">
                     <line x1={xFor(t)} y1={PAD_T} x2={xFor(t)} y2={CHART_H - PAD_B} stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="2 4" />
                     <text x={xFor(t)} y={CHART_H - PAD_B + 20} textAnchor="middle" className="font-evidence" fontSize="11" fill="hsl(var(--muted-foreground))">
                         D{t}
@@ -219,10 +341,10 @@ function MarketPlot({ activeDay, onHover, live, milestones, actual }) {
             ))}
 
             {/* axis labels */}
-            <text x={PAD_L - 44} y={PAD_T - 14} className="font-evidence" fontSize="10" fill="hsl(var(--muted-foreground))" letterSpacing="1.5">
+            <text aria-hidden="true" x={PAD_L - 44} y={PAD_T - 14} className="font-evidence" fontSize="10" fill="hsl(var(--muted-foreground))" letterSpacing="1.5">
                 % PLAN
             </text>
-            <text x={CHART_W - PAD_R} y={CHART_H - PAD_B + 20} textAnchor="end" className="font-evidence" fontSize="10" fill="hsl(var(--muted-foreground))" letterSpacing="1.5">
+            <text aria-hidden="true" x={CHART_W - PAD_R} y={CHART_H - PAD_B + 20} textAnchor="end" className="font-evidence" fontSize="10" fill="hsl(var(--muted-foreground))" letterSpacing="1.5">
                 SPRINT DAY →
             </text>
 
@@ -246,15 +368,37 @@ function MarketPlot({ activeDay, onHover, live, milestones, actual }) {
                 const x = xFor(m.day);
                 const y = yFor(m.value);
                 const isActive = activeDay === m.day;
+                const isPinned = pinnedDay === m.day;
                 const isVerified = m.status === 'verified';
                 return (
                     <g
                         key={m.day}
-                        onMouseEnter={() => onHover(m.day)}
-                        onMouseLeave={() => onHover(null)}
-                        style={{ cursor: 'pointer' }}
+                        id={markerId(m.day)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={milestoneLabel(m)}
+                        aria-pressed={isPinned}
+                        data-testid={`milestone-marker-${m.day}`}
+                        onPointerEnter={(e) => { if (e.pointerType !== 'touch') onHover(m.day); }}
+                        onPointerLeave={() => onHover(null)}
+                        onFocus={() => onHover(m.day)}
+                        onBlur={() => onHover(null)}
+                        onClick={() => onPin(m.day, 'chart')}
+                        onKeyDown={(e) => handleKeyDown(e, m.day)}
+                        className="cursor-pointer outline-none [&:focus-visible>.marker-ring]:stroke-[hsl(var(--ring))]"
+                        style={{ touchAction: 'manipulation' }}
                     >
-                        {isActive && <circle cx={x} cy={y} r="9" fill="hsl(var(--primary) / 0.18)" />}
+                        {/* hit target - invisible, but it is what receives the tap */}
+                        <circle cx={x} cy={y} r={HIT_R} fill="transparent" stroke="none" />
+                        {/* focus ring / active halo */}
+                        <circle
+                            className="marker-ring"
+                            cx={x} cy={y} r="11"
+                            fill={isActive || isPinned ? 'hsl(var(--primary) / 0.18)' : 'transparent'}
+                            stroke={isPinned ? 'hsl(var(--primary))' : 'transparent'}
+                            strokeWidth="1.5"
+                            strokeDasharray={isPinned ? '3 2' : undefined}
+                        />
                         <circle
                             cx={x}
                             cy={y}
@@ -263,18 +407,74 @@ function MarketPlot({ activeDay, onHover, live, milestones, actual }) {
                             stroke="hsl(var(--primary))"
                             strokeWidth="2"
                         />
-                        <text x={x} y={y - 12} textAnchor="middle" className="font-evidence" fontSize="10" fill="hsl(var(--foreground))">
+                        <text x={x} y={y - 16} textAnchor="middle" className="font-evidence" fontSize="10" fill="hsl(var(--foreground))" aria-hidden="true">
                             D{m.day}
                         </text>
                     </g>
                 );
             })}
 
+            {/* Real dated campaign commitments - summit windows, competition deadlines.
+                These come from the estate, not from the plan list: PLANNED_MILESTONES is
+                eleven evenly spaced labels written in advance, whereas these are the dates
+                the sprint is actually judged against, and none of them used to reach the
+                page. Hard deadlines are drawn solid, soft dates hairline. */}
+            {campaignMilestones.map((m) => (
+                <g key={`cm-${m.day}-${m.title}`} aria-hidden="true">
+                    <line
+                        x1={xFor(m.day)} y1={PAD_T}
+                        x2={xFor(m.day)} y2={CHART_H - PAD_B}
+                        stroke={m.hard ? 'hsl(var(--primary) / 0.32)' : 'hsl(var(--muted-foreground) / 0.26)'}
+                        strokeWidth={m.hard ? 1.5 : 1}
+                        strokeDasharray={m.hard ? '5 3' : '1 5'}
+                    />
+                    <polygon
+                        points={`${xFor(m.day) - 4},${PAD_T - 9} ${xFor(m.day) + 4},${PAD_T - 9} ${xFor(m.day)},${PAD_T - 2}`}
+                        fill={m.hard ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))'}
+                    />
+                </g>
+            ))}
+
+            {/* The measured curve. Solid where the estate measured the day, broken and
+                faded where it did not - see achievedSegments. Bounded at today by the
+                caller: continuing it to D21 would draw the future as if it were known. */}
+            {achieved && achieved.segments.map((seg, i) => (
+                <path
+                    key={`ach-${i}`}
+                    d={seg.d}
+                    fill="none"
+                    stroke={seg.measured ? 'hsl(var(--foreground))' : 'hsl(var(--muted-foreground))'}
+                    strokeWidth={seg.measured ? 2.25 : 1.5}
+                    strokeDasharray={seg.measured ? undefined : '3 4'}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity={seg.measured ? 1 : 0.5}
+                />
+            ))}
+            {achieved && (
+                <g role="img" aria-label={
+                    `Measured progression: ${achieved.last.cum_pct}% of the campaign verified by day `
+                    + `${achieved.last.day}, against a plan of ${achieved.plannedPct}% - `
+                    + `${achieved.unmeasuredDays} day(s) in this range were never measured`
+                }>
+                    <circle
+                        cx={xFor(achieved.last.day)} cy={yFor(achieved.last.cum_pct)} r="5"
+                        fill="hsl(var(--foreground))" stroke="hsl(var(--card))" strokeWidth="2"
+                    />
+                    <text
+                        x={xFor(achieved.last.day) + 9} y={yFor(achieved.last.cum_pct) + 4}
+                        className="font-evidence" fontSize="10" fill="hsl(var(--foreground))"
+                    >
+                        VERIFIED {achieved.last.cum_pct}%
+                    </text>
+                </g>
+            )}
+
             {/* actual progress marker - drawn only from a fresh, measured
                 projection. An UNMEASURED or missing file draws nothing at all
                 rather than a marker at a number nobody computed. */}
             {actual && (
-                <g>
+                <g aria-label={`Milestone evidence ${actual.pct}% of the plan on plan day ${actual.day} - not measured progression`} role="img">
                     <line
                         x1={xFor(actual.day)} y1={PAD_T}
                         x2={xFor(actual.day)} y2={CHART_H - PAD_B}
@@ -288,7 +488,7 @@ function MarketPlot({ activeDay, onHover, live, milestones, actual }) {
                         x={xFor(actual.day)} y={yFor(actual.pct) - 14}
                         textAnchor="middle" className="font-evidence" fontSize="10" fill="hsl(var(--foreground))"
                     >
-                        ACTUAL {actual.pct}%
+                        ACTUAL (EVIDENCE) {actual.pct}%
                     </text>
                 </g>
             )}
@@ -309,19 +509,48 @@ function MarketPlot({ activeDay, onHover, live, milestones, actual }) {
     );
 }
 
+function TickerChip({ href, children, className, ...props }) {
+    return (
+        <a
+            href={href}
+            className={cn('inline-flex min-h-[32px] items-center hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ring))]', className)}
+            {...props}
+        >
+            {children}
+        </a>
+    );
+}
+
 export default function RoadmapPage() {
-    const [activeDay, setActiveDay] = useState(null);
-    const [live, setLive] = useState(null);
-    const [liveError, setLiveError] = useState(false);
+    // pinnedDay persists until another marker is pinned or Escape; hoverDay is
+    // a transient preview from mouse hover or keyboard focus.
+    const [pinnedDay, setPinnedDay] = useState(null);
+    const [hoverDay, setHoverDay] = useState(null);
+    const [highlightedDay, setHighlightedDay] = useState(null);
+    const [statusFilter, setStatusFilter] = useState(() => new Set());
+    const chartRef = useRef(null);
+    const { status: live, error: liveError } = useRoadmapStatus();
 
     const milestones = useMemo(() => mergeLiveStatus(live?.milestones), [live]);
     const verifiedCount = useMemo(
         () => milestones.filter((m) => m.status === 'verified').length,
         [milestones],
     );
+    const statusCounts = useMemo(
+        () => milestones.reduce((acc, m) => ({ ...acc, [m.status]: (acc[m.status] || 0) + 1 }), {}),
+        [milestones],
+    );
+
+    const activeDay = hoverDay ?? pinnedDay;
     const activeMilestone = useMemo(
         () => milestones.find((m) => m.day === activeDay) || null,
         [milestones, activeDay],
+    );
+    const detailMode = activeMilestone ? (hoverDay !== null && hoverDay !== pinnedDay ? 'preview' : 'pinned') : null;
+
+    const visibleMilestones = useMemo(
+        () => (statusFilter.size ? milestones.filter((m) => statusFilter.has(m.status)) : milestones),
+        [milestones, statusFilter],
     );
 
     // A projection is only quoted when it says it measured something. An
@@ -338,30 +567,112 @@ export default function RoadmapPage() {
 
     // sprint_day is clamped here as well as in sprint_cycle.py: a status file
     // written after D21, or by an older projection, must not plot off-chart.
+    // The marker is MILESTONE EVIDENCE (verified_pct from sprint_cycle), never
+    // the measured progression the Progression panel quotes from the estate.
+    // Canonical progression, consumed from the estate through the projection.
+    // Absent or unmeasured renders as UNMEASURED - never as zero. The day it
+    // carries is counted live from the operator anchor at view time.
+    const progression = useMemo(() => progressionOf(live), [live]);
+
     const actual = useMemo(() => {
         if (!measured) return null;
-        if (!Number.isFinite(live.sprint_day) || !Number.isFinite(live.actual_pct)) return null;
+        const evidencePct = live.verified_pct ?? live.actual_pct;
+        // Today's day comes from the live anchor count; the build-time
+        // sprint_day is only the fallback when the anchor is unknown.
+        const day = progression.day ?? live.sprint_day;
+        if (!Number.isFinite(day) || !Number.isFinite(evidencePct)) return null;
         return {
-            day: Math.max(1, Math.min(live.sprint_day, SPRINT_DAYS)),
-            pct: Math.max(0, Math.min(live.actual_pct, 100)),
+            day: Math.max(1, Math.min(day, SPRINT_DAYS)),
+            pct: Math.max(0, Math.min(evidencePct, 100)),
         };
-    }, [measured, live]);
+    }, [measured, live, progression]);
 
-    useEffect(() => {
-        let cancelled = false;
-        fetch('/roadmap-status.json', { cache: 'no-store' })
-            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
-            .then((data) => { if (!cancelled) setLive(data); })
-            .catch(() => { if (!cancelled) setLiveError(true); });
-        return () => { cancelled = true; };
-    }, []);
+    // The measured curve, bounded at today. The estate series covers all 21 days, and
+    // some future-day criteria are already verified (work landed early), but plotting
+    // past today would draw a cumulative line across days that have not happened - a
+    // forecast wearing the styling of a measurement. Everything after today is simply
+    // not drawn; the whole-campaign figure stays a scalar in the Progression panel.
+    const achieved = useMemo(() => {
+        const series = Array.isArray(progression.series) ? progression.series : [];
+        if (series.length < 2) return null;
+        const today = Number.isFinite(progression.day) ? progression.day : live.sprint_day;
+        const bound = Number.isFinite(today) ? today : SPRINT_DAYS;
+        const upto = series.filter((r) => r.day <= bound);
+        if (upto.length < 2) return null;
+        const last = upto[upto.length - 1];
+        return {
+            segments: achievedSegments(upto),
+            last,
+            plannedPct: plannedPctFor(last.day),
+            unmeasuredDays: upto.filter((r) => r.state === 'UNMEASURED').length,
+        };
+    }, [progression, live]);
+
+    // Real dated commitments, mapped onto the sprint-day axis upstream so the browser
+    // never re-derives that mapping and cannot disagree with the plan curve.
+    const campaignMilestones = useMemo(() => {
+        const list = Array.isArray(progression.campaignMilestones)
+            ? progression.campaignMilestones : [];
+        return list.filter((m) => m.day >= 1 && m.day <= SPRINT_DAYS);
+    }, [progression]);
 
     const handleHover = (day) => {
-        setActiveDay(day);
-        if (day) {
+        setHoverDay(day);
+        if (day && day !== pinnedDay) {
             const m = milestones.find((x) => x.day === day);
             trackEvent('roadmap_milestone_hover', { day, title: m?.title });
         }
+    };
+
+    const handlePin = useCallback((day, via) => {
+        setPinnedDay(day);
+        const m = milestones.find((x) => x.day === day);
+        trackEvent('roadmap_milestone_pin', { day, title: m?.title, status: m?.status, via });
+    }, [milestones]);
+
+    const handleUnpin = useCallback(() => {
+        setPinnedDay(null);
+        setHoverDay(null);
+    }, []);
+
+    // Escape anywhere on the page releases the pin.
+    useEffect(() => {
+        if (pinnedDay === null) return undefined;
+        const onKey = (e) => { if (e.key === 'Escape') handleUnpin(); };
+        document.addEventListener('keydown', onKey);
+        return () => document.removeEventListener('keydown', onKey);
+    }, [pinnedDay, handleUnpin]);
+
+    // The ledger highlight is a short flash, not a state the reader has to clear.
+    useEffect(() => {
+        if (highlightedDay === null) return undefined;
+        const t = setTimeout(() => setHighlightedDay(null), HIGHLIGHT_MS);
+        return () => clearTimeout(t);
+    }, [highlightedDay]);
+
+    const handleJumpToLedger = (day) => {
+        setHighlightedDay(day);
+        trackEvent('roadmap_ledger_jump', { day });
+        document.getElementById(ledgerId(day))?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    const handleShowOnChart = (day) => {
+        handlePin(day, 'ledger');
+        chartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById(markerId(day))?.focus({ preventScroll: true });
+    };
+
+    const toggleStatus = (s) => {
+        setStatusFilter((prev) => {
+            const next = new Set(prev);
+            if (next.has(s)) next.delete(s); else next.add(s);
+            trackEvent('roadmap_status_filter', { statuses: [...next].sort() });
+            return next;
+        });
+    };
+    const clearStatus = () => {
+        setStatusFilter(new Set());
+        trackEvent('roadmap_status_filter', { statuses: [] });
     };
 
     return (
@@ -382,6 +693,7 @@ export default function RoadmapPage() {
 
             <Header />
 
+            <main id="main-content" tabIndex={-1} className="pt-14 outline-none">
             <div className="rule-double" />
             <Section className="py-14 sm:py-20">
                 <SectionLabel icon={Gauge}>Operational Roadmap</SectionLabel>
@@ -389,59 +701,94 @@ export default function RoadmapPage() {
                     A 21-day sprint, plotted like a market chart.
                 </h1>
                 <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                    BuildAndDo&rsquo;s near-term roadmap is a planned development
+                    BuildAndDo is an educational, collaborative platform built in
+                    public, and this is its near-term roadmap: a planned development
                     sprint, drawn as an old-school stock-market plot. Each marker
                     is a milestone in the sprint. The curve is a plan, not
                     telemetry — it shows intended cumulative completion, not real
                     results. An item is never marked Verified from a prompt
                     alone; Verified still requires an evidence record. The
-                    red ACTUAL marker on the chart, where present, is live
-                    build/deploy telemetry, not another plan line.
+                    red ACTUAL marker on the chart, where present, is milestone
+                    evidence against the plan - not measured progression, which
+                    the Progression panel quotes separately from the estate.
                 </p>
 
-                <div className="mt-8 flex flex-wrap gap-2">
-                    {STATUSES.map((s) => <StatePill key={s} state={s} />)}
+                <div className="mt-8">
+                    <p className="mb-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                        Status legend · select to filter the ledger
+                    </p>
+                    <StatusLegendFilter
+                        statuses={STATUSES}
+                        selected={statusFilter}
+                        counts={statusCounts}
+                        onToggle={toggleStatus}
+                        onClear={clearStatus}
+                    />
                 </div>
             </Section>
 
-            {/* Market plot */}
+            {/* Progression - consumed from the estate, one row per axis, never averaged */}
             <Section className="border-t border-foreground/80 py-12 sm:py-16">
-                <div className="flex flex-wrap items-end justify-between gap-4">
+                <ProgressionPanel progression={progression} fetchFailed={liveError} />
+            </Section>
+
+            {/* Market plot */}
+            <Section id="sprint-chart" className="border-t border-foreground/80 py-12 sm:py-16">
+                <div ref={chartRef} className="scroll-mt-24 flex flex-wrap items-end justify-between gap-4">
                     <div>
                         <SectionLabel icon={TrendingUp}>Dev trajectory · planned</SectionLabel>
                         <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            21-day sprint — milestone plot
+                            21-day sprint — milestone plot
                         </h2>
                     </div>
                     <div className="font-evidence text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-            BND · SPRINT 01 · PLAN
+                        BND · SPRINT 01 · PLAN
                     </div>
                 </div>
 
-                <Card className="mt-6 overflow-hidden p-0">
-                    <MarketPlot
-                        activeDay={activeDay}
-                        onHover={handleHover}
-                        live={live}
-                        milestones={milestones}
-                        actual={actual}
-                    />
-                </Card>
+                <div className="mt-6 grid gap-4 lg:grid-cols-12">
+                    <Card className="overflow-hidden p-0 lg:col-span-8">
+                        <MarketPlot
+                            activeDay={activeDay}
+                            pinnedDay={pinnedDay}
+                            onHover={handleHover}
+                            onPin={handlePin}
+                            live={live}
+                            milestones={milestones}
+                            actual={actual}
+                            achieved={achieved}
+                            campaignMilestones={campaignMilestones}
+                        />
+                    </Card>
+                    {/* persistent detail card - pinned milestone, or a hover preview */}
+                    <div className="lg:col-span-4">
+                        <MilestoneDetailCard
+                            milestone={activeMilestone}
+                            mode={detailMode}
+                            stateSource={live?.milestone_state_source || 'Unknown'}
+                            onUnpin={handleUnpin}
+                            onJump={handleJumpToLedger}
+                        />
+                    </div>
+                </div>
 
-                {/* ticker / readout strip */}
-                <div className="mt-4 border border-border bg-secondary/40 px-4 py-3">
+                {/* ticker / readout strip - each chip is a link to its section */}
+                <nav aria-label="Roadmap sections" className="mt-4 border border-border bg-secondary/40 px-4 py-2">
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-1 font-evidence text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                        <span>SPRINT 01</span>
+                        <TickerChip href="#sprint-chart">SPRINT 01</TickerChip>
                         <span>· {SPRINT_DAYS} DAYS</span>
-                        <span>· {milestones.length} MILESTONES</span>
-                        <span>· {verifiedCount} VERIFIED</span>
+                        <TickerChip href="#milestone-ledger">· {milestones.length} MILESTONES</TickerChip>
+                        <TickerChip href="#milestone-ledger" data-testid="ticker-verified">· {verifiedCount} VERIFIED</TickerChip>
                         <span className="text-primary">· CURVE = PLAN, NOT RESULTS</span>
                         {actual && (
-                            <span>· LIVE ACTUAL: {actual.pct}% (day {actual.day})</span>
+                            <span data-testid="ticker-actual">· ACTUAL = MILESTONE EVIDENCE: {actual.pct}% (plan day {actual.day})</span>
                         )}
+                        <TickerChip href="#progression" data-testid="ticker-progression">
+                            · MEASURED PROGRESSION: {progression.state === 'UNMEASURED' ? 'UNMEASURED' : `${progression.measuredPct}%`}
+                        </TickerChip>
                         {live && !measured && <span>· LIVE DATA UNAVAILABLE</span>}
                         {live?.gate_state && (
-                            <span>· LAST GATE: {live.gate_state}</span>
+                            <TickerChip href="#build-activity">· LAST GATE: {live.gate_state}</TickerChip>
                         )}
                         {stale && (
                             <span className="text-amber-warm">
@@ -450,99 +797,102 @@ export default function RoadmapPage() {
                         )}
                         {liveError && <span>· LIVE DATA: UNKNOWN (FETCH FAILED)</span>}
                     </div>
-                </div>
+                </nav>
 
-                {/* active milestone readout */}
-                <div className="mt-4 min-h-[3.5rem]">
-                    {activeMilestone ? (
-                        <Card className="p-4">
-                            <div className="flex flex-wrap items-center gap-3">
-                                <span className="font-evidence text-[11px] uppercase tracking-[0.14em] text-primary">
-                    Day {activeMilestone.day}
-                                </span>
-                                <span className="font-display text-lg font-semibold">{activeMilestone.title}</span>
-                                <StatePill state={activeMilestone.status} />
-                                <span className="font-evidence text-[11px] text-muted-foreground">
-                    planned completion {activeMilestone.value}%
-                                </span>
-                            </div>
-                            {activeMilestone.description && (
-                                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                                    {activeMilestone.description}
-                                </p>
-                            )}
-                            {activeMilestone.deliverables?.length > 0 && (
-                                <ul className="mt-3 space-y-1.5">
-                                    {activeMilestone.deliverables.map((d) => (
-                                        <li key={d} className="flex gap-2 text-sm text-foreground/90">
-                                            <span className="text-primary">·</span>
-                                            <span>{d}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </Card>
-                    ) : (
-                        <p className="px-1 text-sm text-muted-foreground">
-              Hover or tap a milestone marker on the chart to read its
-              planned deliverable.
-                        </p>
-                    )}
-                </div>
+                {/* live source signals - one tile per connected system, never a result */}
+                <LiveSourcesPanel
+                    signals={live?.signals || null}
+                    signalsState={live?.signals_state || 'UNMEASURED'}
+                    generatedAt={live?.signals_generated_at || null}
+                />
             </Section>
 
             {/* Milestone ledger */}
-            <Section className="border-t border-foreground/80 py-12 sm:py-16">
+            <Section id="milestone-ledger" className="border-t border-foreground/80 py-12 sm:py-16">
                 <SectionLabel>Milestone ledger</SectionLabel>
                 <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-          Every milestone, with provenance fields.
+                    Every milestone, with provenance fields.
                 </h2>
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          No invented results, no fake progress bars, no illustrative dates
-          presented as real. If a field is unknown, it says Unknown.
+                    No invented results, no fake progress bars, no illustrative dates
+                    presented as real. If a field is unknown, it says Unknown.
                 </p>
+                {statusFilter.size > 0 && (
+                    <p className="mt-3 font-evidence text-[11px] uppercase tracking-[0.14em] text-muted-foreground" data-testid="ledger-filter-note">
+                        Showing {visibleMilestones.length} of {milestones.length} · filtered by {[...statusFilter].map((s) => s.replace(/_/g, ' ')).join(', ')}
+                        {' '}·{' '}
+                        <button type="button" onClick={clearStatus} className="underline hover:text-foreground">clear</button>
+                    </p>
+                )}
 
-                <Card className="mt-6 divide-y divide-border">
-                    {milestones.map((m) => (
-                        <div key={m.day} className="p-4">
-                            <div className="grid grid-cols-12 items-center gap-3">
-                                <div className="col-span-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-primary sm:col-span-1">
-                    D{m.day}
+                <Card className="mt-6 divide-y divide-border" data-testid="milestone-ledger">
+                    {visibleMilestones.length === 0 && (
+                        <p className="p-4 text-sm text-muted-foreground">No milestones carry the selected status.</p>
+                    )}
+                    {visibleMilestones.map((m) => {
+                        const isPinned = pinnedDay === m.day;
+                        const isHighlighted = highlightedDay === m.day;
+                        return (
+                            <article
+                                key={m.day}
+                                id={ledgerId(m.day)}
+                                data-testid={`ledger-entry-${m.day}`}
+                                data-pinned={isPinned ? 'true' : undefined}
+                                aria-labelledby={`${ledgerId(m.day)}-title`}
+                                className={cn(
+                                    'scroll-mt-24 p-4 transition-colors',
+                                    isHighlighted && 'bg-primary/10',
+                                    isPinned && !isHighlighted && 'bg-secondary/40',
+                                )}
+                            >
+                                <div className="grid grid-cols-12 items-center gap-3">
+                                    <div className="col-span-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-primary sm:col-span-1">
+                                        D{m.day}
+                                    </div>
+                                    <h3 id={`${ledgerId(m.day)}-title`} className="col-span-10 text-sm font-medium sm:col-span-6">{m.title}</h3>
+                                    <div className="col-span-12 flex flex-wrap items-center justify-end gap-2 sm:col-span-5">
+                                        <span className="font-evidence text-[11px] text-muted-foreground">{m.value}%</span>
+                                        <StatePill state={m.status} />
+                                        <button
+                                            type="button"
+                                            onClick={() => handleShowOnChart(m.day)}
+                                            aria-pressed={isPinned}
+                                            aria-label={`Show day ${m.day} on chart`}
+                                            className="inline-flex min-h-[36px] items-center gap-1 border border-border px-2 font-evidence text-[11px] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ring))]"
+                                        >
+                                            <ArrowUp className="h-3 w-3" /> {isPinned ? 'On chart' : 'Show on chart'}
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="col-span-7 text-sm font-medium sm:col-span-8">{m.title}</div>
-                                <div className="col-span-3 flex items-center justify-end gap-2">
-                                    <span className="font-evidence text-[11px] text-muted-foreground">{m.value}%</span>
-                                    <StatePill state={m.status} />
-                                </div>
-                            </div>
-                            {m.status === 'verified' && m.evidence && (
-                                <p className="font-evidence mt-2 pl-0 text-[11px] text-muted-foreground sm:pl-[calc(8.33%+0.75rem)]">
-                                    Evidence: {m.evidence}
-                                    {m.verifiedAt ? ` · verified ${m.verifiedAt}` : ''}
-                                </p>
-                            )}
-                            {m.description && (
-                                <p className="mt-2 pl-0 text-sm leading-relaxed text-muted-foreground sm:pl-[calc(8.33%+0.75rem)]">
-                                    {m.description}
-                                </p>
-                            )}
-                            {m.deliverables?.length > 0 && (
-                                <ul className="mt-2 space-y-1 pl-0 sm:pl-[calc(8.33%+0.75rem)]">
-                                    {m.deliverables.map((d) => (
-                                        <li key={d} className="flex gap-2 text-xs text-foreground/80">
-                                            <span className="text-primary">·</span>
-                                            <span>{d}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    ))}
+                                {m.status === 'verified' && m.evidence && (
+                                    <p className="font-evidence mt-2 pl-0 text-[11px] text-muted-foreground sm:pl-[calc(8.33%+0.75rem)]">
+                                        Evidence: {m.evidence}
+                                        {m.verifiedAt ? ` · verified ${m.verifiedAt}` : ''}
+                                    </p>
+                                )}
+                                {m.description && (
+                                    <p className="mt-2 pl-0 text-sm leading-relaxed text-muted-foreground sm:pl-[calc(8.33%+0.75rem)]">
+                                        {m.description}
+                                    </p>
+                                )}
+                                {m.deliverables?.length > 0 && (
+                                    <ul className="mt-2 space-y-1 pl-0 sm:pl-[calc(8.33%+0.75rem)]">
+                                        {m.deliverables.map((d) => (
+                                            <li key={d} className="flex gap-2 text-xs text-foreground/80">
+                                                <span className="text-primary">·</span>
+                                                <span>{d}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </article>
+                        );
+                    })}
                 </Card>
             </Section>
 
             {/* Recent build activity - real GitHub commit log, refreshed every deploy */}
-            <Section className="border-t border-foreground/80 py-12 sm:py-16">
+            <Section id="build-activity" className="border-t border-foreground/80 py-12 sm:py-16">
                 <SectionLabel icon={GitCommit}>Build in public</SectionLabel>
                 <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
                     Recent build activity.
@@ -550,6 +900,8 @@ export default function RoadmapPage() {
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
                     Pulled live from the public GitHub repository at build time. Not
                     a summary or a curated highlight reel — the real commit log.
+                    {live?.gate_state ? ` Last deploy gate: ${live.gate_state}` : ''}
+                    {live?.gate_checked_at ? ` (checked ${live.gate_checked_at.slice(0, 16).replace('T', ' ')} UTC).` : ''}
                 </p>
                 <Card className="mt-6 divide-y divide-border">
                     {live?.recent_commits?.length ? (
@@ -585,11 +937,11 @@ export default function RoadmapPage() {
                     <div className="lg:col-span-5">
                         <SectionLabel>What each item contains</SectionLabel>
                         <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Full provenance, by default.
+                            Full provenance, by default.
                         </h2>
                         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            No invented milestones, no fake progress bars, no illustrative
-            dates presented as real. If a field is unknown, it says Unknown.
+                            No invented milestones, no fake progress bars, no illustrative
+                            dates presented as real. If a field is unknown, it says Unknown.
                         </p>
                     </div>
                     <div className="lg:col-span-7">
@@ -610,12 +962,15 @@ export default function RoadmapPage() {
             <Section className="border-t border-foreground/80 py-12 sm:py-16">
                 <Card className="p-8 text-center">
                     <p className="font-display text-xl font-semibold">
-            The live, editable roadmap lives in your workspace.
+                        The live, editable roadmap lives in your workspace.
                     </p>
                     <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-            The dashed curve is the planned sprint. A milestone renders as
-            verified here only when the sprint projection reports it verified
-            with an evidence reference — never from this page&rsquo;s own defaults.
+                        The dashed curve is the plan. The ACTUAL marker is milestone
+                        evidence against that plan; a milestone renders as verified here
+                        only when the sprint projection reports it verified with an
+                        evidence reference — never from this page&rsquo;s own defaults.
+                        Measured progression is a separate axis, quoted above from the
+                        estate and never averaged with the plan.
                     </p>
                     <div className="mt-5 flex justify-center gap-2">
                         <Link to="/app/roadmap"><Button size="sm">Open workspace roadmap <ArrowRight className="h-4 w-4" /></Button></Link>
@@ -626,10 +981,17 @@ export default function RoadmapPage() {
 
             <p className="mx-auto flex max-w-6xl items-start gap-2 px-4 pb-10 text-xs leading-relaxed text-muted-foreground/70 sm:px-6">
                 <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-        The curve on this page is a planned sprint trajectory, not verified
-        results or live telemetry. BuildAndDo does not present illustrative
-        numbers as real; no cost markers or growth metrics are shown.
+                <span>
+                    How to read this page: hover a marker to preview it; click, tap, or
+                    press Enter on a marker to pin it in the detail card; arrow keys move
+                    between markers and Escape unpins. Legend chips filter the ledger, and
+                    every ledger entry can show its marker on the chart. The curve is a
+                    planned sprint trajectory, not verified results or live telemetry.
+                    BuildAndDo does not present illustrative numbers as real; no cost
+                    markers or growth metrics are shown.
+                </span>
             </p>
+            </main>
 
             <Footer />
         </div>

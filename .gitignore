@@ -1,4 +1,5 @@
-﻿# Local secrets
+# CGRF: SRS=SRS-BUILDANDDO-PUBLIC-RECORD-001 | CAPS=B | Seat=C-ONE
+# Local secrets
 .env
 .env.*
 !.env.example
@@ -24,8 +25,14 @@ apps/pocketbase/pocketbase
 Thumbs.db
 .vscode/*.local.json
 
-# Local-only operational state / internal ops scripts (never public)
-state/
+# Local-only operational state / internal ops scripts (never public).
+# Root-anchored on purpose. A bare `state/` matches at EVERY depth, and it
+# silently swallowed apps/web/plugins/visual-editor/state/ - 5 first-party
+# modules with 15 importers. They were never missing, just invisible to git:
+# lint passed in dev clones where the files sat on disk, and failed with 29
+# import/no-unresolved on every fresh checkout and CI runner. Same failure the
+# .buildanddo/ note below records (2026-09-07). Keep the leading slash.
+/state/
 evidence/**/private/
 evidence/**/secrets/
 .buildanddo/*
@@ -55,6 +62,14 @@ scripts/ci/run_sprint_cycle.ps1
 # Generated at build time by scripts/deploy/roadmap_status.py - never hand-edited
 # or committed as source, it's build output like dist/.
 apps/web/public/roadmap-status.json
+# Same for scripts/deploy/integrations_status.py (public-record bridge).
+apps/web/public/integrations-status.json
+apps/web/public/.well-known/citadel-release.json
+
+# Local sensitive working area. NOT ignored before 2026-09-11: a bare
+# `git add .` staged vault/temp/SESSION_JOURNAL.md into this repo, which
+# pushes to PUBLIC github.com/mrnobodytx/buildanddo.
+vault/
 # Generated at build time by scripts/ci/fleet_report.py - build output, same as
 # roadmap-status.json above. The Fleet and Platform Health pages state that the
 # projection is missing rather than drawing stale data when it was not written.

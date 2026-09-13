@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-WORKSPACE-001 | CAPS=B | Seat=C-ONE
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -21,10 +22,12 @@ import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import EarlyAccess from '@/components/site/EarlyAccess';
 import Faq, { FAQ_ITEMS } from '@/components/site/Faq';
+import RoadmapPulse from '@/components/roadmap/RoadmapPulse';
 import Seo from '@/components/Seo';
 import pb from '@/lib/pocketbaseClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { PURPOSE, pageTitle } from '@/lib/purpose';
 import {
     Button,
     Section,
@@ -35,8 +38,8 @@ import {
     ProvenanceTag,
 } from '@/components/site/ui';
 
-const DESCRIPTION =
-    'BuildAndDo is a business newspaper for your own operations. It tells you what changed, what to do next, and proves whether it worked — using only data from sources you connect. No mock metrics, no fabricated results.';
+const DESCRIPTION = PURPOSE.description;
+const TITLE = pageTitle();
 
 const structuredData = [
     {
@@ -55,7 +58,7 @@ const structuredData = [
         '@context': 'https://schema.org',
         '@type': 'SoftwareApplication',
         name: 'BuildAndDo',
-        applicationCategory: 'BusinessApplication',
+        applicationCategory: 'EducationalApplication',
         operatingSystem: 'Web',
         description: DESCRIPTION,
     },
@@ -99,8 +102,8 @@ function Masthead() {
                         BUILDANDDO
                     </h1>
                     <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                        Your business changed today. BuildAndDo tells you what
-                        changed, what to do next, and proves whether it worked.
+                        {PURPOSE.tagline} A daily record of what learners and
+                        guilds actually did, with the evidence behind it.
                     </p>
                 </div>
             </div>
@@ -127,15 +130,15 @@ function FrontPageHero() {
                 <div className="lg:col-span-7">
                     <SectionLabel icon={Newspaper}>Front Page</SectionLabel>
                     <h2 className="mt-3 font-display text-3xl font-bold leading-[1.08] tracking-tight sm:text-5xl">
-                        Awaiting your first verified business signal.
+                        {PURPOSE.headline}
                     </h2>
                     <p className="drop-cap mt-5 max-w-xl text-base leading-relaxed text-foreground/90 sm:text-lg">
-                        BuildAndDo is a daily business edition built only from
-                        records you connect and authorize. Nothing here is
-                        invented. When a source sends real data, this front
-                        page reports what changed, proposes a bounded next
-                        step, and records whether it worked — with a receipt
-                        you can inspect.
+                        {PURPOSE.subhead} This front page is a daily edition
+                        built only from records you and your guild create.
+                        Nothing here is invented: when real work is recorded,
+                        this page reports what changed, proposes a bounded
+                        next step, and records whether it was verified — with
+                        a receipt you can inspect.
                     </p>
                     <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
                         Until then, every section below shows its true state:
@@ -145,7 +148,7 @@ function FrontPageHero() {
 
                     <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                         <Button href="#challenge-desk" size="lg">
-                            Run a business challenge
+                            Take on a challenge
                             <ArrowRight className="h-4 w-4" />
                         </Button>
                         <Button href="#evidence-ledger" variant="secondary" size="lg">
@@ -244,7 +247,7 @@ function BusinessAtAGlance() {
         <Section id="glance" className="border-t border-foreground/80 py-12 sm:py-16">
             <div className="flex items-end justify-between">
                 <div>
-                    <SectionLabel icon={Gauge}>Your Business at a Glance</SectionLabel>
+                    <SectionLabel icon={Gauge}>Your Work at a Glance</SectionLabel>
                     <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
                         Only data supplied by connected sources.
                     </h2>
@@ -329,7 +332,7 @@ function ChallengeDesk() {
                 <div className="lg:col-span-4">
                     <SectionLabel icon={Send}>Challenge Desk</SectionLabel>
                     <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-                        Describe a real business problem.
+                        Describe a real problem you want to learn to solve.
                     </h2>
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                         Your submission is preserved exactly as written and
@@ -364,7 +367,7 @@ function ChallengeDesk() {
                         ) : (
                             <form onSubmit={submit} className="space-y-4">
                                 <label htmlFor="challenge" className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                                    Your business challenge
+                                    Your challenge
                                 </label>
                                 <textarea
                                     id="challenge"
@@ -372,7 +375,7 @@ function ChallengeDesk() {
                                     onChange={(e) => setProblem(e.target.value)}
                                     rows={5}
                                     maxLength={2000}
-                                    placeholder="e.g. Friday appointment no-shows are rising and I don't know why."
+                                    placeholder="e.g. I want to ship a small service with tests and a real deploy, and I don't know where to start."
                                     className="w-full resize-y border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-foreground focus:outline-none"
                                 />
                                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -567,7 +570,7 @@ export default function HomePage() {
     return (
         <div className="min-h-screen bg-background text-foreground">
             <Helmet>
-                <title>BuildAndDo — your business, as a daily verified edition</title>
+                <title>{TITLE}</title>
                 <meta name="description" content={DESCRIPTION} />
                 {structuredData.map((data, i) => (
                     <script key={i} type="application/ld+json">
@@ -576,16 +579,18 @@ export default function HomePage() {
                 ))}
             </Helmet>
             <Seo
-                title="BuildAndDo — your business, as a daily verified edition"
+                title={TITLE}
                 description={DESCRIPTION}
                 siteName="BuildAndDo"
                 type="website"
             />
 
             <Header />
-            <main>
+            <main id="main-content" tabIndex={-1} className="pt-14 outline-none">
                 <Masthead />
                 <FrontPageHero />
+                {/* Roadmap pulse - measured progression for anonymous visitors, UNMEASURED-safe */}
+                <RoadmapPulse />
                 <BusinessAtAGlance />
                 <ChallengeDesk />
                 <EvidenceLedger />

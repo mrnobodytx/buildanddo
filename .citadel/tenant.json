@@ -1,0 +1,8 @@
+{
+  "schema": "citadel.tenant-pointer/v1",
+  "tenant_id": "buildanddo",
+  "controller_id": "citadel-nexus",
+  "controller_contract": "config/tenants/buildanddo.tenant.json",
+  "foundry": "rig1",
+  "rail": "tools/citadel_tenant_rail.py"
+}

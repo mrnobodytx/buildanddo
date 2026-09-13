@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-PURPOSE-001 | CAPS=B | Seat=C-ONE
 import React, { useState } from 'react';
 import { ArrowRight, CheckCircle2, AlertCircle, Loader2, ShieldCheck } from 'lucide-react';
 import { Section, SectionLabel, PaperCard, Button } from '@/components/site/ui';
@@ -13,13 +14,15 @@ import {
 } from '@/components/ui/select';
 import pb from '@/lib/pocketbaseClient';
 
-const BUSINESS_TYPES = [
-    'Nail or beauty salon',
-    'Appointment-based service',
-    'Consulting or freelance',
-    'Local service business',
-    'Retail or online shop',
-    'Just an idea for now',
+// Stored in the PocketBase `early_access.business_type` field (schema name
+// unchanged); the question it answers is "what are you here to learn or build".
+const LEARNING_TRACKS = [
+    'Learning to build and ship software',
+    'Research or evidence work with a guild',
+    'A real-world objective I want to work through',
+    'Contributing to Citadel Nexus guilds',
+    'Teaching or mentoring others',
+    'Just curious for now',
     'Something else',
 ];
 
@@ -42,9 +45,9 @@ export default function EarlyAccess() {
         if (!form.email.trim()) next.email = 'Please enter your email address.';
         else if (!EMAIL_RE.test(form.email.trim()))
             next.email = 'That email address doesn\u2019t look right.';
-        if (!form.businessType) next.businessType = 'Please pick the closest business type.';
+        if (!form.businessType) next.businessType = 'Please pick the closest track.';
         if (!form.task.trim())
-            next.task = 'Describe the repetitive task you\u2019d want help with.';
+            next.task = 'Describe what you want to learn to do.';
         else if (form.task.trim().length < 10)
             next.task = 'A short sentence helps us understand the task.';
         setErrors(next);
@@ -83,19 +86,20 @@ export default function EarlyAccess() {
                 <div className="lg:col-span-5">
                     <SectionLabel>Early access</SectionLabel>
                     <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                        Describe the task you want help with
+                        Tell us what you want to learn to do
                     </h2>
                     <p className="mt-4 text-base leading-relaxed text-muted-foreground">
                         BuildAndDo is an early MVP. The people on this list aren&rsquo;t just
-                        waiting — their real problems decide what gets built first.
+                        waiting — their real objectives decide what gets built first.
                     </p>
 
                     <div className="mt-6 rounded-[var(--radius)] border border-border bg-card p-5">
-                        <p className="font-display text-sm font-semibold">The ideal early user</p>
+                        <p className="font-display text-sm font-semibold">The ideal early collaborator</p>
                         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                            An owner or operator with one repetitive business problem they want to
-                            make clearer, faster, or easier to manage — like no-shows, follow-ups,
-                            schedule gaps, or end-of-week summaries. One problem is enough.
+                            Someone with one real objective they want to learn to do properly —
+                            ship a small project, run a piece of research, or work through a
+                            real-world goal — and who is willing to do it in the open with a
+                            guild, with the evidence recorded. One objective is enough.
                         </p>
                     </div>
 
@@ -121,21 +125,21 @@ export default function EarlyAccess() {
                                 </h3>
                                 <p className="mt-2 max-w-sm text-sm leading-relaxed text-paper-muted">
                                     Thanks, {form.name.split(' ')[0] || 'there'} — we saved your
-                                    task and we&rsquo;ll reach out as early access opens. Your input
-                                    directly shapes what BuildAndDo learns to do next.
+                                    objective and we&rsquo;ll reach out as early access opens. Your
+                                    input directly shapes what BuildAndDo teaches next.
                                 </p>
                                 <button
                                     type="button"
                                     onClick={reset}
                                     className="mt-6 inline-flex h-10 items-center rounded-md border border-paper px-5 text-sm font-semibold text-paper-fg transition-colors hover:bg-[hsl(var(--paper-subtle))]"
                                 >
-                                    Submit another task
+                                    Submit another objective
                                 </button>
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} noValidate>
                                 <h3 className="font-display text-xl font-semibold text-paper-fg">
-                                    Describe what you need
+                                    Describe what you want to learn
                                 </h3>
                                 <p className="mt-1.5 text-sm text-paper-muted">
                                     Four fields, two minutes. That&rsquo;s the whole form.
@@ -171,7 +175,7 @@ export default function EarlyAccess() {
                                             type="email"
                                             value={form.email}
                                             onChange={(e) => setField('email', e.target.value)}
-                                            placeholder="maya@lunastudio.com"
+                                            placeholder="maya@example.com"
                                             autoComplete="email"
                                             aria-invalid={Boolean(errors.email)}
                                             className="h-11 border-paper bg-paper-subtle text-paper-fg placeholder:text-paper-muted/70 focus-visible:border-[hsl(var(--paper-foreground)/0.4)]"
@@ -185,7 +189,7 @@ export default function EarlyAccess() {
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="ea-business-type" className="text-paper-fg">
-                                            Business type
+                                            What brings you here
                                         </Label>
                                         <Select
                                             value={form.businessType}
@@ -201,7 +205,7 @@ export default function EarlyAccess() {
                                                 <SelectValue placeholder="Pick the closest match" />
                                             </SelectTrigger>
                                             <SelectContent className="border-paper bg-paper text-paper-fg">
-                                                {BUSINESS_TYPES.map((type) => (
+                                                {LEARNING_TRACKS.map((type) => (
                                                     <SelectItem key={type} value={type}>
                                                         {type}
                                                     </SelectItem>
@@ -217,14 +221,13 @@ export default function EarlyAccess() {
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="ea-task" className="text-paper-fg">
-                                            What repetitive task would you like BuildAndDo to handle
-                                            or clarify?
+                                            What do you want to learn to do, and with whom?
                                         </Label>
                                         <Textarea
                                             id="ea-task"
                                             value={form.task}
                                             onChange={(e) => setField('task', e.target.value)}
-                                            placeholder="e.g. Every Friday I manually text reminders to next week's clients, and I still get no-shows."
+                                            placeholder="e.g. I want to build and deploy a small API with tests, and I'd like a guild to review each step."
                                             rows={4}
                                             aria-invalid={Boolean(errors.task)}
                                             className="border-paper bg-paper-subtle text-paper-fg placeholder:text-paper-muted/70 focus-visible:border-[hsl(var(--paper-foreground)/0.4)]"
@@ -262,15 +265,15 @@ export default function EarlyAccess() {
                                         </>
                                     ) : (
                                         <>
-                                            Describe what you need
+                                            Join early access
                                             <ArrowRight className="h-4 w-4" />
                                         </>
                                     )}
                                 </Button>
 
                                 <p className="mt-3 text-center text-xs leading-relaxed text-paper-muted">
-                                    Saved to your early-access list. We contact you about the
-                                    product — nothing else.
+                                    Saved to the early-access list. We contact you about the
+                                    platform — nothing else.
                                 </p>
                             </form>
                         )}

@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-PURPOSE-001 | CAPS=B | Seat=C-ONE
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -27,7 +28,7 @@ const DOMAIN_RE = /^(?!-)[a-z0-9-]{1,63}(?<!-)(\.[a-z0-9-]{2,63})+$/i;
 const DEMO_RESULTS = [
     {
         domain: 'lunastudio.example',
-        label: 'Luna Studio — nail & beauty salon',
+        label: 'Luna Studio — a study project site',
         hint: 'Illustrative result · Demo data',
     },
     {
@@ -81,7 +82,7 @@ const PLANNED_SERVICES = [
     },
     {
         name: 'ERP system',
-        purpose: 'Operational records, processes, and business resource workflows.',
+        purpose: 'Operational records, processes, and resource workflows for a workspace.',
         data_boundary: 'Objectives, tasks, and contacts for this workspace.',
         next_action: 'Start recording objectives in the ERP workspace.',
     },
@@ -162,7 +163,7 @@ export default function OnboardingPage() {
             // 2. Workspace around the domain.
             const wsName = selected.domain
                 ? selected.domain.split('.')[0].replace(/-/g, ' ')
-                : 'My business';
+                : 'My project';
             const ws = await pb.collection('workspaces').create({
                 name: wsName.charAt(0).toUpperCase() + wsName.slice(1),
                 domain: domainId,
@@ -203,7 +204,7 @@ export default function OnboardingPage() {
                 <title>Set up your workspace · BuildAndDo</title>
                 <meta
                     name="description"
-                    content="Choose the domain or business BuildAndDo should understand. A found domain is only marked for analysis — not ownership or access."
+                    content="Choose the domain or project BuildAndDo should understand. A found domain is only marked for analysis — not ownership or access."
                 />
             </Helmet>
             <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
@@ -219,12 +220,14 @@ export default function OnboardingPage() {
                 <div className="mt-10">
                     <SectionLabel>Onboarding · Step 1 of 1</SectionLabel>
                     <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                        Which business should BuildAndDo understand?
+                        Which project should BuildAndDo understand?
                     </h1>
                     <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                        Search for or enter the domain you want BuildAndDo to
-                        work with. You’ll explicitly choose one before we
-                        continue — and choosing a domain only marks it for
+                        A workspace is where you and your guild do the work.
+                        Search for or enter the domain of the project you want
+                        to learn on — your own site, a study project, or a real
+                        objective. You’ll explicitly choose one before we
+                        continue, and choosing a domain only marks it for
                         analysis, not ownership or access.
                     </p>
                 </div>
@@ -233,7 +236,7 @@ export default function OnboardingPage() {
                     {/* Search */}
                     <form onSubmit={runSearch} className="space-y-3">
                         <Label htmlFor="ob-domain" className="text-paper-fg">
-                            Domain or business name
+                            Domain or project name
                         </Label>
                         <div className="flex flex-col gap-3 sm:flex-row">
                             <div className="relative flex-1">
@@ -279,7 +282,7 @@ export default function OnboardingPage() {
                         >
                             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                             That doesn’t look like a valid domain (e.g.
-                            <span className="mx-1 font-mono">yourbusiness.com</span>
+                            <span className="mx-1 font-mono">yourproject.com</span>
                             ). Try again.
                         </div>
                     )}

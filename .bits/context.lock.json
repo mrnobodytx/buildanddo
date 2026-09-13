@@ -16,7 +16,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/deploy/roadmap_status.py",
+      "evidence": "referenced by: scripts/deploy/roadmap_status.py, tests/roadmap/test_roadmap_status_progression.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is never executed by GitHub Actions"
@@ -34,6 +34,20 @@
       "severity": "high",
       "srs": "",
       "statement": "SRS-BUILDANDDO-COMMUNITY-001 has a spec but is not in the registry"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-SUBSTRATE-001.md is unregistered, so no branch may claim it",
+      "severity": "high",
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-SUBSTRATE-001 has a spec but is not in the registry"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-VISUAL-SUBSTRATE-001.md is unregistered, so no branch may claim it",
+      "severity": "high",
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-VISUAL-SUBSTRATE-001 has a spec but is not in the registry"
     },
     {
       "area": "governance",
@@ -58,7 +72,9 @@
     },
     {
       "path": "scripts/ci/candidate_manifest.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/deploy/test_ship_manifest.py"
+      ],
       "wired_into_ci": true
     },
     {
@@ -95,7 +111,8 @@
     {
       "path": "scripts/ci/sprint_cycle.py",
       "referenced_by": [
-        "scripts/deploy/roadmap_status.py"
+        "scripts/deploy/roadmap_status.py",
+        "tests/roadmap/test_roadmap_status_progression.py"
       ],
       "wired_into_ci": false
     },
@@ -122,7 +139,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-13T02:11:42.379326+00:00",
+  "generated_at": "2026-09-13T18:46:47.914731+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -186,6 +203,13 @@
         "title": "Run the Praxis evidence suite in public CI"
       },
       {
+        "code": "SRS-BUILDANDDO-LIVE-UTILIZATION-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-LIVE-UTILIZATION-001.md",
+        "status": "in_progress",
+        "title": "Living Rooms visual substrate plus AgentOps content and A2A contracts"
+      },
+      {
         "code": "SRS-BUILDANDDO-PB-METRICS-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md",
@@ -198,6 +222,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-PLATFORM-001.md",
         "status": "in_progress",
         "title": "MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PURPOSE-001",
+        "risk": "A0",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PURPOSE-001.md",
+        "status": "in_progress",
+        "title": "One canonical purpose statement - educational collaborative platform, read by every public surface"
       },
       {
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
@@ -228,11 +259,25 @@
         "title": "Workspace actions, per-page error scope and interaction timing"
       },
       {
+        "code": "SRS-BUILDANDDO-SIGNALS-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SIGNALS-001.md",
+        "status": "in_progress",
+        "title": "Roadmap signals - live source tiles embedded in the projection, drawn as signals never results"
+      },
+      {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-SUPPLY-001.md",
         "status": "proposed",
         "title": "Dependency vulnerability and supply-chain telemetry"
+      },
+      {
+        "code": "SRS-BUILDANDDO-TENANT-RAIL-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-TENANT-RAIL-001.md",
+        "status": "in_progress",
+        "title": "Citadel tenant rail - stage-only ship mode, controller pointer, manifest-derived CODEOWNERS"
       },
       {
         "code": "SRS-BUILDANDDO-TEST-001",
@@ -247,6 +292,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-WORKSPACE-001.md",
         "status": "in_progress",
         "title": "Functional workspace pages backed by a real data layer"
+      },
+      {
+        "code": "SRS-BUILDANDDO-WRITING-JOURNEY-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WRITING-JOURNEY-001.md",
+        "status": "in_progress",
+        "title": "Public educational writing journey with honest claim separation"
       }
     ]
   },
@@ -347,31 +399,36 @@
       "apps/web/tools/lint.mjs",
       "apps/web/tools/observability-smoke.mjs",
       "apps/web/vite.config.js",
+      "scripts/deploy/integrations_status.py",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py"
     ],
-    "migrations": 16,
-    "python_files": 40,
+    "migrations": 37,
+    "python_files": 63,
     "services": [
+      "buildanddo_mcp",
+      "buildanddo_runtime",
+      "buildanddo_substrate",
+      "buildanddo_visual_substrate",
       "praxis_evidence"
     ],
-    "tracked_files": 354,
-    "web_source_files": 149
+    "tracked_files": 475,
+    "web_source_files": 193
   },
   "schema_version": 1,
   "summary": {
-    "findings": 7,
-    "findings_high": 6,
+    "findings": 9,
+    "findings_high": 8,
     "pipelines": 5,
-    "srs_open": 13,
-    "srs_total": 16,
+    "srs_open": 18,
+    "srs_total": 21,
     "unwired_gates": 4
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 8,
+    "js_test_files": 24,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

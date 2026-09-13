@@ -1,25 +1,32 @@
+// CGRF: SRS=SRS-BUILDANDDO-ROADMAP-001 | CAPS=B | Seat=C-ONE
 import React from 'react';
-import { Activity, Mail, MessageCircle, BookOpen, Users, Github } from 'lucide-react';
+import { Activity, Mail, MessageCircle, MessagesSquare, BookOpen, Users, Github } from 'lucide-react';
+import { PUBLIC_LINKS, CONTACT_EMAIL } from '@/lib/publicLinks';
+import { PURPOSE } from '@/lib/purpose';
 
-const DISCORD_INVITE_URL = 'https://discord.gg/vTDZxmpHHC';
-const WIKI_URL = 'https://wiki.buildanddo.com';
-const FORUM_URL = 'https://forum.buildanddo.com';
-const GITHUB_URL = 'https://github.com/mrnobodytx/buildanddo';
-const CONTRIBUTING_URL = 'https://github.com/mrnobodytx/buildanddo/blob/main/CONTRIBUTING.md';
+const DISCORD_INVITE_URL = PUBLIC_LINKS.discord;
+const WIKI_URL = PUBLIC_LINKS.wiki;
+const FORUM_URL = PUBLIC_LINKS.forum;
+const REDDIT_URL = PUBLIC_LINKS.reddit;
+const GITHUB_URL = PUBLIC_LINKS.github;
+const CONTRIBUTING_URL = PUBLIC_LINKS.contributing;
 
+// Absolute routes so the footer works from /roadmap and /practice too.
 const PRODUCT_LINKS = [
-    { label: 'At a glance', href: '#glance' },
+    { label: 'At a glance', href: '/#glance' },
     { label: 'Platform', href: '/platform' },
-    { label: 'Challenge Desk', href: '#challenge-desk' },
-    { label: 'Evidence Ledger', href: '#evidence-ledger' },
-    { label: 'Daily Edition', href: '#daily-edition' },
-    { label: 'Field Manual', href: '#field-manual' },
-    { label: 'FAQ', href: '#faq' },
+    { label: 'Challenge Desk', href: '/#challenge-desk' },
+    { label: 'Evidence Ledger', href: '/#evidence-ledger' },
+    { label: 'Daily Edition', href: '/#daily-edition' },
+    { label: 'Field Manual', href: '/#field-manual' },
+    { label: 'Practice library', href: '/practice' },
+    { label: 'Roadmap', href: '/roadmap' },
+    { label: 'FAQ', href: '/#faq' },
 ];
 
 export default function Footer({
     productLinks = PRODUCT_LINKS,
-    earlyAccessHref = '#early-access',
+    earlyAccessHref = '/#early-access',
 }) {
     const year = new Date().getFullYear();
 
@@ -41,9 +48,10 @@ export default function Footer({
                             </span>
                         </a>
                         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                            Early-stage software that helps small-business owners notice changes,
-                            understand them in plain language, approve a bounded mission, and verify
-                            what happened.
+                            {PURPOSE.subhead}
+                        </p>
+                        <p className="mt-2 max-w-sm font-evidence text-[11px] uppercase tracking-[0.14em] text-muted-foreground/80">
+                            {PURPOSE.tagline}
                         </p>
                     </div>
 
@@ -102,6 +110,17 @@ export default function Footer({
                             </li>
                             <li>
                                 <a
+                                    href={REDDIT_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    <MessagesSquare className="h-4 w-4 shrink-0" />
+                                    Reddit
+                                </a>
+                            </li>
+                            <li>
+                                <a
                                     href={WIKI_URL}
                                     target="_blank"
                                     rel="noreferrer"
@@ -132,9 +151,14 @@ export default function Footer({
                                     How to contribute
                                 </a>
                             </li>
-                            <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Mail className="h-4 w-4 shrink-0" />
-                                Contact — coming soon
+                            <li>
+                                <a
+                                    href={`mailto:${CONTACT_EMAIL}`}
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    <Mail className="h-4 w-4 shrink-0" />
+                                    {CONTACT_EMAIL}
+                                </a>
                             </li>
                         </ul>
                     </div>

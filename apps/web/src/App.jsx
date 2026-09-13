@@ -12,6 +12,7 @@ import TelemetryBoundary from './components/observability/TelemetryBoundary';
 import HomePage from './pages/HomePage';
 import RoadmapPage from './pages/RoadmapPage';
 import PracticePage from './pages/PracticePage';
+import WritingChallengePage from './pages/WritingChallengePage';
 import PlatformPage from './pages/PlatformPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -31,12 +32,16 @@ import EvidencePage from './pages/workspace/EvidencePage';
 import DailyEditionPage from './pages/workspace/DailyEditionPage';
 // Capability Passport viewer; file path retained from the former desks page so
 // existing /app/desks bookmarks keep resolving (SRS-BUILDANDDO-WITNESS-001).
-import CapabilityPassportPage from './pages/workspace/SpecialistDeskPage';
+import SpecialistDeskPage from './pages/workspace/SpecialistDeskPage';
 import CorrectionsPage from './pages/workspace/CorrectionsPage';
 import SupportRevenuePage from './pages/workspace/SupportRevenuePage';
 import CommunitySocialPage from './pages/workspace/CommunitySocialPage';
 import WorkspaceRoadmapPage from './pages/workspace/RoadmapPage';
 import SettingsPage from './pages/workspace/SettingsPage';
+import RoomsPage from './pages/workspace/RoomsPage';
+import SystemsRoomPage from './pages/workspace/SystemsRoomPage';
+import LiveExperimentRoomPage from './pages/workspace/LiveExperimentRoomPage';
+import ClassroomPage from './pages/workspace/ClassroomPage';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import {
     WorkspaceProvider,
@@ -61,10 +66,19 @@ const WORKSPACE_ROUTES = [
     { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
-    { path: 'desks', label: 'Specialist Desks', element: SpecialistDeskPage },
+    // Renamed to SpecialistDeskPage in dab412f; the route kept the old symbol, which
+    // was never imported and never existed as a file. WORKSPACE_ROUTES is MODULE-SCOPE,
+    // so that dangling reference threw a ReferenceError on load and the whole app —
+    // including the Living Rooms routes below — failed to boot. Build does not catch
+    // this; the lint gate that would have was itself crashing.
+    { path: 'passport', label: 'Capability Passport', element: SpecialistDeskPage },
     { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
     { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },
     { path: 'community', label: 'Community & Social', element: CommunitySocialPage },
+    { path: 'rooms/:room?', label: 'Living Rooms', element: RoomsPage },
+    { path: 'rooms/systems', label: 'Systems Room', element: SystemsRoomPage },
+    { path: 'rooms/live', label: 'Live Experiment', element: LiveExperimentRoomPage },
+    { path: 'classroom', label: 'Classroom', element: ClassroomPage },
     { path: 'roadmap', label: 'Roadmap', element: WorkspaceRoadmapPage },
     { path: 'settings', label: 'Settings', element: SettingsPage },
 ];
@@ -97,6 +111,8 @@ function AppRoutes() {
             <Route path="/" element={<HomePage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/practice" element={<PracticePage />} />
+            {/* Public educational writing journey — SRS-CN-BUILDANDDO-EDUCATION-API-001. */}
+            <Route path="/write" element={<WritingChallengePage />} />
             <Route path="/platform" element={<PlatformPage />} />
 
             {/* Authentication */}
@@ -151,6 +167,7 @@ function AppRoutes() {
                         }
                     />
                 ))}
+                <Route path="desks" element={<Navigate to="/app/passport" replace />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="BuildAndDo">
+	<title>BuildAndDo</title>
+	<!--
+		Avatar/app-icon variant, for surfaces that render a small square or circle:
+		Discord's server icon, a forum favicon, an OG avatar.
+
+		Deliberately NOT the same drawing as mark.svg. Discord CIRCLE-CROPS server
+		icons, so mark.svg's rounded-square border - the thing that reads as "a button"
+		at 64px - would have its corners sliced off and survive only as a stray arc.
+		Here the paper fills the whole canvas instead, so the crop yields a clean paper
+		disc, and the border is dropped entirely.
+
+		Everything sits inside a 400px centred circle (the safe area once cropped), and
+		the pulse is drawn heavier (stroke 26 on a 512 grid vs the header's 2.4 on 24)
+		because a hairline vanishes at the 20px Discord actually renders in a sidebar.
+		Same glyph, weighted for its size - that is what the mark means here, not a
+		scaled copy of the web one.
+	-->
+	<rect width="512" height="512" fill="#F4F2EB"/>
+	<!-- lucide Activity on its 24-unit grid, scaled to span 320px and centred -->
+	<g transform="translate(89 89) scale(14.0833)" fill="none" stroke="#AD1F1F" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+	</g>
+</svg>

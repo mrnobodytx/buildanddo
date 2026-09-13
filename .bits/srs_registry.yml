@@ -128,6 +128,39 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md
     notes: Blocked on a metrics sink - see .bits/handoffs/2026-09-10-bits-codegen-ide1.md
 
+  - code: SRS-BUILDANDDO-TENANT-RAIL-001
+    title: Citadel tenant rail - stage-only ship mode, controller pointer, manifest-derived CODEOWNERS
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-TENANT-RAIL-001.md
+    notes: Repo-side half only; rail tool and tenant contract live in the controller estate (seat C-ONE)
+
+  - code: SRS-BUILDANDDO-SIGNALS-001
+    title: Roadmap signals - live source tiles embedded in the projection, drawn as signals never results
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-SIGNALS-001.md
+    notes: Repo-side half only; the collector tools/citadel_roadmap_signals.py lives in the controller estate (seat C-ONE)
+
+  - code: SRS-BUILDANDDO-PURPOSE-001
+    title: One canonical purpose statement - educational collaborative platform, read by every public surface
+    status: in_progress
+    risk: A0
+    spec: .bits/srs/SRS-BUILDANDDO-PURPOSE-001.md
+    notes: Copy and metadata only; apps/web/src/lib/purpose.js is the source, purpose.test.js guards index.html and forbids the old SMB framing (seat C-ONE)
+
+  - code: SRS-BUILDANDDO-LIVE-UTILIZATION-001
+    title: Living Rooms visual substrate plus AgentOps content and A2A contracts
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-LIVE-UTILIZATION-001.md
+    notes: Deterministic read projections served LIVE by the rooms sidecar (services/buildanddo_visual_substrate, signed CitadelKey boundary to Citadel Nexus); OCN login (seats sign in with a CitadelKey via pb_hooks/ocn-login.pb.js + sidecar POST /api/rooms/verify, docs/architecture/BUILDANDDO_OCN_LOGIN.md); publication and production mutation remain separate; PocketBase migrations reconciled with production disk 2026-09-11 (18 admin-UI migrations imported as 1788950001..18, fresh-install order fixed, guarded by apps/pocketbase/tools/check_migration_order.mjs, docs/architecture/POCKETBASE_MIGRATION_DRIFT_2026-09-11.md)
+  - code: SRS-BUILDANDDO-WRITING-JOURNEY-001
+    title: Public educational writing journey with honest claim separation
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-WRITING-JOURNEY-001.md
+    notes: Public /write route - challenge, learner draft, Track B coaching, accept/reject/defer, complete, evidence. Consumes SRS-CN-BUILDANDDO-EDUCATION-API-001. Renders four SEPARATE claims (submission, integrity, historical witness, content origin) and never collapses them into "human authored" - a learner can paste AI prose and produce an identical record, so the chain proves submission, not composition. Rejecting a suggestion is positive evidence and is never scored against the learner.
   - code: SRS-BUILDANDDO-PLATFORM-001
     title: MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard
     status: in_progress

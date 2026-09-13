@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-PUBLIC-RECORD-001 | CAPS=B | Seat=C-ONE
 import React, { useCallback, useEffect, useState } from 'react';
 import {
     Plus,
@@ -24,6 +25,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+    channelOf,
+    integrationsStateOf,
+    isIntegrationsStale,
+    useIntegrationsStatus,
+} from '@/lib/integrationsStatus';
 
 const PLATFORMS = [
     { key: 'discord', label: 'Discord', note: 'Community server connection and health.' },
@@ -641,12 +648,213 @@ function SocialTab() {
     );
 }
 
+/* Public record -------------------------------------------------------------- */
+/* What the estate has actually published, queued or held on the channels the  */
+/* community can read and audit. Read from the build-time projection           */
+/* (integrations-status.json); nothing here calls a channel API, and the       */
+/* browser holds no key for any of them.                                       */
+
+const PUBLIC_CHANNELS = [
+    {
+        key: 'wiki',
+        label: 'Wiki',
+        note: 'Every roadmap change becomes a page. This is the record a learner can cite.',
+    },
+    {
+        key: 'forum',
+        label: 'Forum',
+        note: 'Long-form discussion of each change. Queued texts wait for the forum publish key.',
+    },
+    {
+        key: 'discord',
+        label: 'Discord',
+        note: 'Short notices to the community server, sent by the estate rail.',
+    },
+    {
+        key: 'reddit',
+        label: 'Reddit',
+        note: 'The estate never auto-posts here. Queued items wait for a human to post them.',
+    },
+];
+
+const VALIDITY_TONE = { PASS: 'green', DEGRADED: 'amber' };
+
+function ValidityBadge({ validity }) {
+    const state = validity?.state || 'UNMEASURED';
+    return (
+        <Badge tone={VALIDITY_TONE[state] || 'neutral'}>
+            <span className="sr-only">Validity </span>
+            {state}
+        </Badge>
+    );
+}
+
+function CountRow({ label, value }) {
+    return (
+        <div className="flex items-center justify-between gap-3">
+            <dt className="text-muted-foreground">{label}</dt>
+            <dd className="font-semibold tabular-nums">{value ?? 'UNMEASURED'}</dd>
+        </div>
+    );
+}
+
+function PublicChannelCard({ meta, channel }) {
+    const headingId = `public-record-${meta.key}`;
+    if (!channel) {
+        return (
+            <Card className="p-5" aria-labelledby={headingId}>
+                <div className="flex items-start justify-between gap-3">
+                    <h3 id={headingId} className="font-display text-base font-semibold tracking-tight">
+                        {meta.label}
+                    </h3>
+                    <StatePill state="unavailable" />
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    UNMEASURED — the estate did not project this channel in the last build.
+                </p>
+            </Card>
+        );
+    }
+    const latest = meta.key === 'wiki' ? channel.latest || [] : [];
+    const queue = meta.key === 'reddit' ? (channel.recent || []).filter((e) => e.state !== 'HELD') : [];
+    return (
+        <Card className="flex h-full flex-col p-5" aria-labelledby={headingId}>
+            <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                    <h3 id={headingId} className="font-display text-base font-semibold tracking-tight">
+                        {meta.label}
+                    </h3>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{meta.note}</p>
+                </div>
+                <ValidityBadge validity={channel.validity} />
+            </div>
+
+            <dl className="mt-4 space-y-1.5 border-t border-border/60 pt-3 text-sm">
+                <CountRow label="Published" value={channel.published} />
+                <CountRow label="Queued" value={channel.queued} />
+                <CountRow label="Held" value={channel.held} />
+                <CountRow
+                    label="Last published"
+                    value={channel.last_published_at ? timeAgo(channel.last_published_at) : 'never'}
+                />
+            </dl>
+
+            {latest.length > 0 && (
+                <div className="mt-4">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Latest change pages
+                    </p>
+                    <ul className="mt-2 space-y-1 text-sm" aria-label="Latest wiki change pages">
+                        {latest.map((page) => (
+                            <li key={page.change_id}>
+                                <a
+                                    href={page.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-primary underline-offset-2 hover:underline"
+                                >
+                                    {page.change_id}
+                                    <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                                </a>
+                                <span className="ml-2 text-xs text-muted-foreground">{timeAgo(page.published_at)}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {meta.key === 'reddit' && (
+                <div className="mt-4">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Queued for a human to post
+                    </p>
+                    {queue.length === 0 ? (
+                        <p className="mt-2 text-sm text-muted-foreground">Nothing queued.</p>
+                    ) : (
+                        <ul className="mt-2 space-y-1 text-sm" aria-label="Reddit posts queued for a human">
+                            {queue.map((entry) => (
+                                <li key={entry.change_id} className="flex flex-col">
+                                    <span className="font-medium">{entry.title || entry.change_id}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                        {entry.change_id} · {entry.state} · {timeAgo(entry.created_at)}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            )}
+        </Card>
+    );
+}
+
+function PublicRecordTab() {
+    const { status, error } = useIntegrationsStatus();
+    const measured = integrationsStateOf(status) === 'MEASURED';
+    const stale = isIntegrationsStale(status);
+
+    if (!status && !error) {
+        return (
+            <Card className="p-8 text-center text-sm text-muted-foreground">
+                <Loader2 className="mx-auto h-5 w-5 animate-spin" aria-label="Loading public record" />
+            </Card>
+        );
+    }
+
+    if (!measured) {
+        return (
+            <EmptyState
+                icon={Plug}
+                title="Public record UNMEASURED"
+                description={
+                    error
+                        ? 'integrations-status.json was not served with this build, so nothing is claimed about the wiki, forum, Discord or Reddit channels.'
+                        : `The last build projected no readable estate source (${status?.reason || status?.error || 'no reason recorded'}).`
+                }
+            />
+        );
+    }
+
+    return (
+        <section className="space-y-6" aria-labelledby="public-record-heading">
+            <div>
+                <h2 id="public-record-heading" className="font-display text-lg font-semibold tracking-tight">
+                    What the community can read and audit
+                </h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    Every roadmap change and every documented failure is broadcast to public channels by the
+                    estate. These counts come from the estate&apos;s own delivery receipts and outbox, projected
+                    at build time — not from any channel API and not from anything you could edit here.
+                    Held items are texts the estate refused to publish; their contents are never shown.
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                    Projected {timeAgo(status.generated_at)}
+                    {stale && <span className="ml-2 font-semibold text-amber-warm">· DATA MAY BE STALE</span>}
+                </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+                {PUBLIC_CHANNELS.map((meta) => (
+                    <PublicChannelCard key={meta.key} meta={meta} channel={channelOf(status, meta.key)} />
+                ))}
+            </div>
+
+            <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground/70">
+                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                Validity is the estate&apos;s last read-only probe of each channel, not a promise the next
+                publish will succeed. A channel that says UNMEASURED has no configured credential on the
+                estate side; the browser never holds one.
+            </p>
+        </section>
+    );
+}
+
 export default function CommunitySocialPage() {
     return (
         <div className="space-y-8">
             <PageHeader
                 title="Community"
-                description="The contributor hub: what is in flight, who has landed work, and the pipeline every change walks. Pull request data is read from the public GitHub API without a token, so it degrades to a link rather than to a guess. Social operations keep their own tab."
+                description="The contributor hub: what is in flight, who has landed work, and the pipeline every change walks. Pull request data is read from the public GitHub API without a token, so it degrades to a link rather than to a guess. Social operations keep their own tab, and the public record tab shows what the estate has published for anyone to audit."
                 actions={
                     <Button
                         variant="secondary"
@@ -665,12 +873,16 @@ export default function CommunitySocialPage() {
                 <TabsList>
                     <TabsTrigger value="contributors">Contributors</TabsTrigger>
                     <TabsTrigger value="social">Social operations</TabsTrigger>
+                    <TabsTrigger value="public-record">Public record</TabsTrigger>
                 </TabsList>
                 <TabsContent value="contributors" className="mt-6">
                     <ContributorHub />
                 </TabsContent>
                 <TabsContent value="social" className="mt-6">
                     <SocialTab />
+                </TabsContent>
+                <TabsContent value="public-record" className="mt-6">
+                    <PublicRecordTab />
                 </TabsContent>
             </Tabs>
 

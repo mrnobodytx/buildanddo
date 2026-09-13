@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-WORKSPACE-001 | CAPS=B | Seat=C-ONE
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/MissionsPage.jsx
 // Stage:       07_BUILD
@@ -9,13 +10,18 @@
 // Created:     2026-09-10
 // Depends:     apps/web/src/hooks/useWorkspaceRecords.js,
 //              apps/web/src/lib/workspaceActions.js,
-//              apps/web/src/components/workspace/ListToolbar.jsx
+//              apps/web/src/components/workspace/ListToolbar.jsx,
+//              apps/web/src/lib/missionChain.js,
+//              apps/web/src/components/workspace/MissionChain.jsx
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
+//              CONSUMES apps/web/src/lib/missionChain.js;
 //              PRODUCES workspace.mission.created;
 //              PRODUCES workspace.mission.advanced
 // Intent:      Make a list of missions triageable — priority, progress, due
-//              dates, editing and deletion — instead of an append-only stack.
+//              dates, editing and deletion — instead of an append-only stack,
+//              and show where each mission came from and which chain receipt
+//              is missing.
 // ───────────────────────────────────────────────────────────────
 
 import { AlertCircle, CalendarClock, Info, Loader2, Pencil, Plus, Target, Trash2 } from 'lucide-react';
@@ -42,6 +48,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
 import ListToolbar from '@/components/workspace/ListToolbar';
+import MissionChain, { ORIGIN_CHANNEL_META } from '@/components/workspace/MissionChain';
 import {
     MISSION_PRIORITY,
     MISSION_STATUS,
@@ -57,6 +64,7 @@ import {
 } from '@/components/workspace/WorkspaceNotices';
 import { useShapedRecords, useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { describeDueDate, timeAgo } from '@/lib/format';
+import { buildMissionChains, deriveMissionChain, STAGE_LABELS } from '@/lib/missionChain';
 import { cn } from '@/lib/utils';
 import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 
@@ -198,6 +206,14 @@ export default function MissionsPage() {
         clearWriteError,
     } = useWorkspaceRecords('missions', { sort: '-created' });
 
+    // The four collections the chain is reconstructed from. Each keeps its own
+    // degraded flag, so an unreachable source can be named rather than passed
+    // off as a stage with nothing recorded against it.
+    const events = useWorkspaceRecords('mission_events', { sort: '-created' });
+    const operations = useWorkspaceRecords('operations', { sort: '-created' });
+    const runs = useWorkspaceRecords('operation_runs', { sort: '-created' });
+    const evidence = useWorkspaceRecords('evidence', { sort: '-created' });
+
     const [createOpen, setCreateOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [confirmDelete, setConfirmDelete] = useState(null);
@@ -207,6 +223,29 @@ export default function MissionsPage() {
     const [statusFilter, setStatusFilter] = useState('all');
     const [priorityFilter, setPriorityFilter] = useState('all');
     const [sortKey, setSortKey] = useState('priority');
+    const [expandedId, setExpandedId] = useState(null);
+
+    const chains = useMemo(
+        () =>
+            buildMissionChains(records, {
+                events: events.records,
+                operations: operations.records,
+                runs: runs.records,
+                evidence: evidence.records,
+            }),
+        [records, events.records, operations.records, runs.records, evidence.records],
+    );
+
+    const unreadableSources = useMemo(
+        () =>
+            [
+                events.degraded && 'mission_events',
+                operations.degraded && 'operations',
+                runs.degraded && 'operation_runs',
+                evidence.degraded && 'evidence',
+            ].filter(Boolean),
+        [events.degraded, operations.degraded, runs.degraded, evidence.degraded],
+    );
 
     // Missions created before the priority field existed carry an empty
     // value. Defaulting once here keeps the filter and the sort agreeing;
@@ -434,6 +473,11 @@ export default function MissionsPage() {
                     {visible.map((mission) => {
                         const canAdvance = !TERMINAL.includes(mission.status);
                         const due = describeDueDate(mission.due_date);
+                        // A mission created in this session is not in `chains`
+                        // until the next derivation, so fall back to the chain
+                        // the mission record alone can prove.
+                        const chain = chains[mission.id] || deriveMissionChain({ mission });
+                        const expanded = expandedId === mission.id;
                         return (
                             <li key={mission.id}>
                                 <Card className="p-5">
@@ -448,6 +492,10 @@ export default function MissionsPage() {
                                         </div>
                                         <div className="flex shrink-0 flex-wrap items-center gap-2">
                                             <StatusBadge
+                                                map={ORIGIN_CHANNEL_META}
+                                                value={chain.origin.channel || 'unmeasured'}
+                                            />
+                                            <StatusBadge
                                                 map={MISSION_PRIORITY}
                                                 value={mission.priority || 'normal'}
                                             />
@@ -461,6 +509,10 @@ export default function MissionsPage() {
 
                                     <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
                                         <span>Started {timeAgo(mission.created)}</span>
+                                        <span data-testid={`mission-stage-${mission.id}`}>
+                                            Chain stage: {STAGE_LABELS[chain.current]} ·{' '}
+                                            {chain.stageState[chain.current]}
+                                        </span>
                                         {due.label && (
                                             <span
                                                 className={cn(
@@ -474,7 +526,23 @@ export default function MissionsPage() {
                                         )}
                                     </div>
 
+                                    {expanded && (
+                                        <MissionChain
+                                            chain={chain}
+                                            unreadableSources={unreadableSources}
+                                            className="mt-4"
+                                        />
+                                    )}
+
                                     <div className="mt-4 flex flex-wrap gap-2 border-t border-border/60 pt-3">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            aria-expanded={expanded}
+                                            onClick={() => setExpandedId(expanded ? null : mission.id)}
+                                        >
+                                            {expanded ? 'Hide chain' : 'Show chain'}
+                                        </Button>
                                         {canAdvance && (
                                             <Button
                                                 variant="secondary"
@@ -595,6 +663,8 @@ export default function MissionsPage() {
                 )}
                 'Proposed' and 'approved' mean nothing has run yet. 'Running' means an approved
                 action is in progress. 'Verified' means the outcome was checked against evidence.
+                The chain under a mission is judged on stored receipts only: a stage with none
+                reads UNMEASURED, whatever stage the mission itself is set to.
             </p>
         </div>
     );
