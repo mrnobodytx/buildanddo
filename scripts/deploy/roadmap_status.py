@@ -310,6 +310,102 @@ def _unmeasured_progression(reason: str, plan_day: int, anchor: dict) -> dict:
     }
 
 
+_DAY_STATES = ("VERIFIED", "PARTIAL", "UNMEASURED", "PENDING", "HOLD", "DEGRADED")
+
+
+def _progression_series(data: dict) -> list[dict]:
+    """The per-day verified curve, copied out under the same public allowlist.
+
+    The estate file carries a 21-entry day series: for each day, the acceptance-criteria
+    weight VERIFIED against the weight DUE. Until now this module consumed only the
+    `summary` from that file, so the published roadmap could draw the plan curve and
+    exactly one ACTUAL dot - a single scalar standing in for three weeks of measured
+    work, with no way to see when progress was made or where it stalled.
+
+    `cum_pct` is cumulative verified weight over the WHOLE-campaign denominator, which
+    is what makes it plottable on the same axis as the plan curve. Using a to-date
+    denominator instead would make the achieved line chase the plan line by
+    construction and always look roughly on-track, which is precisely the flattery this
+    estate's measurement rules exist to prevent.
+
+    UNMEASURED days carry their STATE, not a zero. A day nobody measured contributes no
+    verified weight, so the cumulative line runs flat across it - and a flat line is
+    indistinguishable from "we tried and achieved nothing" unless the state travels
+    alongside it. The chart needs this flag to draw those spans as unknown rather than
+    as failure. Days 9-14 of this campaign are exactly that case.
+    """
+    days = data.get("days")
+    if not isinstance(days, list):
+        return []
+    total = 0.0
+    for row in days:
+        if isinstance(row, dict):
+            total += _num(row.get("total_weight")) or 0.0
+    if total <= 0:
+        return []  # no denominator -> no percentage is meaningful, so publish nothing
+    out: list[dict] = []
+    cum = 0.0
+    for row in days:
+        if not isinstance(row, dict):
+            continue
+        day = _int(row.get("day"))
+        if day is None:
+            continue
+        verified = _num(row.get("verified_weight")) or 0.0
+        due = _num(row.get("total_weight")) or 0.0
+        cum += verified
+        state = row.get("state")
+        out.append({
+            "day": day,
+            "date": _public_str(row.get("date")),
+            "title": _public_str(row.get("title")),
+            "state": state if state in _DAY_STATES else "UNMEASURED",
+            "verified_weight": verified,
+            "due_weight": due,
+            "day_pct": _num(row.get("verified_percent")),
+            "cum_pct": round(100.0 * cum / total, 1),
+        })
+    return out
+
+
+def _campaign_milestones(data: dict) -> list[dict]:
+    """The real dated commitments the estate tracks, mapped onto the sprint-day axis.
+
+    The plot's existing markers come from sprint_cycle.MILESTONES, which is a PLAN:
+    eleven evenly spaced labels written in advance. The estate separately tracks the
+    actual dated commitments this sprint is judged against - summit starts, competition
+    deadlines, submission closes - and none of them reached the page. So the chart
+    showed a tidy invented plan and not one of the dates that actually matter.
+
+    `day` is derived here rather than in the browser so the axis mapping has exactly
+    one definition, shared with the plan curve (sprint_cycle.SPRINT_START).
+    """
+    items = data.get("milestones")
+    if not isinstance(items, list):
+        return []
+    out: list[dict] = []
+    for entry in items:
+        if not isinstance(entry, dict):
+            continue
+        title = _public_str(entry.get("title"))
+        when = _date(entry.get("date"))
+        if not title or when is None:
+            continue
+        day = (when - sprint_cycle.SPRINT_START).days + 1
+        if not 1 <= day <= sprint_cycle.SPRINT_DAYS:
+            continue  # outside the plotted window; dropping beats drawing off-axis
+        out.append({
+            "title": title,
+            "date": when.isoformat(),
+            "day": day,
+            "kind": _public_str(entry.get("kind")),
+            "hard": bool(entry.get("hard")),
+            "past": bool(entry.get("past")) if "past" in entry else None,
+        })
+    out.sort(key=lambda m: (m["day"], m["title"]))
+    return out[:24]
+
+
 def _progression(build_date: dt.date | None = None) -> dict:
     """Consume the estate's canonical progression through a public-safe allowlist.
 
@@ -404,6 +500,10 @@ def _progression(build_date: dt.date | None = None) -> dict:
         "stale_days": 0 if fresh else stale_days,
         "measurement_contract": _measurement_contract(rule, day_index_rule),
         "baseline_epoch": generated_at,
+        # The measured curve and the real dated commitments. Previously the page got
+        # only the scalars above, so it could draw the plan and a single ACTUAL dot.
+        "series": _progression_series(data),
+        "campaign_milestones": _campaign_milestones(data),
     }
 
 

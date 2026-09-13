@@ -157,6 +157,62 @@ export function liveSprintDay(anchor, now = Date.now(), total = 21) {
     return Math.max(1, Math.min(day, total));
 }
 
+const DAY_STATES = new Set(['VERIFIED', 'PARTIAL', 'UNMEASURED', 'PENDING', 'HOLD', 'DEGRADED']);
+
+/**
+ * Per-day measured curve, normalised for the plot.
+ *
+ * progressionOf builds an explicit object rather than spreading the projection, so a new
+ * field on the server reaches the page only when it is named here. That is deliberate -
+ * it is what stops unvetted estate content leaking into the public bundle - but it also
+ * means a silently dropped key looks exactly like an empty chart.
+ *
+ * A row without a finite day or cumulative percent is discarded rather than coerced:
+ * plotting a NaN puts a hole in the line, and plotting a coerced zero would assert
+ * "nothing verified" on a day nobody measured.
+ *
+ * @param {unknown} rows Raw `progression.series` from roadmap-status.json.
+ * @returns {Array<object>} Rows safe to plot, ordered by day.
+ */
+function seriesOf(rows) {
+    if (!Array.isArray(rows)) return [];
+    return rows
+        .map((r) => ({
+            day: num(r?.day),
+            date: str(r?.date),
+            title: str(r?.title),
+            state: DAY_STATES.has(r?.state) ? r.state : 'UNMEASURED',
+            verifiedWeight: num(r?.verified_weight),
+            dueWeight: num(r?.due_weight),
+            dayPct: num(r?.day_pct),
+            cum_pct: num(r?.cum_pct),
+        }))
+        .filter((r) => r.day !== null && r.cum_pct !== null)
+        .sort((a, b) => a.day - b.day);
+}
+
+/**
+ * Real dated campaign commitments, already mapped onto the sprint-day axis upstream.
+ *
+ * @param {unknown} rows Raw `progression.campaign_milestones`.
+ * @returns {Array<object>} Rows safe to plot.
+ */
+function campaignMilestonesOf(rows) {
+    if (!Array.isArray(rows)) return [];
+    return rows
+        .map((m) => ({
+            day: num(m?.day),
+            date: str(m?.date),
+            title: str(m?.title),
+            kind: str(m?.kind),
+            hard: Boolean(m?.hard),
+            past: typeof m?.past === 'boolean' ? m.past : null,
+        }))
+        .filter((m) => m.day !== null && m.title)
+        .sort((a, b) => a.day - b.day);
+}
+
+
 export function progressionOf(status, options = {}) {
     const { knownContract = null, now = Date.now() } = options;
     const p = status?.progression;
@@ -221,6 +277,10 @@ export function progressionOf(status, options = {}) {
         contractShort: shortContract(contract),
         baselineEpoch: str(p?.baseline_epoch),
         contractChanged: knownContract && contract ? knownContract !== contract : null,
+        // Empty, not absent: an UNMEASURED projection has no curve to draw, and the
+        // plot must render nothing rather than fall over on undefined.
+        series: [],
+        campaignMilestones: [],
     };
     if (!p || p.state !== 'MEASURED') return base;
 
@@ -240,6 +300,8 @@ export function progressionOf(status, options = {}) {
 
     return {
         ...base,
+        series: seriesOf(p.series),
+        campaignMilestones: campaignMilestonesOf(p.campaign_milestones),
         state: stale ? 'STALE' : 'MEASURED',
         reason: null,
         day,

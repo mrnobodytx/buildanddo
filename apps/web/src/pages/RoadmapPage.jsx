@@ -189,6 +189,58 @@ export const PLANNED_MILESTONES = [
 const TRAJECTORY = PLANNED_MILESTONES.map((m) => ({ day: m.day, value: m.value }));
 
 /**
+ * Plan percentage at a given day, interpolated between milestone points.
+ *
+ * Used only to say what the plan expected beside what was measured; the plan curve
+ * itself is still drawn straight from TRAJECTORY, so there is one source for the line.
+ *
+ * @param {number} day Sprint day.
+ * @returns {number|null} Planned cumulative percent, or null outside the sprint.
+ */
+function plannedPctFor(day) {
+    if (!Number.isFinite(day)) return null;
+    let prev = TRAJECTORY[0];
+    for (const point of TRAJECTORY) {
+        if (point.day === day) return point.value;
+        if (point.day > day) {
+            const span = point.day - prev.day;
+            if (span <= 0) return point.value;
+            return Math.round((prev.value + ((point.value - prev.value) * (day - prev.day)) / span) * 10) / 10;
+        }
+        prev = point;
+    }
+    return prev.value;
+}
+
+/**
+ * Segments of the measured curve, split wherever measurement stops.
+ *
+ * The achieved line is drawn segment by segment rather than as one path because a day
+ * nobody measured contributes no verified weight, so the cumulative value runs FLAT
+ * across it - and a flat solid line is indistinguishable from "we worked and achieved
+ * nothing". Splitting lets the unmeasured spans render as a broken ghost line, which
+ * says "not measured" instead of claiming a result. Days 9-14 of this campaign are
+ * exactly that case.
+ *
+ * @param {Array<object>} series Per-day progression rows from the estate projection.
+ * @returns {Array<{d: string, measured: boolean}>} SVG path segments.
+ */
+function achievedSegments(series) {
+    const out = [];
+    for (let i = 1; i < series.length; i += 1) {
+        const a = series[i - 1];
+        const b = series[i];
+        out.push({
+            d: `M ${xFor(a.day).toFixed(1)} ${yFor(a.cum_pct).toFixed(1)} `
+                + `L ${xFor(b.day).toFixed(1)} ${yFor(b.cum_pct).toFixed(1)}`,
+            measured: b.state !== 'UNMEASURED',
+        });
+    }
+    return out;
+}
+
+
+/**
  * Overlays projection status onto the planned milestones.
  *
  * The plan owns which milestones exist and what they are worth; the projection
@@ -238,7 +290,8 @@ const yFor = (value) => PAD_T + (1 - value / 100) * (CHART_H - PAD_T - PAD_B);
  * click / tap / Enter / Space pins, arrow keys walk between milestones,
  * Escape unpins (handled by the page).
  */
-function MarketPlot({ activeDay, pinnedDay, onHover, onPin, live, milestones, actual }) {
+function MarketPlot({ activeDay, pinnedDay, onHover, onPin, live, milestones, actual,
+    achieved, campaignMilestones }) {
     const linePath = TRAJECTORY.map((p, i) => `${i === 0 ? 'M' : 'L'} ${xFor(p.day).toFixed(1)} ${yFor(p.value).toFixed(1)}`).join(' ');
     const areaPath = `${linePath} L ${xFor(SPRINT_DAYS).toFixed(1)} ${yFor(0).toFixed(1)} L ${xFor(1).toFixed(1)} ${yFor(0).toFixed(1)} Z`;
 
@@ -361,6 +414,62 @@ function MarketPlot({ activeDay, pinnedDay, onHover, onPin, live, milestones, ac
                 );
             })}
 
+            {/* Real dated campaign commitments - summit windows, competition deadlines.
+                These come from the estate, not from the plan list: PLANNED_MILESTONES is
+                eleven evenly spaced labels written in advance, whereas these are the dates
+                the sprint is actually judged against, and none of them used to reach the
+                page. Hard deadlines are drawn solid, soft dates hairline. */}
+            {campaignMilestones.map((m) => (
+                <g key={`cm-${m.day}-${m.title}`} aria-hidden="true">
+                    <line
+                        x1={xFor(m.day)} y1={PAD_T}
+                        x2={xFor(m.day)} y2={CHART_H - PAD_B}
+                        stroke={m.hard ? 'hsl(var(--primary) / 0.32)' : 'hsl(var(--muted-foreground) / 0.26)'}
+                        strokeWidth={m.hard ? 1.5 : 1}
+                        strokeDasharray={m.hard ? '5 3' : '1 5'}
+                    />
+                    <polygon
+                        points={`${xFor(m.day) - 4},${PAD_T - 9} ${xFor(m.day) + 4},${PAD_T - 9} ${xFor(m.day)},${PAD_T - 2}`}
+                        fill={m.hard ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))'}
+                    />
+                </g>
+            ))}
+
+            {/* The measured curve. Solid where the estate measured the day, broken and
+                faded where it did not - see achievedSegments. Bounded at today by the
+                caller: continuing it to D21 would draw the future as if it were known. */}
+            {achieved && achieved.segments.map((seg, i) => (
+                <path
+                    key={`ach-${i}`}
+                    d={seg.d}
+                    fill="none"
+                    stroke={seg.measured ? 'hsl(var(--foreground))' : 'hsl(var(--muted-foreground))'}
+                    strokeWidth={seg.measured ? 2.25 : 1.5}
+                    strokeDasharray={seg.measured ? undefined : '3 4'}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity={seg.measured ? 1 : 0.5}
+                />
+            ))}
+            {achieved && (
+                <g role="img" aria-label={
+                    `Measured progression: ${achieved.last.cum_pct}% of the campaign verified by day `
+                    + `${achieved.last.day}, against a plan of ${achieved.plannedPct}% - `
+                    + `${achieved.unmeasuredDays} day(s) in this range were never measured`
+                }>
+                    <circle
+                        cx={xFor(achieved.last.day)} cy={yFor(achieved.last.cum_pct)} r="5"
+                        fill="hsl(var(--foreground))" stroke="hsl(var(--card))" strokeWidth="2"
+                    />
+                    <text
+                        x={xFor(achieved.last.day) + 9} y={yFor(achieved.last.cum_pct) + 4}
+                        className="font-evidence" fontSize="10" fill="hsl(var(--foreground))"
+                    >
+                        VERIFIED {achieved.last.cum_pct}%
+                    </text>
+                </g>
+            )}
+
             {/* actual progress marker - drawn only from a fresh, measured
                 projection. An UNMEASURED or missing file draws nothing at all
                 rather than a marker at a number nobody computed. */}
@@ -477,6 +586,35 @@ export default function RoadmapPage() {
             pct: Math.max(0, Math.min(evidencePct, 100)),
         };
     }, [measured, live, progression]);
+
+    // The measured curve, bounded at today. The estate series covers all 21 days, and
+    // some future-day criteria are already verified (work landed early), but plotting
+    // past today would draw a cumulative line across days that have not happened - a
+    // forecast wearing the styling of a measurement. Everything after today is simply
+    // not drawn; the whole-campaign figure stays a scalar in the Progression panel.
+    const achieved = useMemo(() => {
+        const series = Array.isArray(progression.series) ? progression.series : [];
+        if (series.length < 2) return null;
+        const today = Number.isFinite(progression.day) ? progression.day : live.sprint_day;
+        const bound = Number.isFinite(today) ? today : SPRINT_DAYS;
+        const upto = series.filter((r) => r.day <= bound);
+        if (upto.length < 2) return null;
+        const last = upto[upto.length - 1];
+        return {
+            segments: achievedSegments(upto),
+            last,
+            plannedPct: plannedPctFor(last.day),
+            unmeasuredDays: upto.filter((r) => r.state === 'UNMEASURED').length,
+        };
+    }, [progression, live]);
+
+    // Real dated commitments, mapped onto the sprint-day axis upstream so the browser
+    // never re-derives that mapping and cannot disagree with the plan curve.
+    const campaignMilestones = useMemo(() => {
+        const list = Array.isArray(progression.campaignMilestones)
+            ? progression.campaignMilestones : [];
+        return list.filter((m) => m.day >= 1 && m.day <= SPRINT_DAYS);
+    }, [progression]);
 
     const handleHover = (day) => {
         setHoverDay(day);
@@ -618,6 +756,8 @@ export default function RoadmapPage() {
                             live={live}
                             milestones={milestones}
                             actual={actual}
+                            achieved={achieved}
+                            campaignMilestones={campaignMilestones}
                         />
                     </Card>
                     {/* persistent detail card - pinned milestone, or a hover preview */}
