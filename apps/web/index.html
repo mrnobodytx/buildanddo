@@ -10,6 +10,47 @@
 			name="description"
 			content="BuildAndDo helps small-business owners notice important changes, understand them in plain language, approve a bounded mission, and verify what happened. Early access for practical small-business operations."
 		/>
+
+		<!--
+			Social and canonical metadata.
+
+			RESTORED, not invented: production still serves og:type, og:site_name,
+			og:title, og:description and twitter:card, and this file had none of them,
+			so every staging build silently shipped worse link previews than the live
+			site. The release gate now fails that as a regression
+			(citadel_release_gate.measure_surface_regression).
+
+			The COPY here is deliberately the newer positioning already in <title> and
+			the description above, NOT production's older wording. Staging is meant to
+			lead production; matching the old copy to make a diff quiet would be
+			getting the direction exactly backwards.
+
+			NO og:image / twitter:image. There is no image asset in apps/web, and
+			production serves none either. A tag pointing at a file that does not exist
+			makes previews worse than omitting it — a scraper that fetches 404 renders
+			nothing, whereas an absent image falls back to a clean text card. Add a real
+			1200x630 asset and both tags at once; until then this is honestly silent.
+		-->
+		<link rel="canonical" href="https://buildanddo.com/" />
+		<meta name="theme-color" content="#0b0f14" />
+		<meta name="robots" content="index, follow" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="BuildAndDo" />
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:url" content="https://buildanddo.com/" />
+		<meta property="og:title" content="BuildAndDo — turn a business problem into a verified next step" />
+		<meta
+			property="og:description"
+			content="Notice what changed, understand it in plain language, approve a bounded mission, and verify what actually happened. Early access for practical small-business operations."
+		/>
+
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content="BuildAndDo — turn a business problem into a verified next step" />
+		<meta
+			name="twitter:description"
+			content="Notice what changed, understand it in plain language, approve a bounded mission, and verify what actually happened."
+		/>
 	</head>
 	<body>
 		<div id="root"></div>
