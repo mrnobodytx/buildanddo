@@ -82,17 +82,34 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full contributor and code proce
 what's public vs. private, the PR requirements, and how a change actually reaches
 production.
 
-Short version: every push to `main` runs a real build+lint+public-boundary gate,
-deploys to a staging environment, probes it live, and only then promotes the
-same build to production. Nothing is deployed on trust — every stage is a real
-HTTP check against the live site, not a simulated pass.
+Short version: a release runs a real build+lint+public-boundary gate, deploys to
+a staging environment, probes it live, and only then promotes the **same build**
+to production. Nothing is deployed on trust — every stage is a real HTTP check
+against the live site, not a simulated pass.
+
+**Where that actually runs today, measured 2026-09-13.** The pipeline above is
+real and it is `scripts/deploy/ship.py`, executed on the build rig. It is *not*
+currently driven by a push to `main`: the four GitHub Actions workflows in
+`.github/workflows/` are failing to start — the most recent runs each completed
+in about two seconds having recorded **zero steps** and been assigned **no
+runner**, which is what a job looks like when it never gets scheduled rather than
+when it fails a check. So a green pipeline badge is not available, and this
+README will not claim one until the workflows actually execute.
+
+We would rather say that plainly than describe a trigger that does not fire. The
+gate, the staging probe and the same-build promotion are all genuinely real; the
+`on: push` part is not, yet.
 
 ## Observability
 
-Every CI run measures itself — bundle size, dependency count, source volume,
-tests, lint and dead-code findings, boundary-scan results, pipeline duration —
-compares it against the last successful `main` build, and publishes the values,
-their deltas, events and structured logs to Datadog (us5.datadoghq.com).
+The release pipeline measures itself — bundle size, dependency count, source
+volume, tests, lint and dead-code findings, boundary-scan results, pipeline
+duration — compares it against the last successful build, and publishes the
+values, their deltas, events and structured logs to Datadog (us5.datadoghq.com).
+
+Same caveat as above: that publication happens on the rig-executed path. While
+the GitHub workflows are not starting, no CI-triggered measurement is being
+emitted, and none should be inferred from the presence of the workflow files.
 Deployments emit DORA events with lead time. Regressions against the baseline
 appear in the PR job summary as warnings; they do not block the build.
 
