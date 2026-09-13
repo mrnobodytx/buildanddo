@@ -64,9 +64,20 @@ describe('MetaFunction platform visuals', () => {
 
         await user.click(policy);
 
+        // aria-expanded stays SYNCHRONOUS on purpose: it lives on the motion.button in
+        // the <ol>, outside the AnimatePresence subtree, so it updates with the click.
         expect(policy).toHaveAttribute('aria-expanded', 'true');
+        // The detail panel does not. <AnimatePresence mode="wait"> does not merely delay
+        // the incoming child's animation - it drops the child from the rendered set
+        // (framer-motion 11.18.2, AnimatePresence/index.mjs:113-116) and remounts it from
+        // the exit-completion callback (:155). So between the click and that callback the
+        // ONLY panel in the tree is the outgoing one, and a synchronous getByRole samples
+        // exactly that window. Measured: headings right after the click are ["Guildmaster"].
+        // Awaiting is the assertion matching the component's real behaviour; a user does
+        // see this heading. Not fixed by reduced motion - with duration 0 the swap is still
+        // a state update, so still a tick away.
         expect(
-            screen.getByRole('heading', { name: 'AAXP / Policy Gate', level: 3 }),
+            await screen.findByRole('heading', { name: 'AAXP / Policy Gate', level: 3 }),
         ).toBeInTheDocument();
         expect(screen.getByText('actor A3')).toBeInTheDocument();
         expect(screen.getByText('EXECUTED')).toBeInTheDocument();
