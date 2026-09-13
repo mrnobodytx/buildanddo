@@ -715,14 +715,23 @@ def _gate() -> dict:
     # would let an unproven tree reach production. So it does neither: HOLD stages, and
     # `promotable` is what the production line must consult.
     # Corrected after measuring: an earlier version of this made a lint FAIL stop the
-    # line before staging, and that is the wrong cut. apps/web/plugins/visual-editor
-    # imports eight state/*.js modules that were NEVER committed - real errors, present
-    # on main, in dev-only plugin code vite never bundles. The build is green; only
-    # lint sees them. Blocking staging on that means the one surface built for review
-    # cannot be reviewed.
+    # line before staging, and that is the wrong cut, because lint and the bundle do
+    # not see the same tree. Dev-only code - vite plugins, tooling - is linted but
+    # never bundled, so it can fail lint while the built artifact is provably fine.
+    # Refusing to stage then means the one surface built for review cannot be
+    # reviewed, and the defect gets read off a terminal instead of the page it affects.
     # So: the BUILD decides whether a thing can be staged. LINT decides whether it can
     # be promoted. A build that compiles may be looked at; only a measured-clean tree
     # may ship to production.
+    # The case that forced this split is now FIXED; the split stands on the reasoning
+    # above, not on that case. For the record, since this comment used to describe it
+    # wrongly: apps/web/plugins/visual-editor imports FIVE state/*.js modules (not
+    # eight - that conflated modules with the 29 import sites across 15 files), and
+    # they were not 'never committed' so much as never VISIBLE: a bare `state/` rule in
+    # .gitignore, meant for the root ./state ops tree, matched at every depth and hid
+    # them. Hence 29 import/no-unresolved on any fresh checkout and zero in a dev clone
+    # where the files sat on disk untracked. Anchored to /state/ and committed in
+    # b027d75.
     return {"ok": bool(report.get("build", {}).get("ok")), "promotable": state == "PASS", "state": state,
             "build_ok": report.get("build", {}).get("ok"), "lint_ok": report.get("lint", {}).get("ok"),
             "lint_state": report.get("lint", {}).get("state"),
