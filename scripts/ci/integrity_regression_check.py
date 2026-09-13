@@ -73,7 +73,27 @@ def main() -> int:
     lint = _run([NPM, "run", "lint"], cwd=web_dir, timeout=180)
 
     build_ok = build.get("returncode") == 0
-    lint_ok = lint.get("returncode") == 0
+
+    # LINT IS PART OF THE VERDICT, and its two failure modes are not the same thing.
+    #
+    # This used to compute lint_ok, record it in the report, and then never use it:
+    #     "state": "PASS" if build_ok else "FAIL"
+    # So on 2026-09-13 the gate reported {"state":"PASS","lint":{"ok":false}} and
+    # ship.py staged on it. That is REFLEX_VERDICT_IGNORES_MEASUREMENT — a value
+    # measured, stored, and excluded from the conclusion it was measured for.
+    #
+    # eslint's exit codes separate the cases, and conflating them would be its own
+    # error: rc 1 means it RAN and found violations; rc 2 means it CRASHED and found
+    # out nothing. A crash must not read as clean, and it must not read as dirty
+    # either — the correct answer is that lint did not happen.
+    lint_rc = lint.get("returncode")
+    if lint_rc == 0:
+        lint_state = "PASS"
+    elif lint_rc == 1:
+        lint_state = "FAIL"          # real violations; blocks
+    else:
+        lint_state = "UNMEASURED"    # crash / timeout / missing script; NOT a pass
+    lint_ok = lint_state == "PASS"
 
     report = {
         "schema_version": 1,
@@ -84,15 +104,25 @@ def main() -> int:
         "diff": diff,
         "build": {"ok": build_ok, "returncode": build.get("returncode"),
                    "stderr_tail": build.get("stderr_tail", ""), "reason": build.get("reason")},
-        "lint": {"ok": lint_ok, "returncode": lint.get("returncode"), "reason": lint.get("reason")},
-        "state": "PASS" if build_ok else "FAIL",
+        "lint": {"ok": lint_ok, "state": lint_state, "returncode": lint_rc,
+                  "reason": lint.get("reason"), "stderr_tail": lint.get("stderr_tail", "")[-400:]},
+        # PASS requires BOTH to have passed. An UNMEASURED lint yields HOLD, never
+        # PASS: "we did not find out" is not "it is fine".
+        "state": ("FAIL" if not build_ok or lint_state == "FAIL"
+                  else "PASS" if lint_state == "PASS" else "HOLD"),
         "manifest": hash_result["manifest"],  # persisted so the NEXT run can diff against it
     }
     ts_path = STATE_DIR / f"{report['generated_at'].replace(':', '').replace('.', '')}.json"
     ts_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     latest_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps({k: report[k] for k in ("state", "tracked_files", "build", "lint")}, indent=2))
-    return 0 if build_ok else 1
+    # Exit non-zero on a real failure. An UNMEASURED lint is surfaced as HOLD in the
+    # report and in stdout, but does not block: lint is currently CRASHING on this
+    # repo (eslint import/namespace cannot resolve vite/internal from
+    # vitest.config.js under vite 7.3.6), and blocking every commit on a broken
+    # linter would get the whole gate disabled within a day. It is loud, not fatal —
+    # and it can no longer be mistaken for PASS, which is the defect that mattered.
+    return 0 if (build_ok and lint_state != "FAIL") else 1
 
 
 if __name__ == "__main__":
