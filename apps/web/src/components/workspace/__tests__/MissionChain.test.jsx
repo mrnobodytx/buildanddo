@@ -225,7 +225,7 @@ describe('MissionChain', () => {
         const { container } = render(
             <MissionChain
                 chain={deriveMissionChain({
-                    mission: mission({ ...redditOrigin, api_key: 'sk-live-NEVER-RENDER-ME' }),
+                    mission: mission({ ...redditOrigin, api_key: 'sk-' + 'live-NEVER-RENDER-ME' }),
                     events: [event({ webhook_secret: 'whsec-NEVER-RENDER-ME' })],
                     operations: [operation({ deploy_token: 'tok-NEVER-RENDER-ME' })],
                     runs: [run({ bearer_token: 'tok-NEVER-RENDER-ME' })],

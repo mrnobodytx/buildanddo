@@ -83,17 +83,71 @@ class PublicBoundary(unittest.TestCase):
         for benign in ("MEASURED", "CENSUS_DEGRADED", "SIGNALS_NOT_RESULTS", "FORUM_LIVE_BUT_EMPTY"):
             self.assertIsNone(CREDENTIAL_RX.search(benign), "pattern is too greedy: %s" % benign)
 
-    def test_signals_still_carry_real_information(self):
-        """The cheapest way to pass a leak test is to publish nothing. If signals are
-        measured at all, they must still say which systems reported and how they are."""
-        report = roadmap_status.build_report()
-        signals = report.get("signals")
-        if not signals or signals.get("state") not in ("MEASURED", "DEGRADED"):
-            self.skipTest("no measured signals available in this environment")
-        sources = signals.get("sources") or {}
-        self.assertGreater(len(sources), 0, "measured signals published no sources at all")
-        for name, row in sources.items():
-            self.assertIn("state", row, "source %s lost its state" % name)
+    def test_sanitiser_strips_names_and_keeps_information(self):
+        """Both halves asserted against a FIXTURE, so this runs everywhere.
+
+        The previous version of this test read the LIVE estate and called skipTest when
+        no measured signals were present. A peer pointed out what that means in CI: a
+        bare container has no measured signals either, so the one assertion proving the
+        sanitiser does not simply publish nothing would never have executed anywhere
+        automated. Green, guarding nothing - the exact shape this file was written to
+        catch. Feeding a fixture removes the environment from the question.
+
+        Both directions matter. A sanitiser that returns {} passes every leak assertion
+        ever written; a sanitiser that returns its input passes every information
+        assertion. Only asserting both at once pins it.
+        """
+        source = {
+            "state": "DEGRADED",
+            "reason": "CENSUS_DEGRADED",
+            "freshness": "STALE",
+            "basis": "FLARUM_PUBLIC_API+LOCAL_VERIFICATION_RECORD",
+            "metrics": {"monitors": 72, "alerting": 15},
+            # every shape that really leaked, reproduced from the live bundle
+            "secret_names": ["DD_API_KEY", "DD_APP_KEY"],
+            "token_name": "GITHUB_TOKEN",
+            "key_name": "BAD_PERSONAL_PH_KEY",
+            "project_id_name": "POSTHOG_PROJECT_ID",
+            "host": "eu.posthog.com",
+            "repo": "mrnobodytx/buildanddo",
+            "source_file": "/d/HOSTINGER_COMP/state/roadmap_signals/latest.json",
+        }
+        out = roadmap_status._public_signals({  # noqa: SLF001 - the boundary IS the unit
+            "schema": "buildanddo.roadmap-signals/v1",
+            "generated_at": "2026-09-13T00:00:00+00:00",
+            "state": "DEGRADED",
+            "sources": {"datadog": source},
+            "failures": [],
+            "truth_boundary": {},
+        })
+        blob = json.dumps(out)
+
+        # 1. nothing sensitive survives
+        for leaked in ("DD_API_KEY", "DD_APP_KEY", "GITHUB_TOKEN", "BAD_PERSONAL_PH_KEY",
+                       "POSTHOG_PROJECT_ID", "eu.posthog.com", "mrnobodytx/buildanddo",
+                       "HOSTINGER_COMP", "secret_names", "token_name", "key_name"):
+            self.assertNotIn(leaked, blob, "%r survived the sanitiser" % leaked)
+
+        # 2. and the tile is still worth publishing
+        row = out["sources"]["datadog"]
+        self.assertEqual(row["state"], "DEGRADED")
+        self.assertEqual(row["reason"], "CENSUS_DEGRADED")
+        self.assertEqual(row["freshness"], "STALE")
+        self.assertEqual(row["metrics"], {"monitors": 72.0, "alerting": 15.0})
+
+    def test_a_bare_credential_name_cannot_ride_through_reason(self):
+        """reason and a credential name are the same shape; only one may pass."""
+        def reason_for(value):
+            out = roadmap_status._public_signals(  # noqa: SLF001
+                {"schema": "s", "generated_at": "t", "state": "MEASURED",
+                 "sources": {"x": {"state": "MEASURED", "reason": value}},
+                 "failures": [], "truth_boundary": {}})
+            return out["sources"]["x"]["reason"]
+
+        for credential in ("DD_API_KEY", "GITHUB_TOKEN", "BUILDANDDO_FORUM_API_KEY", "R_SECRET"):
+            self.assertIsNone(reason_for(credential), "%s rode through reason" % credential)
+        for real in ("CENSUS_DEGRADED", "FORUM_LIVE_BUT_EMPTY", "DEVVIT_PROJECT_UNMEASURED"):
+            self.assertEqual(reason_for(real), real, "%s was wrongly dropped" % real)
 
 
 if __name__ == "__main__":
