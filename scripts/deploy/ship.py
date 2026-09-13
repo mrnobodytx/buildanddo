@@ -707,8 +707,16 @@ def _gate() -> dict:
         report = json.loads(report_path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         report = {"state": "UNKNOWN"}
-    return {"ok": report.get("state") == "PASS", "state": report.get("state"),
+    state = report.get("state")
+    # The gate has three outcomes, not two. PASS and FAIL are obvious; HOLD means the
+    # build is good but lint could not be MEASURED (eslint crashed rather than finding
+    # violations - see integrity_regression_check.py). Treating HOLD as a failure would
+    # close the staging line for a defect nobody has evidence of; treating it as a pass
+    # would let an unproven tree reach production. So it does neither: HOLD stages, and
+    # `promotable` is what the production line must consult.
+    return {"ok": state in ("PASS", "HOLD"), "promotable": state == "PASS", "state": state,
             "build_ok": report.get("build", {}).get("ok"), "lint_ok": report.get("lint", {}).get("ok"),
+            "lint_state": report.get("lint", {}).get("state"),
             "returncode": r.get("returncode")}
 
 
@@ -838,6 +846,20 @@ def main(argv: list[str] | None = None) -> int:
         record["stopped_at"] = "stage_only"
         _finish(record, args.json_path)
         return EXIT_PASS
+
+    # A gate that came back HOLD got this build onto staging, which is the point of
+    # staging. It must not carry it further: HOLD means lint was never measured, so
+    # nothing here has established the tree is clean, and "we did not look" is not a
+    # licence to promote. Refused BEFORE the rsync, so remote_writes stays honest.
+    if not gate.get("promotable"):
+        record["stopped_at"] = "gate_not_promotable"
+        record["refusal"] = (
+            "gate state=%s (lint=%s): staged, but not promotable. Production needs a "
+            "measured-clean gate, not merely a non-failing one."
+            % (gate.get("state"), gate.get("lint_state"))
+        )
+        _finish(record, args.json_path)
+        return EXIT_FAIL
 
     # LEGACY (explicit flag + explicit A3 acknowledgement only): promote the SAME build to production.
     prod_sync = _rsync(DIST_DIR, PROD_REMOTE_DIR)

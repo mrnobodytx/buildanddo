@@ -23,7 +23,6 @@ import {
     MessageCircle,
     Network,
     Gauge,
-    Network,
     Plug,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';

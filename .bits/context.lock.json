@@ -139,7 +139,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-13T18:32:03.640638+00:00",
+  "generated_at": "2026-09-13T18:37:51.582359+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -412,8 +412,8 @@
       "buildanddo_visual_substrate",
       "praxis_evidence"
     ],
-    "tracked_files": 487,
-    "web_source_files": 199
+    "tracked_files": 475,
+    "web_source_files": 193
   },
   "schema_version": 1,
   "summary": {

@@ -73,7 +73,25 @@ def main() -> int:
     lint = _run([NPM, "run", "lint"], cwd=web_dir, timeout=180)
 
     build_ok = build.get("returncode") == 0
-    lint_ok = lint.get("returncode") == 0
+
+    # Lint was run, recorded, and then left OUT of the verdict: `state` and the exit
+    # code were both computed from build_ok alone, so a tree with real lint violations
+    # reported PASS and shipped. Measuring something and not letting it reach the
+    # verdict is worse than not measuring it - it looks like coverage.
+    #
+    # eslint's exit codes are not a boolean: 0 = clean, 1 = violations it actually
+    # found, anything else = it CRASHED and found nothing. Collapsing that to
+    # `returncode == 0` turns a crash into "not ok" (indistinguishable from real
+    # violations) - and the older `state` line turned it into PASS. A crash is
+    # UNMEASURED: not a pass, and not evidence of violations either.
+    lint_rc = lint.get("returncode")
+    if lint_rc == 0:
+        lint_state = "PASS"
+    elif lint_rc == 1:
+        lint_state = "FAIL"        # violations eslint genuinely found - blocks
+    else:
+        lint_state = "UNMEASURED"  # crash, timeout, missing binary - never a pass
+    lint_ok = lint_state == "PASS"
 
     report = {
         "schema_version": 1,
@@ -84,15 +102,23 @@ def main() -> int:
         "diff": diff,
         "build": {"ok": build_ok, "returncode": build.get("returncode"),
                    "stderr_tail": build.get("stderr_tail", ""), "reason": build.get("reason")},
-        "lint": {"ok": lint_ok, "returncode": lint.get("returncode"), "reason": lint.get("reason")},
-        "state": "PASS" if build_ok else "FAIL",
+        "lint": {"ok": lint_ok, "state": lint_state, "returncode": lint.get("returncode"),
+                  "reason": lint.get("reason")},
+        # PASS only when both were measured clean. HOLD when lint could not be
+        # measured: the build is good but the tree is unproven, which is a fine thing
+        # to put on STAGING for review and not a fine thing to promote.
+        "state": ("FAIL" if not build_ok or lint_state == "FAIL"
+                  else "PASS" if lint_state == "PASS" else "HOLD"),
         "manifest": hash_result["manifest"],  # persisted so the NEXT run can diff against it
     }
     ts_path = STATE_DIR / f"{report['generated_at'].replace(':', '').replace('.', '')}.json"
     ts_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     latest_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps({k: report[k] for k in ("state", "tracked_files", "build", "lint")}, indent=2))
-    return 0 if build_ok else 1
+    # Exit non-zero only on a real failure. An unmeasured lint is surfaced as HOLD in
+    # the report rather than by failing the run, so it stops a promotion without
+    # blocking the staging line it needs to be reviewed on.
+    return 0 if (build_ok and lint_state != "FAIL") else 1
 
 
 if __name__ == "__main__":
