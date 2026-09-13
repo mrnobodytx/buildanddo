@@ -1,0 +1,26 @@
+#!/bin/sh
+# CGRF: SRS=SRS-BUILDANDDO-RELEASE-GATE-001 | CAPS=B | Seat=C-ONE
+# BLOCKING. Secrets, syntax and version/changelog on what is about to be committed.
+#
+# This hook deliberately does NOT redirect to /dev/null. The post-commit hook that shipped before
+# this one ended every line with `>/dev/null 2>&1 || true`, which is why on 2026-09-13 it could
+# announce "Queuing push + VPS deploy" while pushing nothing and nobody saw. A gate you cannot hear
+# is not a gate.
+#
+# --no-network keeps the commit path fast and offline-safe; credential validity is measured
+# post-commit, where a slow HTTPS call costs nobody a keystroke.
+#
+# Bypass is possible but never silent:  RELEASE_GATE_OVERRIDE=1 git commit ...
+set -e
+ROOT="${CITADEL_ROOT:-D:/HOSTINGER_COMP}"
+GATE="$ROOT/tools/citadel_release_gate.py"
+REPO="$(git rev-parse --show-toplevel)"
+
+if [ ! -f "$GATE" ]; then
+  echo "[release-gate] MODULE ABSENT at $GATE — gate did not run." >&2
+  echo "[release-gate] That is UNMEASURED, not a pass. Commit allowed; fix the path." >&2
+  exit 0
+fi
+
+PY="py"; command -v py >/dev/null 2>&1 || PY="python3"
+PYTHONDONTWRITEBYTECODE=1 "$PY" -3.13 "$GATE" pre --root "$ROOT" --repo "$REPO" --no-network || exit 1

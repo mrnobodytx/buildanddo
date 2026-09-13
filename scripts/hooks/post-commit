@@ -1,0 +1,25 @@
+#!/bin/sh
+# CGRF: SRS=SRS-BUILDANDDO-RELEASE-GATE-001 | CAPS=B | Seat=C-ONE
+# NON-BLOCKING measurement of what just happened: which credentials actually work (by NAME),
+# whether the commit reached a remote (measured against the remote, never inferred from exit 0),
+# and what staging and production are really serving.
+#
+# It never blocks: the commit already exists, so failing here could only teach people --no-verify.
+set -e
+ROOT="${CITADEL_ROOT:-D:/HOSTINGER_COMP}"
+GATE="$ROOT/tools/citadel_release_gate.py"
+REPO="$(git rev-parse --show-toplevel)"
+
+# Preserved from CITADEL_ROADMAP_POST_COMMIT_V1 — the roadmap fabric still runs first.
+if command -v powershell.exe >/dev/null 2>&1; then
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$ROOT/citadel-roadmap-hooks.ps1" post-commit -Repo "$REPO" >/dev/null 2>&1 || true
+fi
+
+if [ ! -f "$GATE" ]; then
+  echo "[release-gate] MODULE ABSENT at $GATE — post-commit checks are UNMEASURED." >&2
+  exit 0
+fi
+
+PY="py"; command -v py >/dev/null 2>&1 || PY="python3"
+# `|| true` is correct HERE and only here: post-commit must never fail a commit that already exists.
+PYTHONDONTWRITEBYTECODE=1 "$PY" -3.13 "$GATE" post --root "$ROOT" --repo "$REPO" || true
