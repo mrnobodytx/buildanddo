@@ -24,8 +24,14 @@ apps/pocketbase/pocketbase
 Thumbs.db
 .vscode/*.local.json
 
-# Local-only operational state / internal ops scripts (never public)
-state/
+# Local-only operational state / internal ops scripts (never public).
+# Root-anchored on purpose. A bare `state/` matches at EVERY depth, and it
+# silently swallowed apps/web/plugins/visual-editor/state/ - 5 first-party
+# modules with 15 importers. They were never missing, just invisible to git:
+# lint passed in dev clones where the files sat on disk, and failed with 29
+# import/no-unresolved on every fresh checkout and CI runner. Same failure the
+# .buildanddo/ note below records (2026-09-07). Keep the leading slash.
+/state/
 evidence/**/private/
 evidence/**/secrets/
 .buildanddo/*
