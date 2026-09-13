@@ -145,6 +145,16 @@ _SIGNAL_STATES = ("MEASURED", "DEGRADED", "UNMEASURED", "PENDING", "HOLD")
 # the estate collector adds next, and the collector is not owned by this repo.
 _SIGNAL_SOURCE_KEYS = ("state", "reason", "freshness", "basis")
 _REASON_RX = re.compile(r"^[A-Z][A-Z0-9_]{0,63}$")
+# A reason code and a credential name are the SAME SHAPE. _REASON_RX admits
+# "CENSUS_DEGRADED" and "DD_API_KEY" alike, so the allowlist above closed the fields
+# that leaked (secret_names, token_name, key_name) and left one door open: an upstream
+# collector that sets reason to a bare env-var token would republish a credential name
+# through the very filter meant to stop it. Today's reasons survive only because they
+# happen to carry a ":" or a space and fail _REASON_RX - that is luck, not design.
+# No length floor: R_SECRET is as much a credential name as DD_API_KEY.
+_CREDENTIAL_RX = re.compile(
+    r"^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*_(?:KEY|TOKEN|SECRET|PASSWORD|PAT|CREDENTIAL|DSN|URI)$"
+)
 
 
 def _signal_metrics(value: object) -> dict:
@@ -196,7 +206,8 @@ def _public_signal_source(value: object) -> dict | None:
         if key == "reason":
             # Reason codes are uppercase tokens (CENSUS_DEGRADED, FORUM_LIVE_BUT_EMPTY).
             # Anything else is prose that could carry a path, a host or a name.
-            out[key] = raw if isinstance(raw, str) and _REASON_RX.match(raw) else None
+            ok = isinstance(raw, str) and _REASON_RX.match(raw) and not _CREDENTIAL_RX.match(raw)
+            out[key] = raw if ok else None
         else:
             out[key] = _public_str(raw, 120)
     metrics = _signal_metrics(value.get("metrics"))
