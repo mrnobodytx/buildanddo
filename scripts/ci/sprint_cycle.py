@@ -69,6 +69,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -103,7 +104,19 @@ def campaign_date(moment: dt.datetime | None = None) -> dt.date:
     return m.astimezone(_campaign_zone()).date()
 SPRINT_DAYS = 21
 
-STATE_PATH = ROOT / "state" / "roadmap" / "sprint.json"
+STATE_ENV = "BUILDANDDO_SPRINT_STATE"
+# state/roadmap/sprint.json is the ops tree, deliberately gitignored - it records which
+# milestones were VERIFIED and with what evidence, and that is operator state, not source.
+# Hardcoding it to ROOT meant any build outside the working clone (a worktree, a fresh CI
+# checkout, a release rebuild) silently found no file, fell back to the unverified plan,
+# and published a roadmap asserting every milestone was merely "planned" - while the
+# Progression panel on the SAME page quoted 56.8% measured from the estate. Two halves of
+# one page disagreeing, with nothing reporting that anything was missing.
+#
+# roadmap_status.py already solves this for its three estate inputs
+# (BUILDANDDO_PROGRESSION_FILE / _ROADMAP_SIGNALS / _CAMPAIGN_CONFIG). This is the same
+# escape hatch for the one input that lacked it. Absent env var, behaviour is unchanged.
+STATE_PATH = Path(os.environ.get(STATE_ENV) or (ROOT / "state" / "roadmap" / "sprint.json"))
 
 VERIFIED = "verified"
 PLANNED = "planned"
