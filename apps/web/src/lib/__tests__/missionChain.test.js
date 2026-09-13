@@ -346,7 +346,7 @@ describe('deriveMissionChain', () => {
     it('projects trace rows field by field, so an unrendered column cannot leak', () => {
         const chain = deriveMissionChain({
             mission: mission({ ...redditOrigin, api_key: 'sk-' + 'live-NEVER-RENDER-ME' }),
-            events: [event({ webhook_secret: 'whsec-NEVER-RENDER-ME' })],
+            events: [event({ webhook_secret: 'whsec-' + 'NEVER-RENDER-ME' })],
             operations: [operation()],
             runs: [run({ bearer_token: 'tok-NEVER-RENDER-ME' })],
             evidence: [evidence({ password: 'pw-NEVER-RENDER-ME' })],
