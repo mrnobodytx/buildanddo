@@ -61,7 +61,10 @@ const WORKSPACE_ROUTES = [
     { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
-    { path: 'desks', label: 'Specialist Desks', element: SpecialistDeskPage },
+    // Renamed to the Capability Passport viewer (SRS-BUILDANDDO-WITNESS-001).
+    // The PATH stays 'desks' so existing bookmarks resolve; the element binding
+    // and the label follow the page, which titles itself 'Capability Passport'.
+    { path: 'desks', label: 'Capability Passport', element: CapabilityPassportPage },
     { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
     { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },
     { path: 'community', label: 'Community & Social', element: CommunitySocialPage },
