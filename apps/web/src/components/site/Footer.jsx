@@ -1,12 +1,13 @@
 // CGRF: SRS=SRS-BUILDANDDO-ROADMAP-001 | CAPS=B | Seat=C-ONE
 import React from 'react';
-import { Activity, Mail, MessageCircle, BookOpen, Users, Github } from 'lucide-react';
-import { PUBLIC_LINKS } from '@/lib/publicLinks';
+import { Activity, Mail, MessageCircle, MessagesSquare, BookOpen, Users, Github } from 'lucide-react';
+import { PUBLIC_LINKS, CONTACT_EMAIL } from '@/lib/publicLinks';
 import { PURPOSE } from '@/lib/purpose';
 
 const DISCORD_INVITE_URL = PUBLIC_LINKS.discord;
 const WIKI_URL = PUBLIC_LINKS.wiki;
 const FORUM_URL = PUBLIC_LINKS.forum;
+const REDDIT_URL = PUBLIC_LINKS.reddit;
 const GITHUB_URL = PUBLIC_LINKS.github;
 const CONTRIBUTING_URL = PUBLIC_LINKS.contributing;
 
@@ -105,6 +106,17 @@ export default function Footer() {
                             </li>
                             <li>
                                 <a
+                                    href={REDDIT_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    <MessagesSquare className="h-4 w-4 shrink-0" />
+                                    Reddit
+                                </a>
+                            </li>
+                            <li>
+                                <a
                                     href={WIKI_URL}
                                     target="_blank"
                                     rel="noreferrer"
@@ -135,9 +147,14 @@ export default function Footer() {
                                     How to contribute
                                 </a>
                             </li>
-                            <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Mail className="h-4 w-4 shrink-0" />
-                                Contact — coming soon
+                            <li>
+                                <a
+                                    href={`mailto:${CONTACT_EMAIL}`}
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    <Mail className="h-4 w-4 shrink-0" />
+                                    {CONTACT_EMAIL}
+                                </a>
                             </li>
                         </ul>
                     </div>

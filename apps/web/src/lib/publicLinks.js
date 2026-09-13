@@ -22,7 +22,15 @@ export const PUBLIC_LINKS = Object.freeze({
     wiki: 'https://wiki.buildanddo.com',
     forum: 'https://forum.buildanddo.com',
     discord: 'https://discord.gg/vTDZxmpHHC',
+    reddit: 'https://www.reddit.com/r/BuildAndDo',
 });
+
+// Kept OUT of PUBLIC_LINKS deliberately. That map is the fallback table for
+// `publicUrlForSource`, whose whole contract is "returns an https URL or null" —
+// dropping a mailto: into it would let a signal-source id resolve to a non-https
+// value and quietly break that guarantee. The contact address is not a signal
+// source, so it gets its own export.
+export const CONTACT_EMAIL = 'contact@buildanddo.com';
 
 /**
  * Resolves the public URL for a live-source tile.
@@ -30,8 +38,13 @@ export const PUBLIC_LINKS = Object.freeze({
  * The signals record wins when it carries one (`url`, `public_url`, an
  * `invite_url` for Discord, or a `repo` slug for GitHub); otherwise the tile
  * falls back to the same public surface the footer links to. Sources with no
- * public surface (Datadog, PostHog, Reddit verification, the Citadel rail)
- * return null and render without a link.
+ * public surface (Datadog, PostHog, the Citadel rail) return null and render
+ * without a link.
+ *
+ * Reddit moved OUT of that no-surface list on 2026-09-13: the subreddit is now
+ * a public surface the footer links to, so its tile resolves like any other.
+ * Note the tile still MEASURES the devvit verification checks, not subreddit
+ * activity — the link is where a reader goes, not what the metric counts.
  *
  * @param {string} sourceId Signal source id, e.g. "github".
  * @param {object} [record] The source's record from roadmap-status.json.
