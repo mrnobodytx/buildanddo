@@ -127,3 +127,10 @@ srs:
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md
     notes: Blocked on a metrics sink - see .bits/handoffs/2026-09-10-bits-codegen-ide1.md
+
+  - code: SRS-BUILDANDDO-PLATFORM-001
+    title: MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-PLATFORM-001.md
+    owner: BITS-CODEGEN

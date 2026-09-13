@@ -9,6 +9,7 @@ const CONTRIBUTING_URL = 'https://github.com/mrnobodytx/buildanddo/blob/main/CON
 
 const PRODUCT_LINKS = [
     { label: 'At a glance', href: '#glance' },
+    { label: 'Platform', href: '/platform' },
     { label: 'Challenge Desk', href: '#challenge-desk' },
     { label: 'Evidence Ledger', href: '#evidence-ledger' },
     { label: 'Daily Edition', href: '#daily-edition' },
@@ -16,7 +17,10 @@ const PRODUCT_LINKS = [
     { label: 'FAQ', href: '#faq' },
 ];
 
-export default function Footer() {
+export default function Footer({
+    productLinks = PRODUCT_LINKS,
+    earlyAccessHref = '#early-access',
+}) {
     const year = new Date().getFullYear();
 
     return (
@@ -48,7 +52,7 @@ export default function Footer() {
                             Product
                         </p>
                         <ul className="mt-4 space-y-2.5">
-                            {PRODUCT_LINKS.map((link) => (
+                            {productLinks.map((link) => (
                                 <li key={link.href}>
                                     <a
                                         href={link.href}
@@ -68,7 +72,7 @@ export default function Footer() {
                         <ul className="mt-4 space-y-2.5">
                             <li>
                                 <a
-                                    href="#early-access"
+                                    href={earlyAccessHref}
                                     className="text-sm font-medium text-primary transition-colors hover:brightness-125"
                                 >
                                     Join early access
