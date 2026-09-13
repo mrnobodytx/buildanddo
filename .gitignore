@@ -64,3 +64,8 @@ apps/web/public/.well-known/citadel-release.json
 # `git add .` staged vault/temp/SESSION_JOURNAL.md into this repo, which
 # pushes to PUBLIC github.com/mrnobodytx/buildanddo.
 vault/
+# Generated at build time by scripts/ci/fleet_report.py - build output, same as
+# roadmap-status.json above. The Fleet and Platform Health pages state that the
+# projection is missing rather than drawing stale data when it was not written.
+apps/web/public/fleet-status.json
+apps/web/public/platform-health.json

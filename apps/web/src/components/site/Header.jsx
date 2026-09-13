@@ -51,6 +51,7 @@ export const NAV = [
             { label: 'Practice', to: '/practice' },
         ],
     },
+    { label: 'Platform', to: '/platform' },
     { label: 'Roadmap', to: '/roadmap' },
     { label: 'FAQ', to: '/#faq' },
 ];
@@ -84,10 +85,12 @@ const linkIdle = 'text-muted-foreground hover:text-foreground';
 const linkActive = 'text-foreground font-semibold';
 
 function NavLink({ item, location, onNavigate, className }) {
-    const active = isActiveRoute(item.to, location);
+    // NAV entries carry `to`; the per-page lists PlatformPage passes carry `href`.
+    const to = item.to ?? item.href;
+    const active = isActiveRoute(to, location);
     return (
         <Link
-            to={item.to}
+            to={to}
             onClick={onNavigate}
             aria-current={active ? 'page' : undefined}
             className={cn(linkBase, active ? linkActive : linkIdle, className)}
@@ -184,7 +187,11 @@ function SignalsChip({ state, className }) {
     );
 }
 
-export default function Header() {
+export default function Header({
+    navLinks = NAV,
+    ctaHref = '/#early-access',
+    ctaLabel = 'Join early access',
+}) {
     const [open, setOpen] = useState(false);
     const [compact, setCompact] = useState(false);
     const { isAuthed } = useAuth();
@@ -228,11 +235,11 @@ export default function Header() {
                 </div>
 
                 <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
-                    {NAV.map((entry) =>
+                    {navLinks.map((entry) =>
                         entry.items ? (
                             <NavGroup key={entry.label} group={entry} location={location} />
                         ) : (
-                            <NavLink key={entry.to} item={entry} location={location} />
+                            <NavLink key={entry.to ?? entry.href} item={entry} location={location} />
                         ),
                     )}
                 </nav>
@@ -251,8 +258,8 @@ export default function Header() {
                             >
                                 Sign in
                             </Link>
-                            <Button to="/#early-access" size="sm" className="hidden sm:inline-flex">
-                                Join early access
+                            <Button to={ctaHref} size="sm" className="hidden sm:inline-flex">
+                                {ctaLabel}
                             </Button>
                         </>
                     )}
@@ -272,7 +279,7 @@ export default function Header() {
                             </div>
                             <SignalsChip state={signalsState} className="mt-4" />
                             <nav className="mt-6 flex flex-col gap-5" aria-label="Mobile">
-                                {NAV.map((entry) =>
+                                {navLinks.map((entry) =>
                                     entry.items ? (
                                         <div key={entry.label}>
                                             <p className="px-2 font-evidence text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -287,7 +294,7 @@ export default function Header() {
                                             </ul>
                                         </div>
                                     ) : (
-                                        <NavLink key={entry.to} item={entry} location={location} onNavigate={closeMenu} className="px-3 py-3 text-base hover:bg-secondary" />
+                                        <NavLink key={entry.to ?? entry.href} item={entry} location={location} onNavigate={closeMenu} className="px-3 py-3 text-base hover:bg-secondary" />
                                     ),
                                 )}
                             </nav>
@@ -303,8 +310,8 @@ export default function Header() {
                                         >
                                             Sign in
                                         </Link>
-                                        <Button to="/#early-access" onClick={closeMenu} className="w-full">
-                                            Join early access
+                                        <Button to={ctaHref} onClick={closeMenu} className="w-full">
+                                            {ctaLabel}
                                         </Button>
                                     </>
                                 )}

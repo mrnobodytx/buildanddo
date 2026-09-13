@@ -13,6 +13,7 @@ import HomePage from './pages/HomePage';
 import RoadmapPage from './pages/RoadmapPage';
 import PracticePage from './pages/PracticePage';
 import WritingChallengePage from './pages/WritingChallengePage';
+import PlatformPage from './pages/PlatformPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -25,6 +26,8 @@ import WorkflowsPage from './pages/workspace/WorkflowsPage';
 import TutorialsPage from './pages/workspace/TutorialsPage';
 import ErpPage from './pages/workspace/ErpPage';
 import OperationsPage from './pages/workspace/OperationsPage';
+import FleetPage from './pages/workspace/FleetPage';
+import PlatformHealthPage from './pages/workspace/PlatformHealthPage';
 import EvidencePage from './pages/workspace/EvidencePage';
 import DailyEditionPage from './pages/workspace/DailyEditionPage';
 // Capability Passport viewer; file path retained from the former desks page so
@@ -59,6 +62,8 @@ const WORKSPACE_ROUTES = [
     { path: 'tutorials', label: 'Field Manual', element: TutorialsPage },
     { path: 'erp', label: 'ERP', element: ErpPage },
     { path: 'operations', label: 'Operations', element: OperationsPage },
+    { path: 'fleet', label: 'Fleet', element: FleetPage },
+    { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
     // Renamed to SpecialistDeskPage in dab412f; the route kept the old symbol, which
@@ -108,6 +113,7 @@ function AppRoutes() {
             <Route path="/practice" element={<PracticePage />} />
             {/* Public educational writing journey — SRS-CN-BUILDANDDO-EDUCATION-API-001. */}
             <Route path="/write" element={<WritingChallengePage />} />
+            <Route path="/platform" element={<PlatformPage />} />
 
             {/* Authentication */}
             <Route

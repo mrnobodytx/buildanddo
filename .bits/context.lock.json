@@ -2,6 +2,13 @@
   "findings": [
     {
       "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/fleet_report.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: scripts/deploy/ship.py",
       "severity": "high",
       "srs": "",
@@ -20,13 +27,6 @@
       "severity": "high",
       "srs": "SRS-BUILDANDDO-EVIDENCE-CI-001",
       "statement": "services/praxis_evidence/run_all_tests.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "governance",
-      "evidence": ".bits/srs/SRS-BUILDANDDO-CLASSROOM-001.md is unregistered, so no branch may claim it",
-      "severity": "high",
-      "srs": "",
-      "statement": "SRS-BUILDANDDO-CLASSROOM-001 has a spec but is not in the registry"
     },
     {
       "area": "governance",
@@ -97,6 +97,11 @@
       "wired_into_ci": true
     },
     {
+      "path": "scripts/ci/fleet_report.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "path": "scripts/ci/integrity_regression_check.py",
       "referenced_by": [
         "scripts/deploy/ship.py"
@@ -134,7 +139,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-12T23:25:01.003267+00:00",
+  "generated_at": "2026-09-13T18:32:03.640638+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -210,6 +215,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md",
         "status": "proposed",
         "title": "Server-side CRUD, latency and error telemetry from PocketBase hooks"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PLATFORM-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PLATFORM-001.md",
+        "status": "in_progress",
+        "title": "MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard"
       },
       {
         "code": "SRS-BUILDANDDO-PURPOSE-001",
@@ -392,7 +404,7 @@
       "scripts/deploy/ship.py"
     ],
     "migrations": 37,
-    "python_files": 62,
+    "python_files": 63,
     "services": [
       "buildanddo_mcp",
       "buildanddo_runtime",
@@ -400,23 +412,23 @@
       "buildanddo_visual_substrate",
       "praxis_evidence"
     ],
-    "tracked_files": 456,
-    "web_source_files": 182
+    "tracked_files": 487,
+    "web_source_files": 199
   },
   "schema_version": 1,
   "summary": {
     "findings": 9,
     "findings_high": 8,
     "pipelines": 5,
-    "srs_open": 17,
-    "srs_total": 20,
-    "unwired_gates": 3
+    "srs_open": 18,
+    "srs_total": 21,
+    "unwired_gates": 4
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 23,
+    "js_test_files": 24,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

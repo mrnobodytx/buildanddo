@@ -161,3 +161,9 @@ srs:
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-WRITING-JOURNEY-001.md
     notes: Public /write route - challenge, learner draft, Track B coaching, accept/reject/defer, complete, evidence. Consumes SRS-CN-BUILDANDDO-EDUCATION-API-001. Renders four SEPARATE claims (submission, integrity, historical witness, content origin) and never collapses them into "human authored" - a learner can paste AI prose and produce an identical record, so the chain proves submission, not composition. Rejecting a suggestion is positive evidence and is never scored against the learner.
+  - code: SRS-BUILDANDDO-PLATFORM-001
+    title: MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-PLATFORM-001.md
+    owner: BITS-CODEGEN
