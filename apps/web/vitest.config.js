@@ -52,6 +52,12 @@ export default defineConfig({
         },
         coverage: {
             provider: 'v8',
+            thresholds: {
+                'src/pages/{Pricing,About,Docs,Blog,Contact}Page.jsx': { lines: 80, statements: 80, functions: 80, branches: 80 },
+                'src/components/{ThemeControls,RouteLoading,SkipNavigation}.jsx': { lines: 80, statements: 80, functions: 80, branches: 80 },
+                'src/components/site/PublicPage.jsx': { lines: 80, statements: 80, functions: 80, branches: 80 },
+                'src/lib/observability/mutations.js': { lines: 80, statements: 80, functions: 80, branches: 80 },
+            },
             reporter: ['text-summary', 'lcov'],
             reportsDirectory: '../../reports/coverage/web',
             include: ['src/**/*.{js,jsx}'],

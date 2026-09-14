@@ -138,7 +138,7 @@ export default function PlatformPage() {
                 ctaLabel="Open live preview"
             />
 
-            <main>
+            <main id="main-content" tabIndex={-1}>
                 <section className="relative overflow-hidden border-b border-foreground/80 pt-14">
                     <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-70" />
                     <div className="relative mx-auto grid min-h-[calc(100vh-3.5rem)] max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-12">

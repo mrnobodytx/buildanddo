@@ -1,0 +1,33 @@
+<!--
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/web/public/llms.txt
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-14
+# Depends:     apps/web/src/lib/publicPages.js
+# EnumType:    Doc
+# EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js
+# DAG Node:    none
+# Intent:      Publish the same public route catalogue for text-based discovery.
+# ───────────────────────────────────────────────────────────────
+-->
+# BuildAndDo
+
+A business newspaper built around sources, scoped missions and evidence.
+
+## Public pages
+
+- [BuildAndDo — Your business, in evidence](https://buildanddo.tech/): Notice what changed, approve a bounded mission, and verify the outcome. A business newspaper built from the sources you connect.
+- [MetaFunction Fabric Platform | BuildAndDo](https://buildanddo.tech/platform): Explore the governed execution flow, capability mesh and illustrative monitoring of the MetaFunction Fabric.
+- [BuildAndDo — Practice library](https://buildanddo.tech/practice): Community-audited methods for real objectives, with evidence, knowledge states and lessons from each attempt.
+- [BuildAndDo — Public roadmap](https://buildanddo.tech/roadmap): Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.
+- [Pricing & early access | BuildAndDo](https://buildanddo.tech/pricing): Explore BuildAndDo early access and discuss a team rollout. Public subscription pricing has not been announced.
+- [About & team | BuildAndDo](https://buildanddo.tech/about): Meet the people and principles behind BuildAndDo, a Citadel Nexus Inc. product built around accountable work.
+- [Documentation | BuildAndDo](https://buildanddo.tech/docs): Get started with workspaces, signals, missions, workflows and the evidence ledger. Learn what each state means.
+- [The BuildAndDo journal](https://buildanddo.tech/blog): Field notes on evidence, bounded work and running a business with a traceable record of decisions.
+- [Contact | BuildAndDo](https://buildanddo.tech/contact): Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.

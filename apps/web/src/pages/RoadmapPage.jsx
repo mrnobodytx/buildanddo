@@ -381,6 +381,7 @@ export default function RoadmapPage() {
             />
 
             <Header />
+            <main id="main-content" tabIndex={-1} className="pt-14">
 
             <div className="rule-double" />
             <Section className="py-14 sm:py-20">
@@ -631,6 +632,7 @@ export default function RoadmapPage() {
         numbers as real; no cost markers or growth metrics are shown.
             </p>
 
+            </main>
             <Footer />
         </div>
     );

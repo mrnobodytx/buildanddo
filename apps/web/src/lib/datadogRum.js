@@ -20,6 +20,7 @@
 
 import { datadogRum } from '@datadog/browser-rum';
 import { datadogLogs } from '@datadog/browser-logs';
+import { BROWSER_TELEMETRY } from '@/lib/observability/config';
 
 import { resolveEnvironment, resolveRelease, resolveSampleRate } from '@/lib/observability/context';
 import { networkSummary } from '@/lib/observability/network';
@@ -27,14 +28,13 @@ import { enableReporting } from '@/lib/observability/report';
 
 // VITE_DD_APPLICATION_ID and VITE_DD_CLIENT_TOKEN are client-side public
 // identifiers (the RUM client token is scoped to intake only and carries no
-// read access), written into apps/web/.env before every build by
-// scripts/deploy/ship.py. No credentials = no RUM; initialisation must never
+// read access), supplied by the build environment. The release version is
+// injected by tools/build.mjs. No credentials = no RUM; initialisation must never
 // throw or block rendering.
 const APPLICATION_ID = import.meta.env.VITE_DD_APPLICATION_ID;
 const CLIENT_TOKEN = import.meta.env.VITE_DD_CLIENT_TOKEN;
 
-const SITE = 'us5.datadoghq.com';
-const SERVICE = 'buildanddo-web';
+const { site: SITE, service: SERVICE } = BROWSER_TELEMETRY;
 
 // Query parameters that must never reach Datadog. Password-reset and
 // verification links put single-use tokens in the URL, and RUM records the URL
@@ -122,7 +122,7 @@ export function initDatadogRum() {
 
 	const env = resolveEnvironment();
 	const version = resolveRelease();
-	const sessionSampleRate = resolveSampleRate('VITE_DD_SESSION_SAMPLE_RATE', 100);
+	const sessionSampleRate = resolveSampleRate('VITE_DD_SESSION_SAMPLE_RATE', BROWSER_TELEMETRY.sessionSampleRate);
 
 	datadogRum.init({
 		applicationId: APPLICATION_ID,
@@ -132,8 +132,8 @@ export function initDatadogRum() {
 		env,
 		version,
 		sessionSampleRate,
-		sessionReplaySampleRate: resolveSampleRate('VITE_DD_REPLAY_SAMPLE_RATE', 20),
-		traceSampleRate: resolveSampleRate('VITE_DD_TRACE_SAMPLE_RATE', 20),
+		sessionReplaySampleRate: resolveSampleRate('VITE_DD_REPLAY_SAMPLE_RATE', BROWSER_TELEMETRY.sessionReplaySampleRate),
+		traceSampleRate: resolveSampleRate('VITE_DD_TRACE_SAMPLE_RATE', BROWSER_TELEMETRY.traceSampleRate),
 		trackUserInteractions: true,
 		trackResources: true,
 		trackLongTasks: true,

@@ -39,6 +39,7 @@ export default function PracticePage() {
             <Seo title="BuildAndDo — Practice library" siteName="BuildAndDo" type="website" />
 
             <Header />
+            <main id="main-content" tabIndex={-1} className="pt-14">
             <div className="rule-double" />
 
             <Section className="py-14 sm:py-20">
@@ -92,6 +93,7 @@ export default function PracticePage() {
                 zero attempts is honestly labeled &ldquo;proposed,&rdquo; not hidden.
             </p>
 
+            </main>
             <Footer />
         </div>
     );

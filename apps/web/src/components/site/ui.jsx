@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 /**
@@ -31,14 +32,14 @@ const DOT_TONES = {
 };
 
 /* Button ------------------------------------------------------------------ */
-export function Button({
+export const Button = React.forwardRef(function Button({
     variant = 'primary',
     size = 'md',
     href,
     className,
     children,
     ...props
-}) {
+}, ref) {
     const base =
         'inline-flex items-center justify-center gap-2 font-semibold transition-all active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ring))] disabled:cursor-not-allowed disabled:opacity-60';
     const sizes = {
@@ -56,19 +57,22 @@ export function Button({
             'border border-[hsl(var(--paper-border))] bg-transparent text-[hsl(var(--paper-foreground))] hover:bg-[hsl(var(--paper-subtle))]',
     };
     const cls = cn(base, sizes[size], variants[variant], className);
+    if (href?.startsWith('/')) {
+        return <Link ref={ref} to={href} className={cls} {...props}>{children}</Link>;
+    }
     if (href) {
         return (
-            <a href={href} className={cls} {...props}>
+            <a ref={ref} href={href} className={cls} {...props}>
                 {children}
             </a>
         );
     }
     return (
-        <button className={cls} {...props}>
+        <button ref={ref} type="button" className={cls} {...props}>
             {children}
         </button>
     );
-}
+});
 
 /* Badge / pill ------------------------------------------------------------ */
 export function Badge({ tone = 'neutral', className, children }) {

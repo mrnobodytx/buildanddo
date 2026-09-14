@@ -9,6 +9,7 @@ import {
     BookOpen,
 } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient';
+import { workspaceCollection } from '@/lib/observability/mutations';
 import { useRecords } from '@/hooks/useWorkspaceRecords';
 import {
     PageHeader,
@@ -60,12 +61,12 @@ function LessonsTab() {
         const existing = progressFor(tutorial.id);
         try {
             if (existing) {
-                await pb.collection('tutorial_progress').update(existing.id, {
+                await workspaceCollection('tutorial_progress').update(existing.id, {
                     status,
                     progress: status === 'completed' ? 100 : status === 'in_progress' ? 50 : 0,
                 });
             } else {
-                await pb.collection('tutorial_progress').create({
+                await workspaceCollection('tutorial_progress').create({
                     tutorial: tutorial.id,
                     status,
                     progress: status === 'completed' ? 100 : 50,

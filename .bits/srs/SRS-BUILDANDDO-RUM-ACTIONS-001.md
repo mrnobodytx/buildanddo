@@ -18,7 +18,7 @@
 
 # SRS-BUILDANDDO-RUM-ACTIONS-001 — Workspace actions, per-page error scope, interaction timing
 
-**Status:** proposed **Risk:** A1 **Seat:** unassigned
+**Status:** in_progress **Risk:** A1 **Seat:** BITS-CODEGEN
 
 ## Problem
 
@@ -103,7 +103,8 @@ new telemetry infrastructure and no new dependency.
 ```bash
 npm run lint --prefix apps/web
 npm run build --prefix apps/web
-rg -c "reportAction|reportMetric" apps/web/src/pages/workspace   # expect > 0 per instrumented page
+rg -n "observeMutation|workspaceCollection" apps/web/src/hooks/useWorkspaceRecords.js apps/web/src/pages/workspace
+rg -n "reportAction|reportMetric" apps/web/src/lib/observability/mutations.js
 ```
 
 ## Notes for the implementing agent
@@ -113,3 +114,11 @@ never in the action name. Do not report an action from a `useEffect` that reruns
 on render — attach it to the mutation promise so one user intent yields exactly
 one action. Read `apps/web/src/lib/observability/README.md` before adding
 anything to that directory; the layering there is deliberate.
+
+## Implementation dispatch
+
+The public source implementation is part of owner-authorized dispatch
+VCC-BUILDANDDO-UPGRADE-001 under SRS-BUILDANDDO-UPGRADE-001. Local adapter tests,
+validation limits and remaining activation work are recorded in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md. Status remains in progress until
+merge and environment verification; no live ingestion result is claimed here.

@@ -1,0 +1,62 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/workflows/supply-chain.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-14
+# Depends:     scripts/ci/supply_chain.py
+# EnumType:    Workflow
+# EnumEdges:   DEPENDS_ON scripts/ci/supply_chain.py
+# DAG Node:    none
+# Intent:      Detect newly disclosed dependency advisories without waiting for a code change.
+# ───────────────────────────────────────────────────────────────
+
+name: BuildAndDo Weekly Supply Chain
+
+on:
+  schedule:
+    - cron: '23 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: buildanddo-weekly-supply
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Report current dependency risk
+        uses: ./.github/actions/datadog-ci-report
+        with:
+          dd-api-key: ${{ secrets.DD_API_KEY }}
+          dd-site: ${{ secrets.DD_SITE || 'us5.datadoghq.com' }}
+          pipeline: main
+          service: buildanddo-web
+          env: ci
+          static-analysis: 'false'
+          baseline-artifact: buildanddo-telemetry-main
+          artifact-name: buildanddo-supply-weekly
+          github-token: ${{ github.token }}
+      - name: Upload dependency and license evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: supply-chain-${{ github.run_id }}
+          path: reports/supply-chain.json
+          retention-days: 30

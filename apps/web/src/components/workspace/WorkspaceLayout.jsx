@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import React, { useId, useState } from 'react';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
     Activity,
     LayoutDashboard,
@@ -13,9 +13,6 @@ import {
     Settings,
     LogOut,
     Menu,
-    ChevronDown,
-    Plus,
-    CheckCircle2,
     Newspaper,
     Scale,
     ShieldCheck,
@@ -26,6 +23,8 @@ import {
     Plug,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Helmet } from 'react-helmet';
+import { ThemeToggle } from '@/components/ThemeControls';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
@@ -81,80 +80,41 @@ function NavList({ onNavigate }) {
 
 function BrandMark() {
     return (
-        <a
-            href="/"
-            className="flex items-center gap-2.5"
-            aria-label="BuildAndDo home"
-        >
+        <Link to="/" className="flex items-center gap-2.5" aria-label="BuildAndDo home">
             <span className="flex h-8 w-8 items-center justify-center rounded-md border border-primary/40 bg-primary/10 text-primary">
                 <Activity className="h-4 w-4" strokeWidth={2.4} />
             </span>
-            <span className="font-display text-base font-semibold tracking-tight">
-                BuildAndDo
-            </span>
-        </a>
+            <span className="font-display text-base font-semibold tracking-tight">BuildAndDo</span>
+        </Link>
     );
 }
 
 function WorkspaceSwitcher() {
     const { workspaces, active, setActive } = useWorkspace();
-    const [open, setOpen] = useState(false);
-    if (workspaces.length <= 1) {
-        return (
-            <div className="rounded-md border border-border bg-secondary/40 p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Workspace
-                </p>
-                <p className="mt-1 truncate text-sm font-medium">
-                    {active?.name || '—'}
-                </p>
-            </div>
-        );
-    }
+    const id = useId();
     return (
-        <div className="rounded-md border border-border bg-secondary/40 p-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="border border-border bg-secondary/40 p-3">
+            <label
+                htmlFor={id}
+                className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground"
+            >
                 Workspace
-            </p>
-            <div className="relative mt-1">
-                <button
-                    type="button"
-                    onClick={() => setOpen((o) => !o)}
-                    className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors hover:bg-secondary"
-                    aria-haspopup="listbox"
-                    aria-expanded={open}
-                >
-                    <span className="truncate">{active?.name || 'Select'}</span>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
-                </button>
-                {open && (
-                    <ul
-                        className="absolute bottom-full left-0 z-20 mb-2 w-full overflow-hidden rounded-md border border-border bg-popover shadow-lg"
-                        role="listbox"
-                    >
-                        {workspaces.map((w) => (
-                            <li key={w.id}>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setActive(w.id);
-                                        setOpen(false);
-                                    }}
-                                    className={cn(
-                                        'flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-secondary',
-                                        w.id === active?.id && 'text-primary',
-                                    )}
-                                >
-                                    <span className="truncate">{w.name}</span>
-                                    {w.id === active?.id && (
-                                        <CheckCircle2 className="h-4 w-4 shrink-0" />
-                                    )}
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
+            </label>
+            <select
+                id={id}
+                aria-label="Active workspace"
+                value={active?.id || ''}
+                onChange={(event) => setActive(event.target.value)}
+                className="mt-2 h-11 w-full min-w-0 border border-input bg-background px-2 text-sm text-foreground"
+                disabled={workspaces.length === 0}
+            >
+                {workspaces.length === 0 && <option value="">No workspace</option>}
+                {workspaces.map((workspace) => (
+                    <option key={workspace.id} value={workspace.id}>
+                        {workspace.name}
+                    </option>
+                ))}
+            </select>
         </div>
     );
 }
@@ -176,35 +136,42 @@ export default function WorkspaceLayout() {
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            {/* Desktop sidebar */}
-            <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-border/60 bg-secondary/15 lg:flex">
-                <div className="flex h-14 items-center border-b border-border/60 px-4">
-                    <BrandMark />
-                </div>
-                <div className="flex-1 overflow-y-auto px-3 py-4">
-                    <NavList />
-                </div>
-                <div className="space-y-3 border-t border-border/60 p-3">
-                    <WorkspaceSwitcher />
-                    <div className="flex items-center justify-between gap-2 rounded-md px-1">
-                        <span className="truncate text-xs text-muted-foreground">
-                            {user?.email}
-                        </span>
-                        <button
-                            type="button"
-                            onClick={handleLogout}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
-                        >
-                            <LogOut className="h-3.5 w-3.5" />
-                            Sign out
-                        </button>
-                    </div>
-                </div>
-            </aside>
-
-            {/* Mobile sidebar */}
+            <Helmet>
+                <meta name="robots" content="noindex,nofollow" />
+            </Helmet>
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-                <SheetContent side="left" className="w-72 border-border bg-card p-0">
+                {/* Desktop sidebar */}
+                <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-border/60 bg-secondary/15 lg:flex">
+                    <div className="flex h-14 items-center border-b border-border/60 px-4">
+                        <BrandMark />
+                    </div>
+                    <div className="flex-1 overflow-y-auto px-3 py-4">
+                        <NavList />
+                    </div>
+                    <div className="space-y-3 border-t border-border/60 p-3">
+                        <WorkspaceSwitcher />
+                        <div className="flex items-center justify-between gap-2 rounded-md px-1">
+                            <span className="truncate text-xs text-muted-foreground">
+                                {user?.email}
+                            </span>
+                            <button
+                                type="button"
+                                onClick={handleLogout}
+                                className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                                <LogOut className="h-3.5 w-3.5" />
+                                Sign out
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                {/* Mobile sidebar */}
+                <SheetContent
+                    side="left"
+                    aria-describedby={undefined}
+                    className="w-80 max-w-[calc(100vw-1rem)] overflow-y-auto border-border bg-card p-0"
+                >
                     <SheetTitle className="sr-only">Workspace navigation</SheetTitle>
                     <div className="flex h-14 items-center border-b border-border/60 px-4">
                         <BrandMark />
@@ -224,62 +191,64 @@ export default function WorkspaceLayout() {
                         </button>
                     </div>
                 </SheetContent>
-            </Sheet>
 
-            {/* Main column */}
-            <div className="lg:pl-60">
-                {/* Top header */}
-                <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-border/60 bg-background/85 px-4 backdrop-blur-md sm:px-6">
-                    <div className="flex items-center gap-3">
-                        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                {/* Main column */}
+                <div className="min-w-0 lg:pl-60">
+                    {/* Top header */}
+                    <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-border/60 bg-background/85 px-4 backdrop-blur-md sm:px-6">
+                        <div className="flex min-w-0 flex-1 items-center gap-3">
                             <SheetTrigger
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-foreground lg:hidden"
+                                className="inline-flex h-10 w-10 shrink-0 items-center justify-center border border-border text-foreground lg:hidden"
                                 aria-label="Open navigation"
                             >
                                 <Menu className="h-5 w-5" />
                             </SheetTrigger>
-                        </Sheet>
-                        <div className="flex min-w-0 items-center gap-2">
-                            <span className="truncate font-display text-sm font-semibold tracking-tight">
-                                {loading ? 'Loading…' : active?.name || 'No workspace'}
-                            </span>
-                            <span className="hidden text-muted-foreground/50 sm:inline">
-                                ·
-                            </span>
-                            <span className="hidden truncate text-sm text-muted-foreground sm:inline">
-                                {domainLabel}
-                            </span>
-                            {domainStatus && (
-                                <StatusBadge
-                                    map={DOMAIN_STATUS}
-                                    value={domainStatus}
-                                    className="hidden sm:inline-flex"
-                                />
-                            )}
+                            <div className="flex min-w-0 items-center gap-2">
+                                <span className="truncate font-display text-sm font-semibold tracking-tight">
+                                    {loading ? 'Loading…' : active?.name || 'No workspace'}
+                                </span>
+                                <span className="hidden text-muted-foreground/50 sm:inline">·</span>
+                                <span className="hidden truncate text-sm text-muted-foreground sm:inline">
+                                    {domainLabel}
+                                </span>
+                                {domainStatus && (
+                                    <StatusBadge
+                                        map={DOMAIN_STATUS}
+                                        value={domainStatus}
+                                        className="hidden sm:inline-flex"
+                                    />
+                                )}
+                            </div>
                         </div>
-                    </div>
-                    <Button
-                        size="sm"
-                        onClick={() => navigate('/app/missions')}
-                        className="shrink-0"
-                    >
-                        <Plus className="h-4 w-4" />
-                        Start a mission
-                    </Button>
-                </header>
+                        <div className="flex shrink-0 items-center gap-2">
+                            <ThemeToggle />
+                            <Button
+                                size="sm"
+                                onClick={() => navigate('/app/missions')}
+                                className="shrink-0"
+                            >
+                                <Plus className="h-4 w-4" />
+                                <span className="hidden sm:inline">Start a mission</span>
+                                <span className="sm:hidden">Mission</span>
+                            </Button>
+                        </div>
+                    </header>
 
-                <main className="px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="mx-auto max-w-6xl space-y-6">
-                        {/* Rendered by the shell, not by each page, so a page
+                    <main
+                        id="main-content"
+                        tabIndex={-1}
+                        className="workspace-content px-4 py-8 sm:px-6 lg:px-8"
+                    >
+                        <div className="mx-auto max-w-6xl space-y-6">
+                            {/* Rendered by the shell, not by each page, so a page
                             that forgets it cannot present demonstration data
                             as the operator's own. */}
-                        <DemoModeBanner />
-                        <Outlet />
-                    </div>
-                </main>
-            </div>
+                            <DemoModeBanner />
+                            <Outlet />
+                        </div>
+                    </main>
+                </div>
+            </Sheet>
         </div>
     );
 }
-
-

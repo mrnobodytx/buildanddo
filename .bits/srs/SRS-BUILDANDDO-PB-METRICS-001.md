@@ -19,7 +19,7 @@
 
 # SRS-BUILDANDDO-PB-METRICS-001 — Server-side CRUD, latency and error telemetry
 
-**Status:** proposed **Risk:** A2 **Seat:** unassigned
+**Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 
 ## Problem
 
@@ -114,3 +114,11 @@ Batch before sending: one HTTP call per record write will make the API's tail
 latency worse than the problem being measured. Environment must come from the
 same resolver the rest of the backend uses (`$os.getenv`), and the tag set must
 be finite — collection name yes, user id no, record id never.
+
+## Implementation dispatch
+
+The public source implementation is part of owner-authorized dispatch
+VCC-BUILDANDDO-UPGRADE-001 under SRS-BUILDANDDO-UPGRADE-001. Local adapter tests,
+validation limits and remaining activation work are recorded in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md. Status remains in progress until
+merge and environment verification; no live ingestion result is claimed here.

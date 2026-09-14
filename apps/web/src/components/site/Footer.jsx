@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { PUBLIC_NAV } from '@/lib/publicPages';
 import { Activity, Mail, MessageCircle, BookOpen, Users, Github } from 'lucide-react';
 
 const DISCORD_INVITE_URL = 'https://discord.gg/vTDZxmpHHC';
@@ -7,19 +9,11 @@ const FORUM_URL = 'https://forum.buildanddo.com';
 const GITHUB_URL = 'https://github.com/mrnobodytx/buildanddo';
 const CONTRIBUTING_URL = 'https://github.com/mrnobodytx/buildanddo/blob/main/CONTRIBUTING.md';
 
-const PRODUCT_LINKS = [
-    { label: 'At a glance', href: '#glance' },
-    { label: 'Platform', href: '/platform' },
-    { label: 'Challenge Desk', href: '#challenge-desk' },
-    { label: 'Evidence Ledger', href: '#evidence-ledger' },
-    { label: 'Daily Edition', href: '#daily-edition' },
-    { label: 'Field Manual', href: '#field-manual' },
-    { label: 'FAQ', href: '#faq' },
-];
+const PRODUCT_LINKS = PUBLIC_NAV.map((page) => ({ label: page.label, href: page.path }));
 
 export default function Footer({
     productLinks = PRODUCT_LINKS,
-    earlyAccessHref = '#early-access',
+    earlyAccessHref = '/#early-access',
 }) {
     const year = new Date().getFullYear();
 
@@ -29,7 +23,7 @@ export default function Footer({
                 <div className="grid gap-10 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
                     <div>
                         <a
-                            href="#top"
+                            href="/"
                             className="flex items-center gap-2.5"
                             aria-label="BuildAndDo home"
                         >
@@ -54,12 +48,12 @@ export default function Footer({
                         <ul className="mt-4 space-y-2.5">
                             {productLinks.map((link) => (
                                 <li key={link.href}>
-                                    <a
-                                        href={link.href}
+                                    <Link
+                                        to={link.href}
                                         className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                                     >
                                         {link.label}
-                                    </a>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
@@ -134,7 +128,7 @@ export default function Footer({
                             </li>
                             <li className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Mail className="h-4 w-4 shrink-0" />
-                                Contact — coming soon
+                                <Link to="/contact" className="hover:text-foreground">Contact</Link>
                             </li>
                         </ul>
                     </div>
@@ -142,8 +136,8 @@ export default function Footer({
 
                 <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-border/60 pt-6 sm:flex-row sm:items-center">
                     <p className="text-xs text-muted-foreground">
-                        © {year} BuildAndDo. All rights reserved.{' '}
-                        <span className="text-muted-foreground/40">(edit-proof-20260907)</span>
+                        © {year} Citadel Nexus Inc. All rights reserved.{' '}
+                        <a href="https://citadel-nexus.com/status" className="underline underline-offset-4">Public status</a>
                     </p>
                     <div className="flex items-center gap-5 text-xs text-muted-foreground/70">
                         <span aria-disabled="true">Privacy — coming soon</span>

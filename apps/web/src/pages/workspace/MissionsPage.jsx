@@ -12,8 +12,8 @@
 //              apps/web/src/components/workspace/ListToolbar.jsx
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.mission.created;
-//              PRODUCES workspace.mission.advanced
+//              PRODUCES workspace.mission.create;
+//              PRODUCES workspace.mission.update
 // Intent:      Make a list of missions triageable — priority, progress, due
 //              dates, editing and deletion — instead of an append-only stack.
 // ───────────────────────────────────────────────────────────────
@@ -58,7 +58,6 @@ import {
 import { useShapedRecords, useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { describeDueDate, timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
-import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 
 const STAGE_ORDER = ['proposed', 'approved', 'running', 'needs_attention', 'verified', 'failed'];
 const PRIORITY_ORDER = Object.keys(MISSION_PRIORITY);
@@ -274,11 +273,7 @@ export default function MissionsPage() {
         setValidation('');
         const result = await create(toPayload());
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.MISSION_CREATED, {
-            priority: form.priority,
-            has_due_date: Boolean(form.due_date),
-            open_missions: counts.open + 1,
-        });
+
         setForm(EMPTY_FORM);
         setCreateOpen(false);
     };
@@ -292,10 +287,7 @@ export default function MissionsPage() {
         setValidation('');
         const result = await update(editing.id, toPayload());
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.MISSION_UPDATED, {
-            priority: form.priority,
-            status: form.status,
-        });
+
         setEditing(null);
     };
 
@@ -306,17 +298,13 @@ export default function MissionsPage() {
         if (!next) return;
         const result = await update(mission.id, { status: next });
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.MISSION_ADVANCED, {
-            from_status: mission.status,
-            to_status: next,
-            priority: mission.priority || 'normal',
-        });
+
     };
 
     const destroy = async () => {
         const result = await remove(confirmDelete.id);
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.MISSION_DELETED, { status: confirmDelete.status });
+
         setConfirmDelete(null);
     };
 

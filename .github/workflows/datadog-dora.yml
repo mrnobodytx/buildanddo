@@ -42,6 +42,9 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      - name: Resolve the checked-out release identity
+        run: node scripts/ci/release.mjs --github-env
+
       - name: Send DORA deployment event
         shell: bash
         env:
@@ -62,6 +65,7 @@ jobs:
 
           npx --yes @datadog/datadog-ci@^2 dora deployment \
             --service buildanddo-web \
+            --version "${RELEASE_VERSION}" \
             --env production \
             --started-at "${STARTED_AT}" \
             --finished-at "${FINISHED_AT}" \
@@ -89,6 +93,7 @@ jobs:
           lead_time=$(( finished - authored ))
 
           python scripts/ci/datadog_publish.py \
+            --release-version "${RELEASE_VERSION}" \
             --service buildanddo-web \
             --env production \
             --pipeline main \

@@ -26,6 +26,8 @@ from pathlib import Path
 
 # metric -> (absolute tolerance, relative tolerance, direction that is bad)
 THRESHOLDS: dict[str, tuple[float, float, str]] = {
+    "deps.vulnerabilities.critical": (0, 0.0, "up"),
+    "deps.vulnerabilities.high": (0, 0.0, "up"),
     "bundle.total_bytes": (100_000, 0.05, "up"),
     "bundle.gzip_bytes": (25_000, 0.02, "up"),
     "bundle.js_bytes": (75_000, 0.05, "up"),
@@ -56,6 +58,13 @@ NON_COMPARABLE = {
 }
 
 SUMMARY_ORDER = [
+    "deps.audit_available",
+    "deps.lock_consistent",
+    "deps.vulnerabilities.critical",
+    "deps.vulnerabilities.high",
+    "deps.vulnerabilities.moderate",
+    "deps.vulnerabilities.low",
+    "deps.licenses_unknown",
     "bundle.gzip_bytes",
     "bundle.total_bytes",
     "bundle.js_bytes",

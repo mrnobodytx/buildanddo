@@ -146,6 +146,7 @@ export function trackRenderError(error, info = {}) {
 	incrementCounter('app.render_errors', { route: window.location.pathname });
 	reportError(error, {
 		error_source: 'react_render',
+		page: info.page || 'app',
 		route: window.location.pathname,
 		component_stack: info.componentStack,
 		api_health: networkSummary(),

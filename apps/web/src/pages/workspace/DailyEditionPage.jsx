@@ -11,7 +11,7 @@
 //              apps/web/src/lib/workspaceActions.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.edition.published
+//              PRODUCES workspace.edition.create
 // Intent:      Show the day the edition is about — today's priorities, what was
 //              completed, what is blocked — beside the editions themselves.
 // ───────────────────────────────────────────────────────────────
@@ -55,7 +55,6 @@ import {
 } from '@/components/workspace/WorkspaceNotices';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
-import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 
 const EMPTY_FORM = { title: '', summary: '', body: '', edition_date: '', status: 'draft' };
 
@@ -188,12 +187,6 @@ export default function DailyEditionPage() {
             status: form.status,
         });
         if (!result.ok) return;
-        if (form.status === 'published') {
-            trackWorkspaceAction(WORKSPACE_ACTIONS.EDITION_PUBLISHED, {
-                has_body: Boolean(form.body.trim()),
-                blockers: digest.blockers.length,
-            });
-        }
         setForm(EMPTY_FORM);
         setShow(false);
     };
@@ -201,10 +194,7 @@ export default function DailyEditionPage() {
     const publish = async (edition) => {
         const result = await update(edition.id, { status: 'published' });
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.EDITION_PUBLISHED, {
-            has_body: Boolean(edition.body),
-            blockers: digest.blockers.length,
-        });
+
     };
 
     const digestLoading = missions.loading || signals.loading;

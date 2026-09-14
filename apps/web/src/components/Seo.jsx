@@ -1,29 +1,83 @@
-import React from 'react';
 import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router-dom';
+import { PUBLIC_PAGES, SITE_ORIGIN } from '@/lib/publicPages';
 
-// Social + canonical tags only. The page's own <Helmet> must keep a literal
-// <title> and <meta name="description">, because the llms.txt build step reads
-// those two tags straight out of the page file's source.
-const Seo = ({ title, description, image, url, siteName, type = 'website' }) => {
-    const canonical = url || window.location.origin + window.location.pathname;
-
+export default function Seo({
+    title,
+    description,
+    image,
+    url,
+    path,
+    siteName = 'BuildAndDo',
+    type = 'website',
+    structuredData = [],
+}) {
+    const location = useLocation();
+    const pathname =
+        (path || (url ? new URL(url, SITE_ORIGIN).pathname : location.pathname)).replace(
+            /\/+$/,
+            '',
+        ) || '/';
+    const page = PUBLIC_PAGES.find((entry) => entry.path === pathname) || PUBLIC_PAGES[0];
+    const canonical = `${SITE_ORIGIN}${page.path}`;
+    const pageTitle = title || page.title;
+    const pageDescription = description || page.description;
+    const socialImage = image || `${SITE_ORIGIN}/social-card.png`;
+    const schema = [
+        {
+            '@context': 'https://schema.org',
+            '@type': page.type,
+            '@id': `${canonical}#page`,
+            url: canonical,
+            name: pageTitle,
+            description: pageDescription,
+            isPartOf: { '@type': 'WebSite', name: siteName, url: SITE_ORIGIN },
+            publisher: {
+                '@type': 'Organization',
+                name: 'Citadel Nexus Inc.',
+                url: 'https://citadel-nexus.com',
+            },
+        },
+        ...(page.path === '/'
+            ? []
+            : [
+                  {
+                      '@context': 'https://schema.org',
+                      '@type': 'BreadcrumbList',
+                      itemListElement: [
+                          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_ORIGIN },
+                          { '@type': 'ListItem', position: 2, name: page.label, item: canonical },
+                      ],
+                  },
+              ]),
+        ...structuredData,
+    ];
     return (
         <Helmet>
+            <title>{pageTitle}</title>
+            <meta name="description" content={pageDescription} />
+            <meta name="robots" content="index,follow" />
             <link rel="canonical" href={canonical} />
             <meta property="og:url" content={canonical} />
             <meta property="og:type" content={type} />
-            {siteName && <meta property="og:site_name" content={siteName} />}
-            {title && <meta property="og:title" content={title} />}
-            {description && <meta property="og:description" content={description} />}
-            {image && <meta property="og:image" content={image} />}
-            <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-            {title && <meta name="twitter:title" content={title} />}
-            {description && <meta name="twitter:description" content={description} />}
-            {image && <meta name="twitter:image" content={image} />}
+            <meta property="og:locale" content="en_US" />
+            <meta property="og:site_name" content={siteName} />
+            <meta property="og:title" content={pageTitle} />
+            <meta property="og:description" content={pageDescription} />
+            <meta property="og:image" content={socialImage} />
+            <meta property="og:image:alt" content="BuildAndDo — your business, in evidence" />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={pageTitle} />
+            <meta name="twitter:description" content={pageDescription} />
+            <meta name="twitter:image" content={socialImage} />
+            <meta name="twitter:image:alt" content="BuildAndDo — your business, in evidence" />
+            <script id="page-schema" type="application/ld+json">
+                {JSON.stringify(schema).replace(/</g, '\\u003c')}
+            </script>
         </Helmet>
     );
 }
-
-export default Seo;
 
 export { Seo };

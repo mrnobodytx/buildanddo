@@ -82,14 +82,14 @@ export default function ListToolbar({
                         onChange={(event) => onQueryChange(event.target.value)}
                         placeholder={placeholder}
                         aria-label={placeholder}
-                        className="pl-9"
+                        className="pl-9 pr-10"
                     />
                     {query && (
                         <button
                             type="button"
                             onClick={() => onQueryChange('')}
                             aria-label="Clear search"
-                            className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground"
+                            className="absolute right-1 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded text-muted-foreground hover:text-foreground"
                         >
                             <X className="h-3.5 w-3.5" />
                         </button>
