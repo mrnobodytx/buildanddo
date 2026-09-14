@@ -98,6 +98,7 @@ export function shortContract(hash) {
 
 const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
 const str = (v) => (typeof v === 'string' && v.trim() ? v.trim() : null);
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 /**
  * Normalises the `progression` block of roadmap-status.json for rendering.
@@ -155,6 +156,28 @@ export function liveSprintDay(anchor, now = Date.now(), total = 21) {
     if (!Number.isFinite(anchorUtc) || !Number.isFinite(todayUtc)) return null;
     const day = anchor.anchorDay + Math.round((todayUtc - anchorUtc) / 86400000);
     return Math.max(1, Math.min(day, total));
+}
+
+/**
+ * Calendar days from the day the numbers describe (`current_date`, YYYY-MM-DD)
+ * to the campaign's today, computed at READ time. Unlike the file's own
+ * `stale_days` - stamped once at generation and frozen thereafter - this grows
+ * as an unregenerated file ages, so a freshness counter can never quietly
+ * understate in the reassuring direction.
+ *
+ * @param {string|null} currentDate The projection's current_date.
+ * @param {number} now Epoch ms (test seam).
+ * @returns {number|null} >=0, or null when the date is unusable.
+ */
+function daysBehindToday(currentDate, now) {
+    if (!currentDate) return null;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(currentDate);
+    if (!m) return null;
+    const thenUtc = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    const t = campaignYmd(now, CAMPAIGN_TZ);
+    const todayUtc = Date.UTC(t.y, t.m - 1, t.d);
+    if (!Number.isFinite(thenUtc) || !Number.isFinite(todayUtc)) return null;
+    return Math.max(0, Math.round((todayUtc - thenUtc) / DAY_MS));
 }
 
 export function progressionOf(status, options = {}) {
@@ -232,9 +255,17 @@ export function progressionOf(status, options = {}) {
     const observed = str(p.generated_at) ? new Date(p.generated_at) : null;
     const observedMs = observed && !Number.isNaN(observed.getTime()) ? observed.getTime() : null;
     const ageMs = observedMs === null ? null : Math.max(0, now - observedMs);
-    const staleDays = num(p.stale_days);
+    // Days behind, at READ time: whichever of three lower bounds is worst -
+    // the file's own stale_days (a floor from generation), the gap from the day
+    // the numbers describe (current_date) to the campaign's today, and the
+    // projection's wall-clock age. p.stale_days alone freezes the instant the
+    // file stops being regenerated and then understates, silently, every day.
+    const reportedStale = num(p.stale_days);
+    const ageDays = ageMs === null ? null : Math.floor(ageMs / DAY_MS);
+    const contentGapDays = daysBehindToday(str(p.current_date), now);
+    const staleDays = Math.max(reportedStale ?? 0, ageDays ?? 0, contentGapDays ?? 0);
     const buildFresh = p.freshness === 'FRESH';
-    const stale = (ageMs !== null && ageMs > PROGRESSION_STALE_AFTER_MS) || (staleDays !== null && staleDays >= 2);
+    const stale = (ageMs !== null && ageMs > PROGRESSION_STALE_AFTER_MS) || staleDays >= 2;
     const nextHard = p.next_hard_milestone && typeof p.next_hard_milestone === 'object' ? p.next_hard_milestone : null;
     const focus = p.current_focus && typeof p.current_focus === 'object' ? p.current_focus : null;
 
@@ -270,6 +301,6 @@ export function progressionOf(status, options = {}) {
         sourceTitle: str(p.source_title),
         dayDisagreement: day !== null && planDay !== null ? planDay !== day : null,
         freshness: buildFresh ? 'FRESH' : 'STALE',
-        staleDays: buildFresh ? 0 : staleDays,
+        staleDays,
     };
 }

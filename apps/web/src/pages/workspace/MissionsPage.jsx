@@ -49,6 +49,7 @@ import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
 import ListToolbar from '@/components/workspace/ListToolbar';
 import MissionChain, { ORIGIN_CHANNEL_META } from '@/components/workspace/MissionChain';
+import MissionLoopSummary from '@/components/workspace/MissionLoopSummary';
 import {
     MISSION_PRIORITY,
     MISSION_STATUS,
@@ -394,6 +395,8 @@ export default function MissionsPage() {
                     </span>
                 </div>
             )}
+
+            {counts.total > 0 && <MissionLoopSummary chains={chains} missions={records} />}
 
             {records.length > 0 && (
                 <ListToolbar

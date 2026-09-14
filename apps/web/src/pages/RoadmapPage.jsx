@@ -40,6 +40,7 @@ import Seo from '@/components/Seo';
 import { Section, SectionLabel, Card, StatePill, Button } from '@/components/site/ui';
 import LiveSourcesPanel from '@/components/roadmap/LiveSourcesPanel';
 import ProgressionPanel from '@/components/roadmap/ProgressionPanel';
+import ProgressionSummary from '@/components/roadmap/ProgressionSummary';
 import MilestoneDetailCard from '@/components/roadmap/MilestoneDetailCard';
 import StatusLegendFilter from '@/components/roadmap/StatusLegendFilter';
 import { dayForKey, ledgerId, markerId, milestoneLabel } from '@/components/roadmap/milestoneA11y';
@@ -587,6 +588,11 @@ export default function RoadmapPage() {
                         onClear={clearStatus}
                     />
                 </div>
+            </Section>
+
+            {/* At-a-glance orientation - live day with its source, axes dated, never averaged */}
+            <Section className="border-t border-foreground/80 py-12 sm:py-16">
+                <ProgressionSummary progression={progression} fetchFailed={liveError} />
             </Section>
 
             {/* Progression - consumed from the estate, one row per axis, never averaged */}

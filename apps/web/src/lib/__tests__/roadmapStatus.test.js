@@ -137,6 +137,19 @@ describe('progressionOf', () => {
         expect(changed.state).toBe('MEASURED');
     });
 
+    it('ages the days-behind count at read time, so an unregenerated file grows staler', () => {
+        // Generated on the 10th, describing the 10th, stamped stale_days: 2.
+        const file = statusFixture(progressionFixture({
+            generated_at: '2026-09-10T01:20:00+00:00', current_date: '2026-09-10', stale_days: 2,
+        }));
+        const onThe12th = progressionOf(file, { now: Date.parse('2026-09-12T12:00:00Z') });
+        const onThe14th = progressionOf(file, { now: Date.parse('2026-09-14T12:00:00Z') });
+        // Same bytes, read two days apart: the count moves. stale_days alone freezes at 2.
+        expect(onThe12th.staleDays).toBe(2);
+        expect(onThe14th.staleDays).toBe(4);
+        expect(onThe14th.staleDays).toBeGreaterThan(onThe12th.staleDays);
+    });
+
     it('treats a measured block without numbers as a schema mismatch, not zero', () => {
         const p = progressionOf(statusFixture(progressionFixture({ measured_pct: '56.8' })), { now: NOW });
         expect(p.state).toBe('UNMEASURED');
