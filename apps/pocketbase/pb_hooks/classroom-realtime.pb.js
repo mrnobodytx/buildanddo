@@ -24,59 +24,85 @@
 //   seat via BUILDANDDO_CLASSROOM_PUBLISHERS (comma-separated). An EMPTY list means
 //   nobody may publish — deliberately, so an unconfigured deployment cannot silently
 //   let every student broadcast. No role field is invented on the user record.
-
-const RTC_BASE = "https://rtc.live.cloudflare.com/v1/apps";
-
-/** Returns {appId, secret, reason}. Never logs the secret. */
-function realtimeConfig() {
-    const appId = $os.getenv("CLOUDFLARE_REALTIME_APP_ID") || "";
-    const secret = $os.getenv("CLOUDFLARE_REALTIME_APP_SECRET") || "";
-    if (!appId) return { reason: "CLOUDFLARE_REALTIME_APP_ID absent" };
-    if (!secret) return { reason: "CLOUDFLARE_REALTIME_APP_SECRET absent" };
-    return { appId: appId, secret: secret, reason: "" };
-}
-
-/** True when this seat is explicitly allowed to publish. Empty allowlist => false. */
-function mayPublish(seat) {
-    const raw = $os.getenv("BUILDANDDO_CLASSROOM_PUBLISHERS") || "";
-    if (!raw.trim()) return false;
-    const allowed = raw.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
-    return allowed.indexOf(String(seat || "").toLowerCase()) !== -1;
-}
-
-/** One authenticated Cloudflare call. Returns {status, body} and never throws. */
-function callRealtime(path, secret, payload) {
-    try {
-        const res = $http.send({
-            url: RTC_BASE + path,
-            method: "POST",
-            headers: {
-                Authorization: "Bearer " + secret,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-            body: JSON.stringify(payload || {}),
-            timeout: 15,
-        });
-        return { status: res.statusCode, body: res.json || {} };
-    } catch (err) {
-        // The error string may contain the URL but never the Authorization header.
-        return { status: 0, body: { errorDescription: String(err).slice(0, 160) } };
-    }
-}
-
-/** Resolves the calling seat, or null when unauthenticated. */
-function callerSeat(e) {
-    const auth = e.auth;
-    if (!auth) return null;
-    return auth.get("seat_id") || auth.get("email") || auth.id;
-}
+//
+// VM-POOL CONVENTION (why the helpers are repeated inside each handler)
+//   ocn-login.pb.js establishes the convention for this repo and states the reason:
+//   routerAdd handlers are serialized into a SEPARATE VM POOL, so the file's
+//   top-level scope does not exist when a handler runs. This file previously
+//   declared RTC_BASE, realtimeConfig, mayPublish, callRealtime and callerSeat at
+//   top level and called them from all three handlers, which cannot resolve at
+//   request time.
+//
+//   Measured across this directory: of the two hooks that register routes,
+//   ocn-login.pb.js has ZERO top-level declarations and is live on staging, and
+//   this file had FIVE and is not. (custom-migrations-cmd.pb.js also has top-level
+//   declarations but registers no routes, so handler serialization never applies
+//   to it.)
+//
+//   The duplication below is therefore load-bearing, not an oversight. Do not
+//   "clean it up" by hoisting these helpers back to module scope.
+//
+//   NOTE, so the next reader does not over-credit this fix: this is NOT the reason
+//   /api/classroom/health currently answers 404 on staging. A handler that cannot
+//   resolve its helpers returns 500; a 404 whose body is byte-identical to a
+//   nonexistent route (measured: 53 bytes, same JSON as a bogus-path control) means
+//   the route was never REGISTERED, i.e. the file did not load on the box at all.
+//   That is a separate, still-open question needing the box filesystem or
+//   PocketBase's startup log. This fix is what makes the handlers actually work
+//   once the file is loading.
 
 // ---------------------------------------------------------------------------
 // POST /api/classroom/session — create an SFU session from the browser's offer.
 // Body: { sessionDescription: { type: "offer", sdp: "..." } }
 // ---------------------------------------------------------------------------
 routerAdd("POST", "/api/classroom/session", (e) => {
+    const RTC_BASE = "https://rtc.live.cloudflare.com/v1/apps";
+
+    /** Returns {appId, secret, reason}. Never logs the secret. */
+    const realtimeConfig = () => {
+        const appId = $os.getenv("CLOUDFLARE_REALTIME_APP_ID") || "";
+        const secret = $os.getenv("CLOUDFLARE_REALTIME_APP_SECRET") || "";
+        if (!appId) return { reason: "CLOUDFLARE_REALTIME_APP_ID absent" };
+        if (!secret) return { reason: "CLOUDFLARE_REALTIME_APP_SECRET absent" };
+        return { appId: appId, secret: secret, reason: "" };
+    };
+
+    /** True when this seat is explicitly allowed to publish. Empty allowlist => false. */
+    const mayPublish = (seat) => {
+        const raw = $os.getenv("BUILDANDDO_CLASSROOM_PUBLISHERS") || "";
+        if (!raw.trim()) return false;
+        const allowed = raw.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+        return allowed.indexOf(String(seat || "").toLowerCase()) !== -1;
+    };
+
+    /** One authenticated Cloudflare call. Returns {status, body} and never throws. */
+    const callRealtime = (path, secret, payload) => {
+        try {
+            const res = $http.send({
+                url: RTC_BASE + path,
+                method: "POST",
+                headers: {
+                    Authorization: "Bearer " + secret,
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify(payload || {}),
+                timeout: 15,
+            });
+            return { status: res.statusCode, body: res.json || {} };
+        } catch (err) {
+            // The error string may contain the URL but never the Authorization header.
+            return { status: 0, body: { errorDescription: String(err).slice(0, 160) } };
+        }
+    };
+
+    /** Resolves the calling seat, or null when unauthenticated. */
+    const callerSeat = (ev) => {
+        const auth = ev.auth;
+        if (!auth) return null;
+        return auth.get("seat_id") || auth.get("email") || auth.id;
+    };
+
     const seat = callerSeat(e);
     if (!seat) return e.json(401, { message: "authentication required" });
 
@@ -118,6 +144,48 @@ routerAdd("POST", "/api/classroom/session", (e) => {
 // Body: { sessionId, action: "push"|"pull", tracks: [...], sessionDescription? }
 // ---------------------------------------------------------------------------
 routerAdd("POST", "/api/classroom/tracks", (e) => {
+    const RTC_BASE = "https://rtc.live.cloudflare.com/v1/apps";
+
+    const realtimeConfig = () => {
+        const appId = $os.getenv("CLOUDFLARE_REALTIME_APP_ID") || "";
+        const secret = $os.getenv("CLOUDFLARE_REALTIME_APP_SECRET") || "";
+        if (!appId) return { reason: "CLOUDFLARE_REALTIME_APP_ID absent" };
+        if (!secret) return { reason: "CLOUDFLARE_REALTIME_APP_SECRET absent" };
+        return { appId: appId, secret: secret, reason: "" };
+    };
+
+    const mayPublish = (seat) => {
+        const raw = $os.getenv("BUILDANDDO_CLASSROOM_PUBLISHERS") || "";
+        if (!raw.trim()) return false;
+        const allowed = raw.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+        return allowed.indexOf(String(seat || "").toLowerCase()) !== -1;
+    };
+
+    const callRealtime = (path, secret, payload) => {
+        try {
+            const res = $http.send({
+                url: RTC_BASE + path,
+                method: "POST",
+                headers: {
+                    Authorization: "Bearer " + secret,
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify(payload || {}),
+                timeout: 15,
+            });
+            return { status: res.statusCode, body: res.json || {} };
+        } catch (err) {
+            return { status: 0, body: { errorDescription: String(err).slice(0, 160) } };
+        }
+    };
+
+    const callerSeat = (ev) => {
+        const auth = ev.auth;
+        if (!auth) return null;
+        return auth.get("seat_id") || auth.get("email") || auth.id;
+    };
+
     const seat = callerSeat(e);
     if (!seat) return e.json(401, { message: "authentication required" });
 
@@ -161,6 +229,14 @@ routerAdd("POST", "/api/classroom/tracks", (e) => {
 // GET /api/classroom/health — configuration state by NAME only, no secrets.
 // ---------------------------------------------------------------------------
 routerAdd("GET", "/api/classroom/health", (e) => {
+    const realtimeConfig = () => {
+        const appId = $os.getenv("CLOUDFLARE_REALTIME_APP_ID") || "";
+        const secret = $os.getenv("CLOUDFLARE_REALTIME_APP_SECRET") || "";
+        if (!appId) return { reason: "CLOUDFLARE_REALTIME_APP_ID absent" };
+        if (!secret) return { reason: "CLOUDFLARE_REALTIME_APP_SECRET absent" };
+        return { appId: appId, secret: secret, reason: "" };
+    };
+
     const cfg = realtimeConfig();
     const publishers = ($os.getenv("BUILDANDDO_CLASSROOM_PUBLISHERS") || "").split(",")
         .map((s) => s.trim()).filter(Boolean);
