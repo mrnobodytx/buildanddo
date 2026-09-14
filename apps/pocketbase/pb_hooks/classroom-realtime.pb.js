@@ -44,12 +44,36 @@
 //
 //   NOTE, so the next reader does not over-credit this fix: this is NOT the reason
 //   /api/classroom/health currently answers 404 on staging. A handler that cannot
-//   resolve its helpers returns 500; a 404 whose body is byte-identical to a
-//   nonexistent route (measured: 53 bytes, same JSON as a bogus-path control) means
-//   the route was never REGISTERED, i.e. the file did not load on the box at all.
-//   That is a separate, still-open question needing the box filesystem or
-//   PocketBase's startup log. This fix is what makes the handlers actually work
-//   once the file is loading.
+//   resolve its helpers returns 500, not 404. The route was never REGISTERED, i.e.
+//   the file did not load on the box at all. That is a separate, still-open question
+//   needing the box filesystem or PocketBase's startup log. This fix is what makes
+//   the handlers actually work once the file is loading.
+//
+//   HOW THAT WAS ESTABLISHED, in the order the evidence actually carries — corrected
+//   after a counter-audit by seat citadel-2b, because the first writeup credited the
+//   wrong probe and the mistake is reusable:
+//
+//     1. STRUCTURAL: GET /hcgi/platform/api/ocn/health returns 200 with real
+//        PocketBase-generated content. THIS is what proves the edge forwards this
+//        prefix to PB and that PB answers on it.
+//     2. CONFIRMATORY: only once (1) holds does the classroom 404 being byte-identical
+//        to a bogus-path control (53 bytes, same JSON) mean "PB's router has no entry
+//        for this path".
+//
+//   The byte-identical control ALONE proves only that both responses came from the
+//   same generator — it does not prove the generator is PocketBase. A CDN or nginx in
+//   front of the origin emits byte-identical 404s for two unrouted paths just as
+//   faithfully, and then the control compares two responses that never reached the app,
+//   ruling out nothing about PB's router because PB's router was never consulted.
+//
+//   That ambiguity is live here, not theoretical: EVERY response on this host —
+//   the 200s, the 404s, and the SPA fallback — carries "Server: cloudflare" and a
+//   CF-RAY, so the Server header discriminates nothing. What does discriminate is that
+//   a bogus path at SITE ROOT returns 200 text/html (the SPA), while any bogus path
+//   under /hcgi/platform returns PocketBase's own data/message/status error envelope.
+//
+//   If you reuse this pattern on a surface with NO working sibling route, the control
+//   alone will give you a confident wrong answer.
 
 // ---------------------------------------------------------------------------
 // POST /api/classroom/session — create an SFU session from the browser's offer.
