@@ -1,452 +1,153 @@
-import React, { useState } from 'react';
-import {
-    Boxes,
-    Plus,
-    Loader2,
-    AlertCircle,
-    Info,
-    Target,
-    ListTodo,
-    Users,
-} from 'lucide-react';
-import pb from '@/lib/pocketbaseClient';
-import { workspaceCollection } from '@/lib/observability/mutations';
-import { useWorkspace } from '@/contexts/WorkspaceContext';
-import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
-import EmptyState from '@/components/workspace/EmptyState';
-import { PageHeader, StatusBadge } from '@/components/workspace/workspaceHelpers';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from '@/components/ui/tabs';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogFooter,
-    DialogClose,
-} from '@/components/ui/dialog';
-const OBJECTIVE_STATUS = {
-    active: { label: 'Active', tone: 'violet' },
-    achieved: { label: 'Achieved', tone: 'teal' },
-    archived: { label: 'Archived', tone: 'neutral' },
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PageHeader } from '@/components/workspace/workspaceHelpers';
+import { DemoModeBanner, DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNotices';
+import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useDemoMode } from '@/hooks/useDemoMode';
+import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { dateInput, localDay, overdue, retainedFields, selectTasks, TASK_STATUSES, OBJECTIVE_STATUSES, PRIORITIES } from '@/lib/businessPlanning';
+import pb from '@/lib/pocketbaseClient';
+
+const selectClass = 'h-10 w-full min-w-0 rounded-md border border-border bg-background px-3 text-sm';
+const definitions = {
+    objectives: { singular: 'objective', collection: 'erp_objectives', fields: [
+        ['title', 'Objective', 'text', 200], ['description', 'Description', 'textarea', 1000],
+        ['success_metric', 'Success measure', 'textarea', 600], ['due_date', 'Review due date', 'date'],
+    ], statuses: OBJECTIVE_STATUSES, defaults: { title: '', description: '', success_metric: '', due_date: '', status: 'active' } },
+    tasks: { singular: 'task', collection: 'erp_tasks', fields: [
+        ['title', 'Task', 'text', 200], ['description', 'Task details', 'textarea', 2000], ['due_date', 'Due date', 'date'],
+    ], statuses: TASK_STATUSES, defaults: { title: '', description: '', due_date: '', status: 'todo', priority: 'normal', objective: '', contact: '' } },
+    contacts: { singular: 'contact', collection: 'erp_contacts', fields: [
+        ['name', 'Name', 'text', 160], ['role', 'Role', 'text', 120], ['email', 'Email', 'email'], ['notes', 'Notes', 'textarea', 1000],
+    ], defaults: { name: '', role: '', email: '', notes: '' } },
 };
-const TASK_STATUS = {
-    todo: { label: 'To do', tone: 'neutral' },
-    in_progress: { label: 'In progress', tone: 'violet' },
-    done: { label: 'Done', tone: 'teal' },
-};
 
-function ObjectivesTab({ workspaceId }) {
-    const { records, loading, refresh } = useWorkspaceRecords('erp_objectives', {
-        enabled: !!workspaceId,
-    });
-    const [open, setOpen] = useState(false);
-    const [form, setForm] = useState({ title: '', description: '' });
-    const [saving, setSaving] = useState(false);
+function ErpDesk({ accountId, demo }) {
+    const objectives = useWorkspaceRecords('erp_objectives');
+    const tasks = useWorkspaceRecords('erp_tasks');
+    const contacts = useWorkspaceRecords('erp_contacts');
+    const sources = { objectives, tasks, contacts };
+    const [tab, setTab] = useState('objectives');
+    const [query, setQuery] = useState('');
+    const [status, setStatus] = useState('all');
+    const [priority, setPriority] = useState('all');
+    const [editor, setEditor] = useState(null);
+    const [draft, setDraft] = useState({});
+    const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
-
-    const submit = async (e) => {
-        e.preventDefault();
-        if (saving) return;
-        if (!form.title.trim()) {
-            setError('Name the objective.');
-            return;
-        }
-        setSaving(true);
-        try {
-            await workspaceCollection('erp_objectives').create({
-                title: form.title.trim(),
-                description: form.description.trim(),
-                status: 'active',
-                workspace: workspaceId,
-                owner: pb.authStore.record.id,
-            });
-            setForm({ title: '', description: '' });
-            setOpen(false);
-            refresh();
-        } catch (err) {
-            setError(err?.response?.message || 'Could not save the objective.');
-        }
-        setSaving(false);
+    const [saved, setSaved] = useState('');
+    const alive = useRef(true);
+    const lock = useRef(false);
+    const opener = useRef(null);
+    useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+    const today = localDay();
+    const knownTasks = !tasks.loading && !tasks.degraded;
+    const knownObjectives = !objectives.loading && !objectives.degraded;
+    const begin = (kind, record, target) => {
+        const definition = definitions[kind];
+        sources[kind].clearWriteError();
+        opener.current = target;
+        setDraft(Object.fromEntries(Object.entries(definition.defaults).map(([key, fallback]) => [key,
+            key === 'due_date' ? dateInput(record?.[key]) : record?.[key] || fallback])));
+        setEditor({ kind, id: record?.id || '' }); setError(''); setSaved('');
     };
-
-    return (
-        <div className="space-y-4">
-            <div className="flex justify-end">
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger asChild>
-                        <Button size="sm">
-                            <Plus className="h-4 w-4" />
-                            Add objective
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="border-border bg-card">
-                        <DialogHeader>
-                            <DialogTitle>Add a business objective</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={submit} className="space-y-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="obj-title">Objective</Label>
-                                <Input
-                                    id="obj-title"
-                                    value={form.title}
-                                    onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
-                                    placeholder="e.g. Cut no-shows to under 5%"
-                                />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="obj-desc">Description</Label>
-                                <Textarea
-                                    id="obj-desc"
-                                    value={form.description}
-                                    onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
-                                    rows={3}
-                                />
-                            </div>
-                            {error && (
-                                <p className="flex items-start gap-2 text-sm text-destructive" role="alert">
-                                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-                                    {error}
-                                </p>
-                            )}
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button type="button" variant="ghost" size="sm">Cancel</Button>
-                                </DialogClose>
-                                <Button type="submit" size="sm" disabled={saving}>
-                                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+    const save = async (event) => {
+        event.preventDefault();
+        if (lock.current || demo || !editor || pb.authStore.record?.id !== accountId) return;
+        const definition = definitions[editor.kind];
+        if (!(draft.title || draft.name || '').trim()) { setError('A name is required.'); return; }
+        lock.current = true; setBusy(true); setError('');
+        const values = Object.fromEntries(Object.entries(draft).map(([key, value]) => [key,
+            key === 'due_date' ? (value ? `${value} 12:00:00.000Z` : '') : value.trim()]));
+        const source = sources[editor.kind];
+        const result = editor.id ? await source.update(editor.id, values) : await source.create(values);
+        if (alive.current && pb.authStore.record?.id === accountId) {
+            if (result.ok && !retainedFields(result.record, values)) {
+                setEditor((before) => ({ ...before, id: result.record.id }));
+                setError('A record was saved, but the backend did not retain every field. Apply the ERP migration before updating this saved record. Your entered values are still here.');
+            } else if (result.ok) { setEditor(null); setSaved(`${definition.singular[0].toUpperCase()}${definition.singular.slice(1)} saved.`); }
+            else setError(result.error || 'Could not save this record. Your form is still available.');
+            setBusy(false);
+        }
+        lock.current = false;
+    };
+    const definition = editor && definitions[editor.kind];
+    const source = sources[tab];
+    const search = query.trim().toLowerCase();
+    const visible = tab === 'tasks' ? selectTasks(tasks.records, { query, status, priority, today }) : source.records.filter((record) =>
+        `${record.title || record.name || ''} ${record.description || record.role || ''} ${record.email || ''} ${record.notes || ''}`.toLowerCase().includes(search) &&
+        (status === 'all' || record.status === status));
+    const relationSelect = (name, label, records, unavailable, titleField) => <div className="space-y-1">
+        <Label htmlFor={`erp-${name}`}>{label}</Label>
+        <select id={`erp-${name}`} className={selectClass} value={draft[name]} disabled={unavailable} onChange={(event) => setDraft((before) => ({ ...before, [name]: event.target.value }))}>
+            <option value="">No link</option>{records.map((record) => <option key={record.id} value={record.id}>{record[titleField]}</option>)}
+            {draft[name] && !records.some((record) => record.id === draft[name]) && <option value={draft[name]}>Current link unavailable</option>}
+        </select>
+        {unavailable && <p className="text-xs text-muted-foreground">Related records are unavailable; retry their list before changing this link.</p>}
+    </div>;
+    return <div className="ph-no-capture space-y-6" data-dd-privacy="mask">
+        {demo && <DemoModeBanner />}
+        <div className="grid gap-3 sm:grid-cols-3">{[
+            ['Active objectives', knownObjectives ? objectives.records.filter((record) => record.status === 'active').length : 'Unavailable'],
+            ['Open tasks', knownTasks ? tasks.records.filter((record) => record.status !== 'done').length : 'Unavailable'],
+            ['Overdue tasks', knownTasks ? tasks.records.filter((record) => overdue(record, today)).length : 'Unavailable'],
+        ].map(([label, value]) => <Card key={label} className="space-y-2 p-4"><p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p><p className="font-display text-2xl">{value}</p></Card>)}</div>
+        {saved && <p role="status" className="text-sm text-success">{saved}</p>}
+        <Tabs value={tab} onValueChange={(next) => { setTab(next); setStatus('all'); setQuery(''); setPriority('all'); }}>
+            <TabsList className="h-auto flex-wrap justify-start">{Object.keys(definitions).map((name) => <TabsTrigger key={name} value={name}>{name[0].toUpperCase() + name.slice(1)}</TabsTrigger>)}</TabsList>
+            {Object.entries(definitions).map(([kind, config]) => <TabsContent key={kind} value={kind} className="space-y-4 pt-4">
+                <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-display text-xl font-semibold">{kind[0].toUpperCase() + kind.slice(1)}</h2><div className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="secondary" disabled={source.loading || busy} onClick={source.refresh}>Refresh {kind}</Button>
+                    <Button size="sm" disabled={demo || source.loading || source.degraded} onClick={(event) => begin(kind, null, event.currentTarget)}>Add {config.singular}</Button>
+                </div></div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                    <div className="space-y-1"><Label htmlFor={`erp-search-${kind}`}>Search {kind}</Label><Input id={`erp-search-${kind}`} value={query} onChange={(event) => setQuery(event.target.value)} /></div>
+                    {config.statuses && <div className="space-y-1"><Label htmlFor={`erp-filter-${kind}`}>Filter by status</Label><select id={`erp-filter-${kind}`} className={selectClass} value={status} onChange={(event) => setStatus(event.target.value)}><option value="all">All states</option>{Object.entries(config.statuses).map(([value, label]) => <option key={value} value={value}>{label}</option>)}{kind === 'tasks' && <option value="overdue">Overdue</option>}</select></div>}
+                    {kind === 'tasks' && <div className="space-y-1"><Label htmlFor="erp-priority-filter">Filter by priority</Label><select id="erp-priority-filter" className={selectClass} value={priority} onChange={(event) => setPriority(event.target.value)}><option value="all">All priorities</option>{Object.entries(PRIORITIES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>}
+                </div>
+                {source.degraded ? <DegradedNotice message={`The ${kind} list is unavailable.`} onRetry={source.refresh} /> : source.loading ? <ListSkeleton label={`Loading ${kind}…`} /> : !visible.length ? <p className="text-sm text-muted-foreground">{query || status !== 'all' || priority !== 'all' ? 'No records match these filters.' : `No ${kind} yet. Add a record to begin.`}</p> : <ul className="grid gap-3 md:grid-cols-2">
+                    {visible.map((record) => <li key={record.id} className="min-w-0"><Card className="h-full space-y-3 break-words p-4">
+                        <div className="flex items-start justify-between gap-3"><h3 className="font-display text-lg font-semibold">{record.title || record.name}</h3><Button size="sm" variant="ghost" disabled={demo} aria-label={`Edit ${record.title || record.name}`} onClick={(event) => begin(kind, record, event.currentTarget)}>Edit</Button></div>
+                        {record.status && <p className="text-xs font-semibold text-primary">{config.statuses?.[record.status] || record.status}{kind === 'tasks' ? ` · ${PRIORITIES[record.priority] || 'Normal'} priority` : ''}</p>}
+                        {(record.description || record.role) && <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">{record.description || record.role}</p>}
+                        {kind === 'objectives' && <><p className="text-sm leading-6">Success measure: {record.success_metric || 'Not recorded yet.'}</p><p className="text-xs text-muted-foreground">{knownTasks ? `${tasks.records.filter((task) => task.objective === record.id && task.status === 'done').length} of ${tasks.records.filter((task) => task.objective === record.id).length} linked tasks done` : 'Linked task counts unavailable'}</p></>}
+                        {kind === 'tasks' && <><p className="text-xs text-muted-foreground">Objective: {record.objective ? objectives.records.find((item) => item.id === record.objective)?.title || 'Current link unavailable' : 'Not linked'}</p><p className="text-xs text-muted-foreground">Contact: {record.contact ? contacts.records.find((item) => item.id === record.contact)?.name || 'Current link unavailable' : 'Not linked'}</p></>}
+                        {dateInput(record.due_date) && <p className={`text-xs ${overdue(record, today) && kind === 'tasks' ? 'text-destructive' : 'text-muted-foreground'}`}>Due: {dateInput(record.due_date)}{kind === 'tasks' && overdue(record, today) ? ' · Overdue' : ''}</p>}
+                        {record.email && <p className="break-all text-sm">{record.email}</p>}{record.notes && <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">{record.notes}</p>}
+                    </Card></li>)}
+                </ul>}
+            </TabsContent>)}
+        </Tabs>
+        {editor && <Dialog open onOpenChange={(open) => { if (!open && !busy) setEditor(null); }}><DialogContent className="max-h-[90dvh] overflow-y-auto" data-dd-privacy="mask" onCloseAutoFocus={(event) => { event.preventDefault(); opener.current?.focus(); }}>
+            <div className="ph-no-capture space-y-4"><DialogHeader><DialogTitle>{editor.id ? 'Edit' : 'Add'} {definition.singular}</DialogTitle><DialogDescription>Save real planning information for this workspace. Contact links do not send notifications or grant access.</DialogDescription></DialogHeader>
+                <form onSubmit={save} className="space-y-4"><fieldset disabled={busy} className="min-w-0 space-y-4">
+                    {definition.fields.map(([name, label, type, maximum]) => <div key={name} className="space-y-1"><Label htmlFor={`erp-edit-${name}`}>{label}</Label>{type === 'textarea' ? <Textarea id={`erp-edit-${name}`} rows={3} maxLength={maximum} value={draft[name]} onChange={(event) => setDraft((before) => ({ ...before, [name]: event.target.value }))} /> : <Input id={`erp-edit-${name}`} type={type} maxLength={maximum} required={['title', 'name'].includes(name)} value={draft[name]} onChange={(event) => setDraft((before) => ({ ...before, [name]: event.target.value }))} />}</div>)}
+                    {definition.statuses && <div className="space-y-1"><Label htmlFor="erp-edit-status">Status</Label><select id="erp-edit-status" className={selectClass} value={draft.status} onChange={(event) => setDraft((before) => ({ ...before, status: event.target.value }))}>{Object.entries(definition.statuses).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>}
+                    {editor.kind === 'tasks' && <>
+                        <div className="space-y-1"><Label htmlFor="erp-edit-priority">Priority</Label><select id="erp-edit-priority" className={selectClass} value={draft.priority} onChange={(event) => setDraft((before) => ({ ...before, priority: event.target.value }))}>{Object.entries(PRIORITIES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
+                        {relationSelect('objective', 'Linked objective', objectives.records, objectives.loading || objectives.degraded, 'title')}
+                        {relationSelect('contact', 'Point of contact', contacts.records, contacts.loading || contacts.degraded, 'name')}
+                    </>}
+                    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+                    <div className="flex flex-wrap justify-end gap-2"><Button type="button" variant="ghost" size="sm" onClick={() => setEditor(null)}>Cancel</Button><Button type="submit" size="sm">{busy ? 'Saving…' : 'Save'}</Button></div>
+                </fieldset></form>
             </div>
-            {loading ? (
-                <Card className="p-8 text-center text-sm text-muted-foreground">
-                    <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                </Card>
-            ) : records.length === 0 ? (
-                <EmptyState
-                    icon={Target}
-                    title="No business objectives yet"
-                    description="An objective is a goal this workspace works toward — like cutting no-shows or automating weekly summaries. Missions and tasks can tie back to it. Add your first one to give BuildAndDo direction."
-                    action={
-                        <Button size="sm" onClick={() => setOpen(true)}>
-                            <Plus className="h-4 w-4" />
-                            Add objective
-                        </Button>
-                    }
-                />
-            ) : (
-                <ul className="space-y-3">
-                    {records.map((o) => (
-                        <li key={o.id}>
-                            <Card className="p-4">
-                                <div className="flex items-start justify-between gap-3">
-                                    <div className="min-w-0">
-                                        <p className="font-medium">{o.title}</p>
-                                        {o.description && (
-                                            <p className="mt-1 text-sm text-muted-foreground">{o.description}</p>
-                                        )}
-                                    </div>
-                                    <StatusBadge map={OBJECTIVE_STATUS} value={o.status} />
-                                </div>
-                            </Card>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
-}
-
-function TasksTab({ workspaceId }) {
-    const { records, loading, refresh } = useWorkspaceRecords('erp_tasks', {
-        enabled: !!workspaceId,
-        expand: 'objective',
-    });
-    const [open, setOpen] = useState(false);
-    const [form, setForm] = useState({ title: '' });
-    const [saving, setSaving] = useState(false);
-    const [error, setError] = useState('');
-
-    const submit = async (e) => {
-        e.preventDefault();
-        if (saving) return;
-        if (!form.title.trim()) {
-            setError('Name the task.');
-            return;
-        }
-        setSaving(true);
-        try {
-            await workspaceCollection('erp_tasks').create({
-                title: form.title.trim(),
-                status: 'todo',
-                workspace: workspaceId,
-                owner: pb.authStore.record.id,
-            });
-            setForm({ title: '' });
-            setOpen(false);
-            refresh();
-        } catch (err) {
-            setError(err?.response?.message || 'Could not save the task.');
-        }
-        setSaving(false);
-    };
-
-    const cycle = async (t) => {
-        const next = t.status === 'todo' ? 'in_progress' : t.status === 'in_progress' ? 'done' : 'todo';
-        try {
-            await workspaceCollection('erp_tasks').update(t.id, { status: next });
-            refresh();
-        } catch (err) {
-            console.error('update task failed', err);
-        }
-    };
-
-    return (
-        <div className="space-y-4">
-            <div className="flex justify-end">
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger asChild>
-                        <Button size="sm">
-                            <Plus className="h-4 w-4" />
-                            Add task
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="border-border bg-card">
-                        <DialogHeader>
-                            <DialogTitle>Add a task</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={submit} className="space-y-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="task-title">Task</Label>
-                                <Input
-                                    id="task-title"
-                                    value={form.title}
-                                    onChange={(e) => setForm({ title: e.target.value })}
-                                    placeholder="e.g. Draft reminder message template"
-                                />
-                            </div>
-                            {error && (
-                                <p className="flex items-start gap-2 text-sm text-destructive" role="alert">
-                                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-                                    {error}
-                                </p>
-                            )}
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button type="button" variant="ghost" size="sm">Cancel</Button>
-                                </DialogClose>
-                                <Button type="submit" size="sm" disabled={saving}>
-                                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    </DialogContent>
-                </Dialog>
-            </div>
-            {loading ? (
-                <Card className="p-8 text-center text-sm text-muted-foreground">
-                    <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                </Card>
-            ) : records.length === 0 ? (
-                <EmptyState
-                    icon={ListTodo}
-                    title="No tasks yet"
-                    description="Tasks are the concrete steps behind your objectives. Add one when you know the next thing to do — BuildAndDo won't invent work for you."
-                    action={
-                        <Button size="sm" onClick={() => setOpen(true)}>
-                            <Plus className="h-4 w-4" />
-                            Add task
-                        </Button>
-                    }
-                />
-            ) : (
-                <ul className="space-y-2.5">
-                    {records.map((t) => (
-                        <li key={t.id}>
-                            <Card className="flex items-center justify-between gap-3 p-4">
-                                <div className="min-w-0">
-                                    <p className="truncate text-sm font-medium">{t.title}</p>
-                                    {t.expand?.objective && (
-                                        <p className="truncate text-xs text-muted-foreground">
-                                            Objective: {t.expand.objective.title}
-                                        </p>
-                                    )}
-                                </div>
-                                <button type="button" aria-label="Change task status" className="min-h-9 px-1" onClick={() => cycle(t)}>
-                                    <StatusBadge map={TASK_STATUS} value={t.status} />
-                                </button>
-                            </Card>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
-}
-
-function ContactsTab({ workspaceId }) {
-    const { records, loading, refresh } = useWorkspaceRecords('erp_contacts', {
-        enabled: !!workspaceId,
-    });
-    const [open, setOpen] = useState(false);
-    const [form, setForm] = useState({ name: '', role: '', email: '', notes: '' });
-    const [saving, setSaving] = useState(false);
-    const [error, setError] = useState('');
-
-    const submit = async (e) => {
-        e.preventDefault();
-        if (saving) return;
-        if (!form.name.trim()) {
-            setError('A name is required.');
-            return;
-        }
-        setSaving(true);
-        try {
-            await workspaceCollection('erp_contacts').create({
-                name: form.name.trim(),
-                role: form.role.trim(),
-                email: form.email.trim(),
-                notes: form.notes.trim(),
-                workspace: workspaceId,
-                owner: pb.authStore.record.id,
-            });
-            setForm({ name: '', role: '', email: '', notes: '' });
-            setOpen(false);
-            refresh();
-        } catch (err) {
-            setError(err?.response?.message || 'Could not save the contact.');
-        }
-        setSaving(false);
-    };
-
-    return (
-        <div className="space-y-4">
-            <div className="flex justify-end">
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger asChild>
-                        <Button size="sm">
-                            <Plus className="h-4 w-4" />
-                            Add contact
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="border-border bg-card">
-                        <DialogHeader>
-                            <DialogTitle>Add a contact</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={submit} className="space-y-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="c-name">Name</Label>
-                                <Input id="c-name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
-                            </div>
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="c-role">Role</Label>
-                                    <Input id="c-role" value={form.role} onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))} placeholder="e.g. Front desk" />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="c-email">Email</Label>
-                                    <Input id="c-email" type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} />
-                                </div>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="c-notes">Notes</Label>
-                                <Textarea id="c-notes" value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} rows={2} />
-                            </div>
-                            {error && (
-                                <p className="flex items-start gap-2 text-sm text-destructive" role="alert">
-                                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-                                    {error}
-                                </p>
-                            )}
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button type="button" variant="ghost" size="sm">Cancel</Button>
-                                </DialogClose>
-                                <Button type="submit" size="sm" disabled={saving}>
-                                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    </DialogContent>
-                </Dialog>
-            </div>
-            {loading ? (
-                <Card className="p-8 text-center text-sm text-muted-foreground">
-                    <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                </Card>
-            ) : records.length === 0 ? (
-                <EmptyState
-                    icon={Users}
-                    title="No contacts yet"
-                    description="Keep a small list of people relevant to this workspace — staff, vendors, key clients. This is a lightweight foundation, not a full CRM. Connect Twenty in Operations when you need richer relationship records."
-                    action={
-                        <Button size="sm" onClick={() => setOpen(true)}>
-                            <Plus className="h-4 w-4" />
-                            Add contact
-                        </Button>
-                    }
-                />
-            ) : (
-                <ul className="grid gap-3 sm:grid-cols-2">
-                    {records.map((c) => (
-                        <li key={c.id}>
-                            <Card className="p-4">
-                                <p className="font-medium">{c.name}</p>
-                                {c.role && <p className="text-sm text-muted-foreground">{c.role}</p>}
-                                {c.email && <p className="mt-1 text-xs text-muted-foreground">{c.email}</p>}
-                            </Card>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
+        </DialogContent></Dialog>}
+        <p className="text-xs leading-6 text-muted-foreground">Task completion records an action. Review the objective’s success measure separately. Contact records do not send messages or establish consent.</p>
+    </div>;
 }
 
 export default function ErpPage() {
     const { active } = useWorkspace();
-    return (
-        <div className="space-y-8">
-            <PageHeader
-                title="ERP workspace"
-                description="A deliberately small foundation: business objectives, tasks, and contacts for this workspace. It's not a full ERP suite — it's the structure real operational records can grow into."
-            />
-
-            <Tabs defaultValue="objectives">
-                <TabsList>
-                    <TabsTrigger value="objectives">Objectives</TabsTrigger>
-                    <TabsTrigger value="tasks">Tasks</TabsTrigger>
-                    <TabsTrigger value="contacts">Contacts</TabsTrigger>
-                </TabsList>
-                <TabsContent value="objectives" className="mt-6">
-                    <ObjectivesTab workspaceId={active?.id} />
-                </TabsContent>
-                <TabsContent value="tasks" className="mt-6">
-                    <TasksTab workspaceId={active?.id} />
-                </TabsContent>
-                <TabsContent value="contacts" className="mt-6">
-                    <ContactsTab workspaceId={active?.id} />
-                </TabsContent>
-            </Tabs>
-
-            <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground/70">
-                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                This ERP view is a foundation. BuildAndDo does not fabricate
-                customer data, inventory, or financial records. Add what's real
-                and connect a dedicated ERP system in Operations when you need more.
-            </p>
-        </div>
-    );
+    const { user } = useAuth();
+    const { demo } = useDemoMode();
+    return <div className="space-y-6"><PageHeader title="ERP workspace" description="Plan measurable objectives, link tasks and contacts, and review the next action using saved workspace records." />
+        {active && user?.id ? <ErpDesk key={`${user.id}:${active.id}:${demo}`} accountId={user.id} demo={demo} /> : <p>Select a workspace to manage its records.</p>}
+    </div>;
 }

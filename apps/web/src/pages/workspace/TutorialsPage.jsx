@@ -32,14 +32,14 @@ export default function TutorialsPage() {
         <div className="space-y-8">
             <PageHeader
                 title="Field Manual"
-                description="Learn how and why to build a mission, continue your saved lessons, and explore the UI primitives already available. Apply the plan, evidence and review loop to your own work."
+                description="Work through 25 starter lessons on business planning, missions, content production and evidence. Read a worked example, practice and check your understanding."
             />
 
-            <Tabs defaultValue="missions">
+            <Tabs defaultValue="lessons">
                 <TabsList className="h-auto flex-wrap justify-start">
+                    <TabsTrigger value="lessons">Lessons</TabsTrigger>
                     <TabsTrigger value="missions">Build a mission</TabsTrigger>
                     <TabsTrigger value="catalog">Component catalogue</TabsTrigger>
-                    <TabsTrigger value="lessons">Lessons</TabsTrigger>
                 </TabsList>
                 <TabsContent value="missions" className="mt-6">
                     <MissionGuide />

@@ -17,7 +17,7 @@
 
 # Dispatch VCC-BUILDANDDO-UPGRADE-001
 
-**SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A1 **Seat:** BITS-CODEGEN
+**SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
 ## Authorization and objective
@@ -167,3 +167,118 @@ with its previously recorded frontend and native-runtime acceptance gaps.
 Handoff gate results: T PASS; U PASS. Context, tracked/new-file boundary, memory
 and diff checks pass (4/4). Runtime tests and installation remain unexecuted;
 the application smoke remains the historical 4/7, not newly verified here.
+
+## Workflow backend continuation authorized 2026-09-15
+
+The owner requested the next BuildAndDo backend wave and set Rig 1 aside. The
+existing A1 source dispatch now covers persistent workflow runs, approval
+checkpoints and atomic mission-linked evidence as specified in the umbrella.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| V | Register the workflow backend scope and inspect current persistence | `python scripts/ci/agent_context.py --check` | done |
+| W | Add bounded run storage, authenticated commands and atomic receipts | `node --test tests/upgrade/workflow-runs.test.mjs` | partial — 15/15 contract tests pass; native acceptance pending |
+| X | Connect run history, approvals and outcome recording to the workspace | Workflow interaction suite and client contract tests | partial — 7/7 client tests pass; interaction suites cannot start |
+| Y | Verify the backend wave and record evidence | Node/Python/web checks; context, boundary and memory verification | done — context, boundary and memory pass; unavailable acceptance recorded |
+
+Memory brief: workflows have editable JSON steps and activation state, but no
+run collection. Activation currently assigns last_run without recording an
+outcome. Operations' run logs and the mission evidence flow establish the local
+recording pattern. The next wave adds transactional run/evidence persistence;
+external execution remains outside this source dispatch. Existing frontend
+dependencies and native PocketBase were unavailable in earlier iterations.
+No authenticated live workspace is supplied, so no seat event is fabricated.
+
+Workflow phase gates: V PASS. W local contract gate PASS, native gate unexecuted
+because the pinned PocketBase binary is unavailable. X client gate PASS; component
+gate FAIL to start because Vitest is absent. The full Node suite passes 66/66 and
+Python passes 18/18. Frontend coverage is also unavailable, official lint lacks
+eslint-plugin-import and Vite cannot start. These are environment failures, not
+successful acceptance. The source checker parses 185 modules without core errors.
+
+An initial retry regression failed when stored JSON object keys were reordered.
+Comparing command fields and scalar values independently of serialization order
+fixed it. Replays, stale tabs, approval-role checks, mission approval changes and
+run/evidence rollback are exercised against actual production source with doubles.
+docs/workflow-system.md records the API, operator workflow, retention, native
+concurrency and browser acceptance requirements. No external tool execution or
+mission verification is inferred from a completed recorded workflow run.
+
+Y evidence gate PASS (4/7 smoke). The boundary scanner checks all 428 tracked
+files with no failures. The initial post-staging context mismatch was fixed by
+regenerating the lock after the new files entered its tracked inventory. Memory
+verification confirms 138 file vectors, 227 declared edges and 20 real events.
+Native and frontend acceptance remain pending; no delivery status is claimed.
+
+## Delivery continuation — private-agent handoff, 2026-09-15
+
+The owner requested merging the session changes without relying on GitHub
+Actions and using the private Datadog agent. This A1 continuation records the
+source/merge investigation and prepares a public delivery handoff. Remote merge,
+private-agent activation and deployment cannot be performed from this session.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| Z | Register delivery scope and establish current main/check state | `python scripts/ci/agent_context.py --check`; provider reads and ancestry commands in the handoff | done — provider main and session ancestry checked |
+| AA | Prepare the private delivery handoff and evidence | Context, public-boundary and memory verification | done — public artifact prepared; private activation unavailable |
+
+Memory brief: PRs 19, 20 and 21 merged the earlier upgrades. Workflow source
+was added after PR 21. Candidate jobs have failed, including a billing lock,
+and Cloudflare independently reports a failed build. A previous managed clone
+request rejected combining public BuildAndDo and private data_dog_private in
+one session. No private source, runner, credentials or deployment capability has
+been verified. The earlier Rig 1 runtime handoff remains deferred.
+
+Delivery gate Z PASS: provider main matches the local origin/main revision;
+PRs 19–21 contain the first four session revisions, while workflow source is
+still outside main. The candidate job is billing-blocked and the independent
+Cloudflare build failed. AA records the runnable acceptance and release checks
+in .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md. This
+artifact does not activate a seat, merge source or deploy an application.
+
+## ERP/content/tutorial continuation authorized 2026-09-15
+
+The owner requested enhanced ERP and content production and 25 authored lessons
+for testing. This is an A2 schema-source continuation; shared activation stays
+with the private delivery handoff. Scope and acceptance are registered above
+implementation in SRS-BUILDANDDO-UPGRADE-001.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| AB | Register the business and education scope; inspect current schemas | `python scripts/ci/agent_context.py --check` | done |
+| AC | Add bounded fields, curriculum seed and server policies | Node migration and policy contract tests | partial — local contracts pass; native migration/hook acceptance pending |
+| AD | Provide editable, linked ERP planning | ERP selector and component suites | partial — selectors pass; component execution unavailable |
+| AE | Provide content drafting, preview and explicit review | Content policy and component suites | partial — policy contracts pass; component execution unavailable |
+| AF | Author and display 25 complete tutorials with progress | Curriculum and reader/progress suites | partial — all 25 bodies and merge/progress contracts pass; reader execution unavailable |
+| AG | Verify source and refresh delivery/report/memory evidence | Application, context, boundary and memory gates | done — available gates pass; frontend/native/delivery acceptance remains pending |
+
+Memory brief: six tutorial seed records contain summaries only; the current
+Start control writes progress without opening a lesson. ERP creates objectives,
+tasks and contacts but offers no editing or task linking in its forms. The
+social_content form accepts status directly, including published. Existing
+workspace hooks, PocketBase role rules and workflow policy helpers are reusable.
+Frontend packages and the native PocketBase binary are still absent locally.
+
+Business phase gates: AB PASS; AC, AD, AE and AF local contract gates PASS.
+The full Node regression passes 86/86, including 20 business/learning cases;
+Python passes 18/18. Selected policy, hook, migration and selector coverage is
+100% lines, 96.41% branches and 100% functions. The limited source checker
+parses 191 frontend modules with zero core errors; 24 Vitest files are tracked.
+Component and coverage gates FAIL to start because Vitest is absent; official
+lint lacks eslint-plugin-import, and build cannot spawn Vite. These failures
+remain acceptance blockers, along with native PocketBase 0.28.4 and browser
+checks. No shared migration, external publication or private-agent execution ran.
+
+docs/business-learning.md explains the ERP and editorial flows, five-path
+curriculum, migration asset, retention and acceptance procedure. An old backend
+that drops newly submitted fields now produces an incomplete-save error while
+retaining input and the returned record ID. Reviewed copy and publication
+receipts are server-attributed; opening a completed lesson preserves completion.
+The delivery handoff requires the complete published source head, including
+this business/learning wave, rather than the earlier workflow-only revision.
+
+AG evidence gate PASS with 4/7 application smoke: context and boundary checks
+pass for all 442 tracked files, and CGRF provenance is present on 88/88 files
+new since the original base. Memory records 152 file vectors, 263 declared
+edges and 24 observed events with no orphan vectors. Six existing findings
+and four unwired gates remain visible; no complete TEVV or deployment is claimed.

@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/pocketbase/pb_migrations/data/starter-tutorials.json.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-15
+# Depends:     apps/pocketbase/pb_migrations/data/starter-tutorials.json
+# EnumType:    Doc
+# EnumEdges:   VALIDATES apps/pocketbase/pb_migrations/data/starter-tutorials.json
+# DAG Node:    none
+# Intent:      Attribute 25 authored lessons shared by the catalogue preview and persistent tutorial seed.
+# ───────────────────────────────────────────────────────────────
+file: apps/pocketbase/pb_migrations/data/starter-tutorials.json
+curriculum_version: '2026.09.1'
+lesson_count: 25
+purpose: Teach BuildAndDo operation, business planning, governed content and evidence-based review with labelled illustrative exercises.

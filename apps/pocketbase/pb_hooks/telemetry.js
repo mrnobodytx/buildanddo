@@ -21,6 +21,7 @@
 const COLLECTIONS = [
     'missions',
     'workflows',
+    'workflow_runs',
     'signals',
     'services',
     'operations',
@@ -93,6 +94,12 @@ function record(event, operation, failed) {
 }
 
 function endpoint(path) {
+    if (/^\/api\/buildanddo\/workflow-runs\/?$/.test(path || '')) {
+        return { collection: 'workflow_runs', endpoint: '/api/buildanddo/workflow-runs' };
+    }
+    if (/^\/api\/buildanddo\/workflow-runs\/[^/]+\/decisions\/?$/.test(path || '')) {
+        return { collection: 'workflow_runs', endpoint: '/api/buildanddo/workflow-runs/:id/decisions' };
+    }
     const match = /^\/api\/collections\/([^/]+)\/records(\/[^/]+)?\/?$/.exec(path || '');
     if (!match || !COLLECTIONS.includes(match[1])) return null;
     return {

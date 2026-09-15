@@ -1,0 +1,1777 @@
+{
+  "version": "2026.09.1",
+  "lessons": [
+    {
+      "id": "bdo25lesson0001",
+      "slug": "welcome-to-buildanddo",
+      "title": "Welcome to BuildAndDo",
+      "summary": "Learn the Observe → Understand → Act → Verify loop and read workspace state without mistaking a plan for a result.",
+      "category": "Foundations",
+      "effort_minutes": 8,
+      "prerequisites": "None — start here.",
+      "order": 1,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Identify the four parts of the work loop.",
+          "Distinguish missing data from a failed data request."
+        ],
+        "why": "A shared workspace is useful only when people can tell an observation, a proposal and a verified result apart. This habit prevents an attractive dashboard from becoming a substitute for evidence.",
+        "preparation": [
+          "Open BuildAndDo; sign in only when saving an exercise.",
+          "Use a test workspace you are allowed to change."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Observe means record what a source actually returned. Understand means explain what that observation might mean and keep uncertainty visible. Act means perform an approved, bounded step. Verify means inspect whether its stated outcome happened.",
+              "Counts summarize saved records. An empty list can be valid, while an unavailable notice means the application cannot currently tell you what is stored. Refreshing a page does not authorize a mission or deploy a release."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Open Overview and identify the active workspace.",
+              "Visit Signals and Evidence Ledger; find the displayed source and timestamp, or the explicit empty state.",
+              "Open Missions and compare a proposed item with a finished outcome if either exists.",
+              "Write down one observation and one question you still cannot answer."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: a reminder mission is proposed after five missed appointments. The proposal is not five messages sent. Keep the observation, approval, attempt and delivery receipt as separate records."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Describe one small business problem using the four stages. Save real records only if you have permission.",
+          "checklist": [
+            "Name the source of the observation.",
+            "Identify the approval needed before acting.",
+            "Specify an observable result."
+          ]
+        },
+        "check": {
+          "question": "A mission has been saved as proposed. What can you conclude?",
+          "choices": [
+            "Its business outcome is verified.",
+            "A proposal was recorded; execution and outcome remain unproven.",
+            "The related service is installed."
+          ],
+          "answer": 1,
+          "explanation": "A saved proposal proves that the plan exists. Later actions and evidence are separate observations."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app"
+          }
+        ]
+      },
+      "legacy_summary": "The Observe → Understand → Act → Verify loop, and how your workspace is organized."
+    },
+    {
+      "id": "bdo25lesson0002",
+      "slug": "domain-selection-and-authority",
+      "title": "Selecting and verifying a domain",
+      "summary": "Separate a discovered domain, a selected target and permission to operate on it.",
+      "category": "Foundations",
+      "effort_minutes": 10,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 2,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Describe selected versus verified domain state.",
+          "Record what ownership evidence is still missing."
+        ],
+        "why": "A hostname is an address, not a grant of authority. Keeping ownership and verification separate helps you avoid running an otherwise reasonable task against the wrong organization.",
+        "preparation": [
+          "Have a domain you control or use an explicitly labelled example.",
+          "Do not enter DNS credentials or verification secrets in notes."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Discovery produces a candidate. Selection chooses a candidate for a workspace. Verification needs an observed result from the authorized ownership-check process; do not infer it from a matching name.",
+              "A domain may serve different staging and production sites. Permission for a test environment does not automatically cover production. The workspace record should describe which environment and action are intended."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Inspect the workspace identity and any selected domain in Settings.",
+              "Compare the hostname with the organization and environment you intend to use.",
+              "Record the ownership check you have actually observed, or state that verification is pending.",
+              "Scope the next mission to the permitted environment and stop if authority is unclear."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: selecting example.com for a learning exercise does not establish ownership of that reserved example domain. A note saying “example only, no live action” keeps the exercise honest."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Write a domain-verification note with target, environment, authority source and missing evidence.",
+          "checklist": [
+            "Spell the target hostname exactly.",
+            "Separate observed ownership from a pending check.",
+            "Exclude credentials and secret values."
+          ]
+        },
+        "check": {
+          "question": "Does selecting a domain authorize changes to its DNS?",
+          "choices": [
+            "Yes, if the domain appears in search.",
+            "Yes, after adding it to a workspace.",
+            "No; ownership and the specific change authority must be established."
+          ],
+          "answer": 2,
+          "explanation": "Selection is an organizational choice. Ownership verification and permission for the intended change are separate."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/settings"
+          }
+        ]
+      },
+      "legacy_summary": "How domain discovery works, what 'selected' vs 'verified' means, and why a found domain is not an authorized domain."
+    },
+    {
+      "id": "bdo25lesson0003",
+      "slug": "reading-signals",
+      "title": "Reading the Signals feed",
+      "summary": "Read observations, confidence and timestamps before turning a signal into work.",
+      "category": "Foundations",
+      "effort_minutes": 12,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 3,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Separate a source fact from an interpretation.",
+          "Identify one useful follow-up check."
+        ],
+        "why": "Signals compete for attention. Preserving source and freshness lets a team act on the strongest observation rather than the most dramatic wording.",
+        "preparation": [
+          "Open Signals in an authorized workspace.",
+          "If there are no records, use the illustrative example without inventing a live event."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "A fact is an observation attributed to a source at a time. An inference explains that observation and can be wrong. Confidence describes uncertainty; it does not make an inference a fact.",
+              "Old signals can remain useful history but should not be presented as current system health. A missing timestamp or inaccessible source is a reason to gather more evidence before escalating."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Choose one signal and read its source, timestamp and displayed confidence.",
+              "Restate only what the source observed in one sentence.",
+              "Write a separate possible explanation and an alternative explanation.",
+              "Choose a small check that distinguishes those explanations before proposing a mission."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: “three failed requests in ten minutes” is an observation. “The new release is broken” is a hypothesis; a service outage or client network failure could explain the same count."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Prepare a short signal assessment with one fact, two hypotheses and a next check.",
+          "checklist": [
+            "Keep the source and observation time.",
+            "Use uncertainty language for explanations.",
+            "Define what new evidence would change your conclusion."
+          ]
+        },
+        "check": {
+          "question": "Which statement is an inference?",
+          "choices": [
+            "The release caused the error spike.",
+            "The log contains three failed requests.",
+            "The observation was recorded at 09:00 UTC."
+          ],
+          "answer": 0,
+          "explanation": "Causation requires additional evidence. A count or timestamp can be a direct observation when its source is recorded."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/signals"
+          }
+        ]
+      },
+      "legacy_summary": "Telling facts, inferences, and user-provided information apart, and what confidence means."
+    },
+    {
+      "id": "bdo25lesson0004",
+      "slug": "proposing-and-approving-missions",
+      "title": "Proposing and approving a mission",
+      "summary": "Build a bounded mission plan with explicit authorization, success criteria and review.",
+      "category": "Foundations",
+      "effort_minutes": 14,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 4,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Save a useful mission draft.",
+          "Explain why approval is distinct from starting work."
+        ],
+        "why": "A clear proposal makes the approver’s decision reviewable. The person authorizing work should know its scope, limits and recovery plan before anyone records work started.",
+        "preparation": [
+          "Read a real signal or choose an illustrative business problem.",
+          "Identify an authorized approver; use demo mode for read-only exploration."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "A mission plan connects a beneficiary and purpose with a bounded change. Include the current baseline, measurable target, allowed systems, risk, authorization and rollback.",
+              "BuildAndDo records planning, approval, work and review. An approved status does not start a private agent. Revising approved scope requires a new approval rather than quietly carrying old permission forward."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Open Missions and create a proposed mission.",
+              "Describe the purpose, beneficiary and exactly what is inside the scope.",
+              "Add a baseline, target, recovery plan and four TEVV methods.",
+              "Save the proposal and inspect it before the authorized approval action."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: “Test one reminder template with consenting staff in the test workspace; compare delivery receipts; send no customer messages” is a bounded experiment. “Improve communications” is not."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Draft a mission that can be completed and checked in one short session.",
+          "checklist": [
+            "State one measurable success criterion.",
+            "Name an explicit out-of-scope action.",
+            "Describe what happens if the check fails."
+          ]
+        },
+        "check": {
+          "question": "What should happen after materially changing an approved scope?",
+          "choices": [
+            "Keep the old approval automatically.",
+            "Return the plan for approval of the new scope.",
+            "Mark the mission verified."
+          ],
+          "answer": 1,
+          "explanation": "The new scope changes what was authorized. The saved approval must describe the work actually being performed."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/missions"
+          }
+        ]
+      },
+      "legacy_summary": "How a bounded mission is scoped, what you approve before anything runs, and how to review the plan."
+    },
+    {
+      "id": "bdo25lesson0005",
+      "slug": "inspecting-evidence",
+      "title": "Inspecting evidence and replay",
+      "summary": "Use source-backed observations to review a mission without turning a receipt into a claim it cannot support.",
+      "category": "Foundations",
+      "effort_minutes": 11,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 5,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Connect evidence to the correct mission and workspace.",
+          "Separate a recorded review from independent verification."
+        ],
+        "why": "A receipt is valuable because someone else can inspect what happened. Evidence without a source or a clear connection to the claim makes reviews impossible to reproduce.",
+        "preparation": [
+          "Use an existing test mission or inspect the example.",
+          "Remove customer information from learning artifacts."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "An evidence entry needs enough content, source and context to explain the observation. A mission review must reference readable evidence from the same mission and workspace.",
+              "A screenshot may prove that a screen displayed a value, but it does not prove that a backend transaction committed. A reviewer’s assertion is not a signed credential or an external certification."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Open Evidence Ledger and inspect one entry’s content and source.",
+              "Check the associated mission and workspace.",
+              "Compare the observation with one stated acceptance criterion.",
+              "Record a limitation or a missing check before choosing a mission outcome."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: a “saved” toast is UI evidence. A returned record ID followed by a successful authorized read adds persistence evidence. Neither proves a notification reached an external recipient."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Write an evidence note explaining what a receipt proves and what it does not.",
+          "checklist": [
+            "Identify the exact claim being assessed.",
+            "Keep a readable source reference.",
+            "Record one practical limitation."
+          ]
+        },
+        "check": {
+          "question": "Can a UI success message alone prove external delivery?",
+          "choices": [
+            "Yes, because it is visible.",
+            "Yes, if a reviewer clicks complete.",
+            "No; external delivery requires its own observable receipt."
+          ],
+          "answer": 2,
+          "explanation": "Evidence should match the claim. UI state and external delivery are different events."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/evidence"
+          },
+          {
+            "label": "W3C Verifiable Credentials Data Model 2.0",
+            "url": "https://www.w3.org/TR/vc-data-model-2.0/"
+          }
+        ]
+      },
+      "legacy_summary": "How to review what BuildAndDo observed, decided, attempted, and verified — and what to do when a mission needs attention."
+    },
+    {
+      "id": "bdo25lesson0006",
+      "slug": "connecting-services",
+      "title": "Connecting a self-hosted service",
+      "summary": "Read service connection state and prepare a useful operations handoff.",
+      "category": "Operations",
+      "effort_minutes": 13,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 6,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Explain requested, connected and healthy states.",
+          "Prepare a connection acceptance check."
+        ],
+        "why": "A connection request is useful coordination, but confusing it with a running integration can hide the absence of real data.",
+        "preparation": [
+          "Identify a service and an operator authorized to configure it.",
+          "Keep host credentials in the private environment."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Operations records the services relevant to the workspace. A pending connection indicates requested work; it does not install software or configure a host.",
+              "Connection and health are separate claims. An endpoint may accept authentication but fail its useful operation. Prefer a timestamped, minimal read or test receipt to a label with no backing observation."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Open Operations and inspect the service catalogue and any saved state.",
+              "Identify the operator who owns the actual private setup.",
+              "Write the smallest authorized acceptance check and its expected response.",
+              "Keep the state pending until the operator returns the check’s result."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: a CRM connection is requested. A later authorized list request returns one synthetic test contact and a timestamp. That receipt supports the read path, not every CRM feature."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Prepare an operations note for one service connection without including a secret.",
+          "checklist": [
+            "Name the operator and intended environment.",
+            "Describe a minimal non-production check.",
+            "Separate configuration completion from useful-operation health."
+          ]
+        },
+        "check": {
+          "question": "A service shows Pending. What is established?",
+          "choices": [
+            "A connection has been requested or is awaiting completion.",
+            "The service is healthy.",
+            "All its data has synchronized."
+          ],
+          "answer": 0,
+          "explanation": "Pending is coordination state. Health and synchronization need later observations."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/operations"
+          }
+        ]
+      },
+      "legacy_summary": "What the Operations area means, the planned self-hosted stack, and how connection status works."
+    },
+    {
+      "id": "bdo25lesson0007",
+      "slug": "measurable-objectives",
+      "title": "Define a measurable business objective",
+      "summary": "Turn a broad ambition into an ERP objective with a useful success measure and review date.",
+      "category": "Operations",
+      "effort_minutes": 12,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 7,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Describe a baseline, target and observation period.",
+          "Save and edit an ERP objective."
+        ],
+        "why": "A measurable objective helps people decide which tasks matter and when the work is sufficient. The measure should reflect a business result rather than the number of buttons clicked.",
+        "preparation": [
+          "Choose one process you understand.",
+          "Use an observed baseline or explicitly mark it as unknown."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "An objective describes a desired result. A task describes an action that may help produce it. Keep them separate so task completion does not automatically imply business success.",
+              "A useful success measure identifies the quantity, population, period and source. If you have no baseline, the first task should gather it; inventing a number makes later evaluation meaningless."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Open ERP, choose Objectives and add an objective.",
+              "Write a short result-oriented title and a description of the affected process.",
+              "Enter a success measure with baseline, target, period and source.",
+              "Set a review due date, save, then reopen the record to confirm the stored fields."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: “Reduce test appointment no-shows from 5 of 40 to at most 3 of 40 over the next four weeks, using the booking export.” These numbers are educational examples, not live results."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Create or sketch one objective whose result a second person could assess.",
+          "checklist": [
+            "Separate the intended result from an action.",
+            "Identify a source for the measure.",
+            "Keep unknown baseline values explicitly unknown."
+          ]
+        },
+        "check": {
+          "question": "Which is the stronger success measure?",
+          "choices": [
+            "Make the process better.",
+            "Use the dashboard every day.",
+            "Reduce median response time from an observed baseline to a named target over a defined period."
+          ],
+          "answer": 2,
+          "explanation": "The last measure defines an assessable outcome. Activity alone does not establish improvement."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/erp"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0008",
+      "slug": "objectives-into-tasks",
+      "title": "Break an objective into linked tasks",
+      "summary": "Create small ERP tasks that remain connected to the objective they support.",
+      "category": "Operations",
+      "effort_minutes": 10,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 8,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Save a task with a clear completion condition.",
+          "Link it to the correct workspace objective and contact."
+        ],
+        "why": "A task list becomes easier to prioritize when each action has a visible purpose. Linking a task to an objective preserves that context during handoffs.",
+        "preparation": [
+          "Have one saved objective.",
+          "Add a test contact only if you have permission to store the information."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "A good task names an action and the observable artifact it should produce. “Investigate” needs a boundary, such as producing a one-page comparison of two options.",
+              "A linked contact is a point of coordination, not an account permission or an assignment notification. The server requires related records to be readable in the same workspace."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Open ERP Tasks and add a task.",
+              "Describe the action and expected result in the task details.",
+              "Choose the saved objective and an optional point of contact.",
+              "Save, reopen and confirm that the links and details survived the write."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: objective “Reduce no-shows”; task “Compare two reminder templates using ten synthetic bookings”; contact “Test coordinator.” The task produces a comparison, not an automatic customer campaign."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Break one objective into three tasks with different observable outputs.",
+          "checklist": [
+            "Link each task to the objective.",
+            "Make each output reviewable.",
+            "Keep customer outreach outside the exercise unless separately authorized."
+          ]
+        },
+        "check": {
+          "question": "Does choosing a contact grant that person workspace access?",
+          "choices": [
+            "Yes, contacts are workspace members.",
+            "No; contact records and account permissions are separate.",
+            "Only when the task is high priority."
+          ],
+          "answer": 1,
+          "explanation": "Contact linking describes coordination. Workspace membership remains the authentication and role system’s responsibility."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/erp"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0009",
+      "slug": "priorities-and-dates",
+      "title": "Prioritize tasks and review due dates",
+      "summary": "Use explicit status, priority and overdue views to decide the next useful action.",
+      "category": "Operations",
+      "effort_minutes": 9,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 9,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Filter open and overdue work.",
+          "Change task state deliberately without losing the plan."
+        ],
+        "why": "Dates and priorities are useful when they support decisions. Marking everything urgent hides real constraints and makes missed commitments harder to see.",
+        "preparation": [
+          "Use at least two authorized test tasks or the worked example.",
+          "Choose dates according to your local calendar."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Priority describes relative attention; a due date describes a commitment or review point. An overdue task is unfinished work with a valid past date. A completed task should not keep inflating the overdue count.",
+              "Status changes record human-reported progress. Moving a task to Done does not verify its linked objective. Review the objective’s measure separately."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Edit one task to set priority and a due date.",
+              "Search for a phrase in its title or details.",
+              "Compare the All, In progress and Overdue filters.",
+              "Set an explicit task state and confirm that the saved list updates."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: an overdue, high-priority consent review should be resolved before a low-priority formatting task. A task with no due date is unscheduled, not secretly overdue since 1970."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Prepare a three-item next-action list using priority, due dates and dependency judgment.",
+          "checklist": [
+            "Give each priority a reason.",
+            "Exclude completed work from overdue action items.",
+            "Record a next review date for unscheduled work."
+          ]
+        },
+        "check": {
+          "question": "How should a missing due date be treated?",
+          "choices": [
+            "As unscheduled work.",
+            "As the Unix epoch.",
+            "As automatically due today."
+          ],
+          "answer": 0,
+          "explanation": "A missing value is unknown or unscheduled. Inventing a date distorts the planning view."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/erp"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0010",
+      "slug": "contact-hygiene",
+      "title": "Keep useful, minimal contact records",
+      "summary": "Maintain contact context without turning notes into a store for unnecessary personal data.",
+      "category": "Operations",
+      "effort_minutes": 10,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 10,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Create and edit a purpose-limited contact.",
+          "Separate notes, authority and actual outreach."
+        ],
+        "why": "Useful contact records make coordination easier. Collecting more personal data than the task needs increases both confusion and exposure.",
+        "preparation": [
+          "Use a consenting colleague or synthetic example.",
+          "Know why this workspace needs the record."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "A name, role, work email and short operational note are usually enough for a small coordination task. Do not paste credentials, identity documents or sensitive customer histories into notes.",
+              "A saved contact does not establish consent for marketing, provide account access or send a message. Any outreach needs its own authorized workflow and evidence."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Open ERP Contacts and create a permitted test record.",
+              "Use Role to explain the person’s operational context.",
+              "Write a short note describing the reason for contact and a review point.",
+              "Edit the record to correct a detail and confirm that the saved view reflects it."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: “Jordan, training coordinator, jordan@example.com; coordinates the synthetic-data workshop.” The example email is for illustration and must not be used for actual outreach."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Review a contact note and remove information that is unnecessary for its purpose.",
+          "checklist": [
+            "State the reason for storing the contact.",
+            "Exclude secrets and sensitive personal detail.",
+            "Identify when the record should be reviewed or removed."
+          ]
+        },
+        "check": {
+          "question": "What does saving an email address do?",
+          "choices": [
+            "Subscribe the person to a campaign.",
+            "Grant permission to email them.",
+            "Store a contact field; outreach and permission are separate."
+          ],
+          "answer": 2,
+          "explanation": "Storage is not consent or delivery. Keep those decisions explicit."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/erp"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0011",
+      "slug": "risk-and-rollback",
+      "title": "Scope risk and plan recovery",
+      "summary": "Write a bounded risk assessment and a rollback that preserves useful records.",
+      "category": "Missions & workflows",
+      "effort_minutes": 14,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 11,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Identify affected users, data and systems.",
+          "Define stop conditions and a recovery check."
+        ],
+        "why": "Recovery is easier to design before a failure. A rollback plan should identify the state you intend to restore and the evidence you must retain.",
+        "preparation": [
+          "Choose a small proposed change.",
+          "Know the environment and authority for that change."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Risk depends on impact and reversibility, not only on how many lines changed. A one-line shared database change can matter more than a large local documentation update.",
+              "Rollback is not always deletion. Restoring compatible application code while retaining additive data can preserve audit history. Destructive migrations need a separate retention decision and a tested backup path."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "In a mission draft, list the systems and people the change can affect.",
+              "Describe one plausible failure and a signal that would reveal it.",
+              "Set a stop condition and name who can authorize recovery.",
+              "Write a post-recovery check that confirms the intended state."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: a content preview change can be reverted while retaining drafts. Removing the collection to undo the UI change would unnecessarily destroy editorial history."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Write a four-line risk and recovery note for one ERP or content change.",
+          "checklist": [
+            "Bound the environment and affected data.",
+            "Define a measurable stop condition.",
+            "Preserve records needed to understand the failure."
+          ]
+        },
+        "check": {
+          "question": "Which is a useful recovery check?",
+          "choices": [
+            "The rollback command printed no error.",
+            "The previous accepted behavior is observed and retained data remains readable.",
+            "Someone said the system looks fine."
+          ],
+          "answer": 1,
+          "explanation": "A command outcome is only one part of recovery. Verify the behavior and data you intended to restore."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/missions"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0012",
+      "slug": "designing-tevv",
+      "title": "Design four distinct TEVV checks",
+      "summary": "Use testing, evaluation, verification and validation to gather different kinds of evidence.",
+      "category": "Missions & workflows",
+      "effort_minutes": 18,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 12,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Distinguish the four TEVV activities.",
+          "Connect each method to a claim and an observation."
+        ],
+        "why": "A single passing test rarely answers every question about a system. Distinct checks make gaps visible before a team claims the work is successful.",
+        "preparation": [
+          "Use a bounded mission with a success criterion.",
+          "Read the linked NIST guidance as context, not as a certification checklist."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Testing exercises behavior under specified conditions. Evaluation assesses results against a measure or rubric. Verification checks conformance to stated requirements. Validation asks whether the result serves the intended use and users.",
+              "These categories can overlap, but copying the same assertion into four fields adds no evidence. BuildAndDo records your methods and review; it does not issue NIST certification."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Choose one acceptance criterion in a mission.",
+              "Define an input and expected behavior for Testing.",
+              "Define a measurement for Evaluation and a requirement check for Verification.",
+              "Describe a realistic user exercise for Validation and the evidence each activity should produce."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: test a draft save failure; evaluate task completion rate in a workshop; verify that approved text cannot silently change; validate that an editor can recover an interrupted review."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Create four different TEVV methods for the same small content workflow.",
+          "checklist": [
+            "Name the claim each method addresses.",
+            "Specify an observable artifact.",
+            "State what remains untested or uncertain."
+          ]
+        },
+        "check": {
+          "question": "Which activity most directly asks whether the result serves the intended user?",
+          "choices": [
+            "Validation.",
+            "Counting source files.",
+            "Checking whether a command exists."
+          ],
+          "answer": 0,
+          "explanation": "Validation addresses intended use. File counts and command availability do not establish user value."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/missions"
+          },
+          {
+            "label": "NIST AI Risk Management Framework",
+            "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0013",
+      "slug": "owasp-in-workspace-flows",
+      "title": "Apply practical OWASP checks",
+      "summary": "Check authorization, input handling and data exposure at the boundary where the operation happens.",
+      "category": "Missions & workflows",
+      "effort_minutes": 16,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 13,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Identify a cross-workspace test case.",
+          "Explain why content should render as text rather than executable HTML."
+        ],
+        "why": "A disabled button is helpful guidance, but it cannot protect a backend from direct requests. Security checks belong at the actual authorization boundary.",
+        "preparation": [
+          "Use isolated test accounts and workspaces only.",
+          "Obtain authorization before exercising any security test."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "For a linked task, test that a record from another workspace cannot be selected through a direct request. Also test that a viewer cannot write and that membership removal takes effect.",
+              "For content preview, treat draft text as data. Strings that look like HTML or scripts should remain text. OWASP ASVS provides a structured verification reference; these examples are a starting point, not a complete assessment."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Write one allowed and one denied request scenario for an ERP task link.",
+              "Include a viewer account and a removed-member scenario.",
+              "Enter harmless markup-looking text in a local draft preview.",
+              "Record the observed behavior and any test that could not be executed."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: a task in workspace A must reject an objective ID from workspace B even if the browser form normally hides that choice. A server rejection is stronger evidence than a hidden option."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Add three boundary checks to a mission plan without probing any unapproved system.",
+          "checklist": [
+            "Test the backend boundary, not only the UI.",
+            "Use synthetic records.",
+            "Document failed or unavailable checks honestly."
+          ]
+        },
+        "check": {
+          "question": "Where must a same-workspace relation be enforced?",
+          "choices": [
+            "Only in the dropdown.",
+            "Only in a tutorial.",
+            "In the server request policy as well as the UI."
+          ],
+          "answer": 2,
+          "explanation": "Clients can be bypassed. The server must validate the actual linked record and current caller permissions."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/missions"
+          },
+          {
+            "label": "OWASP Application Security Verification Standard",
+            "url": "https://owasp.org/www-project-application-security-verification-standard/"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0014",
+      "slug": "workflow-approval-checkpoints",
+      "title": "Build a workflow with an approval checkpoint",
+      "summary": "Save a reusable procedure and record its ordered steps with an explicit approval decision.",
+      "category": "Missions & workflows",
+      "effort_minutes": 16,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 14,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Separate workflow activation from a recorded run.",
+          "Use an approval checkpoint before a consequential step."
+        ],
+        "why": "A reusable definition makes repeat work consistent. A separate run history preserves what was actually recorded for a particular attempt.",
+        "preparation": [
+          "Use an authorized test workspace with the workflow backend installed.",
+          "Have an owner or admin available for an approval exercise."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Workflow definitions describe steps; runs preserve a snapshot of the definition at start. Editing a definition later should not rewrite history.",
+              "The current workflow system records operator-performed work. A notify step does not itself deliver a message. Approval checkpoints require the current owner/admin role and an explicit recorded decision."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Create a draft workflow with read, approval and record steps.",
+              "Write a concrete expected observation for each step, then activate the saved definition.",
+              "Start a real test run and record the first outcome.",
+              "Have the authorized approver decide the checkpoint and inspect the resulting evidence receipt."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: inspect a synthetic draft, approve its use in training, then record the training artifact. Activating the definition alone should not add a run or invent a last-run timestamp."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Record one approved checkpoint and inspect the run snapshot.",
+          "checklist": [
+            "Keep each decision in the original step order.",
+            "Identify the saved approval actor and time.",
+            "Do not claim external tool execution from a recorded step."
+          ]
+        },
+        "check": {
+          "question": "What does activating a workflow prove?",
+          "choices": [
+            "All its steps ran.",
+            "The definition is available to start; it does not prove an execution.",
+            "An external message was sent."
+          ],
+          "answer": 1,
+          "explanation": "Definition state and execution history are separate. A real run begins with the start command."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/workflows"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0015",
+      "slug": "failed-runs-and-retries",
+      "title": "Review a failed run and retry safely",
+      "summary": "Preserve observations after failure and avoid creating duplicate evidence when a response is uncertain.",
+      "category": "Missions & workflows",
+      "effort_minutes": 15,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 15,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Distinguish a rejected operation from a lost response.",
+          "Explain why terminal runs are retained."
+        ],
+        "why": "A failed attempt can teach as much as a passing one if the record is preserved. Retrying carelessly can turn a recoverable network problem into duplicate work.",
+        "preparation": [
+          "Use a test workflow and synthetic observations.",
+          "Do not cause failures in a shared production service."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "A lost response does not prove that the server did nothing. The workflow client retains a request key so an identical retry can return the saved result instead of appending a second receipt.",
+              "Expected revisions protect against stale tabs. If another operator advances the run, reload its state before making a new decision. A terminal failed or cancelled run is historical; new work needs a new attempt."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Inspect a failed test run and read its reason and recorded observations.",
+              "Compare the last accepted revision with the current step.",
+              "Use the documented retry for an uncertain response without changing the request’s meaning.",
+              "Write a reflection and a bounded next attempt instead of rewriting the failed outcome."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: the server commits one evidence receipt, but the browser loses the response. Reusing the same request identity should reveal that receipt; creating a new identity may request a new operation."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Write a recovery note for a lost response and a separate note for a rejected stale decision.",
+          "checklist": [
+            "Preserve the original observation.",
+            "Refresh state after a revision conflict.",
+            "Define a new attempt only when its scope is clear."
+          ]
+        },
+        "check": {
+          "question": "What is the first conclusion after a network response is lost?",
+          "choices": [
+            "The outcome is uncertain; reconcile using the existing request identity.",
+            "Nothing was saved.",
+            "The run is verified."
+          ],
+          "answer": 0,
+          "explanation": "Transport failure and business-operation failure are different. Reconcile the durable result before repeating work."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/workflows"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0016",
+      "slug": "audience-and-content-brief",
+      "title": "Write an audience-focused content brief",
+      "summary": "Give a draft one reader, one useful purpose and an explicit connection to a business objective.",
+      "category": "Content production",
+      "effort_minutes": 12,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 16,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Save a draft brief in the content desk.",
+          "Separate a desired reader action from an unsupported promise."
+        ],
+        "why": "A clear brief reduces rewrites because the reviewer knows whom the content serves and what the reader should be able to do afterward.",
+        "preparation": [
+          "Choose a permitted topic and one audience.",
+          "Have a saved ERP objective if the draft should support it."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "A brief explains the reader’s situation, useful takeaway, available evidence and limits. “Everyone” is usually too broad to guide language or examples.",
+              "The content desk creates editable outlines from your brief. It does not invent research or call a private generation service. Any factual claims in the finished copy remain the author’s and reviewer’s responsibility."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Open Community, then the Content studio tab, and choose New draft.",
+              "Select a format and name the specific intended audience.",
+              "Write the brief and a clear optional next action; link an objective if appropriate.",
+              "Save the draft and reopen it before generating or editing an outline."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: “Audience: front-desk coordinators testing reminders. Takeaway: compare two templates with synthetic appointments. Next action: review the consent checklist.” No revenue or delivery guarantee is needed."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Write a brief for a short piece that helps one reader perform one task.",
+          "checklist": [
+            "Name a specific reader.",
+            "Identify supporting evidence or research still needed.",
+            "Make the next action optional and clear."
+          ]
+        },
+        "check": {
+          "question": "Which statement belongs in a useful brief?",
+          "choices": [
+            "This will double every customer’s revenue.",
+            "Write something for everybody.",
+            "Help first-time editors review a draft using a named checklist."
+          ],
+          "answer": 2,
+          "explanation": "The last statement names a reader and a useful action without promising an unobserved outcome."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/community"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0017",
+      "slug": "blog-from-brief",
+      "title": "Turn a brief into a blog draft",
+      "summary": "Use an outline to produce a readable article with a problem, practical steps and stated limits.",
+      "category": "Content production",
+      "effort_minutes": 15,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 17,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Generate and edit a blog outline.",
+          "Preview headings, paragraphs and lists before requesting review."
+        ],
+        "why": "An outline provides structure so the writer can focus on supported content. A template should make missing evidence obvious rather than fill it with confident-sounding claims.",
+        "preparation": [
+          "Have a saved or unsaved blog brief.",
+          "Gather public sources you are allowed to cite."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Start with the reader’s problem, explain the useful action, then present evidence and limitations. Replace bracketed outline prompts with your own reviewed writing.",
+              "The preview supports simple headings and lists and treats text as text. Pasted HTML is not an instruction to execute. Do not confuse a formatted preview with a published page."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Choose Blog article in a new draft and complete its audience and brief.",
+              "Use Create outline on an empty body; confirm before replacing existing copy.",
+              "Replace prompts with short paragraphs, useful steps and attributable facts.",
+              "Open Preview, inspect the structure, then save the draft before requesting review."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: an article about reminder testing describes a small synthetic experiment, gives its procedure and admits that production delivery was not measured. It does not turn that experiment into a customer success story."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Produce a 150–250 word draft with one heading, one list and one explicit limitation.",
+          "checklist": [
+            "Remove all outline prompts.",
+            "Attribute any factual claim that needs a source.",
+            "Check that the next action follows naturally."
+          ]
+        },
+        "check": {
+          "question": "What does Create outline provide?",
+          "choices": [
+            "A published article.",
+            "Editable structure based on your input.",
+            "Independently verified research."
+          ],
+          "answer": 1,
+          "explanation": "The outline is a writing aid. The author supplies content, evidence and review."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/community"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0018",
+      "slug": "teach-with-a-tutorial",
+      "title": "Design a tutorial people can test",
+      "summary": "Write an instructional draft with preparation, observable steps, an exercise and useful feedback.",
+      "category": "Content production",
+      "effort_minutes": 18,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 18,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Define an observable learning outcome.",
+          "Write a knowledge check that diagnoses a misconception."
+        ],
+        "why": "A tutorial succeeds when a learner can perform and check a task. Explanations without an exercise are difficult to test with real readers.",
+        "preparation": [
+          "Choose one small task you can perform yourself.",
+          "Use examples without private customer data."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "State what the learner will do and what they need first. Each step should contain an action and an expected observation, with a recovery instruction where mistakes are likely.",
+              "A good knowledge check tests understanding rather than word recognition. Explain why the correct answer works and what misconception the alternatives reveal. Completion records learning activity, not professional certification."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Select Tutorial in the content desk and describe the learner and outcome.",
+              "Create the outline and fill the preparation and ordered steps.",
+              "Add a clearly labelled worked example and a short independent exercise.",
+              "Ask a reviewer to follow the draft using only the written instructions."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: a task-linking lesson asks the learner to save a task, reopen it and identify its objective. A question about whether a contact link grants access exposes an important permission misconception."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Draft a five-step lesson and one three-choice question with an answer explanation.",
+          "checklist": [
+            "Make the outcome observable.",
+            "Separate illustrative values from real records.",
+            "Include a way to check and recover from an error."
+          ]
+        },
+        "check": {
+          "question": "Which feedback helps a learner most?",
+          "choices": [
+            "An explanation connecting the answer to the underlying rule.",
+            "Wrong.",
+            "A score without context."
+          ],
+          "answer": 0,
+          "explanation": "Explanatory feedback supports transfer to another task. A bare score does not explain how to improve."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/community"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0019",
+      "slug": "adapt-for-social",
+      "title": "Adapt a draft for a social post",
+      "summary": "Distill one supported takeaway into a short channel-specific draft.",
+      "category": "Content production",
+      "effort_minutes": 12,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 19,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Create a social draft from a reviewed idea.",
+          "Preserve source context and one clear next action."
+        ],
+        "why": "Shorter copy should preserve the meaning and limits of the source. Compression is not permission to replace uncertainty with a guarantee.",
+        "preparation": [
+          "Use source material you own or have permission to adapt.",
+          "Know the audience and intended channel."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Choose one useful observation, one explanation and one next action. Keep the wording understandable without requiring readers to know internal acronyms.",
+              "Channel names and planned dates in the desk are editorial metadata. They do not connect an account, send a post or prove delivery. Publishing still happens through a separately authorized process."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Create a Social post draft and name its audience and channel.",
+              "Use the outline to write a short hook and practical takeaway.",
+              "Keep a source reference and any limitation essential to the claim.",
+              "Preview, save and request review; do not label the item published to simulate delivery."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: “Our test workflow now records one receipt per accepted decision” is narrower than “Our automation never fails.” Link the actual test evidence when available."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Adapt a short blog paragraph into a social draft without adding a new claim.",
+          "checklist": [
+            "Keep the original meaning.",
+            "Retain a relevant source or limitation.",
+            "Choose one optional next action."
+          ]
+        },
+        "check": {
+          "question": "Does setting a planned date send a social post?",
+          "choices": [
+            "Yes, immediately.",
+            "Yes, through every connected channel.",
+            "No; it records an editorial plan, not an external publishing job."
+          ],
+          "answer": 2,
+          "explanation": "Planning and delivery are separate. The current public content desk does not publish to external accounts."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/community"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0020",
+      "slug": "editorial-review",
+      "title": "Review content before approving it",
+      "summary": "Check accuracy, privacy, rights and accessibility before approving a specific saved draft.",
+      "category": "Content production",
+      "effort_minutes": 16,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 20,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Record four review checks and an explanatory note.",
+          "Return changed copy to draft for a new review."
+        ],
+        "why": "Review should attach to the copy someone actually inspected. Quietly changing approved text breaks the connection between the decision and its object.",
+        "preparation": [
+          "Use a saved draft with audience and body.",
+          "Have a workspace owner or admin available to record approval."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Accuracy asks whether claims are supported and limits are visible. Privacy checks unnecessary personal information. Rights checks permission to use the material. Accessibility checks structure and understandable language.",
+              "The server attributes approval to the authenticated reviewer and records the time. Approved copy and its brief must return to draft before editing. The checklist records a human review; it does not certify legal or technical compliance."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Request review for a saved draft.",
+              "As an authorized reviewer, read the actual copy and its brief.",
+              "Record the four checks and explain evidence or changes in the review note.",
+              "Approve only after the checks are satisfied; otherwise return the item to draft."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: a tutorial uses a customer screenshot without permission. Return it to draft and replace the image with a synthetic example before approval, rather than checking Rights without evidence."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Review a test draft and identify one useful correction before approving it.",
+          "checklist": [
+            "Inspect the saved copy, not just its title.",
+            "Record why the checks passed.",
+            "Request a new review after a substantive edit."
+          ]
+        },
+        "check": {
+          "question": "What should happen when approved copy needs a factual correction?",
+          "choices": [
+            "Edit it silently while keeping approval.",
+            "Return it to draft, correct it and request review again.",
+            "Change the publication URL only."
+          ],
+          "answer": 1,
+          "explanation": "The approval applies to the reviewed content. A correction must receive a new review before publication is recorded."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/community"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0021",
+      "slug": "publication-receipts",
+      "title": "Record a publication without inventing delivery",
+      "summary": "Keep an approved draft, a planned date and an observed publication URL as distinct records.",
+      "category": "Practice & improvement",
+      "effort_minutes": 12,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 21,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Plan an approved item without claiming automatic publishing.",
+          "Record a checked HTTPS publication URL."
+        ],
+        "why": "Publication history helps explain what readers could actually see. Recording a plan as a successful delivery would make later evaluation unreliable.",
+        "preparation": [
+          "Use approved test content.",
+          "Publish only through an independently authorized channel and environment."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "A planned date is an editorial commitment. It is not an installed scheduler. The public desk sends no external posts and does not hold channel credentials.",
+              "An owner or admin can record the HTTPS URL of a publication they checked. The server records who made that assertion and when. This is an operator receipt, not an automated proof that every audience member received the content."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Inspect the saved approval on a content item.",
+              "Optionally save a planned date and confirm the item is labelled Planned.",
+              "After an authorized publication outside this desk, open its URL and inspect the actual copy.",
+              "Use Record publication with that URL; retain the resulting history instead of editing it."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: a training article is approved on Monday and planned for Tuesday. Until the operator checks the actual published page, its state remains a plan rather than a publication receipt."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Write the evidence you would require before recording a publication. Do not publish merely to complete this lesson.",
+          "checklist": [
+            "Distinguish approval, plan and observed result.",
+            "Use an actual checked URL when recording a real receipt.",
+            "State the limits of the receipt."
+          ]
+        },
+        "check": {
+          "question": "What does the recorded publication time represent?",
+          "choices": [
+            "When the server recorded the operator’s publication assertion.",
+            "Guaranteed delivery to every reader.",
+            "The exact time an external platform first published the page."
+          ],
+          "answer": 0,
+          "explanation": "The timestamp belongs to the recording operation. External first-publication time requires separate evidence."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/community"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0022",
+      "slug": "weekly-operations-review",
+      "title": "Run a weekly operations review",
+      "summary": "Connect ERP work, mission evidence and editorial plans in a short repeatable review.",
+      "category": "Practice & improvement",
+      "effort_minutes": 15,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 22,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Review open objectives and overdue work.",
+          "Choose a bounded next action based on evidence."
+        ],
+        "why": "A regular review converts scattered updates into explicit decisions. It should reduce uncertainty, not produce a decorative report full of unverified achievements.",
+        "preparation": [
+          "Use the current workspace and a defined review period.",
+          "Keep business figures in their original source and currency context."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Start with objective measures, then inspect tasks and related mission evidence. A completed task may be useful progress even when the objective’s target is not yet met.",
+              "Review content plans separately from actual publication receipts. Do not count scheduled items as delivered or combine unrelated financial amounts without a common basis."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Read active ERP objectives and their success measures.",
+              "Inspect unfinished or overdue tasks and assign one clear next action to each relevant item.",
+              "Review mission outcomes and the strongest evidence from the period.",
+              "Inspect content awaiting review and planned items; record decisions in your authorized work record."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: three tasks are done, one objective still lacks a baseline, and two articles await review. A useful next week begins with baseline collection and review, not an unsupported “all goals achieved” statement."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Prepare a five-line review: observed result, open question, blocker, next action and review date.",
+          "checklist": [
+            "Define the review period.",
+            "Separate activity from outcome.",
+            "Keep one source with each important conclusion."
+          ]
+        },
+        "check": {
+          "question": "Does completing all linked tasks automatically achieve an objective?",
+          "choices": [
+            "Yes, tasks are the objective.",
+            "Yes, if they were high priority.",
+            "No; assess the objective’s success measure separately."
+          ],
+          "answer": 2,
+          "explanation": "Tasks are actions. The objective describes the desired result, which still needs its own observation."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/erp"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0023",
+      "slug": "accessible-content-checks",
+      "title": "Check a lesson on mobile and keyboard",
+      "summary": "Test reading order, controls, focus and narrow layouts with observable checks.",
+      "category": "Practice & improvement",
+      "effort_minutes": 15,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 23,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Exercise keyboard navigation and focus return.",
+          "Inspect lesson structure and narrow-screen readability."
+        ],
+        "why": "Content is useful only if people can reach and understand it. A desktop screenshot alone does not show whether a keyboard or small-screen reader can complete the flow.",
+        "preparation": [
+          "Use a browser and a keyboard.",
+          "Choose a lesson and a test draft; avoid changing shared records without permission."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Meaningful headings, labelled controls and visible focus help readers orient. Dialogs should keep focus within the open interaction and return it to the opener when closed.",
+              "Test at narrow widths and increased zoom. Look for horizontal page overflow, clipped buttons and long unbroken text. WCAG guidance supports a broader review; these checks do not replace a complete accessibility evaluation."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Navigate to the Field Manual with Tab and open a lesson using the keyboard.",
+              "Move through controls, answer choices and the exercise confirmation.",
+              "Close the reader with Escape and check that focus returns to the lesson control.",
+              "Repeat at 320 and 375 px widths, in both themes, and note any unreadable or unreachable content."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: a long title should wrap instead of pushing a completion button off-screen. A visible close icon also needs an accessible name so its purpose is available without sight."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Record one passing keyboard check and one narrow-screen observation with the viewport used.",
+          "checklist": [
+            "Check focus visibility and return.",
+            "Read headings in a useful order.",
+            "Record actual observations rather than a blanket accessible claim."
+          ]
+        },
+        "check": {
+          "question": "Which evidence supports keyboard usability?",
+          "choices": [
+            "The page uses a popular component library.",
+            "A user can reach, operate and leave the dialog using the keyboard.",
+            "The page looks good in a screenshot."
+          ],
+          "answer": 1,
+          "explanation": "Observed operation is stronger evidence than the choice of library or a static image."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/tutorials"
+          },
+          {
+            "label": "W3C WCAG 2.2 quick reference",
+            "url": "https://www.w3.org/WAI/WCAG22/quickref/"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0024",
+      "slug": "evaluate-content-outcomes",
+      "title": "Evaluate content against its purpose",
+      "summary": "Measure a draft’s or publication’s usefulness without inventing traffic, revenue or causal claims.",
+      "category": "Practice & improvement",
+      "effort_minutes": 16,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 24,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Define a small evaluation and its limits.",
+          "Record observed outcomes separately from predictions."
+        ],
+        "why": "Content metrics are meaningful when they connect to the intended reader action. A large view count may say little about whether the reader could complete the task.",
+        "preparation": [
+          "Choose one content brief and its intended action.",
+          "Use consenting test readers or an authorized analytics source."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "Before the exercise, define the audience, task, measure and observation period. In a tutorial test, task completion and the point of confusion may be more useful than likes.",
+              "Separate prediction from observed result. A change in a metric does not by itself prove that the content caused it; audience, timing and other releases may have changed too."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Read the content brief and choose one intended reader action.",
+              "Define a small test and how you will record completion or confusion.",
+              "Collect authorized observations and retain their source and date.",
+              "Compare results with the original objective; record uncertainty and a useful next revision."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: three of four consenting test readers link a task to an objective without help. Record the small sample and the step where the fourth reader hesitated; do not generalize it to every customer."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Design an evaluation note with a measure, sample, source and limitation.",
+          "checklist": [
+            "Tie the measure to the reader’s task.",
+            "Label small or incomplete samples.",
+            "Avoid unsupported causal or commercial claims."
+          ]
+        },
+        "check": {
+          "question": "What can a four-reader workshop establish?",
+          "choices": [
+            "Observed results for those readers under the recorded conditions.",
+            "Guaranteed success for all users.",
+            "Revenue impact across the business."
+          ],
+          "answer": 0,
+          "explanation": "The observation is useful within its scope. Broader claims require broader evidence."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/evidence"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bdo25lesson0025",
+      "slug": "release-with-evidence",
+      "title": "Verify a release from source to served version",
+      "summary": "Separate source, merge, build, deployment and the version a browser actually receives.",
+      "category": "Practice & improvement",
+      "effort_minutes": 18,
+      "prerequisites": "Read earlier lessons in this path; use an authorized test workspace for exercises.",
+      "order": 25,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Name the distinct delivery stages.",
+          "Explain how a release stamp and user-flow check support deployment acceptance."
+        ],
+        "why": "A merged pull request can coexist with a failed build or an old live site. Release evidence should connect the intended source to the artifact and the observed environment.",
+        "preparation": [
+          "Use public-safe release metadata from an authorized operator.",
+          "Do not change infrastructure or run deployment commands as a lesson exercise."
+        ],
+        "sections": [
+          {
+            "heading": "Understand the idea",
+            "paragraphs": [
+              "A commit identifies source; a merge puts source on a branch. A build produces an artifact. Deployment places an artifact in an environment. A served-version check observes what that environment returns.",
+              "BuildAndDo generates version.json with its build version and commit SHA. Compare it with the accepted release receipt and inspect real behavior as well: a version file alone cannot prove every backend migration or user flow works."
+            ]
+          },
+          {
+            "heading": "Try it in BuildAndDo",
+            "steps": [
+              "Read the source revision and test results attached to an accepted change.",
+              "Find its build and environment deployment receipt through the authorized operator.",
+              "Compare the confirmed environment’s version.json with the expected release identity.",
+              "Exercise a permitted read or test flow and record the result, timestamp and remaining gaps."
+            ]
+          },
+          {
+            "heading": "Worked example — illustrative data",
+            "paragraphs": [
+              "Illustration: source merges successfully but the candidate job never starts. That proves a source merge, not an updated staging site. An independent private runner still needs tests, a build, deployment evidence and served checks."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Prepare a release evidence table with source, build, deployment, served version and behavior rows; mark unavailable evidence unknown.",
+          "checklist": [
+            "Bind evidence to one accepted source revision.",
+            "Check staging and production separately.",
+            "Never turn a missing or skipped job into a passing result."
+          ]
+        },
+        "check": {
+          "question": "Does a merged pull request prove that production serves the change?",
+          "choices": [
+            "Yes, merging always deploys.",
+            "Yes, if no one reported an error.",
+            "No; build, deployment and served behavior need separate evidence."
+          ],
+          "answer": 2,
+          "explanation": "Delivery is a chain of observed steps. A merge establishes only the source integration step."
+        },
+        "references": [
+          {
+            "label": "Open the workspace tool",
+            "url": "/app/community"
+          }
+        ]
+      }
+    }
+  ]
+}

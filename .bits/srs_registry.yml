@@ -34,9 +34,9 @@ srs:
   - code: SRS-BUILDANDDO-UPGRADE-001
     title: Public pages and tested accessible workspace upgrades
     status: in_progress
-    risk: A1
+    risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
-    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella for public/workspace upgrades, backend reuse, guided mission education and the public Rig 1 handoff; private runtime execution excluded
+    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella for site upgrades, backend reuse, missions, workflows, ERP/content, 25 tutorials and delivery handoffs; private runtime execution excluded
 
   - code: SRS-BUILDANDDO-BOOTSTRAP-001
     title: Machine-facing governance bootstrap

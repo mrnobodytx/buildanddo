@@ -27,6 +27,7 @@ vi.mock('@/lib/pocketbaseClient', async () => {
 import pb from '@/lib/pocketbaseClient';
 import WorkflowsPage from '@/pages/workspace/WorkflowsPage';
 import {
+    act,
     createMockWorkflow,
     renderWithProviders,
     screen,
@@ -35,14 +36,15 @@ import {
     within,
 } from '@/test/utils';
 
-const workflowList = () => screen.getByRole('list');
+const workflowList = () => screen.getByRole('list', { name: 'Workflow definitions' });
+const savedSteps = [{ id: 'step1', name: 'Review the list', kind: 'read', detail: '' }];
 
 describe('WorkflowsPage', () => {
     beforeEach(() => {
         pb.__reset();
     });
 
-    it('renders the page header and the execution caveat', async () => {
+    it('renders the page header and explains operator-recorded runs', async () => {
         pb.__setRecords('workflows', []);
         renderWithProviders(<WorkflowsPage />);
 
@@ -50,7 +52,7 @@ describe('WorkflowsPage', () => {
             await screen.findByRole('heading', { name: 'Workflows', level: 1 }),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/BuildAndDo does not\s+run automations on its own/i),
+            screen.getByText(/BuildAndDo records the work you perform/i),
         ).toBeInTheDocument();
     });
 
@@ -90,7 +92,7 @@ describe('WorkflowsPage', () => {
         expect(list.getByText('Draft')).toBeInTheDocument();
     });
 
-    it('cannot activate a workflow that is still a draft', async () => {
+    it('cannot activate a workflow with no saved steps', async () => {
         pb.__setRecords('workflows', [createMockWorkflow({ status: 'draft' })]);
         renderWithProviders(<WorkflowsPage />);
 
@@ -99,7 +101,7 @@ describe('WorkflowsPage', () => {
 
     it('pauses an active workflow and reflects the new status', async () => {
         const user = setupUser();
-        const workflow = createMockWorkflow({ name: 'Weekly reminders', status: 'active' });
+        const workflow = createMockWorkflow({ name: 'Weekly reminders', status: 'active', steps: savedSteps });
         pb.__setRecords('workflows', [workflow]);
         renderWithProviders(<WorkflowsPage />);
 
@@ -118,7 +120,7 @@ describe('WorkflowsPage', () => {
 
     it('activates a paused workflow', async () => {
         const user = setupUser();
-        const workflow = createMockWorkflow({ status: 'paused' });
+        const workflow = createMockWorkflow({ status: 'paused', steps: savedSteps });
         pb.__setRecords('workflows', [workflow]);
         renderWithProviders(<WorkflowsPage />);
 
@@ -163,10 +165,59 @@ describe('WorkflowsPage', () => {
                 name: 'Weekly reminders',
                 description: 'Friday text send.',
                 status: 'draft',
+                template: 'blank',
+                steps: [],
                 workspace: 'ws_test',
                 owner: 'user_test',
             }),
         );
-        expect(await screen.findByText('Weekly reminders')).toBeInTheDocument();
+        await waitFor(() => expect(within(workflowList()).getByText('Weekly reminders')).toBeInTheDocument());
+    });
+
+    it('keeps legacy activation dates out of run history and repairs missing step identifiers on edit', async () => {
+        const user = setupUser();
+        const workflow = createMockWorkflow({ name: 'Legacy procedure', status: 'paused', last_run: new Date().toISOString(),
+            steps: [{ name: 'Check the list', kind: 'read', detail: '' }] });
+        pb.__setRecords('workflows', [workflow]);
+        renderWithProviders(<WorkflowsPage />);
+        await user.click(await screen.findByRole('button', { name: 'Edit steps' }));
+        expect(screen.queryByText(/Last activated/)).not.toBeInTheDocument();
+        const dialog = within(screen.getByRole('dialog'));
+        await user.click(dialog.getByRole('button', { name: 'Save workflow' }));
+        await waitFor(() => expect(pb.__collection('workflows').update).toHaveBeenCalledWith(workflow.id,
+            expect.objectContaining({ steps: [expect.objectContaining({ id: expect.any(String), name: 'Check the list' })] })));
+    });
+
+    it('keeps a pending draft open and preserves it when the backend rejects the save', async () => {
+        const user = setupUser();
+        let rejectSave;
+        const pending = new Promise((_resolve, reject) => { rejectSave = reject; });
+        pb.__collection('workflows').create.mockImplementationOnce(() => pending);
+        renderWithProviders(<WorkflowsPage />);
+        await user.click(await screen.findByRole('button', { name: 'Create workflow' }));
+        const dialog = within(screen.getByRole('dialog'));
+        await user.type(dialog.getByLabelText('Name'), 'Recover this draft');
+        await user.click(dialog.getByRole('button', { name: 'Create draft' }));
+        await waitFor(() => expect(dialog.getByLabelText('Name')).toBeDisabled());
+        expect(dialog.getByRole('button', { name: 'Cancel' })).toBeDisabled();
+        await user.keyboard('{Escape}');
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+        await act(async () => rejectSave({ response: { message: 'Workspace permission changed.' } }));
+        expect(await dialog.findByRole('alert')).toHaveTextContent('Workspace permission changed');
+        expect(dialog.getByLabelText('Name')).toHaveValue('Recover this draft');
+        expect(dialog.getByRole('button', { name: 'Create draft' })).toBeEnabled();
+    });
+
+    it('asks before deleting a workflow and preserves the definition when history blocks deletion', async () => {
+        const user = setupUser();
+        const workflow = createMockWorkflow({ name: 'Retained procedure' });
+        pb.__setRecords('workflows', [workflow]);
+        renderWithProviders(<WorkflowsPage />);
+        await user.click(await screen.findByRole('button', { name: 'Delete' }));
+        expect(pb.__collection('workflows').delete).not.toHaveBeenCalled();
+        pb.__collection('workflows').delete.mockRejectedValue({ response: { message: 'This workflow has run history. Pause it.' } });
+        await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Delete workflow' }));
+        await waitFor(() => expect(within(screen.getByRole('dialog')).getByRole('alert')).toHaveTextContent('run history'));
+        expect(within(workflowList()).getByText('Retained procedure')).toBeInTheDocument();
     });
 });

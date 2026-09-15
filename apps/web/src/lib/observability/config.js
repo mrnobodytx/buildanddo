@@ -28,6 +28,7 @@ export const WORKSPACE_ENTITIES = Object.freeze({
     missions: 'mission',
     challenge_submissions: 'challenge',
     workflows: 'workflow',
+    workflow_runs: 'workflow_run',
     signals: 'signal',
     services: 'service',
     operations: 'operation',

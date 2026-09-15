@@ -114,6 +114,31 @@ test('failed writes are counted as errors and never as successful writes', () =>
     );
 });
 
+test('workflow run counters omit stored observations and receipt identifiers', () => {
+    const { hooks, records } = runtime();
+    const event = recordEvent('workflow_runs');
+    event.record.snapshot = { name: 'Private procedure title' };
+    event.record.events = [{ observation: 'Private outcome', evidence: 'receipt-private' }];
+    hooks.onRecordAfterCreateSuccess(event);
+    assert.equal(records.length, 1);
+    assert.equal(records[0].data.tags.collection, 'workflow_runs');
+    assert.equal(records[0].data.metric, 'buildanddo.records.created');
+    assert.doesNotMatch(JSON.stringify(records), /Private|receipt-private/);
+});
+
+test('workflow command latency uses bounded endpoint names and preserves failed outcomes', () => {
+    const { telemetry, records } = runtime();
+    assert.equal(telemetry.observeRequest(requestEvent('/api/buildanddo/workflow-runs', 'POST')), 'saved');
+    assert.equal(records[0].data.tags.endpoint, '/api/buildanddo/workflow-runs');
+    const rejected = new Error('stale revision');
+    assert.throws(() => telemetry.observeRequest(requestEvent('/api/buildanddo/workflow-runs/private-run-id/decisions', 'POST',
+        () => { throw rejected; })), (error) => error === rejected);
+    assert.equal(records[1].data.tags.endpoint, '/api/buildanddo/workflow-runs/:id/decisions');
+    assert.equal(records[1].data.tags.outcome, 'failure');
+    assert.equal(records[1].data.tags.collection, 'workflow_runs');
+    assert.doesNotMatch(JSON.stringify(records), /private-run-id/);
+});
+
 test('unset configuration silently disables counters and middleware', () => {
     const { hooks, telemetry, records } = runtime({});
     const event = recordEvent();
