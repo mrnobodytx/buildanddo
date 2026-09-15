@@ -13,7 +13,7 @@
       "lines": 409,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Record current pipelines, governance findings and the 24-file Vitest inventory so acceptance gaps remain reproducible.",
+      "intent_statement": "Record current pipelines, governance findings and the 25-file Vitest inventory so acceptance gaps remain reproducible.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "stored",
       "supersedes": false,
@@ -69,7 +69,8 @@
       ],
       "enum_type": "Test",
       "functions": [
-        "checkDirectory"
+        "checkDirectory",
+        "inspectSource"
       ],
       "dependencies": [
         "apps/web/src",
@@ -78,7 +79,7 @@
         "node:module",
         "node:path"
       ],
-      "lines": 71,
+      "lines": 102,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the limited offline source checks reproducible without presenting them as repository lint or component tests.",
@@ -109,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 8758,
+      "lines": 9522,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -171,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 414,
+      "lines": 276,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -238,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 284,
+      "lines": 326,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -398,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 326,
+      "lines": 372,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1797,13 +1798,14 @@
         "@/components/ui/sheet",
         "@/contexts/AuthContext",
         "@/contexts/WorkspaceContext",
+        "@/hooks/useDemoMode",
         "@/lib/utils",
         "lucide-react",
         "react",
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 254,
+      "lines": 257,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
@@ -1830,17 +1832,26 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [],
+      "functions": [
+        "DraftPage",
+        "WorkspaceScene"
+      ],
       "dependencies": [
         "@/components/workspace/PageBoundary",
         "@/components/workspace/WorkspaceLayout",
+        "@/contexts/AuthContext",
+        "@/contexts/WorkspaceContext",
+        "@/lib/demoWorkspace",
         "@/lib/observability/runtime",
         "@/test/utils",
+        "@testing-library/react",
         "apps/web/src/components/workspace/PageBoundary.jsx",
+        "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+        "react",
         "react-router-dom",
         "vitest"
       ],
-      "lines": 68,
+      "lines": 106,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prove a page failure preserves navigation, carries page attribution and can recover.",
@@ -2225,7 +2236,7 @@
         "apps/web/src/lib/pocketbaseClient.js",
         "react"
       ],
-      "lines": 101,
+      "lines": 102,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Bind loaded workspaces to the current account so late requests cannot retain another account selection.",
@@ -2348,7 +2359,7 @@
         "apps/web/src/lib/workspaceActions.js",
         "react"
       ],
-      "lines": 325,
+      "lines": 327,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "One read/write path for workspace collections, so every page reports failure the same way and none of them can confuse an empty collection with an unreachable one.",
@@ -3529,7 +3540,7 @@
         "lucide-react",
         "react"
       ],
-      "lines": 710,
+      "lines": 711,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
@@ -3906,7 +3917,7 @@
         "lucide-react",
         "react"
       ],
-      "lines": 720,
+      "lines": 721,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Give a workflow the sequence that makes it one — ordered, editable steps — so activating it says what would run.",
@@ -5068,7 +5079,7 @@
         "react",
         "vitest"
       ],
-      "lines": 228,
+      "lines": 250,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise workflow history, safe retries, approval consent, evidence recording and scope changes through the real workspace UI.",
@@ -5273,26 +5284,24 @@
       ],
       "enum_type": "Test",
       "functions": [
-        "ApiError",
-        "BadRequestError",
-        "ForbiddenError",
-        "NotFoundError",
-        "Collection",
-        "Record",
         "fixture",
         "rejected"
       ],
       "dependencies": [
+        "../../apps/web/src/lib/workflowRuns.js",
+        "@/lib/pocketbaseClient",
         "apps/pocketbase/pb_hooks/workflow-policy.js",
         "apps/pocketbase/pb_hooks/workflow-runs.js",
         "apps/pocketbase/pb_hooks/workflows.pb.js",
         "apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js",
+        "apps/web/src/lib/workHistory.js",
+        "apps/web/src/lib/workflowRuns.js",
         "node:assert/strict",
         "node:fs",
         "node:test",
         "node:vm"
       ],
-      "lines": 447,
+      "lines": 519,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise production workflow commands against transactional storage contracts, including role isolation, retries, stale requests and rollback.",
@@ -7856,7 +7865,7 @@
         "docs/workflow-system.md",
         "scripts/ci/release.mjs"
       ],
-      "lines": 180,
+      "lines": 202,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Give the private delivery seat verified source boundaries and acceptance requirements for releasing BuildAndDo without relying on GitHub Actions.",
@@ -8741,12 +8750,767 @@
       "timestamp": "2026-09-15T05:08:38+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/evidence-policy.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "author",
+        "enforce",
+        "remove"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workflow-policy.js"
+      ],
+      "lines": 53,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep evidence writes with their author and current workspace authority while permitting readable same-workspace mission links.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/evidence.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/evidence-policy.js"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Enforce shared evidence write boundaries on native collection requests while preserving server-owned workflow transactions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/evidence.pb.js",
+        "apps/pocketbase/pb_migrations/1788900000_create_workspace_members_rbac.js"
+      ],
+      "lines": 61,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let current members discover their workspace and read shared evidence without granting workspace management or evidence authorship to another account.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/PreviousWorkNote.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "PreviousWorkNote",
+        "timeAgo"
+      ],
+      "dependencies": [
+        "@/components/workspace/workspaceHelpers",
+        "@/lib/workflowRuns",
+        "apps/web/src/components/workspace/workspaceHelpers.jsx",
+        "apps/web/src/lib/workHistory.js",
+        "apps/web/src/lib/workflowRuns.js",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 118,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Warn a seat that someone already worked this, before it spends effort rediscovering it.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/__tests__/WorkspaceHistory.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "@/components/workspace/PreviousWorkNote",
+        "@/hooks/usePreviousWork",
+        "@/lib/demoWorkspace",
+        "@/lib/pocketbaseClient",
+        "@/lib/workHistory",
+        "@/test/utils",
+        "@testing-library/react",
+        "apps/web/src/components/workspace/PreviousWorkNote.jsx",
+        "apps/web/src/hooks/usePreviousWork.js",
+        "react",
+        "vitest"
+      ],
+      "lines": 113,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify that receipt history is visible, unavailable history is actionable, and private results cannot cross workspace, account or demo boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/usePreviousWork.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "usePreviousWork"
+      ],
+      "dependencies": [
+        "@/contexts/WorkspaceContext",
+        "@/hooks/useDemoMode",
+        "@/lib/pocketbaseClient",
+        "@/lib/workHistory",
+        "apps/web/src/contexts/WorkspaceContext.jsx",
+        "apps/web/src/hooks/useDemoMode.js",
+        "apps/web/src/lib/pocketbaseClient.js",
+        "apps/web/src/lib/workHistory.js",
+        "react"
+      ],
+      "lines": 79,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Load seat and receipt history for the current scope without per-row requests or stale account results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/workHistory.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "deriveWorkState",
+        "lookupPreviousWork",
+        "lookupPreviousWorkBatch",
+        "readSource",
+        "summariseHistory",
+        "summariseSeats",
+        "toHistoryEvent"
+      ],
+      "dependencies": [
+        "@/lib/pocketbaseClient",
+        "apps/web/src/lib/pocketbaseClient.js",
+        "apps/web/src/lib/seatComms.js"
+      ],
+      "lines": 196,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Answer \"has anyone already worked this\" before a seat spends effort rediscovering it.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/workspace-integration.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/workflow-system.md",
+        "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js",
+        "tests/upgrade/workspace-integration.test.mjs",
+        "tests/upgrade/work-history.test.mjs"
+      ],
+      "lines": 121,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make repaired workspace connections and remaining runtime acceptance explicit so recorded work cannot be mistaken for an activated integration.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/source-checker.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "../../.bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs",
+        "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+        "lucide-react",
+        "node:assert/strict",
+        "node:fs",
+        "node:test"
+      ],
+      "lines": 48,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep missing JSX imports from passing the offline diagnostic that previously missed a crash in every workspace route.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/work-history.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "fixture"
+      ],
+      "dependencies": [
+        "@/lib/pocketbaseClient",
+        "apps/web/src/lib/workHistory.js",
+        "node:assert/strict",
+        "node:fs",
+        "node:test",
+        "node:url",
+        "node:vm"
+      ],
+      "lines": 200,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Detect missing evidence and run history, incomplete reads, request collisions and account changes in the actual history adapter.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/workspace-integration.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "migrationFixture",
+        "policyFixture",
+        "record"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/evidence-policy.js",
+        "apps/pocketbase/pb_hooks/evidence.pb.js",
+        "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js",
+        "node:assert/strict",
+        "node:fs",
+        "node:test",
+        "node:url",
+        "node:vm"
+      ],
+      "lines": 219,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise actual evidence authority and migration retention with workspace, account, custom-rule and missing-source failures.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/PageBoundary.test.jsx",
+      "target": "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/__tests__/PageBoundary.test.jsx validates apps/web/src/components/workspace/WorkspaceLayout.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workflow-runs.test.mjs",
+      "target": "apps/web/src/lib/workflowRuns.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workflow-runs.test.mjs validates apps/web/src/lib/workflowRuns.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workflow-runs.test.mjs",
+      "target": "apps/web/src/lib/workHistory.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workflow-runs.test.mjs validates apps/web/src/lib/workHistory.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/evidence-policy.js",
+      "target": "apps/pocketbase/pb_hooks/workflow-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/evidence-policy.js depends on apps/pocketbase/pb_hooks/workflow-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/evidence.pb.js",
+      "target": "apps/pocketbase/pb_hooks/evidence-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/evidence.pb.js depends on apps/pocketbase/pb_hooks/evidence-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js",
+      "target": "apps/pocketbase/pb_migrations/1788900000_create_workspace_members_rbac.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js depends on apps/pocketbase/pb_migrations/1788900000_create_workspace_members_rbac.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js",
+      "target": "apps/pocketbase/pb_hooks/evidence.pb.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js depends on apps/pocketbase/pb_hooks/evidence.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/PreviousWorkNote.jsx",
+      "target": "apps/web/src/lib/workHistory.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/PreviousWorkNote.jsx consumes apps/web/src/lib/workHistory.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/PreviousWorkNote.jsx",
+      "target": "apps/web/src/lib/workflowRuns.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/PreviousWorkNote.jsx consumes apps/web/src/lib/workflowRuns.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/PreviousWorkNote.jsx",
+      "target": "apps/web/src/pages/workspace/MissionsPage.jsx",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/PreviousWorkNote.jsx verified by apps/web/src/pages/workspace/MissionsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/WorkspaceHistory.test.jsx",
+      "target": "apps/web/src/hooks/usePreviousWork.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/__tests__/WorkspaceHistory.test.jsx validates apps/web/src/hooks/usePreviousWork.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/WorkspaceHistory.test.jsx",
+      "target": "apps/web/src/components/workspace/PreviousWorkNote.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/__tests__/WorkspaceHistory.test.jsx validates apps/web/src/components/workspace/PreviousWorkNote.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/usePreviousWork.js",
+      "target": "apps/web/src/lib/workHistory.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/usePreviousWork.js consumes apps/web/src/lib/workHistory.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/usePreviousWork.js",
+      "target": "apps/web/src/hooks/useDemoMode.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/usePreviousWork.js consumes apps/web/src/hooks/useDemoMode.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/usePreviousWork.js",
+      "target": "apps/web/src/lib/pocketbaseClient.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/usePreviousWork.js consumes apps/web/src/lib/pocketbaseClient.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workHistory.js",
+      "target": "seat_events",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/workHistory.js consumes seat_events.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workHistory.js",
+      "target": "evidence",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/workHistory.js consumes evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workHistory.js",
+      "target": "workflow_runs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/workHistory.js consumes workflow_runs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workHistory.js",
+      "target": "apps/web/src/pages/workspace/MissionsPage.jsx",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/workHistory.js verified by apps/web/src/pages/workspace/MissionsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/workspace-integration.md",
+      "target": "docs/workflow-system.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/workspace-integration.md depends on docs/workflow-system.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/workspace-integration.md",
+      "target": "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/workspace-integration.md consumes apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/workspace-integration.md",
+      "target": "tests/upgrade/workspace-integration.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/workspace-integration.md verified by tests/upgrade/workspace-integration.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/workspace-integration.md",
+      "target": "tests/upgrade/work-history.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/workspace-integration.md verified by tests/upgrade/work-history.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/source-checker.test.mjs",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/source-checker.test.mjs validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/source-checker.test.mjs",
+      "target": "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/source-checker.test.mjs validates apps/web/src/components/workspace/WorkspaceLayout.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/work-history.test.mjs",
+      "target": "apps/web/src/lib/workHistory.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/work-history.test.mjs validates apps/web/src/lib/workHistory.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-integration.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/evidence-policy.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-integration.test.mjs validates apps/pocketbase/pb_hooks/evidence-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-integration.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/evidence.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-integration.test.mjs validates apps/pocketbase/pb_hooks/evidence.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-integration.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-integration.test.mjs validates apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/work-history.test.mjs",
+      "description": "Workspace integration red tests: The first eight history regressions failed against the previous reader: mission evidence and workflow receipts were omitted, failed/truncated sources were hidden, and concurrent/account reads were not isolated. The enhanced source checker also identified the actual unbound Plus component in WorkspaceLayout. Production source was then repaired and the cases passed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Established a reproducible source failure before restoring workspace rendering and connected receipt history.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T12:24:41.663962+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/workflow-runs.test.mjs",
+      "description": "Workspace integration connected regression: All 110 Node and 18 Python tests pass. The real browser command helper, server transaction helpers and history reader are connected through storage/SDK doubles; lost start/decision responses retry to one run and one evidence receipt without verifying the mission. Nine access contracts cover authored evidence, current membership, mission links and reversible read rules. Selected evidence/history coverage is 100% lines/functions and 96.83% branches. Native PocketBase and React acceptance are not inferred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Workspace discovery, receipt visibility and request isolation are ready for source review; native and UI acceptance remains pending.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T12:40:06.450212+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "apps/web/src/components/workspace/__tests__/WorkspaceHistory.test.jsx",
+      "description": "Workspace integration acceptance blockers: Targeted Vitest and coverage cannot start because Vitest is absent; official lint cannot load eslint-plugin-import and build cannot spawn Vite. The lock audit reports eight missing resolutions and two manifest dependency-group differences. The limited checker parses 192 frontend modules with no core or JSX binding errors. PocketBase 0.28.4 is absent. No dependency removal, network installation, native execution or browser acceptance is claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "A dependency-enabled runner and an isolated native PocketBase fixture are still required before release.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T12:40:18.303330+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "docs/workspace-integration.md",
+      "description": "Workspace integration governance review: Measured context matches all 450 tracked files with six existing findings and four unwired gates retained. The public-boundary scanner reports zero failures; all 96 files new since the original base carry CGRF provenance. PR 22 is already merged into the current baseline. The repair remains local source; the delivery handoff requires the subsequently published full source revision, installed evidence hooks/read rules and served-version checks. No shared mutation or private runtime was activated.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "The integration repair and remaining private/native acceptance steps are reviewable without claiming deployed behavior.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T12:50:10.766994+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 152,
-    "type_b_count": 263,
-    "type_c_count": 24,
+    "type_a_count": 163,
+    "type_b_count": 292,
+    "type_c_count": 28,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

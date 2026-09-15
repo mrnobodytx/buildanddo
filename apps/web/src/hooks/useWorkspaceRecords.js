@@ -117,6 +117,7 @@ export function useWorkspaceRecords(collection, options = {}) {
 				sort: sort || '-created',
 				expand,
 				filter,
+				requestKey: null,
 			});
 			if (requestRef.current !== request) return;
 			setRecords(list);
@@ -262,6 +263,7 @@ export function useRecords(collection, options = {}) {
 			const list = await pb.collection(collection).getFullList({
 				sort: sort || '-created',
 				expand,
+				requestKey: null,
 			});
 			if (requestRef.current !== request) return;
 			setRecords(list);

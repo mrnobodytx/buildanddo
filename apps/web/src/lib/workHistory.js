@@ -9,14 +9,12 @@
 // Created:     2026-09-10
 // Depends:     apps/web/src/lib/pocketbaseClient.js, apps/web/src/lib/seatComms.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES seat_events; CONSUMES evidence; VERIFIED_BY apps/web/src/pages/workspace/MissionsPage.jsx
+// EnumEdges:   CONSUMES seat_events; CONSUMES evidence; CONSUMES workflow_runs;
+//              VERIFIED_BY apps/web/src/pages/workspace/MissionsPage.jsx
 // Intent:      Answer "has anyone already worked this" before a seat spends effort rediscovering it.
 // ───────────────────────────────────────────────────────────────
 
 import pb from '@/lib/pocketbaseClient';
-
-/** Subject types the lookup understands. Anything else reads seat events only. */
-const EVIDENCE_LINKED_SUBJECTS = new Set(['mission']);
 
 const EMPTY_HISTORY = Object.freeze({
     hasHistory: false,
@@ -24,10 +22,12 @@ const EMPTY_HISTORY = Object.freeze({
     seats: [],
     events: [],
     evidence: [],
+    runs: [],
     prLinks: [],
     firstAt: null,
     lastAt: null,
     partial: false,
+    sources: {},
 });
 
 /**
@@ -99,145 +99,98 @@ function toHistoryEvent(record) {
     };
 }
 
-/**
- * Looks up everything already recorded against one mission, workflow, or page.
- *
- * Two sources are consulted. `seat_events` is the coordination record — who
- * picked it up, how far they got, whether they handed it off. `evidence` is the
- * outcome record, and only missions carry an evidence relation, so a workflow
- * lookup returns `partial: true` to say the second source did not apply rather
- * than implying there was nothing to find.
- *
- * Failures degrade to an empty result: a page must still render when the
- * history read fails, and an empty "previous work" panel is less wrong than a
- * broken one.
- *
- * @param {object} input Lookup input.
- * @param {string} input.workspaceId Workspace record id.
- * @param {string} input.subjectType `mission`, `workflow`, `page`, `issue`, `pull_request`, `other`.
- * @param {string} input.subject Record id, or repository path for a page.
- * @param {{ limit?: number }} [options] Read options.
- * @returns {Promise<object>} History summary; `hasHistory` is false when nothing was found.
- */
-export async function lookupPreviousWork({ workspaceId, subjectType, subject }, options = {}) {
-    if (!workspaceId || !subjectType || !subject || !pb.authStore.record) {
-        return EMPTY_HISTORY;
-    }
-    const limit = options.limit || 25;
-    const checksEvidence = EVIDENCE_LINKED_SUBJECTS.has(subjectType);
-
-    let events = [];
-    let evidence = [];
-
+/** Read one bounded source while retaining the difference between missing and unreadable work. */
+async function readSource(name, field, { workspaceId, subjectType, ids, limit }) {
+    const params = { ws: workspaceId, type: subjectType };
+    ids.forEach((id, index) => { params[`s${index}`] = id; });
+    const clause = ids.map((_, index) => `${field} = {:s${index}}`).join(' || ');
+    const scope = name === 'seat_events' ? ' && subject_type = {:type}' : '';
     try {
-        const page = await pb.collection('seat_events').getList(1, limit, {
-            filter: pb.filter(
-                'workspace = {:ws} && subject_type = {:type} && subject = {:subject}',
-                { ws: workspaceId, type: subjectType, subject },
-            ),
-            sort: '-created',
+        const page = await pb.collection(name).getList(1, limit, {
+            filter: pb.filter(`workspace = {:ws}${scope} && (${clause})`, params),
+            sort: name === 'workflow_runs' ? '-started_at,-id' : '-created,-id',
+            // Different panels can read the same collection concurrently.
+            // Scope checks below, and the hook's sequence, discard stale results.
+            requestKey: null,
         });
-        events = page.items.map(toHistoryEvent);
-    } catch (err) {
-        console.error('previous work: seat event read failed', err);
-    }
-
-    if (checksEvidence) {
-        try {
-            const page = await pb.collection('evidence').getList(1, limit, {
-                filter: pb.filter('workspace = {:ws} && mission = {:subject}', {
-                    ws: workspaceId,
-                    subject,
-                }),
-                sort: '-created',
-            });
-            evidence = page.items.map((record) => ({
-                id: record.id,
-                type: record.type,
-                content: record.content,
-                source: record.source || null,
-                createdAt: record.created,
-            }));
-        } catch (err) {
-            console.error('previous work: evidence read failed', err);
+        if (!Array.isArray(page.items) || !Number.isInteger(page.totalItems) || page.totalItems < page.items.length ||
+            page.items.some((row) => !row || row.workspace !== workspaceId || !ids.includes(row[field]) ||
+                (name === 'seat_events' && row.subject_type !== subjectType))) {
+            return { name, field, rows: [], state: 'unavailable' };
         }
+        return { name, field, rows: page.items, state: page.totalItems > page.items.length ? 'truncated' : 'complete' };
+    } catch {
+        return { name, field, rows: [], state: 'unavailable' };
     }
+}
 
-    const timestamps = [
-        ...events.map((e) => e.createdAt),
-        ...evidence.map((e) => e.createdAt),
-    ]
-        .filter(Boolean)
-        .sort();
-
+function summariseHistory(id, sources) {
+    const rows = (name) => {
+        const source = sources.find((item) => item.name === name);
+        return source ? source.rows.filter((row) => row[source.field] === id) : [];
+    };
+    const events = rows('seat_events').map(toHistoryEvent);
+    const evidence = rows('evidence').map((record) => ({ id: record.id, type: record.type,
+        content: record.content, source: record.source || null, createdAt: record.created }));
+    const runs = rows('workflow_runs').map((record) => ({ id: record.id, status: record.status,
+        startedAt: record.started_at, finishedAt: record.finished_at || null, updatedAt: record.updated || null }));
+    const timestamps = [...events.map((item) => item.createdAt), ...evidence.map((item) => item.createdAt),
+        ...runs.flatMap((item) => [item.startedAt, item.finishedAt, item.updatedAt])]
+        .filter((value) => typeof value === 'string' && Number.isFinite(Date.parse(value)))
+        .sort((a, b) => Date.parse(a) - Date.parse(b));
     return {
-        hasHistory: events.length > 0 || evidence.length > 0,
+        hasHistory: events.length + evidence.length + runs.length > 0,
         state: deriveWorkState(events),
         seats: summariseSeats(events),
-        events,
-        evidence,
-        prLinks: [...new Set(events.map((e) => e.prUrl).filter(Boolean))],
+        events, evidence, runs,
+        prLinks: [...new Set(events.map((item) => item.prUrl).filter(Boolean))],
         firstAt: timestamps[0] || null,
         lastAt: timestamps[timestamps.length - 1] || null,
-        partial: !checksEvidence,
+        partial: sources.some((source) => source.state !== 'complete'),
+        sources: Object.fromEntries(sources.map((source) => [source.name, source.state])),
     };
 }
 
 /**
- * Looks up previous work for several subjects in one pass.
+ * Read seat activity and the receipts applicable to one subject.
  *
- * Used by list pages that want a "previous work" marker per row without firing
- * one request per row on every render.
- *
- * @param {object} input Lookup input.
- * @param {string} input.workspaceId Workspace record id.
- * @param {string} input.subjectType Subject type shared by every id.
- * @param {string[]} input.subjects Record ids.
- * @returns {Promise<Record<string, object>>} Map of subject id to history summary.
+ * @param {object} input Workspace id, subject type and subject id.
+ * @param {{limit?: number}} [options] Maximum rows per source, capped at 200.
+ * @returns {Promise<object>} History with explicit incomplete-source state.
  */
-export async function lookupPreviousWorkBatch({ workspaceId, subjectType, subjects }) {
-    const ids = [...new Set((subjects || []).filter(Boolean))];
-    if (!workspaceId || !subjectType || ids.length === 0 || !pb.authStore.record) {
-        return {};
+export async function lookupPreviousWork({ workspaceId, subjectType, subject }, options = {}) {
+    const history = await lookupPreviousWorkBatch({ workspaceId, subjectType, subjects: [subject] },
+        { limit: options.limit ?? 25 });
+    return Object.hasOwn(history, subject) ? history[subject] : EMPTY_HISTORY;
+}
+
+/**
+ * Read history for a list without issuing a request per row.
+ *
+ * Queries use groups of 40 subjects and at most 200 rows per source. A truncated
+ * source marks every subject in that group incomplete, including missing rows.
+ * Evidence and run receipts remain distinct from the seat communication state.
+ *
+ * @param {object} input Workspace id, subject type and subject ids.
+ * @param {{limit?: number}} [options] Maximum rows per source, capped at 200.
+ * @returns {Promise<Record<string, object>>} Scoped history keyed by subject id.
+ */
+export async function lookupPreviousWorkBatch({ workspaceId, subjectType, subjects }, options = {}) {
+    const ids = [...new Set((Array.isArray(subjects) ? subjects : []).filter((id) => typeof id === 'string' && id.length > 0))];
+    const accountId = pb.authStore.record?.id;
+    if (!workspaceId || !subjectType || !ids.length || !accountId) return {};
+    const limit = Number.isInteger(options.limit) && options.limit > 0 ? Math.min(options.limit, 200) : 200;
+    const bySubject = new Map();
+    for (let offset = 0; offset < ids.length; offset += 40) {
+        if (pb.authStore.record?.id !== accountId) return {};
+        const batch = ids.slice(offset, offset + 40);
+        const query = { workspaceId, subjectType, ids: batch, limit };
+        const pending = [readSource('seat_events', 'subject', query)];
+        if (subjectType === 'mission') pending.push(readSource('evidence', 'mission', query));
+        if (subjectType === 'workflow') pending.push(readSource('workflow_runs', 'workflow', query));
+        const sources = await Promise.all(pending);
+        if (pb.authStore.record?.id !== accountId) return {};
+        for (const id of batch) bySubject.set(id, summariseHistory(id, sources));
     }
-
-    const bySubject = {};
-    for (const id of ids) bySubject[id] = { ...EMPTY_HISTORY, events: [], seats: [] };
-
-    try {
-        const clause = ids.map((_, i) => `subject = {:s${i}}`).join(' || ');
-        const params = { ws: workspaceId, type: subjectType };
-        ids.forEach((id, i) => {
-            params[`s${i}`] = id;
-        });
-        const page = await pb.collection('seat_events').getList(1, 200, {
-            filter: pb.filter(
-                `workspace = {:ws} && subject_type = {:type} && (${clause})`,
-                params,
-            ),
-            sort: '-created',
-        });
-        const grouped = new Map(ids.map((id) => [id, []]));
-        for (const record of page.items) {
-            const bucket = grouped.get(record.subject);
-            if (bucket) bucket.push(toHistoryEvent(record));
-        }
-        for (const [id, events] of grouped) {
-            bySubject[id] = {
-                hasHistory: events.length > 0,
-                state: deriveWorkState(events),
-                seats: summariseSeats(events),
-                events,
-                evidence: [],
-                prLinks: [...new Set(events.map((e) => e.prUrl).filter(Boolean))],
-                firstAt: events.length ? events[events.length - 1].createdAt : null,
-                lastAt: events.length ? events[0].createdAt : null,
-                partial: true,
-            };
-        }
-    } catch (err) {
-        console.error('previous work batch read failed', err);
-    }
-
-    return bySubject;
+    return Object.fromEntries(bySubject);
 }

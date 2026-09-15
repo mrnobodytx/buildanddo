@@ -29,7 +29,7 @@ import { createWorkflowRunClient, readRunSnapshot, RUN_STATUS } from '@/lib/work
 import { timeAgo } from '@/lib/format';
 
 /** Present run history for the mounted account and workspace. */
-export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, demo = false, definitionsUnavailable = false }) {
+export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, demo = false, definitionsUnavailable = false, onRecordsChanged }) {
     const [page, setPage] = useState(1);
     const [workflow, setWorkflow] = useState('');
     const [status, setStatus] = useState('');
@@ -61,7 +61,7 @@ export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, d
             items: [], totalItems: 0, totalPages: 0 });
     }, [api, demo, page, workflow, status]);
     useEffect(() => { refresh(); return () => { sequence.current += 1; }; }, [refresh]);
-    const saved = (record) => { setSelected(record); refresh(); };
+    const saved = (record) => { setSelected(record); refresh(); onRecordsChanged?.(); };
     const canStart = !demo && !definitionsUnavailable && !history.loading && !history.error &&
         workflows.some((record) => record.status === 'active');
 

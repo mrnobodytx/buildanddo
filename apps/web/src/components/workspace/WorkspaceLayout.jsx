@@ -21,12 +21,14 @@ import {
     Gauge,
     Network,
     Plug,
+    Plus,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Helmet } from 'react-helmet';
 import { ThemeToggle } from '@/components/ThemeControls';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useDemoMode } from '@/hooks/useDemoMode';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/site/ui';
 import { StatusBadge, DOMAIN_STATUS } from './workspaceHelpers';
@@ -122,6 +124,7 @@ function WorkspaceSwitcher() {
 export default function WorkspaceLayout() {
     const { user, logout } = useAuth();
     const { active, loading } = useWorkspace();
+    const { demo } = useDemoMode();
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -131,8 +134,8 @@ export default function WorkspaceLayout() {
     };
 
     const domainRecord = active?.expand?.domain;
-    const domainLabel = domainRecord?.domain || 'No website yet';
-    const domainStatus = domainRecord?.status || (active ? 'selected' : null);
+    const domainLabel = domainRecord?.domain || (active?.domain ? 'Website details unavailable' : 'No website yet');
+    const domainStatus = domainRecord?.status || (active && !active.domain ? 'selected' : null);
 
     return (
         <div className="min-h-screen bg-background text-foreground">
@@ -239,7 +242,7 @@ export default function WorkspaceLayout() {
                         tabIndex={-1}
                         className="workspace-content px-4 py-8 sm:px-6 lg:px-8"
                     >
-                        <div className="mx-auto max-w-6xl space-y-6">
+                        <div key={`${user?.id}:${active?.id}:${demo}`} className="mx-auto max-w-6xl space-y-6">
                             {/* Rendered by the shell, not by each page, so a page
                             that forgets it cannot present demonstration data
                             as the operator's own. */}

@@ -7,15 +7,18 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/lib/workHistory.js, apps/web/src/components/workspace/workspaceHelpers.jsx
+// Depends:     apps/web/src/lib/workHistory.js, apps/web/src/components/workspace/workspaceHelpers.jsx,
+//              apps/web/src/lib/workflowRuns.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/lib/workHistory.js; VERIFIED_BY apps/web/src/pages/workspace/MissionsPage.jsx
+// EnumEdges:   CONSUMES apps/web/src/lib/workHistory.js; CONSUMES apps/web/src/lib/workflowRuns.js;
+//              VERIFIED_BY apps/web/src/pages/workspace/MissionsPage.jsx
 // Intent:      Warn a seat that someone already worked this, before it spends effort rediscovering it.
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
 import { History } from 'lucide-react';
 import { StatusBadge, WORK_STATE } from '@/components/workspace/workspaceHelpers';
+import { RUN_STATUS } from '@/lib/workflowRuns';
 
 function timeAgo(iso) {
     if (!iso) return '—';
@@ -32,15 +35,16 @@ function timeAgo(iso) {
 /**
  * Renders what has already been recorded against one subject.
  *
- * Returns null when there is no history — an absent panel says "nothing
- * recorded" more honestly than a panel announcing emptiness on every row.
+ * Hide a successfully read empty history; keep unavailable sources visible.
  *
  * @param {object} props Component props.
  * @param {object} [props.history] A summary from `lookupPreviousWork` or `lookupPreviousWorkBatch`.
+ * @param {Function} [props.onRetry] Reload incomplete history.
  * @returns {(JSX.Element|null)} The panel, or null when there is nothing to show.
  */
-export default function PreviousWorkNote({ history }) {
-    if (!history?.hasHistory) return null;
+export default function PreviousWorkNote({ history, onRetry }) {
+    if (!history || (!history.hasHistory && !history.partial)) return null;
+    const { seats = [], events = [], evidence = [], runs = [], prLinks = [] } = history;
 
     return (
         <div className="mt-4 border-t border-border/60 pt-3">
@@ -49,11 +53,11 @@ export default function PreviousWorkNote({ history }) {
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Previous work
                 </span>
-                <StatusBadge map={WORK_STATE} value={history.state} />
+                {events.length > 0 && <StatusBadge map={WORK_STATE} value={history.state} />}
             </div>
 
             <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-                {history.seats.map((seat) => (
+                {seats.map((seat) => (
                     <li key={seat.seat} className="flex flex-wrap items-baseline gap-x-2">
                         <span className="font-evidence text-foreground">{seat.seat}</span>
                         <span>({seat.actorType})</span>
@@ -65,15 +69,15 @@ export default function PreviousWorkNote({ history }) {
                 ))}
             </ul>
 
-            {history.seats[0]?.lastSummary && (
+            {seats[0]?.lastSummary && (
                 <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                    Latest: {history.seats[0].lastSummary}
+                    Latest: {seats[0].lastSummary}
                 </p>
             )}
 
-            {history.prLinks.length > 0 && (
+            {prLinks.length > 0 && (
                 <ul className="mt-2 space-y-1 text-xs">
-                    {history.prLinks.map((url) => (
+                    {prLinks.map((url) => (
                         <li key={url}>
                             <a
                                 href={url}
@@ -88,11 +92,23 @@ export default function PreviousWorkNote({ history }) {
                 </ul>
             )}
 
-            {history.evidence.length > 0 && (
+            {evidence.length > 0 && (
                 <p className="mt-2 text-xs text-muted-foreground">
-                    {history.evidence.length} evidence record
-                    {history.evidence.length === 1 ? '' : 's'} already attached — read the
+                    {history.sources?.evidence === 'truncated' ? 'At least ' : ''}{evidence.length} evidence record
+                    {evidence.length === 1 ? '' : 's'} already attached — read the
                     Evidence Ledger before repeating the work.
+                </p>
+            )}
+            {runs.length > 0 && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                    {history.sources?.workflow_runs === 'truncated' ? 'At least ' : ''}{runs.length} recorded workflow run{runs.length === 1 ? '' : 's'}.
+                    {' '}Latest run: {RUN_STATUS[runs[0].status]?.label || 'Unknown status'}.
+                </p>
+            )}
+            {history.partial && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                    History is incomplete. A source is unavailable or more records exist than this summary can show.
+                    {onRetry && <button type="button" onClick={onRetry} className="ml-2 min-h-8 underline underline-offset-4">Retry history</button>}
                 </p>
             )}
         </div>

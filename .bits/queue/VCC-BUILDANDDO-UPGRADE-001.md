@@ -282,3 +282,45 @@ pass for all 442 tracked files, and CGRF provenance is present on 88/88 files
 new since the original base. Memory records 152 file vectors, 263 declared
 edges and 24 observed events with no orphan vectors. Six existing findings
 and four unwired gates remain visible; no complete TEVV or deployment is claimed.
+
+## Workspace integration repair authorized 2026-09-15
+
+The owner's report of disconnected or malfunctioning systems extends this A2
+source dispatch. The current review baseline includes merged PR 22. Repair
+measured record-path defects before adding further product subsystems.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| AH | Reconcile the merged source and register integration defects | `python scripts/ci/agent_context.py --check` | done |
+| AI | Repair workspace discovery and shared evidence access | `node --test tests/upgrade/workspace-integration.test.mjs` | partial — 9/9 source contracts pass; native rules/hooks pending |
+| AJ | Connect previous work to evidence/runs, restore rendering and isolate reads | History/JSX regressions and targeted component suites | partial — source contracts pass; component execution unavailable |
+| AK | Verify connected behavior and refresh evidence | Node/Python, web, context, boundary and memory checks | done — available gates pass; native/frontend acceptance remains pending |
+
+Memory brief: PR 22 is merged, but its governance and Cloudflare checks failed.
+The resumed checkout was behind it and has been fast-forwarded to the merged
+source. The 86 existing Node and 18 Python regressions pass on this baseline.
+Workspace RBAC omitted the workspaces and evidence collections. Previous work
+batch reads query only seat_events, so persisted mission evidence and workflow
+runs do not appear. Independent shared reads use the SDK's default cancellation
+key, and history has no guard against a response from an earlier scope. Existing
+frontend dependencies and the native PocketBase binary remain unavailable.
+No authenticated workspace is supplied; no live seat event is fabricated.
+
+Repair results: all 110 Node and 18 Python regressions pass, including the
+browser-command to server-transaction to history-reader connection with lost
+responses and idempotent retries. The first eight history regressions failed
+before the fix. The source checker also found the missing Plus import in the
+shared layout; its JSX-binding checks now pass on all 192 frontend modules.
+Selected evidence/history source coverage is 100% lines/functions and 96.83%
+branches. Vitest and frontend coverage cannot start, lint lacks its import
+plugin, and Vite is unavailable. The lock audit still finds eight missing
+resolutions and two manifest differences. Native PocketBase and browser checks
+remain pending. docs/workspace-integration.md defines the remaining acceptance.
+
+AK evidence gate PASS with 4/7 application smoke. The context lock and public
+boundary pass for 450 tracked files; all 96 files new since the original base
+carry CGRF provenance. Memory verification passes for 163 file vectors, 292
+declared edges and 28 observed events with complete IOO and no orphan vectors.
+The cumulative report records 18/37 acceptance gates complete. Six existing
+findings and four unwired gates remain visible. No live deployment, native
+acceptance or private-agent execution is inferred from these source results.

@@ -324,3 +324,49 @@ unavailable. These results establish source contracts, not complete TEVV.
 docs/business-learning.md and the BuildAndDo delivery handoff define remaining
 native, keyboard/mobile/theme and served-version acceptance. No live release
 or private agent was started in this public session.
+
+## Authorized continuation — repair workspace integration
+
+On 2026-09-15 the owner reported that systems are disconnected or not working
+properly after PR 22 merged. This continues the existing A2 source dispatch:
+trace the shipped record paths, repair demonstrable integration defects, and
+distinguish application functionality from private services awaiting activation.
+The resumed checkout was brought forward to the already-merged PR 22 source
+before investigation. This is not a new deployment or a rollback of earlier work.
+
+Acceptance:
+
+1. Let current workspace members discover their shared workspace and read its
+   Evidence Ledger, including receipts authored by another member. Use bound
+   workspace membership, preserve owner-only workspace management, and retain
+   evidence authorship. Add a reversible migration and request validation for
+   current write authority, immutable ownership/workspace, and same-workspace
+   readable mission references. No anonymous or unrelated-workspace access.
+2. Make both single and batch Previous work reads include persisted mission
+   evidence and workflow runs as applicable. Keep seat events and operator-run
+   receipts distinct. Report unavailable or truncated sources as incomplete;
+   an unsuccessful read must never establish that no work exists.
+3. Isolate independent PocketBase reads from SDK request cancellation and hide
+   late history results after account, workspace, subject, or demo changes.
+   Demo reads make no backend request. Refresh the appropriate history after
+   a successful mission-evidence write or workflow command.
+   Render the real workspace layout without unbound JSX components and remount
+   its private page state when the account/workspace/demo scope changes.
+4. Add behavioral regressions for these connections and their denied/error
+   paths. Run the available Node/Python, context, boundary and memory gates;
+   run component/native checks only with their actual required tools. Record
+   missing tooling and deployment status separately from passing source tests.
+
+External-agent execution, service credentials, migrations on shared databases,
+and deployment control remain with the existing private delivery handoff.
+This repair does not turn a recorded workflow into an automation runner.
+
+Observed repair evidence: all 110 Node and 18 Python regressions pass. The first
+eight new history cases failed before the reader repair. An integrated browser
+adapter/server-command/storage-double/history-reader case now preserves exactly
+one run and receipt after lost responses. The extended source diagnostic found
+the layout's missing Plus import and now parses 192 modules without errors.
+Selected history/evidence source coverage is 100% lines/functions and 96.83%
+branches. Native PocketBase and frontend execution remain acceptance blockers;
+docs/workspace-integration.md specifies their tests and the remaining external
+integration boundary.
