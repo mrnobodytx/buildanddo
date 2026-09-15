@@ -82,3 +82,29 @@ Private activation: .bits/handoffs/2026-09-14-bits-codegen-ide1-upgrade-telemetr
 Final local governance: context lock PASS (6 retained findings, 4 unwired gates);
 public boundary PASS (397 files, zero failures). The provider actor label remains
 a PR check. Dispatch smoke: 4/7; frontend environment failures are detailed in the report.
+
+## Continuation authorized 2026-09-15
+
+The owner's request to reuse backend functions from the logged-in sections
+extends this in-progress dispatch under SRS-BUILDANDDO-UPGRADE-001 at A1.
+PR 19 merged the initial implementation; its previously blocked frontend
+checks are not inferred to have passed. The continuation adds these tasks:
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| K | Inventory and register backend reuse | `python scripts/ci/agent_context.py --check` | done |
+| L | Connect home previews and challenge history to existing workspace hooks | Targeted home/selection suites | partial — source complete, selector tests pass; component execution unavailable |
+| M | Share authenticated Field Manual and progress with Docs | Targeted tutorial/account-isolation suites | partial — source and regression suites complete; component execution unavailable |
+| N | Verify and record continuation evidence | Web checks, Node tests, context, boundary and memory checks | done — blocked checks recorded |
+
+Existing collections and access rules are the authorization boundary. No new
+backend deployment or live workspace mutation is performed. The sandbox still
+has no authenticated workspace for publishing a seat event; record local
+evidence without fabricating a public event.
+
+Continuation gate results: K PASS; L selector gate PASS (7/7), component gate
+FAIL to start (Vitest absent); M source gate PASS, component gate FAIL to start;
+N PASS for local evidence, with 4/7 dispatch smoke checks passing. Full Node
+regression: 22/22. Python: 18/18. Offline source parser: 174 modules, no static
+errors. Browser and native/live backend acceptance remain unverified. See the
+updated cumulative report and memory payload for runnable commands and limits.

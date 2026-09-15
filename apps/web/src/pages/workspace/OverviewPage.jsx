@@ -56,8 +56,7 @@ import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
-
-const ACTIVE_MISSION_STATES = ['approved', 'running', 'needs_attention'];
+import { activeMissions as selectActiveMissions, verifiedEvidence } from '@/lib/workspaceSummary';
 
 const QUICK_ACTIONS = [
     {
@@ -153,7 +152,7 @@ export default function OverviewPage() {
     ].filter(Boolean);
 
     const activeMissions = useMemo(
-        () => missions.records.filter((mission) => ACTIVE_MISSION_STATES.includes(mission.status)),
+        () => selectActiveMissions(missions.records),
         [missions.records],
     );
 
@@ -163,7 +162,7 @@ export default function OverviewPage() {
     );
 
     const verifiedCount = useMemo(
-        () => evidence.records.filter((entry) => entry.type === 'verified').length,
+        () => verifiedEvidence(evidence.records).length,
         [evidence.records],
     );
 

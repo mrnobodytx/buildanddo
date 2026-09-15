@@ -85,6 +85,10 @@ export function useWorkspaceRecords(collection, options = {}) {
 	// A slow response for a workspace the user has already navigated away from
 	// must not overwrite the records now on screen.
 	const requestRef = useRef(0);
+	const mountedRef = useRef(false);
+	const workspaceId = active?.id;
+	const workspaceRef = useRef(workspaceId);
+	workspaceRef.current = workspaceId;
 
 	const load = useCallback(async () => {
 		const request = requestRef.current + 1;
@@ -129,7 +133,12 @@ export function useWorkspaceRecords(collection, options = {}) {
 	}, [collection, active, enabled, sort, expand, extraFilter, demo]);
 
 	useEffect(() => {
+		mountedRef.current = true;
 		load();
+		return () => {
+			mountedRef.current = false;
+			requestRef.current += 1;
+		};
 	}, [load]);
 
 	// Demonstration mode short-circuits before any PocketBase call, so a
@@ -142,11 +151,12 @@ export function useWorkspaceRecords(collection, options = {}) {
 
 	const runWrite = useCallback(
 		async (operation, fallbackMessage, context) => {
+			const accountId = pb.authStore.record?.id;
 			setSaving(true);
 			setWriteError('');
 			try {
 				const record = await observeMutation(collection, context.op, operation);
-				await load();
+				if (mountedRef.current && workspaceRef.current === workspaceId && pb.authStore.record?.id === accountId) await load();
 				setSaving(false);
 				return { ok: true, record };
 			} catch (err) {
@@ -158,7 +168,7 @@ export function useWorkspaceRecords(collection, options = {}) {
 				return { ok: false, reason: 'write_failed', error: message };
 			}
 		},
-		[collection, load],
+		[collection, load, workspaceId],
 	);
 
 	const create = useCallback(
@@ -236,10 +246,14 @@ export function useRecords(collection, options = {}) {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
 	const [degraded, setDegraded] = useState(false);
+	const requestRef = useRef(0);
 
 	const load = useCallback(async () => {
+		const request = ++requestRef.current;
 		if (!enabled) {
 			setRecords([]);
+			setError('');
+			setDegraded(false);
 			setLoading(false);
 			return;
 		}
@@ -249,10 +263,12 @@ export function useRecords(collection, options = {}) {
 				sort: sort || '-created',
 				expand,
 			});
+			if (requestRef.current !== request) return;
 			setRecords(list);
 			setError('');
 			setDegraded(false);
 		} catch (err) {
+			if (requestRef.current !== request) return;
 			console.error(`load ${collection} failed`, err);
 			setError(READ_FAILED);
 			setDegraded(true);
@@ -263,6 +279,7 @@ export function useRecords(collection, options = {}) {
 
 	useEffect(() => {
 		load();
+		return () => { requestRef.current += 1; };
 	}, [load]);
 
 	return { records, loading, error, degraded, refresh: load };

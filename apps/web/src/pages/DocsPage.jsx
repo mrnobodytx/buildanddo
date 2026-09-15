@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PublicPage from '@/components/site/PublicPage';
 import { Input } from '@/components/ui/input';
+import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 
 const GUIDES = [
     {
@@ -155,6 +156,10 @@ export default function DocsPage() {
                     </p>
                 </div>
             </div>
+            <section id="workspace-lessons" aria-labelledby="workspace-lessons-title" className="mt-12 scroll-mt-24 border-t-2 border-foreground pt-6">
+                <h2 id="workspace-lessons-title" className="mb-5 font-display text-2xl font-semibold">Your Field Manual</h2>
+                <TutorialCatalog />
+            </section>
         </PublicPage>
     );
 }
