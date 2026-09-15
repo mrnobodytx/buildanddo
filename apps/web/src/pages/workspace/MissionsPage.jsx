@@ -30,6 +30,7 @@ import { MotionList } from '@/components/motion/MotionPrimitives';
 import { useMotionPreferences } from '@/contexts/MotionContext';
 import React, { useMemo, useRef, useState } from 'react';
 import { CalendarClock, Plus, Target } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import {
     Dialog,
@@ -621,6 +622,7 @@ function MissionDesk() {
                     {detail && (
                         <div key={detail.id} className="space-y-7">
                             <SavedPlan mission={detail} />
+                            <Link to={`/app/research?mission=${encodeURIComponent(detail.id)}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">Open this mission’s research and source review</Link>
                             <MissionLearning
                                 mission={detail}
                                 evidence={evidence.degraded ? [] : evidence.records}

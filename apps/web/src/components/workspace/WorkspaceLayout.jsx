@@ -44,6 +44,7 @@ const NAV = [
     { to: '/app/missions', label: 'Challenge Desk', icon: Target },
     { to: '/app/workflows', label: 'Workflows', icon: Workflow },
     { to: '/app/evidence', label: 'Evidence Ledger', icon: FileSearch },
+    { to: '/app/research', label: 'Mission research', icon: FileSearch },
     { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },
     { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },
     { to: '/app/corrections', label: 'Corrections', icon: Scale },

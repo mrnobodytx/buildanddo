@@ -543,3 +543,78 @@ Vitest, official web lint, Vite and live activation remain acceptance blockers.
 docs/discord-bot.md records commands, scope, response bounds, content sources,
 deliberate registration, validation and rollback. The private community handoff
 retains workspace binding, request execution and observation responsibilities.
+
+## Authorized continuation — mission research from Discord and the website
+
+On 2026-09-15 the owner requested mission/evidence integration and self-hosted
+Firecrawl search and parsing of URLs, documents, audio and video submitted from
+Discord or the website. This continues VCC-BUILDANDDO-UPGRADE-001 at A2 for
+public application source and additive schemas after merged PR 26. Existing
+source authority covers implementation and isolated validation; hosting,
+credentials, OAuth provider activation and shared execution remain private.
+
+Acceptance:
+
+1. Use one workspace/mission-scoped research submission store for both entry
+   points. Support search, URL and protected document/audio/video uploads,
+   bounded input, durable retry identity, explicit processing state, cancellation
+   and reviewed evidence promotion. A parsed source never verifies its mission.
+2. Authenticate every API through PocketBase users auth. Resolve Discord users
+   only through PocketBase's existing Discord OAuth links, an operator-registered
+   bot principal and exact guild/channel/workspace binding. Recheck current
+   membership, disabled integrations and mission scope on every operation. No
+   Discord role, typed account ID or browser claim grants workspace authority.
+3. Add private Discord mission list/proposal, evidence list, research submission
+   and submission status commands. Forward only explicitly supplied attachments;
+   enforce metadata and byte limits before upload. Do not cache private records
+   or broadcast results. Retain the public teaching commands.
+4. Add an authenticated research desk linked from missions/evidence, protected
+   upload handling, status/result review and explicit evidence creation. Preserve
+   failed inputs and retry keys; clear results on account/workspace changes.
+   Add a personal Discord-link control using PocketBase's built-in OAuth flow.
+5. Add source-level processing clients for self-hosted Firecrawl search/scrape
+   and configured document/audio/video parser endpoints. Firecrawl is not assumed
+   to transcribe media. Expose missing capabilities as unavailable; accept no
+   provider URL or credential from a submission. Use bounded responses, typed
+   errors, server-attributed receipts and current worker leases. Extracted text
+   is untrusted content, never instructions, an approval or runnable code.
+6. Reuse existing integration desired-state controls and require private runtime
+   bindings for bot/worker principals and provider capabilities. Recheck disabled,
+   revoked, superseded and cancelled work before processing and completion. Store
+   provenance and evidence atomically; reject stale worker results and conflicting
+   retries. Retain data on migration rollback and fail closed on custom schema.
+7. Verify actual command, migration, client and processor sources, including
+   foreign/revoked identities, uploads, retries, rollback, parser failures and
+   evidence promotion. Distinguish source doubles, native SDK/PocketBase, rendered
+   UI and live provider acceptance. Record the missing private API/version and
+   media bindings without inventing a deployment or sending external messages.
+
+The operator's Firecrawl API version and document/media parser contracts are
+being requested. Implementation may define bounded public adapter contracts;
+their availability and live behavior require receiving-seat verification.
+
+
+
+Research implementation evidence (current source):
+The shared native-auth command API, protected uploads, optional seven-command
+Discord bridge, same-account OAuth control, website review and leased processing
+worker are implemented. Firecrawl supports explicitly selected v1/v2 search and
+scrape contracts; documents parse locally and media uses a configured self-hosted
+OpenAI-compatible transcription contract. No deployed provider/API/model has been
+asserted in the absence of operator evidence. Video handling transcribes audio;
+visual analysis and scanned-document OCR are not implemented.
+
+Local regression passes 199 Node and 107 Python tests, with two native dependency
+skips. Selected JS source coverage is 99.87% lines, 85.18% branches and 94.44%
+functions. The targeted Python source checker passes 89 cases and measures at
+least 83.72% statement coverage per module, without branch or live-runtime claims.
+Native-required SDK/PDF acceptance remains failing until declared dependencies
+are available. Source connects Discord -> queue -> worker -> review -> one
+observed evidence record, while preserving mission status and current authority.
+Unicode bounds and queue recovery have observed red/green regressions.
+
+The CI job now requires both native dependencies and the complete research suite.
+Frontend tools, native PocketBase, OAuth/browser, full SDK typing, pytest/branch
+coverage and live Firecrawl/transcription/test-server evidence remain pending.
+The report, docs/mission-research.md and community-controls handoff contain actual
+commands, rollback/retention and receiving-runtime responsibilities.

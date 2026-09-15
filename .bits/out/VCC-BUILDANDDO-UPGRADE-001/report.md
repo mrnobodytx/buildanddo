@@ -53,6 +53,7 @@
 #              VALIDATES apps/web/tools/generate-community.mjs;
 #              VALIDATES tests/upgrade/check_discordbot.py;
 #              VALIDATES .github/workflows/pr-governance.yml;
+#              CONSUMES docs/mission-research.md;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -61,35 +62,38 @@
 
 ## §1 SUMMARY
 
-Status: PARTIAL
+Status: PARTIAL — connected source implemented; native, rendered and live acceptance remain open
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
 Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 30/58 cumulative acceptance gates complete; public Discord command source implemented
-Smoke: 4/7 application gates; bot source contracts pass; native SDK, frontend and live acceptance remain open
+Tasks: 34/65 cumulative phase gates complete; current source implementation covers BG–BM with 4/7 phase gates complete
+Smoke: 4/7 application gates; native SDK/PDF gate remains failing on missing dependencies
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: 9 prior source revisions (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b, e820f8f220632405b910f9ebd9d71e2e20a00e41, af63ab4a64aa2708487e3a2f20b5c229e4da2d83, 203a08ced7348e551f810ed90b0a869b29532427, 858ccf52c82b58bdcd3b44db68b77e69c347d379, b609039afde504eae73bd969890a2e06c1a5b48e, 295725ac49a8131a888fb344322b32f9cfb6f2f6); Discord evidence prepared before its final source commit
+Commits: 10 earlier source revisions (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b, e820f8f220632405b910f9ebd9d71e2e20a00e41, af63ab4a64aa2708487e3a2f20b5c229e4da2d83, 203a08ced7348e551f810ed90b0a869b29532427, 858ccf52c82b58bdcd3b44db68b77e69c347d379, b609039afde504eae73bd969890a2e06c1a5b48e, 295725ac49a8131a888fb344322b32f9cfb6f2f6, 58772dee3296d6f73f2ee583ce639ba617848830); current research evidence prepared before its final source bookkeeping
+Verify source identity: `git log -1 --format='%H %s'`
 
-The current continuation expands the existing public Discord bot into 13
-namespaced commands with private replies, bounded public HTTP, complete authored
-lesson readers, quizzes, documentation and workspace navigation, dated roadmap
-and release observations, scoped diagnostics and explicit registration controls.
-The web build projects the same 25-lesson curriculum and public route catalogue;
-no workspace data, private consumer, credential or deployment control is added.
-An independent PR job installs the declared Discord runtime and requires native
-command/component tests and source coverage. Both ci:test checklists describe it;
-the hosted job has not executed in this source session.
+Discord and the website now submit to one protected workspace/mission research
+queue. The bot resolves native Discord OAuth links and current workspace roles,
+can propose missions and list existing evidence, and submits explicit search,
+URL or file sources. The website reviews actual extraction results before
+atomically creating one observed evidence record and its audit. Mission approval
+and verification remain with the existing mission lifecycle.
 
-Merged PR 25 is the source baseline. Current verification passes 168 Node tests
-and 70 Python tests, with one explicitly skipped native Discord SDK test.
-Fifty-two bot tests pass. Python trace statement coverage exceeds 92% in every
-bot module; generator coverage is 98.20% lines, 97.87% branches, 100% functions.
-Full SDK typing, pytest/branch coverage, Vite, Vitest and official web lint remain
-blocked by missing dependencies. No native or live Discord result is inferred.
+The source worker uses selected self-hosted Firecrawl v1/v2 contracts, local
+document extraction and a configured self-hosted transcription endpoint. It
+records input digests, citations, processor/version, truncation and dated results
+under fenced leases. No private deployment, credentials, live Discord message,
+OAuth activation or provider operation was performed by this source session.
+
+Merged PR 26 is the source baseline. Current checks pass 199 Node and 107 Python
+cases with two native dependency skips. The targeted source checker passes 89
+cases with those same two skips; its native-required variant correctly fails.
+Native auth/rules/concurrency, browser/mobile/OAuth, deployed providers and
+Discord gateway acceptance remain separate from the source fixtures.
 
 ## §2 TASK RESULTS
 
@@ -97,7 +101,7 @@ blocked by missing dependencies. No native or live Discord result is inferred.
 |---|---|---|---|---|---|
 | A — Register original scope | PASS | Eight-area umbrella, registry and owner dispatch | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs_registry.yml, .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md |
 | B — Public pages | PARTIAL | Pricing, About, Docs, Blog, Contact and navigation | `npm --prefix apps/web test -- src/pages/__tests__/PublicPages.test.jsx` | 07_BUILD / 08_TEST | apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/AboutPage.jsx, apps/web/src/pages/DocsPage.jsx, apps/web/src/pages/BlogPage.jsx, apps/web/src/pages/ContactPage.jsx |
-| C — Component coverage | PARTIAL | Public/workspace interaction suites; 30 Vitest files inventoried; frontend execution remains blocked | `npm --prefix apps/web run test:coverage` | 08_TEST | apps/web/src/pages/__tests__/PublicPages.test.jsx, apps/web/vitest.config.js |
+| C — Component coverage | PARTIAL | Public/workspace interaction suites; 33 Vitest files inventoried; frontend execution remains blocked | `npm --prefix apps/web run test:coverage` | 08_TEST | apps/web/src/pages/__tests__/PublicPages.test.jsx, apps/web/vitest.config.js |
 | D — Route loading | PARTIAL | Lazy routes, Suspense feedback and workspace error isolation | `npm --prefix apps/web run build` | 07_BUILD | apps/web/src/App.jsx |
 | E — Mobile layouts | PARTIAL | Responsive shared navigation, controls and dialogs; new previews wrap at narrow widths | Production preview at 320, 375 and 1280 px after build | 07_BUILD | apps/web/src/components/site/Header.jsx, apps/web/src/components/ui/sheet.jsx |
 | F — Telemetry adapters | PASS locally | Real-result mutation events/timing, shared release, supply collection and opt-in PocketBase hooks | `node --test tests/upgrade/*.test.mjs`; `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | 07_BUILD / 11_COMMIT | apps/pocketbase/pb_hooks/telemetry.js, scripts/ci/supply_chain.py |
@@ -153,157 +157,158 @@ blocked by missing dependencies. No native or live Discord result is inferred.
 | BD — Shared public feed | PASS locally | Real build generator selects only public source fields and the same release identity | `node --test tests/upgrade/discord-catalogue.test.mjs` | 11_COMMIT / 08_TEST | apps/web/tools/generate-community.mjs, apps/web/tools/build.mjs |
 | BE — Discord evidence | PASS with open runtime gates | Source tests, measured coverage, core typing, lint and documentation; missing native/frontend tools recorded | `python tests/upgrade/check_discordbot.py` | 06_PLAN / 08_TEST | docs/discord-bot.md, tests/upgrade/check_discordbot.py |
 | BF — Governance and handoff | PASS | Current source report, preserved memory history and explicit private activation responsibilities | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | 11_COMMIT | .bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json |
+| BG — Research scope | PASS | Existing registered umbrella extended before source changes | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md |
+| BH — Research persistence | PASS local source; native acceptance pending | Current membership, protected originals, lease fencing, audited retries and atomic evidence attachment | `node --test tests/upgrade/mission-research.test.mjs` | 07_BUILD / 08_TEST | apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_hooks/research.pb.js, apps/pocketbase/pb_migrations/1790100000_mission_research.js |
+| BI — Discord mission/evidence | PARTIAL | Thirteen connected tests pass; SDK/live acceptance pending | `python -m unittest discover -s tests/upgrade -p 'test_discordbot_research.py'` | 07_BUILD / 08_TEST | scripts/discordbot/research.py, scripts/discordbot/bot.py, tests/upgrade/test_discordbot_research.py |
+| BJ — Web research and account linking | PARTIAL | Twelve client contracts pass; twelve rendered tests authored but unavailable | `node --test tests/upgrade/research-client.test.mjs`; frontend commands below | 07_BUILD / 08_TEST | apps/web/src/pages/workspace/ResearchPage.jsx, apps/web/src/hooks/useMissionResearch.js, apps/web/src/lib/missionResearch.js, apps/web/src/lib/discordAccount.js, apps/web/src/components/workspace/DiscordAccountLink.jsx |
+| BK — Processing | PARTIAL | Real local HTTP/text/DOCX and provider/worker contracts pass; native PDF and deployed providers unverified | `python -m unittest discover -s tests/upgrade -p 'test_research_runtime.py'` | 07_BUILD / 08_TEST | apps/research/, tests/upgrade/test_research_runtime.py |
+| BL — Verification | PASS with unavailable gates recorded | Regression, red/green fixes, statement coverage, core typing, lint and CI policy checks | Commands below | 08_TEST / 11_COMMIT | tests/upgrade/check_discordbot.py, .github/workflows/pr-governance.yml |
+| BM — Evidence and handoff | PASS | Current context/provenance/memory and concrete private receiving requirements | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | 06_PLAN / 11_COMMIT | docs/mission-research.md, docs/discord-bot.md, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md |
 
-Earlier motion source evidence is retained below.
-
-
-Earlier phase results are preserved with their original limits. The current
-implementation covers controls, menus, route entrances, layout/reading continuity,
-data and state feedback, tutorials, community and administrative presentations,
-editorial storytelling, media examples and optional pointer/ambient/3D effects.
-Every technique has an actual usage description in the shared catalogue; examples
-are explicitly local and engineering guarantees are not optional checkboxes.
-
-The source review corrected a platform component-factory naming collision,
-selectors for disabled pseudo-element effects and image-dialog focus return.
-The new real component suites cover those interactions but are not a passing
-browser receipt. Personal preferences migrate the old mission-effect choice,
-handle blocked storage and sync across tabs without storing workspace data.
-Account/workspace state keys, immediate record removal and existing authorization
-remain unchanged. No animation sends a message or invents completion/health.
-
-See docs/motion-system.md for the complete 50-area mapping, file-size limits,
-timings, preference behavior, cleanup contracts and browser acceptance matrix.
-
+Earlier phase results retain their original acceptance limits. Current source
+and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
 | Check | Command | Expected | Actual | Result |
 |---|---|---|---|---|
-| 1 | `npm --prefix apps/web test` | Rendered flows pass | Vitest missing; exit 127 | FAIL |
-| 2 | `npm --prefix apps/web run lint` | Repository lint passes | eslint-plugin-import missing; exit 2 | FAIL |
-| 3 | `npm --prefix apps/web run build` | Vite bundle and public feed emitted | spawnSync vite ENOENT; exit 1 | FAIL |
-| 4 | `node --test tests/upgrade/*.test.mjs` | Behavioral regressions pass | 168/168, including five new generator cases | PASS |
-| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Source regressions pass | 70 pass, one native-SDK skip; native acceptance remains open | PASS for source contracts |
-| 6 | `python scripts/ci/agent_context.py --check` | Context matches | 30 Vitest files; six prior findings/four unwired gates retained | PASS |
-| 7 | `python scripts/ci/verify_public_boundary.py` | Public boundary clean | 503 tracked files; zero failures | PASS |
+| 1 | `npm --prefix apps/web test` (targeted research suites attempted) | Vitest executes | exit 127; Vitest unavailable | FAIL — environment |
+| 2 | `npm --prefix apps/web run lint` | Official repository lint executes | exit 2; eslint-plugin-import unavailable | FAIL — environment |
+| 3 | `npm --prefix apps/web run build` | Vite produces production output | exit 1; spawnSync vite ENOENT | FAIL — environment |
+| 4 | `node --test tests/upgrade/*.test.mjs` | No failing source contracts | 199/199 pass | PASS |
+| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | No failing source contracts | 107 pass, two native dependency skips, 109 total | PASS for local source; native not covered |
+| 6 | `python scripts/ci/agent_context.py --check` | Current measured context | Matches; 33 Vitest files, six earlier findings, four unwired gates | PASS |
+| 7 | `python scripts/ci/verify_public_boundary.py` | No public-boundary failures | 530 files; zero failures | PASS |
 
-The three application failures retain their existing dependency root cause.
-No lock entry, dependency removal or weakened gate was used as a workaround.
-Reconcile/install declared packages on an enabled runner, rerun the exact failed
-commands and `npm --prefix apps/web run test:coverage`. Native PocketBase and
-served application acceptance from earlier phases remain independently required.
-The build's existing fleet generator output is a source snapshot, not a live
-health observation.
+Application smoke is 4/7. The dispatch stays in progress; missing environment
+checks are not counted as passing tests. Prior lock-resolution findings are
+retained in the earlier report/history; no dependencies or gates were weakened.
 
-Additional Discord evidence:
-
-| Command | Observed result |
-|---|---|
-| `python tests/upgrade/check_discordbot.py` | PASS; 52 bot tests pass, one native-SDK skip; every module exceeds 80% measured statement coverage |
-| `node --test --experimental-test-coverage --test-coverage-include='apps/web/tools/generate-community.mjs' tests/upgrade/discord-catalogue.test.mjs` | PASS; five real generator cases; 98.20% lines, 97.87% branches, 100% functions |
-| `python -m ruff check scripts/discordbot tests/upgrade/*discord*.py` | PASS |
-| `python -m mypy --strict --explicit-package-bases scripts/discordbot/contracts.py scripts/discordbot/public_data.py scripts/discordbot/catalogue.py scripts/discordbot/service.py` | PASS; four source modules |
-| `python tests/upgrade/check_discordbot.py --require-sdk` | FAIL; Discord.py unavailable; source tests still pass and the native case stays explicitly skipped |
-| `python -m mypy --strict --explicit-package-bases scripts/discordbot` | FAIL; missing Discord import/types causes ten adapter diagnostics |
-| `python -m pytest tests/upgrade/test_discordbot_*.py --cov=scripts/discordbot --cov-branch --cov-fail-under=80` | FAIL; pytest is unavailable; pytest-cov is also absent |
-| `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs` | PASS; 217 frontend modules parsed; does not run repository lint or UI tests |
-
-The native failures require the declared real dependency and native runner;
-SDK doubles and ignored import errors are not fixes for them. The exact commands
-above are the receiving verification steps. No native type or branch-coverage
-result is claimed.
-
-The CI workflow parses with PyYAML. Its independent Discord job has no frontend
-dependency, continue-on-error flag or bot credentials; it installs the existing
-runtime requirements and runs the native-required checker. The matching ci:test
-descriptions are present in AGENTS.md and ProgressionPipeline.jsx. Verify the
-native requirement with `python -c 'import yaml; from pathlib import Path; job = yaml.safe_load(Path(".github/workflows/pr-governance.yml").read_text())["jobs"]["discord"]; assert "needs" not in job; assert job["steps"][-1]["run"].endswith("--require-sdk")'`.
-This verifies source wiring, not a hosted CI result.
-
-Python trace statement results (not branch or live SDK coverage):
-
-| Module | Covered / executable lines | Percent |
+| Additional check | Command | Observed result |
 |---|---|---|
-| bot.py | 267/290 | 92.07% |
-| catalogue.py | 151/156 | 96.79% |
-| contracts.py | 174/175 | 99.43% |
-| public_data.py | 145/149 | 97.32% |
-| service.py | 224/225 | 99.56% |
+| Connected source coverage | `node --test --experimental-test-coverage --test-coverage-include='apps/pocketbase/pb_hooks/mission-research.js' --test-coverage-include='apps/pocketbase/pb_hooks/research-policy.js' --test-coverage-include='apps/pocketbase/pb_migrations/1790100000_mission_research.js' --test-coverage-include='apps/web/src/lib/missionResearch.js' --test-coverage-include='apps/web/src/lib/discordAccount.js' tests/upgrade/mission-research.test.mjs tests/upgrade/research-client.test.mjs` | 31/31; 99.87% lines, 85.18% branches, 94.44% functions; every selected module exceeds 80% in each measure |
+| Bot/research source | `python tests/upgrade/check_discordbot.py --include-research` | 89 pass, two native skips; per-module statement gate PASS |
+| Required native SDK/PDF | `python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf` | FAIL, exit 1; Discord.py and pypdf unavailable; neither skip becomes native acceptance |
+| Python lint | `python -m ruff check apps/research scripts/discordbot tests/upgrade/*discord*.py tests/upgrade/*research*.py` | PASS |
+| New Python typing | `python -m mypy --strict --explicit-package-bases apps/research scripts/discordbot/research.py` | PASS; six source files |
+| Complete SDK typing | `python -m mypy --strict --explicit-package-bases apps/research scripts/discordbot` | FAIL; missing discord import and ten resulting untyped SDK errors |
+| Python branch coverage | `python -m pytest tests/upgrade/test_discordbot_*.py tests/upgrade/test_research_runtime.py --cov=scripts/discordbot --cov=apps/research --cov-branch --cov-fail-under=80` | Cannot run; pytest unavailable |
+| Web coverage | `npm --prefix apps/web run test:coverage` | Cannot run; Vitest unavailable |
+| Limited source diagnostic | `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs` | PASS; 225 modules, zero static errors; does not render UI or replace repository lint |
+| Provenance and memory | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | PASS; 263 file vectors, 520 edges, 47 events |
 
-An initial Ruff check found an unused test import; it was removed and the exact
-lint gate passes. The first statement-coverage run included an unnecessary
-docstring-only package initializer; it was removed in favor of the existing
-namespace import layout. CPython's non-executable line-zero marker is excluded
-from the executable-line denominator. The same coverage command now passes
-without lowering the 80% threshold.
+Python trace statement lines measure actual source execution under local HTTP,
+document subprocesses and explicit backend/transport fixtures. They do not
+measure branches, native PocketBase transactions or the Discord gateway.
 
-Source review also corrected delayed selection after reader expiry, identical
-quiz-answer replay after a lost response and caller timeouts that retain the
-same tracked HTTP worker. Their regressions pass. No screenshot, SDK login,
-command synchronization, live message, deployment or private execution occurred.
+| Module | Statement coverage |
+|---|---|
+| apps/research/contracts.py | 98.25% |
+| apps/research/documents.py | 83.72% |
+| apps/research/processing.py | 90.57% |
+| apps/research/transport.py | 98.21% |
+| apps/research/worker.py | 88.05% |
+| scripts/discordbot/bot.py | 91.35% |
+| scripts/discordbot/catalogue.py | 96.79% |
+| scripts/discordbot/contracts.py | 99.43% |
+| scripts/discordbot/public_data.py | 97.32% |
+| scripts/discordbot/research.py | 92.49% |
+| scripts/discordbot/service.py | 99.56% |
+
+Red/green evidence and applied fixes:
+
+- `python -m unittest discover -s tests/upgrade -p 'test_research_runtime.py' -k unclaimable`
+  initially failed because every bounded poll restarted before the same 200
+  unclaimable jobs. The worker now resumes later pages; the next eligible job
+  processes on the following poll. The same regression passes.
+- `python -m unittest discover -s tests/upgrade -p 'test_discordbot_research.py' -k unicode_document`
+  initially recorded failure for long non-BMP text: escaped child JSON and
+  JavaScript UTF-16 bounds disagreed with Python code-point counts. Shared
+  character-safe truncation now fits both boundaries, marks truncation, preserves
+  the original-byte digest and reaches ready through the actual handler source.
+  The same regression passes.
+- `node --test --test-name-pattern='file downloads' tests/upgrade/mission-research.test.mjs`
+  initially allowed file access after the linked mission became unreadable.
+  Downloads now recheck mission readability for members and leased workers;
+  unused uploads are owner-only. The same regression and full connected suites
+  pass. Native PocketBase file-token enforcement still requires native acceptance.
+- Combined SDK-double discovery initially created distinct exception classes
+  when patch.dict restored newly imported modules. Importing shared research
+  modules before the SDK patch fixes the fixture lifecycle; the complete checker
+  passes its source tests without broadening production exception handling.
+  An incorrect fixture import and a limiter-count test expectation were also
+  corrected; the full Node/Python commands above pass.
+
+Unresolved failures: declared native SDK/PDF and frontend dependencies are absent;
+complete SDK typing and pytest/branch coverage consequently remain unavailable.
+The receiving runner must install declared dependencies and rerun the exact
+commands above. The independent CI job has been parsed and checked to require
+both native dependencies and corresponding ci:test descriptions, with no login,
+credentials, skip suppression or continue-on-error. Its hosted result is unobserved.
+
+The current interpreter is Python 3.12.13 and local Node is 24.13.0. CI uses
+Python 3.12 and Node 22; that runner's results are still required. Native
+PocketBase 0.28.4, Discord OAuth/SDK/gateway, rendered mobile/keyboard/theme,
+served revision, self-hosted Firecrawl/transcription and real resource limits
+remain receiving-runtime checks. No browser screenshot or live result is claimed.
 
 ## §4 MEMORY INGEST
 
-Type A count: 236
-Type B count: 453
-Type C count: 41
+Type A count: 263
+Type B count: 520
+Type C count: 47
 IOO compliance: true
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
-All 36 earlier event vectors remain unchanged. Five Discord continuation events
-record observed source tests and open runtime/dependency gates with real UTC
-timestamps. No direct memory ingestion or signature computation was performed.
+All 41 baseline Type C events are preserved without rewriting their historical
+facts. New events record source results, the observed red/green fixes and native
+environment limits. No direct memory service write occurred.
 
 ## §5 CKET FILING
 
-06_PLAN: docs/discord-bot.md.
-04_HYPOTHESIZE: upgrade specification continuation.
-07_BUILD: Discord contracts, public client, catalogue, service and adapter.
-08_TEST: public HTTP, command, adapter, generator and statement-coverage checks.
-11_COMMIT: build generator, registry, dispatch, context, handoff, report and memory.
-13_SAVE: none.
-
-Paths follow this repository's AGENTS.md and public boundary. This continuation
-adds 12 files. CGRF provenance is present on all 149/149 files
-new since the original base; the existing bot also receives an authored header.
-Existing provenance is retained. REFLEX remains deferred to the private
-validator; CK, CAPS and CKS remain pending.
+06_PLAN: docs/mission-research.md and updated docs/discord-bot.md
+04_HYPOTHESIZE: existing umbrella spec/registry and contribution governance
+07_BUILD: research backend/migration, Python processors, bot bridge and web flow
+08_TEST: connected source, transport/storage fixtures and rendered suites
+11_COMMIT: CI, dispatch, context, report, handoff and memory payload
+13_SAVE: none
+CGRF headers: 27/27 new this continuation; 176/176 cumulatively
+REFLEX validator: deferred to the private validator; no signing values fabricated
+Verify paths and headers: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
 ## §6 GOVERNANCE
 
 Entity: Citadel Nexus Inc. (Delaware C-Corporation)
 License posture: unchanged; commercial contact licensing@citadel-nexus.com
-Hard-NO scan: PASS; zero public-boundary failures
-Secret scan: PASS under the repository boundary scanner
+Hard-NO scan: zero public-boundary violations
+Secret scan: clean under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: A2 umbrella; public source, generated public content and tests
+Risk / authority: A2 public application source, additive schemas and isolated tests
+Verify boundary: `python scripts/ci/verify_public_boundary.py`
 
-No workspace records, bot credential, installer, shared mutation, deployment
-control or live seat event was introduced. The bot reads only fixed public
-resources; the private binding and integration-request consumer remain outside
-this implementation. Source configuration does not claim executed requests.
+Credentials are read only through existing native runtime bindings at explicit
+startup. Discord identity is resolved through native OAuth links, not typed IDs
+or Discord roles. Review creates observed evidence, never verification. No
+shared database operation, Discord message/registration, token provisioning,
+private infrastructure, seat event or provider activation was performed here.
 
 ## §7 NEXT ACTIONS
 
-Blockers: Discord.py/native adapter typing and serialization; pytest/branch
-coverage; Vite, Vitest and official web lint; a verified served community feed
-and authorized test-server activation. Earlier PocketBase, browser and delivery
-gates remain open.
+Blockers: native SDK/PDF, full typing/branch coverage, frontend dependencies,
+native PocketBase and OAuth/rule/concurrency/file acceptance, actual provider
+contracts and controlled test-server/served-version evidence.
+Handoffs requested: CMAX-B/IDE1/community operator via
+.bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md.
+No receiving seat was activated. The existing delivery handoff also applies.
+Suggested next dispatch: receiver-owned native research and controlled provider
+acceptance; its private dispatch ID belongs to that receiving owner.
+Bugs filed: none; no provider write. Six earlier context findings remain visible.
 
-Handoffs: the existing community-controls artifact now includes this public
-command bot, packaging changes and actual acceptance commands. The existing
-BuildAndDo delivery handoff still applies. No receiving seat was activated.
-Suggested next dispatch: receiver-owned native bot, complete frontend and
-test-server acceptance; private dispatch ID remains with that receiving owner.
-Bugs filed: none; no provider write was performed. Six earlier governance/gate
-findings remain visible.
-
-Rollback: coordinate the complete bot source bundle and registered application
-commands with the private operator. The generated public catalogue is additive;
-there is no database migration or record write to undo. Restoring the old bot
-also restores its blocking HTTP and privileged intent requirement. No shared
-rollback ran in this session.
+Rollback: the research down migration removes its protocol marker and retains
+protected files, submissions, audit history and observed evidence links. Do not
+down unrelated migrations or restore older membership permissions. Coordinate
+complete frontend/bot/worker bundles and registered commands with the private
+operator. docs/mission-research.md contains the actual contracts and test sequence.

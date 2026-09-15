@@ -112,8 +112,8 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Install the declared Discord runtime for source tests
-        run: python -m pip install -r scripts/discordbot/requirements.txt
+      - name: Install declared Discord and document runtimes for source tests
+        run: python -m pip install -r scripts/discordbot/requirements.txt -r apps/research/requirements.txt
 
-      - name: Require native command definitions, controls and source coverage
-        run: python tests/upgrade/check_discordbot.py --require-sdk
+      - name: Require native commands, document parsing and research source coverage
+        run: python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf

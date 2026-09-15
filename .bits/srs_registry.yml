@@ -36,7 +36,7 @@ srs:
     status: in_progress
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
-    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella including workspace administration, community controls, shared motion and the existing public Discord bot; private execution and deployment excluded
+    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella including workspace administration, shared motion, Discord and mission research intake with self-hosted processing adapters; private activation and deployment excluded
 
   - code: SRS-BUILDANDDO-BOOTSTRAP-001
     title: Machine-facing governance bootstrap

@@ -99,7 +99,7 @@ export const PIPELINE_STEPS = [
         checks: [
             'Lint passes',
             'Web coverage and public telemetry adapter suites pass',
-            'Native Discord command and control checks pass with source coverage',
+            'Native Discord commands and research parser checks pass with source coverage',
             'Every manifest matches the dependency lockfile',
             'Verification commands from the issue produce their stated output',
         ],

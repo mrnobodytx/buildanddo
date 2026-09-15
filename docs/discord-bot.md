@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     scripts/discordbot/bot.py, scripts/discordbot/service.py, apps/web/tools/generate-community.mjs, tests/upgrade/check_discordbot.py, .github/workflows/pr-governance.yml
+# Depends:     scripts/discordbot/bot.py, scripts/discordbot/service.py, apps/web/tools/generate-community.mjs, tests/upgrade/check_discordbot.py, .github/workflows/pr-governance.yml, docs/mission-research.md, scripts/discordbot/research.py
 # EnumType:    Doc
-# EnumEdges:   CONSUMES scripts/discordbot/bot.py; CONSUMES scripts/discordbot/service.py; CONSUMES apps/web/tools/generate-community.mjs; VERIFIED_BY tests/upgrade/check_discordbot.py; CONSUMES .github/workflows/pr-governance.yml
+# EnumEdges:   CONSUMES scripts/discordbot/bot.py; CONSUMES scripts/discordbot/service.py; CONSUMES apps/web/tools/generate-community.mjs; VERIFIED_BY tests/upgrade/check_discordbot.py; CONSUMES .github/workflows/pr-governance.yml; CONSUMES docs/mission-research.md; CONSUMES scripts/discordbot/research.py
 # DAG Node:    none
 # Intent:      Explain the implemented Discord experience, its real public data sources and the remaining private activation requirements.
 # ───────────────────────────────────────────────────────────────
@@ -19,8 +19,11 @@
 
 The public command bot helps community members learn BuildAndDo, open the
 appropriate workspace desk and inspect dated public evidence. It uses the same
-authored lessons and canonical site origin as the web application. It never
-authenticates to PocketBase or retrieves workspace records.
+authored lessons and canonical site origin as the web application. These thirteen
+public commands do not authenticate to PocketBase or retrieve workspace records.
+An explicitly configured mission research bridge adds seven private commands
+through native PocketBase authentication and current workspace roles; see
+`docs/mission-research.md` for setup and the connected submission/review flow.
 
 ## Commands
 
@@ -55,11 +58,21 @@ same explanation. A different answer requires a new quiz. Practice does not
 write tutorial progress, award authority, approve a mission or issue credentials.
 Saved progress remains in the signed-in website.
 
+With the research bridge configured, `/buildanddo missions`, `mission`,
+`evidence`, `submit`, `submissions`, `submission` and `recover` connect to the
+mission and evidence system. Link Discord in website **Settings → Account**
+first. Submit a search, URL or explicit document/audio/video attachment for a
+mission, then review its actual processing result in **Mission research**.
+Evidence attachment happens through that website review and records observed
+evidence without changing the mission's verification. These commands require
+current workspace membership and the exact registered server/channel; they have
+no prefix variant. `docs/mission-research.md` lists their arguments and recovery.
+
 ## Sources and behavior
 
 The canonical origin is `https://buildanddo.tech`, taken from the public site's
 existing route catalogue and checked for parity by the generated-feed tests.
-The bot reads exactly four resources:
+The public command service reads exactly four resources:
 
 | Resource | Purpose | Cache |
 |---|---|---|
@@ -117,8 +130,10 @@ do not resynchronize commands. Global registration replaces this application's
 global command set and must be coordinated with its existing command owner.
 
 The application needs the existing Discord.py dependency in
-`scripts/discordbot/requirements.txt` and the complete `scripts/discordbot` source
-directory. Copying just the old single `bot.py` is no longer sufficient.
+`scripts/discordbot/requirements.txt` and the complete `scripts/discordbot` and
+`apps/research` source directories. Shared research contracts/transport are
+imported even when private commands are disabled; no private client starts in
+that case. Copying just the old single `bot.py` is no longer sufficient.
 Both `python -m scripts.discordbot.bot` and the existing direct-script entry
 point remain supported. No token is read and no client is started by importing
 the modules.
@@ -130,18 +145,23 @@ moderation permissions are not needed. Message Content is used only for
 explicit prefix compatibility. Prefix replies are visible in the channel;
 the slash-command experience is private.
 
-BuildAndDo's integration controls still record desired state and check requests.
-This bot does not acknowledge those requests or write `observed_state`.
-Binding a workspace to a Discord server, consuming revisions, applying
-enable/disable requests and persisting executor receipts remain in
+BuildAndDo's integration controls record desired state and check requests. The
+research API enforces matching enabled Discord/Firecrawl settings and private
+runtime registrations before serving private commands or worker leases. It
+records source-specific processing receipts, and fences disabled or superseded
+work. It does not write generic integration `observed_state` or acknowledge
+health-check requests. Private provisioning, the remaining integration consumer
+and generic observed-state receipts remain in
 `.bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md`.
 
 ## Verification
 
-Run the targeted source suite and its statement-coverage gate:
+Run from the BuildAndDo checkout containing this update, with Python 3.12 and
+Node 22 as configured in CI. These paths belong to BuildAndDo, not the separate
+CNWB checkout. Run the targeted source suite and its statement-coverage gate:
 
 ```bash
-python tests/upgrade/check_discordbot.py
+python tests/upgrade/check_discordbot.py --include-research
 node --test tests/upgrade/discord-catalogue.test.mjs
 python -m ruff check scripts/discordbot tests/upgrade/*discord*.py
 python -m mypy --strict --explicit-package-bases scripts/discordbot/contracts.py scripts/discordbot/public_data.py scripts/discordbot/catalogue.py scripts/discordbot/service.py
@@ -154,7 +174,8 @@ statement lines; it does not claim branch coverage or live transport validation.
 Coverage must be at least 80% for each bot module.
 
 The PR governance workflow has an independent `ci:test / Discord SDK` job.
-It installs the declared runtime and runs the checker with `--require-sdk`,
+It installs both bot and research requirements and runs the checker with
+`--include-research --require-sdk --require-pdf`,
 without bot credentials or a login. Missing SDK support cannot turn into a
 passing skip in that job, and frontend dependency failures do not prevent it
 from running. Its hosted execution has not been observed in this sandbox.
@@ -162,9 +183,9 @@ from running. Its hosted execution has not been observed in this sandbox.
 On a dependency-enabled runner, require native SDK acceptance:
 
 ```bash
-python tests/upgrade/check_discordbot.py --require-sdk
-python -m mypy --strict --explicit-package-bases scripts/discordbot
-python -m pytest tests/upgrade/test_discordbot_*.py --cov=scripts/discordbot --cov-branch --cov-fail-under=80
+python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf
+python -m mypy --strict --explicit-package-bases apps/research scripts/discordbot
+python -m pytest tests/upgrade/test_discordbot_*.py tests/upgrade/test_research_runtime.py --cov=scripts/discordbot --cov=apps/research --cov-branch --cov-fail-under=80
 npm --prefix apps/web run build
 ```
 
@@ -182,6 +203,9 @@ and native PocketBase acceptance blockers remain with the delivery handoff.
 
 Roll back the bot as a complete source bundle and coordinate any registered
 command changes with the receiving operator. The public catalogue is additive
-and can remain available to an earlier frontend; this change has no migration
-or workspace-record write to reverse. Reverting to the old bot also restores
-its blocking HTTP behavior and Message Content requirement.
+and can remain available to an earlier frontend. The optional mission research
+continuation adds retained uploads, submissions and audits; its non-destructive
+migration rollback is documented in `docs/mission-research.md`. Do not down
+unrelated workspace migrations or delete research evidence when rolling back
+the bot. Reverting to the original bot also restores its blocking HTTP behavior
+and Message Content requirement.

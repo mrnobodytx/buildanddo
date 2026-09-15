@@ -132,7 +132,8 @@ class Command(Generic):
         self.autocompletes = {}
         for key, value in kwargs.items():
             setattr(self, key, value)
-        if list(inspect.signature(self.callback).parameters) not in [["interaction"], ["interaction", "query"]]:
+        parameters = list(inspect.signature(self.callback).parameters.values())
+        if not parameters or parameters[0].name != 'interaction' or any(parameter.kind in (parameter.VAR_POSITIONAL, parameter.VAR_KEYWORD) for parameter in parameters):
             raise TypeError("Unexpected slash callback signature.")
 
     def autocomplete(self, name: str) -> object:
@@ -180,6 +181,7 @@ def sdk_double() -> ModuleType:
     module.AllowedMentions, module.Embed = AllowedMentions, Embed
     module.ButtonStyle = SimpleNamespace(secondary=2)
     module.SelectOption, module.Object = SimpleNamespace, SimpleNamespace
+    module.Attachment = SimpleNamespace
     module.HTTPException = type("HTTPException", (Exception,), {})
     module.LoginFailure = type("LoginFailure", (Exception,), {})
     module.PrivilegedIntentsRequired = type("PrivilegedIntentsRequired", (Exception,), {})

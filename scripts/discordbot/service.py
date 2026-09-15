@@ -55,6 +55,7 @@ WORKSPACE_AREAS = {
     "tutorials": ("Field Manual", "/app/tutorials"),
     "erp": ("ERP", "/app/erp"),
     "evidence": ("Evidence Ledger", "/app/evidence"),
+    "research": ("Mission research", "/app/research"),
     "community": ("Community & Social", "/app/community"),
     "wiki": ("Workspace wiki", "/app/wiki"),
     "forums": ("Workspace forums", "/app/forums"),
