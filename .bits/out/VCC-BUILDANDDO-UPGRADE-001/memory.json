@@ -13,7 +13,7 @@
       "lines": 409,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Record the current pipelines, governance and 21-file Vitest test surface so the next session can verify the repository state.",
+      "intent_statement": "Record the current pipelines, governance and 22-file Vitest test surface so the next session can verify the repository state.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "stored",
       "supersedes": false,
@@ -107,10 +107,10 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 6075,
+      "lines": 6979,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Carry cumulative source relationships and honest backend-reuse validation evidence into the authorized post-merge memory flow.",
+      "intent_statement": "Carry cumulative source relationships and honest mission-system validation evidence into the authorized post-merge memory flow.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "stored",
       "supersedes": false,
@@ -169,7 +169,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 198,
+      "lines": 309,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -235,7 +235,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 110,
+      "lines": 169,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -394,7 +394,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 119,
+      "lines": 198,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -663,6 +663,83 @@
     },
     {
       "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/mission-policy.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "draft",
+        "enforce",
+        "evidenceFor",
+        "invalid",
+        "json",
+        "keys",
+        "object",
+        "passingReview",
+        "same",
+        "text",
+        "validateLearning",
+        "validatePlan",
+        "validateReview",
+        "writableWorkspace"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js"
+      ],
+      "lines": 313,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Enforce persisted mission boundaries, lifecycle transitions and evidence requirements independently of the browser.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/missions.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/mission-policy.js"
+      ],
+      "lines": 26,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Apply mission policy through PocketBase request hooks while retaining the existing authentication and collection rules.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
       "file_path": "apps/pocketbase/pb_hooks/telemetry.js",
       "cket_stage": "07_BUILD",
       "srs_codes": [
@@ -697,6 +774,37 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1789000000_extend_workspace_operations.js"
+      ],
+      "lines": 58,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Persist bounded mission plans, learning answers and review receipts without changing collection access rules or existing rows.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
       ],
       "tenant_id": null
     },
@@ -1879,6 +1987,201 @@
     },
     {
       "type": "A",
+      "file_path": "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MissionBuilder"
+      ],
+      "dependencies": [
+        "@/components/site/ui",
+        "@/components/ui/input",
+        "@/components/ui/label",
+        "@/components/ui/textarea",
+        "@/lib/missionLearning",
+        "apps/web/src/lib/missionLearning.js",
+        "react"
+      ],
+      "lines": 289,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Help operators author purpose, permission boundaries and TEVV methods while preserving incomplete drafts and rejected saves.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/missions/MissionGuide.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MissionGuide"
+      ],
+      "dependencies": [
+        "@/lib/missionLearning",
+        "apps/web/src/lib/missionLearning.js",
+        "react",
+        "react-router-dom"
+      ],
+      "lines": 167,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Teach why bounded missions need distinct TEVV checks and how standards and credentials inform evidence without replacing judgment.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/missions/MissionLearning.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MissionLearning"
+      ],
+      "dependencies": [
+        "@/components/site/ui",
+        "@/lib/missionLearning",
+        "apps/web/src/lib/missionLearning.js",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 259,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Use saved knowledge checks and evidence to unlock educational examples, with finite non-monetary rewards and an explicitly unsigned record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/missions/MissionReview.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MissionReview"
+      ],
+      "dependencies": [
+        "@/components/site/ui",
+        "@/components/ui/input",
+        "@/components/ui/label",
+        "@/components/ui/textarea",
+        "@/lib/missionLearning",
+        "apps/web/src/lib/missionLearning.js",
+        "react"
+      ],
+      "lines": 446,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record TEVV observations and mission-scoped evidence with explicit review, retry handling and honest failure outcomes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "LearningHarness"
+      ],
+      "dependencies": [
+        "@/components/workspace/missions/MissionBuilder",
+        "@/components/workspace/missions/MissionGuide",
+        "@/components/workspace/missions/MissionLearning",
+        "@/components/workspace/missions/MissionReview",
+        "@/lib/missionLearning",
+        "@/test/utils",
+        "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
+        "apps/web/src/components/workspace/missions/MissionGuide.jsx",
+        "apps/web/src/components/workspace/missions/MissionLearning.jsx",
+        "apps/web/src/components/workspace/missions/MissionReview.jsx",
+        "react",
+        "vitest"
+      ],
+      "lines": 431,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Test draft recovery, explicit TEVV review, real evidence writes and saved educational rewards through user interactions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
       "file_path": "apps/web/src/components/workspace/workspaceHelpers.jsx",
       "cket_stage": "07_BUILD",
       "srs_codes": [
@@ -2083,7 +2386,7 @@
       "enum_type": "Widget",
       "functions": [],
       "dependencies": [],
-      "lines": 264,
+      "lines": 283,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep broadsheet text readable in both themes and shared layouts usable at narrow widths.",
@@ -2147,6 +2450,46 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/missionLearning.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "emptyPlan",
+        "emptyReview",
+        "learningRecord",
+        "learningRewards",
+        "missionEvidence",
+        "planIssues",
+        "readPlan",
+        "reviewIssues"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useWorkspaceRecords.js"
+      ],
+      "lines": 360,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Teach evidence-led mission planning and derive bounded learning rewards without granting authority or certification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
       ],
       "tenant_id": null
     },
@@ -2572,11 +2915,12 @@
         "@/components/site/PublicPage",
         "@/components/ui/input",
         "@/components/workspace/TutorialCatalog",
+        "@/components/workspace/missions/MissionGuide",
         "apps/web/src/components/site/PublicPage.jsx",
         "react",
         "react-router-dom"
       ],
-      "lines": 165,
+      "lines": 179,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain critical workspace flows with searchable public documentation and real destinations.",
@@ -3168,30 +3512,41 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "MissionForm",
-        "MissionsPage"
+        "MissionDesk",
+        "MissionsPage",
+        "SavedPlan"
       ],
       "dependencies": [
         "@/components/site/ui",
         "@/components/ui/dialog",
-        "@/components/ui/input",
-        "@/components/ui/label",
-        "@/components/ui/select",
-        "@/components/ui/textarea",
         "@/components/workspace/EmptyState",
         "@/components/workspace/ListToolbar",
+        "@/components/workspace/PreviousWorkNote",
         "@/components/workspace/WorkspaceNotices",
+        "@/components/workspace/missions/MissionBuilder",
+        "@/components/workspace/missions/MissionGuide",
+        "@/components/workspace/missions/MissionLearning",
+        "@/components/workspace/missions/MissionReview",
         "@/components/workspace/workspaceHelpers",
+        "@/contexts/AuthContext",
+        "@/contexts/WorkspaceContext",
+        "@/hooks/useDemoMode",
+        "@/hooks/usePreviousWork",
         "@/hooks/useWorkspaceRecords",
         "@/lib/format",
+        "@/lib/missionLearning",
         "@/lib/utils",
         "apps/web/src/components/workspace/ListToolbar.jsx",
+        "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
+        "apps/web/src/components/workspace/missions/MissionGuide.jsx",
+        "apps/web/src/components/workspace/missions/MissionLearning.jsx",
+        "apps/web/src/components/workspace/missions/MissionReview.jsx",
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/workspaceActions.js",
         "lucide-react",
         "react"
       ],
-      "lines": 589,
+      "lines": 710,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
@@ -3509,13 +3864,15 @@
         "@/components/site/ui",
         "@/components/ui/tabs",
         "@/components/workspace/TutorialCatalog",
+        "@/components/workspace/missions/MissionGuide",
         "@/components/workspace/workspaceHelpers",
         "apps/web/src/components/workspace/ComponentCatalog.jsx",
         "apps/web/src/components/workspace/TutorialCatalog.jsx",
+        "apps/web/src/components/workspace/missions/MissionGuide.jsx",
         "lucide-react",
         "react"
       ],
-      "lines": 59,
+      "lines": 64,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Use the same saved lesson progress as Docs and the front page while loading the component reference separately.",
@@ -3582,6 +3939,47 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/MissionsPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "@/contexts/AuthContext",
+        "@/contexts/WorkspaceContext",
+        "@/lib/demoWorkspace",
+        "@/lib/missionLearning",
+        "@/lib/pocketbaseClient",
+        "@/pages/workspace/MissionsPage",
+        "@/test/utils",
+        "apps/web/src/pages/workspace/MissionsPage.jsx",
+        "apps/web/src/test/utils.jsx",
+        "react",
+        "vitest"
+      ],
+      "lines": 291,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Hold the mission lifecycle UI to its promise: nothing runs until a mission is proposed, advanced and shown as such.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
       ],
       "tenant_id": null
     },
@@ -3867,7 +4265,7 @@
         "node:url",
         "vitest/config"
       ],
-      "lines": 74,
+      "lines": 76,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the web test suite on the existing Vite transform, resolving the same \"@\" alias the app builds with.",
@@ -3883,6 +4281,39 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/mission-system.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/mission-policy.js",
+        "apps/web/src/lib/missionLearning.js",
+        "tests/upgrade/mission-system.test.mjs"
+      ],
+      "lines": 158,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain how to build and validate educational missions, why their checks differ, and which backend and credential guarantees are actually provided.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
       ],
       "tenant_id": null
     },
@@ -4131,6 +4562,53 @@
     },
     {
       "type": "A",
+      "file_path": "tests/upgrade/mission-system.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ApiError",
+        "BadRequestError",
+        "ForbiddenError",
+        "Record",
+        "runtime"
+      ],
+      "dependencies": [
+        "../../apps/web/src/lib/missionLearning.js",
+        "apps/pocketbase/pb_hooks/mission-policy.js",
+        "apps/pocketbase/pb_hooks/missions.pb.js",
+        "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js",
+        "apps/web/src/lib/missionLearning.js",
+        "node:assert/strict",
+        "node:fs",
+        "node:path",
+        "node:test",
+        "node:url",
+        "node:vm"
+      ],
+      "lines": 668,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise actual mission policy, migration and reward selectors across invalid transitions, permission boundaries, evidence failures and repeatable educational credit.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
       "file_path": "tests/upgrade/pocketbase-metrics.test.mjs",
       "cket_stage": "08_TEST",
       "srs_codes": [
@@ -4269,6 +4747,38 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "backend-reuse"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/handoffs/TEMPLATE.md"
+      ],
+      "lines": 252,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the owner's Rig 1 execution requirements and testable private-seat handoff without adding runtime authority to the public site.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "rig1-handoff"
       ],
       "tenant_id": null
     },
@@ -4784,11 +5294,41 @@
     },
     {
       "type": "B",
+      "source": "apps/pocketbase/pb_hooks/mission-policy.js",
+      "target": "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/mission-policy.js depends on apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/missions.pb.js",
+      "target": "apps/pocketbase/pb_hooks/mission-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/missions.pb.js depends on apps/pocketbase/pb_hooks/mission-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "apps/pocketbase/pb_hooks/telemetry.js",
       "target": "apps/pocketbase/pb_hooks/logs-forwarder.pb.js",
       "edge_type": "DEPENDS_ON",
       "weight": 1.0,
       "description": "apps/pocketbase/pb_hooks/telemetry.js depends on apps/pocketbase/pb_hooks/logs-forwarder.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js",
+      "target": "apps/pocketbase/pb_migrations/1789000000_extend_workspace_operations.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js depends on apps/pocketbase/pb_migrations/1789000000_extend_workspace_operations.js.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -5024,6 +5564,86 @@
     },
     {
       "type": "B",
+      "source": "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
+      "target": "apps/web/src/lib/missionLearning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/missions/MissionBuilder.jsx depends on apps/web/src/lib/missionLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/missions/MissionGuide.jsx",
+      "target": "apps/web/src/lib/missionLearning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/missions/MissionGuide.jsx depends on apps/web/src/lib/missionLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/missions/MissionLearning.jsx",
+      "target": "apps/web/src/lib/missionLearning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/missions/MissionLearning.jsx depends on apps/web/src/lib/missionLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/missions/MissionReview.jsx",
+      "target": "apps/web/src/lib/missionLearning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/missions/MissionReview.jsx depends on apps/web/src/lib/missionLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx depends on apps/web/src/components/workspace/missions/MissionBuilder.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionGuide.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx depends on apps/web/src/components/workspace/missions/MissionGuide.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionLearning.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx depends on apps/web/src/components/workspace/missions/MissionLearning.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionReview.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx depends on apps/web/src/components/workspace/missions/MissionReview.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "apps/web/src/contexts/WorkspaceContext.jsx",
       "target": "apps/web/src/contexts/AuthContext.jsx",
       "edge_type": "CONSUMES",
@@ -5129,6 +5749,16 @@
       "edge_type": "TRIGGERS",
       "weight": 1.0,
       "description": "apps/web/src/lib/datadogRum.js triggers apps/web/src/lib/observability/report.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/missionLearning.js",
+      "target": "apps/web/src/hooks/useWorkspaceRecords.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/missionLearning.js depends on apps/web/src/hooks/useWorkspaceRecords.js.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -5269,6 +5899,16 @@
       "edge_type": "DEPENDS_ON",
       "weight": 1.0,
       "description": "apps/web/src/pages/ContactPage.jsx depends on apps/web/src/components/site/PublicPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/DocsPage.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionGuide.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/DocsPage.jsx consumes apps/web/src/components/workspace/missions/MissionGuide.jsx.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -5429,6 +6069,46 @@
       "edge_type": "PRODUCES",
       "weight": 1.0,
       "description": "apps/web/src/pages/workspace/EvidencePage.jsx produces workspace.evidence.create.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/MissionsPage.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/MissionsPage.jsx consumes apps/web/src/components/workspace/missions/MissionBuilder.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/MissionsPage.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionGuide.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/MissionsPage.jsx consumes apps/web/src/components/workspace/missions/MissionGuide.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/MissionsPage.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionLearning.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/MissionsPage.jsx consumes apps/web/src/components/workspace/missions/MissionLearning.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/MissionsPage.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionReview.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/MissionsPage.jsx consumes apps/web/src/components/workspace/missions/MissionReview.jsx.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -5624,6 +6304,16 @@
     },
     {
       "type": "B",
+      "source": "apps/web/src/pages/workspace/TutorialsPage.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionGuide.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/TutorialsPage.jsx consumes apps/web/src/components/workspace/missions/MissionGuide.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "apps/web/src/pages/workspace/WorkflowsPage.jsx",
       "target": "apps/web/src/hooks/useWorkspaceRecords.js",
       "edge_type": "CONSUMES",
@@ -5649,6 +6339,26 @@
       "edge_type": "PRODUCES",
       "weight": 1.0,
       "description": "apps/web/src/pages/workspace/WorkflowsPage.jsx produces workspace.workflow.update.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/MissionsPage.test.jsx",
+      "target": "apps/web/src/test/utils.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/MissionsPage.test.jsx consumes apps/web/src/test/utils.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/MissionsPage.test.jsx",
+      "target": "apps/web/src/pages/workspace/MissionsPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/MissionsPage.test.jsx validates apps/web/src/pages/workspace/MissionsPage.jsx.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -5784,6 +6494,36 @@
     },
     {
       "type": "B",
+      "source": "docs/mission-system.md",
+      "target": "apps/pocketbase/pb_hooks/mission-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/mission-system.md depends on apps/pocketbase/pb_hooks/mission-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-system.md",
+      "target": "apps/web/src/lib/missionLearning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/mission-system.md depends on apps/web/src/lib/missionLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-system.md",
+      "target": "tests/upgrade/mission-system.test.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/mission-system.md depends on tests/upgrade/mission-system.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "scripts/ci/datadog_publish.py",
       "target": "scripts/ci/telemetry_delta.py",
       "edge_type": "CONSUMES",
@@ -5904,6 +6644,46 @@
     },
     {
       "type": "B",
+      "source": "tests/upgrade/mission-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/mission-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/mission-system.test.mjs depends on apps/pocketbase/pb_hooks/mission-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/mission-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/missions.pb.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/mission-system.test.mjs depends on apps/pocketbase/pb_hooks/missions.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/mission-system.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/mission-system.test.mjs depends on apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/mission-system.test.mjs",
+      "target": "apps/web/src/lib/missionLearning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/mission-system.test.mjs depends on apps/web/src/lib/missionLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "tests/upgrade/pocketbase-metrics.test.mjs",
       "target": "apps/pocketbase/pb_hooks/metrics.pb.js",
       "edge_type": "DEPENDS_ON",
@@ -5939,6 +6719,26 @@
       "edge_type": "VALIDATES",
       "weight": 1.0,
       "description": "tests/upgrade/workspace-summary.test.mjs validates apps/web/src/lib/workspaceSummary.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Keep the Rig 1 request within its recorded public handoff scope.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+      "target": ".bits/handoffs/TEMPLATE.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "Use the repository handoff structure to make missing private authority actionable.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -6058,12 +6858,116 @@
       "timestamp": "2026-09-15T01:46:13.654972+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/mission-system.test.mjs",
+      "description": "The malformed-plan assertion failed because false was treated as a missing draft. Strict null handling restored schema validation before the mission suite passed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:32:47.732104+00:00",
+      "commit_sha": null,
+      "smoke_result": "18/19"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/mission-system.test.mjs",
+      "description": "The evidence rejection test failed for prototype property names. Replacing the object lookup cache with a Set made toString, constructor and __proto__ require real readable evidence.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:32:47.732104+00:00",
+      "commit_sha": null,
+      "smoke_result": "0/1"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/mission-system.test.mjs",
+      "description": "All 42 Node regression tests passed, including 20 mission tests. Node measured 100% lines/functions and 99.58% branches for the selected mission model, policy, request hooks and migration under JSVM contract doubles.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:32:47.732104+00:00",
+      "commit_sha": null,
+      "smoke_result": "42/42"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_supply_chain.py",
+      "description": "The 18 Python adapter and contrast tests passed during mission-system verification.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:32:47.732104+00:00",
+      "commit_sha": null,
+      "smoke_result": "18/18"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "apps/web/package.json",
+      "description": "Targeted mission Vitest and coverage could not start; official lint lacks eslint-plugin-import and the build lacks Vite. Frontend component, browser and native PocketBase acceptance remain unverified.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:32:47.732104+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "description": "Mission continuation smoke is 4/7: Node, Python, measured context and public boundary pass. Source parsing covers 180 frontend modules. The three frontend execution gates remain blocked by dependencies.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:32:47.732104+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+      "description": "Private runtime attachment was rejected because public and private repositories cannot share this session. The named runtime facilities are absent from public source; their contracts remain unverified. A CMAX-B handoff records the bridge-first implementation requirements and private-session/dispatch blocker.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Private Rig 1 implementation awaits its primary-repository session and execution dispatch.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:59:05.802481+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "description": "Rig 1 public handoff checks passed: measured context, tracked/new-file public boundary, memory consistency and diff whitespace (4/4). The continuation changes only public .bits governance/evidence. Application smoke remains historical 4/7; private runtime source and execution have not been validated.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Public CMAX-B handoff is reviewable; private execution remains blocked.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:59:51.866409+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/4"
     }
   ],
   "summary": {
-    "type_a_count": 111,
-    "type_b_count": 167,
-    "type_c_count": 9,
+    "type_a_count": 124,
+    "type_b_count": 196,
+    "type_c_count": 17,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

@@ -58,6 +58,8 @@ export default defineConfig({
                 'src/components/site/PublicPage.jsx': { lines: 80, statements: 80, functions: 80, branches: 80 },
                 'src/lib/observability/mutations.js': { lines: 80, statements: 80, functions: 80, branches: 80 },
                 'src/components/workspace/TutorialCatalog.jsx': { lines: 80, statements: 80, functions: 80, branches: 80 },
+                'src/components/workspace/missions/*.jsx': { lines: 80, statements: 80, functions: 80, branches: 80 },
+                'src/lib/missionLearning.js': { lines: 80, statements: 80, functions: 80, branches: 80 },
             },
             reporter: ['text-summary', 'lcov'],
             reportsDirectory: '../../reports/coverage/web',

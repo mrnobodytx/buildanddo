@@ -9,39 +9,42 @@
 // Created:     2026-09-10
 // Depends:     apps/web/src/hooks/useWorkspaceRecords.js,
 //              apps/web/src/lib/workspaceActions.js,
-//              apps/web/src/components/workspace/ListToolbar.jsx
+//              apps/web/src/components/workspace/ListToolbar.jsx,
+//              apps/web/src/components/workspace/missions/MissionBuilder.jsx,
+//              apps/web/src/components/workspace/missions/MissionReview.jsx,
+//              apps/web/src/components/workspace/missions/MissionLearning.jsx,
+//              apps/web/src/components/workspace/missions/MissionGuide.jsx
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
 //              PRODUCES workspace.mission.create;
-//              PRODUCES workspace.mission.update
+//              PRODUCES workspace.mission.update;
+//              CONSUMES apps/web/src/components/workspace/missions/MissionBuilder.jsx;
+//              CONSUMES apps/web/src/components/workspace/missions/MissionReview.jsx;
+//              CONSUMES apps/web/src/components/workspace/missions/MissionLearning.jsx;
+//              CONSUMES apps/web/src/components/workspace/missions/MissionGuide.jsx
 // Intent:      Make a list of missions triageable — priority, progress, due
 //              dates, editing and deletion — instead of an append-only stack.
 // ───────────────────────────────────────────────────────────────
 
-import { AlertCircle, CalendarClock, Info, Loader2, Pencil, Plus, Target, Trash2 } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
-
+import React, { useMemo, useRef, useState } from 'react';
+import { CalendarClock, Plus, Target } from 'lucide-react';
 import { Button, Card } from '@/components/site/ui';
 import {
     Dialog,
     DialogClose,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
 import ListToolbar from '@/components/workspace/ListToolbar';
+import PreviousWorkNote from '@/components/workspace/PreviousWorkNote';
+import MissionBuilder from '@/components/workspace/missions/MissionBuilder';
+import MissionGuide from '@/components/workspace/missions/MissionGuide';
+import MissionLearning from '@/components/workspace/missions/MissionLearning';
+import MissionReview from '@/components/workspace/missions/MissionReview';
 import {
     MISSION_PRIORITY,
     MISSION_STATUS,
@@ -55,134 +58,74 @@ import {
     ListSkeleton,
     WriteErrorNotice,
 } from '@/components/workspace/WorkspaceNotices';
+import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useDemoMode } from '@/hooks/useDemoMode';
+import { usePreviousWork } from '@/hooks/usePreviousWork';
 import { useShapedRecords, useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { describeDueDate, timeAgo } from '@/lib/format';
+import { PLAN_FIELDS, TRANSITIONS, learningRewards, planIssues } from '@/lib/missionLearning';
 import { cn } from '@/lib/utils';
 
-const STAGE_ORDER = ['proposed', 'approved', 'running', 'needs_attention', 'verified', 'failed'];
-const PRIORITY_ORDER = Object.keys(MISSION_PRIORITY);
+const STAGES = Object.keys(TRANSITIONS);
 const TERMINAL = ['verified', 'failed'];
-
-const EMPTY_FORM = {
-    title: '',
-    description: '',
-    priority: 'normal',
-    progress: '',
-    due_date: '',
-    status: 'proposed',
+const PRIORITIES = Object.keys(MISSION_PRIORITY);
+const priorityRank = (mission) => {
+    const rank = PRIORITIES.indexOf(mission.priority);
+    return rank < 0 ? PRIORITIES.indexOf('normal') : rank;
 };
-
 const SORTS = {
     priority: {
         label: 'Priority',
-        // Unset priority sorts as 'normal' rather than last: a mission created
-        // before the field existed is not implicitly the least important one.
-        compare: (a, b) => {
-            const rank = (m) => {
-                const index = PRIORITY_ORDER.indexOf(m.priority || 'normal');
-                return index === -1 ? PRIORITY_ORDER.indexOf('normal') : index;
-            };
-            return rank(a) - rank(b) || new Date(b.created) - new Date(a.created);
-        },
+        compare: (a, b) =>
+            priorityRank(a) - priorityRank(b) || new Date(b.created) - new Date(a.created),
     },
     due: {
         label: 'Due date',
-        // Missions with no due date sink below dated ones instead of sorting
-        // as "the epoch", which would put every undated mission first.
-        compare: (a, b) => {
-            const at = a.due_date ? new Date(a.due_date).getTime() : Number.POSITIVE_INFINITY;
-            const bt = b.due_date ? new Date(b.due_date).getTime() : Number.POSITIVE_INFINITY;
-            return at - bt;
-        },
+        compare: (a, b) =>
+            (a.due_date ? new Date(a.due_date).getTime() : Infinity) -
+            (b.due_date ? new Date(b.due_date).getTime() : Infinity),
     },
     stage: {
         label: 'Stage',
-        compare: (a, b) => STAGE_ORDER.indexOf(a.status) - STAGE_ORDER.indexOf(b.status),
+        compare: (a, b) => STAGES.indexOf(a.status) - STAGES.indexOf(b.status),
     },
-    newest: {
-        label: 'Newest',
-        compare: (a, b) => new Date(b.created) - new Date(a.created),
-    },
+    newest: { label: 'Newest', compare: (a, b) => new Date(b.created) - new Date(a.created) },
 };
 
-function MissionForm({ form, setForm, onSubmit, saving, error, submitLabel, onDismissError }) {
-    const set = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
-
+function SavedPlan({ mission }) {
     return (
-        <form onSubmit={onSubmit} className="space-y-4">
-            <div className="grid gap-2">
-                <Label htmlFor="m-title">Goal</Label>
-                <Input
-                    id="m-title"
-                    value={form.title}
-                    onChange={(event) => set('title', event.target.value)}
-                    placeholder="e.g. Reduce next-week no-shows with reminder texts"
-                />
-            </div>
-            <div className="grid gap-2">
-                <Label htmlFor="m-desc">Scope &amp; plan</Label>
-                <Textarea
-                    id="m-desc"
-                    value={form.description}
-                    onChange={(event) => set('description', event.target.value)}
-                    placeholder="What's in scope, what's out, and how success is verified"
-                    rows={4}
-                />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-                <div className="grid gap-2">
-                    <Label htmlFor="m-priority">Priority</Label>
-                    <Select value={form.priority} onValueChange={(value) => set('priority', value)}>
-                        <SelectTrigger id="m-priority">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {PRIORITY_ORDER.map((key) => (
-                                <SelectItem key={key} value={key}>
-                                    {MISSION_PRIORITY[key].label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="m-due">Due date (optional)</Label>
-                    <Input
-                        id="m-due"
-                        type="date"
-                        value={form.due_date}
-                        onChange={(event) => set('due_date', event.target.value)}
-                    />
-                </div>
-            </div>
-            <div className="grid gap-2">
-                <Label htmlFor="m-progress">Progress % (optional)</Label>
-                <Input
-                    id="m-progress"
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={form.progress}
-                    onChange={(event) => set('progress', event.target.value)}
-                    placeholder="Leave blank when progress isn't being tracked"
-                />
-            </div>
-            <WriteErrorNotice message={error} onDismiss={onDismissError} />
-            <DialogFooter>
-                <DialogClose asChild>
-                    <Button type="button" variant="ghost" size="sm">
-                        Cancel
-                    </Button>
-                </DialogClose>
-                <Button type="submit" size="sm" disabled={saving}>
-                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : submitLabel}
-                </Button>
-            </DialogFooter>
-        </form>
+        <details className="border border-border p-4">
+            <summary className="min-h-8 cursor-pointer font-semibold">
+                Inspect the saved mission plan
+            </summary>
+            <p className="mt-3 text-sm">
+                Risk tier: {mission.mission_plan?.risk || 'Not recorded'}
+            </p>
+            <dl className="mt-3 space-y-3 text-sm">
+                {PLAN_FIELDS.map((field) => (
+                    <div key={field.id}>
+                        <dt className="font-semibold">{field.label}</dt>
+                        <dd className="mt-1 whitespace-pre-wrap text-muted-foreground">
+                            {mission.mission_plan?.[field.id] || 'Not yet recorded'}
+                        </dd>
+                    </div>
+                ))}
+            </dl>
+            {mission.mission_approved_at && (
+                <p className="mt-4 text-xs text-muted-foreground">
+                    Approval recorded at {mission.mission_approved_at} by account{' '}
+                    {mission.mission_approved_by}.
+                </p>
+            )}
+        </details>
     );
 }
 
-export default function MissionsPage() {
+function MissionDesk() {
+    const { setDemo } = useDemoMode();
+    const missions = useWorkspaceRecords('missions', { sort: '-created' });
+    const evidence = useWorkspaceRecords('evidence', { sort: '-created' });
     const {
         records,
         loading,
@@ -192,158 +135,172 @@ export default function MissionsPage() {
         create,
         update,
         remove,
-        saving,
         writeError,
         clearWriteError,
-    } = useWorkspaceRecords('missions', { sort: '-created' });
-
-    const [createOpen, setCreateOpen] = useState(false);
-    const [editing, setEditing] = useState(null);
+    } = missions;
+    const [builder, setBuilder] = useState(null);
+    const [detailId, setDetailId] = useState(null);
+    const [approvalId, setApprovalId] = useState(null);
+    const [approvalConfirmed, setApprovalConfirmed] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(null);
-    const [form, setForm] = useState(EMPTY_FORM);
-    const [validation, setValidation] = useState('');
     const [query, setQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [priorityFilter, setPriorityFilter] = useState('all');
     const [sortKey, setSortKey] = useState('priority');
-
-    // Missions created before the priority field existed carry an empty
-    // value. Defaulting once here keeps the filter and the sort agreeing;
-    // without it, a mission the list sorts as "normal" would vanish when you
-    // filter for "Normal".
+    const [notice, setNotice] = useState('');
+    const [busy, setBusy] = useState(false);
+    const pending = useRef(false);
+    const [effects, setEffects] = useState(() => {
+        try {
+            return localStorage.getItem('buildanddo.mission-effects') !== 'off';
+        } catch {
+            return false;
+        }
+    });
     const normalised = useMemo(
         () => records.map((mission) => ({ ...mission, priority: mission.priority || 'normal' })),
         [records],
     );
-
-    const compare = SORTS[sortKey].compare;
     const visible = useShapedRecords(normalised, {
         query,
         searchFields: ['title', 'description'],
         filters: { status: statusFilter, priority: priorityFilter },
-        sort: compare,
+        sort: SORTS[sortKey].compare,
     });
-
-    const counts = useMemo(() => {
-        const open = records.filter((m) => !TERMINAL.includes(m.status));
-        const overdue = open.filter(
-            (m) => m.due_date && new Date(m.due_date).getTime() < Date.now(),
+    const previous = usePreviousWork(
+        'mission',
+        demo ? [] : normalised.map((mission) => mission.id),
+    );
+    const detail = records.find((mission) => mission.id === detailId);
+    const approval = records.find((mission) => mission.id === approvalId);
+    const selected = records.find((mission) => mission.id === builder);
+    const disabled = demo || busy || degraded || loading;
+    const openBuilder = (id = 'new') => {
+        clearWriteError();
+        setBuilder(id);
+    };
+    const toggleEffects = (enabled) => {
+        setEffects(enabled);
+        try {
+            localStorage.setItem('buildanddo.mission-effects', enabled ? 'on' : 'off');
+        } catch {
+            /* The current page preference still applies. */
+        }
+    };
+    const mutate = async (operation, successMessage = '') => {
+        if (pending.current || demo)
+            return {
+                ok: false,
+                error: demo
+                    ? 'Demonstration mode is read-only.'
+                    : 'Wait for the current save to finish.',
+            };
+        pending.current = true;
+        setBusy(true);
+        clearWriteError();
+        setNotice('');
+        try {
+            const result = await operation();
+            if (result.ok && successMessage) setNotice(successMessage);
+            return result;
+        } finally {
+            pending.current = false;
+            setBusy(false);
+        }
+    };
+    const savePlan = async (data) => {
+        const result = await mutate(
+            () => (selected ? update(selected.id, data) : create(data)),
+            'Mission draft saved. Review the saved plan before approving it.',
         );
-        return { open: open.length, overdue: overdue.length, total: records.length };
-    }, [records]);
-
-    const toPayload = () => ({
-        title: form.title.trim(),
-        description: form.description.trim(),
-        status: form.status,
-        priority: form.priority,
-        progress: form.progress === '' ? null : Number(form.progress),
-        due_date: form.due_date || null,
-    });
-
-    const openCreate = () => {
-        setForm(EMPTY_FORM);
-        setValidation('');
-        clearWriteError();
-        setCreateOpen(true);
-    };
-
-    const openEdit = (mission) => {
-        setForm({
-            title: mission.title || '',
-            description: mission.description || '',
-            priority: mission.priority || 'normal',
-            progress: mission.progress == null ? '' : String(mission.progress),
-            // The date input needs a bare YYYY-MM-DD; PocketBase returns a
-            // full timestamp.
-            due_date: mission.due_date ? String(mission.due_date).slice(0, 10) : '',
-            status: mission.status,
-        });
-        setValidation('');
-        clearWriteError();
-        setEditing(mission);
-    };
-
-    const submitCreate = async (event) => {
-        event.preventDefault();
-        if (!form.title.trim()) {
-            setValidation('Give the mission a clear goal.');
-            return;
+        if (result.ok) {
+            setBuilder(null);
+            setDetailId(result.record.id);
         }
-        setValidation('');
-        const result = await create(toPayload());
-        if (!result.ok) return;
-
-        setForm(EMPTY_FORM);
-        setCreateOpen(false);
+        return result;
     };
-
-    const submitEdit = async (event) => {
-        event.preventDefault();
-        if (!form.title.trim()) {
-            setValidation('Give the mission a clear goal.');
-            return;
-        }
-        setValidation('');
-        const result = await update(editing.id, toPayload());
-        if (!result.ok) return;
-
-        setEditing(null);
+    const changeStatus = (mission, status) =>
+        mutate(
+            () => update(mission.id, { status }),
+            `${MISSION_STATUS[status].label} recorded. No automation was executed by this action.`,
+        );
+    const approve = async () => {
+        if (!approvalConfirmed || !approval || planIssues(approval.mission_plan).length) return;
+        const result = await changeStatus(approval, 'approved');
+        if (result.ok) setApprovalId(null);
     };
-
-    const advance = async (mission) => {
-        const index = STAGE_ORDER.indexOf(mission.status);
-        // 'failed' is an outcome, never the next step in a normal advance.
-        const next = STAGE_ORDER.find((stage, position) => position > index && stage !== 'failed');
-        if (!next) return;
-        const result = await update(mission.id, { status: next });
-        if (!result.ok) return;
-
-    };
-
     const destroy = async () => {
-        const result = await remove(confirmDelete.id);
-        if (!result.ok) return;
-
-        setConfirmDelete(null);
+        const result = await mutate(() => remove(confirmDelete.id), 'Mission deleted.');
+        if (result.ok) setConfirmDelete(null);
     };
-
+    const openMissions = records.filter((mission) => !TERMINAL.includes(mission.status));
+    const overdueCount = openMissions.filter(
+        (mission) => mission.due_date && new Date(mission.due_date).getTime() < Date.now(),
+    ).length;
     return (
-        <div className="space-y-8">
+        <div
+            className="mission-effects ph-no-capture space-y-8"
+            data-effects={effects ? 'on' : 'off'}
+            data-dd-privacy="mask"
+        >
             <PageHeader
                 title="Challenge Desk"
-                description="A mission is a bounded, approved task with a clear goal and scope. You review the plan before anything runs, and you can inspect what BuildAndDo observed, decided, attempted, and verified."
+                description="Build missions with a clear why, an approved plan and checkable evidence. Learn as you plan, record work and review the outcome."
                 actions={
-                    <Button size="sm" onClick={openCreate}>
-                        <Plus className="h-4 w-4" />
+                    <Button size="sm" onClick={() => openBuilder()} disabled={disabled}>
+                        <Plus className="h-4 w-4" aria-hidden="true" />
                         Start a mission
                     </Button>
                 }
             />
-
-
-            {counts.total > 0 && (
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                    <span>
-                        <span className="font-semibold text-foreground">{counts.open}</span> open
-                    </span>
-                    <span>
-                        <span
-                            className={cn(
-                                'font-semibold',
-                                counts.overdue ? 'text-amber-warm' : 'text-foreground',
-                            )}
-                        >
-                            {counts.overdue}
-                        </span>{' '}
-                        past due
-                    </span>
-                    <span>
-                        <span className="font-semibold text-foreground">{counts.total}</span> total
-                    </span>
-                </div>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+                <p className="text-sm text-muted-foreground">
+                    {openMissions.length} open · {overdueCount} past due · {records.length} total.
+                    Learning points are separate from mission outcomes.
+                </p>
+                <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm">
+                    <input
+                        type="checkbox"
+                        checked={effects}
+                        onChange={(event) => toggleEffects(event.target.checked)}
+                    />
+                    Learning animations
+                </label>
+            </div>
+            <p className="text-xs text-muted-foreground">
+                Animations also respect your system’s reduced-motion preference. Every result is
+                available as text.
+            </p>
+            {demo && (
+                <p role="status" className="border border-border p-3 text-sm">
+                    Demonstration mode is read-only. Switch it off to save missions, evidence or
+                    learning progress.{' '}
+                    <Button type="button" size="sm" variant="ghost" onClick={() => setDemo(false)}>
+                        Show real data
+                    </Button>
+                </p>
             )}
-
+            <MissionGuide />
+            <div aria-label="Mission stages" className="flex flex-wrap gap-2">
+                {STAGES.map((stage) => (
+                    <StatusBadge key={stage} map={MISSION_STATUS} value={stage} />
+                ))}
+            </div>
+            <p className="text-sm text-muted-foreground">
+                Proposed → Approved → Running → Verified or Failed. Pause with Needs attention;
+                revise as a new proposal before changing an approved plan. A finished mission is not
+                reopened.
+            </p>
+            {notice && (
+                <p
+                    key={notice}
+                    role="status"
+                    className="mission-reward border border-border p-3 text-sm"
+                >
+                    {notice}
+                </p>
+            )}
+            <WriteErrorNotice message={writeError} onDismiss={clearWriteError} />
             {records.length > 0 && (
                 <ListToolbar
                     query={query}
@@ -359,9 +316,9 @@ export default function MissionsPage() {
                             onChange: setStatusFilter,
                             options: [
                                 { value: 'all', label: 'All stages' },
-                                ...STAGE_ORDER.map((stage) => ({
-                                    value: stage,
-                                    label: MISSION_STATUS[stage].label,
+                                ...STAGES.map((value) => ({
+                                    value,
+                                    label: MISSION_STATUS[value].label,
                                 })),
                             ],
                         },
@@ -372,9 +329,9 @@ export default function MissionsPage() {
                             onChange: setPriorityFilter,
                             options: [
                                 { value: 'all', label: 'All priorities' },
-                                ...PRIORITY_ORDER.map((key) => ({
-                                    value: key,
-                                    label: MISSION_PRIORITY[key].label,
+                                ...PRIORITIES.map((value) => ({
+                                    value,
+                                    label: MISSION_PRIORITY[value].label,
                                 })),
                             ],
                         },
@@ -383,17 +340,14 @@ export default function MissionsPage() {
                             label: 'Sort',
                             value: sortKey,
                             onChange: setSortKey,
-                            options: Object.entries(SORTS).map(([key, value]) => ({
-                                value: key,
-                                label: `Sort: ${value.label}`,
+                            options: Object.entries(SORTS).map(([value, sort]) => ({
+                                value,
+                                label: `Sort: ${sort.label}`,
                             })),
                         },
                     ]}
                 />
             )}
-
-            <WriteErrorNotice message={writeError} onDismiss={clearWriteError} />
-
             {degraded ? (
                 <DegradedNotice onRetry={refresh} />
             ) : loading ? (
@@ -402,11 +356,10 @@ export default function MissionsPage() {
                 <EmptyState
                     icon={Target}
                     title="No missions yet"
-                    description="Start a mission to turn a signal into a bounded task. It begins as 'proposed' — you approve it before BuildAndDo runs anything, and you verify the outcome when it's done."
+                    description="Save a draft, learn how to bound it, then approve the plan before recording any work."
                     action={
-                        <div className="flex flex-wrap items-center justify-center gap-2">
-                            <Button size="sm" onClick={openCreate}>
-                                <Plus className="h-4 w-4" />
+                        <div className="flex flex-wrap gap-2">
+                            <Button size="sm" disabled={disabled} onClick={() => openBuilder()}>
                                 Start a mission
                             </Button>
                             <DemoModeToggle />
@@ -414,80 +367,167 @@ export default function MissionsPage() {
                     }
                 />
             ) : visible.length === 0 ? (
-                <Card className="p-8 text-center text-sm text-muted-foreground">
-                    No mission matches those filters.
-                </Card>
+                <Card className="p-8 text-center text-sm">No mission matches those filters.</Card>
             ) : (
-                <ul className="space-y-3">
+                <ul aria-label="Missions" className="space-y-4">
                     {visible.map((mission) => {
-                        const canAdvance = !TERMINAL.includes(mission.status);
+                        const issues = planIssues(mission.mission_plan);
                         const due = describeDueDate(mission.due_date);
+                        const points = learningRewards(
+                            mission,
+                            evidence.degraded ? [] : evidence.records,
+                        ).points;
                         return (
                             <li key={mission.id}>
                                 <Card className="p-5">
-                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                    <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
                                         <div className="min-w-0">
-                                            <p className="font-medium">{mission.title}</p>
+                                            <h2 className="font-display text-xl font-semibold">
+                                                {mission.title}
+                                            </h2>
                                             {mission.description && (
                                                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                                                     {mission.description}
                                                 </p>
                                             )}
                                         </div>
-                                        <div className="flex shrink-0 flex-wrap items-center gap-2">
+                                        <div className="flex shrink-0 flex-wrap items-start gap-2">
                                             <StatusBadge
                                                 map={MISSION_PRIORITY}
-                                                value={mission.priority || 'normal'}
+                                                value={mission.priority}
                                             />
-                                            <StatusBadge map={MISSION_STATUS} value={mission.status} />
+                                            <StatusBadge
+                                                map={MISSION_STATUS}
+                                                value={mission.status}
+                                            />
                                         </div>
                                     </div>
-
                                     {mission.progress != null && (
-                                        <ProgressMeter value={mission.progress} className="mt-4" />
+                                        <div className="mt-4">
+                                            <p className="text-xs text-muted-foreground">
+                                                Self-reported work progress
+                                            </p>
+                                            <ProgressMeter value={mission.progress} />
+                                        </div>
                                     )}
-
-                                    <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
-                                        <span>Started {timeAgo(mission.created)}</span>
+                                    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
+                                        <span>Created {timeAgo(mission.created)}</span>
+                                        <span>{points} / 100 learning points</span>
                                         {due.label && (
                                             <span
                                                 className={cn(
-                                                    'inline-flex items-center gap-1.5',
-                                                    (due.overdue || due.soon) && 'text-amber-warm',
+                                                    'inline-flex items-center gap-1',
+                                                    due.overdue && 'text-destructive',
                                                 )}
                                             >
-                                                <CalendarClock className="h-3.5 w-3.5" />
+                                                <CalendarClock
+                                                    className="h-3.5 w-3.5"
+                                                    aria-hidden="true"
+                                                />
                                                 {due.label}
                                             </span>
                                         )}
                                     </div>
-
-                                    <div className="mt-4 flex flex-wrap gap-2 border-t border-border/60 pt-3">
-                                        {canAdvance && (
+                                    <PreviousWorkNote history={previous.history[mission.id]} />
+                                    {mission.status === 'proposed' && issues.length > 0 && (
+                                        <p className="mt-3 text-xs text-muted-foreground">
+                                            Complete {issues.length} plan items before approval.
+                                            Learning checks are available now.
+                                        </p>
+                                    )}
+                                    {['approved', 'needs_attention', 'running'].includes(
+                                        mission.status,
+                                    ) &&
+                                        (!mission.mission_approved_by ||
+                                            !mission.mission_approved_at ||
+                                            issues.length > 0) && (
+                                            <p className="mt-3 text-xs text-muted-foreground">
+                                                This legacy mission needs a structured plan and
+                                                recorded approval. Pause any running work, then
+                                                revise the proposal.
+                                            </p>
+                                        )}
+                                    <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-3">
+                                        <Button
+                                            type="button"
+                                            size="sm"
+                                            variant="secondary"
+                                            onClick={() => setDetailId(mission.id)}
+                                        >
+                                            Learn and review
+                                            <span className="sr-only">: {mission.title}</span>
+                                        </Button>
+                                        {['proposed', 'approved', 'needs_attention'].includes(
+                                            mission.status,
+                                        ) && (
                                             <Button
-                                                variant="secondary"
+                                                type="button"
                                                 size="sm"
-                                                disabled={saving}
-                                                onClick={() => advance(mission)}
+                                                variant="ghost"
+                                                disabled={disabled}
+                                                onClick={() => openBuilder(mission.id)}
                                             >
-                                                Advance to next stage
+                                                {mission.status === 'proposed'
+                                                    ? 'Edit plan'
+                                                    : 'Revise as proposal'}
+                                            </Button>
+                                        )}
+                                        {mission.status === 'proposed' && (
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                disabled={disabled || issues.length > 0}
+                                                onClick={() => {
+                                                    setApprovalConfirmed(false);
+                                                    setApprovalId(mission.id);
+                                                }}
+                                            >
+                                                Review approval
+                                            </Button>
+                                        )}
+                                        {['approved', 'needs_attention'].includes(
+                                            mission.status,
+                                        ) && (
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                disabled={
+                                                    disabled ||
+                                                    issues.length > 0 ||
+                                                    !mission.mission_approved_by ||
+                                                    !mission.mission_approved_at
+                                                }
+                                                onClick={() => changeStatus(mission, 'running')}
+                                            >
+                                                {mission.status === 'approved'
+                                                    ? 'Record work started'
+                                                    : 'Record work resumed'}
+                                            </Button>
+                                        )}
+                                        {mission.status === 'running' && (
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                variant="ghost"
+                                                disabled={disabled}
+                                                onClick={() =>
+                                                    changeStatus(mission, 'needs_attention')
+                                                }
+                                            >
+                                                Pause for attention
                                             </Button>
                                         )}
                                         <Button
-                                            variant="ghost"
+                                            type="button"
                                             size="sm"
-                                            onClick={() => openEdit(mission)}
-                                        >
-                                            <Pencil className="h-4 w-4" />
-                                            Edit
-                                        </Button>
-                                        <Button
                                             variant="ghost"
-                                            size="sm"
-                                            onClick={() => setConfirmDelete(mission)}
+                                            disabled={disabled}
+                                            onClick={() => {
+                                                clearWriteError();
+                                                setConfirmDelete(mission);
+                                            }}
                                         >
-                                            <Trash2 className="h-4 w-4" />
-                                            Delete
+                                            Delete<span className="sr-only">: {mission.title}</span>
                                         </Button>
                                     </div>
                                 </Card>
@@ -496,94 +536,175 @@ export default function MissionsPage() {
                     })}
                 </ul>
             )}
-
-            <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-                <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-card">
+            <Dialog
+                open={Boolean(builder)}
+                onOpenChange={(open) => !open && !busy && setBuilder(null)}
+            >
+                <DialogContent
+                    className="mission-effects ph-no-capture sm:max-w-3xl"
+                    data-effects={effects ? 'on' : 'off'}
+                    data-dd-privacy="mask"
+                >
                     <DialogHeader>
-                        <DialogTitle>Start a mission</DialogTitle>
+                        <DialogTitle>
+                            {selected ? 'Revise mission plan' : 'Start a mission'}
+                        </DialogTitle>
+                        <DialogDescription>
+                            Save a draft at any step. Approval happens after the plan is saved.
+                        </DialogDescription>
                     </DialogHeader>
-                    <MissionForm
-                        form={form}
-                        setForm={setForm}
-                        onSubmit={submitCreate}
-                        saving={saving}
-                        error={validation || writeError}
-                        onDismissError={clearWriteError}
-                        submitLabel="Propose mission"
-                    />
+                    {builder && (
+                        <MissionBuilder
+                            key={builder}
+                            mission={selected}
+                            onSave={savePlan}
+                            onCancel={() => setBuilder(null)}
+                            disabled={demo || degraded}
+                        />
+                    )}
                 </DialogContent>
             </Dialog>
-
-            <Dialog open={Boolean(editing)} onOpenChange={(open) => !open && setEditing(null)}>
-                <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-card">
+            <Dialog
+                open={Boolean(approval)}
+                onOpenChange={(open) => !open && !busy && setApprovalId(null)}
+            >
+                <DialogContent className="sm:max-w-2xl ph-no-capture" data-dd-privacy="mask">
                     <DialogHeader>
-                        <DialogTitle>Edit mission</DialogTitle>
+                        <DialogTitle>Approve the saved mission</DialogTitle>
+                        <DialogDescription>
+                            Confirm your authority and review the boundaries. Approval does not
+                            execute work.
+                        </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-2">
-                        <Label htmlFor="m-stage">Stage</Label>
-                        <Select
-                            value={form.status}
-                            onValueChange={(value) => setForm((prev) => ({ ...prev, status: value }))}
-                        >
-                            <SelectTrigger id="m-stage">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {STAGE_ORDER.map((stage) => (
-                                    <SelectItem key={stage} value={stage}>
-                                        {MISSION_STATUS[stage].label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <MissionForm
-                        form={form}
-                        setForm={setForm}
-                        onSubmit={submitEdit}
-                        saving={saving}
-                        error={validation || writeError}
-                        onDismissError={clearWriteError}
-                        submitLabel="Save changes"
-                    />
+                    {approval && (
+                        <>
+                            <h3 className="font-semibold">{approval.title}</h3>
+                            <SavedPlan mission={approval} />
+                            <label className="flex min-h-11 items-start gap-3 border border-border p-3 text-sm">
+                                <input
+                                    type="checkbox"
+                                    checked={approvalConfirmed}
+                                    disabled={busy}
+                                    onChange={(event) => setApprovalConfirmed(event.target.checked)}
+                                    className="mt-1"
+                                />
+                                <span>
+                                    I have authority to approve this bounded plan and have reviewed
+                                    its purpose, risk, checks and recovery steps.
+                                </span>
+                            </label>
+                            <WriteErrorNotice message={writeError} onDismiss={clearWriteError} />
+                            <DialogFooter>
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    disabled={
+                                        disabled ||
+                                        !approvalConfirmed ||
+                                        planIssues(approval.mission_plan).length > 0
+                                    }
+                                    onClick={approve}
+                                >
+                                    {busy ? 'Saving…' : 'Record approval'}
+                                </Button>
+                            </DialogFooter>
+                        </>
+                    )}
                 </DialogContent>
             </Dialog>
-
+            <Dialog
+                open={Boolean(detail) && !builder}
+                onOpenChange={(open) => !open && setDetailId(null)}
+            >
+                <DialogContent
+                    className="mission-effects ph-no-capture sm:max-w-4xl"
+                    data-effects={effects ? 'on' : 'off'}
+                    data-dd-privacy="mask"
+                >
+                    <DialogHeader>
+                        <DialogTitle>{detail?.title}</DialogTitle>
+                        <DialogDescription>
+                            Learn, inspect the saved plan, and review actual outcomes.
+                        </DialogDescription>
+                    </DialogHeader>
+                    {detail && (
+                        <div key={detail.id} className="space-y-7">
+                            <SavedPlan mission={detail} />
+                            <MissionLearning
+                                mission={detail}
+                                evidence={evidence.degraded ? [] : evidence.records}
+                                disabled={disabled}
+                                onSave={(answers) =>
+                                    mutate(() => update(detail.id, { mission_learning: answers }))
+                                }
+                            />
+                            {['running', 'needs_attention', 'verified', 'failed'].includes(
+                                detail.status,
+                            ) ? (
+                                <MissionReview
+                                    mission={detail}
+                                    evidence={evidence.records}
+                                    evidenceLoading={evidence.loading}
+                                    evidenceDegraded={evidence.degraded}
+                                    onRefreshEvidence={evidence.refresh}
+                                    disabled={disabled}
+                                    onSave={(data) => mutate(() => update(detail.id, data))}
+                                    onEvidence={(data) => mutate(() => evidence.create(data))}
+                                />
+                            ) : (
+                                <p className="border border-border p-4 text-sm">
+                                    Save a complete plan, record approval and record work started
+                                    before adding a TEVV review.
+                                </p>
+                            )}
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
             <Dialog
                 open={Boolean(confirmDelete)}
-                onOpenChange={(open) => !open && setConfirmDelete(null)}
+                onOpenChange={(open) => !open && !busy && setConfirmDelete(null)}
             >
-                <DialogContent className="border-border bg-card">
+                <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Delete this mission?</DialogTitle>
+                        <DialogDescription>
+                            The mission and evidence linked to it will be deleted and cannot be
+                            recovered. Keep finished experiments when their results can teach the
+                            next mission.
+                        </DialogDescription>
                     </DialogHeader>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                        {confirmDelete ? `"${confirmDelete.title}" ` : ''}will be removed. Evidence
-                        recorded against it is deleted with it and cannot be recovered.
-                    </p>
                     <WriteErrorNotice message={writeError} onDismiss={clearWriteError} />
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button type="button" variant="ghost" size="sm">
+                            <Button size="sm" type="button" variant="ghost" disabled={busy}>
                                 Keep it
                             </Button>
                         </DialogClose>
-                        <Button size="sm" onClick={destroy} disabled={saving}>
-                            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Delete mission'}
+                        <Button type="button" size="sm" disabled={disabled} onClick={destroy}>
+                            Delete mission
                         </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-
-            <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground/70">
-                {demo ? (
-                    <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                ) : (
-                    <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                )}
-                'Proposed' and 'approved' mean nothing has run yet. 'Running' means an approved
-                action is in progress. 'Verified' means the outcome was checked against evidence.
-            </p>
         </div>
     );
+}
+
+/** Keep mission drafts, pending rewards and evidence within the current account and workspace. */
+export default function MissionsPage() {
+    const { user, isAuthed } = useAuth();
+    const { active, loading, error, refresh } = useWorkspace();
+    const { demo } = useDemoMode();
+    if (!isAuthed || !user?.id || !active || loading || error)
+        return (
+            <div className="space-y-4">
+                <PageHeader
+                    title="Challenge Desk"
+                    description="Open an authenticated workspace to save a mission."
+                />
+                {error && <DegradedNotice onRetry={refresh} />}
+            </div>
+        );
+    return <MissionDesk key={`${user.id}:${active.id}:${demo ? 'demo' : 'live'}`} />;
 }
