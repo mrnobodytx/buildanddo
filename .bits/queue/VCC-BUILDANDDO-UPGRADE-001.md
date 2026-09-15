@@ -167,3 +167,45 @@ with its previously recorded frontend and native-runtime acceptance gaps.
 Handoff gate results: T PASS; U PASS. Context, tracked/new-file boundary, memory
 and diff checks pass (4/4). Runtime tests and installation remain unexecuted;
 the application smoke remains the historical 4/7, not newly verified here.
+
+## Workflow backend continuation authorized 2026-09-15
+
+The owner requested the next BuildAndDo backend wave and set Rig 1 aside. The
+existing A1 source dispatch now covers persistent workflow runs, approval
+checkpoints and atomic mission-linked evidence as specified in the umbrella.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| V | Register the workflow backend scope and inspect current persistence | `python scripts/ci/agent_context.py --check` | done |
+| W | Add bounded run storage, authenticated commands and atomic receipts | `node --test tests/upgrade/workflow-runs.test.mjs` | partial — 15/15 contract tests pass; native acceptance pending |
+| X | Connect run history, approvals and outcome recording to the workspace | Workflow interaction suite and client contract tests | partial — 7/7 client tests pass; interaction suites cannot start |
+| Y | Verify the backend wave and record evidence | Node/Python/web checks; context, boundary and memory verification | done — context, boundary and memory pass; unavailable acceptance recorded |
+
+Memory brief: workflows have editable JSON steps and activation state, but no
+run collection. Activation currently assigns last_run without recording an
+outcome. Operations' run logs and the mission evidence flow establish the local
+recording pattern. The next wave adds transactional run/evidence persistence;
+external execution remains outside this source dispatch. Existing frontend
+dependencies and native PocketBase were unavailable in earlier iterations.
+No authenticated live workspace is supplied, so no seat event is fabricated.
+
+Workflow phase gates: V PASS. W local contract gate PASS, native gate unexecuted
+because the pinned PocketBase binary is unavailable. X client gate PASS; component
+gate FAIL to start because Vitest is absent. The full Node suite passes 66/66 and
+Python passes 18/18. Frontend coverage is also unavailable, official lint lacks
+eslint-plugin-import and Vite cannot start. These are environment failures, not
+successful acceptance. The source checker parses 185 modules without core errors.
+
+An initial retry regression failed when stored JSON object keys were reordered.
+Comparing command fields and scalar values independently of serialization order
+fixed it. Replays, stale tabs, approval-role checks, mission approval changes and
+run/evidence rollback are exercised against actual production source with doubles.
+docs/workflow-system.md records the API, operator workflow, retention, native
+concurrency and browser acceptance requirements. No external tool execution or
+mission verification is inferred from a completed recorded workflow run.
+
+Y evidence gate PASS (4/7 smoke). The boundary scanner checks all 428 tracked
+files with no failures. The initial post-staging context mismatch was fixed by
+regenerating the lock after the new files entered its tracked inventory. Memory
+verification confirms 138 file vectors, 227 declared edges and 20 real events.
+Native and frontend acceptance remain pending; no delivery status is claimed.

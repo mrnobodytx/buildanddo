@@ -9,16 +9,17 @@
 # Created:     2026-09-10
 # Depends:     apps/pocketbase/pb_migrations, apps/web/src/contexts/AuthContext.jsx
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/pocketbase/pb_migrations; VALIDATES apps/web/src/lib/pocketbaseClient.js
+# EnumEdges:   CONSUMES apps/pocketbase/pb_migrations; VALIDATES apps/web/src/lib/pocketbaseClient.js; CONSUMES docs/workflow-system.md
 # Intent:      Write down the API surface that already exists, extracted from the
 #              migrations, so the schema is readable without reading 1,600 lines of JS.
 # ───────────────────────────────────────────────────────────────
 
 # BuildAndDo API reference
 
-The backend is [PocketBase](https://pocketbase.io). There is no hand-written
-API layer: every endpoint below is PocketBase's generated REST API over
-collections defined in `apps/pocketbase/pb_migrations/`.
+The backend is [PocketBase](https://pocketbase.io). Collection endpoints use its
+generated REST API over migrations in `apps/pocketbase/pb_migrations/`. Workflow
+run commands use authenticated PocketBase routes so each decision and evidence
+receipt can be saved together in a transaction. See [Workflow runs](../workflow-system.md).
 
 **The migrations are the source of truth.** This document is extracted from
 them by hand and can drift; when it disagrees with a migration, the migration
@@ -282,8 +283,27 @@ mission; always attached to a workspace.
 | `name` | text, required | max 160 |
 | `description` | text | max 1000 |
 | `status` | select, required | `draft` \| `active` \| `paused` |
+| `steps` | JSON | ordered definitions; at most 20 bounded steps; activation requires at least one |
+| `template` | text | starting template, max 80 |
+| `last_run` | date | server-written when a run is created; historical activation dates are not evidence |
 | `workspace` | relation → `workspaces`, required | cascade |
 | `owner` | relation → `users`, required | cascade |
+
+### `workflow_runs` — workspace reads, command-only writes
+
+Current workspace owners and members can list/read runs. The generated create,
+update and delete endpoints are locked for normal accounts. Owners, admins and
+editors use `POST /api/buildanddo/workflow-runs` to start a run and
+`POST /api/buildanddo/workflow-runs/{id}/decisions` to record an outcome. Approval
+checkpoints require an owner or admin. Both commands use PocketBase auth and
+explicit same-workspace checks. No command executes an external tool.
+
+Each run stores its workflow/mission relations, immutable definition and approval
+snapshot, ordered decision receipts, revision, current step and server timestamps.
+An idempotency key identifies a submitted command; decisions also carry the
+expected revision. [Request bodies, lifecycle and native acceptance](../workflow-system.md)
+describe the complete contract. Ordinary collection rules on missions and
+evidence are unchanged.
 
 ### `services` — rules: owner+member
 
@@ -460,6 +480,7 @@ everywhere as `owner`, `user`, `actor`, `auditor`, `submitted_by`.
 | `1788800000_create_praxis_evidence_fabric.js` | `knowledge_sources`, `knowledge_claims`, `knowledge_logic`, `knowledge_beliefs`, `praxis_methods`, `praxis_materials`, `praxis_tools`, `praxis_pricing`, `praxis_timing`, `experience_attempts`, `experience_outcomes`, `experience_failures`, `governance_audits`, `governance_disputes`, `governance_research_quests` |
 | `1788900000_create_workspace_members_rbac.js` | `workspace_members` (+ re-scopes 15 collections) |
 | `1788920000_add_claim_authorship_and_reputation.js` | `contributor_reputation` (+ `knowledge_claims.submitted_by`) |
+| `1789600000_create_workflow_runs.js` | `workflow_runs` with workspace reads, locked direct writes and request-key uniqueness |
 | PocketBase built-ins | `users`, `_superusers` |
 
 The remaining migrations change settings, data or individual fields rather

@@ -12,7 +12,9 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
 //              PRODUCES workspace.workflow.create;
-//              PRODUCES workspace.workflow.update
+//              PRODUCES workspace.workflow.update;
+//              CONSUMES apps/web/src/components/workspace/workflows/WorkflowRunsPanel.jsx;
+//              CONSUMES apps/web/src/lib/workflowRuns.js
 // Intent:      Give a workflow the sequence that makes it one — ordered,
 //              editable steps — so activating it says what would run.
 // ───────────────────────────────────────────────────────────────
@@ -29,13 +31,14 @@ import {
     Workflow as WorkflowIcon,
     X,
 } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
 import { Button, Card } from '@/components/site/ui';
 import {
     Dialog,
     DialogClose,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -52,6 +55,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
 import ListToolbar from '@/components/workspace/ListToolbar';
+import PreviousWorkNote from '@/components/workspace/PreviousWorkNote';
+import WorkflowRunsPanel from '@/components/workspace/workflows/WorkflowRunsPanel';
 import {
     PageHeader,
     StatusBadge,
@@ -64,16 +69,13 @@ import {
     WriteErrorNotice,
 } from '@/components/workspace/WorkspaceNotices';
 import { useShapedRecords, useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useDemoMode } from '@/hooks/useDemoMode';
+import { usePreviousWork } from '@/hooks/usePreviousWork';
 import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
-
-const STEP_KINDS = {
-    read: 'Read data',
-    transform: 'Summarise or transform',
-    approval: 'Wait for approval',
-    notify: 'Send a message',
-    record: 'Record evidence',
-};
+import { readWorkflowSteps as readSteps, STEP_KINDS } from '@/lib/workflowRuns';
 
 // Templates are starting points, not products. Each one is a sequence the
 // operator then edits; none of them is wired to anything by itself.
@@ -113,31 +115,11 @@ const nextStepId = () => {
     return `s${Date.now().toString(36)}${stepCounter}`;
 };
 
-/**
- * Steps are stored as json. A record written before the field existed, or one
- * hand-edited into a non-array, must not take the page down with it.
- *
- * @param {*} value Raw `steps` value from PocketBase.
- * @returns {Array<object>} Always an array.
- */
-function readSteps(value) {
-    if (Array.isArray(value)) return value;
-    if (typeof value === 'string' && value.trim()) {
-        try {
-            const parsed = JSON.parse(value);
-            return Array.isArray(parsed) ? parsed : [];
-        } catch {
-            return [];
-        }
-    }
-    return [];
-}
-
 function StepEditor({ steps, onChange }) {
     const [draft, setDraft] = useState({ name: '', kind: 'read', detail: '' });
 
     const add = () => {
-        if (!draft.name.trim()) return;
+        if (!draft.name.trim() || steps.length >= 20) return;
         onChange([...steps, { ...draft, name: draft.name.trim(), detail: draft.detail.trim(), id: nextStepId() }]);
         setDraft({ name: '', kind: 'read', detail: '' });
     };
@@ -212,6 +194,7 @@ function StepEditor({ steps, onChange }) {
                     value={draft.name}
                     onChange={(event) => setDraft((prev) => ({ ...prev, name: event.target.value }))}
                     placeholder="Step description"
+                    maxLength={160}
                     aria-label="New step description"
                     onKeyDown={(event) => {
                         if (event.key === 'Enter') {
@@ -241,9 +224,10 @@ function StepEditor({ steps, onChange }) {
                     value={draft.detail}
                     onChange={(event) => setDraft((prev) => ({ ...prev, detail: event.target.value }))}
                     placeholder="Where it happens (optional)"
+                    maxLength={300}
                     aria-label="Step target"
                 />
-                <Button type="button" variant="secondary" size="sm" onClick={add}>
+                <Button type="button" variant="secondary" size="sm" disabled={steps.length >= 20} onClick={add}>
                     <Plus className="h-4 w-4" />
                     Add step
                 </Button>
@@ -252,7 +236,7 @@ function StepEditor({ steps, onChange }) {
     );
 }
 
-export default function WorkflowsPage() {
+function WorkflowDesk({ workspaceId, accountId, demo }) {
     const {
         records,
         loading,
@@ -274,6 +258,9 @@ export default function WorkflowsPage() {
     const [query, setQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [busyId, setBusyId] = useState(null);
+    const [deleting, setDeleting] = useState(null);
+    const writeBusy = useRef(false);
+    const { history } = usePreviousWork('workflow', records.map((record) => record.id));
 
     const byStatusThenAge = useMemo(() => {
         const rank = { active: 0, draft: 1, paused: 2 };
@@ -302,6 +289,7 @@ export default function WorkflowsPage() {
     };
 
     const openCreate = () => {
+        if (writeBusy.current || demo) return;
         setForm(EMPTY_FORM);
         setSteps([]);
         setValidation('');
@@ -310,12 +298,13 @@ export default function WorkflowsPage() {
     };
 
     const openEdit = (workflow) => {
+        if (writeBusy.current || demo) return;
         setForm({
             name: workflow.name || '',
             description: workflow.description || '',
             template: workflow.template || 'blank',
         });
-        setSteps(readSteps(workflow.steps));
+        setSteps(readSteps(workflow.steps).map((step) => ({ ...step, id: step.id || nextStepId() })));
         setValidation('');
         clearWriteError();
         setEditing(workflow);
@@ -323,11 +312,13 @@ export default function WorkflowsPage() {
 
     const submitCreate = async (event) => {
         event.preventDefault();
+        if (writeBusy.current || demo) return;
         if (!form.name.trim()) {
             setValidation('Name the workflow.');
             return;
         }
         setValidation('');
+        writeBusy.current = true;
         const result = await create({
             name: form.name.trim(),
             description: form.description.trim(),
@@ -335,6 +326,7 @@ export default function WorkflowsPage() {
             template: form.template,
             steps,
         });
+        writeBusy.current = false;
         if (!result.ok) return;
 
         setCreateOpen(false);
@@ -342,54 +334,63 @@ export default function WorkflowsPage() {
 
     const submitEdit = async (event) => {
         event.preventDefault();
+        if (writeBusy.current || demo) return;
         if (!form.name.trim()) {
             setValidation('Name the workflow.');
             return;
         }
         setValidation('');
-        const before = readSteps(editing.steps).length;
+        writeBusy.current = true;
         const result = await update(editing.id, {
             name: form.name.trim(),
             description: form.description.trim(),
             steps,
         });
+        writeBusy.current = false;
         if (!result.ok) return;
         setEditing(null);
     };
 
     const toggleStatus = async (workflow) => {
+        if (writeBusy.current || demo) return;
         const next = workflow.status === 'active' ? 'paused' : 'active';
         if (next === 'active' && readSteps(workflow.steps).length === 0) {
             setValidation('Add at least one step before activating this workflow.');
             return;
         }
         setValidation('');
+        writeBusy.current = true;
         setBusyId(workflow.id);
         const result = await update(workflow.id, {
             status: next,
-            last_run: next === 'active' ? new Date().toISOString() : workflow.last_run || null,
         });
+        writeBusy.current = false;
         setBusyId(null);
         if (!result.ok) return;
 
     };
 
     const destroy = async (workflow) => {
+        if (writeBusy.current || demo) return;
+        writeBusy.current = true;
         setBusyId(workflow.id);
-        await remove(workflow.id);
+        const result = await remove(workflow.id);
+        writeBusy.current = false;
         setBusyId(null);
+        if (result.ok) setDeleting(null);
     };
 
     return (
-        <div className="space-y-8">
+        <div className="ph-no-capture min-w-0 space-y-8 break-words" data-dd-privacy="mask">
             <PageHeader
                 title="Workflows"
-                description="Repeatable automations for this workspace. Workflows start as drafts — you activate them once the steps and boundaries are clear. Connect n8n in Operations to run them outside BuildAndDo."
+                description="Saved procedures for this workspace. Define and activate the steps, then start a recorded run to capture work, approval checkpoints and evidence."
                 actions={
-                    <Button size="sm" onClick={openCreate}>
+                    <div className="flex flex-wrap gap-2"><DemoModeToggle compact />
+                    <Button size="sm" onClick={openCreate} disabled={saving || demo}>
                         <Plus className="h-4 w-4" />
                         Create workflow
-                    </Button>
+                    </Button></div>
                 }
             />
 
@@ -446,10 +447,10 @@ export default function WorkflowsPage() {
                 <EmptyState
                     icon={WorkflowIcon}
                     title="No workflows connected"
-                    description="A workflow is a repeatable automation — reminders, follow-ups, end-of-week summaries. Define one here as a draft, then connect n8n in Operations to actually run it. BuildAndDo won't pretend to execute automations that aren't wired up."
+                    description="Start with a draft procedure for reminders, follow-ups or weekly reviews. Add its steps and boundaries, then record what happened as you perform the work."
                     action={
                         <div className="flex flex-wrap items-center justify-center gap-2">
-                            <Button size="sm" onClick={openCreate}>
+                            <Button size="sm" onClick={openCreate} disabled={saving || demo}>
                                 <Plus className="h-4 w-4" />
                                 Create a workflow
                             </Button>
@@ -462,7 +463,7 @@ export default function WorkflowsPage() {
                     No workflow matches those filters.
                 </Card>
             ) : (
-                <ul className="space-y-3">
+                <ul className="space-y-3" aria-label="Workflow definitions">
                     {visible.map((workflow) => {
                         const workflowSteps = readSteps(workflow.steps);
                         const busy = busyId === workflow.id;
@@ -518,16 +519,13 @@ export default function WorkflowsPage() {
                                             {workflowSteps.length === 1 ? '' : 's'}
                                         </span>
                                         <span>Created {timeAgo(workflow.created)}</span>
-                                        {workflow.last_run && (
-                                            <span>Last activated {timeAgo(workflow.last_run)}</span>
-                                        )}
                                     </div>
 
                                     <div className="mt-4 flex flex-wrap gap-2 border-t border-border/60 pt-3">
                                         <Button
                                             variant="secondary"
                                             size="sm"
-                                            disabled={busy}
+                                            disabled={busy || saving || demo || (workflow.status !== 'active' && workflowSteps.length === 0)}
                                             onClick={() => toggleStatus(workflow)}
                                         >
                                             {busy ? (
@@ -543,19 +541,21 @@ export default function WorkflowsPage() {
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => openEdit(workflow)}
+                                            disabled={saving || demo}
                                         >
                                             Edit steps
                                         </Button>
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            disabled={busy}
-                                            onClick={() => destroy(workflow)}
+                                            disabled={busy || saving || demo}
+                                            onClick={() => { clearWriteError(); setDeleting(workflow); }}
                                         >
                                             <Trash2 className="h-4 w-4" />
                                             Delete
                                         </Button>
                                     </div>
+                                    <PreviousWorkNote history={history[workflow.id]} />
                                 </Card>
                             </li>
                         );
@@ -563,112 +563,137 @@ export default function WorkflowsPage() {
                 </ul>
             )}
 
-            <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-                <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-card sm:max-w-2xl">
+            <WorkflowRunsPanel workflows={records} workspaceId={workspaceId} accountId={accountId}
+                demo={demo} definitionsUnavailable={loading || degraded} />
+
+            <Dialog open={createOpen} onOpenChange={(open) => { if (!writeBusy.current) setCreateOpen(open); }}>
+                <DialogContent className="ph-no-capture max-h-[90vh] overflow-y-auto border-border bg-card sm:max-w-2xl" data-dd-privacy="mask">
                     <DialogHeader>
                         <DialogTitle>Create a workflow</DialogTitle>
+                        <DialogDescription>Save an ordered procedure. Activate it when its steps and boundaries are ready.</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={submitCreate} className="space-y-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="w-template">Start from</Label>
-                            <Select value={form.template} onValueChange={applyTemplate}>
-                                <SelectTrigger id="w-template">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Object.entries(TEMPLATES).map(([key, template]) => (
-                                        <SelectItem key={key} value={key}>
-                                            {template.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="w-name">Name</Label>
-                            <Input
-                                id="w-name"
-                                value={form.name}
-                                onChange={(event) =>
-                                    setForm((prev) => ({ ...prev, name: event.target.value }))
-                                }
-                                placeholder="e.g. Weekly appointment reminders"
+                        <fieldset disabled={saving || demo} className="min-w-0 space-y-4">
+                            <legend className="sr-only">Workflow draft</legend>
+                            <div className="grid gap-2">
+                                <Label htmlFor="w-template">Start from</Label>
+                                <Select value={form.template} onValueChange={applyTemplate}>
+                                    <SelectTrigger id="w-template">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Object.entries(TEMPLATES).map(([key, template]) => (
+                                            <SelectItem key={key} value={key}>
+                                                {template.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="w-name">Name</Label>
+                                <Input
+                                    id="w-name"
+                                    maxLength={160}
+                                    value={form.name}
+                                    onChange={(event) =>
+                                        setForm((prev) => ({ ...prev, name: event.target.value }))
+                                    }
+                                    placeholder="e.g. Weekly appointment reminders"
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="w-desc">What it does</Label>
+                                <Textarea
+                                    id="w-desc"
+                                    maxLength={1000}
+                                    value={form.description}
+                                    onChange={(event) =>
+                                        setForm((prev) => ({ ...prev, description: event.target.value }))
+                                    }
+                                    placeholder="Trigger, steps, and where the result lands"
+                                    rows={3}
+                                />
+                            </div>
+                            <StepEditor steps={steps} onChange={setSteps} />
+                            <WriteErrorNotice
+                                message={validation || writeError}
+                                onDismiss={clearWriteError}
                             />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="w-desc">What it does</Label>
-                            <Textarea
-                                id="w-desc"
-                                value={form.description}
-                                onChange={(event) =>
-                                    setForm((prev) => ({ ...prev, description: event.target.value }))
-                                }
-                                placeholder="Trigger, steps, and where the result lands"
-                                rows={3}
-                            />
-                        </div>
-                        <StepEditor steps={steps} onChange={setSteps} />
-                        <WriteErrorNotice
-                            message={validation || writeError}
-                            onDismiss={clearWriteError}
-                        />
-                        <DialogFooter>
-                            <DialogClose asChild>
-                                <Button type="button" variant="ghost" size="sm">
-                                    Cancel
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button type="button" variant="ghost" size="sm">
+                                        Cancel
+                                    </Button>
+                                </DialogClose>
+                                <Button type="submit" size="sm" disabled={saving || demo}>
+                                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create draft'}
                                 </Button>
-                            </DialogClose>
-                            <Button type="submit" size="sm" disabled={saving}>
-                                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create draft'}
-                            </Button>
-                        </DialogFooter>
+                            </DialogFooter>
+                        </fieldset>
                     </form>
                 </DialogContent>
             </Dialog>
 
-            <Dialog open={Boolean(editing)} onOpenChange={(open) => !open && setEditing(null)}>
-                <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-card sm:max-w-2xl">
+            <Dialog open={Boolean(editing)} onOpenChange={(open) => { if (!open && !writeBusy.current) setEditing(null); }}>
+                <DialogContent className="ph-no-capture max-h-[90vh] overflow-y-auto border-border bg-card sm:max-w-2xl" data-dd-privacy="mask">
                     <DialogHeader>
                         <DialogTitle>Edit workflow</DialogTitle>
+                        <DialogDescription>Changes apply to future runs. Existing runs keep their saved steps.</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={submitEdit} className="space-y-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="we-name">Name</Label>
-                            <Input
-                                id="we-name"
-                                value={form.name}
-                                onChange={(event) =>
-                                    setForm((prev) => ({ ...prev, name: event.target.value }))
-                                }
+                        <fieldset disabled={saving || demo} className="min-w-0 space-y-4">
+                            <legend className="sr-only">Saved workflow definition</legend>
+                            <div className="grid gap-2">
+                                <Label htmlFor="we-name">Name</Label>
+                                <Input
+                                    id="we-name"
+                                    maxLength={160}
+                                    value={form.name}
+                                    onChange={(event) =>
+                                        setForm((prev) => ({ ...prev, name: event.target.value }))
+                                    }
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="we-desc">What it does</Label>
+                                <Textarea
+                                    id="we-desc"
+                                    maxLength={1000}
+                                    value={form.description}
+                                    onChange={(event) =>
+                                        setForm((prev) => ({ ...prev, description: event.target.value }))
+                                    }
+                                    rows={3}
+                                />
+                            </div>
+                            <StepEditor steps={steps} onChange={setSteps} />
+                            <WriteErrorNotice
+                                message={validation || writeError}
+                                onDismiss={clearWriteError}
                             />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="we-desc">What it does</Label>
-                            <Textarea
-                                id="we-desc"
-                                value={form.description}
-                                onChange={(event) =>
-                                    setForm((prev) => ({ ...prev, description: event.target.value }))
-                                }
-                                rows={3}
-                            />
-                        </div>
-                        <StepEditor steps={steps} onChange={setSteps} />
-                        <WriteErrorNotice
-                            message={validation || writeError}
-                            onDismiss={clearWriteError}
-                        />
-                        <DialogFooter>
-                            <DialogClose asChild>
-                                <Button type="button" variant="ghost" size="sm">
-                                    Cancel
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button type="button" variant="ghost" size="sm">
+                                        Cancel
+                                    </Button>
+                                </DialogClose>
+                                <Button type="submit" size="sm" disabled={saving || demo}>
+                                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save workflow'}
                                 </Button>
-                            </DialogClose>
-                            <Button type="submit" size="sm" disabled={saving}>
-                                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save workflow'}
-                            </Button>
-                        </DialogFooter>
+                            </DialogFooter>
+                        </fieldset>
                     </form>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={Boolean(deleting)} onOpenChange={(open) => { if (!open && !saving) setDeleting(null); }}>
+                <DialogContent className="ph-no-capture border-border bg-card" data-dd-privacy="mask">
+                    <DialogHeader><DialogTitle>Delete workflow?</DialogTitle>
+                        <DialogDescription>Delete {deleting?.name}. Workflows with recorded runs must be paused to retain their history.</DialogDescription></DialogHeader>
+                    <WriteErrorNotice message={writeError} onDismiss={clearWriteError} />
+                    <DialogFooter><Button type="button" size="sm" variant="secondary" disabled={saving} onClick={() => setDeleting(null)}>Keep workflow</Button>
+                        <Button type="button" size="sm" disabled={saving || demo} onClick={() => destroy(deleting)}>Delete workflow</Button></DialogFooter>
                 </DialogContent>
             </Dialog>
 
@@ -678,10 +703,18 @@ export default function WorkflowsPage() {
                 )}
             >
                 <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                Activating a workflow here marks its intent and records the time. Actual execution
-                happens in your connected n8n instance — BuildAndDo does not run automations on its
-                own, and the steps above describe what it would do, not what it has done.
+                BuildAndDo records the work you perform. Complete external actions before recording
+                their outcomes. Activation prepares a procedure; only a saved run records its start
+                and only an observed outcome advances a step.
             </p>
         </div>
     );
+}
+
+export default function WorkflowsPage() {
+    const { user } = useAuth();
+    const { active } = useWorkspace();
+    const { demo } = useDemoMode();
+    if (!user || !active) return <p className="text-sm text-muted-foreground">Select a workspace to manage workflows.</p>;
+    return <WorkflowDesk key={`${user.id}:${active.id}:${demo}`} workspaceId={active.id} accountId={user.id} demo={demo} />;
 }

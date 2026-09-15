@@ -196,3 +196,52 @@ Public acceptance consists of:
 The receiving private seat must inspect its own governance and source, register
 the execution scope and obtain the private dispatch before implementing it.
 The public handoff does not authorize an installation or shared mutation.
+
+## Authorized continuation — workflow runs and evidence
+
+On 2026-09-15 the owner set Rig 1 aside and requested the next wave of
+BuildAndDo backend systems. This continues VCC-BUILDANDDO-UPGRADE-001 at A1:
+local PocketBase migrations/hooks and their web interfaces, with no shared
+mutation or deployment. The connected next flow is workflow run persistence,
+approval checkpoints and mission-linked evidence. Existing workflow activation
+writes a last-run date without a run; that date is not execution evidence.
+
+Acceptance for this wave:
+
+1. Persist each run with an immutable copy of its saved workflow steps and,
+   optionally, the running mission's approval receipt. Existing workflow edits
+   cannot rewrite earlier runs. Only active workflows with valid bounded steps
+   can start a run; activation alone does not set last_run.
+2. Enforce ordered outcomes and owner/admin approval checkpoints in PocketBase.
+   Workspace editors may start runs and record ordinary outcomes; viewers only
+   read. Reject foreign workspaces, changed ownership, unapproved/paused missions,
+   malformed steps, skipped steps and changes to terminal runs.
+3. Create an Evidence Ledger receipt and append the run decision in one database
+   transaction. Attribute account and time on the server. Retain observations
+   in the run snapshot even if a separate evidence record later changes. Run
+   completion never verifies a mission or asserts that an external tool ran.
+4. Require a bounded request key and expected run revision. Identical retries
+   return the saved result without duplicating runs/evidence; conflicting key
+   reuse and stale revisions fail explicitly. Native collection writes to run
+   state are locked; authenticated commands enforce the complete policy.
+5. Provide paginated run history, an approval filter, recorded step outcomes,
+   explicit cancellation and recoverable errors. Preserve pending inputs on
+   request failures. Clear private state on account/workspace/demo changes.
+   Make dialogs usable with keyboard, narrow screens and either theme.
+6. Reuse PocketBase auth, the existing evidence/mission collections and bounded
+   mutation telemetry. These are operator-recorded runs; no external agent,
+   n8n execution, message delivery, payment or new credentials are introduced.
+
+Verify the actual command, policy and migration sources with Node contract tests,
+including rollback, stale requests, retries, permission failures and changed
+mission approval. Add workflow interaction tests and run the available web,
+context, boundary and memory gates. Report native PocketBase and frontend
+dependency limitations separately from observed source-contract results.
+
+Workflow backend evidence: docs/workflow-system.md describes commands, roles,
+retries, immutable receipts, native acceptance and retention. The final local
+regression passes 66 Node and 18 Python tests, including 15 backend and seven
+client workflow cases. Selected workflow source coverage is 100% lines, 97.53%
+branches and 98.46% functions under Node contract doubles. Vitest/coverage,
+repository lint and Vite remain blocked by missing packages. Native PocketBase
+and browser acceptance are not claimed. The dispatch remains in progress.
