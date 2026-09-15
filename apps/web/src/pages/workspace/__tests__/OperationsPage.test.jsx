@@ -19,14 +19,25 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OperationsPage from '@/pages/workspace/OperationsPage';
 import pb from '@/lib/pocketbaseClient';
 import { renderWithProviders, screen, setupUser, waitFor, within } from '@/test/utils';
+const permissions = vi.hoisted(() => ({ can_write: true, can_admin: true }));
+vi.mock('@/contexts/WorkspaceAccessContext', () => ({ useWorkspaceAccess: () => ({ data: permissions }) }));
 vi.mock('@/lib/pocketbaseClient', async () => {
     const { createMockPocketBase } = await import('@/test/pocketbaseMock');
     const client = createMockPocketBase();
     return { default: client, pocketbaseClient: client };
 });
-beforeEach(() => pb.__reset());
+beforeEach(() => { pb.__reset(); permissions.can_write = true; permissions.can_admin = true; });
 
 describe('operations desk', () => {
+    it('disables record controls for viewers and provides no browser control for service health', async () => {
+        permissions.can_write = false; permissions.can_admin = false;
+        const user = setupUser();
+        renderWithProviders(<OperationsPage />);
+        expect((await screen.findAllByRole('button', { name: 'Add operation' }))[0]).toBeDisabled();
+        await user.click(screen.getByRole('tab', { name: 'Recorded service cards' }));
+        expect(screen.queryByRole('combobox', { name: /^Status for/ })).not.toBeInTheDocument();
+        expect(pb.collection('services').update).not.toHaveBeenCalled();
+    });
     it('records an operation only after the backend accepts it', async () => {
         const user = setupUser();
         renderWithProviders(<OperationsPage />);

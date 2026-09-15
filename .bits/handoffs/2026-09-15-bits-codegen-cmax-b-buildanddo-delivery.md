@@ -8,13 +8,14 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, .bits/handoffs/TEMPLATE.md, docs/workflow-system.md, scripts/ci/release.mjs
+# Depends:     .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, .bits/handoffs/TEMPLATE.md, docs/workflow-system.md, scripts/ci/release.mjs, docs/workspace-administration.md
 # EnumType:    Doc
 # EnumEdges:   DEPENDS_ON .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md;
 #              USES_TEMPLATE .bits/handoffs/TEMPLATE.md;
 #              DEPENDS_ON docs/workflow-system.md;
 #              DEPENDS_ON scripts/ci/release.mjs;
-#              VALIDATES .github/workflows/candidate-to-gitlab.yml
+#              VALIDATES .github/workflows/candidate-to-gitlab.yml;
+#              DEPENDS_ON docs/workspace-administration.md
 # DAG Node:    none
 # Intent:      Give the private delivery seat verified source boundaries and acceptance requirements for releasing BuildAndDo without relying on GitHub Actions.
 # ───────────────────────────────────────────────────────────────
@@ -200,3 +201,23 @@ history reads and retries after lost responses. It passes with storage/SDK
 doubles. Frontend dependency/lock, native runtime and served-version acceptance
 remain required. The source repair does not start the private agent or make
 planned service cards execute integrations.
+
+## Administration and community continuation after PR 23
+
+PR 23 has merged the workspace/history repair into the baseline used by this
+continuation. Consume the subsequent complete administration source as well:
+current-role write enforcement, locked native management writes, audited
+membership/settings/integration commands, workspace wiki/forum storage and UI.
+The implementation does not establish a private executor or deployed revision.
+
+Follow docs/workspace-administration.md for the additional native/browser matrix
+and coordinated application of 1789900000_secure_workspace_rbac.js and
+1790000000_workspace_administration.js with administration.pb.js and its policy
+modules. The new schema down retains data and disables command access; the RBAC
+down restores older permissions and is not the default frontend rollback.
+
+The receiving executor contract is in
+.bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md. Integration
+requests carry closed non-secret configuration and remain distinct from private
+execution and matching dated receipts. Source checks, review labels, dependency
+restoration and actual served-version verification still apply.

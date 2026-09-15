@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
     Loader2,
     Info,
@@ -10,8 +11,10 @@ import {
 } from 'lucide-react';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import ContentStudio from '@/components/workspace/ContentStudio';
+import IntegrationControls from '@/components/workspace/IntegrationControls';
 import { DemoModeBanner, DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNotices';
 import { useWorkspaceRecords, useRecords } from '@/hooks/useWorkspaceRecords';
 import { reportAction } from '@/lib/observability/runtime';
@@ -22,7 +25,6 @@ import { Badge, Button, Card, StatePill } from '@/components/site/ui';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const PLATFORMS = [
-    { key: 'discord', label: 'Discord', note: 'Community server connection and health.' },
     { key: 'youtube', label: 'YouTube', note: 'Video channel.' },
     { key: 'x', label: 'X', note: 'Posts and engagement.' },
     { key: 'linkedin', label: 'LinkedIn', note: 'Professional posts.' },
@@ -469,9 +471,10 @@ function ContributorHub() {
 
 function SocialTab() {
     const channels = useWorkspaceRecords('social_channels');
+    const access = useWorkspaceAccess();
     const writing = useRef(false);
     const connect = async (key) => {
-        if (writing.current || channels.demo || channels.loading || channels.degraded) return;
+        if (writing.current || channels.demo || channels.loading || channels.degraded || !access.data?.can_admin) return;
         writing.current = true;
         const existing = channels.records.find((record) => record.platform === key);
         if (existing) await channels.update(existing.id, { status: 'pending' });
@@ -480,6 +483,8 @@ function SocialTab() {
     };
     return <section className="ph-no-capture space-y-4" data-dd-privacy="mask">
         <h2 className="font-display text-xl font-semibold">Social connections</h2>
+        <IntegrationControls kinds={['community']} />
+        <h3 className="font-display text-lg font-semibold">Other channel requests</h3>
         <p className="text-sm leading-6 text-muted-foreground">Request a channel connection here. Write and review posts in Content studio. A pending request does not install a connection or send content.</p>
         {channels.demo && <DemoModeBanner />}
         {channels.writeError && <p role="alert" className="text-sm text-destructive">{channels.writeError}</p>}
@@ -488,7 +493,8 @@ function SocialTab() {
                 const record = channels.records.find((item) => item.platform === platform.key);
                 const connected = ['connected', 'healthy'].includes(record?.status);
                 return <Card key={platform.key} className="space-y-3 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-display text-lg font-semibold">{platform.label}</h3><StatePill state={record?.status || 'not-connected'} /></div><p className="text-xs text-muted-foreground">{platform.note}</p>
-                    {!connected && <Button size="sm" variant="secondary" disabled={channels.demo || channels.saving || record?.status === 'pending'} onClick={() => connect(platform.key)}>{record?.status === 'pending' ? 'Request pending' : 'Request connection'}</Button>}
+                    <p className="text-xs text-muted-foreground">Previously reported channel state; live activation is unconfirmed.</p>
+                    {!connected && access.data?.can_admin && <Button size="sm" variant="secondary" disabled={channels.demo || channels.saving || record?.status === 'pending'} onClick={() => connect(platform.key)}>{record?.status === 'pending' ? 'Request pending' : 'Request connection'}</Button>}
                     {connected && record.handle && <p className="break-all text-xs text-muted-foreground">{record.handle}</p>}
                 </Card>;
             })}</div>}
@@ -517,6 +523,12 @@ export default function CommunitySocialPage() {
                     </Button>
                 }
             />
+
+            <div className="flex flex-wrap gap-4 text-sm">
+                <Link to="/app/wiki" className="underline underline-offset-4">Workspace wiki</Link>
+                <Link to="/app/forums" className="underline underline-offset-4">Workspace forum</Link>
+                <Link to="/app/integrations" className="underline underline-offset-4">Discord, Reddit & integrations</Link>
+            </div>
 
             <Tabs defaultValue="contributors">
                 <TabsList className="h-auto flex-wrap justify-start">
