@@ -122,7 +122,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-15T17:12:11.372006+00:00",
+  "generated_at": "2026-09-15T18:52:45.405708+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -246,7 +246,7 @@
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
         "status": "in_progress",
-        "title": "Public pages and tested accessible workspace upgrades"
+        "title": "BuildAndDo public, workspace and community upgrades"
       },
       {
         "code": "SRS-BUILDANDDO-WORKSPACE-001",
@@ -369,6 +369,7 @@
     ],
     "build_scripts": [
       "apps/web/tools/build.mjs",
+      "apps/web/tools/generate-community.mjs",
       "apps/web/tools/generate-llms.js",
       "apps/web/tools/generate-seo.mjs",
       "apps/web/tools/lint.mjs",
@@ -378,11 +379,11 @@
       "scripts/deploy/ship.py"
     ],
     "migrations": 24,
-    "python_files": 44,
+    "python_files": 53,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 491,
+    "tracked_files": 503,
     "web_source_files": 220
   },
   "schema_version": 1,

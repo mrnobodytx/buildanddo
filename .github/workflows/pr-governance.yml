@@ -96,3 +96,24 @@ jobs:
             reports/supply-chain.json
             dist/apps/web
           retention-days: 14
+
+  discord:
+    name: ci:test / Discord SDK
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install the declared Discord runtime for source tests
+        run: python -m pip install -r scripts/discordbot/requirements.txt
+
+      - name: Require native command definitions, controls and source coverage
+        run: python tests/upgrade/check_discordbot.py --require-sdk
