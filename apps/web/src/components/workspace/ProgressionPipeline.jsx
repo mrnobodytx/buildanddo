@@ -98,6 +98,8 @@ export const PIPELINE_STEPS = [
             'The claim gets evidence. "It builds" is not proof a feature works, so the verification is a command someone else can run.',
         checks: [
             'Lint passes',
+            'Web coverage and public telemetry adapter suites pass',
+            'Every manifest matches the dependency lockfile',
             'Verification commands from the issue produce their stated output',
         ],
         tag: 'ci:test',

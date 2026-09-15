@@ -31,6 +31,13 @@
 schema_version: 1
 
 srs:
+  - code: SRS-BUILDANDDO-UPGRADE-001
+    title: Public pages and tested accessible workspace upgrades
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
+    notes: Owner-authorized single-PR umbrella for VCC-BUILDANDDO-UPGRADE-001 including SUPPLY, RUM-ACTIONS, RELEASE-TAG and public PB-METRICS
+
   - code: SRS-BUILDANDDO-BOOTSTRAP-001
     title: Machine-facing governance bootstrap
     status: delivered
@@ -91,7 +98,7 @@ srs:
 
   - code: SRS-BUILDANDDO-RELEASE-TAG-001
     title: Stamp build version so RUM, CI and DORA describe one release
-    status: proposed
+    status: in_progress
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-RELEASE-TAG-001.md
 
@@ -110,23 +117,23 @@ srs:
 
   - code: SRS-BUILDANDDO-SUPPLY-001
     title: Dependency vulnerability and supply-chain telemetry
-    status: proposed
+    status: in_progress
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-SUPPLY-001.md
 
   - code: SRS-BUILDANDDO-RUM-ACTIONS-001
     title: Workspace actions, per-page error scope and interaction timing
-    status: proposed
+    status: in_progress
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-RUM-ACTIONS-001.md
     notes: Uses the existing browser observability layer; adds no dependency
 
   - code: SRS-BUILDANDDO-PB-METRICS-001
     title: Server-side CRUD, latency and error telemetry from PocketBase hooks
-    status: proposed
+    status: in_progress
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md
-    notes: Blocked on a metrics sink - see .bits/handoffs/2026-09-10-bits-codegen-ide1.md
+    notes: A1 opt-in hook under VCC-BUILDANDDO-UPGRADE-001; A2 sink activation remains private-plane work
 
   - code: SRS-BUILDANDDO-PLATFORM-001
     title: MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard

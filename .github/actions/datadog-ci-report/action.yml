@@ -148,6 +148,12 @@ runs:
           echo "Baseline download failed; continuing without a baseline."
         fi
 
+    - name: Collect dependency supply-chain evidence
+      continue-on-error: true
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: python scripts/ci/supply_chain.py
+
     - name: Collect telemetry snapshot
       shell: bash
       working-directory: ${{ github.workspace }}

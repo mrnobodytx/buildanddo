@@ -1,25 +1,45 @@
 import { useLocation } from 'react-router-dom';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
-const ScrollToTop = () => {
+export default function ScrollToTop() {
     const { pathname, hash } = useLocation();
+    const previousPath = useRef(pathname);
 
     useLayoutEffect(() => {
-        if (hash) {
-            const target = document.getElementById(hash.slice(1));
-
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                return;
-            }
+        const changedPage = previousPath.current !== pathname;
+        previousPath.current = pathname;
+        let anchor = '';
+        try {
+            anchor = decodeURIComponent(hash.slice(1));
+        } catch {
+            anchor = hash.slice(1);
         }
-
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        const settle = () => {
+            if (document.querySelector('[data-route-loading]')) return false;
+            const main = document.getElementById('main-content');
+            if (!main) return false;
+            const target = anchor ? document.getElementById(anchor) : null;
+            if (target) {
+                target.scrollIntoView({ behavior: 'auto', block: 'start' });
+            } else if (changedPage || !anchor) {
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }
+            if (changedPage) main.focus({ preventScroll: true });
+            return true;
+        };
+        if (settle()) return undefined;
+        // A lazy page may mount after this router effect. Wait for real content
+        // so deep links and keyboard focus do not land on the loading fallback.
+        const observer = new MutationObserver(() => {
+            if (settle()) observer.disconnect();
+        });
+        observer.observe(document.getElementById('root') || document.body, {
+            childList: true,
+            subtree: true,
+        });
+        return () => observer.disconnect();
     }, [pathname, hash]);
-
     return null;
 }
-
-export default ScrollToTop;
 
 export { ScrollToTop };

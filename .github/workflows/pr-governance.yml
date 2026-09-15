@@ -40,6 +40,9 @@ jobs:
         continue-on-error: true
         run: python scripts/ci/changelog_gen.py --check
 
+      - name: Verify dependency lock matches every manifest
+        run: python scripts/ci/supply_chain.py --skip-audit --check-lock
+
       - name: Install
         run: npm ci
 
@@ -48,13 +51,18 @@ jobs:
 
       # Required, not `--if-present`: a missing test script must fail the PR
       # rather than pass silently, which is what the old no-op step did.
-      - name: Test
-        run: npm test
+      - name: Test with coverage
+        run: npm --prefix apps/web run test:coverage -- --reporter=default --reporter=junit --outputFile.junit=../../reports/junit/web.xml
 
       # The suite can pass while producing no report (wrong reporter, wrong
       # path), which would leave Datadog test visibility empty and green.
       - name: Verify JUnit test report was produced
         run: test -s reports/junit/web.xml
+
+      - name: Verify public telemetry and build adapters
+        run: |
+          node --test tests/upgrade/*.test.mjs
+          python -m unittest discover -s tests/upgrade -p 'test_*.py'
 
       - name: Build
         run: npm run build
@@ -84,5 +92,7 @@ jobs:
           path: |
             .buildanddo/public/boundary-report.json
             reports/junit
+            reports/coverage
+            reports/supply-chain.json
             dist/apps/web
           retention-days: 14

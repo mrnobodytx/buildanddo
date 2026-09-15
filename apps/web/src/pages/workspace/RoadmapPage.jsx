@@ -14,8 +14,8 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
 //              CONSUMES apps/web/src/components/workspace/ListToolbar.jsx;
-//              PRODUCES workspace.roadmap_item.created;
-//              PRODUCES workspace.roadmap_item.updated
+//              PRODUCES workspace.roadmap_item.create;
+//              PRODUCES workspace.roadmap_item.update
 // Intent:      Make the roadmap answer "how far along is this workspace, and on
 //              what evidence" — a status distribution, a filterable ledger, and
 //              in-place status changes that still cannot fake a verification.
@@ -55,7 +55,6 @@ import {
 import { useShapedRecords, useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
-import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 
 const STATUS_KEYS = Object.keys(ROADMAP_STATUS);
 
@@ -80,26 +79,6 @@ const EMPTY_FORM = {
 const statusOf = (item) => (STATUS_KEYS.includes(item.status) ? item.status : 'proposed');
 
 const CHART_CONFIG = { count: { label: 'Items', color: 'hsl(var(--primary))' } };
-
-// Archived items are deliberately excluded from the completion denominator:
-// an item withdrawn from the plan is neither done nor outstanding, and
-// counting it either way misstates the number.
-const COUNTED_STATUSES = STATUSES.filter((status) => status !== 'archived');
-
-const STATUS_LABEL = (status) => status.replace(/_/g, ' ');
-
-const BAR_FILL = {
-    verified: 'hsl(var(--primary))',
-    blocked: 'hsl(var(--destructive, 0 84% 60%))',
-};
-
-const EMPTY_FORM = {
-    title: '', description: '', status: 'proposed',
-    owner_role: '', evidence_ref: '', dependency: '', next_action: '',
-};
-
-const VERIFY_WITHOUT_EVIDENCE =
-    'A roadmap item cannot be marked Verified without an evidence reference.';
 
 /**
  * Reports whether an item counts as complete.
@@ -165,7 +144,8 @@ export default function WorkspaceRoadmapPage() {
             counted,
             // Only `verified` counts as complete. An item that looks finished but
             // carries no evidence record is not progress this page will claim.
-            completion: counted ? Math.round((byStatus.verified / counted) * 100) : null,
+            completion: counted ? Math.round((normalised.filter(isVerified).length / counted) * 100) : null,
+            verified: normalised.filter(isVerified).length,
             withoutEvidence: normalised.filter((item) => !(item.evidence_ref || '').trim()).length,
         };
     }, [normalised]);
@@ -200,11 +180,7 @@ export default function WorkspaceRoadmapPage() {
             next_action: form.next_action.trim(),
         });
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.ROADMAP_ITEM_CREATED, {
-            status: form.status,
-            has_evidence: Boolean(form.evidence_ref.trim()),
-            has_dependency: Boolean(form.dependency.trim()),
-        });
+
         setForm(EMPTY_FORM);
         setShowCreate(false);
     };
@@ -239,11 +215,7 @@ export default function WorkspaceRoadmapPage() {
             next_action: edit.next_action.trim(),
         });
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.ROADMAP_ITEM_UPDATED, {
-            from_status: item.status,
-            to_status: edit.status,
-            has_evidence: Boolean(edit.evidence_ref.trim()),
-        });
+
         setEditingId(null);
     };
 
@@ -293,7 +265,7 @@ export default function WorkspaceRoadmapPage() {
                         <StatCard
                             icon={Gauge}
                             label="Verified"
-                            value={summary.byStatus.verified}
+                            value={summary.verified}
                             hint={`of ${summary.counted} item${summary.counted === 1 ? '' : 's'} still on the plan`}
                             tone="teal"
                         />
@@ -353,7 +325,7 @@ export default function WorkspaceRoadmapPage() {
 
             {showCreate && (
                 <Card className="p-5">
-                    <form onSubmit={submitCreate} className="space-y-4">
+                    <form onSubmit={submit} className="space-y-4">
                         <div className="grid gap-2">
                             <Label htmlFor="rm-title">Title</Label>
                             <Input

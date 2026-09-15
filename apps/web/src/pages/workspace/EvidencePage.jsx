@@ -11,7 +11,7 @@
 //              apps/web/src/lib/workspaceActions.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.evidence.recorded
+//              PRODUCES workspace.evidence.create
 // Intent:      Make the evidence trail searchable and linkable, so a ledger
 //              stays a ledger past its first thirty entries.
 // ───────────────────────────────────────────────────────────────
@@ -53,7 +53,6 @@ import {
 } from '@/components/workspace/WorkspaceNotices';
 import { useShapedRecords, useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
-import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 
 const EMPTY_FORM = {
     title: '',
@@ -132,11 +131,7 @@ export default function EvidencePage() {
             mission: form.mission || null,
         });
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.EVIDENCE_RECORDED, {
-            evidence_type: form.type,
-            has_link: Boolean(form.url.trim()),
-            linked_to_mission: Boolean(form.mission),
-        });
+
         setForm(EMPTY_FORM);
         setOpen(false);
     };

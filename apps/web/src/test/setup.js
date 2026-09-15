@@ -83,6 +83,7 @@ if (!Element.prototype.releasePointerCapture) {
 beforeEach(() => {
     // WorkspaceContext persists the active workspace id here; a leaked value
     // silently changes which workspace the next test believes is active.
+    document.documentElement.classList.remove('light', 'dark');
     window.localStorage.clear();
     window.sessionStorage.clear();
 });

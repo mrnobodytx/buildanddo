@@ -1,3 +1,11 @@
+# CGRF: SRS-BUILDANDDO-UPGRADE-001 | VCC-BUILDANDDO-UPGRADE-001 | BITS-CODEGEN | Citadel Nexus Inc. | CK: pending | CAPS: pending
 User-agent: *
 Allow: /
-Sitemap: https://buildanddo.com/sitemap.xml
+Disallow: /app
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /onboarding
+Disallow: /api/
+Disallow: /hcgi/
+Sitemap: https://buildanddo.tech/sitemap.xml

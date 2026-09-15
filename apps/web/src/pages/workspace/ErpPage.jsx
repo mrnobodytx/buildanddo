@@ -10,6 +10,7 @@ import {
     Users,
 } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient';
+import { workspaceCollection } from '@/lib/observability/mutations';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import EmptyState from '@/components/workspace/EmptyState';
@@ -62,7 +63,7 @@ function ObjectivesTab({ workspaceId }) {
         }
         setSaving(true);
         try {
-            await pb.collection('erp_objectives').create({
+            await workspaceCollection('erp_objectives').create({
                 title: form.title.trim(),
                 description: form.description.trim(),
                 status: 'active',
@@ -187,7 +188,7 @@ function TasksTab({ workspaceId }) {
         }
         setSaving(true);
         try {
-            await pb.collection('erp_tasks').create({
+            await workspaceCollection('erp_tasks').create({
                 title: form.title.trim(),
                 status: 'todo',
                 workspace: workspaceId,
@@ -205,7 +206,7 @@ function TasksTab({ workspaceId }) {
     const cycle = async (t) => {
         const next = t.status === 'todo' ? 'in_progress' : t.status === 'in_progress' ? 'done' : 'todo';
         try {
-            await pb.collection('erp_tasks').update(t.id, { status: next });
+            await workspaceCollection('erp_tasks').update(t.id, { status: next });
             refresh();
         } catch (err) {
             console.error('update task failed', err);
@@ -283,7 +284,7 @@ function TasksTab({ workspaceId }) {
                                         </p>
                                     )}
                                 </div>
-                                <button type="button" onClick={() => cycle(t)}>
+                                <button type="button" aria-label="Change task status" className="min-h-9 px-1" onClick={() => cycle(t)}>
                                     <StatusBadge map={TASK_STATUS} value={t.status} />
                                 </button>
                             </Card>
@@ -313,7 +314,7 @@ function ContactsTab({ workspaceId }) {
         }
         setSaving(true);
         try {
-            await pb.collection('erp_contacts').create({
+            await workspaceCollection('erp_contacts').create({
                 name: form.name.trim(),
                 role: form.role.trim(),
                 email: form.email.trim(),

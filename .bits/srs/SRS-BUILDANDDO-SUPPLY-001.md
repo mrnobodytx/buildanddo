@@ -15,7 +15,7 @@
 
 # SRS-BUILDANDDO-SUPPLY-001 — Dependency and supply-chain telemetry
 
-**Status:** proposed **Risk:** A1 **Seat:** unassigned
+**Status:** in_progress **Risk:** A1 **Seat:** BITS-CODEGEN
 
 ## Problem
 
@@ -74,3 +74,11 @@ python scripts/ci/telemetry_snapshot.py --pipeline local | grep -i vuln
 evaluate it explicitly rather than letting the exit code fail the step — the
 same best-effort pattern the lint and knip collectors already use. Report-only
 first; thresholds only after one baseline exists.
+
+## Implementation dispatch
+
+The public source implementation is part of owner-authorized dispatch
+VCC-BUILDANDDO-UPGRADE-001 under SRS-BUILDANDDO-UPGRADE-001. Local adapter tests,
+validation limits and remaining activation work are recorded in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md. Status remains in progress until
+merge and environment verification; no live ingestion result is claimed here.

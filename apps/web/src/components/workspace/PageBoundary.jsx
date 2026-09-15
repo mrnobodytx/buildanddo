@@ -44,6 +44,7 @@ class PageBoundary extends React.Component {
     componentDidCatch(error, info) {
         trackRenderError(error, {
             ...info,
+            page: this.props.name,
             componentStack: info && info.componentStack,
         });
     }
@@ -64,7 +65,7 @@ class PageBoundary extends React.Component {
         }
 
         return (
-            <Card className="border-destructive/40 bg-destructive/5 p-6">
+            <Card role="alert" className="border-destructive/40 bg-destructive/5 p-6">
                 <div className="flex items-start gap-3">
                     <AlertOctagon className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
                     <div className="min-w-0 flex-1">
@@ -72,9 +73,8 @@ class PageBoundary extends React.Component {
                             {name ? `${name} could not be displayed` : 'This page could not be displayed'}
                         </p>
                         <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                            The failure has been reported. Your records are not
-                            affected — nothing was written. The rest of the
-                            workspace still works.
+                            Try this page again, or choose another page from
+                            the workspace navigation.
                         </p>
                         <Button
                             variant="secondary"

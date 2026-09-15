@@ -12,6 +12,7 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
         <div className="min-h-screen bg-background text-foreground">
             <Helmet>
                 <title>{title} · BuildAndDo</title>
+                <meta name="robots" content="noindex,nofollow" />
                 <meta
                     name="description"
                     content="Sign in to your BuildAndDo workspace or create an account to start the Observe → Understand → Act → Verify loop."
@@ -82,7 +83,7 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
                         </Link>
                     </div>
 
-                    <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">
+                    <main id="main-content" tabIndex={-1} className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">
                         <Link
                             to="/"
                             className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -107,7 +108,7 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
                                 {footer}
                             </div>
                         )}
-                    </div>
+                    </main>
                 </div>
             </div>
         </div>

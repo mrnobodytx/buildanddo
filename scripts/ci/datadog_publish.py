@@ -95,6 +95,9 @@ def base_tags(args, context: dict) -> list[str]:
         tags.append(f"workflow:{context['workflow']}")
     if context.get("job_status"):
         tags.append(f"job_status:{context['job_status']}")
+    version = getattr(args, "release_version", "") or context.get("version")
+    if pipeline == "main" and version:
+        tags.append(f"version:{version}")
     tags += list(args.tag or [])
     return sorted(set(tags))
 
@@ -166,6 +169,8 @@ def build_event(args, snapshot: dict | None, delta: dict | None, tags: list[str]
         alert = "error" if status in {"failure", "cancelled"} else "warning" if regressions else "success"
 
     event_tags = list(tags)
+    if context.get("version"):
+        event_tags.append(f"version:{context['version']}")
     if context.get("branch"):
         event_tags.append(f"git_branch:{context['branch']}")
     if context.get("commit_sha"):
@@ -229,6 +234,7 @@ def build_logs(args, snapshot: dict | None, delta: dict | None, tags: list[str])
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--release-version", default="")
     ap.add_argument("--snapshot", default="")
     ap.add_argument("--delta", default="")
     ap.add_argument("--summary-markdown", default="")

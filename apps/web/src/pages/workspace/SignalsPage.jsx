@@ -11,8 +11,8 @@
 //              apps/web/src/lib/workspaceActions.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.signal.acknowledged;
-//              PRODUCES workspace.signal.created
+//              PRODUCES workspace.signal.update;
+//              PRODUCES workspace.signal.create
 // Intent:      Turn an append-only feed into something triageable: severity,
 //              acknowledge and dismiss, and a default view of what is still open.
 // ───────────────────────────────────────────────────────────────
@@ -57,7 +57,6 @@ import {
 import { useShapedRecords, useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
-import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 
 const SEVERITY_ORDER = Object.keys(SIGNAL_SEVERITY);
 
@@ -145,11 +144,7 @@ export default function SignalsPage() {
             confidence: form.confidence === '' ? null : Number(form.confidence),
         });
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.SIGNAL_CREATED, {
-            signal_type: form.type,
-            severity: form.severity,
-            has_confidence: form.confidence !== '',
-        });
+
         setForm(EMPTY_FORM);
         setOpen(false);
     };
@@ -161,18 +156,8 @@ export default function SignalsPage() {
             acknowledged_at: next === 'new' ? null : new Date().toISOString(),
         });
         setBusyId(null);
-        if (!result.ok) return;
-        if (next === 'acknowledged') {
-            trackWorkspaceAction(WORKSPACE_ACTIONS.SIGNAL_ACKNOWLEDGED, {
-                severity: signal.severity,
-                signal_type: signal.type,
-                age_minutes: Math.round((Date.now() - new Date(signal.created).getTime()) / 60000),
-            });
-        } else if (next === 'dismissed') {
-            trackWorkspaceAction(WORKSPACE_ACTIONS.SIGNAL_DISMISSED, {
-                severity: signal.severity,
-                signal_type: signal.type,
-            });
+        if (!result.ok) return; else if (next === 'dismissed') {
+
         }
     };
 

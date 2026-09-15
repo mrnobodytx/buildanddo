@@ -279,7 +279,7 @@ export const CATALOG_ENTRIES = [
         ],
         preview: () => (
             <Select defaultValue="a1">
-                <SelectTrigger className="w-48">
+                <SelectTrigger aria-label="Risk tier" className="w-48">
                     <SelectValue placeholder="Risk tier" />
                 </SelectTrigger>
                 <SelectContent>

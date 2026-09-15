@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Loader2, AlertCircle, Info, Plug } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient';
+import { workspaceCollection } from '@/lib/observability/mutations';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
@@ -33,9 +34,9 @@ export default function SupportRevenuePage() {
         try {
             const existing = byProvider(key);
             if (existing) {
-                await pb.collection('support_sources').update(existing.id, { status: 'pending' });
+                await workspaceCollection('support_sources').update(existing.id, { status: 'pending' });
             } else {
-                await pb.collection('support_sources').create({
+                await workspaceCollection('support_sources').create({
                     provider: key, status: 'pending',
                     workspace: active.id, owner: pb.authStore.record.id,
                 });

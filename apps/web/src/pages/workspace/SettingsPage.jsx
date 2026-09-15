@@ -9,6 +9,7 @@ import {
     Plus,
 } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient';
+import { workspaceCollection } from '@/lib/observability/mutations';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import {
@@ -16,6 +17,7 @@ import {
     StatusBadge,
     DOMAIN_STATUS,
 } from '@/components/workspace/workspaceHelpers';
+import { ThemeSelect } from '@/components/ThemeControls';
 import { Button, Card } from '@/components/site/ui';
 import {
     Select,
@@ -30,17 +32,19 @@ export default function SettingsPage() {
     const { user, logout } = useAuth();
     const { active, workspaces, refresh } = useWorkspace();
     const [savingDomain, setSavingDomain] = useState(false);
+    const [domainError, setDomainError] = useState('');
 
     const domainRecord = active?.expand?.domain;
 
     const updateDomainStatus = async (status) => {
         if (!domainRecord) return;
         setSavingDomain(true);
+        setDomainError('');
         try {
-            await pb.collection('domains').update(domainRecord.id, { status });
+            await workspaceCollection('domains').update(domainRecord.id, { status });
             await refresh();
         } catch (err) {
-            console.error('update domain failed', err);
+            setDomainError('Could not update the domain status. Please try again.');
         }
         setSavingDomain(false);
     };
@@ -57,13 +61,18 @@ export default function SettingsPage() {
                 description="Workspace profile, domain authorization, and your account. The selected domain stays visible across the workspace so you always know which business you're operating on."
             />
 
+            <section className="space-y-3">
+                <h2 className="font-display text-lg font-semibold tracking-tight">Appearance</h2>
+                <Card className="p-5"><ThemeSelect /></Card>
+            </section>
+
             {/* Workspace profile */}
             <section className="space-y-3">
                 <h2 className="font-display text-lg font-semibold tracking-tight">
                     Workspace
                 </h2>
                 <Card className="p-5">
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
                         <div>
                             <p className="font-medium">{active?.name || '—'}</p>
                             <p className="mt-1 text-sm text-muted-foreground">
@@ -113,14 +122,15 @@ export default function SettingsPage() {
                                 confirmation — BuildAndDo does not verify
                                 ownership automatically.
                             </p>
+                            {domainError && <p role="alert" className="mt-3 text-sm text-destructive">{domainError}</p>}
                             {domainRecord && (
-                                <div className="mt-4 flex items-center gap-2">
+                                <div className="mt-4 flex flex-wrap items-center gap-2">
                                     <Select
                                         value={domainRecord.status}
                                         onValueChange={updateDomainStatus}
                                         disabled={savingDomain}
                                     >
-                                        <SelectTrigger className="h-9 w-52">
+                                        <SelectTrigger aria-label="Domain status" className="h-11 w-full sm:w-52">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -182,9 +192,9 @@ export default function SettingsPage() {
                     Account
                 </h2>
                 <Card className="p-5">
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
                         <div>
-                            <p className="text-sm font-medium">{user?.email}</p>
+                            <p className="break-all text-sm font-medium">{user?.email}</p>
                             <p className="mt-0.5 text-xs text-muted-foreground">
                                 BuildAndDo sign-in · no external provider connected
                             </p>

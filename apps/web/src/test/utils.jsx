@@ -20,6 +20,7 @@
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
+import { ThemeProvider } from 'next-themes';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -234,11 +235,12 @@ export function createWorkspaceValue(overrides = {}) {
  *          — the exact context values the tree received, for assertions.
  */
 export function renderWithProviders(ui, options = {}) {
-    const { auth, workspace, route = '/', ...renderOptions } = options;
+    const { auth, workspace, route = '/', theme = 'light', ...renderOptions } = options;
     const authValue = createAuthValue(auth);
     const workspaceValue = createWorkspaceValue(workspace);
 
     const Wrapper = ({ children }) => (
+        <ThemeProvider attribute="class" defaultTheme={theme} enableSystem storageKey="buildanddo.theme">
         <MemoryRouter initialEntries={[route]}>
             <AuthContext.Provider value={authValue}>
                 <WorkspaceContext.Provider value={workspaceValue}>
@@ -246,6 +248,7 @@ export function renderWithProviders(ui, options = {}) {
                 </WorkspaceContext.Provider>
             </AuthContext.Provider>
         </MemoryRouter>
+        </ThemeProvider>
     );
 
     return {

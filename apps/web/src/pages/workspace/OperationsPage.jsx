@@ -11,7 +11,10 @@
 //              apps/pocketbase/pb_migrations/1789000000_extend_workspace_operations.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.operation.run_logged
+//              PRODUCES workspace.operation_run.create;
+//              PRODUCES workspace.operation.create;
+//              PRODUCES workspace.operation.update;
+//              PRODUCES workspace.service.update
 // Intent:      Give the operations surface the two things it was missing — the
 //              runbook text and the record of each time a human ran it.
 // ───────────────────────────────────────────────────────────────
@@ -66,7 +69,6 @@ import {
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
-import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 
 function formatDate(iso) {
     if (!iso) return 'Never';
@@ -219,10 +221,7 @@ export default function OperationsPage() {
             owner_note: operationForm.owner_note.trim(),
         });
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.OPERATION_CREATED, {
-            status: operationForm.status,
-            has_runbook: Boolean(operationForm.runbook.trim()),
-        });
+
         setOperationForm(EMPTY_OPERATION);
         setOperationOpen(false);
     };
@@ -240,10 +239,7 @@ export default function OperationsPage() {
         // The run is the record of truth; the operation only caches when it
         // last happened so the card can be read without opening the log.
         await operations.update(runFor.id, { last_run: new Date().toISOString() });
-        trackWorkspaceAction(WORKSPACE_ACTIONS.OPERATION_RUN_LOGGED, {
-            run_result: runForm.result,
-            has_notes: Boolean(runForm.notes.trim()),
-        });
+
         setRunForm(EMPTY_RUN);
         setRunFor(null);
     };

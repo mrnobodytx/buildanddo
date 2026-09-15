@@ -13,6 +13,7 @@ import {
     Users,
 } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient';
+import { workspaceCollection } from '@/lib/observability/mutations';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords, useRecords } from '@/hooks/useWorkspaceRecords';
 import { reportAction } from '@/lib/observability/runtime';
@@ -489,9 +490,9 @@ function SocialTab() {
         try {
             const existing = byPlatform(key);
             if (existing) {
-                await pb.collection('social_channels').update(existing.id, { status: 'pending' });
+                await workspaceCollection('social_channels').update(existing.id, { status: 'pending' });
             } else {
-                await pb.collection('social_channels').create({
+                await workspaceCollection('social_channels').create({
                     platform: key, status: 'pending',
                     workspace: active.id, owner: pb.authStore.record.id,
                 });
@@ -510,7 +511,7 @@ function SocialTab() {
         if (saving || !active || !form.title.trim()) return;
         setSaving(true); setError('');
         try {
-            await pb.collection('social_content').create({
+            await workspaceCollection('social_content').create({
                 title: form.title.trim(),
                 body: form.body.trim(),
                 status: form.status,

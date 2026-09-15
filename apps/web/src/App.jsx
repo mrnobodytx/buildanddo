@@ -1,49 +1,49 @@
-import React from 'react';
-import {
-    Route,
-    Routes,
-    BrowserRouter as Router,
-    Navigate,
-} from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import React, { lazy, Suspense } from 'react';
+import { ThemeProvider } from 'next-themes';
+import RouteLoading from '@/components/RouteLoading';
+import SkipNavigation from '@/components/SkipNavigation';
+import { Route, Routes, BrowserRouter as Router, Navigate } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RouteTelemetry from './components/observability/RouteTelemetry';
 import TelemetryBoundary from './components/observability/TelemetryBoundary';
-import HomePage from './pages/HomePage';
-import RoadmapPage from './pages/RoadmapPage';
-import PracticePage from './pages/PracticePage';
-import PlatformPage from './pages/PlatformPage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import OnboardingPage from './pages/OnboardingPage';
-import WorkspaceLayout from './components/workspace/WorkspaceLayout';
-import OverviewPage from './pages/workspace/OverviewPage';
-import SignalsPage from './pages/workspace/SignalsPage';
-import MissionsPage from './pages/workspace/MissionsPage';
-import WorkflowsPage from './pages/workspace/WorkflowsPage';
-import TutorialsPage from './pages/workspace/TutorialsPage';
-import ErpPage from './pages/workspace/ErpPage';
-import OperationsPage from './pages/workspace/OperationsPage';
-import FleetPage from './pages/workspace/FleetPage';
-import PlatformHealthPage from './pages/workspace/PlatformHealthPage';
-import EvidencePage from './pages/workspace/EvidencePage';
-import DailyEditionPage from './pages/workspace/DailyEditionPage';
-// Capability Passport viewer; file path retained from the former desks page so
-// existing /app/desks bookmarks keep resolving (SRS-BUILDANDDO-WITNESS-001).
-import CapabilityPassportPage from './pages/workspace/SpecialistDeskPage';
-import CorrectionsPage from './pages/workspace/CorrectionsPage';
-import SupportRevenuePage from './pages/workspace/SupportRevenuePage';
-import CommunitySocialPage from './pages/workspace/CommunitySocialPage';
-import WorkspaceRoadmapPage from './pages/workspace/RoadmapPage';
-import SettingsPage from './pages/workspace/SettingsPage';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-import {
-    WorkspaceProvider,
-    useWorkspace,
-} from '@/contexts/WorkspaceContext';
+import { WorkspaceProvider, useWorkspace } from '@/contexts/WorkspaceContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageBoundary from '@/components/workspace/PageBoundary';
+
+const HomePage = lazy(() => import('./pages/HomePage'));
+const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
+const PracticePage = lazy(() => import('./pages/PracticePage'));
+const PlatformPage = lazy(() => import('./pages/PlatformPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const SignupPage = lazy(() => import('./pages/SignupPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
+const WorkspaceLayout = lazy(() => import('./components/workspace/WorkspaceLayout'));
+const OverviewPage = lazy(() => import('./pages/workspace/OverviewPage'));
+const SignalsPage = lazy(() => import('./pages/workspace/SignalsPage'));
+const MissionsPage = lazy(() => import('./pages/workspace/MissionsPage'));
+const WorkflowsPage = lazy(() => import('./pages/workspace/WorkflowsPage'));
+const TutorialsPage = lazy(() => import('./pages/workspace/TutorialsPage'));
+const ErpPage = lazy(() => import('./pages/workspace/ErpPage'));
+const OperationsPage = lazy(() => import('./pages/workspace/OperationsPage'));
+const FleetPage = lazy(() => import('./pages/workspace/FleetPage'));
+const PlatformHealthPage = lazy(() => import('./pages/workspace/PlatformHealthPage'));
+const EvidencePage = lazy(() => import('./pages/workspace/EvidencePage'));
+const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
+// Capability Passport viewer; file path retained from the former desks page so
+// existing /app/desks bookmarks keep resolving (SRS-BUILDANDDO-WITNESS-001).
+const CapabilityPassportPage = lazy(() => import('./pages/workspace/SpecialistDeskPage'));
+const CorrectionsPage = lazy(() => import('./pages/workspace/CorrectionsPage'));
+const SupportRevenuePage = lazy(() => import('./pages/workspace/SupportRevenuePage'));
+const CommunitySocialPage = lazy(() => import('./pages/workspace/CommunitySocialPage'));
+const WorkspaceRoadmapPage = lazy(() => import('./pages/workspace/RoadmapPage'));
+const SettingsPage = lazy(() => import('./pages/workspace/SettingsPage'));
+const PricingPage = lazy(() => import('./pages/PricingPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const DocsPage = lazy(() => import('./pages/DocsPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 // Each workspace page is mounted inside its own error boundary. The root
 // TelemetryBoundary still catches everything, but a root catch replaces the
@@ -61,7 +61,8 @@ const WORKSPACE_ROUTES = [
     { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
-    { path: 'desks', label: 'Specialist Desks', element: SpecialistDeskPage },
+    { path: 'desks', label: 'Capability Passport', element: CapabilityPassportPage },
+    { path: 'passport', label: 'Capability Passport', element: CapabilityPassportPage },
     { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
     { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },
     { path: 'community', label: 'Community & Social', element: CommunitySocialPage },
@@ -80,97 +81,110 @@ function RedirectIfAuthed({ children }) {
 function WorkspaceGate({ children }) {
     const { loading, hasWorkspaces } = useWorkspace();
     if (loading) {
-        return (
-            <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-                <Loader2 className="h-5 w-5 animate-spin" />
-            </div>
-        );
+        return <RouteLoading fullPage />;
     }
     if (!hasWorkspaces) return <Navigate to="/onboarding" replace />;
     return children;
 }
 
-function AppRoutes() {
+export function AppRoutes() {
     return (
-        <Routes>
-            {/* Public marketing site */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/roadmap" element={<RoadmapPage />} />
-            <Route path="/practice" element={<PracticePage />} />
-            <Route path="/platform" element={<PlatformPage />} />
+        <Suspense fallback={<RouteLoading fullPage />}>
+            <Routes>
+                {/* Public marketing site */}
+                <Route path="/" element={<HomePage />} />
+                <Route path="/roadmap" element={<RoadmapPage />} />
+                <Route path="/practice" element={<PracticePage />} />
+                <Route path="/platform" element={<PlatformPage />} />
+                <Route path="/pricing" element={<PricingPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/docs" element={<DocsPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/contact" element={<ContactPage />} />
 
-            {/* Authentication */}
-            <Route
-                path="/login"
-                element={
-                    <RedirectIfAuthed>
-                        <LoginPage />
-                    </RedirectIfAuthed>
-                }
-            />
-            <Route
-                path="/signup"
-                element={
-                    <RedirectIfAuthed>
-                        <SignupPage />
-                    </RedirectIfAuthed>
-                }
-            />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                {/* Authentication */}
+                <Route
+                    path="/login"
+                    element={
+                        <RedirectIfAuthed>
+                            <LoginPage />
+                        </RedirectIfAuthed>
+                    }
+                />
+                <Route
+                    path="/signup"
+                    element={
+                        <RedirectIfAuthed>
+                            <SignupPage />
+                        </RedirectIfAuthed>
+                    }
+                />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-            {/* Onboarding (protected) */}
-            <Route
-                path="/onboarding"
-                element={
-                    <ProtectedRoute>
-                        <OnboardingPage />
-                    </ProtectedRoute>
-                }
-            />
+                {/* Onboarding (protected) */}
+                <Route
+                    path="/onboarding"
+                    element={
+                        <ProtectedRoute>
+                            <OnboardingPage />
+                        </ProtectedRoute>
+                    }
+                />
 
-            {/* Authenticated workspace */}
-            <Route
-                path="/app"
-                element={
-                    <ProtectedRoute>
-                        <WorkspaceGate>
-                            <WorkspaceLayout />
-                        </WorkspaceGate>
-                    </ProtectedRoute>
-                }
-            >
-                {WORKSPACE_ROUTES.map(({ path, index, label, element: Element }) => (
-                    <Route
-                        key={label}
-                        index={index}
-                        path={path}
-                        element={
-                            <PageBoundary name={label}>
-                                <Element />
-                            </PageBoundary>
-                        }
-                    />
-                ))}
-            </Route>
+                {/* Authenticated workspace */}
+                <Route
+                    path="/app"
+                    element={
+                        <ProtectedRoute>
+                            <WorkspaceGate>
+                                <WorkspaceLayout />
+                            </WorkspaceGate>
+                        </ProtectedRoute>
+                    }
+                >
+                    {WORKSPACE_ROUTES.map(({ path, index, label, element: Element }) => (
+                        <Route
+                            key={path || 'index'}
+                            index={index}
+                            path={path}
+                            element={
+                                <PageBoundary key={path || 'index'} name={label}>
+                                    <Suspense fallback={<RouteLoading />}>
+                                        <Element />
+                                    </Suspense>
+                                </PageBoundary>
+                            }
+                        />
+                    ))}
+                </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </Suspense>
     );
 }
 
 function App() {
     return (
-        <TelemetryBoundary>
-            <Router>
-                <AuthProvider>
-                    <WorkspaceProvider>
-                        <ScrollToTop />
-                        <RouteTelemetry />
-                        <AppRoutes />
-                    </WorkspaceProvider>
-                </AuthProvider>
-            </Router>
-        </TelemetryBoundary>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            storageKey="buildanddo.theme"
+        >
+            <TelemetryBoundary>
+                <Router>
+                    <SkipNavigation />
+                    <AuthProvider>
+                        <WorkspaceProvider>
+                            <ScrollToTop />
+                            <RouteTelemetry />
+                            <AppRoutes />
+                        </WorkspaceProvider>
+                    </AuthProvider>
+                </Router>
+            </TelemetryBoundary>
+        </ThemeProvider>
     );
 }
 

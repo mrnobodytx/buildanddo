@@ -11,8 +11,8 @@
 //              apps/web/src/lib/workspaceActions.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.workflow.started;
-//              PRODUCES workspace.workflow.step_added
+//              PRODUCES workspace.workflow.create;
+//              PRODUCES workspace.workflow.update
 // Intent:      Give a workflow the sequence that makes it one — ordered,
 //              editable steps — so activating it says what would run.
 // ───────────────────────────────────────────────────────────────
@@ -66,7 +66,6 @@ import {
 import { useShapedRecords, useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
-import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 
 const STEP_KINDS = {
     read: 'Read data',
@@ -337,10 +336,7 @@ export default function WorkflowsPage() {
             steps,
         });
         if (!result.ok) return;
-        trackWorkspaceAction(WORKSPACE_ACTIONS.WORKFLOW_CREATED, {
-            template: form.template,
-            step_count: steps.length,
-        });
+
         setCreateOpen(false);
     };
 
@@ -358,12 +354,6 @@ export default function WorkflowsPage() {
             steps,
         });
         if (!result.ok) return;
-        if (steps.length > before) {
-            trackWorkspaceAction(WORKSPACE_ACTIONS.WORKFLOW_STEP_ADDED, {
-                step_count: steps.length,
-                added: steps.length - before,
-            });
-        }
         setEditing(null);
     };
 
@@ -381,14 +371,7 @@ export default function WorkflowsPage() {
         });
         setBusyId(null);
         if (!result.ok) return;
-        trackWorkspaceAction(
-            next === 'active' ? WORKSPACE_ACTIONS.WORKFLOW_STARTED : WORKSPACE_ACTIONS.WORKFLOW_PAUSED,
-            {
-                step_count: readSteps(workflow.steps).length,
-                template: workflow.template || 'blank',
-                from_status: workflow.status,
-            },
-        );
+
     };
 
     const destroy = async (workflow) => {

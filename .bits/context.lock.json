@@ -41,13 +41,6 @@
       "severity": "high",
       "srs": "",
       "statement": "SRS-BUILDANDDO-WITNESS-001 has a spec but is not in the registry"
-    },
-    {
-      "area": "observability",
-      "evidence": ".env.example declares them; no build or deploy script writes them, so RUM reports them empty",
-      "severity": "medium",
-      "srs": "SRS-BUILDANDDO-RELEASE-TAG-001",
-      "statement": "RUM variables VITE_DD_ENV are documented but no tracked build path sets them"
     }
   ],
   "gates": [
@@ -100,6 +93,13 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/supply_chain.py",
+      "referenced_by": [
+        "tests/upgrade/test_supply_chain.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
       "path": "scripts/ci/telemetry_delta.py",
       "referenced_by": [],
       "wired_into_ci": true
@@ -122,7 +122,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-13T02:11:42.379326+00:00",
+  "generated_at": "2026-09-14T23:32:51.766271+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -189,7 +189,7 @@
         "code": "SRS-BUILDANDDO-PB-METRICS-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md",
-        "status": "proposed",
+        "status": "in_progress",
         "title": "Server-side CRUD, latency and error telemetry from PocketBase hooks"
       },
       {
@@ -203,7 +203,7 @@
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-RELEASE-TAG-001.md",
-        "status": "proposed",
+        "status": "in_progress",
         "title": "Stamp build version so RUM, CI and DORA describe one release"
       },
       {
@@ -224,14 +224,14 @@
         "code": "SRS-BUILDANDDO-RUM-ACTIONS-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-RUM-ACTIONS-001.md",
-        "status": "proposed",
+        "status": "in_progress",
         "title": "Workspace actions, per-page error scope and interaction timing"
       },
       {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-SUPPLY-001.md",
-        "status": "proposed",
+        "status": "in_progress",
         "title": "Dependency vulnerability and supply-chain telemetry"
       },
       {
@@ -240,6 +240,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-TEST-001.md",
         "status": "in_progress",
         "title": "Web test runner emitting JUnit, with workspace component suites"
+      },
+      {
+        "code": "SRS-BUILDANDDO-UPGRADE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        "status": "in_progress",
+        "title": "Public pages and tested accessible workspace upgrades"
       },
       {
         "code": "SRS-BUILDANDDO-WORKSPACE-001",
@@ -264,6 +271,7 @@
       ],
       "scripts": [
         "scripts/ci/candidate_manifest.py",
+        "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py"
       ],
       "triggers": [
@@ -316,10 +324,27 @@
       "scripts": [
         "scripts/ci/agent_context.py",
         "scripts/ci/changelog_gen.py",
+        "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py"
       ],
       "triggers": [
         "pull_request"
+      ]
+    },
+    {
+      "file": ".github/workflows/supply-chain.yml",
+      "kind": "workflow",
+      "local_actions": [
+        ".github/actions/datadog-ci-report"
+      ],
+      "name": "BuildAndDo Weekly Supply Chain",
+      "npm_scripts": [],
+      "scripts": [
+        "scripts/ci/supply_chain.py"
+      ],
+      "triggers": [
+        "schedule",
+        "workflow_dispatch"
       ]
     },
     {
@@ -330,6 +355,7 @@
       "npm_scripts": [],
       "scripts": [
         "scripts/ci/datadog_publish.py",
+        "scripts/ci/supply_chain.py",
         "scripts/ci/telemetry_delta.py",
         "scripts/ci/telemetry_snapshot.py"
       ],
@@ -344,6 +370,7 @@
     "build_scripts": [
       "apps/web/tools/build.mjs",
       "apps/web/tools/generate-llms.js",
+      "apps/web/tools/generate-seo.mjs",
       "apps/web/tools/lint.mjs",
       "apps/web/tools/observability-smoke.mjs",
       "apps/web/vite.config.js",
@@ -351,27 +378,27 @@
       "scripts/deploy/ship.py"
     ],
     "migrations": 16,
-    "python_files": 40,
+    "python_files": 44,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 354,
-    "web_source_files": 149
+    "tracked_files": 397,
+    "web_source_files": 171
   },
   "schema_version": 1,
   "summary": {
-    "findings": 7,
+    "findings": 6,
     "findings_high": 6,
-    "pipelines": 5,
-    "srs_open": 13,
-    "srs_total": 16,
+    "pipelines": 6,
+    "srs_open": 14,
+    "srs_total": 17,
     "unwired_gates": 4
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 8,
+    "js_test_files": 18,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

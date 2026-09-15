@@ -288,6 +288,28 @@ def pipeline_metrics(started_at: str | None, status: str | None, now: dt.datetim
     return out
 
 
+def release_context(root: Path) -> dict[str, str]:
+    """Resolve release metadata through the same Node module used by Vite."""
+    try:
+        result = subprocess.run(["node", str(root / "scripts/ci/release.mjs"), "--json"],
+                                cwd=root, text=True, capture_output=True, timeout=10, check=True)
+        release = json.loads(result.stdout)
+        return {key: release[key] for key in ("version", "commit_sha") if isinstance(release.get(key), str)}
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return {}
+
+
+def supply_metrics(path: Path) -> dict[str, float]:
+    """Read only bounded numeric metrics from the dependency report."""
+    report = load_json(path)
+    if not isinstance(report, dict) or not isinstance(report.get("metrics"), dict):
+        return {}
+    allowed = {"deps.audit_available", "deps.lock_consistent", "deps.licenses_unknown"}
+    allowed.update(f"deps.vulnerabilities.{severity}" for severity in ("critical", "high", "moderate", "low"))
+    return {key: value for key, value in report.get("metrics", {}).items()
+            if key in allowed and type(value) in (int, float) and value >= 0}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--root", default=".")
@@ -310,6 +332,7 @@ def main() -> int:
     metrics: dict[str, float] = {}
     metrics.update(bundle_metrics(root / args.dist))
     metrics.update(dependency_metrics(root))
+    metrics.update(supply_metrics(root / "reports/supply-chain.json"))
     metrics.update(source_metrics(root))
     metrics.update(test_metrics(root / args.junit_dir))
     metrics.update(eslint_metrics(root / args.eslint_report))
@@ -327,12 +350,14 @@ def main() -> int:
     except RuntimeError:
         sha = ""
 
+    release = release_context(root)
     snapshot = {
         "schema_version": 1,
         "generated_at": now.isoformat(),
         "context": {
             "pipeline": args.pipeline,
-            "commit_sha": os.environ.get("GITHUB_SHA") or sha,
+            "commit_sha": release.get("commit_sha") or sha or os.environ.get("GITHUB_SHA", ""),
+            "version": release.get("version", ""),
             "branch": os.environ.get("GITHUB_HEAD_REF") or os.environ.get("GITHUB_REF_NAME") or "",
             "repository": os.environ.get("GITHUB_REPOSITORY") or "",
             "workflow": os.environ.get("GITHUB_WORKFLOW") or "",

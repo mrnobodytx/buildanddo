@@ -23,10 +23,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { observeMutation } from '@/lib/observability/mutations';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { demoRecords } from '@/lib/demoWorkspace';
 import pb from '@/lib/pocketbaseClient';
-import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 
 const READ_FAILED = 'Could not load this data right now. What you see may be incomplete.';
 const DEMO_READ_ONLY = 'Demonstration mode is on. Turn it off to save real records.';
@@ -145,7 +145,7 @@ export function useWorkspaceRecords(collection, options = {}) {
 			setSaving(true);
 			setWriteError('');
 			try {
-				const record = await operation();
+				const record = await observeMutation(collection, context.op, operation);
 				await load();
 				setSaving(false);
 				return { ok: true, record };
@@ -153,10 +153,7 @@ export function useWorkspaceRecords(collection, options = {}) {
 				const message = describeWriteError(err, fallbackMessage);
 				console.error(`${context.op} ${collection} failed`, err);
 				setWriteError(message);
-				trackWorkspaceAction(WORKSPACE_ACTIONS.RECORD_WRITE_FAILED, {
-					collection,
-					operation: context.op,
-				});
+
 				setSaving(false);
 				return { ok: false, reason: 'write_failed', error: message };
 			}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Scale, Plus, Loader2, AlertCircle, Info } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient';
+import { workspaceCollection } from '@/lib/observability/mutations';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import EmptyState from '@/components/workspace/EmptyState';
@@ -25,7 +26,7 @@ export default function CorrectionsPage() {
         if (saving || !active || !form.prior_prediction.trim()) return;
         setSaving(true); setError('');
         try {
-            await pb.collection('corrections').create({
+            await workspaceCollection('corrections').create({
                 prior_prediction: form.prior_prediction.trim(),
                 observed_result: form.observed_result.trim(),
                 status: form.status,

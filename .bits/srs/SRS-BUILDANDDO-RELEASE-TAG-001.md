@@ -15,7 +15,7 @@
 
 # SRS-BUILDANDDO-RELEASE-TAG-001 — One version across RUM, CI and DORA
 
-**Status:** proposed **Risk:** A1 **Seat:** unassigned
+**Status:** in_progress **Risk:** A1 **Seat:** BITS-CODEGEN
 
 ## Problem
 
@@ -75,3 +75,11 @@ python scripts/ci/agent_context.py | grep -i version
 
 Keep the version tag low cardinality on metrics: one value per deploy is fine,
 one per PR build is not. Prefer tagging main-branch runs and deployments.
+
+## Implementation dispatch
+
+The public source implementation is part of owner-authorized dispatch
+VCC-BUILDANDDO-UPGRADE-001 under SRS-BUILDANDDO-UPGRADE-001. Local adapter tests,
+validation limits and remaining activation work are recorded in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md. Status remains in progress until
+merge and environment verification; no live ingestion result is claimed here.

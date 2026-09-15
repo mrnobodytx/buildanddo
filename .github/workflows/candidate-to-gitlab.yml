@@ -36,6 +36,7 @@ jobs:
 
       - name: Install, test, build
         run: |
+          python scripts/ci/supply_chain.py --skip-audit --check-lock
           npm ci
           npm run lint --if-present
           npm test --if-present
