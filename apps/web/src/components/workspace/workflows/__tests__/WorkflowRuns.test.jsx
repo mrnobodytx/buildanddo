@@ -49,6 +49,23 @@ beforeEach(() => { pb.__reset(); pb.send.mockReset(); setDemoMode(false); });
 afterEach(() => { setDemoMode(false); });
 
 describe('workflow run history and start', () => {
+    it('updates the workflow card previous-work receipt after a successful start', async () => {
+        const user = setupUser();
+        pb.__setRecords('workflows', [workflow]);
+        pb.send.mockImplementation(async () => {
+            const record = savedRun();
+            pb.__setRecords('workflow_runs', [record]);
+            return { record };
+        });
+        renderWithProviders(<WorkflowsPage />);
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Start a run' })).toBeEnabled());
+        expect(screen.queryByText(/1 recorded workflow run/)).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Start a run' }));
+        await user.selectOptions(screen.getByLabelText('Saved workflow'), 'workflow1');
+        await user.click(screen.getByRole('button', { name: 'Start recorded run' }));
+        expect(await screen.findByText(/1 recorded workflow run/)).toHaveTextContent('Latest run: In progress');
+    });
+
     it('separates unavailable history from an empty history and enables retry', async () => {
         const user = setupUser();
         pb.__collection('workflow_runs').getList.mockRejectedValueOnce(new Error('offline'));
@@ -90,12 +107,13 @@ describe('workflow run history and start', () => {
 
     it('starts a saved workflow and opens the server snapshot with a mission link', async () => {
         const user = setupUser();
+        const onRecordsChanged = vi.fn();
         const record = savedRun({ snapshot: { ...savedRun().snapshot, mission_id: 'mission1', mission_title: 'Measured mission' } });
         pb.__setRecords('missions', [{ id: 'mission1', title: 'Measured mission', status: 'running',
             mission_approved_at: '2026-09-15', mission_approved_by: 'user_test', workspace: 'ws_test' },
         { id: 'draft1', title: 'Unapproved proposal', status: 'proposed' }]);
         pb.send.mockResolvedValue({ record });
-        renderWithProviders(panel());
+        renderWithProviders(panel({ onRecordsChanged }));
         await waitFor(() => expect(screen.getByRole('button', { name: 'Start a run' })).toBeEnabled());
         await user.click(screen.getByRole('button', { name: 'Start a run' }));
         const dialog = within(screen.getByRole('dialog'));
@@ -108,21 +126,25 @@ describe('workflow run history and start', () => {
             method: 'POST', body: { workspace: 'ws_test', workflow: 'workflow1', mission: 'mission1', request_key: expect.any(String) } })));
         expect(await screen.findByRole('heading', { name: 'Original saved procedure' })).toBeInTheDocument();
         expect(screen.getByText(/Mission: Measured mission/)).toBeInTheDocument();
+        expect(onRecordsChanged).toHaveBeenCalledTimes(1);
     });
 
     it('retains selection and the same request key after a response is lost', async () => {
         const user = setupUser();
+        const onRecordsChanged = vi.fn();
         pb.send.mockRejectedValueOnce(new Error('response lost')).mockResolvedValueOnce({ record: savedRun(), replayed: true });
-        renderWithProviders(panel());
+        renderWithProviders(panel({ onRecordsChanged }));
         await waitFor(() => expect(screen.getByRole('button', { name: 'Start a run' })).toBeEnabled());
         await user.click(screen.getByRole('button', { name: 'Start a run' }));
         await user.selectOptions(screen.getByLabelText('Saved workflow'), 'workflow1');
         await user.click(screen.getByRole('button', { name: 'Start recorded run' }));
         expect(await screen.findByRole('alert')).toHaveTextContent('confirm the saved result');
+        expect(onRecordsChanged).not.toHaveBeenCalled();
         expect(screen.getByLabelText('Saved workflow')).toHaveValue('workflow1');
         await user.click(screen.getByRole('button', { name: 'Start recorded run' }));
         await screen.findByRole('heading', { name: 'Original saved procedure' });
         expect(pb.send.mock.calls[0][1].body.request_key).toBe(pb.send.mock.calls[1][1].body.request_key);
+        expect(onRecordsChanged).toHaveBeenCalledTimes(1);
     });
 
     it('blocks all run reads and writes in demo mode', async () => {

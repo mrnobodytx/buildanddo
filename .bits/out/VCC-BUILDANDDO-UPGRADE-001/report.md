@@ -45,27 +45,27 @@ Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
 Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 16/33 acceptance gates complete; public upgrades, backend reuse, missions, workflow runs, delivery handoff and business learning
-Smoke: 4/7 current application gates; native/browser and delivery acceptance pending
+Tasks: 18/37 acceptance gates complete; cumulative source upgrades and workspace integration repair
+Smoke: 4/7 application gates; native/browser and delivery acceptance pending
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: 5 prior revisions (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b, e820f8f220632405b910f9ebd9d71e2e20a00e41, af63ab4a64aa2708487e3a2f20b5c229e4da2d83); business/learning evidence prepared before its final source commit
+Commits: 6 prior source revisions (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b, e820f8f220632405b910f9ebd9d71e2e20a00e41, af63ab4a64aa2708487e3a2f20b5c229e4da2d83, 203a08ced7348e551f810ed90b0a869b29532427); integration evidence prepared before its final source commit
 
-The current A2 source continuation adds editable ERP planning, a reviewed
-content studio and 25 complete lessons shared by the web catalogue and an
-additive PocketBase seed. All 86 Node and 18 Python regressions pass. Frontend
-execution and native PocketBase compatibility remain unverified; source
-completion is not TEVV. docs/business-learning.md defines the user flows and
-remaining acceptance work.
+The current A2 repair addresses three measured disconnects: an undefined icon
+that breaks the shared workspace layout, missing member access to workspaces
+and evidence, and previous-work summaries that omit saved receipts. Reads now
+retain unavailable/truncated state, independent panels do not cancel each other,
+and account/workspace/demo changes discard private page state and late history.
+All 110 Node and 18 Python tests pass. Frontend and native acceptance remain open.
 
-PRs 19–21 merged earlier upgrades; the workflow revision and this continuation
-remain outside the observed provider main. The candidate job is billing-blocked
-and Cloudflare independently reports a failed build. The BuildAndDo delivery
-handoff specifies equivalent validation and served-version checks for the
-private seat. No remote merge, private-agent activation or deployment occurred.
-The earlier Rig 1 runtime handoff remains deferred at the owner's request.
+PR 22 has merged the earlier workflow and business/learning source. The current
+baseline includes it; earlier statements that those revisions await publication
+are historical. Its failed governance/Cloudflare checks provide no deployment
+receipt. This turn performs no remote merge, shared migration, private-agent
+activation or release. The complete source-to-runtime acceptance procedure is
+in docs/workspace-integration.md and the existing private delivery handoff.
 
 ## §2 TASK RESULTS
 
@@ -73,7 +73,7 @@ The earlier Rig 1 runtime handoff remains deferred at the owner's request.
 |---|---|---|---|---|---|
 | A — Register original scope | PASS | Eight-area umbrella, registry and owner dispatch | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs_registry.yml, .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md |
 | B — Public pages | PARTIAL | Pricing, About, Docs, Blog, Contact and navigation | `npm --prefix apps/web test -- src/pages/__tests__/PublicPages.test.jsx` | 07_BUILD / 08_TEST | apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/AboutPage.jsx, apps/web/src/pages/DocsPage.jsx, apps/web/src/pages/BlogPage.jsx, apps/web/src/pages/ContactPage.jsx |
-| C — Component coverage | PARTIAL | Public/workspace interaction suites; 24 Vitest files inventoried; frontend execution remains blocked | `npm --prefix apps/web run test:coverage` | 08_TEST | apps/web/src/pages/__tests__/PublicPages.test.jsx, apps/web/vitest.config.js |
+| C — Component coverage | PARTIAL | Public/workspace interaction suites; 25 Vitest files inventoried; frontend execution remains blocked | `npm --prefix apps/web run test:coverage` | 08_TEST | apps/web/src/pages/__tests__/PublicPages.test.jsx, apps/web/vitest.config.js |
 | D — Route loading | PARTIAL | Lazy routes, Suspense feedback and workspace error isolation | `npm --prefix apps/web run build` | 07_BUILD | apps/web/src/App.jsx |
 | E — Mobile layouts | PARTIAL | Responsive shared navigation, controls and dialogs; new previews wrap at narrow widths | Production preview at 320, 375 and 1280 px after build | 07_BUILD | apps/web/src/components/site/Header.jsx, apps/web/src/components/ui/sheet.jsx |
 | F — Telemetry adapters | PASS locally | Real-result mutation events/timing, shared release, supply collection and opt-in PocketBase hooks | `node --test tests/upgrade/*.test.mjs`; `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | 07_BUILD / 11_COMMIT | apps/pocketbase/pb_hooks/telemetry.js, scripts/ci/supply_chain.py |
@@ -94,265 +94,145 @@ The earlier Rig 1 runtime handoff remains deferred at the owner's request.
 | U — Rig 1 handoff | PASS | CMAX-B requirements and acceptance cases for bridge selection, ingress, supervision, MCP and controlled MRs; private execution blocked | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | 11_COMMIT | .bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md |
 | V — Workflow scope | PASS | Public workflow persistence and review scope registered before implementation | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md |
 | W — Run persistence | PARTIAL — local contracts pass | Immutable snapshots, bounded commands, approval roles, expected revisions, safe retries and atomic mission-linked evidence | `node --test tests/upgrade/workflow-runs.test.mjs` | 07_BUILD / 08_TEST | apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workflow-policy.js, apps/pocketbase/pb_hooks/workflows.pb.js, apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js |
-| X — Workflow desk | PARTIAL — client contracts pass, UI execution unavailable | Paginated history, approval filter, saved outcome forms, recoverable drafts and account/workspace/demo isolation | `node --test tests/upgrade/workflow-client.test.mjs`; targeted Vitest command below | 07_BUILD / 08_TEST | apps/web/src/pages/workspace/WorkflowsPage.jsx, apps/web/src/components/workspace/workflows/WorkflowRunsPanel.jsx, apps/web/src/lib/workflowRuns.js |
+| X — Workflow desk | PARTIAL — client contracts pass, UI execution unavailable | Paginated history, approval filter, saved outcome forms, recoverable drafts and account/workspace/demo isolation | `node --test tests/upgrade/workflow-client.test.mjs`; workflow Vitest procedure in docs/workflow-system.md | 07_BUILD / 08_TEST | apps/web/src/pages/workspace/WorkflowsPage.jsx, apps/web/src/components/workspace/workflows/WorkflowRunsPanel.jsx, apps/web/src/lib/workflowRuns.js |
 | Y — Workflow evidence | PASS with acceptance blockers recorded | Current source/contract checks, API and rollout documentation, context, boundary and memory evidence | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`; context and boundary gates | 06_PLAN / 11_COMMIT | docs/workflow-system.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json |
 | Z — Delivery investigation | PASS | Provider main/PR ancestry and failed candidate/Cloudflare checks established | Provider and ancestry commands in the delivery handoff | 11_COMMIT | .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md |
 | AA — Private delivery handoff | PASS for public artifact | Full source publication, equivalent private validation, authorized release and served-version requirements; receiving seat not activated | `python scripts/ci/verify_public_boundary.py`; `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | 11_COMMIT | .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md |
 | AB — Business/learning scope | PASS | Owner continuation registered at A2 before source/schema edits | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md |
 | AC — Business data and policy | PARTIAL — local contracts pass | Additive ERP/content fields, server review receipts, workspace-local relations and identity-preserving curriculum seed; native acceptance pending | `node --test tests/upgrade/business-learning.test.mjs` | 07_BUILD / 08_TEST | apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_hooks/business.pb.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js |
-| AD — ERP desk | PARTIAL — component execution unavailable | Editable measures, due dates, linked tasks/contacts, priority and search; failed saves retain data and returned identities | Targeted business Vitest command below; Node selector contracts | 07_BUILD / 08_TEST | apps/web/src/pages/workspace/ErpPage.jsx, apps/web/src/lib/businessPlanning.js |
-| AE — Content studio | PARTIAL — component execution unavailable | Editable outlines and safe previews, explicit review, editorial dates and recorded publication receipts; no external posting | Targeted business Vitest command below; Node policy contracts | 07_BUILD / 08_TEST | apps/web/src/components/workspace/ContentStudio.jsx, apps/web/src/components/workspace/StructuredContent.jsx, apps/web/src/pages/workspace/CommunitySocialPage.jsx |
-| AF — First 25 tutorials | PARTIAL — source contracts pass | Five learning paths, complete structured bodies, searchable reader, safe references and progress recovery; browser/native acceptance pending | `node --test tests/upgrade/business-learning.test.mjs`; targeted business Vitest command below | 07_BUILD / 08_TEST | apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/web/src/components/workspace/TutorialReader.jsx, apps/web/src/lib/tutorialCurriculum.js |
+| AD — ERP desk | PARTIAL — component execution unavailable | Editable measures, due dates, linked tasks/contacts, priority and search; failed saves retain data and returned identities | Business Vitest procedure in docs/business-learning.md; Node selector contracts | 07_BUILD / 08_TEST | apps/web/src/pages/workspace/ErpPage.jsx, apps/web/src/lib/businessPlanning.js |
+| AE — Content studio | PARTIAL — component execution unavailable | Editable outlines and safe previews, explicit review, editorial dates and recorded publication receipts; no external posting | Business Vitest procedure in docs/business-learning.md; Node policy contracts | 07_BUILD / 08_TEST | apps/web/src/components/workspace/ContentStudio.jsx, apps/web/src/components/workspace/StructuredContent.jsx, apps/web/src/pages/workspace/CommunitySocialPage.jsx |
+| AF — First 25 tutorials | PARTIAL — source contracts pass | Five learning paths, complete structured bodies, searchable reader, safe references and progress recovery; browser/native acceptance pending | `node --test tests/upgrade/business-learning.test.mjs`; business Vitest procedure in docs/business-learning.md | 07_BUILD / 08_TEST | apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/web/src/components/workspace/TutorialReader.jsx, apps/web/src/lib/tutorialCurriculum.js |
 | AG — Business/learning evidence | PASS with acceptance blockers recorded | User/retention documentation, extended delivery handoff and current context/boundary/CGRF/memory verification | Context, boundary and memory gates | 06_PLAN / 11_COMMIT | docs/business-learning.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json |
+| AH — Integration scope | PASS | Current merged PR 22 baseline reconciled; defects and A2 repair scope registered | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md |
+| AI — Shared workspace/evidence access | PARTIAL — source contracts pass | Current members can discover workspaces and read shared receipts; author/current-role write checks; custom rules are preserved | `node --test tests/upgrade/workspace-integration.test.mjs` | 07_BUILD / 08_TEST | apps/pocketbase/pb_hooks/evidence-policy.js, apps/pocketbase/pb_hooks/evidence.pb.js, apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js |
+| AJ — Connected history and rendering | PARTIAL — source contracts pass, React execution unavailable | Fix the missing layout icon, surface evidence/runs and incomplete reads, refresh after saves and discard stale private state | `node --test tests/upgrade/work-history.test.mjs tests/upgrade/source-checker.test.mjs tests/upgrade/workflow-runs.test.mjs`; targeted Vitest below | 07_BUILD / 08_TEST | apps/web/src/lib/workHistory.js, apps/web/src/hooks/usePreviousWork.js, apps/web/src/components/workspace/PreviousWorkNote.jsx, apps/web/src/components/workspace/WorkspaceLayout.jsx |
+| AK — Integration evidence | PASS with acceptance blockers recorded | Connected client/server/history regression; current Node/Python, context, boundary, CGRF and memory evidence; native/browser handoff | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`; context and boundary gates | 06_PLAN / 11_COMMIT | docs/workspace-integration.md, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md |
 
-Backend reuse inventory:
+The earlier phases remain listed with their observed limits. This continuation
+does not convert authored UI tests into passing acceptance or operator-recorded
+work into external automation. Earlier full implementation descriptions live
+in the source specifications, docs/mission-system.md, docs/workflow-system.md,
+docs/business-learning.md and the preserved memory events.
 
-| Surface | Existing data reused | Resulting behavior |
-|---|---|---|
-| Home account state and glance | services, signals, missions, evidence | Active-workspace counts using the same mission/evidence selectors as Overview; unavailable reads stay unknown |
-| Challenge Desk | challenge_submissions and useWorkspaceRecords mutations | Saves owner/workspace-scoped input, shows the returned status and recent receipts; no automation is claimed |
-| Evidence Ledger | evidence | Recent records retain type, source, timestamp and receipt |
-| Corrections | corrections | Only complete comparisons marked verified appear |
-| Daily Edition | daily_editions | Latest published, non-future edition; drafts remain in the workspace |
-| Support & Revenue | support_sources | Reported gross, fees, refunds, payout, period and last sync stay separate per source and currency |
-| Home/Docs/Field Manual | tutorials and tutorial_progress | One shared catalogue and mutation flow; saved progress belongs to the authenticated account |
-| Early access | early_access | Already persisted; no duplicate intake backend added |
-| Commercial contact | Explicit user-sent email draft | No existing delivery backend was found to reuse; no false delivery confirmation added |
+Current connection repairs:
 
-Private reads mount only after authentication. Workspace previews and forms
-remount on account/workspace/demo changes; the provider binds results to the
-current account and discards stale loads. Shared hooks discard late reads and
-do not refresh a previous workspace after a pending mutation. Failed workspace
-loads now offer retry instead of redirecting to onboarding. New private preview
-regions are masked for Datadog replay and excluded from PostHog autocapture.
-Backend reuse retained the collection rules and deployment authority. The mission continuation below adds an optional-field migration and request validation without changing any collection access rule.
-
-
-Mission implementation and limits:
-
-- `/app/missions` now saves purpose, scope, baseline/target, risk, authorization,
-  data handling, recovery and four TEVV methods. Save drafts independently from
-  approval; record work started, pause, review evidence, then verify or record an
-  honest failed outcome. Revising an approved/paused plan clears its prior review
-  and approval. Finished mission outcomes cannot be reopened through this API.
-- PocketBase owns schema/transition checks, workspace write permissions and
-  evidence access validation. Ownership/workspace cannot be reassigned. Approval
-  and review identities/times come from the authenticated request, not the body.
-  A verification requires readable source-backed evidence from the same mission
-  and workspace for all four passing observations. It is a workspace assertion,
-  not independent certification or tamper-proof proof of a business outcome.
-- Home/Docs reuse remains intact. Mission instruction appears in Docs and the
-  Field Manual; `docs/mission-system.md` explains the how, why, architecture,
-  primary framework references, validation procedure and coordinated rollback.
-- “wor3 voc” was not found in the repository. A clarification was requested;
-  absent a reply it is provisionally interpreted as W3C Verifiable Credentials
-  2.0. The guide explains issuer, subject, evidence and securing mechanisms.
-  Downloads are explicitly unsigned learning records, not VCs or signed proofs.
-- Saved planning contributes 30 points, four knowledge checks 60, and a complete
-  observed review 10. Repeats cannot add points. Honest failures earn equal review
-  credit. At 30/60 points, a worked TEVV example and review coach become available.
-  These mission-level rewards grant no authority, money or qualification.
-- The animation preference and system reduced-motion setting disable the brief
-  step/progress/reward effects. Forms remount on account/workspace/demo changes;
-  demo writes are blocked and private mission regions are masked from replay.
-
-No mission was created in a live workspace and no deployment or migration was
-applied to a shared backend. Native PocketBase acceptance is still required.
-
-Workflow backend implementation and limits:
-
-- Native authenticated commands create a workflow run from a saved active
-  definition. Each run preserves its original steps and optional mission approval;
-  subsequent definition edits apply to future runs. Activation no longer writes
-  a browser timestamp. Only a real server start updates last_run; old activation
-  dates remain untouched and are not shown as evidence of execution.
-- Run collection writes are locked for ordinary users. A current owner/admin/editor
-  can start, record or cancel; only an owner/admin can decide approval checkpoints.
-  Membership must match one workspace/user row. Current source readability, step
-  order, expected revision and mission approval are checked before persistence.
-- A decision saves both the run event and its evidence in one transaction. Exact
-  retries return the same result after JSON key reordering or a lost response.
-  Stale or conflicting requests do not append evidence. Failure and cancellation
-  retain a reason; terminal outcomes cannot be rewritten through these commands.
-- The desk provides pages of 20 runs, workflow/status filters, explicit approval
-  and outcome forms, immutable receipts, and links to the Mission Desk/Evidence
-  Ledger. Failed saves retain inputs and request keys. Pending draft saves keep
-  the form open. Account/workspace changes discard drafts and late responses;
-  demo mode makes no run request. Private portal content is masked for replay.
-- Workflow commands add bounded browser mutation and optional PocketBase request
-  telemetry. The public adapters send no content, record IDs or credentials to
-  telemetry and install no transport. History indexes match the pagination sort.
-- Step kinds describe operator-performed work. A completed recorded run does not
-  execute an external tool, verify its linked mission, issue a credential or
-  prove an independent business outcome. Native SQL/JSVM and browser acceptance
-  remain pending. docs/workflow-system.md defines the activation/retention checks.
-
-Business planning, content and learning implementation:
-
-- ERP objectives carry a success measure and due date. Tasks can be edited,
-  prioritized and linked to readable same-workspace objectives and contacts.
-  Search, explicit states and overdue views use saved records; unavailable
-  reads remain unknown. Forms retain input after failure. When an old backend
-  drops newly submitted fields, the UI reports an incomplete save and retains
-  the returned record ID, avoiding a second create on retry.
-- The content studio supports blog, tutorial and social drafts from an audience
-  brief. Outlines are deterministic writing prompts, with explicit confirmation
-  before replacing copy. Preview uses React text nodes and structured elements.
-  Owner/admin review requires four checks and a note, attributed by the server.
-  Reviewed copy must return to draft before changes; planned dates do not run a
-  scheduler. An owner/admin can record a checked HTTPS publication URL with an
-  attributed receipt. Published history is retained through ordinary requests.
-- Twenty-five authored lessons cover five paths: foundations, operations,
-  missions/workflows, content production and practice/improvement. Each has
-  outcomes, rationale, preparation, instruction, a worked example, exercise,
-  knowledge check and references. Public/demo readers make no PocketBase calls.
-  Signed-in readers combine saved lessons with starter previews; saving requires
-  a real catalogue ID and known account progress. Reviewing completion does not
-  downgrade it. A lost create response reloads progress before retrying.
-- One versioned JSON asset supplies both previews and the migration. The seed
-  hydrates only unchanged legacy summaries, preserves their IDs/progress, uses
-  stable IDs for new lessons and never overwrites an existing body on replay.
-  The asset must accompany the migration. The explicit down preserves tutorial
-  identities/progress and the approved select value, but removes new field data;
-  ordinary application rollback should retain the schema and receipts.
-- Existing collection rules, workspace roles and auth remain authoritative.
-  Demo writes are disabled; account/workspace changes discard private drafts
-  and late responses. Ordinary editorial request hooks do not provide the
-  workflow commands' revision/idempotency guarantees. Native simultaneous
-  request acceptance is specified in docs/business-learning.md.
-
-Delivery investigation:
-
-- At 2026-09-15T04:24:05Z, provider main and local origin/main both resolved to
-  ff8af6c81090eaa016155f418c6fd98076ee8cfb. The four session revisions through
-  e820f8f220632405b910f9ebd9d71e2e20a00e41 are ancestors; workflow revision
-  af63ab4a64aa2708487e3a2f20b5c229e4da2d83 is not. The older open staging PR 18
-  is outside this session's reviewed source and was not bundled.
-- Candidate run 34924483806/check 104239502387 did not start because GitHub
-  reported an account billing lock. Main's Cloudflare check 104239520899 failed
-  independently; its underlying build log is unavailable here. A skipped DORA
-  workflow and a source merge are not deployment receipts.
-- Provider branch metadata reported no protection or required status contexts
-  at inspection time. No rules were changed, and sandbox provider access is
-  read-only. The Create/Update PR flow must publish the remaining source.
-  The private repository cannot be attached to this public session; no private
-  runtime, runner capability or dispatch channel was verified or activated.
-- The handoff targets the complete subsequently published PR head, including
-  this business/learning wave. It retains boundary, actor, lock, test, build,
-  native and browser gates for private execution without GitHub Actions. A
-  release must produce version.json and show the same identity in the served
-  staging/production application before delivery can be claimed.
+- WorkspaceLayout imports its rendered Plus icon. A key on page content resets
+  private drafts on account, workspace and demo changes while retaining the
+  navigation shell. An unreadable domain expansion is shown as unavailable.
+- The new migration changes only list/view rules on workspaces and evidence.
+  Current membership enables shared reads; workspace management stays with the
+  owner. Ordinary evidence writes/deletes require the author and a current
+  writable role. An optional linked mission must be readable in that workspace.
+  Custom read rules stop migration before either collection changes. Replay and
+  down retain data. These are source contracts awaiting native rule acceptance.
+- Mission history combines seat events and evidence; workflow history combines
+  seat events and recorded runs. Queries group 40 subjects and cap each source
+  at 200 rows. Missing, failed and truncated sources stay distinct. A run receipt
+  does not fabricate a seat event or complete its linked mission.
+- Shared reads disable PocketBase SDK automatic cancellation between panels;
+  the existing request guards and new history scope guards discard late results.
+  Successful mission/run writes refresh their summaries and workflow definitions.
+  Demo/anonymous history performs no backend read. Retry is explicit on incomplete
+  history. UI tests exercise these paths but cannot execute in this environment.
 
 ## §3 SMOKE TEST RESULTS
 
-These results were observed during the business/learning continuation. Tests
-execute local source; no shared backend, live workspace or deployment was used.
-
 | # | Command | Expected | Observed | Result |
 |---|---|---|---|---|
-| 1 | Targeted business Vitest command below | ERP/content/reader interactions pass | vitest: not found | FAIL — environment |
-| 2 | `npm --prefix apps/web run lint` | Repository lint passes | Missing eslint-plugin-import | FAIL — environment |
-| 3 | `npm --prefix apps/web run build` | Vite emits the application bundle | spawnSync vite ENOENT | FAIL — environment |
-| 4 | `node --test tests/upgrade/*.test.mjs` | Node source suites pass | 86/86 pass, including 20 new business/learning cases | PASS |
-| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Python adapter/contrast suites pass | 18/18 pass | PASS |
-| 6 | `python scripts/ci/agent_context.py --check` | Measured context matches source | 24 frontend test files; six pre-existing findings and four unwired gates retained | PASS after lock refresh |
-| 7 | `python scripts/ci/verify_public_boundary.py` | Public boundary clear | 442 tracked files; zero failures; actor label not applied by this session | PASS |
-
-Targeted frontend verification:
+| 1 | Targeted integration Vitest command below | Real layout/history/workflow interactions pass | vitest: not found | FAIL — environment |
+| 2 | `npm --prefix apps/web run lint` | Official lint passes | Missing eslint-plugin-import | FAIL — environment |
+| 3 | `npm --prefix apps/web run build` | Production bundle emitted | spawnSync vite ENOENT | FAIL — environment |
+| 4 | `node --test tests/upgrade/*.test.mjs` | Source contract regressions pass | 110/110 pass | PASS |
+| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Adapter/contrast regressions pass | 18/18 pass | PASS |
+| 6 | `python scripts/ci/agent_context.py --check` | Measured context matches source | 25 frontend test files; six findings/four unwired gates retained | PASS |
+| 7 | `python scripts/ci/verify_public_boundary.py` | Public paths and contents pass | 450 tracked files; zero failures; actor not inferred | PASS |
 
 ```bash
-npm --prefix apps/web test -- src/pages/workspace/__tests__/BusinessDesks.test.jsx src/components/workspace/__tests__/TutorialCatalog.test.jsx src/pages/__tests__/HomePage.test.jsx
+npm --prefix apps/web test -- src/components/workspace/__tests__/PageBoundary.test.jsx src/components/workspace/__tests__/WorkspaceHistory.test.jsx src/components/workspace/workflows/__tests__/WorkflowRuns.test.jsx src/hooks/__tests__/useWorkspaceRecords.test.js
 npm --prefix apps/web run test:coverage
 ```
 
-Failures 1–3 retain the missing-dependency root cause. Coverage also cannot
-start because Vitest is absent. The earlier lock audit found eight declared
-packages missing from the lock and disagreement with manifests; this wave changes
-neither. No offline cache repair is available and no network installation,
-dependency removal or gate bypass was attempted. A registry-enabled runner must
-reconcile the lock with the declared manifests and install them, then rerun the
-commands above, lint, build and the browser procedures in docs/business-learning.md
-and docs/workflow-system.md.
-No applied source fix is claimed for unavailable packages.
-
-The measured context inventories tracked files. It was regenerated after staging
-this wave using `python scripts/ci/agent_context.py --write`, then checked with
-all 442 files present. The six unrelated findings remain. The earlier workflow
-wave's pre-staging inventory mismatch and its fix are retained in event history.
-
-Selected production-source coverage was measured with the full Node suite:
+Failures 1–3 and coverage cannot start because the declared frontend packages
+are missing. No product change is presented as a repair for unavailable tools.
+The lock check below fails with eight missing package resolutions and two
+manifest dependency-group mismatches. A registry-enabled runner must reconcile
+the declared manifests and lock, install packages, then rerun the same web gates.
+No package was removed, resolution fabricated or network installation attempted.
 
 ```bash
-node --test --experimental-test-coverage --test-coverage-include=apps/pocketbase/pb_hooks/business-policy.js --test-coverage-include=apps/pocketbase/pb_hooks/business.pb.js --test-coverage-include=apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js --test-coverage-include=apps/web/src/lib/businessPlanning.js --test-coverage-include=apps/web/src/lib/tutorialCurriculum.js tests/upgrade/*.test.mjs
+python scripts/ci/supply_chain.py --skip-audit --check-lock --output /tmp/buildanddo-integration-supply.json
 ```
 
-Observed aggregate: 100% lines, 96.41% branches and 100% functions across the
-five selected source files. Component coverage is not inferred. Twenty new
-cases check complete lesson structure, safe references, legacy/custom catalogue
-merge, progress retention, objective/task selectors, draft outlines, incomplete
-backend responses, seed replay/down and identity collision, workspace relation
-denials, editorial authority, forged receipts and hook registration.
-
-Historical red/green evidence: the initial workflow identical-retry test failed when stored JSON
-object keys were reordered. Comparing scalar command fields independently of
-JSON serialization order fixed the failing case. Reproduce with:
+The first eight history regressions failed on the previous implementation and
+passed after connecting receipts, retaining failed/truncated state and isolating
+reads. The limited checker found the missing Plus import before its repair.
+Three checker regressions cover unresolved JSX names, valid lexical bindings and
+removal of the actual icon import. Reproduce the current green regressions:
 
 ```bash
-node --test --test-name-pattern='idempotency compares JSON' tests/upgrade/workflow-runs.test.mjs
+node --test tests/upgrade/work-history.test.mjs tests/upgrade/source-checker.test.mjs
+node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs
 ```
 
-`node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs` parsed 191 frontend
-modules with zero core errors after the final UI edits. This limited parser is
-not repository lint, React execution, coverage or a browser test. UI suites now
-cover ERP linked edits, retained draft inputs, old-schema responses, outline
-replacement, review/receipt controls, anonymous/demo reading, full lesson bodies,
-completion retention, lost-response progress recovery and account changes. Their
-execution remains blocked. Earlier mission/workflow suites remain included.
+The checker now parses 192 frontend modules with no core or JSX binding errors.
+It is a limited static check, not official lint, React execution or browser proof.
+The connected regression passes commands from the real browser helper through
+the server transaction implementation to the real history reader. It loses
+responses after successful saves, retries, and asserts one run and one evidence
+receipt visible on both subjects. The mission remains running until its own
+review. Storage/SDK doubles establish this source connection; they do not prove
+PocketBase JSVM execution, collection rules or transaction concurrency.
 
-The local apps/pocketbase/pocketbase binary and a PocketBase executable on PATH
-are both absent. The JSVM/transaction doubles do not prove native back-relation
-rules, transaction isolation, registered callbacks or JSON behavior on PocketBase
-0.28.4. Native seed asset/field compatibility, concurrency, permission and rollback
-checks plus 320/375/1280 px, theme and keyboard checks are specified in
-docs/business-learning.md and docs/workflow-system.md.
+Selected production-source coverage:
 
-Historical evidence retained: workflow source coverage was 100% lines, 97.53%
-branches and 98.46% functions; mission policy/model coverage was 100% lines and
-functions with 99.58% branches; workspace-summary coverage was 100% in all three
-measures. Those modules' tests pass in the current full regression, but their
-coverage percentages were not remeasured by this wave's selected command.
-The prior Rig 1 handoff passed four documentation/governance checks; no private
-runtime source was accessible and no readiness percentage is claimed.
+```bash
+node --test --experimental-test-coverage --test-coverage-include=apps/pocketbase/pb_hooks/evidence-policy.js --test-coverage-include=apps/pocketbase/pb_hooks/evidence.pb.js --test-coverage-include=apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js --test-coverage-include=apps/web/src/lib/workHistory.js tests/upgrade/*.test.mjs
+```
+
+Observed aggregate: 100% lines, 96.83% branches, 100% functions. Nine access
+cases exercise roles, author retention, foreign/unreadable missions, current
+membership, hook wiring, migration replay/down and refusal of custom rules.
+Eleven history cases cover real receipts, pagination limits, denied/malformed
+responses, scope changes and independent requests. The full suite retains the
+mission, workflow, business/learning and telemetry regressions.
+
+PocketBase is absent from apps/pocketbase/pocketbase and PATH. Native 0.28.4
+acceptance must cover owner/editor/viewer/unrelated/removed accounts, back-relation
+read rules, installed request hooks, simultaneous commands and up/down. Browser
+checks at 320/375/1280 px, both themes, keyboard navigation and account/workspace
+switching remain unexecuted. See docs/workspace-integration.md for the matrix.
 
 ## §4 MEMORY INGEST
 
-Type A count: 152
-Type B count: 263
-Type C count: 24
+Type A count: 163
+Type B count: 292
+Type C count: 28
 IOO compliance: true
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
-File vectors cover cumulative touched source. Edges match CGRF declarations;
-each file has a relationship. Prior timestamps are preserved. Current events
-record actual contract results and unavailable validation with real UTC times;
-pre-commit events have null commit_sha. No memory endpoint was called.
+Existing events and provenance are retained. Current file vectors reflect exact
+line counts; every vector has a declared relationship. The four new events
+record failed regressions, connected source tests, unavailable acceptance and
+the observed governance checks with real UTC timestamps. Pre-commit events use
+null commit_sha. No memory endpoint, signing or ingestion workflow was invoked.
 
 ## §5 CKET FILING
 
-06_PLAN: docs/mission-system.md, docs/workflow-system.md, docs/business-learning.md and docs/api/README.md.
-04_HYPOTHESIZE: umbrella/telemetry specs and SRS registry.
-07_BUILD: public/workspace UI, data adapters, mission/workflow/business policy, commands, hooks, migrations and authored curriculum.
-08_TEST: component/account suites, mission/workflow/business policy, curriculum, client and telemetry regressions.
-11_COMMIT: context lock, task table, report/memory, source verifier, existing build/CI tools and handoffs.
+06_PLAN: docs/workspace-integration.md; earlier mission/workflow/business/API documentation retained.
+04_HYPOTHESIZE: existing upgrade SRS continuation.
+07_BUILD: workspace layout, scoped readers/history UI, evidence policy/request hooks and read-rule migration.
+08_TEST: access/history/checker/connected-workflow regressions and authored component suites.
+11_COMMIT: task table, report/memory, measured context, offline checker and existing delivery handoff.
 13_SAVE: none.
 
-The application/test paths follow the actual BuildAndDo AGENTS.md and public
-path policy. CGRF headers: 88/88 files new since the original base, including
-sibling metadata for JSON and PNG. This business/delivery wave adds 14 new files.
-Existing provenance is preserved. REFLEX remains deferred to the private
-post-merge validator; no CK/CAPS/CKS grade or signature was fabricated.
+Paths follow the actual BuildAndDo AGENTS.md and public path policy. This repair
+adds eight files. CGRF headers are present on all 96 files new since the original
+base, including sibling metadata for JSON/PNG. Existing provenance is preserved.
+REFLEX remains deferred to the private post-merge validator; all grades/signatures
+remain pending. Verify headers and relationships with the memory command above.
 
 ## §6 GOVERNANCE
 
@@ -362,53 +242,35 @@ Hard-NO scan: PASS; zero public-boundary failures
 Secret scan: PASS; zero scanner failures
 Stripe mode: not applicable; no checkout or payment processing added
 Actor label: actor:agent required; not applied by this session
-Risk / authority: A2 reviewed schema/source additions; no deployment or shared mutation
+Risk / authority: A2 reviewed source/access-rule changes; no shared mutation or deployment
 
-The new workflow_runs collection has workspace-scoped reads and locked ordinary
-writes. Native authenticated commands apply explicit current role and source
-read checks. No existing collection rule was relaxed. The earlier mission
-migration adds optional fields and its hooks still enforce mission verification.
-New workflow evidence never bypasses that review. No external automation,
-contact delivery, payment service, private runtime or credential was added.
-Business request hooks reuse the same authority helpers for ERP relations,
-editorial review and account-owned learning progress; collection rules remain
-unchanged. The content studio records an operator's publication assertion and
-does not claim the external platform's publication time or execute a post.
+The explicitly authorized membership repair changes two collection read rules
+with a reversible migration, preserving native create/update/delete rules.
+Evidence request hooks constrain author identity, workspace role and mission
+relations. This scope adds no credentials, external connector, private runtime,
+live database edit or direct message to another seat. Private execution and
+delivery still require the receiving repository's actual controls and evidence.
 
 ## §7 NEXT ACTIONS
 
-Blockers: restore frontend dependencies and reconcile the pre-existing lock on a
-registry-enabled runner; execute Vitest/coverage, official lint, build and browser
-acceptance. Validate mission, workflow and business/learning migrations/hooks on
-the pinned native PocketBase runtime before activation, including the bundled
-seed file, real concurrent requests and membership removal. Source contracts
-alone do not establish a delivered status. Provider writes and private-agent
-activation are unavailable here; the candidate billing lock and independent
-Cloudflare build failure must be handled through the delivery handoff.
+Blockers: frontend dependencies and manifest/lock alignment; official lint,
+Vitest/coverage and Vite build; isolated native PocketBase 0.28.4 rule/hook,
+transaction and migration acceptance; browser/mobile/theme/keyboard checks.
+No staging or production behavior is claimed from these source tests.
 
-Handoffs requested: the existing IDE1 PocketBase telemetry activation note remains
-at .bits/handoffs/2026-09-14-bits-codegen-ide1-upgrade-telemetry.md. The existing
-CMAX-B Rig 1 note is retained unchanged and deferred at the owner's request.
-The new CMAX-B/IDE1 delivery note is
-.bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md. It is a
-public artifact for a private session, not a dispatched live seat event.
-No live seat or issue message was sent.
-Suggested next dispatch: equivalent private-runner validation of the complete
-published PR head, authorized release and served-version/flow checks on staging
-and production; the operator supplies the private execution dispatch ID.
+Handoffs requested: the existing IDE1 telemetry note and CMAX-B/IDE1 BuildAndDo
+delivery note remain public artifacts, not activated seats. The delivery note
+now includes this integration repair, coordinated hook/migration activation and
+matching built/served release identity. The earlier Rig 1 handoff remains deferred.
+Suggested next dispatch: private-runner validation of the complete published
+source revision followed by authorized release and served-flow verification.
+The operator supplies that private execution dispatch in its own repository.
 Bugs filed: none; no issue target was supplied and provider writes are unavailable.
-The six pre-existing governance/gate findings remain in agent_context.py.
+Six pre-existing governance/gate findings remain visible in agent_context.py.
 
-Workflow rollback: remove the new UI and commands together while retaining the
-locked workflow_runs collection and its receipts. The explicit down migration
-deletes that collection and all run data, requiring the deployment owner's
-retention decision; Evidence Ledger rows remain. Pausing preserves definitions
-with history. Old activation timestamps are not converted into invented runs.
-Mission rollback: revert its UI and hooks together, retaining additive fields
-unless the deployment owner explicitly decides their stored data can be removed.
-Business rollback: revert UI and request hooks together while retaining the
-additive fields and seed. Explicit down removes new planning/lesson/receipt
-contents and requires a retention decision and backup; lesson IDs, progress
-and historical approved states remain. Never present old status labels as
-review or publication receipts after rollback.
-No shared migration, rollback, deployment or telemetry activation ran here.
+Rollback: restore owner-only list/view rules using the new migration's down
+before removing evidence request hooks. The down changes no field, record or
+receipt. Reverting UI/readers does not require deleting data. Older additive
+mission/workflow/business migrations retain their documented retention decisions;
+do not apply their destructive downs as part of this access repair's rollback.
+No shared migration, rollback, release or private-agent activation ran here.

@@ -201,6 +201,7 @@ function MissionDesk() {
         setNotice('');
         try {
             const result = await operation();
+            if (result.ok) previous.refresh();
             if (result.ok && successMessage) setNotice(successMessage);
             return result;
         } finally {
@@ -428,7 +429,7 @@ function MissionDesk() {
                                             </span>
                                         )}
                                     </div>
-                                    <PreviousWorkNote history={previous.history[mission.id]} />
+                                    <PreviousWorkNote history={previous.history[mission.id]} onRetry={previous.refresh} />
                                     {mission.status === 'proposed' && issues.length > 0 && (
                                         <p className="mt-3 text-xs text-muted-foreground">
                                             Complete {issues.length} plan items before approval.

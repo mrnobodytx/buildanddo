@@ -260,7 +260,7 @@ function WorkflowDesk({ workspaceId, accountId, demo }) {
     const [busyId, setBusyId] = useState(null);
     const [deleting, setDeleting] = useState(null);
     const writeBusy = useRef(false);
-    const { history } = usePreviousWork('workflow', records.map((record) => record.id));
+    const { history, refresh: refreshHistory } = usePreviousWork('workflow', records.map((record) => record.id));
 
     const byStatusThenAge = useMemo(() => {
         const rank = { active: 0, draft: 1, paused: 2 };
@@ -555,7 +555,7 @@ function WorkflowDesk({ workspaceId, accountId, demo }) {
                                             Delete
                                         </Button>
                                     </div>
-                                    <PreviousWorkNote history={history[workflow.id]} />
+                                    <PreviousWorkNote history={history[workflow.id]} onRetry={refreshHistory} />
                                 </Card>
                             </li>
                         );
@@ -564,7 +564,8 @@ function WorkflowDesk({ workspaceId, accountId, demo }) {
             )}
 
             <WorkflowRunsPanel workflows={records} workspaceId={workspaceId} accountId={accountId}
-                demo={demo} definitionsUnavailable={loading || degraded} />
+                demo={demo} definitionsUnavailable={loading || degraded}
+                onRecordsChanged={() => { refresh(); refreshHistory(); }} />
 
             <Dialog open={createOpen} onOpenChange={(open) => { if (!writeBusy.current) setCreateOpen(open); }}>
                 <DialogContent className="ph-no-capture max-h-[90vh] overflow-y-auto border-border bg-card sm:max-w-2xl" data-dd-privacy="mask">

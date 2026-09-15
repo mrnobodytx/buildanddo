@@ -8,27 +8,65 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
-// Depends:     apps/web/src/components/workspace/PageBoundary.jsx
+// Depends:     apps/web/src/components/workspace/PageBoundary.jsx, apps/web/src/components/workspace/WorkspaceLayout.jsx
 // EnumType:    Test
-// EnumEdges:   DEPENDS_ON apps/web/src/components/workspace/PageBoundary.jsx
+// EnumEdges:   DEPENDS_ON apps/web/src/components/workspace/PageBoundary.jsx; VALIDATES apps/web/src/components/workspace/WorkspaceLayout.jsx
 // DAG Node:    none
 // Intent:      Prove a page failure preserves navigation, carries page attribution and can recover.
 // ───────────────────────────────────────────────────────────────
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { act } from '@testing-library/react';
 import PageBoundary from '@/components/workspace/PageBoundary';
 import WorkspaceLayout from '@/components/workspace/WorkspaceLayout';
-import { renderWithProviders, screen, setupUser } from '@/test/utils';
+import WorkspaceContext from '@/contexts/WorkspaceContext';
+import AuthContext from '@/contexts/AuthContext';
+import { createAuthValue, createMockWorkspace, createWorkspaceValue, renderWithProviders, screen, setupUser } from '@/test/utils';
+import { setDemoMode } from '@/lib/demoWorkspace';
 import { trackRenderError } from '@/lib/observability/runtime';
 
 vi.mock('@/lib/observability/runtime', () => ({
     trackRenderError: vi.fn(),
     reportAction: vi.fn(),
 }));
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => { setDemoMode(false); vi.restoreAllMocks(); });
+
+function DraftPage() {
+    const [draft, setDraft] = useState('');
+    return <label>Private draft<input value={draft} onChange={(event) => setDraft(event.target.value)} /></label>;
+}
+function WorkspaceScene({ workspace = 'ws1', account = 'account1' }) {
+    return (
+        <AuthContext.Provider value={createAuthValue({ user: { id: account } })}>
+            <WorkspaceContext.Provider value={createWorkspaceValue({ active: createMockWorkspace({ id: workspace }) })}>
+                <Routes>
+                    <Route path="/app" element={<WorkspaceLayout />}>
+                        <Route index element={<DraftPage />} />
+                    </Route>
+                </Routes>
+            </WorkspaceContext.Provider>
+        </AuthContext.Provider>
+    );
+}
 
 describe('page error isolation', () => {
+    it('renders the real workspace controls and clears private page state on workspace, account and demo changes', async () => {
+        const user = setupUser();
+        const view = renderWithProviders(<WorkspaceScene />, { route: '/app' });
+        expect(screen.getByRole('button', { name: /Start a mission/ })).toBeInTheDocument();
+        await user.type(screen.getByLabelText('Private draft'), 'First workspace draft');
+        view.rerender(<WorkspaceScene workspace="ws2" />);
+        expect(screen.getByLabelText('Private draft')).toHaveValue('');
+        await user.type(screen.getByLabelText('Private draft'), 'First account draft');
+        view.rerender(<WorkspaceScene workspace="ws2" account="account2" />);
+        expect(screen.getByLabelText('Private draft')).toHaveValue('');
+        await user.type(screen.getByLabelText('Private draft'), 'Live workspace draft');
+        act(() => setDemoMode(true));
+        expect(screen.getByLabelText('Private draft')).toHaveValue('');
+    });
+
     it('attributes a failed page, keeps the shell available and recovers on retry', async () => {
         vi.spyOn(console, 'error').mockImplementation(() => {});
         let broken = true;

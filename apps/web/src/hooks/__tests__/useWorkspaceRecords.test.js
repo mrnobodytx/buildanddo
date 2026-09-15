@@ -88,7 +88,7 @@ describe('useWorkspaceRecords', () => {
         await waitFor(() => expect(result.current.loading).toBe(false));
 
         expect(pb.__collection('evidence').getFullList).toHaveBeenCalledWith(
-            expect.objectContaining({ sort: 'created', expand: 'mission' }),
+            expect.objectContaining({ sort: 'created', expand: 'mission', requestKey: null }),
         );
     });
 

@@ -45,6 +45,7 @@ export const WorkspaceProvider = ({ children }) => {
             const list = await pb.collection('workspaces').getFullList({
                 sort: '-created',
                 expand: 'domain',
+                requestKey: null,
             });
             if (request !== requestRef.current) return;
             setSnapshot({ accountId, records: list, loading: false, error: '' });

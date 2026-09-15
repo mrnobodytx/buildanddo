@@ -8,9 +8,11 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workflow-policy.js, apps/pocketbase/pb_hooks/workflows.pb.js, apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js
+// Depends:     apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workflow-policy.js, apps/pocketbase/pb_hooks/workflows.pb.js, apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js,
+//              apps/web/src/lib/workflowRuns.js, apps/web/src/lib/workHistory.js
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/workflow-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflows.pb.js; VALIDATES apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js
+// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/workflow-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflows.pb.js; VALIDATES apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js;
+//              VALIDATES apps/web/src/lib/workflowRuns.js; VALIDATES apps/web/src/lib/workHistory.js
 // DAG Node:    none
 // Intent:      Exercise production workflow commands against transactional storage contracts, including role isolation, retries, stale requests and rollback.
 // ───────────────────────────────────────────────────────────────
@@ -19,6 +21,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import vm from 'node:vm';
+import { createWorkflowRunClient, readRunEvents, readRunSnapshot } from '../../apps/web/src/lib/workflowRuns.js';
 
 const root = new URL('../../', import.meta.url);
 const policyPath = 'apps/pocketbase/pb_hooks/workflow-policy.js';
@@ -185,6 +188,75 @@ function rejected(call, status, pattern) {
     assert.throws(call, (error) => error.status === status && (!pattern || pattern.test(error.message)),
         `expected status ${status}`);
 }
+
+test('browser commands, server transactions and history readers agree after lost responses without duplicating evidence', async () => {
+    const f = fixture();
+    let loseStart = true, loseDecision = true;
+    const client = {
+        authStore: { record: { id: 'owner1' } },
+        filter: (format, params) => JSON.stringify({ format, params }),
+        async send(path, options) {
+            assert.equal(options.method, 'POST');
+            assert.equal(options.requestKey, null);
+            if (path === '/api/buildanddo/workflow-runs') {
+                const response = f.start(options.body);
+                if (loseStart) { loseStart = false; throw new Error('Lost start response after persistence'); }
+                return response;
+            }
+            const match = /^\/api\/buildanddo\/workflow-runs\/([^/]+)\/decisions$/.exec(path);
+            assert.ok(match, 'client must address the registered command path');
+            const response = f.advance(match[1], options.body);
+            if (loseDecision) { loseDecision = false; throw new Error('Lost decision response after persistence'); }
+            return response;
+        },
+        collection(name) {
+            assert.ok(['workflow_runs', 'evidence', 'seat_events'].includes(name));
+            return { async getList(page, limit, options) {
+                const { params } = JSON.parse(options.filter);
+                const workspace = params.workspace ?? params.ws;
+                assert.equal(workspace, 'workspace1');
+                const subjects = Object.entries(params).filter(([key]) => /^s\d+$/.test(key)).map(([, value]) => value);
+                const field = { workflow_runs: 'workflow', evidence: 'mission', seat_events: 'subject' }[name];
+                const rows = (f.state.records[name] || []).filter((record) => record.workspace === workspace &&
+                    (!subjects.length || subjects.includes(record[field])));
+                return { page, items: plain(rows.slice((page - 1) * limit, page * limit)), totalItems: rows.length, totalPages: Math.ceil(rows.length / limit) };
+            } };
+        },
+    };
+    const api = createWorkflowRunClient({ client, workspaceId: 'workspace1', accountId: 'owner1', isCurrent: () => true });
+    const start = { workflow: 'workflow1', mission: 'mission1', request_key: 'client-start-request-1' };
+    assert.equal((await api.start(start)).ok, false);
+    const recovered = await api.start(start);
+    assert.equal(recovered.ok, true);
+    assert.equal(recovered.replayed, true);
+    assert.equal(f.state.records.workflow_runs.length, 1);
+    assert.equal(readRunSnapshot(recovered.record).mission_id, 'mission1');
+
+    const decision = actionBody({ request_key: 'client-step-request-1', observation: 'The saved acceptance measure was checked.' });
+    assert.equal((await api.decide(recovered.record.id, decision)).ok, false);
+    const completed = await api.decide(recovered.record.id, decision);
+    assert.equal(completed.ok, true);
+    assert.equal(completed.replayed, true);
+    assert.equal(completed.record.status, 'completed');
+    assert.equal(f.state.records.evidence.length, 1);
+    assert.equal(readRunEvents(completed.record)[0].evidence, f.state.records.evidence[0].id);
+    assert.equal(f.state.records.evidence[0].mission, 'mission1');
+    assert.equal(f.state.records.missions[0].status, 'running', 'recorded work does not bypass mission review');
+    assert.equal((await api.list()).page.items[0].status, 'completed');
+
+    const historyModule = { exports: {} };
+    const historySource = source('apps/web/src/lib/workHistory.js').replace("import pb from '@/lib/pocketbaseClient';", '')
+        .replaceAll('export async function', 'async function');
+    vm.runInNewContext(`${historySource}\nmodule.exports = { lookupPreviousWorkBatch };`, { pb: client, module: historyModule },
+        { filename: new URL('apps/web/src/lib/workHistory.js', root).href });
+    const history = historyModule.exports.lookupPreviousWorkBatch;
+    const missions = await history({ workspaceId: 'workspace1', subjectType: 'mission', subjects: ['mission1'] });
+    const workflows = await history({ workspaceId: 'workspace1', subjectType: 'workflow', subjects: ['workflow1'] });
+    assert.equal(missions.mission1.evidence[0].id, f.state.records.evidence[0].id);
+    assert.equal(workflows.workflow1.runs[0].id, completed.record.id);
+    assert.equal(missions.mission1.partial, false);
+    assert.equal(workflows.workflow1.partial, false);
+});
 
 test('run migration is idempotent, locks direct writes and explicitly reverses its own collection', () => {
     const f = fixture();

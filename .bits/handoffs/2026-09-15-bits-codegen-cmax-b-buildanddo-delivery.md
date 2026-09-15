@@ -178,3 +178,25 @@ repository, runner and environment access. Pending source needs the PR publishin
 flow before that runner can consume it. Frontend/native acceptance and the
 Cloudflare failure remain unresolved. The public handoff is complete only as
 an artifact; no agent was dispatched and no remote merge or deployment occurred.
+
+## Integration repair after merged PR 22
+
+PR 22 merged the workflow/business/learning source. The public follow-up repairs
+the shared layout's missing icon import, scope changes in private page/history
+state, and receipt history omitted from the mission and workflow lists. It adds
+current-member workspace/evidence reads and author-bound evidence request hooks.
+Consume the complete published repair head rather than rebuilding PR 22 alone.
+
+Follow docs/workspace-integration.md for the native acceptance matrix. Deploy
+evidence-policy.js/evidence.pb.js with migration
+1789800000_restore_workspace_evidence_access.js; validate its workspace back
+relations with owner/editor/viewer, unrelated and removed accounts. Custom
+private read rules cause a deliberate migration failure before changes and
+require review in the receiving environment. Down restores owner-only reads
+without deleting data; restore those rules before removing the write hooks.
+
+The connected Node regression covers client commands, transaction persistence,
+history reads and retries after lost responses. It passes with storage/SDK
+doubles. Frontend dependency/lock, native runtime and served-version acceptance
+remain required. The source repair does not start the private agent or make
+planned service cards execute integrations.
