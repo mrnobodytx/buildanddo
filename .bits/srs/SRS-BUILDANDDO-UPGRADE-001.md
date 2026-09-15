@@ -486,3 +486,60 @@ review corrected platform component-name shadowing, disabled-category selectors
 and gallery focus return; those UI fixes still require rendered acceptance.
 No screenshot, device performance, native backend or deployment result is inferred.
 The detailed use and acceptance reference is docs/motion-system.md.
+
+## Authorized continuation — improve the existing Discord bot
+
+On 2026-09-15 the owner asked why the Discord bot had not been substantially
+improved after requesting it in the community work. This continues the same
+registered SRS and in-progress A2 dispatch. The existing public implementation
+is scripts/discordbot/bot.py: three prefix commands, synchronous HTTP in async
+handlers, old site URLs and no command tests. Prior integration controls and
+the private executor handoff did not improve that source. This continuation
+covers the bot's public application code, shared authored learning content and
+local tests. It does not authorize hosting, token changes or live messages.
+
+Acceptance:
+
+1. Replace event-loop-blocking probes with bounded asynchronous public reads.
+   Use the canonical site, fixed resource paths, explicit time/body limits,
+   redirect rejection, shared in-flight requests and short-lived caches. Preserve
+   unknown, unavailable, stale and measured states with source timestamps.
+2. Provide a namespaced slash-command suite for help, liveness, site reachability,
+   release identity, roadmap evidence, documentation, learning search, complete
+   lessons, knowledge checks, workspace navigation and support. Keep optional
+   legacy prefix compatibility; privileged message-content intent is opt-in.
+3. Reuse the existing 25 authored tutorials and public page catalogue through a
+   versioned public JSON artifact produced by the normal web build. Include only
+   explicitly selected public seed fields. Never read workspace records, member
+   identities, progress, wiki drafts, forum content or integration credentials.
+4. Offer bounded interactive lesson pages and per-person quiz answers. Guard
+   component ownership, expire controls, suppress mentions, bound output and
+   rate-limit command work. Lessons and quizzes do not create saved progress,
+   mission verification, credentials or authority. Reply privately by default.
+5. Configure command synchronization, allowed guilds/channels and optional prefix
+   mode explicitly. Do not sync during reconnects or import/start tests. Report
+   bounded command outcome/timing fields without raw arguments, IDs or payloads.
+6. Verify source-connected command behavior, HTTP failure/recovery, burst and
+   cancellation behavior, malformed public data, quiz ownership and expiry,
+   reply limits, configuration and real generated catalogue parity. Run offline
+   tests, static checks and available regression gates. SDK/network acceptance
+   must be distinguished from adapter doubles and local HTTP fixtures.
+   Run the native-SDK checker in a separate PR validation job with the declared
+   Discord runtime installed; keep the existing ci:test contribution checklists
+   synchronized with that added check. This adds no bot login or credentials.
+7. Document actual commands and the remaining private activation checklist in
+   the existing community handoff. The bot does not consume integration requests
+   or publish their observations without the private binding/transport contract.
+   No installer, service unit, credential, arbitrary publishing or shared write
+   is added. Record source and runtime acceptance separately in report/memory.
+
+Discord source evidence: the 13 commands are implemented with 52 passing bot
+tests and five generator tests using the actual shared curriculum. One native
+SDK serialization case is explicitly skipped; full SDK typing and pytest/branch
+coverage cannot run without the missing dependencies. Core strict mypy and Ruff
+pass. Python trace statement coverage exceeds 92% in every bot module. The full
+regression passes 168 Node and 70 Python tests, with one native-SDK skip.
+Vitest, official web lint, Vite and live activation remain acceptance blockers.
+docs/discord-bot.md records commands, scope, response bounds, content sources,
+deliberate registration, validation and rollback. The private community handoff
+retains workspace binding, request execution and observation responsibilities.

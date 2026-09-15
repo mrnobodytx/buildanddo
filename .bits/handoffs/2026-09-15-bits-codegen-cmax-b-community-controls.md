@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     docs/workspace-administration.md, apps/pocketbase/pb_hooks/workspace-administration.js, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md
+# Depends:     docs/workspace-administration.md, apps/pocketbase/pb_hooks/workspace-administration.js, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md, docs/discord-bot.md
 # EnumType:    Doc
-# EnumEdges:   DEPENDS_ON docs/workspace-administration.md; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; EXTENDS .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md
+# EnumEdges:   DEPENDS_ON docs/workspace-administration.md; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; EXTENDS .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md; CONSUMES docs/discord-bot.md
 # DAG Node:    none
 # Intent:      Define the private execution and acceptance boundary for audited BuildAndDo integration requests without adding credentials or deployment control to the public repository.
 # ───────────────────────────────────────────────────────────────
@@ -108,3 +108,49 @@ frontend/native acceptance, source publication, private deployment and served
 release identity. Published source and local installer selftests do not prove
 that the private executor or current frontend is active. Retain prior receipts
 and apply the documented non-destructive rollback if activation fails.
+
+## Public Discord command bot continuation
+
+The existing scripts/discordbot/bot.py is public application source. It is now
+expanded from three blocking prefix commands into the namespaced 13-command
+experience described in docs/discord-bot.md. The source includes private slash
+replies, optional prefix compatibility, bounded public HTTP, public documentation
+and curriculum search, complete readers, owned quizzes and permission-scoped
+diagnostics. It does not implement the private integration-request consumer
+described above or claim that a desired configuration has been applied.
+
+The normal frontend build now emits community-catalog.json from the same
+authored 25-lesson curriculum and public route catalogue, stamped with the same
+release as version.json. Deploy this generated public artifact before accepting
+bot learning commands. Copy the complete scripts/discordbot source directory;
+the previous single-file deployment shape no longer suffices. The canonical
+public origin is https://buildanddo.tech; no unverified staging URL is probed.
+
+Source evidence: 52 bot tests pass, with one explicitly skipped native-SDK case;
+five generator tests pass. Python trace statement coverage is above 92% in every
+bot module. The full regression passes 168 Node tests and 70 Python tests, with
+that same one native-SDK skip. The adapter currently uses an explicitly labelled
+SDK double because Discord.py is unavailable. This is not native or live Discord
+acceptance. Core strict typing and Ruff pass; complete SDK typing, pytest/branch
+coverage, Vite, Vitest and official web lint remain blocked by missing packages.
+
+Receiving acceptance must include the native commands/components gate
+`python tests/upgrade/check_discordbot.py --require-sdk`, actual dependency-backed
+typing/coverage and a full frontend build. In the approved test server, verify
+installation scope, deliberate guild command synchronization, private slash
+replies, source failure, permissions, mention suppression, mobile menus, the
+ten-minute reader expiry and an idempotent quiz-response retry. Prefix mode
+needs deliberate Message Content intent enablement; it is off by default.
+Command synchronization is also off by default, so a new installation requires
+an explicit registration step before it can serve slash commands. Returning
+SYNC to none after registration prevents routine restarts from changing commands.
+
+Record the bot and served-site revisions independently. Keep the existing
+workspace/server binding and integration execution requirements intact. No bot
+login, command sync, live post, token change, private runtime activation or
+workspace observation was performed by this source session.
+
+PR validation now includes a separate ci:test / Discord SDK job that installs
+the declared runtime and invokes the native-required checker without credentials
+or login. Its hosted result is still required; the local dependency failure
+does not establish that the job passed or that shared activation is ready.

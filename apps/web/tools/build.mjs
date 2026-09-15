@@ -11,6 +11,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { resolveBuildRelease } from '../../../scripts/ci/release.mjs';
 import { generatePublicAssets, generatePageHeads } from './generate-seo.mjs';
+import { generateCommunityCatalogue } from './generate-community.mjs';
 
 const release = resolveBuildRelease();
 const output = fileURLToPath(new URL('../../../dist/apps/web', import.meta.url));
@@ -44,3 +45,4 @@ const vite = spawnSync('vite', ['build', '--outDir', '../../dist/apps/web'], {
 if (vite.error) console.error('Unable to start Vite:', vite.error.message);
 if (vite.status !== 0) process.exit(vite.status ?? 1);
 generatePageHeads(output, release);
+generateCommunityCatalogue(output, release);

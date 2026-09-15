@@ -48,6 +48,11 @@
 #              VALIDATES apps/web/src/components/ui/toast.jsx;
 #              VALIDATES apps/web/src/components/ui/tooltip.jsx;
 #              VALIDATES apps/web/src/pages/OnboardingPage.jsx;
+#              CONSUMES docs/discord-bot.md;
+#              CONSUMES scripts/discordbot/bot.py;
+#              VALIDATES apps/web/tools/generate-community.mjs;
+#              VALIDATES tests/upgrade/check_discordbot.py;
+#              VALIDATES .github/workflows/pr-governance.yml;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -61,25 +66,30 @@ Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
 Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 24/51 cumulative acceptance gates complete; all motion areas implemented in source
-Smoke: 4/7 application gates; frontend/browser/native and delivery acceptance remain open
+Tasks: 30/58 cumulative acceptance gates complete; public Discord command source implemented
+Smoke: 4/7 application gates; bot source contracts pass; native SDK, frontend and live acceptance remain open
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: 8 prior source revisions (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b, e820f8f220632405b910f9ebd9d71e2e20a00e41, af63ab4a64aa2708487e3a2f20b5c229e4da2d83, 203a08ced7348e551f810ed90b0a869b29532427, 858ccf52c82b58bdcd3b44db68b77e69c347d379, b609039afde504eae73bd969890a2e06c1a5b48e); motion evidence prepared before its final source commit
+Commits: 9 prior source revisions (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b, e820f8f220632405b910f9ebd9d71e2e20a00e41, af63ab4a64aa2708487e3a2f20b5c229e4da2d83, 203a08ced7348e551f810ed90b0a869b29532427, 858ccf52c82b58bdcd3b44db68b77e69c347d379, b609039afde504eae73bd969890a2e06c1a5b48e, 295725ac49a8131a888fb344322b32f9cfb6f2f6); Discord evidence prepared before its final source commit
 
-The current continuation unifies motion across the public site, authentication
-and workspace. Personal settings provide six groups, 14 categories, seven local
-preview collections and a searchable reference for all 50 requested areas.
-Reduced-motion precedence, responsive limits, visible activity and immediate
-private-record removal constrain effects. Saved state and executor observations
-continue to come from the existing application, not the animation layer.
+The current continuation expands the existing public Discord bot into 13
+namespaced commands with private replies, bounded public HTTP, complete authored
+lesson readers, quizzes, documentation and workspace navigation, dated roadmap
+and release observations, scoped diagnostics and explicit registration controls.
+The web build projects the same 25-lesson curriculum and public route catalogue;
+no workspace data, private consumer, credential or deployment control is added.
+An independent PR job installs the declared Discord runtime and requires native
+command/component tests and source coverage. Both ci:test checklists describe it;
+the hosted job has not executed in this source session.
 
-PR 24 and earlier site/workspace upgrades are already in the source baseline.
-This frontend wave passes 163 Node and 18 Python regressions. The required React,
-lint and build tools remain unavailable; browser/performance and served-release
-acceptance are not established. This wave adds no backend or deployment control.
+Merged PR 25 is the source baseline. Current verification passes 168 Node tests
+and 70 Python tests, with one explicitly skipped native Discord SDK test.
+Fifty-two bot tests pass. Python trace statement coverage exceeds 92% in every
+bot module; generator coverage is 98.20% lines, 97.87% branches, 100% functions.
+Full SDK typing, pytest/branch coverage, Vite, Vitest and official web lint remain
+blocked by missing dependencies. No native or live Discord result is inferred.
 
 ## §2 TASK RESULTS
 
@@ -136,6 +146,15 @@ acceptance are not established. This wave adds no backend or deployment control.
 | AW — Editorial, learning and records | PARTIAL — rendered acceptance pending | Public explanation, measured reading, lesson steps, title continuity, keyed lists, exact data and saved-state emphasis | MotionRuntime and mission Vitest commands in docs/motion-system.md | 07_BUILD / 08_TEST | apps/web/src/components/motion/EditorialStory.jsx, apps/web/src/components/motion/ReadingProgress.jsx, apps/web/src/components/motion/StepSequence.jsx |
 | AX — Organized settings and usage | PARTIAL — catalogue source passes; UI unexecuted | Six groups, 14 categories, seven local previews and all 50 searchable usage entries; public controls and workspace tab | `node --test tests/upgrade/motion-system.test.mjs`; MotionSettings Vitest suite | 07_BUILD / 08_TEST | apps/web/src/components/motion/MotionSettings.jsx, apps/web/src/components/motion/MotionPlayground.jsx, apps/web/src/lib/motion/catalog.js |
 | AY — Motion evidence | PASS with acceptance blockers recorded | 163 Node/18 Python tests; current context/boundary/provenance and explicit frontend/browser limits | Node/Python/frontend commands below; memory verifier | 06_PLAN / 11_COMMIT | docs/motion-system.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json |
+| AZ — Discord scope | PASS | Existing public bot found and umbrella extended before source changes | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md |
+| BA — Public HTTP | PASS | Fixed resources, worker/request/body bounds, shared reads, caching, cancellation and dated evidence | `python -m unittest discover -s tests/upgrade -p 'test_discordbot_public.py'` | 07_BUILD / 08_TEST | scripts/discordbot/public_data.py, scripts/discordbot/contracts.py |
+| BB — Commands and teaching | PASS | All 25 authored lessons, quizzes, public page search, evidence states and scope failures | `python -m unittest discover -s tests/upgrade -p 'test_discordbot_commands.py'` | 07_BUILD / 08_TEST | scripts/discordbot/catalogue.py, scripts/discordbot/service.py |
+| BC — Discord adapter | PARTIAL | Private replies, controls, expiry, retry and registration contracts pass with an explicit SDK double | `python tests/upgrade/check_discordbot.py --require-sdk` | 07_BUILD / 08_TEST | scripts/discordbot/bot.py, tests/upgrade/test_discordbot_adapter.py |
+| BD — Shared public feed | PASS locally | Real build generator selects only public source fields and the same release identity | `node --test tests/upgrade/discord-catalogue.test.mjs` | 11_COMMIT / 08_TEST | apps/web/tools/generate-community.mjs, apps/web/tools/build.mjs |
+| BE — Discord evidence | PASS with open runtime gates | Source tests, measured coverage, core typing, lint and documentation; missing native/frontend tools recorded | `python tests/upgrade/check_discordbot.py` | 06_PLAN / 08_TEST | docs/discord-bot.md, tests/upgrade/check_discordbot.py |
+| BF — Governance and handoff | PASS | Current source report, preserved memory history and explicit private activation responsibilities | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | 11_COMMIT | .bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json |
+
+Earlier motion source evidence is retained below.
 
 
 Earlier phase results are preserved with their original limits. The current
@@ -156,80 +175,102 @@ remain unchanged. No animation sends a message or invents completion/health.
 See docs/motion-system.md for the complete 50-area mapping, file-size limits,
 timings, preference behavior, cleanup contracts and browser acceptance matrix.
 
+
 ## §3 SMOKE TEST RESULTS
 
 | Check | Command | Expected | Actual | Result |
 |---|---|---|---|---|
-| 1 | `npm --prefix apps/web test -- src/components/motion/__tests__/MotionSettings.test.jsx src/components/motion/__tests__/MotionRuntime.test.jsx src/pages/workspace/__tests__/MissionsPage.test.jsx` | Rendered flows pass | Vitest missing; exit 127 | FAIL |
+| 1 | `npm --prefix apps/web test` | Rendered flows pass | Vitest missing; exit 127 | FAIL |
 | 2 | `npm --prefix apps/web run lint` | Repository lint passes | eslint-plugin-import missing; exit 2 | FAIL |
-| 3 | `npm --prefix apps/web run build` | Vite bundle emitted | spawnSync vite ENOENT; exit 1 | FAIL |
-| 4 | `node --test tests/upgrade/*.test.mjs` | Behavioral regressions pass | 163/163 | PASS |
-| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Regressions pass | 18/18 | PASS |
-| 6 | `python scripts/ci/agent_context.py --check` | Context matches | 30 Vitest files; six earlier findings/four unwired gates retained | PASS |
-| 7 | `python scripts/ci/verify_public_boundary.py` | Public boundary clean | 491 tracked files; zero failures | PASS |
+| 3 | `npm --prefix apps/web run build` | Vite bundle and public feed emitted | spawnSync vite ENOENT; exit 1 | FAIL |
+| 4 | `node --test tests/upgrade/*.test.mjs` | Behavioral regressions pass | 168/168, including five new generator cases | PASS |
+| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Source regressions pass | 70 pass, one native-SDK skip; native acceptance remains open | PASS for source contracts |
+| 6 | `python scripts/ci/agent_context.py --check` | Context matches | 30 Vitest files; six prior findings/four unwired gates retained | PASS |
+| 7 | `python scripts/ci/verify_public_boundary.py` | Public boundary clean | 503 tracked files; zero failures | PASS |
 
-All three failed application gates are blocked by unavailable frontend packages.
-The unchanged lock also lacks eight resolutions and differs in two dependency
-groups. No source workaround, dependency removal, invented resolution or gate
-relaxation was applied. Reconcile/install the declared dependencies on a runner
-with package access, then rerun the exact failed commands above and
-`npm --prefix apps/web run test:coverage`. Native PocketBase and complete served
-application acceptance from earlier phases remain independently required.
+The three application failures retain their existing dependency root cause.
+No lock entry, dependency removal or weakened gate was used as a workaround.
+Reconcile/install declared packages on an enabled runner, rerun the exact failed
+commands and `npm --prefix apps/web run test:coverage`. Native PocketBase and
+served application acceptance from earlier phases remain independently required.
+The build's existing fleet generator output is a source snapshot, not a live
+health observation.
 
-The following measured additional diagnostics passed:
+Additional Discord evidence:
 
-```bash
-node --test --experimental-test-coverage \
-  --test-coverage-include='apps/web/src/lib/motion/*.js' \
-  tests/upgrade/*.test.mjs
-node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs
-```
+| Command | Observed result |
+|---|---|
+| `python tests/upgrade/check_discordbot.py` | PASS; 52 bot tests pass, one native-SDK skip; every module exceeds 80% measured statement coverage |
+| `node --test --experimental-test-coverage --test-coverage-include='apps/web/tools/generate-community.mjs' tests/upgrade/discord-catalogue.test.mjs` | PASS; five real generator cases; 98.20% lines, 97.87% branches, 100% functions |
+| `python -m ruff check scripts/discordbot tests/upgrade/*discord*.py` | PASS |
+| `python -m mypy --strict --explicit-package-bases scripts/discordbot/contracts.py scripts/discordbot/public_data.py scripts/discordbot/catalogue.py scripts/discordbot/service.py` | PASS; four source modules |
+| `python tests/upgrade/check_discordbot.py --require-sdk` | FAIL; Discord.py unavailable; source tests still pass and the native case stays explicitly skipped |
+| `python -m mypy --strict --explicit-package-bases scripts/discordbot` | FAIL; missing Discord import/types causes ten adapter diagnostics |
+| `python -m pytest tests/upgrade/test_discordbot_*.py --cov=scripts/discordbot --cov-branch --cov-fail-under=80` | FAIL; pytest is unavailable; pytest-cov is also absent |
+| `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs` | PASS; 217 frontend modules parsed; does not run repository lint or UI tests |
 
-Coverage is 100% lines, branches and functions for preferences, catalogue and
-browser lifecycle helpers. Nineteen new Node cases cover actual source behavior,
-including the legacy preference, interruption and finite scheduling contracts.
-The limited checker parses 217 frontend modules with zero core/JSX binding errors;
-it does not replace repository lint or component execution. Two new component
-suites cover organization, live controls, reduced mode, previews, media cleanup,
-focus, platform rendering, manual playback and private list removal.
+The native failures require the declared real dependency and native runner;
+SDK doubles and ignored import errors are not fixes for them. The exact commands
+above are the receiving verification steps. No native type or branch-coverage
+result is claimed.
 
-The read-only lock check still fails and performs no vulnerability-network audit:
+The CI workflow parses with PyYAML. Its independent Discord job has no frontend
+dependency, continue-on-error flag or bot credentials; it installs the existing
+runtime requirements and runs the native-required checker. The matching ci:test
+descriptions are present in AGENTS.md and ProgressionPipeline.jsx. Verify the
+native requirement with `python -c 'import yaml; from pathlib import Path; job = yaml.safe_load(Path(".github/workflows/pr-governance.yml").read_text())["jobs"]["discord"]; assert "needs" not in job; assert job["steps"][-1]["run"].endswith("--require-sdk")'`.
+This verifies source wiring, not a hosted CI result.
 
-```bash
-python scripts/ci/supply_chain.py --skip-audit --check-lock --output /tmp/buildanddo-motion-supply.json
-```
+Python trace statement results (not branch or live SDK coverage):
 
-No screenshots, mobile frame-rate results, live performance comparison, private
-runtime acceptance or staging/production validation were produced here.
+| Module | Covered / executable lines | Percent |
+|---|---|---|
+| bot.py | 267/290 | 92.07% |
+| catalogue.py | 151/156 | 96.79% |
+| contracts.py | 174/175 | 99.43% |
+| public_data.py | 145/149 | 97.32% |
+| service.py | 224/225 | 99.56% |
+
+An initial Ruff check found an unused test import; it was removed and the exact
+lint gate passes. The first statement-coverage run included an unnecessary
+docstring-only package initializer; it was removed in favor of the existing
+namespace import layout. CPython's non-executable line-zero marker is excluded
+from the executable-line denominator. The same coverage command now passes
+without lowering the 80% threshold.
+
+Source review also corrected delayed selection after reader expiry, identical
+quiz-answer replay after a lost response and caller timeouts that retain the
+same tracked HTTP worker. Their regressions pass. No screenshot, SDK login,
+command synchronization, live message, deployment or private execution occurred.
 
 ## §4 MEMORY INGEST
 
-Type A count: 223
-Type B count: 418
-Type C count: 36
+Type A count: 236
+Type B count: 453
+Type C count: 41
 IOO compliance: true
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
-All 32 earlier event vectors remain unchanged. Four current observed events were
-added with real timestamps. New metadata describes each file's intent and its
-declared relationships. No direct memory ingestion or signature computation ran.
+All 36 earlier event vectors remain unchanged. Five Discord continuation events
+record observed source tests and open runtime/dependency gates with real UTC
+timestamps. No direct memory ingestion or signature computation was performed.
 
 ## §5 CKET FILING
 
-06_PLAN: docs/motion-system.md.
-04_HYPOTHESIZE: existing upgrade SRS continuation.
-07_BUILD: motion policy, runtime, provider, shared styles/components and page integration.
-08_TEST: motion source/component suites, mission preference regression and Vitest coverage targets.
-11_COMMIT: registry, dispatch, measured context, report and memory.
+06_PLAN: docs/discord-bot.md.
+04_HYPOTHESIZE: upgrade specification continuation.
+07_BUILD: Discord contracts, public client, catalogue, service and adapter.
+08_TEST: public HTTP, command, adapter, generator and statement-coverage checks.
+11_COMMIT: build generator, registry, dispatch, context, handoff, report and memory.
 13_SAVE: none.
 
 Paths follow this repository's AGENTS.md and public boundary. This continuation
-adds 16 files. CGRF provenance is present on all 137/137 files new since the
-original base. Existing headers remain attributable to their original work;
-base files without headers have substantive metadata and report validation edges.
-REFLEX remains deferred to the private validator; CK/CAPS/CKS remain pending.
+adds 12 files. CGRF provenance is present on all 149/149 files
+new since the original base; the existing bot also receives an authored header.
+Existing provenance is retained. REFLEX remains deferred to the private
+validator; CK, CAPS and CKS remain pending.
 
 ## §6 GOVERNANCE
 
@@ -239,29 +280,30 @@ Hard-NO scan: PASS; zero public-boundary failures
 Secret scan: PASS under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: A2 umbrella, frontend source only in this continuation
+Risk / authority: A2 umbrella; public source, generated public content and tests
 
-Motion choices are per-device preferences, not workspace roles or service state.
-Local preview actions do not publish, activate integrations or change records.
-Media object URLs are local, bounded and released; text remains masked from replay
-and excluded from PostHog autocapture. No private runtime, credential, shared
-schema, deployment control or live seat event was introduced.
+No workspace records, bot credential, installer, shared mutation, deployment
+control or live seat event was introduced. The bot reads only fixed public
+resources; the private binding and integration-request consumer remain outside
+this implementation. Source configuration does not claim executed requests.
 
 ## §7 NEXT ACTIONS
 
-Blockers: frontend packages/lock, Vitest/coverage, official lint/build, browser
-and device performance acceptance. Earlier native PocketBase 0.28.4, private
-executor and served-release gates also remain open.
+Blockers: Discord.py/native adapter typing and serialization; pytest/branch
+coverage; Vite, Vitest and official web lint; a verified served community feed
+and authorized test-server activation. Earlier PocketBase, browser and delivery
+gates remain open.
 
-Handoffs: existing BuildAndDo delivery and community-controls artifacts continue
-to apply; no receiving seat was activated. The motion-specific acceptance matrix
-is in docs/motion-system.md. Suggested next dispatch: dependency-enabled frontend
-and native acceptance for the complete source, then authorized delivery and
-matching served-version/flow verification. Bugs filed: none; no issue target or
-provider-write capability supplied. Six earlier governance/gate findings remain.
+Handoffs: the existing community-controls artifact now includes this public
+command bot, packaging changes and actual acceptance commands. The existing
+BuildAndDo delivery handoff still applies. No receiving seat was activated.
+Suggested next dispatch: receiver-owned native bot, complete frontend and
+test-server acceptance; private dispatch ID remains with that receiving owner.
+Bugs filed: none; no provider write was performed. Six earlier governance/gate
+findings remain visible.
 
-Rollback: revert the frontend motion continuation as one change, including its
-provider and imports. The local preference key has no business data and can be
-ignored by the prior frontend. No database migration or record deletion is needed;
-retain earlier access-rule and administration protections. No release or shared
+Rollback: coordinate the complete bot source bundle and registered application
+commands with the private operator. The generated public catalogue is additive;
+there is no database migration or record write to undo. Restoring the old bot
+also restores its blocking HTTP and privileged intent requirement. No shared
 rollback ran in this session.

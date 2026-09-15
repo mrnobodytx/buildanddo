@@ -10,10 +10,10 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 409,
+      "lines": 410,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Record the 30-file frontend test inventory and unchanged governance findings so motion acceptance gaps remain reproducible.",
+      "intent_statement": "Keep the registered Discord continuation and measured repository inventory reviewable while retaining existing test and delivery findings.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "stored",
       "supersedes": false,
@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 13276,
+      "lines": 14146,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 267,
+      "lines": 309,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 425,
+      "lines": 483,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 488,
+      "lines": 545,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -555,7 +555,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 98,
+      "lines": 119,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate contribution review on manifest integrity, component coverage and public adapter tests.",
@@ -615,8 +615,8 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [
-        ".buildanddo/public/path-policy.json",
-        "CONTRIBUTING.md"
+        "CONTRIBUTING.md",
+        ".buildanddo/public/path-policy.json"
       ],
       "lines": 160,
       "caps_grade": "pending",
@@ -1722,14 +1722,10 @@
         "ProgressionPipeline"
       ],
       "dependencies": [
-        ".github/workflows/pr-governance.yml",
-        "@/components/site/ui",
-        "@/lib/utils",
         "apps/web/src/components/site/ui.jsx",
-        "lucide-react",
-        "react"
+        ".github/workflows/pr-governance.yml"
       ],
-      "lines": 288,
+      "lines": 289,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
@@ -4238,7 +4234,7 @@
         "node:child_process",
         "node:url"
       ],
-      "lines": 46,
+      "lines": 48,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Stamp one release into the bundle and produce route-specific crawler heads after Vite succeeds.",
@@ -9587,9 +9583,10 @@
       "dependencies": [
         "docs/workspace-administration.md",
         "apps/pocketbase/pb_hooks/workspace-administration.js",
-        ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md"
+        ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
+        "docs/discord-bot.md"
       ],
-      "lines": 110,
+      "lines": 156,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define the private execution and acceptance boundary for audited BuildAndDo integration requests without adding credentials or deployment control to the public repository.",
@@ -13259,12 +13256,885 @@
       "timestamp": "2026-09-15T17:12:47.205749+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/tools/generate-community.mjs",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "text",
+        "buildCommunityCatalogue",
+        "generateCommunityCatalogue"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/publicPages.js",
+        "apps/web/src/lib/tutorialCurriculum.js",
+        "apps/pocketbase/pb_migrations/data/starter-tutorials.json"
+      ],
+      "lines": 110,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep Discord documentation and teaching content on the same authored curriculum and release as the public site.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/discord-bot.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "scripts/discordbot/bot.py",
+        "scripts/discordbot/service.py",
+        "apps/web/tools/generate-community.mjs",
+        "tests/upgrade/check_discordbot.py",
+        ".github/workflows/pr-governance.yml"
+      ],
+      "lines": 187,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the implemented Discord experience, its real public data sources and the remaining private activation requirements.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/discordbot/bot.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "caller_from",
+        "escaped",
+        "render",
+        "notify_private",
+        "transport_error",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/discordbot/service.py",
+        "scripts/discordbot/contracts.py"
+      ],
+      "lines": 423,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Serve useful public Discord interactions with explicit scope, private replies and no import-time activation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/discordbot/catalogue.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "mapping",
+        "text",
+        "sequence",
+        "strings",
+        "release_identity",
+        "public_path",
+        "reference_url",
+        "_lesson"
+      ],
+      "dependencies": [
+        "scripts/discordbot/contracts.py",
+        "apps/web/tools/generate-community.mjs"
+      ],
+      "lines": 227,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject malformed community feeds and render complete authored lessons without reading private records.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/discordbot/contracts.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "paginate"
+      ],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
+      ],
+      "lines": 265,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound bot configuration, replies and personal interactions without granting workspace authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/discordbot/public_data.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_invalid_constant",
+        "read_resource"
+      ],
+      "dependencies": [
+        "scripts/discordbot/contracts.py"
+      ],
+      "lines": 211,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep public source reads off the Discord event loop and bound their traffic, lifetime and failure evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/discordbot/service.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_time",
+        "_note",
+        "_number"
+      ],
+      "dependencies": [
+        "scripts/discordbot/catalogue.py",
+        "scripts/discordbot/public_data.py"
+      ],
+      "lines": 294,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect useful community commands to dated public evidence and the site's authored teaching content.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/check_discordbot.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_discordbot_public.py",
+        "tests/upgrade/test_discordbot_commands.py",
+        "tests/upgrade/test_discordbot_adapter.py"
+      ],
+      "lines": 81,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Produce reproducible bot coverage evidence and a separate native-SDK gate without installing packages or hiding skipped acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/discord-catalogue.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/tools/generate-community.mjs"
+      ],
+      "lines": 90,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify the real community artifact preserves public lesson parity and excludes private or malformed data.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/discord_sdk_double.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "button",
+        "sdk_double"
+      ],
+      "dependencies": [
+        "scripts/discordbot/bot.py"
+      ],
+      "lines": 195,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Isolate Discord transport in offline behavior tests without substituting those tests for native SDK acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_discordbot_adapter.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "load_adapter",
+        "interaction"
+      ],
+      "dependencies": [
+        "scripts/discordbot/bot.py",
+        "tests/upgrade/discord_sdk_double.py",
+        "apps/web/tools/generate-community.mjs"
+      ],
+      "lines": 331,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify private replies, owned controls and deliberate synchronization while keeping SDK-double results distinct from native acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_discordbot_commands.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "generated_catalogue"
+      ],
+      "dependencies": [
+        "scripts/discordbot/service.py",
+        "scripts/discordbot/catalogue.py",
+        "apps/web/tools/generate-community.mjs"
+      ],
+      "lines": 269,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify real generated learning content, scope enforcement, dated evidence and useful bot command outcomes without private access.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_discordbot_public.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "scripts/discordbot/public_data.py",
+        "scripts/discordbot/contracts.py"
+      ],
+      "lines": 306,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove bounded public HTTP, cancellation, scope limits and private learning controls without contacting Discord.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "discord-community"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md",
+      "target": "docs/discord-bot.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md consumes docs/discord-bot.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "docs/discord-bot.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md consumes docs/discord-bot.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "scripts/discordbot/bot.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md consumes scripts/discordbot/bot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": ".github/workflows/pr-governance.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates .github/workflows/pr-governance.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/tools/generate-community.mjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/tools/generate-community.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/check_discordbot.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates tests/upgrade/check_discordbot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/tools/generate-community.mjs",
+      "target": "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/tools/generate-community.mjs depends on apps/pocketbase/pb_migrations/data/starter-tutorials.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/tools/generate-community.mjs",
+      "target": "apps/web/src/lib/publicPages.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/tools/generate-community.mjs depends on apps/web/src/lib/publicPages.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/tools/generate-community.mjs",
+      "target": "apps/web/src/lib/tutorialCurriculum.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/tools/generate-community.mjs depends on apps/web/src/lib/tutorialCurriculum.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": ".github/workflows/pr-governance.yml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-bot.md consumes .github/workflows/pr-governance.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "apps/web/tools/generate-community.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-bot.md consumes apps/web/tools/generate-community.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "scripts/discordbot/bot.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-bot.md consumes scripts/discordbot/bot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "scripts/discordbot/service.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-bot.md consumes scripts/discordbot/service.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "tests/upgrade/check_discordbot.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/discord-bot.md verified by tests/upgrade/check_discordbot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/bot.py",
+      "target": "scripts/discordbot/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/discordbot/bot.py depends on scripts/discordbot/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/bot.py",
+      "target": "scripts/discordbot/service.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/discordbot/bot.py depends on scripts/discordbot/service.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/catalogue.py",
+      "target": "apps/web/tools/generate-community.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/discordbot/catalogue.py depends on apps/web/tools/generate-community.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/catalogue.py",
+      "target": "scripts/discordbot/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/discordbot/catalogue.py depends on scripts/discordbot/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/contracts.py",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/discordbot/contracts.py depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/public_data.py",
+      "target": "scripts/discordbot/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/discordbot/public_data.py depends on scripts/discordbot/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/service.py",
+      "target": "scripts/discordbot/catalogue.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/discordbot/service.py depends on scripts/discordbot/catalogue.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/service.py",
+      "target": "scripts/discordbot/public_data.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/discordbot/service.py depends on scripts/discordbot/public_data.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_discordbot.py",
+      "target": "tests/upgrade/test_discordbot_adapter.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_discordbot.py consumes tests/upgrade/test_discordbot_adapter.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_discordbot.py",
+      "target": "tests/upgrade/test_discordbot_commands.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_discordbot.py consumes tests/upgrade/test_discordbot_commands.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_discordbot.py",
+      "target": "tests/upgrade/test_discordbot_public.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_discordbot.py consumes tests/upgrade/test_discordbot_public.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/discord-catalogue.test.mjs",
+      "target": "apps/web/tools/generate-community.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/discord-catalogue.test.mjs depends on apps/web/tools/generate-community.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/discord_sdk_double.py",
+      "target": "scripts/discordbot/bot.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/discord_sdk_double.py validates scripts/discordbot/bot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_adapter.py",
+      "target": "apps/web/tools/generate-community.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_adapter.py consumes apps/web/tools/generate-community.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_adapter.py",
+      "target": "tests/upgrade/discord_sdk_double.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_adapter.py depends on tests/upgrade/discord_sdk_double.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_adapter.py",
+      "target": "scripts/discordbot/bot.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_adapter.py validates scripts/discordbot/bot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_commands.py",
+      "target": "apps/web/tools/generate-community.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_commands.py consumes apps/web/tools/generate-community.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_commands.py",
+      "target": "scripts/discordbot/catalogue.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_commands.py validates scripts/discordbot/catalogue.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_commands.py",
+      "target": "scripts/discordbot/service.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_commands.py validates scripts/discordbot/service.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_public.py",
+      "target": "scripts/discordbot/contracts.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_public.py validates scripts/discordbot/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_public.py",
+      "target": "scripts/discordbot/public_data.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_public.py validates scripts/discordbot/public_data.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_discordbot.py",
+      "description": "Discord continuation: 52 bot tests passed with one explicitly skipped native-SDK case; real loopback HTTP and actual generated lessons are exercised. Python trace statement coverage exceeds 92 percent in every bot module.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T18:37:28.956617+00:00",
+      "commit_sha": null,
+      "smoke_result": "52/53"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/discord-catalogue.test.mjs",
+      "description": "Discord continuation: 168 Node regression tests passed, including five real public generator cases; generator coverage measured 98.20 percent lines, 97.87 percent branches and 100 percent functions.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T18:37:28.956617+00:00",
+      "commit_sha": null,
+      "smoke_result": "168/168"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "scripts/discordbot/bot.py",
+      "description": "Discord continuation: The require-sdk gate and complete adapter typing remain blocked because Discord.py is unavailable. Pytest/pytest-cov are absent. No live bot or native SDK validation was inferred from the explicit transport double.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T18:37:28.956617+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": null,
+      "description": "Discord continuation: Application smoke remains 4/7: 168 Node and 70 Python cases passed with one native-SDK skip; frontend tools remain unavailable. The exact public bot activation and packaging requirements were added to the existing community handoff.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T18:37:28.956617+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".github/workflows/pr-governance.yml",
+      "description": "Discord CI continuation: PyYAML parsed the independent native-SDK validation job; source checks confirmed declared runtime installation, required SDK acceptance, no bot credentials or failure suppression and matching ci:test descriptions. Hosted execution remains unobserved.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T18:52:47.962309+00:00",
+      "commit_sha": null,
+      "smoke_result": null
     }
   ],
   "summary": {
-    "type_a_count": 223,
-    "type_b_count": 418,
-    "type_c_count": 36,
+    "type_a_count": 236,
+    "type_b_count": 453,
+    "type_c_count": 41,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

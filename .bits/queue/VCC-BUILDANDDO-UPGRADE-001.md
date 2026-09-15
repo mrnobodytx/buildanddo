@@ -423,3 +423,61 @@ browser matrix. Frontend execution, real device performance, screenshots, native
 PocketBase and served-release verification remain unclaimed. Existing private
 delivery handoffs still apply; this wave changes no backend, external integration,
 workspace authority or deployment control.
+
+## Discord bot continuation authorized 2026-09-15
+
+The owner renewed the earlier Discord request. The existing public bot is in
+scope under this same A2 source dispatch; hosting, credentials, integration
+request consumption and live activation remain with the private receiving seat.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| AZ | Reconcile merged source and register the bot continuation | `python scripts/ci/agent_context.py --check` | done — PR 25 source reconciled; existing registered SRS extended before implementation |
+| BA | Bound asynchronous public reads and source reporting | Discord public-client tests | done — real loopback HTTP, shared reads, cancellation, size limits and deadlines pass |
+| BB | Add the command, lesson and quiz service | Discord command/content tests | done — all 25 authored lessons, public evidence states and scope failures pass |
+| BC | Wire slash commands, private interactive replies and access limits | Discord adapter and lifecycle tests | partial — adapter contracts pass; native SDK and live Discord acceptance pending |
+| BD | Generate shared public documentation/learning content | `node --test tests/upgrade/discord-catalogue.test.mjs` | done — five real generator tests pass; full Vite execution remains unavailable |
+| BE | Verify and document bot behavior and activation limits | Python/Node regression, static and native SDK checks | done — available evidence recorded, runtime/package gates remain explicit |
+| BF | Refresh dispatch, handoff, report and memory | Context, boundary and memory gates | done — current checks pass and all prior memory events are retained |
+
+Memory brief: the resumed checkout was behind the locally available merge of
+PR 25 and was fast-forwarded before implementation. scripts/discordbot/bot.py
+is public application source and was unchanged by all earlier waves. Its three
+commands use urllib synchronously in the Discord event loop and use older
+buildanddo.com targets. The canonical public page catalogue names
+https://buildanddo.tech. The existing community handoff covers private request
+execution, not this command bot's source. No secondary source repository, live
+PocketBase seat or bot session is attached. Discord.py and Python testing/HTTP
+packages are absent; Python's unittest, Node, mypy and Ruff are available.
+Do not fabricate seat events, runtime observations, source coverage or live
+Discord evidence. Runtime dependency availability is an explicit acceptance gate.
+
+Discord evidence: 52 bot tests pass; one native serialization case is explicitly
+skipped because Discord.py is absent. The same suite uses the real SDK when it
+is installed. Five generator tests execute the actual site projection; full
+regression passes 168 Node tests and 70 Python tests, with the same one skip.
+Python trace coverage exceeds 92% of statement lines in every bot module.
+Core strict mypy and all bot/test Ruff checks pass. Full SDK typing cannot resolve
+Discord.py; pytest/pytest-cov are absent. Vitest, eslint-plugin-import and Vite
+are still unavailable. The source diagnostic parses 217 frontend modules.
+
+Source review repaired delayed selection after reader expiry and identical
+quiz-answer retry after a lost response. The HTTP client returns a bounded
+timeout while keeping a stalled worker registered; retries cannot spawn an
+unbounded set of replacement reads. Controls expire after ten minutes to permit
+reading an actual starter lesson. No native Discord, live bot activation,
+server command synchronization or integration-request execution is inferred.
+docs/discord-bot.md and the extended community handoff define the receiving work.
+
+BF source evidence PASS: context matches with six earlier findings and four
+unwired gates retained; public boundary passes 503 tracked files with zero
+failures. Provenance covers 149/149 files new since the original base. Memory
+verification passes 236 Type A vectors, 453 Type B relationships and 41 Type C
+events; all 36 earlier events are unchanged, IOO is complete and no vector is
+orphaned. Source acceptance now completes 30/58 cumulative gates; the dispatch
+remains in progress until its explicit native, frontend and live gates run.
+
+The existing PR governance workflow now has an independent ci:test / Discord SDK
+job that installs the declared bot runtime and requires native serialization and
+source coverage. The contribution step and AGENTS table describe the same check.
+This hosted job has not executed here; its missing-SDK failure is observed locally.
