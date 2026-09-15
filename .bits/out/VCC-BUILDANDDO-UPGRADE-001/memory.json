@@ -13,7 +13,7 @@
       "lines": 409,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Record current pipelines, governance findings and the 28-file Vitest inventory so administration acceptance gaps remain reproducible.",
+      "intent_statement": "Record the 30-file frontend test inventory and unchanged governance findings so motion acceptance gaps remain reproducible.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "stored",
       "supersedes": false,
@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 11194,
+      "lines": 13276,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 251,
+      "lines": 267,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 373,
+      "lines": 425,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 432,
+      "lines": 488,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1019,14 +1019,16 @@
         "@/components/ProtectedRoute",
         "@/components/RouteLoading",
         "@/components/SkipNavigation",
+        "@/components/motion/MotionPrimitives",
         "@/components/workspace/PageBoundary",
         "@/contexts/AuthContext",
+        "@/contexts/MotionContext",
         "@/contexts/WorkspaceContext",
         "next-themes",
         "react",
         "react-router-dom"
       ],
-      "lines": 210,
+      "lines": 214,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve route loading and offer retry when the workspace list cannot be read instead of treating an outage as a new account.",
@@ -1126,10 +1128,12 @@
         "ScrollToTop"
       ],
       "dependencies": [
+        "@/contexts/MotionContext",
+        "@/lib/motion/runtime",
         "react",
         "react-router-dom"
       ],
-      "lines": 45,
+      "lines": 58,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Wait for lazy routes before restoring scroll positions and moving keyboard focus.",
@@ -1445,6 +1449,7 @@
       ],
       "dependencies": [
         "@/components/ThemeControls",
+        "@/components/motion/MotionToggle",
         "@/components/site/ui",
         "@/components/ui/sheet",
         "@/contexts/AuthContext",
@@ -1453,7 +1458,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 140,
+      "lines": 142,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose public sections, mobile navigation and a persistent theme control.",
@@ -1485,13 +1490,15 @@
       ],
       "dependencies": [
         "@/components/Seo",
+        "@/components/motion/MotionPrimitives",
+        "@/components/motion/ReadingProgress",
         "@/components/site/Footer",
         "@/components/site/Header",
         "@/components/site/ui",
         "@/lib/publicPages",
         "apps/web/src/lib/publicPages.js"
       ],
-      "lines": 52,
+      "lines": 55,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Give the new public pages a consistent broadsheet layout and metadata.",
@@ -1532,11 +1539,12 @@
         "StatusDot"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
         "@/lib/utils",
         "react",
         "react-router-dom"
       ],
-      "lines": 334,
+      "lines": 337,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep shared links within SPA navigation and forward refs to accessible menu triggers.",
@@ -1570,7 +1578,7 @@
         "lucide-react",
         "react"
       ],
-      "lines": 117,
+      "lines": 119,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep long forms usable on mobile and return keyboard focus after programmatic dialogs close.",
@@ -1605,7 +1613,7 @@
         "lucide-react",
         "react"
       ],
-      "lines": 106,
+      "lines": 108,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep navigation dialogs scrollable and their close controls reachable on small screens.",
@@ -1754,10 +1762,25 @@
         "TutorialCatalog"
       ],
       "dependencies": [
+        "../../../../pocketbase/pb_migrations/data/starter-tutorials.json",
+        "@/components/motion/MotionPrimitives",
+        "@/components/site/ui",
+        "@/components/ui/input",
+        "@/components/ui/label",
+        "@/components/workspace/TutorialReader",
+        "@/components/workspace/WorkspaceNotices",
+        "@/contexts/AuthContext",
+        "@/hooks/useDemoMode",
+        "@/hooks/useWorkspaceRecords",
+        "@/lib/observability/mutations",
+        "@/lib/pocketbaseClient",
+        "@/lib/tutorialCurriculum",
         "apps/web/src/hooks/useWorkspaceRecords.js",
-        "apps/web/src/lib/observability/mutations.js"
+        "apps/web/src/lib/observability/mutations.js",
+        "lucide-react",
+        "react"
       ],
-      "lines": 129,
+      "lines": 131,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.",
@@ -1794,6 +1817,7 @@
         "./WorkspaceNotices",
         "./workspaceHelpers",
         "@/components/ThemeControls",
+        "@/components/motion/MotionToggle",
         "@/components/site/ui",
         "@/components/ui/sheet",
         "@/contexts/AuthContext",
@@ -1806,7 +1830,7 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 267,
+      "lines": 269,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
@@ -2199,10 +2223,12 @@
         "statusMeta"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
+        "@/contexts/MotionContext",
         "@/lib/utils",
         "react"
       ],
-      "lines": 241,
+      "lines": 246,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Support the authorized upgrade with consistent public contracts and reviewable verification evidence.",
@@ -2773,10 +2799,11 @@
         "@/index.css",
         "@/lib/observability/runtime",
         "@/lib/telemetry",
+        "@/motion.css",
         "react",
         "react-dom/client"
       ],
-      "lines": 20,
+      "lines": 21,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Transfer generated crawler metadata to Helmet ownership so SPA navigation cannot leave stale tags.",
@@ -2976,6 +3003,8 @@
       ],
       "dependencies": [
         "@/components/Seo",
+        "@/components/motion/EditorialStory",
+        "@/components/motion/ReadingProgress",
         "@/components/site/EarlyAccess",
         "@/components/site/Faq",
         "@/components/site/Footer",
@@ -2996,7 +3025,7 @@
         "react",
         "react-helmet"
       ],
-      "lines": 938,
+      "lines": 942,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Project authenticated workspace records onto the front page with provenance, recoverable intake and no anonymous private reads.",
@@ -3037,6 +3066,7 @@
         "@/components/site/Footer",
         "@/components/site/Header",
         "@/components/site/ui",
+        "@/contexts/MotionContext",
         "apps/web/src/components/platform/MetaFunctionDashboard.jsx",
         "apps/web/src/components/platform/MetaFunctionFlow.jsx",
         "framer-motion",
@@ -3044,7 +3074,7 @@
         "react",
         "react-helmet"
       ],
-      "lines": 306,
+      "lines": 307,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Give the public an inspectable visual model of the governed capability fabric.",
@@ -3423,22 +3453,24 @@
         "ErpPage"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
         "@/components/site/ui",
         "@/components/ui/dialog",
         "@/components/ui/input",
         "@/components/ui/label",
         "@/components/ui/tabs",
         "@/components/ui/textarea",
-        "@/components/workspace/EmptyState",
+        "@/components/workspace/WorkspaceNotices",
         "@/components/workspace/workspaceHelpers",
+        "@/contexts/AuthContext",
         "@/contexts/WorkspaceContext",
+        "@/hooks/useDemoMode",
         "@/hooks/useWorkspaceRecords",
-        "@/lib/observability/mutations",
+        "@/lib/businessPlanning",
         "@/lib/pocketbaseClient",
-        "lucide-react",
         "react"
       ],
-      "lines": 153,
+      "lines": 154,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect measurable objectives, editable tasks and contacts while retaining failed edits and exposing unavailable workspace data.",
@@ -3519,6 +3551,7 @@
         "SavedPlan"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
         "@/components/site/ui",
         "@/components/ui/dialog",
         "@/components/workspace/EmptyState",
@@ -3531,6 +3564,7 @@
         "@/components/workspace/missions/MissionReview",
         "@/components/workspace/workspaceHelpers",
         "@/contexts/AuthContext",
+        "@/contexts/MotionContext",
         "@/contexts/WorkspaceContext",
         "@/hooks/useDemoMode",
         "@/hooks/usePreviousWork",
@@ -3548,7 +3582,7 @@
         "lucide-react",
         "react"
       ],
-      "lines": 711,
+      "lines": 701,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
@@ -3692,6 +3726,7 @@
         "@/components/workspace/ListToolbar",
         "@/components/workspace/WorkspaceNotices",
         "@/components/workspace/workspaceHelpers",
+        "@/contexts/MotionContext",
         "@/hooks/useWorkspaceRecords",
         "@/lib/format",
         "@/lib/utils",
@@ -3703,7 +3738,7 @@
         "react",
         "recharts"
       ],
-      "lines": 623,
+      "lines": 625,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" — a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
@@ -3735,19 +3770,20 @@
       ],
       "dependencies": [
         "@/components/ThemeControls",
+        "@/components/motion/MotionSettings",
         "@/components/site/ui",
         "@/components/ui/select",
+        "@/components/ui/tabs",
         "@/components/workspace/workspaceHelpers",
         "@/contexts/AuthContext",
         "@/contexts/WorkspaceAccessContext",
         "@/contexts/WorkspaceContext",
         "@/lib/observability/mutations",
-        "@/lib/pocketbaseClient",
         "lucide-react",
         "react",
         "react-router-dom"
       ],
-      "lines": 235,
+      "lines": 259,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace writes attributed to real backend outcomes and expose actionable failure states in this page.",
@@ -3961,6 +3997,7 @@
       "functions": [],
       "dependencies": [
         "@/contexts/AuthContext",
+        "@/contexts/MotionContext",
         "@/contexts/WorkspaceContext",
         "@/lib/demoWorkspace",
         "@/lib/missionLearning",
@@ -3972,7 +4009,7 @@
         "react",
         "vitest"
       ],
-      "lines": 291,
+      "lines": 292,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Hold the mission lifecycle UI to its promise: nothing runs until a mission is proposed, advanced and shown as such.",
@@ -4273,7 +4310,7 @@
         "node:url",
         "vitest/config"
       ],
-      "lines": 85,
+      "lines": 88,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the web test suite on the existing Vite transform, resolving the same \"@\" alias the app builds with.",
@@ -5036,6 +5073,7 @@
         "WorkflowRunsPanel"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
         "@/components/site/ui",
         "@/components/ui/dialog",
         "@/components/ui/label",
@@ -5052,7 +5090,7 @@
         "apps/web/src/lib/workflowRuns.js",
         "react"
       ],
-      "lines": 145,
+      "lines": 146,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show scoped paginated run history and approval checkpoints with distinct loading, empty, unavailable and demo states.",
@@ -8068,11 +8106,26 @@
         "Studio"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
+        "@/components/site/ui",
+        "@/components/ui/dialog",
+        "@/components/ui/input",
+        "@/components/ui/label",
+        "@/components/ui/textarea",
+        "@/components/workspace/StructuredContent",
+        "@/components/workspace/WorkspaceNotices",
+        "@/contexts/AuthContext",
+        "@/contexts/WorkspaceContext",
+        "@/hooks/useDemoMode",
+        "@/hooks/useWorkspaceRecords",
+        "@/lib/businessPlanning",
+        "@/lib/pocketbaseClient",
+        "apps/web/src/components/workspace/StructuredContent.jsx",
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/businessPlanning.js",
-        "apps/web/src/components/workspace/StructuredContent.jsx"
+        "react"
       ],
-      "lines": 184,
+      "lines": 185,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Turn workspace briefs into recoverable drafts with readable previews, explicit review and honest publication receipts.",
@@ -8136,10 +8189,18 @@
         "TutorialReader"
       ],
       "dependencies": [
+        "@/components/motion/ReadingProgress",
+        "@/components/motion/StepSequence",
+        "@/components/site/ui",
+        "@/components/ui/dialog",
+        "@/contexts/MotionContext",
+        "@/lib/motion/runtime",
+        "@/lib/tutorialCurriculum",
+        "apps/web/src/components/ui/dialog.jsx",
         "apps/web/src/lib/tutorialCurriculum.js",
-        "apps/web/src/components/ui/dialog.jsx"
+        "react"
       ],
-      "lines": 104,
+      "lines": 118,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let learners read complete lessons, practice and check understanding with accessible focus and explicit progress persistence.",
@@ -9829,13 +9890,14 @@
         "focusPendingRetry"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
         "@/components/site/ui",
         "apps/web/src/components/site/ui.jsx",
         "apps/web/src/hooks/useWorkspaceControl.js",
         "react",
         "react-router-dom"
       ],
-      "lines": 67,
+      "lines": 68,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make control loading, denied access, pending saves and paginated text readable with keyboard and mobile layouts.",
@@ -9868,6 +9930,7 @@
         "IntegrationForm"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
         "@/components/site/ui",
         "@/components/ui/dialog",
         "@/components/workspace/ControlPrimitives",
@@ -9876,7 +9939,7 @@
         "apps/web/src/hooks/useWorkspaceControl.js",
         "react"
       ],
-      "lines": 85,
+      "lines": 86,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Present one scoped control surface for sinks, extensions, Discord and Reddit with explicit requested versus observed states.",
@@ -10066,6 +10129,7 @@
         "SettingsForm"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
         "@/components/site/ui",
         "@/components/ui/dialog",
         "@/components/ui/tabs",
@@ -10080,7 +10144,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 146,
+      "lines": 147,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let authorized workspace administrators manage profile, members and community settings with visible audit and conflict recovery.",
@@ -10116,6 +10180,7 @@
         "TopicForm"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
         "@/components/site/ui",
         "@/components/ui/dialog",
         "@/components/workspace/ControlPrimitives",
@@ -10125,7 +10190,7 @@
         "apps/web/src/hooks/useWorkspaceControl.js",
         "react"
       ],
-      "lines": 116,
+      "lines": 117,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect workspace discussion, replies and explicit moderation to persisted records and current member permissions.",
@@ -10194,6 +10259,8 @@
         "WikiPage"
       ],
       "dependencies": [
+        "@/components/motion/MotionPrimitives",
+        "@/components/motion/ReadingProgress",
         "@/components/site/ui",
         "@/components/ui/dialog",
         "@/components/workspace/ControlPrimitives",
@@ -10204,7 +10271,7 @@
         "apps/web/src/hooks/useWorkspaceControl.js",
         "react"
       ],
-      "lines": 92,
+      "lines": 95,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make persisted wiki drafting, safe reading and administrator publication available inside the workspace.",
@@ -11177,12 +11244,2027 @@
       "timestamp": "2026-09-15T15:43:56.750897+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/CountUp.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/contexts/MotionContext",
+        "@/lib/motion/runtime",
+        "react"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose exact accessible metric values while pausing visual interpolation when the reader disables motion or leaves the viewport.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/Reveal.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/components/motion/MotionPrimitives",
+        "react"
+      ],
+      "lines": 11,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reuse one interruptible editorial reveal policy while leaving original page content readable before observation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/motion/EditorialStory.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "EditorialStory"
+      ],
+      "dependencies": [
+        "./MotionPrimitives",
+        "./StepSequence",
+        "@/contexts/MotionContext",
+        "apps/web/src/components/motion/StepSequence.jsx",
+        "apps/web/src/contexts/MotionContext.jsx",
+        "react"
+      ],
+      "lines": 58,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the product with a controllable editorial diagram and optional visible-only depth.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/motion/MotionPlayground.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "DataPreview",
+        "GalleryPreview",
+        "InterfacePreview",
+        "MediaPreview",
+        "MotionPlayground",
+        "PlanningPreview",
+        "PlaygroundScene",
+        "useLocalMedia"
+      ],
+      "dependencies": [
+        "./MotionPrimitives",
+        "./StepSequence",
+        "@/components/CountUp",
+        "@/components/site/ui",
+        "@/components/ui/dialog",
+        "@/components/ui/switch",
+        "@/components/ui/tabs",
+        "@/contexts/MotionContext",
+        "@/lib/motion/runtime",
+        "apps/web/src/components/motion/MotionPrimitives.jsx",
+        "apps/web/src/components/motion/StepSequence.jsx",
+        "apps/web/src/contexts/MotionContext.jsx",
+        "apps/web/src/lib/motion/runtime.js",
+        "framer-motion",
+        "react"
+      ],
+      "lines": 240,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Offer isolated, controllable motion demonstrations without changing business state or transmitting local media.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/motion/MotionPrimitives.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MotionEntrance",
+        "MotionList",
+        "MotionProgress",
+        "MotionReveal",
+        "MotionValue",
+        "PointerSurface",
+        "SharedTitle",
+        "useMotionChange"
+      ],
+      "dependencies": [
+        "@/contexts/MotionContext",
+        "@/lib/motion/runtime",
+        "apps/web/src/contexts/MotionContext.jsx",
+        "apps/web/src/lib/motion/runtime.js",
+        "react"
+      ],
+      "lines": 161,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep content usable while revealing, rearranging and emphasizing current records without retaining removed content.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/motion/MotionSettings.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MotionSettings"
+      ],
+      "dependencies": [
+        "@/components/site/ui",
+        "@/contexts/MotionContext",
+        "@/lib/motion/catalog",
+        "@/lib/motion/preferences",
+        "apps/web/src/components/motion/MotionPlayground.jsx",
+        "apps/web/src/contexts/MotionContext.jsx",
+        "apps/web/src/lib/motion/catalog.js",
+        "apps/web/src/lib/motion/preferences.js",
+        "react"
+      ],
+      "lines": 144,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Organize device motion controls and the complete usage catalogue with opt-in interactive previews.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/motion/MotionToggle.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MotionToggle"
+      ],
+      "dependencies": [
+        "@/components/ui/dialog",
+        "apps/web/src/components/motion/MotionSettings.jsx",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 35,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let visitors reach the same personal motion controls without signing in.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/motion/ReadingProgress.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "ReadingProgress"
+      ],
+      "dependencies": [
+        "@/contexts/MotionContext",
+        "@/lib/motion/runtime",
+        "apps/web/src/contexts/MotionContext.jsx",
+        "apps/web/src/lib/motion/runtime.js",
+        "react"
+      ],
+      "lines": 70,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep readers oriented in long pages and lesson dialogs with event-driven scroll feedback.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/motion/StepSequence.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "StepSequence"
+      ],
+      "dependencies": [
+        "@/components/motion/MotionPrimitives",
+        "@/contexts/MotionContext",
+        "apps/web/src/components/motion/MotionPrimitives.jsx",
+        "apps/web/src/contexts/MotionContext.jsx",
+        "react"
+      ],
+      "lines": 85,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make illustrative learning and product diagrams controllable without advancing recorded work.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Controls"
+      ],
+      "dependencies": [
+        "../MotionPrimitives",
+        "../ReadingProgress",
+        "../StepSequence",
+        "@/components/platform/MetaFunctionDashboard",
+        "@/components/platform/MetaFunctionFlow",
+        "@/contexts/MotionContext",
+        "@/lib/motion/preferences",
+        "@testing-library/react",
+        "apps/web/src/components/motion/MotionPrimitives.jsx",
+        "apps/web/src/components/motion/ReadingProgress.jsx",
+        "apps/web/src/components/motion/StepSequence.jsx",
+        "apps/web/src/components/platform/MetaFunctionDashboard.jsx",
+        "apps/web/src/components/platform/MetaFunctionFlow.jsx",
+        "apps/web/src/contexts/MotionContext.jsx",
+        "react",
+        "vitest"
+      ],
+      "lines": 174,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise real hook cleanup, finite walkthroughs, scope removal and readable animation fallbacks.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "../MotionPlayground",
+        "../MotionSettings",
+        "../MotionToggle",
+        "@/contexts/MotionContext",
+        "@/lib/motion/preferences",
+        "@/pages/workspace/SettingsPage",
+        "@/test/utils",
+        "@testing-library/react",
+        "apps/web/src/components/motion/MotionPlayground.jsx",
+        "apps/web/src/components/motion/MotionSettings.jsx",
+        "apps/web/src/pages/workspace/SettingsPage.jsx",
+        "react",
+        "vitest"
+      ],
+      "lines": 198,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise personal preference controls, their real Settings location and media previews without business writes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/platform/MetaFunctionDashboard.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "AuthorityGauge",
+        "InvocationFeed",
+        "MetaFunctionDashboard",
+        "ProviderCard",
+        "RegistryTable",
+        "StateBadge"
+      ],
+      "dependencies": [
+        "@/components/platform/platformData",
+        "@/components/site/ui",
+        "@/contexts/MotionContext",
+        "apps/web/src/components/platform/platformData.js",
+        "apps/web/src/components/site/ui.jsx",
+        "framer-motion",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 341,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preview capability health, authority and receipts without exposing private telemetry.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/platform/MetaFunctionFlow.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "Connector",
+        "MetaFunctionFlow"
+      ],
+      "dependencies": [
+        "@/components/site/ui",
+        "@/contexts/MotionContext",
+        "apps/web/src/components/site/ui.jsx",
+        "framer-motion",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 345,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make each governed step from Guildmaster request to causal edge inspectable.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/platform/MetaFunctionOrb.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MetaFunctionOrb",
+        "buildParticlePositions",
+        "disposeObject"
+      ],
+      "dependencies": [
+        "@/components/platform/CapabilityMeshFallback",
+        "@/components/platform/platformData",
+        "@/contexts/MotionContext",
+        "@/lib/motion/runtime",
+        "apps/web/src/components/platform/CapabilityMeshFallback.jsx",
+        "apps/web/src/contexts/MotionContext.jsx",
+        "apps/web/src/lib/motion/runtime.js",
+        "lucide-react",
+        "react",
+        "three"
+      ],
+      "lines": 355,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Render the provider capability mesh as a restrained, performant hero illustration.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/site/Hero.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "CockpitHero",
+        "Hero"
+      ],
+      "dependencies": [
+        "@/components/site/ui",
+        "@/contexts/MotionContext",
+        "framer-motion",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 272,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Coordinate existing headline entrances and illustrative hero replay with personal motion choices and visible activity.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/accordion.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-accordion",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 42,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared accordion interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/alert-dialog.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/components/ui/button",
+        "@/lib/utils",
+        "@radix-ui/react-alert-dialog",
+        "react"
+      ],
+      "lines": 99,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared alert dialog interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/button.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-slot",
+        "class-variance-authority",
+        "react"
+      ],
+      "lines": 48,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared button interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/context-menu.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-context-menu",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 158,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared context menu interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/dropdown-menu.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-dropdown-menu",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 160,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared dropdown menu interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/hover-card.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-hover-card",
+        "react"
+      ],
+      "lines": 26,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared hover card interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/menubar.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MenubarGroup",
+        "MenubarMenu",
+        "MenubarPortal",
+        "MenubarRadioGroup",
+        "MenubarSub"
+      ],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-menubar",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 200,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared menubar interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/navigation-menu.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-navigation-menu",
+        "class-variance-authority",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 106,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared navigation menu interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/popover.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-popover",
+        "react"
+      ],
+      "lines": 30,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared popover interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/select.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-select",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 121,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared select interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/toast.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-toast",
+        "class-variance-authority",
+        "lucide-react",
+        "react"
+      ],
+      "lines": 86,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared toast interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ui/tooltip.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "@/lib/utils",
+        "@radix-ui/react-tooltip",
+        "react"
+      ],
+      "lines": 27,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared tooltip interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/contexts/MotionContext.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "MotionProvider",
+        "useMotionActivity",
+        "useMotionCategory",
+        "useMotionPreferences"
+      ],
+      "dependencies": [
+        "@/lib/motion/preferences",
+        "@/lib/motion/runtime",
+        "apps/web/src/lib/motion/preferences.js",
+        "apps/web/src/lib/motion/runtime.js",
+        "react"
+      ],
+      "lines": 103,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Apply accessible personal motion choices consistently across public pages and workspace portals.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/motion/catalog.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/lib/motion/preferences.js"
+      ],
+      "lines": 380,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make every requested motion area discoverable with its usage and an honest preview boundary.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/motion/preferences.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "createMotionStore",
+        "normalizeMotionPreferences",
+        "readMotionEnvironment",
+        "resolveMotion"
+      ],
+      "dependencies": [],
+      "lines": 146,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep personal motion choices bounded, persistent and subordinate to device accessibility preferences.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/motion/runtime.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "animateElement",
+        "continuityFrames",
+        "createFrameLoop",
+        "observeActivity",
+        "progressRatio",
+        "reorderItems"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/motion/preferences.js"
+      ],
+      "lines": 113,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Cancel interrupted effects and suspend visual work when it cannot be seen.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/motion.css",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/contexts/MotionContext.jsx"
+      ],
+      "lines": 196,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Apply shared editorial feedback and category controls to existing CSS and portal-based UI.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/OnboardingPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "OnboardingPage"
+      ],
+      "dependencies": [
+        "@/components/motion/MotionPrimitives",
+        "@/components/site/ui",
+        "@/components/ui/input",
+        "@/components/ui/label",
+        "@/contexts/WorkspaceContext",
+        "@/lib/pocketbaseClient",
+        "lucide-react",
+        "react",
+        "react-helmet",
+        "react-router-dom"
+      ],
+      "lines": 423,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Apply consistent setup transitions while preserving keyboard landing, current input and existing account setup behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/motion-system.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/lib/motion/catalog.js",
+        "apps/web/src/lib/motion/preferences.js",
+        "apps/web/src/components/motion/MotionSettings.jsx",
+        "tests/upgrade/motion-system.test.mjs"
+      ],
+      "lines": 219,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe the animation controls, actual usage and acceptance needed to review the complete motion system.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/motion-system.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "browserFixture",
+        "eventTarget"
+      ],
+      "dependencies": [
+        "../../apps/web/src/lib/motion/catalog.js",
+        "../../apps/web/src/lib/motion/preferences.js",
+        "../../apps/web/src/lib/motion/runtime.js",
+        "apps/web/src/lib/motion/catalog.js",
+        "apps/web/src/lib/motion/preferences.js",
+        "apps/web/src/lib/motion/runtime.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "lines": 300,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify preference precedence, storage resilience, interruption and visibility cleanup before enabling motion.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-motion"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/CountUp.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/CountUp.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/Reveal.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/Reveal.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/site/Hero.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/site/Hero.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/accordion.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/accordion.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/alert-dialog.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/alert-dialog.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/button.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/button.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/context-menu.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/context-menu.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/dropdown-menu.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/dropdown-menu.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/hover-card.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/hover-card.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/menubar.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/menubar.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/navigation-menu.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/navigation-menu.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/popover.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/popover.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/select.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/select.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/toast.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/toast.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ui/tooltip.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ui/tooltip.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/pages/OnboardingPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/pages/OnboardingPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/EditorialStory.jsx",
+      "target": "apps/web/src/components/motion/StepSequence.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/EditorialStory.jsx depends on apps/web/src/components/motion/StepSequence.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/EditorialStory.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/EditorialStory.jsx depends on apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionPlayground.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionPlayground.jsx depends on apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionPlayground.jsx",
+      "target": "apps/web/src/components/motion/MotionPrimitives.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionPlayground.jsx depends on apps/web/src/components/motion/MotionPrimitives.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionPlayground.jsx",
+      "target": "apps/web/src/components/motion/StepSequence.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionPlayground.jsx depends on apps/web/src/components/motion/StepSequence.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionPlayground.jsx",
+      "target": "apps/web/src/lib/motion/runtime.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionPlayground.jsx depends on apps/web/src/lib/motion/runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionPrimitives.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionPrimitives.jsx depends on apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionPrimitives.jsx",
+      "target": "apps/web/src/lib/motion/runtime.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionPrimitives.jsx depends on apps/web/src/lib/motion/runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionSettings.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionSettings.jsx depends on apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionSettings.jsx",
+      "target": "apps/web/src/lib/motion/catalog.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionSettings.jsx depends on apps/web/src/lib/motion/catalog.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionSettings.jsx",
+      "target": "apps/web/src/lib/motion/preferences.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionSettings.jsx depends on apps/web/src/lib/motion/preferences.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionSettings.jsx",
+      "target": "apps/web/src/components/motion/MotionPlayground.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionSettings.jsx depends on apps/web/src/components/motion/MotionPlayground.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/MotionToggle.jsx",
+      "target": "apps/web/src/components/motion/MotionSettings.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/MotionToggle.jsx depends on apps/web/src/components/motion/MotionSettings.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/ReadingProgress.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/ReadingProgress.jsx depends on apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/ReadingProgress.jsx",
+      "target": "apps/web/src/lib/motion/runtime.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/ReadingProgress.jsx depends on apps/web/src/lib/motion/runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/StepSequence.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/StepSequence.jsx depends on apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/StepSequence.jsx",
+      "target": "apps/web/src/components/motion/MotionPrimitives.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/StepSequence.jsx depends on apps/web/src/components/motion/MotionPrimitives.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx",
+      "target": "apps/web/src/components/motion/MotionPrimitives.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx depends on apps/web/src/components/motion/MotionPrimitives.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx",
+      "target": "apps/web/src/components/motion/StepSequence.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx depends on apps/web/src/components/motion/StepSequence.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx",
+      "target": "apps/web/src/components/motion/ReadingProgress.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx depends on apps/web/src/components/motion/ReadingProgress.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx depends on apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx",
+      "target": "apps/web/src/components/platform/MetaFunctionFlow.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx depends on apps/web/src/components/platform/MetaFunctionFlow.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx",
+      "target": "apps/web/src/components/platform/MetaFunctionDashboard.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/__tests__/MotionRuntime.test.jsx depends on apps/web/src/components/platform/MetaFunctionDashboard.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx",
+      "target": "apps/web/src/components/motion/MotionSettings.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx depends on apps/web/src/components/motion/MotionSettings.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx",
+      "target": "apps/web/src/components/motion/MotionPlayground.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx depends on apps/web/src/components/motion/MotionPlayground.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx",
+      "target": "apps/web/src/pages/workspace/SettingsPage.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx depends on apps/web/src/pages/workspace/SettingsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionDashboard.jsx",
+      "target": "apps/web/src/components/site/ui.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionDashboard.jsx depends on apps/web/src/components/site/ui.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionDashboard.jsx",
+      "target": "apps/web/src/components/platform/platformData.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionDashboard.jsx consumes apps/web/src/components/platform/platformData.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionDashboard.jsx",
+      "target": "SRS-BUILDANDDO-PLATFORM-001",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionDashboard.jsx validates SRS-BUILDANDDO-PLATFORM-001.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionFlow.jsx",
+      "target": "apps/web/src/components/site/ui.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionFlow.jsx depends on apps/web/src/components/site/ui.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionFlow.jsx",
+      "target": "SRS-BUILDANDDO-PLATFORM-001",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionFlow.jsx validates SRS-BUILDANDDO-PLATFORM-001.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionOrb.jsx",
+      "target": "three",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionOrb.jsx depends on three.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionOrb.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionOrb.jsx depends on apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionOrb.jsx",
+      "target": "apps/web/src/lib/motion/runtime.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionOrb.jsx depends on apps/web/src/lib/motion/runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionOrb.jsx",
+      "target": "apps/web/src/components/platform/CapabilityMeshFallback.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionOrb.jsx depends on apps/web/src/components/platform/CapabilityMeshFallback.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/platform/MetaFunctionOrb.jsx",
+      "target": "apps/web/src/components/platform/platformData.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/platform/MetaFunctionOrb.jsx consumes apps/web/src/components/platform/platformData.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/contexts/MotionContext.jsx",
+      "target": "apps/web/src/lib/motion/preferences.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/contexts/MotionContext.jsx depends on apps/web/src/lib/motion/preferences.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/contexts/MotionContext.jsx",
+      "target": "apps/web/src/lib/motion/runtime.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/contexts/MotionContext.jsx depends on apps/web/src/lib/motion/runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/motion/catalog.js",
+      "target": "apps/web/src/lib/motion/preferences.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/motion/catalog.js depends on apps/web/src/lib/motion/preferences.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/motion/preferences.js",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/motion/preferences.js extends .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/motion/runtime.js",
+      "target": "apps/web/src/lib/motion/preferences.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/motion/runtime.js depends on apps/web/src/lib/motion/preferences.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/motion.css",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/motion.css depends on apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/motion-system.md",
+      "target": "apps/web/src/lib/motion/catalog.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/motion-system.md depends on apps/web/src/lib/motion/catalog.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/motion-system.md",
+      "target": "apps/web/src/lib/motion/preferences.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/motion-system.md depends on apps/web/src/lib/motion/preferences.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/motion-system.md",
+      "target": "apps/web/src/components/motion/MotionSettings.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/motion-system.md depends on apps/web/src/components/motion/MotionSettings.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/motion-system.md",
+      "target": "tests/upgrade/motion-system.test.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/motion-system.md depends on tests/upgrade/motion-system.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/motion-system.test.mjs",
+      "target": "apps/web/src/lib/motion/preferences.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/motion-system.test.mjs depends on apps/web/src/lib/motion/preferences.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/motion-system.test.mjs",
+      "target": "apps/web/src/lib/motion/runtime.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/motion-system.test.mjs depends on apps/web/src/lib/motion/runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/motion-system.test.mjs",
+      "target": "apps/web/src/lib/motion/catalog.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/motion-system.test.mjs depends on apps/web/src/lib/motion/catalog.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "description": "Motion continuation scope: The owner requested all 50 motion areas and organized Settings usage under the existing source dispatch. The checkout was fast-forwarded to merged PR 24 before implementation. Public frontend preferences and existing application presentations remain separate from workspace permissions, runtime receipts and private deployment authority.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "The motion foundation extends the merged application and administration instead of replacing earlier source.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T17:12:11.372369+00:00",
+      "commit_sha": "70f10a125e8b11098908212b6cd5901508da5c4a",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/motion-system.test.mjs",
+      "description": "Motion policy and lifecycle regressions: All 163 Node tests and 18 Python tests pass. Nineteen new motion cases verify preference normalization, OS precedence, category limits, old mission preference migration, cross-tab storage and failure recovery, interrupted animations, viewport/document activity, finite frame scheduling, measured values, reorder identities and all 50 catalogue entries. Selected motion libraries measure 100% lines, branches and functions; these are source and injected browser contracts, not rendered React or performance acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Personal motion policy and cancellable activity contracts have runnable source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T17:11:20.096531+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx",
+      "description": "Motion frontend acceptance blockers: Vitest cannot start, repository lint cannot load eslint-plugin-import, and build cannot spawn Vite. The unchanged lock audit reports eight missing resolutions and two manifest-group differences. Two real motion component suites cover settings, previews, platform rendering, focus, interrupted/private content and visible playback but remain unexecuted. The limited parser passes 217 modules. No package installation, fabricated lock entry, screenshot, frame-rate result or browser acceptance is claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "A dependency-enabled runner must execute React, lint, build and the documented browser/performance matrix before release.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T16:59:55.664962+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "docs/motion-system.md",
+      "description": "Motion public governance review: The measured context matches 30 Vitest files with six earlier findings and four unwired gates retained. Public boundary scanning passes 491 files, and all 137 files new since the original base have CGRF provenance. Settings exposes six groups, 14 categories, seven local preview collections and 50 usage descriptions. Source review corrected platform component shadowing, disabled pseudo-element selectors and gallery focus return. No backend, integration request, external post or deployment was changed by the motion wave.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "The complete public motion continuation is reviewable with explicit frontend and runtime limits.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T17:12:47.205749+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 188,
-    "type_b_count": 353,
-    "type_c_count": 32,
+    "type_a_count": 223,
+    "type_b_count": 418,
+    "type_c_count": 36,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

@@ -1,3 +1,4 @@
+import MotionToggle from '@/components/motion/MotionToggle';
 import React, { useId, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
@@ -73,7 +74,7 @@ function NavList({ onNavigate }) {
                     onClick={onNavigate}
                     className={({ isActive }) =>
                         cn(
-                            'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
+                            'motion-nav-link flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
                             isActive
                                 ? 'bg-primary/10 text-primary'
                                 : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground',
@@ -234,6 +235,7 @@ export default function WorkspaceLayout() {
                         </div>
                         <div className="flex shrink-0 items-center gap-2">
                             <ThemeToggle />
+                    <MotionToggle />
                             <Button
                                 size="sm"
                                 onClick={() => navigate('/app/missions')}

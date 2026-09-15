@@ -32,9 +32,9 @@ export function ThemeToggle() {
             className="inline-flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-foreground hover:bg-secondary"
         >
             {dark ? (
-                <Sun className="h-4 w-4" aria-hidden="true" />
+                <Sun key="sun" className="motion-theme-icon h-4 w-4" aria-hidden="true" />
             ) : (
-                <Moon className="h-4 w-4" aria-hidden="true" />
+                <Moon key="moon" className="motion-theme-icon h-4 w-4" aria-hidden="true" />
             )}
         </button>
     );

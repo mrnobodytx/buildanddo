@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from '@/App';
 import '@/index.css';
+import '@/motion.css';
 import { initTelemetry } from '@/lib/telemetry';
 import { initObservability } from '@/lib/observability/runtime';
 

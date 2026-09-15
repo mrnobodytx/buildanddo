@@ -26,6 +26,8 @@
 //              dates, editing and deletion — instead of an append-only stack.
 // ───────────────────────────────────────────────────────────────
 
+import { MotionList } from '@/components/motion/MotionPrimitives';
+import { useMotionPreferences } from '@/contexts/MotionContext';
 import React, { useMemo, useRef, useState } from 'react';
 import { CalendarClock, Plus, Target } from 'lucide-react';
 import { Button, Card } from '@/components/site/ui';
@@ -150,13 +152,8 @@ function MissionDesk() {
     const [notice, setNotice] = useState('');
     const [busy, setBusy] = useState(false);
     const pending = useRef(false);
-    const [effects, setEffects] = useState(() => {
-        try {
-            return localStorage.getItem('buildanddo.mission-effects') !== 'off';
-        } catch {
-            return false;
-        }
-    });
+    const { preferences, motion, update: updateMotion } = useMotionPreferences();
+    const effects = preferences.categories.learning;
     const normalised = useMemo(
         () => records.map((mission) => ({ ...mission, priority: mission.priority || 'normal' })),
         [records],
@@ -179,14 +176,7 @@ function MissionDesk() {
         clearWriteError();
         setBuilder(id);
     };
-    const toggleEffects = (enabled) => {
-        setEffects(enabled);
-        try {
-            localStorage.setItem('buildanddo.mission-effects', enabled ? 'on' : 'off');
-        } catch {
-            /* The current page preference still applies. */
-        }
-    };
+    const toggleEffects = (enabled) => updateMotion({ categories: { learning: enabled } });
     const mutate = async (operation, successMessage = '') => {
         if (pending.current || demo)
             return {
@@ -241,7 +231,7 @@ function MissionDesk() {
     return (
         <div
             className="mission-effects ph-no-capture space-y-8"
-            data-effects={effects ? 'on' : 'off'}
+            data-effects={motion.categories.learning ? 'on' : 'off'}
             data-dd-privacy="mask"
         >
             <PageHeader
@@ -370,7 +360,7 @@ function MissionDesk() {
             ) : visible.length === 0 ? (
                 <Card className="p-8 text-center text-sm">No mission matches those filters.</Card>
             ) : (
-                <ul aria-label="Missions" className="space-y-4">
+                <MotionList as="ul" itemsKey={visible.map((mission) => mission.id).join(':')} aria-label="Missions" className="space-y-4">
                     {visible.map((mission) => {
                         const issues = planIssues(mission.mission_plan);
                         const due = describeDueDate(mission.due_date);
@@ -379,7 +369,7 @@ function MissionDesk() {
                             evidence.degraded ? [] : evidence.records,
                         ).points;
                         return (
-                            <li key={mission.id}>
+                            <li key={mission.id} data-motion-key={mission.id}>
                                 <Card className="p-5">
                                     <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
                                         <div className="min-w-0">
@@ -535,7 +525,7 @@ function MissionDesk() {
                             </li>
                         );
                     })}
-                </ul>
+                </MotionList>
             )}
             <Dialog
                 open={Boolean(builder)}
@@ -543,7 +533,7 @@ function MissionDesk() {
             >
                 <DialogContent
                     className="mission-effects ph-no-capture sm:max-w-3xl"
-                    data-effects={effects ? 'on' : 'off'}
+                    data-effects={motion.categories.learning ? 'on' : 'off'}
                     data-dd-privacy="mask"
                 >
                     <DialogHeader>
@@ -619,7 +609,7 @@ function MissionDesk() {
             >
                 <DialogContent
                     className="mission-effects ph-no-capture sm:max-w-4xl"
-                    data-effects={effects ? 'on' : 'off'}
+                    data-effects={motion.categories.learning ? 'on' : 'off'}
                     data-dd-privacy="mask"
                 >
                     <DialogHeader>

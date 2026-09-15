@@ -1,3 +1,4 @@
+import MotionToggle from '@/components/motion/MotionToggle';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Activity, Menu } from 'lucide-react';
@@ -33,7 +34,7 @@ export default function Header({
                             key={page.path}
                             to={page.path}
                             className={({ isActive }) =>
-                                `py-3 text-sm transition-colors hover:text-foreground ${isActive ? 'font-semibold text-foreground underline underline-offset-4' : 'text-muted-foreground'}`
+                                `motion-link py-3 text-sm transition-colors hover:text-foreground ${isActive ? 'font-semibold text-foreground underline underline-offset-4' : 'text-muted-foreground'}`
                             }
                         >
                             {page.label}
@@ -42,6 +43,7 @@ export default function Header({
                 </nav>
                 <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                     <ThemeToggle />
+                    <MotionToggle />
                     {isAuthed ? (
                         <Button href="/app" size="sm" className="hidden sm:inline-flex">
                             Open workspace

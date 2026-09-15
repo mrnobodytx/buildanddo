@@ -1,3 +1,4 @@
+import { MotionList, MotionValue } from '@/components/motion/MotionPrimitives';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
@@ -97,7 +98,7 @@ function ErpDesk({ accountId, demo }) {
             ['Active objectives', knownObjectives ? objectives.records.filter((record) => record.status === 'active').length : 'Unavailable'],
             ['Open tasks', knownTasks ? tasks.records.filter((record) => record.status !== 'done').length : 'Unavailable'],
             ['Overdue tasks', knownTasks ? tasks.records.filter((record) => overdue(record, today)).length : 'Unavailable'],
-        ].map(([label, value]) => <Card key={label} className="space-y-2 p-4"><p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p><p className="font-display text-2xl">{value}</p></Card>)}</div>
+        ].map(([label, value]) => <Card key={label} className="space-y-2 p-4"><p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p><MotionValue as="p" value={value} className="font-display text-2xl" /></Card>)}</div>
         {saved && <p role="status" className="text-sm text-success">{saved}</p>}
         <Tabs value={tab} onValueChange={(next) => { setTab(next); setStatus('all'); setQuery(''); setPriority('all'); }}>
             <TabsList className="h-auto flex-wrap justify-start">{Object.keys(definitions).map((name) => <TabsTrigger key={name} value={name}>{name[0].toUpperCase() + name.slice(1)}</TabsTrigger>)}</TabsList>
@@ -111,8 +112,8 @@ function ErpDesk({ accountId, demo }) {
                     {config.statuses && <div className="space-y-1"><Label htmlFor={`erp-filter-${kind}`}>Filter by status</Label><select id={`erp-filter-${kind}`} className={selectClass} value={status} onChange={(event) => setStatus(event.target.value)}><option value="all">All states</option>{Object.entries(config.statuses).map(([value, label]) => <option key={value} value={value}>{label}</option>)}{kind === 'tasks' && <option value="overdue">Overdue</option>}</select></div>}
                     {kind === 'tasks' && <div className="space-y-1"><Label htmlFor="erp-priority-filter">Filter by priority</Label><select id="erp-priority-filter" className={selectClass} value={priority} onChange={(event) => setPriority(event.target.value)}><option value="all">All priorities</option>{Object.entries(PRIORITIES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>}
                 </div>
-                {source.degraded ? <DegradedNotice message={`The ${kind} list is unavailable.`} onRetry={source.refresh} /> : source.loading ? <ListSkeleton label={`Loading ${kind}…`} /> : !visible.length ? <p className="text-sm text-muted-foreground">{query || status !== 'all' || priority !== 'all' ? 'No records match these filters.' : `No ${kind} yet. Add a record to begin.`}</p> : <ul className="grid gap-3 md:grid-cols-2">
-                    {visible.map((record) => <li key={record.id} className="min-w-0"><Card className="h-full space-y-3 break-words p-4">
+                {source.degraded ? <DegradedNotice message={`The ${kind} list is unavailable.`} onRetry={source.refresh} /> : source.loading ? <ListSkeleton label={`Loading ${kind}…`} /> : !visible.length ? <p className="text-sm text-muted-foreground">{query || status !== 'all' || priority !== 'all' ? 'No records match these filters.' : `No ${kind} yet. Add a record to begin.`}</p> : <MotionList as="ul" itemsKey={visible.map((record) => record.id).join(':')} className="grid gap-3 md:grid-cols-2">
+                    {visible.map((record) => <li key={record.id} data-motion-key={record.id} className="min-w-0"><Card className="h-full space-y-3 break-words p-4">
                         <div className="flex items-start justify-between gap-3"><h3 className="font-display text-lg font-semibold">{record.title || record.name}</h3><Button size="sm" variant="ghost" disabled={demo} aria-label={`Edit ${record.title || record.name}`} onClick={(event) => begin(kind, record, event.currentTarget)}>Edit</Button></div>
                         {record.status && <p className="text-xs font-semibold text-primary">{config.statuses?.[record.status] || record.status}{kind === 'tasks' ? ` · ${PRIORITIES[record.priority] || 'Normal'} priority` : ''}</p>}
                         {(record.description || record.role) && <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">{record.description || record.role}</p>}
@@ -121,7 +122,7 @@ function ErpDesk({ accountId, demo }) {
                         {dateInput(record.due_date) && <p className={`text-xs ${overdue(record, today) && kind === 'tasks' ? 'text-destructive' : 'text-muted-foreground'}`}>Due: {dateInput(record.due_date)}{kind === 'tasks' && overdue(record, today) ? ' · Overdue' : ''}</p>}
                         {record.email && <p className="break-all text-sm">{record.email}</p>}{record.notes && <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">{record.notes}</p>}
                     </Card></li>)}
-                </ul>}
+                </MotionList>}
             </TabsContent>)}
         </Tabs>
         {editor && <Dialog open onOpenChange={(open) => { if (!open && !busy) setEditor(null); }}><DialogContent className="max-h-[90dvh] overflow-y-auto" data-dd-privacy="mask" onCloseAutoFocus={(event) => { event.preventDefault(); opener.current?.focus(); }}>

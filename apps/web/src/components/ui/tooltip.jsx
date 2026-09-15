@@ -12,6 +12,7 @@ const TooltipTrigger = TooltipPrimitive.Trigger
 const TooltipContent = React.forwardRef(({ className, sideOffset = 4, ...props }, ref) => (
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
+      data-motion-kind="navigation"
       ref={ref}
       sideOffset={sideOffset}
       className={cn(

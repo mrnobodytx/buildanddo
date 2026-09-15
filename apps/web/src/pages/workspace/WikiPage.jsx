@@ -15,7 +15,9 @@
 // Intent:      Make persisted wiki drafting, safe reading and administrator publication available inside the workspace.
 // ───────────────────────────────────────────────────────────────
 
-import React, { useState } from 'react';
+import ReadingProgress from '@/components/motion/ReadingProgress';
+import { MotionList, MotionEntrance, MotionValue } from '@/components/motion/MotionPrimitives';
+import React, { useRef, useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
@@ -41,13 +43,14 @@ function WikiEditor({ record, control, onClose }) {
                 <p id="wiki-body-help" className="mt-1 text-xs text-muted-foreground">Use blank lines between paragraphs. Content is displayed as text; HTML is not executed.</p></div>
         </fieldset>
         <Button type="button" variant="secondary" size="sm" aria-expanded={preview} onClick={() => setPreview(!preview)}>{preview ? 'Hide preview' : 'Preview page'}</Button>
-        {preview && <Card className="space-y-3 p-4"><h3 className="font-display text-xl font-semibold">{form.title || 'Untitled draft'}</h3><PlainArticle text={form.body} /></Card>}
+        {preview && <MotionEntrance category="community" className="space-y-3 border border-border p-4"><h3 className="font-display text-xl font-semibold">{form.title || 'Untitled draft'}</h3><PlainArticle text={form.body} /></MotionEntrance>}
         <ControlFeedback control={control} />
         <DialogFooter><Button type="button" variant="secondary" disabled={control.saving} onClick={onClose}>Cancel</Button><Button type="submit" disabled={disabled}>Save wiki draft</Button></DialogFooter>
     </form>;
 }
 
 function WikiDesk({ control, onPage }) {
+    const article = useRef(null);
     const { user } = useAuth(); const [editing, setEditing] = useState(null); const [reading, setReading] = useState(null);
     const { data } = control; const disabled = control.saving || control.uncertain;
     if (!data.enabled) return <FeatureDisabled feature="wiki" admin={data.can_admin} />;
@@ -56,9 +59,9 @@ function WikiDesk({ control, onPage }) {
         <p className="text-sm text-muted-foreground">Published pages are visible to workspace members. Drafts stay with their author and moderators until an administrator publishes them.</p>
         {data.can_write && <Button disabled={disabled} onClick={() => setEditing(EMPTY)}>New wiki page</Button>}
         <ControlFeedback control={control} />
-        <div className="grid gap-4 md:grid-cols-2">{data.items.map((record) => <Card key={record.id} className="min-w-0 space-y-3 p-5">
+        <MotionList category="community" itemsKey={data.items.map((record) => record.id).join(':')} className="grid gap-4 md:grid-cols-2">{data.items.map((record) => <Card key={record.id} data-motion-key={record.id} className="min-w-0 space-y-3 p-5">
             <div className="flex flex-wrap items-start justify-between gap-2"><h2 className="break-words font-display text-xl font-semibold">{record.title}</h2>
-                <span className="rounded border border-border px-2 py-1 text-xs capitalize">{record.status}</span></div>
+                <MotionValue value={record.status} category="community" className="rounded border border-border px-2 py-1 text-xs capitalize" /></div>
             <p className="break-all font-evidence text-xs text-muted-foreground">{record.slug} · revision {record.revision}</p>
             <p className="line-clamp-3 whitespace-pre-wrap break-words text-sm text-muted-foreground">{record.body}</p>
             <div className="flex flex-wrap gap-2"><Button variant="secondary" size="sm" disabled={disabled} onClick={() => setReading(record)}>Read page</Button>
@@ -67,7 +70,7 @@ function WikiDesk({ control, onPage }) {
                 {data.can_admin && record.status !== 'draft' && <Button variant="ghost" size="sm" disabled={disabled} onClick={() => transition(record, 'draft')}>Return to draft</Button>}
                 {data.can_admin && record.status !== 'archived' && <Button variant="ghost" size="sm" disabled={disabled} onClick={() => transition(record, 'archived')}>Archive page</Button>}
             </div>
-        </Card>)}</div>
+        </Card>)}</MotionList>
         {!data.items.length && <p className="text-sm text-muted-foreground">No wiki pages visible on this page.</p>}
         <PageControls label="Wiki" page={data.page} hasMore={data.has_more} onPage={onPage} disabled={disabled} />
         <Dialog open={Boolean(editing)} onOpenChange={(open) => { if (!open && !control.saving) setEditing(null); }}>
@@ -76,8 +79,8 @@ function WikiDesk({ control, onPage }) {
             </DialogContent>
         </Dialog>
         <Dialog open={Boolean(reading)} onOpenChange={(open) => { if (!open) setReading(null); }}>
-            <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-3xl"><DialogHeader><DialogTitle>{reading?.title}</DialogTitle></DialogHeader>
-                {reading && <article className="space-y-4"><p className="text-xs capitalize text-muted-foreground">{reading.status} · Updated {dateLabel(reading.updated)}</p>
+            <DialogContent data-reading-scroll className="max-h-[90dvh] overflow-y-auto sm:max-w-3xl"><DialogHeader><DialogTitle>{reading?.title}</DialogTitle></DialogHeader>
+                {reading && <article ref={article} className="space-y-4"><ReadingProgress targetRef={article} label="Wiki reading position" /><p className="text-xs capitalize text-muted-foreground">{reading.status} · Updated {dateLabel(reading.updated)}</p>
                     <PlainArticle text={reading.body} />{reading.published_by && <p className="break-all text-xs text-muted-foreground">Last publication: {dateLabel(reading.published_at)} by {reading.published_by}</p>}</article>}
             </DialogContent>
         </Dialog>

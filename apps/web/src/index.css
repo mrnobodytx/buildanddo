@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 /* Brief educational feedback. No looping effects; user and OS preferences win. */
-.mission-effects[data-effects="on"] .mission-progress { transition: width 300ms ease-out; }
-.mission-effects[data-effects="on"] .mission-step { animation: mission-enter 180ms ease-out; }
-.mission-effects[data-effects="on"] .mission-reward { animation: mission-earned 500ms ease-out; }
+.mission-effects[data-effects="on"] .mission-progress { transition: width var(--motion-layout) var(--motion-ease); }
+.mission-effects[data-effects="on"] .mission-step { animation: mission-enter var(--motion-panel) var(--motion-ease); }
+.mission-effects[data-effects="on"] .mission-reward { animation: mission-earned var(--motion-milestone) var(--motion-ease); }
 @keyframes mission-enter {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }

@@ -15,25 +15,35 @@
 // Intent:      Let learners read complete lessons, practice and check understanding with accessible focus and explicit progress persistence.
 // ───────────────────────────────────────────────────────────────
 
-import React, { useRef, useState } from 'react';
+import ReadingProgress from '@/components/motion/ReadingProgress';
+import StepSequence from '@/components/motion/StepSequence';
+import { useMotionCategory } from '@/contexts/MotionContext';
+import { animateElement, continuityFrames } from '@/lib/motion/runtime';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { lessonLink, validLesson } from '@/lib/tutorialCurriculum';
 
 /** @param {{tutorial: object, completed: boolean, canSave: boolean, busy: boolean, error: string, saved: string, onSave: Function, onClose: Function, opener: HTMLElement|null}} props Reader state. @returns {React.ReactElement} Lesson dialog. */
-export default function TutorialReader({ tutorial, completed, canSave, busy, error, saved, onSave, onClose, opener }) {
+export default function TutorialReader({ tutorial, completed, canSave, busy, error, saved, onSave, onClose, opener, origin }) {
     const [answer, setAnswer] = useState(null);
     const [checked, setChecked] = useState(false);
     const [practiced, setPracticed] = useState(false);
     const heading = useRef(null);
+    const article = useRef(null);
+    const { enabled, motion } = useMotionCategory('layout');
+    useLayoutEffect(() => animateElement(heading.current, continuityFrames(origin, heading.current?.getBoundingClientRect()), {
+        duration: motion.duration.layout, easing: motion.ease,
+    }, enabled && Boolean(origin)), [origin, enabled, motion.duration.layout, motion.ease]);
     const lesson = tutorial.lesson;
     const available = validLesson(lesson);
     const correct = available && checked && answer === lesson.check.answer;
     return <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}>
-        <DialogContent className="max-h-[92dvh] max-w-3xl overflow-y-auto"
+        <DialogContent data-reading-scroll className="max-h-[92dvh] max-w-3xl overflow-y-auto"
             data-dd-privacy="mask" onOpenAutoFocus={(event) => { event.preventDefault(); heading.current?.focus(); }}
             onCloseAutoFocus={(event) => { event.preventDefault(); opener?.focus(); }}>
-            <div className="ph-no-capture min-w-0 space-y-6 break-words">
+            <div ref={article} className="ph-no-capture min-w-0 space-y-6 break-words">
+                <ReadingProgress targetRef={article} label="Lesson reading position" />
                 <DialogHeader>
                     <p className="text-xs font-semibold uppercase tracking-wider text-primary">{tutorial.category} · about {tutorial.effort_minutes || 10} minutes</p>
                     <DialogTitle ref={heading} tabIndex={-1} className="font-display text-2xl">{tutorial.title}</DialogTitle>
@@ -57,6 +67,10 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
                         {section.paragraphs?.map((paragraph, i) => <p key={i} className="whitespace-pre-wrap text-sm leading-7">{paragraph}</p>)}
                         {section.steps && <ol className="list-decimal space-y-3 pl-6 text-sm leading-7">{section.steps.map((step, i) => <li key={i}>{step}</li>)}</ol>}
                     </section>)}
+                    <details className="border border-border p-4">
+                        <summary className="cursor-pointer py-2 text-sm font-semibold">Walk through this lesson</summary>
+                        <div className="mt-4"><StepSequence title={tutorial.title} steps={lesson.sections.slice(0, 5).map((section) => ({ title: section.heading, body: [...(section.paragraphs || []), ...(section.steps || [])].join(' ') }))} /></div>
+                    </details>
                     <section className="space-y-3 rounded-md border border-border p-4">
                         <h3 className="font-display text-xl font-semibold">Practice</h3>
                         <p className="text-sm leading-7">{lesson.exercise.prompt}</p>

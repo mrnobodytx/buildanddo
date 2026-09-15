@@ -15,6 +15,7 @@
 // Intent:      Present one scoped control surface for sinks, extensions, Discord and Reddit with explicit requested versus observed states.
 // ───────────────────────────────────────────────────────────────
 
+import { MotionValue } from '@/components/motion/MotionPrimitives';
 import React, { useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -57,8 +58,8 @@ function IntegrationDesk({ control, kinds }) {
         <div className="grid gap-4 md:grid-cols-2">{items.map((item) => <Card key={item.provider} className="min-w-0 space-y-4 p-5">
             <div><p className="text-xs uppercase tracking-wide text-muted-foreground">{item.kind === 'sink' ? 'Telemetry sink' : item.kind === 'extension' ? 'Extension' : 'Community'}</p>
                 <h2 className="mt-1 font-display text-xl font-semibold">{item.label}</h2></div>
-            <dl className="space-y-2 text-sm"><div className="flex flex-wrap justify-between gap-2"><dt>Requested state</dt><dd>{item.revision ? (item.desired_enabled ? 'Enabled' : 'Disabled') : 'Not configured'}</dd></div>
-                <div className="flex flex-wrap justify-between gap-2"><dt>Last observation</dt><dd>{stateNames[item.observation.state] || 'Not measured'}{item.observation.state !== 'unknown' && !item.observation.current ? ' — out of date' : ''}</dd></div>
+            <dl className="space-y-2 text-sm"><div className="flex flex-wrap justify-between gap-2"><dt>Requested state</dt><MotionValue as="dd" category="community" value={`${item.revision}:${item.desired_enabled}`}>{item.revision ? (item.desired_enabled ? 'Enabled' : 'Disabled') : 'Not configured'}</MotionValue></div>
+                <div className="flex flex-wrap justify-between gap-2"><dt>Last observation</dt><MotionValue as="dd" category="community" value={`${item.observation.state}:${item.observation.at}:${item.observation.current}`}>{stateNames[item.observation.state] || 'Not measured'}{item.observation.state !== 'unknown' && !item.observation.current ? ' — out of date' : ''}</MotionValue></div>
                 <div className="flex flex-wrap justify-between gap-2"><dt>Observed at</dt><dd>{dateLabel(item.observation.at)}</dd></div></dl>
             {item.observation.check_pending && <p className="text-xs text-muted-foreground">Health check requested; awaiting a new result.</p>}
             {item.revision > 0 && !item.observation.current && <p className="text-xs text-muted-foreground">The current request has no fresh matching receipt. Live activation is unconfirmed.</p>}

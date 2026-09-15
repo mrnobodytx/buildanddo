@@ -371,3 +371,55 @@ wiki/forum flows, integration request/observation distinction and native/browser
 acceptance. The community-controls handoff specifies private execution and
 minimal dated receipts. No live seat event, Discord/Reddit post, sink activation,
 credential provisioning, shared migration or deployment occurred here.
+
+
+## Motion continuation authorized 2026-09-15
+
+The owner requested all 50 animation areas and organized Settings usage. The
+existing A2 source dispatch covers personal frontend preferences and motion.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| AT | Reconcile PR 24 and register motion scope | `python scripts/ci/agent_context.py --check` | done — PR 24 baseline reconciled and motion scope registered |
+| AU | Add shared policy, tokens and accessible personal preferences | Motion policy and lifecycle Node tests | done — bounded policy, storage and lifecycle source contracts pass |
+| AV | Connect common controls, navigation, themes and existing effects | Source check and component motion suites | partial — shared source connected; component/browser execution pending |
+| AW | Apply editorial, learning, workflow and record transitions | Motion interaction suites and usage review | partial — public and workspace effects implemented; rendered acceptance pending |
+| AX | Organize Settings, previews and all 50 usage areas | Settings interaction and catalogue tests | partial — grouped controls, seven previews and all 50 uses implemented; React tests unexecuted |
+| AY | Verify and document source/runtime evidence | Node/Python, frontend, context, boundary and memory gates | done — available gates pass and frontend/runtime blockers are recorded |
+
+Memory brief: merged PR 24 is present in the local remote-tracking ref. The
+resumed checkout was fast-forwarded to it before motion edits. React motion,
+CSS transitions, count-up effects and a Three.js platform visualization already
+exist, with inconsistent local motion controls. React, Vite, Vitest, jsdom and
+framer-motion are still absent from the installed environment; the incomplete
+lockfile is a previously recorded dependency blocker. No live PocketBase seat
+or deployed frontend is available. Personal preferences carry no workspace
+authority. Source acceptance must remain distinct from unexecuted UI checks.
+
+Motion phase evidence: AT, AU and AY available-source gates PASS. AV, AW and AX
+source is implemented; their React/browser gates remain open. The full regression
+run passes 163 Node tests (19 new motion cases) and 18 Python tests. Motion policy,
+storage, catalogue and injectable browser lifecycle helpers measure 100% lines,
+branches and functions. Source parsing passes 217 modules. Thirty Vitest files
+are inventoried, including two new real component suites for motion settings,
+previews, platform diagrams, interruption, keyboard recovery and visible activity.
+
+Settings now has Appearance, Motion & interaction, Workspace and Account tabs.
+Motion has six groups, 14 categories, seven opt-in preview collections and a
+searchable reference for all 50 requested areas. Personal device choices sync
+between tabs, migrate the older mission-effects choice and respect OS reduction.
+Optional pointer/ambient/spatial effects default off. Actual record removal and
+saved-state authority remain immediate; local examples cannot write records.
+
+Vitest cannot start; lint lacks eslint-plugin-import and Vite is absent. The
+existing lock still lacks eight resolutions and differs in two manifest groups.
+No dependency install, substituted lock entry or weakened gate was used. Context
+matches, boundary scanning passes 491 files and CGRF provenance passes 137/137 new
+files cumulatively. Six earlier findings and four unwired gates remain visible.
+Application smoke remains 4/7; cumulative completed acceptance gates are 24/51.
+
+docs/motion-system.md contains every usage mapping and the runnable frontend and
+browser matrix. Frontend execution, real device performance, screenshots, native
+PocketBase and served-release verification remain unclaimed. Existing private
+delivery handoffs still apply; this wave changes no backend, external integration,
+workspace authority or deployment control.

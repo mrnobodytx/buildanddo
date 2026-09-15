@@ -16,6 +16,7 @@
 //              a mission is proposed, advanced and shown as such.
 // ───────────────────────────────────────────────────────────────
 
+import { MotionProvider } from '@/contexts/MotionContext';
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -63,7 +64,7 @@ afterEach(() => {
 describe('MissionsPage', () => {
     it('teaches the mission stages and differentiates an empty workspace from loading', async () => {
         pb.__setRecords('missions', []);
-        renderWithProviders(<MissionsPage />);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         expect(screen.queryByText('No missions yet')).not.toBeInTheDocument();
         expect(
             await screen.findByRole('heading', { name: 'Challenge Desk', level: 1 }),
@@ -83,7 +84,7 @@ describe('MissionsPage', () => {
     });
     it('saves a scoped draft through the existing PocketBase data layer', async () => {
         const user = setupUser();
-        renderWithProviders(<MissionsPage />);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         await screen.findByText('No missions yet');
         await user.click(firstStart());
         const dialog = within(screen.getByRole('dialog'));
@@ -116,7 +117,7 @@ describe('MissionsPage', () => {
     });
     it('retains a rejected draft and retries the same entered plan', async () => {
         const user = setupUser();
-        renderWithProviders(<MissionsPage />);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         await screen.findByText('No missions yet');
         await user.click(firstStart());
         const dialog = within(screen.getByRole('dialog'));
@@ -140,7 +141,7 @@ describe('MissionsPage', () => {
         const incomplete = createMockMission({ title: 'Incomplete proposal' });
         const ready = createMockMission({ title: 'Ready proposal', mission_plan: fullPlan() });
         pb.__setRecords('missions', [incomplete, ready]);
-        renderWithProviders(<MissionsPage />);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         const list = within(await screen.findByRole('list', { name: 'Missions' }));
         const cards = list.getAllByRole('listitem');
         expect(within(cards[0]).getByRole('button', { name: 'Review approval' })).toBeDisabled();
@@ -169,7 +170,7 @@ describe('MissionsPage', () => {
             mission_approved_at: '2026-09-15T01:00:00Z',
         });
         pb.__setRecords('missions', [record]);
-        renderWithProviders(<MissionsPage />);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         await user.click(await screen.findByRole('button', { name: 'Record work started' }));
         await waitFor(() =>
             expect(pb.__collection('missions').update).toHaveBeenCalledWith(record.id, {
@@ -189,7 +190,7 @@ describe('MissionsPage', () => {
         const user = setupUser();
         const record = createMockMission({ title: 'Finished work', status: 'failed' });
         pb.__setRecords('missions', [record]);
-        renderWithProviders(<MissionsPage />);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         const list = within(await screen.findByRole('list', { name: 'Missions' }));
         expect(list.queryByRole('button', { name: 'Edit plan' })).not.toBeInTheDocument();
         expect(list.queryByRole('button', { name: 'Record work started' })).not.toBeInTheDocument();
@@ -208,7 +209,7 @@ describe('MissionsPage', () => {
             createMockMission({ title: 'One mission' }),
             createMockMission({ title: 'Second mission' }),
         ]);
-        const rendered = renderWithProviders(<MissionsPage />);
+        const rendered = renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         await screen.findByRole('list', { name: 'Missions' });
         await user.type(screen.getByPlaceholderText('Search missions'), 'One mission');
         expect(within(missionList()).queryByText('Second mission')).not.toBeInTheDocument();
@@ -217,14 +218,14 @@ describe('MissionsPage', () => {
         expect(screen.getByText('No mission matches those filters.')).toBeInTheDocument();
         rendered.unmount();
         pb.__setError('missions');
-        renderWithProviders(<MissionsPage />);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         expect(await screen.findByText(/This list could not be loaded/i)).toBeInTheDocument();
         expect(screen.queryByText('No missions yet')).not.toBeInTheDocument();
     });
     it('keeps demo missions read-only while allowing a return to real workspace data', async () => {
         const user = setupUser();
         setDemoMode(true);
-        renderWithProviders(<MissionsPage />);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         expect(await screen.findByText(/Demonstration mode is read-only/)).toBeInTheDocument();
         expect(firstStart()).toBeDisabled();
         expect(pb.__collection('missions').getFullList).not.toHaveBeenCalled();
@@ -235,15 +236,15 @@ describe('MissionsPage', () => {
     });
     it('persists the animation preference without changing any mission state', async () => {
         const user = setupUser();
-        renderWithProviders(<MissionsPage />);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);
         await screen.findByText('No missions yet');
         await user.click(screen.getByRole('checkbox', { name: 'Learning animations' }));
-        expect(localStorage.getItem('buildanddo.mission-effects')).toBe('off');
+        expect(JSON.parse(localStorage.getItem('buildanddo.motion.v1')).categories.learning).toBe(false);
         expect(screen.getByRole('checkbox', { name: 'Learning animations' })).not.toBeChecked();
         expect(pb.__collection('missions').update).not.toHaveBeenCalled();
     });
     it('does not mount private data hooks for a signed-out visitor', () => {
-        renderWithProviders(<MissionsPage />, { auth: { isAuthed: false, user: null } });
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>, { auth: { isAuthed: false, user: null } });
         expect(
             screen.getByText('Open an authenticated workspace to save a mission.'),
         ).toBeInTheDocument();

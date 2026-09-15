@@ -1,5 +1,6 @@
+import { useMotionActivity, useMotionCategory } from '@/contexts/MotionContext';
 import React, { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
     Radar,
     MessageSquareText,
@@ -17,10 +18,10 @@ import {
     EvidenceChip,
 } from '@/components/site/ui';
 
-const fade = (delay = 0, reduce) => ({
-    initial: { opacity: 0, y: reduce ? 0 : 14 },
+const fade = (delay = 0, reduce, policy) => ({
+    initial: { opacity: reduce ? 1 : 0.65, y: reduce ? 0 : policy.distance },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: reduce ? 0 : policy.duration.reveal / 1000, delay: reduce ? 0 : Math.min(delay, 0.2), ease: policy.curve },
 });
 
 const FLOW = [
@@ -70,20 +71,21 @@ const TONE_TEXT = {
 };
 
 function CockpitHero({ reduce }) {
+    const activity = useMotionActivity('ambient');
     const [step, setStep] = useState(0);
     const current = FLOW[step];
 
     useEffect(() => {
-        if (reduce) return undefined;
+        if (reduce || !activity.active) return undefined;
         const id = setInterval(() => {
             setStep((s) => (s + 1) % FLOW.length);
         }, 2800);
         return () => clearInterval(id);
-    }, [reduce]);
+    }, [reduce, activity.active]);
 
     return (
-        <PaperCard className="overflow-hidden shadow-[0_30px_70px_-30px_rgba(0,0,0,0.65)]">
-            <div className="flex items-center gap-3 border-b border-paper bg-paper-subtle px-4 py-2.5">
+        <PaperCard data-motion-kind="editorial" className="overflow-hidden shadow-[0_30px_70px_-30px_rgba(0,0,0,0.65)]">
+            <div ref={activity.ref} className="flex items-center gap-3 border-b border-paper bg-paper-subtle px-4 py-2.5">
                 <div className="flex gap-1.5" aria-hidden="true">
                     <span className="h-2 w-2 rounded-full bg-[hsl(var(--paper-border))]" />
                     <span className="h-2 w-2 rounded-full bg-[hsl(var(--paper-border))]" />
@@ -201,7 +203,7 @@ function CockpitHero({ reduce }) {
 }
 
 export default function Hero() {
-    const reduce = useReducedMotion();
+    const { reduced: reduce, motion: policy } = useMotionCategory('editorial');
 
     return (
         <section id="top" className="relative overflow-hidden pt-14">
@@ -216,7 +218,7 @@ export default function Hero() {
 
             <div className="relative mx-auto grid min-h-[calc(100dvh-3.5rem)] max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-12 lg:gap-10">
                 <div className="lg:col-span-5">
-                    <motion.div {...fade(0, reduce)}>
+                    <motion.div {...fade(0, reduce, policy)}>
                         <Badge tone="violet">
                             <StatusDot tone="violet" pulse={!reduce} />
                             Early access · small-business operating help
@@ -224,14 +226,14 @@ export default function Hero() {
                     </motion.div>
 
                     <motion.h1
-                        {...fade(0.08, reduce)}
+                        {...fade(0.08, reduce, policy)}
                         className="mt-5 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl"
                     >
                         Turn a business problem into a verified next step.
                     </motion.h1>
 
                     <motion.p
-                        {...fade(0.16, reduce)}
+                        {...fade(0.16, reduce, policy)}
                         className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
                     >
                         BuildAndDo helps small-business owners notice important changes,
@@ -240,7 +242,7 @@ export default function Hero() {
                     </motion.p>
 
                     <motion.div
-                        {...fade(0.24, reduce)}
+                        {...fade(0.24, reduce, policy)}
                         className="mt-7 flex flex-col gap-3 sm:flex-row"
                     >
                         <Button href="#early-access" size="lg">
@@ -254,14 +256,14 @@ export default function Hero() {
                     </motion.div>
 
                     <motion.p
-                        {...fade(0.32, reduce)}
+                        {...fade(0.32, reduce, policy)}
                         className="mt-5 text-xs leading-relaxed text-muted-foreground/80"
                     >
                         No automation jargon. No black box. You stay in control of every action.
                     </motion.p>
                 </div>
 
-                <motion.div {...fade(0.3, reduce)} className="lg:col-span-7">
+                <motion.div {...fade(0.3, reduce, policy)} className="lg:col-span-7">
                     <CockpitHero reduce={reduce} />
                 </motion.div>
             </div>

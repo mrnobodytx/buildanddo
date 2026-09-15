@@ -37,6 +37,7 @@ const toastVariants = cva(
 const Toast = React.forwardRef(({ className, variant, ...props }, ref) => {
   return (
     <ToastPrimitives.Root
+      data-motion-kind="feedback"
       ref={ref}
       className={cn(toastVariants({ variant }), className)}
       {...props} />

@@ -1,3 +1,5 @@
+import { useMotionChange } from '@/components/motion/MotionPrimitives';
+import { useMotionCategory } from '@/contexts/MotionContext';
 import React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -129,6 +131,7 @@ export function statusMeta(map, key) {
 
 export function StatusBadge({ map, value, className }) {
     const meta = statusMeta(map, value);
+    const changed = useMotionChange(value, 'data');
     const tones = {
         neutral: 'border-border bg-secondary/60 text-muted-foreground',
         violet: 'border-primary/30 bg-primary/10 text-primary',
@@ -137,6 +140,7 @@ export function StatusBadge({ map, value, className }) {
     };
     return (
         <span
+            ref={changed}
             className={cn(
                 'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider',
                 tones[meta.tone],
@@ -183,6 +187,7 @@ export function PageHeader({ title, description, actions, children }) {
  * because a zeroed bar reads as "no progress" when the truth is "not tracked".
  */
 export function ProgressMeter({ value, label = 'Progress', className }) {
+    const { enabled } = useMotionCategory('data');
     if (value == null || Number.isNaN(Number(value))) return null;
     const pct = Math.max(0, Math.min(100, Math.round(Number(value))));
     return (
@@ -200,8 +205,8 @@ export function ProgressMeter({ value, label = 'Progress', className }) {
                 aria-label={label}
             >
                 <div
-                    className="h-full rounded-full bg-primary transition-[width] duration-300"
-                    style={{ width: `${pct}%` }}
+                    className="h-full origin-left rounded-full bg-primary"
+                    style={{ transform: `scaleX(${pct / 100})`, transition: enabled ? 'transform var(--motion-layout) var(--motion-ease)' : 'none' }}
                 />
             </div>
         </div>

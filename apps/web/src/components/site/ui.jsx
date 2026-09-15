@@ -1,3 +1,4 @@
+import { MotionReveal, useMotionChange } from '@/components/motion/MotionPrimitives';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -41,7 +42,7 @@ export const Button = React.forwardRef(function Button({
     ...props
 }, ref) {
     const base =
-        'inline-flex items-center justify-center gap-2 font-semibold transition-all active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ring))] disabled:cursor-not-allowed disabled:opacity-60';
+        'motion-button inline-flex items-center justify-center gap-2 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ring))] disabled:cursor-not-allowed disabled:opacity-60';
     const sizes = {
         sm: 'h-9 px-4 text-sm',
         md: 'h-11 px-5 text-sm',
@@ -161,7 +162,7 @@ export function Rule({ className, double = false, thick = false }) {
             aria-hidden="true"
             className={cn(
                 double ? 'rule-double' : thick ? 'rule-thick' : 'rule-thin',
-                'border-0',
+                'motion-rule border-0',
                 className,
             )}
         />
@@ -192,10 +193,12 @@ const STATE_TONE = {
 };
 
 export function StatePill({ state, className }) {
+    const changed = useMotionChange(state, 'data');
     const tone = STATE_TONE[state] || 'neutral';
     const label = (state || '—').replace(/_/g, ' ');
     return (
         <span
+            ref={changed}
             className={cn(
                 'inline-flex items-center gap-1.5 border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em]',
                 TONES[tone] || TONES.neutral,
@@ -321,14 +324,14 @@ export function Section({
             className={cn('scroll-mt-20 py-14 sm:py-20', className)}
             {...props}
         >
-            <div
+            <MotionReveal
                 className={cn(
                     'mx-auto max-w-6xl px-4 sm:px-6',
                     containerClassName,
                 )}
             >
                 {children}
-            </div>
+            </MotionReveal>
         </section>
     );
 }

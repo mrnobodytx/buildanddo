@@ -8,17 +8,20 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-13
-// Depends:     three, framer-motion,
-//              apps/web/src/components/platform/CapabilityMeshFallback.jsx
+// Depends:     three, apps/web/src/contexts/MotionContext.jsx,
+//              apps/web/src/lib/motion/runtime.js, apps/web/src/components/platform/CapabilityMeshFallback.jsx
 // EnumType:    Widget
 // EnumEdges:   DEPENDS_ON three;
+//              DEPENDS_ON apps/web/src/contexts/MotionContext.jsx;
+//              DEPENDS_ON apps/web/src/lib/motion/runtime.js;
 //              DEPENDS_ON apps/web/src/components/platform/CapabilityMeshFallback.jsx;
 //              CONSUMES apps/web/src/components/platform/platformData.js
 // Intent:      Render the provider capability mesh as a restrained, performant hero illustration.
 // ───────────────────────────────────────────────────────────────
 
 import React, { useEffect, useId, useRef, useState } from 'react';
-import { useReducedMotion } from 'framer-motion';
+import { useMotionActivity } from '@/contexts/MotionContext';
+import { createFrameLoop } from '@/lib/motion/runtime';
 import { Pause, Play } from 'lucide-react';
 import * as THREE from 'three';
 import CapabilityMeshFallback from '@/components/platform/CapabilityMeshFallback';
@@ -58,7 +61,11 @@ function disposeObject(object) {
 }
 
 export default function MetaFunctionOrb({ forceStatic = false }) {
-    const reduce = useReducedMotion();
+    const activity = useMotionActivity('spatial');
+    const reduce = activity.reduced;
+    const loopRef = useRef(null);
+    const drawRef = useRef(null);
+    const activeRef = useRef(false);
     const titleId = useId();
     const captionId = useId();
     const mountRef = useRef(null);
@@ -71,6 +78,7 @@ export default function MetaFunctionOrb({ forceStatic = false }) {
     ));
     const [webglFailed, setWebglFailed] = useState(false);
     const staticMode = forceStatic || reduce || compact || webglFailed;
+    activeRef.current = activity.active && !paused;
 
     useEffect(() => {
         const query = window.matchMedia('(max-width: 767px)');
@@ -88,12 +96,18 @@ export default function MetaFunctionOrb({ forceStatic = false }) {
     }, [paused]);
 
     useEffect(() => {
-        if (staticMode || paused) return undefined;
+        // Update drawing inputs above before a manually requested paused frame.
+        loopRef.current?.setActive(activity.active && !paused);
+        if (activity.visible) drawRef.current?.(performance.now());
+    }, [activity.active, activity.visible, paused, activeProvider]);
+
+    useEffect(() => {
+        if (staticMode || paused || !activity.active) return undefined;
         const timer = window.setInterval(() => {
             setActiveProvider((index) => (index + 1) % PROVIDERS.length);
         }, 2600);
         return () => window.clearInterval(timer);
-    }, [paused, staticMode]);
+    }, [paused, staticMode, activity.active]);
 
     useEffect(() => {
         if (staticMode || !mountRef.current) return undefined;
@@ -235,27 +249,17 @@ export default function MetaFunctionOrb({ forceStatic = false }) {
         );
         group.add(particles);
 
-        let visible = true;
-        let documentVisible = !document.hidden;
-        const intersection = new IntersectionObserver((entries) => {
-            visible = entries[0]?.isIntersecting ?? true;
-        }, { threshold: 0.05 });
-        intersection.observe(mount);
-
-        const onVisibility = () => {
-            documentVisible = !document.hidden;
-        };
-        document.addEventListener('visibilitychange', onVisibility);
-
         const resize = () => {
             const width = Math.max(mount.clientWidth, 320);
             const height = Math.max(mount.clientHeight, 390);
             renderer.setSize(width, height, false);
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
+            drawRef.current?.(performance.now());
         };
-        const resizeObserver = new ResizeObserver(resize);
-        resizeObserver.observe(mount);
+        const resizeObserver = window.ResizeObserver ? new window.ResizeObserver(resize) : null;
+        resizeObserver?.observe(mount);
+        window.addEventListener('resize', resize);
         resize();
 
         const onContextLost = (event) => {
@@ -264,12 +268,11 @@ export default function MetaFunctionOrb({ forceStatic = false }) {
         };
         renderer.domElement.addEventListener('webglcontextlost', onContextLost);
 
-        const clock = new THREE.Clock();
-        let frameId = 0;
-        const render = () => {
-            frameId = window.requestAnimationFrame(render);
-            if (!visible || !documentVisible) return;
-            const elapsed = clock.getElapsedTime();
+        let elapsed = 0;
+        let previousTime;
+        const render = (time) => {
+            if (activeRef.current && previousTime !== undefined) elapsed += Math.min(0.05, Math.max(0, (time - previousTime) / 1000));
+            previousTime = time;
             if (!pausedRef.current) {
                 group.rotation.y = elapsed * 0.075;
                 nucleus.rotation.x = elapsed * 0.13;
@@ -279,23 +282,28 @@ export default function MetaFunctionOrb({ forceStatic = false }) {
 
             providerMeshes.forEach((mesh, index) => {
                 const selected = index === activeProviderRef.current;
-                const pulse = selected && !pausedRef.current ? 1 + Math.sin(elapsed * 3.8) * 0.11 : 1;
+                const pulse = selected && activeRef.current ? 1 + Math.sin(elapsed * 3.8) * 0.11 : 1;
                 mesh.scale.setScalar(pulse);
                 mesh.material.emissiveIntensity = selected ? 1.25 : 0.52;
-                providerGlows[index].scale.setScalar(selected ? 1.32 + Math.sin(elapsed * 3.8) * 0.08 : 1);
+                providerGlows[index].scale.setScalar(selected ? 1.32 + (activeRef.current ? Math.sin(elapsed * 3.8) * 0.08 : 0) : 1);
                 providerGlows[index].material.opacity = selected ? 0.2 : 0.08;
                 providerLines[index].material.color.copy(selected ? providerLines[index].color : inactiveLineColor);
                 providerLines[index].material.opacity = selected ? 0.92 : 0.25;
             });
             renderer.render(scene, camera);
         };
-        render();
+        const loop = createFrameLoop(render, window);
+        loopRef.current = loop;
+        drawRef.current = render;
+        loop.setActive(activeRef.current);
+        render(performance.now());
 
         return () => {
-            window.cancelAnimationFrame(frameId);
-            intersection.disconnect();
-            resizeObserver.disconnect();
-            document.removeEventListener('visibilitychange', onVisibility);
+            loop.dispose();
+            loopRef.current = null;
+            drawRef.current = null;
+            resizeObserver?.disconnect();
+            window.removeEventListener('resize', resize);
             renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
             disposeObject(scene);
             renderer.dispose();
@@ -309,6 +317,7 @@ export default function MetaFunctionOrb({ forceStatic = false }) {
     const current = PROVIDERS[activeProvider];
     return (
         <figure
+            ref={activity.ref}
             className="relative overflow-hidden border border-foreground/70 bg-card"
             aria-labelledby={`${titleId} ${captionId}`}
         >
@@ -327,7 +336,7 @@ export default function MetaFunctionOrb({ forceStatic = false }) {
                         <span className="relative h-1.5 w-1.5 rounded-full bg-teal" />
                     </span>
                     {paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
-                    {paused ? 'resume mesh' : `invoking ${current.namespace}`}
+                    {paused || !activity.active ? 'Resume illustration' : `Pause ${current.namespace} illustration`}
                 </button>
             </div>
             <div ref={mountRef} className="h-[25rem] w-full lg:h-[31rem]" />
@@ -339,7 +348,7 @@ export default function MetaFunctionOrb({ forceStatic = false }) {
                 ))}
             </div>
             <figcaption id={captionId} className="border-t border-border px-4 py-3 text-xs leading-relaxed text-muted-foreground">
-                The active path brightens as a named capability crosses its provider boundary.
+                Illustrative capability mesh. Highlighted paths explain provider boundaries; no live invocation is shown.
             </figcaption>
         </figure>
     );
