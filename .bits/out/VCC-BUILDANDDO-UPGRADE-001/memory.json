@@ -107,7 +107,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 6901,
+      "lines": 6979,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Carry cumulative source relationships and honest mission-system validation evidence into the authorized post-merge memory flow.",
@@ -169,7 +169,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 248,
+      "lines": 309,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -235,7 +235,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 140,
+      "lines": 169,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -394,7 +394,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 167,
+      "lines": 198,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -4751,6 +4751,38 @@
       "tenant_id": null
     },
     {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/handoffs/TEMPLATE.md"
+      ],
+      "lines": 252,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the owner's Rig 1 execution requirements and testable private-seat handoff without adding runtime authority to the public site.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "rig1-handoff"
+      ],
+      "tenant_id": null
+    },
+    {
       "type": "B",
       "source": ".bits/handoffs/2026-09-14-bits-codegen-ide1-upgrade-telemetry.md",
       "target": "apps/pocketbase/pb_hooks/metrics.pb.js",
@@ -6691,6 +6723,26 @@
       "created_by": "BITS-CODEGEN"
     },
     {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Keep the Rig 1 request within its recorded public handoff scope.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+      "target": ".bits/handoffs/TEMPLATE.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "Use the repository handoff structure to make missing private authority actionable.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/build.test.mjs",
@@ -6884,12 +6936,38 @@
       "timestamp": "2026-09-15T02:32:47.732104+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+      "description": "Private runtime attachment was rejected because public and private repositories cannot share this session. The named runtime facilities are absent from public source; their contracts remain unverified. A CMAX-B handoff records the bridge-first implementation requirements and private-session/dispatch blocker.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Private Rig 1 implementation awaits its primary-repository session and execution dispatch.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:59:05.802481+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "description": "Rig 1 public handoff checks passed: measured context, tracked/new-file public boundary, memory consistency and diff whitespace (4/4). The continuation changes only public .bits governance/evidence. Application smoke remains historical 4/7; private runtime source and execution have not been validated.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Public CMAX-B handoff is reviewable; private execution remains blocked.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T02:59:51.866409+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/4"
     }
   ],
   "summary": {
-    "type_a_count": 123,
-    "type_b_count": 194,
-    "type_c_count": 15,
+    "type_a_count": 124,
+    "type_b_count": 196,
+    "type_c_count": 17,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

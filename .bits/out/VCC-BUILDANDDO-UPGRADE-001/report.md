@@ -45,19 +45,25 @@ Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
 Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 8/19 acceptance gates complete; source includes the original upgrades, backend reuse and mission education continuation
-Smoke: 4/7
+Tasks: 10/21 acceptance gates complete; original upgrades, backend reuse, mission education and public Rig 1 handoff
+Smoke: 4/7 application gates (retained mission evidence); 4/4 public Rig 1 handoff gates
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: 2 prior implementations (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9); mission evidence is recorded before its commit
+Commits: 3 prior implementations (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b); Rig 1 handoff changes are not committed in this run
 
 The original upgrade was merged through PR 19 on 2026-09-15. The owner then
 requested reuse of backend functions from the signed-in sections. This report
 covers the cumulative source and distinguishes measured checks from acceptance
 that still needs the frontend dependencies. Merge is not evidence of TEVV.
 The registered umbrella and dispatch remain in progress. PR 20 merged the backend reuse; the owner then requested guided mission building, NIST TEVV, OWASP, educational rewards and animation. No merge event is treated as validation evidence.
+
+The Rig 1 continuation adds a public CMAX-B handoff. The managed repository
+service refused to attach the private runtime to this public session. Runtime
+implementation is blocked on a private primary-repository session and its own
+execution dispatch. No private source, implementation readiness percentage or
+runtime test result was verified here.
 
 ## §2 TASK RESULTS
 
@@ -82,6 +88,8 @@ The registered umbrella and dispatch remain in progress. PR 20 merged the backen
 | Q — Guided missions | PARTIAL — component execution unavailable | Purpose/safety/TEVV draft builder, explicit approval, evidence intake, review/failure paths, account isolation; shared how/why guidance | `npm --prefix apps/web test -- src/pages/workspace/__tests__/MissionsPage.test.jsx src/components/workspace/missions/__tests__/MissionFlow.test.jsx` | 07_BUILD / 08_TEST |
 | R — Educational rewards | PARTIAL — selectors pass, browser acceptance pending | Bounded saved points, knowledge checks, worked example/review-coach bonuses, animation preference and reduced-motion CSS | `node --test tests/upgrade/mission-system.test.mjs`; mission component suite and browser checks | 07_BUILD / 08_TEST |
 | S — Mission evidence | PASS with acceptance blockers recorded | Updated dispatch, source checks, report/memory and how/why documentation | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`; context and boundary gates | 06_PLAN / 11_COMMIT |
+| T — Rig 1 scope | PASS | Public handoff boundary registered under the existing SRS before writing the artifact | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT |
+| U — Rig 1 handoff | PASS | CMAX-B requirements and acceptance cases for bridge selection, ingress, supervision, MCP and controlled MRs; private execution blocked | Handoff gates below | 11_COMMIT |
 
 Backend reuse inventory:
 
@@ -139,6 +147,10 @@ applied to a shared backend. Native PocketBase acceptance is still required.
 
 ## §3 SMOKE TEST RESULTS
 
+The application results below are retained from the committed mission revision.
+This continuation changes only .bits governance/evidence and does not rerun or
+upgrade the recorded frontend, browser or native-runtime acceptance claims.
+
 | # | Command | Expected | Observed | Result |
 |---|---|---|---|---|
 | 1 | Targeted Vitest command below | Component/account/route suites pass | `vitest: not found` | FAIL — environment |
@@ -186,11 +198,49 @@ Datadog/RUM/DORA or deployment. The Node PocketBase suites use JSVM contract
 doubles. No live workspace, seat-event publication or external service activation
 was performed.
 
+Rig 1 handoff gates for this continuation: all four PASS. The public boundary
+check includes 415 tracked files and the new handoff checked separately below.
+
+| Gate | Command | Acceptance |
+|---|---|---|
+| Context | `python scripts/ci/agent_context.py --check` | Measured registry/context agree; existing six findings remain visible |
+| Public boundary | `python scripts/ci/verify_public_boundary.py` plus the handoff scan below | Tracked source and the new untracked handoff satisfy the same policy and secret patterns |
+| Memory | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | Current file counts, IOO and CGRF edges agree |
+| Diff | `git diff --check` | No whitespace errors in the tracked diff |
+
+The boundary CLI inventories tracked files (415 at the iteration baseline).
+Before staging, scan the new handoff explicitly with the repository policy and
+the scanner's actual secret patterns:
+
+```bash
+python - <<'PY'
+import json
+import runpy
+from pathlib import Path
+
+path = Path('.bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md')
+policy = json.loads(Path('.buildanddo/public/path-policy.json').read_text())
+scanner = runpy.run_path('scripts/ci/verify_public_boundary.py')
+name = path.as_posix()
+assert name.startswith(tuple(policy['public_allowed_prefixes']))
+assert not any(name.lower() == p.rstrip('/').lower() or name.lower().startswith(p.lower()) for p in policy['public_forbidden_prefixes'])
+assert path.name not in policy['forbidden_file_names']
+assert all(not pattern.search(path.read_text()) for _, pattern in scanner['SECRET_PATTERNS'])
+assert all(line == line.rstrip() for line in path.read_text().splitlines())
+print('PASS: new handoff path and content satisfy the public boundary')
+PY
+```
+
+The handoff supplies a reproducible public-source inventory and receiving-seat
+test matrix. Its future private pytest selection is a requirement, not an
+executed test result. No external seat message, queue delivery, runtime command,
+GitLab write or installation occurred.
+
 ## §4 MEMORY INGEST
 
-Type A count: 123
-Type B count: 194
-Type C count: 15
+Type A count: 124
+Type B count: 196
+Type C count: 17
 IOO compliance: true
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
@@ -207,13 +257,14 @@ current commit have null commit_sha. No memory endpoint was called.
 04_HYPOTHESIZE: umbrella and telemetry specs, SRS registry.
 07_BUILD: public/workspace UI, guided mission components, mission policy/hooks/migration, data selectors, account isolation and telemetry adapters.
 08_TEST: public/workspace/component/account suites, mission policy/migration/reward tests and Node/Python adapters.
-11_COMMIT: context, task table, report/memory, offline source verifier, build/CI tools and existing handoff.
+11_COMMIT: context, task table, report/memory, offline source verifier, build/CI tools, PocketBase activation handoff and Rig 1 CMAX-B handoff.
 13_SAVE: none.
 
 These application/test paths follow the actual BuildAndDo AGENTS.md and public
-path policy. CGRF headers: 61/61 files new since the original
+path policy. CGRF headers: 62/62 files new since the original
 base, including sibling metadata for JSON and PNG. The mission continuation adds
-11 new files. Existing provenance is preserved.
+11 new files; the Rig 1 continuation adds one handoff with a 11_COMMIT header.
+Existing provenance is preserved.
 REFLEX validation remains on the private post-merge plane.
 
 ## §6 GOVERNANCE
@@ -237,8 +288,13 @@ Blockers: restore frontend dependencies and reconcile the baseline lock on a
 registry-enabled runner; run Vitest/coverage, official lint, build and browser
 acceptance. Validate the mission migration, request hooks and permission failures on the actual pinned PocketBase runtime before activation. PocketBase/Datadog activation still needs its owner plane.
 Handoffs requested: IDE1 — .bits/handoffs/2026-09-14-bits-codegen-ide1-upgrade-telemetry.md.
+CMAX-B — .bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md.
+Rig 1 blocker: private data_dog_private session and execution dispatch; public
+and private repositories cannot be attached to this same sandbox. Validate the
+reported bridge-gap mismatch against private source before other runtime work.
 Suggested next dispatch: dependency-enabled acceptance of this dispatch; the
-operator supplies any new dispatch ID.
+operator supplies any new dispatch ID. Rig 1 runtime work needs a separate
+private dispatch and source/test evidence before installation approval.
 Bugs filed: none; no issue target was supplied and provider writes are unavailable.
 Pre-existing unregistered COMMUNITY/WITNESS specs and unwired operational gates
 remain visible in agent_context.py.
@@ -246,3 +302,8 @@ remain visible in agent_context.py.
 Mission rollback: revert UI and hooks together while retaining additive fields to
 preserve plans/reviews. The explicit down migration deletes the new field data and
 requires the deployment owner's retention decision. No shared rollback ran here.
+
+Rig 1 handoff rollback: remove only the added handoff and this continuation's
+governance/evidence entries. There is no runtime or external state to roll back
+from this continuation. Private installation must supply its own durable-receipt
+and side-effect reconciliation plan.

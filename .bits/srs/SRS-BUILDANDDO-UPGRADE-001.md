@@ -165,3 +165,34 @@ trust boundaries, educational reward model and native/browser acceptance steps.
 `tests/upgrade/mission-system.test.mjs` runs actual policy, request-hook, migration
 and reward-selector source under Node. Frontend/native acceptance remains pending
 as documented in the cumulative dispatch report.
+
+## Rig 1 continuation — public handoff boundary
+
+On 2026-09-15 the owner specified one governed `data_dog_private` runtime on
+Rig 1, registered GitLab clones, Cloudflare Worker/Queue ingress, a persistent
+repository supervisor, GitLab triggers and bounded MCP adapters. The owner
+prioritized a dedicated bridge-gap strategy for `citadel.bridge.progression/v2`.
+This continuation records that request under the existing umbrella and dispatch;
+only its public handoff and evidence are in this repository's scope.
+
+The public/private invariant in AGENTS.md and .bits/context.md still applies.
+Runtime, credentials, project registrations, edge deployment and GitLab write
+authority belong to the private plane. The managed repository service rejected
+attaching the private runtime to this public session. No private source contract
+or percentage of implementation readiness has been independently verified.
+
+Public acceptance consists of:
+
+1. A CMAX-B handoff that distinguishes observed repository/access facts from the
+   owner's description of the private runtime, with the bridge-gap fix first.
+2. Explicit receiving-seat criteria for schema-aware target selection, minimal
+   GitLab ingress, durable queue receipts, exact-SHA isolation, stage recovery,
+   bounded MCP calls, TEVV and controlled MR creation. These are requested
+   behaviors, not implemented or tested runtime claims.
+3. Updated dispatch/report/memory and passing context, boundary and memory
+   checks. No new runtime, edge control, clone registry or deployment file is
+   added to the public site. Prior frontend/native acceptance remains pending.
+
+The receiving private seat must inspect its own governance and source, register
+the execution scope and obtain the private dispatch before implementing it.
+The public handoff does not authorize an installation or shared mutation.

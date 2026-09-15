@@ -138,3 +138,32 @@ unavailable, official lint lacks eslint-plugin-import, and Vite cannot start.
 "wor3 voc" is provisionally treated as W3C Verifiable Credentials pending a reply;
 the local learning download is explicitly unsigned. No live seat event, shared
 mutation, deployment or credential signing was performed.
+
+## Rig 1 continuation — handoff only, 2026-09-15
+
+The owner specified a single private runtime on Rig 1 with Cloudflare event
+ingress, registered GitLab clones and a persistent repository loop. The existing
+A1 dispatch covers the public handoff of this mission-execution request. It does
+not grant private runtime implementation, installation or shared-plane authority.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| T | Record Rig 1 scope and public/private boundary before writing the handoff | `python scripts/ci/agent_context.py --check` | done |
+| U | File the private-seat handoff and its evidence | Context, boundary including the untracked handoff, memory and diff checks in the report | done — 4/4 handoff gates pass |
+
+Memory brief: the mission UI records work and review; it does not start an agent.
+The owner described assessment, bridge, driver, trigger and MCP facilities in
+`data_dog_private`. None of those source contracts was inspected here. The
+managed repository service rejected the private attachment because public and
+private repositories cannot share this session. No private execution percentage
+is claimed. The receiving seat must verify the bridge schema and strategy
+mismatch first, then reuse the actual runtime facilities.
+
+Handoff: .bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md.
+Private execution is blocked on a session for `data_dog_private` and its own
+execution dispatch. The existing public mission implementation remains available
+with its previously recorded frontend and native-runtime acceptance gaps.
+
+Handoff gate results: T PASS; U PASS. Context, tracked/new-file boundary, memory
+and diff checks pass (4/4). Runtime tests and installation remain unexecuted;
+the application smoke remains the historical 4/7, not newly verified here.
