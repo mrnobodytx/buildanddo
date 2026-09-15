@@ -18,7 +18,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppRoutes } from '@/App';
 import pb from '@/lib/pocketbaseClient';
-import { renderWithProviders, screen } from '@/test/utils';
+import { renderWithProviders, screen, setupUser } from '@/test/utils';
 vi.mock('@/lib/pocketbaseClient', async () => {
     const { createMockPocketBase } = await import('@/test/pocketbaseMock');
     const client = createMockPocketBase();
@@ -85,5 +85,18 @@ describe('lazy route entry points', () => {
         });
         expect(screen.getByRole('status')).toHaveTextContent('Loading page');
         expect(screen.queryByLabelText(/email/i)).not.toBeInTheDocument();
+    });
+
+    it('offers recovery for a failed workspace read instead of redirecting to onboarding', async () => {
+        const refresh = vi.fn();
+        renderWithProviders(<AppRoutes />, {
+            route: '/app',
+            workspace: { active: null, hasWorkspaces: false, error: 'Could not load your workspaces. Try again.', refresh },
+        });
+        expect(await screen.findByRole('heading', { name: 'Your workspaces are unavailable' })).toBeVisible();
+        expect(screen.getByRole('alert')).toHaveTextContent('Could not load your workspaces');
+        await setupUser().click(screen.getByRole('button', { name: 'Try again' }));
+        expect(refresh).toHaveBeenCalledTimes(1);
+        expect(screen.queryByRole('navigation', { name: 'Workspace' })).not.toBeInTheDocument();
     });
 });

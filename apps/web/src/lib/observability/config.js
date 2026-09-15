@@ -26,6 +26,7 @@ export const BROWSER_TELEMETRY = Object.freeze({
 // Collection names are deliberately closed; record content never enters names.
 export const WORKSPACE_ENTITIES = Object.freeze({
     missions: 'mission',
+    challenge_submissions: 'challenge',
     workflows: 'workflow',
     signals: 'signal',
     services: 'service',

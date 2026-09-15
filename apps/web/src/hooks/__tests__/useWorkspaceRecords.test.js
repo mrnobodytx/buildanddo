@@ -17,7 +17,7 @@
 // ───────────────────────────────────────────────────────────────
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 vi.mock('@/lib/pocketbaseClient', async () => {
     const { createMockPocketBase } = await import('@/test/pocketbaseMock');
@@ -119,7 +119,8 @@ describe('useWorkspaceRecords', () => {
 
         await waitFor(() => expect(result.current.loading).toBe(false));
 
-        expect(result.current.error).toBe('Could not load this data right now.');
+        expect(result.current.error).toMatch(/^Could not load this data right now/);
+        expect(result.current.degraded).toBe(true);
         expect(result.current.records).toEqual([]);
         expect(consoleError).toHaveBeenCalled();
     });
@@ -185,6 +186,40 @@ describe('useWorkspaceRecords', () => {
         await waitFor(() => expect(result.current.error).toBe(''));
         expect(result.current.records[0].title).toBe('Recovered');
     });
+
+    it('does not refresh an old workspace after a pending write finishes on an unmounted page', async () => {
+        let resolveWrite;
+        pb.__collection('missions').create.mockImplementationOnce(() => new Promise((resolve) => { resolveWrite = resolve; }));
+        const { result, unmount } = renderHook(() => useWorkspaceRecords('missions'), { wrapper: workspaceWrapper() });
+        await waitFor(() => expect(result.current.loading).toBe(false));
+        let pending;
+        act(() => { pending = result.current.create({ title: 'Pending mission' }); });
+        unmount();
+        pb.authStore.clear();
+        await act(async () => {
+            resolveWrite({ id: 'saved-mission' });
+            expect((await pending).ok).toBe(true);
+        });
+        expect(pb.__collection('missions').getFullList).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not let a pending write reload a workspace the mounted page has left', async () => {
+        const wrapper = workspaceWrapper();
+        const { result, rerender } = renderHook(() => useWorkspaceRecords('missions'), { wrapper });
+        await waitFor(() => expect(result.current.loading).toBe(false));
+        let resolveWrite;
+        pb.__collection('missions').create.mockImplementationOnce(() => new Promise((resolve) => { resolveWrite = resolve; }));
+        let pending;
+        act(() => { pending = result.current.create({ title: 'Previous workspace mission' }); });
+        wrapper.value.active = createMockWorkspace({ id: 'ws_new' });
+        pb.__setRecords('missions', [createMockMission({ title: 'Current workspace mission', workspace: 'ws_new' })]);
+        rerender();
+        await waitFor(() => expect(result.current.records[0]?.title).toBe('Current workspace mission'));
+        const reads = pb.__collection('missions').getFullList.mock.calls.length;
+        await act(async () => { resolveWrite({ id: 'saved-previous-mission' }); await pending; });
+        expect(pb.__collection('missions').getFullList).toHaveBeenCalledTimes(reads);
+        expect(result.current.records[0].title).toBe('Current workspace mission');
+    });
 });
 
 describe('useRecords', () => {
@@ -218,6 +253,18 @@ describe('useRecords', () => {
 
         await waitFor(() => expect(result.current.loading).toBe(false));
 
-        expect(result.current.error).toBe('Could not load this data right now.');
+        expect(result.current.error).toMatch(/^Could not load this data right now/);
+        expect(result.current.degraded).toBe(true);
+    });
+
+    it('ignores a pending shared read when the caller disables it', async () => {
+        let resolveRead;
+        pb.__collection('tutorials').getFullList.mockImplementationOnce(() => new Promise((resolve) => { resolveRead = resolve; }));
+        const { result, rerender } = renderHook(({ enabled }) => useRecords('tutorials', { enabled }), { initialProps: { enabled: true } });
+        rerender({ enabled: false });
+        await act(async () => { resolveRead([{ id: 'private-lesson', title: 'Old lesson' }]); });
+        expect(result.current.records).toEqual([]);
+        expect(result.current.loading).toBe(false);
+        expect(result.current.degraded).toBe(false);
     });
 });

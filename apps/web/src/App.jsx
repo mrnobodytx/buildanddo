@@ -79,9 +79,20 @@ function RedirectIfAuthed({ children }) {
 
 // Send signed-in users with no workspace into onboarding before the app shell.
 function WorkspaceGate({ children }) {
-    const { loading, hasWorkspaces } = useWorkspace();
+    const { loading, hasWorkspaces, error, refresh } = useWorkspace();
     if (loading) {
         return <RouteLoading fullPage />;
+    }
+    if (error) {
+        return (
+            <main id="main-content" tabIndex={-1} className="mx-auto max-w-xl space-y-4 p-8">
+                <h1 className="font-display text-2xl font-semibold">Your workspaces are unavailable</h1>
+                <p role="alert">{error}</p>
+                <button type="button" onClick={refresh} className="min-h-11 border border-border px-4 py-2">
+                    Try again
+                </button>
+            </main>
+        );
     }
     if (!hasWorkspaces) return <Navigate to="/onboarding" replace />;
     return children;

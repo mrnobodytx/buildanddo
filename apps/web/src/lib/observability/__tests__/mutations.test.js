@@ -36,6 +36,16 @@ afterEach(() => {
 });
 
 describe('workspace mutation telemetry', () => {
+    it('attributes challenge intake without sending the submitted problem', async () => {
+        await observeMutation('challenge_submissions', 'create', async () => ({
+            id: 'receipt', problem: 'Private customer detail',
+        }));
+        expect(reportAction).toHaveBeenCalledWith('workspace.challenge.create', {
+            collection: 'challenge_submissions', operation: 'create', outcome: 'success',
+        });
+        expect(JSON.stringify(reportAction.mock.calls)).not.toContain('Private customer detail');
+        expect(JSON.stringify(reportMetric.mock.calls)).not.toContain('Private customer detail');
+    });
     it.each(['create', 'update', 'delete'])(
         'reports one %s outcome after the real operation settles',
         async (verb) => {

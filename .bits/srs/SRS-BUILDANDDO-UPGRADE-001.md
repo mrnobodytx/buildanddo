@@ -84,3 +84,36 @@ python scripts/ci/verify_public_boundary.py
 Inspect the production preview at mobile and desktop widths in both themes,
 exercise public navigation and keyboard menus, and record the actual evidence.
 Tests using SDK/JSVM doubles prove the adapter contract, not live ingestion.
+
+## Authorized continuation — reuse existing backend flows
+
+On 2026-09-15 the owner requested that existing frontend-only functions reuse
+the backend integrations in the signed-in sections. This continues dispatch
+VCC-BUILDANDDO-UPGRADE-001 at A1 under the same SRS; the first implementation
+was merged as PR 19. It authorizes local source changes, not shared mutations.
+
+- Replace the home page's permanent empty metrics, evidence, corrections and
+  Daily Edition with records from the active workspace through the existing
+  data hooks. Preserve separate loading, empty, unavailable and demo states.
+- Reuse the existing challenge collection and mutation hook for intake and
+  history. Show the saved backend status; a submission does not start a runner.
+- Share the signed-in tutorial catalogue and progress flow with the home Field
+  Manual and Docs. Catalogue access remains authenticated and demo cannot write.
+- Clear records, drafts and pending results when the account or workspace
+  changes. Anonymous visits must make no private collection request and must
+  never render records left by an earlier signed-in session.
+- Preserve source, timestamp and status on previews. Revenue remains separated
+  by provider, currency and date range; pending connections are not payments.
+- No new collection, access-rule relaxation, credential, payment integration,
+  contact-delivery service or private-stack runner is included. Early access
+  already persists to PocketBase; commercial email remains an explicit draft.
+
+Verify the continuation with targeted Testing Library suites for the home page,
+tutorials and account transitions, Node tests for record selection, the web
+build/lint/coverage gates, the context check and the public-boundary scanner.
+Record unavailable tools as blocked validation, never as passing evidence.
+
+The offline diagnostic `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`
+checks JavaScript/JSX syntax and core binding errors using local ESLint. It makes
+no installation or network request and does not replace repository lint, Vitest,
+coverage, or browser acceptance.
