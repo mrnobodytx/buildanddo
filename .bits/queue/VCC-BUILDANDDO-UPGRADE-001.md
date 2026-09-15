@@ -108,3 +108,33 @@ N PASS for local evidence, with 4/7 dispatch smoke checks passing. Full Node
 regression: 22/22. Python: 18/18. Offline source parser: 174 modules, no static
 errors. Browser and native/live backend acceptance remain unverified. See the
 updated cumulative report and memory payload for runnable commands and limits.
+
+## Mission education continuation authorized 2026-09-15
+
+The owner requested the mission system, its how/why instruction, NIST TEVV,
+OWASP, clarification of "wor3 voc", and educational animation/rewards. This
+continues the same in-progress A1 dispatch and registered umbrella. Prior
+merged source remains the baseline; no shared backend is mutated in this run.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| O | Register the mission scope and inspect existing mission/evidence rules | `python scripts/ci/agent_context.py --check` | done |
+| P | Persist plans and enforce lifecycle/evidence constraints | Node mission policy, migration and request-hook tests | partial — 20/20 local contract tests pass; native runtime acceptance pending |
+| Q | Add guided planning, review and how/why learning | Targeted mission component suites | partial — source and suites complete; Vitest unavailable |
+| R | Add educational rewards and accessible animation | Reward tests and reduced-motion UI checks | partial — reward selectors pass; component/browser checks unavailable |
+| S | Record source, validation and memory evidence | Context, boundary, memory and web gates | done — unavailable acceptance checks recorded |
+
+Memory brief: Missions already have CRUD and six status values but status
+advancement is not evidence-gated. The Evidence Ledger has mission and workspace
+relations. Reuse these instead of inventing another task store. Prior frontend
+checks could not run because required packages were absent. NIST TEVV is a
+method for gathering evidence, not a certificate produced by filling a form.
+
+Mission gate results: O PASS; P local contract gate PASS (20/20), native acceptance
+pending; Q component gate FAIL to start; R selector gate PASS, UI gate unexecuted;
+S evidence gate PASS with smoke 4/7. Full Node regression: 42/42. Python: 18/18.
+Source parsing: 180 modules, no static errors. Targeted Vitest and coverage are
+unavailable, official lint lacks eslint-plugin-import, and Vite cannot start.
+"wor3 voc" is provisionally treated as W3C Verifiable Credentials pending a reply;
+the local learning download is explicitly unsigned. No live seat event, shared
+mutation, deployment or credential signing was performed.

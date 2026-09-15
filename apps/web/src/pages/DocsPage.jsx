@@ -10,7 +10,8 @@
 // Created:     2026-09-14
 // Depends:     apps/web/src/components/site/PublicPage.jsx
 // EnumType:    Widget
-// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx
+// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx;
+//              CONSUMES apps/web/src/components/workspace/missions/MissionGuide.jsx
 // DAG Node:    none
 // Intent:      Explain critical workspace flows with searchable public documentation and real destinations.
 // ───────────────────────────────────────────────────────────────
@@ -20,6 +21,7 @@ import { Link } from 'react-router-dom';
 import PublicPage from '@/components/site/PublicPage';
 import { Input } from '@/components/ui/input';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
+import MissionGuide from '@/components/workspace/missions/MissionGuide';
 
 const GUIDES = [
     {
@@ -156,9 +158,21 @@ export default function DocsPage() {
                     </p>
                 </div>
             </div>
-            <section id="workspace-lessons" aria-labelledby="workspace-lessons-title" className="mt-12 scroll-mt-24 border-t-2 border-foreground pt-6">
-                <h2 id="workspace-lessons-title" className="mb-5 font-display text-2xl font-semibold">Your Field Manual</h2>
+            <section
+                id="workspace-lessons"
+                aria-labelledby="workspace-lessons-title"
+                className="mt-12 scroll-mt-24 border-t-2 border-foreground pt-6"
+            >
+                <h2
+                    id="workspace-lessons-title"
+                    className="mb-5 font-display text-2xl font-semibold"
+                >
+                    Your Field Manual
+                </h2>
                 <TutorialCatalog />
+                <div id="mission-building" className="mt-10 scroll-mt-24">
+                    <MissionGuide />
+                </div>
             </section>
         </PublicPage>
     );

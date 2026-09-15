@@ -4,6 +4,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Brief educational feedback. No looping effects; user and OS preferences win. */
+.mission-effects[data-effects="on"] .mission-progress { transition: width 300ms ease-out; }
+.mission-effects[data-effects="on"] .mission-step { animation: mission-enter 180ms ease-out; }
+.mission-effects[data-effects="on"] .mission-reward { animation: mission-earned 500ms ease-out; }
+@keyframes mission-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes mission-earned {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mission-effects[data-effects] .mission-step,
+  .mission-effects[data-effects] .mission-reward { animation: none; }
+  .mission-effects[data-effects] .mission-progress { transition: none; }
+}
+
 /*
   BuildAndDo — editorial business-newspaper product identity.
   Warm paper, black ink, restrained editorial red, muted green, ochre.

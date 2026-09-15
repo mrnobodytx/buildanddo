@@ -117,3 +117,51 @@ The offline diagnostic `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.c
 checks JavaScript/JSX syntax and core binding errors using local ESLint. It makes
 no installation or network request and does not replace repository lint, Vitest,
 coverage, or browser acceptance.
+
+## Authorized continuation — mission building and education
+
+On 2026-09-15 the owner requested a working mission system with how-to and why
+guidance, NIST TEVV, OWASP, a third framework written as "wor3 voc", animations
+and bonuses that aid education. This extends the existing A1 dispatch. The
+third framework is being clarified; no internal acronym or certification is
+invented. The prior backend-reuse revision is retained as the implementation
+baseline. This remains one registered SRS and grants no deployment authority.
+
+- Extend the existing missions collection with optional, bounded JSON plan,
+  learning-answer and TEVV-review fields plus server-attributed approval/review
+  receipts using an idempotent migration with a down migration. Existing records remain readable; new work starts proposed.
+- Build a guided mission planner with purpose, beneficiary, scope, measurable
+  success criteria, risk, rollback, four TEVV methods and practical OWASP checks.
+  Save drafts and recover from backend failures without discarding entered work.
+- Require a complete plan for approval. Use explicit lifecycle transitions;
+  failed or verified work is terminal. Verification requires four passing TEVV
+  observations and evidence from the same mission/workspace. Failed outcomes
+  require a reflection and may retain checks that could not run. Enforce these checks
+  on PocketBase requests as well as in the UI; retain existing access rules.
+- Teach testing, evaluation, verification and validation as distinct activities.
+  Cite NIST AI RMF and OWASP ASVS, distinguishing learning guidance and recorded
+  reviewer assertions from external assessment, certification or test execution.
+- Award bounded educational points for saved knowledge checks and useful plan
+  milestones. Repeated clicks do not mint additional credit. Bonuses unlock
+  examples and review prompts; they never grant authority or a verified status.
+- Add restrained progress/reward animation, reduced-motion support, an effects
+  toggle, keyboard access and visible textual feedback in both themes.
+- Keep data scoped to the active account/workspace and demo mode read-only.
+  Reuse mission/evidence hooks and browser outcome telemetry. No automation
+  runner, signing service, money, secret or live workspace mutation is added.
+
+Verify with Node policy/migration/request-hook suites and measured coverage;
+Testing Library planner, review and reward suites; repository lint/build;
+context, boundary and memory checks. Test denied writes and foreign evidence,
+not just the successful path. Frontend dependency blockers remain explicit.
+
+Framework interpretation: the owner was asked to clarify "wor3 voc". With no reply,
+the education content provisionally uses W3C Verifiable Credentials Data Model
+2.0 and clearly separates unsigned local learning records from signed credentials.
+The mission system does not issue a VC or claim NIST/OWASP certification.
+
+Mission implementation evidence: `docs/mission-system.md` explains the workflow,
+trust boundaries, educational reward model and native/browser acceptance steps.
+`tests/upgrade/mission-system.test.mjs` runs actual policy, request-hook, migration
+and reward-selector source under Node. Frontend/native acceptance remains pending
+as documented in the cumulative dispatch report.

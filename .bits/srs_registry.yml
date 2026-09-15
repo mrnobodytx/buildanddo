@@ -36,7 +36,7 @@ srs:
     status: in_progress
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
-    notes: Owner-authorized single-PR umbrella for VCC-BUILDANDDO-UPGRADE-001 including SUPPLY, RUM-ACTIONS, RELEASE-TAG and public PB-METRICS
+    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella for public/workspace upgrades, backend reuse and guided mission education with TEVV and OWASP
 
   - code: SRS-BUILDANDDO-BOOTSTRAP-001
     title: Machine-facing governance bootstrap
