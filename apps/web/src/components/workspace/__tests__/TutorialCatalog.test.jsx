@@ -16,242 +16,179 @@
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
-import { act } from '@testing-library/react';
+import { act, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import curriculum from '../../../../../pocketbase/pb_migrations/data/starter-tutorials.json';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
-import DocsPage from '@/pages/DocsPage';
 import TutorialsPage from '@/pages/workspace/TutorialsPage';
+import DocsPage from '@/pages/DocsPage';
 import AuthContext from '@/contexts/AuthContext';
 import pb from '@/lib/pocketbaseClient';
 import { setDemoMode } from '@/lib/demoWorkspace';
-import {
-    createAuthValue,
-    mockPocketBaseError,
-    renderWithProviders,
-    screen,
-    setupUser,
-    waitFor,
-} from '@/test/utils';
+import { createAuthValue, mockPocketBaseError, renderWithProviders, screen, setupUser, waitFor } from '@/test/utils';
 
 vi.mock('@/lib/pocketbaseClient', async () => {
     const { createMockPocketBase } = await import('@/test/pocketbaseMock');
     const client = createMockPocketBase();
     return { default: client, pocketbaseClient: client };
 });
-vi.mock('@/lib/observability/runtime', () => ({
-    reportAction: vi.fn(),
-    reportMetric: vi.fn(),
-    trackAuthIdentity: vi.fn(),
-}));
+vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn() }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
-vi.mock('@/components/workspace/ComponentCatalog', () => ({
-    default: () => <p>Component reference</p>,
-}));
-
-const lesson = {
-    id: 'lesson1',
-    title: 'Inspect evidence',
-    summary: 'Keep the source with an observation.',
-    category: 'Evidence',
-    effort_minutes: 8,
-};
-beforeEach(() => {
-    pb.__reset();
-    setDemoMode(false);
-    pb.__setRecords('tutorials', [lesson]);
-});
+vi.mock('@/components/workspace/ComponentCatalog', () => ({ default: () => <p>Component reference</p> }));
+const lesson = curriculum.lessons[0];
+beforeEach(() => { pb.__reset(); setDemoMode(false); pb.__setRecords('tutorials', curriculum.lessons); });
 afterEach(() => vi.restoreAllMocks());
+const read = async (prefix = 'Read') => {
+    const user = setupUser();
+    const opener = await screen.findByRole('button', { name: `${prefix} ${lesson.title}` });
+    await user.click(opener);
+    return { user, opener, reader: within(screen.getByRole('dialog')) };
+};
 
-describe('shared Field Manual', () => {
-    it('shows a true empty catalogue after a successful read', async () => {
+describe('complete Field Manual lessons', () => {
+    it('shows 25 readable previews when the backend has not installed the seed', async () => {
         pb.__setRecords('tutorials', []);
         renderWithProviders(<TutorialCatalog />);
-        expect(screen.getByRole('status')).toHaveTextContent('Loading lessons');
-        expect(await screen.findByText('No lessons available yet.')).toBeVisible();
-        expect(screen.getByText('0 of 0 lessons completed')).toBeVisible();
-    });
-
-    it('retries a catalogue failure without silently treating it as an empty list', async () => {
-        vi.spyOn(console, 'error').mockImplementation(() => {});
-        pb.__setError('tutorials');
-        renderWithProviders(<TutorialCatalog />);
-        expect(await screen.findByText('The lesson catalogue is unavailable.')).toBeVisible();
-        expect(screen.queryByText('No lessons available yet.')).not.toBeInTheDocument();
-        pb.__clearError('tutorials');
-        await setupUser().click(screen.getByRole('button', { name: 'Try again' }));
-        expect(await screen.findByRole('heading', { name: lesson.title })).toBeVisible();
-        pb.__setRecords('tutorials', [{ ...lesson, title: 'Updated catalogue entry' }]);
-        await setupUser().click(screen.getByRole('button', { name: 'Refresh lessons' }));
-        expect(
-            await screen.findByRole('heading', { name: 'Updated catalogue entry' }),
-        ).toBeVisible();
-    });
-
-    it('can reopen a completed lesson using its existing progress record', async () => {
-        pb.__setRecords('tutorials', [{ ...lesson, prerequisites: 'A recorded observation' }]);
-        pb.__setRecords('tutorial_progress', [
-            { id: 'saved-progress', tutorial: lesson.id, status: 'completed', progress: 100 },
-        ]);
-        renderWithProviders(<TutorialCatalog />);
-        const review = await screen.findByRole('button', { name: 'Review Inspect evidence' });
-        expect(screen.getByText('Prerequisite: A recorded observation')).toBeVisible();
-        await setupUser().click(review);
-        expect(await screen.findByText('0 of 1 lessons completed')).toBeVisible();
-        expect(pb.__collection('tutorial_progress').update).toHaveBeenCalledWith('saved-progress', {
-            status: 'in_progress',
-            progress: 50,
-        });
+        expect(await screen.findByText(/Apply the tutorial catalogue migration/)).toBeVisible();
+        expect(screen.getByText('0 of 25 lessons completed')).toBeVisible();
+        const { reader } = await read();
+        expect(reader.getByRole('heading', { name: 'Why this matters' })).toBeVisible();
+        expect(reader.getByRole('heading', { name: 'Worked example — illustrative data' })).toBeVisible();
+        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
         expect(pb.__collection('tutorial_progress').create).not.toHaveBeenCalled();
     });
 
-    it('does not request the catalogue or progress before authentication', () => {
-        renderWithProviders(<TutorialCatalog />, { auth: { isAuthed: false, user: null } });
-        expect(screen.getByRole('link', { name: 'Sign in for lessons' })).toBeVisible();
+    it('lets anonymous and demo readers explore without requesting any private collection', async () => {
+        const view = renderWithProviders(<TutorialCatalog />, { auth: { isAuthed: false, user: null } });
+        expect(screen.getByText('25 lessons to explore')).toBeVisible();
+        const { reader, user } = await read();
+        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
+        await user.click(reader.getByRole('button', { name: 'Close lesson' }));
+        expect(pb.collection).not.toHaveBeenCalled();
+        view.unmount(); setDemoMode(true);
+        renderWithProviders(<TutorialCatalog />);
+        expect(screen.getByText(/Demo mode: read the starter lessons/)).toBeVisible();
         expect(pb.collection).not.toHaveBeenCalled();
     });
 
-    it('persists a start from Docs and reuses that progress in the workspace Field Manual', async () => {
+    it('filters the real curriculum by path and search without claiming missing content is an empty backend', async () => {
+        renderWithProviders(<TutorialCatalog />);
+        await screen.findByRole('button', { name: `Read ${lesson.title}` });
         const user = setupUser();
+        await user.selectOptions(screen.getByLabelText('Learning path'), 'Content production');
+        expect(screen.getAllByRole('button', { name: /^Read / })).toHaveLength(5);
+        await user.type(screen.getByLabelText('Search lessons'), 'social');
+        expect(screen.getAllByRole('button', { name: /^Read / })).toHaveLength(1);
+        await user.clear(screen.getByLabelText('Search lessons'));
+        await user.type(screen.getByLabelText('Search lessons'), 'no-matching-lesson');
+        expect(screen.getByText('No lessons match these filters.')).toBeVisible();
+    });
+
+    it('keeps a completed lesson completed when reviewing and returns keyboard focus to its opener', async () => {
+        pb.__setRecords('tutorial_progress', [{ id: 'saved-progress', tutorial: lesson.id, status: 'completed', progress: 100 }]);
+        renderWithProviders(<TutorialCatalog />);
+        const { user, reader, opener } = await read('Review');
+        expect(reader.getByText('Completed. Reviewing keeps your saved completion.')).toBeVisible();
+        expect(reader.queryByRole('button', { name: 'Mark lesson complete' })).not.toBeInTheDocument();
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(opener).toHaveFocus();
+        expect(pb.__collection('tutorial_progress').update).not.toHaveBeenCalled();
+        expect(screen.getByText('1 of 25 lessons completed')).toBeVisible();
+    });
+
+    it('shares saved progress between Docs and the default Field Manual lesson tab', async () => {
         const docs = renderWithProviders(<DocsPage />, { route: '/docs' });
-        const start = await screen.findByRole('button', { name: 'Start Inspect evidence' });
-        await waitFor(() => expect(start).toBeEnabled());
-        await user.click(start);
-        expect(await screen.findByText('Progress saved for Inspect evidence.')).toBeVisible();
-        expect(pb.__collection('tutorial_progress').create).toHaveBeenCalledWith({
-            tutorial: 'lesson1',
-            owner: 'user_test',
-            status: 'in_progress',
-            progress: 50,
-        });
+        let { reader, user } = await read();
+        await user.click(reader.getByRole('button', { name: 'Save reading progress' }));
+        expect(await reader.findByText(`Progress saved for ${lesson.title}.`)).toBeVisible();
+        expect(pb.__collection('tutorial_progress').create).toHaveBeenCalledWith({ tutorial: lesson.id, owner: 'user_test', status: 'in_progress', progress: 50 });
         docs.unmount();
         renderWithProviders(<TutorialsPage />, { route: '/app/tutorials' });
-        await user.click(screen.getByRole('tab', { name: 'Lessons' }));
-        const next = await screen.findByRole('button', { name: 'Continue Inspect evidence' });
-        expect(next).toBeEnabled();
-        await user.click(screen.getByRole('button', { name: 'Mark Inspect evidence complete' }));
-        expect(await screen.findByText('1 of 1 lessons completed')).toBeVisible();
+        ({ reader, user } = await read('Continue'));
+        expect(reader.getByRole('button', { name: 'Mark lesson complete' })).toBeDisabled();
+        await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[0] }));
+        await user.click(reader.getByRole('button', { name: 'Check answer' }));
+        expect(reader.getByText('Try another answer.')).toBeVisible();
+        await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[lesson.lesson.check.answer] }));
+        await user.click(reader.getByRole('button', { name: 'Check answer' }));
+        expect(reader.getByText('That’s right.')).toBeVisible();
+        await user.click(reader.getByRole('checkbox', { name: /I worked through the exercise/ }));
+        await user.click(reader.getByRole('button', { name: 'Mark lesson complete' }));
+        expect(await reader.findByText('Completed. Reviewing keeps your saved completion.')).toBeVisible();
         expect(pb.__collection('tutorial_progress').create).toHaveBeenCalledTimes(1);
-        expect(pb.__collection('tutorial_progress').update).toHaveBeenCalledWith(
-            expect.any(String),
-            { status: 'completed', progress: 100 },
-        );
+        expect(pb.__collection('tutorial_progress').update).toHaveBeenCalledWith(expect.any(String), { status: 'completed', progress: 100 });
     });
 
-    it('retains the catalogue when progress is unavailable and blocks duplicate creation until recovery', async () => {
-        vi.spyOn(console, 'error').mockImplementation(() => {});
-        pb.__setError('tutorial_progress');
+    it('allows reading during catalogue failure and recovers persistent progress only after successful reads', async () => {
+        vi.spyOn(console, 'error').mockImplementation(() => {}); pb.__setError('tutorials');
         renderWithProviders(<TutorialCatalog />);
-        expect(await screen.findByRole('heading', { name: lesson.title })).toBeVisible();
-        expect(
-            await screen.findByText(
-                'Your saved progress is unavailable. Retry before updating a lesson.',
-            ),
-        ).toBeVisible();
-        expect(screen.getByRole('button', { name: 'Start Inspect evidence' })).toBeDisabled();
-        pb.__clearError('tutorial_progress');
-        pb.__setRecords('tutorial_progress', [
-            { id: 'saved-progress', tutorial: lesson.id, status: 'in_progress', progress: 50 },
-        ]);
-        await setupUser().click(screen.getByRole('button', { name: 'Try again' }));
-        expect(
-            await screen.findByRole('button', { name: 'Continue Inspect evidence' }),
-        ).toBeEnabled();
+        expect(await screen.findByText(/The lesson catalogue is unavailable/)).toBeVisible();
+        const { user, reader } = await read();
+        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
+        await user.click(reader.getByRole('button', { name: 'Close lesson' }));
+        pb.__clearError('tutorials');
+        await user.click(screen.getByRole('button', { name: 'Try again' }));
+        await waitFor(() => expect(screen.queryByText(/The lesson catalogue is unavailable/)).not.toBeInTheDocument());
+        expect(screen.getByText('0 of 25 lessons completed')).toBeVisible();
+    });
+
+    it('blocks progress writes during a failed progress read while keeping the lesson readable', async () => {
+        vi.spyOn(console, 'error').mockImplementation(() => {}); pb.__setError('tutorial_progress');
+        renderWithProviders(<TutorialCatalog />);
+        expect(await screen.findByText(/Your saved progress is unavailable/)).toBeVisible();
+        const { reader } = await read();
+        expect(reader.getByRole('heading', { name: 'Practice' })).toBeVisible();
+        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
         expect(pb.__collection('tutorial_progress').create).not.toHaveBeenCalled();
     });
 
-    it('keeps failed writes recoverable and only reports success after PocketBase accepts them', async () => {
+    it('reconciles a lost create response and reuses the saved progress on retry', async () => {
+        vi.spyOn(console, 'error').mockImplementation(() => {});
         renderWithProviders(<TutorialCatalog />);
-        const start = await screen.findByRole('button', { name: 'Start Inspect evidence' });
-        await waitFor(() => expect(start).toBeEnabled());
-        pb.__collection('tutorial_progress').create.mockRejectedValueOnce(
-            mockPocketBaseError('Could not save progress', 500),
-        );
-        const user = setupUser();
-        await user.click(start);
-        expect(await screen.findByRole('alert')).toHaveTextContent('Could not save progress');
-        expect(screen.queryByText('Progress saved for Inspect evidence.')).not.toBeInTheDocument();
-        await user.click(start);
-        expect(await screen.findByText('Progress saved for Inspect evidence.')).toBeVisible();
+        const { reader, user } = await read();
+        pb.__collection('tutorial_progress').create.mockImplementationOnce(async (fields) => {
+            pb.__setRecords('tutorial_progress', [{ id: 'uncertain-progress', ...fields }]);
+            throw mockPocketBaseError('Response was lost', 500);
+        });
+        await user.click(reader.getByRole('button', { name: 'Save reading progress' }));
+        expect(await reader.findByRole('alert')).toHaveTextContent('Response was lost');
+        await waitFor(() => expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeEnabled());
+        await user.click(reader.getByRole('button', { name: 'Save reading progress' }));
+        expect(await reader.findByText(`Progress saved for ${lesson.title}.`)).toBeVisible();
+        expect(pb.__collection('tutorial_progress').create).toHaveBeenCalledTimes(1);
+        expect(pb.__collection('tutorial_progress').update).toHaveBeenCalledWith('uncertain-progress', { status: 'in_progress', progress: 50 });
     });
 
-    it('does not count orphaned progress and preserves completion when a preview hides a lesson', async () => {
-        pb.__setRecords('tutorials', [
-            lesson,
-            { ...lesson, id: 'lesson2', title: 'Inspect a mission' },
-        ]);
-        pb.__setRecords('tutorial_progress', [
-            { id: 'p1', tutorial: 'lesson2', status: 'completed' },
-            { id: 'orphan', tutorial: 'removed-lesson', status: 'completed' },
-        ]);
+    it('does not count orphaned progress and keeps completed counts outside a limited preview', async () => {
+        pb.__setRecords('tutorial_progress', [{ id: 'hidden', tutorial: curriculum.lessons[1].id, status: 'completed' }, { id: 'orphan', tutorial: 'missing', status: 'completed' }]);
         renderWithProviders(<TutorialCatalog limit={1} />);
-        expect(await screen.findByText('1 of 2 lessons completed')).toBeVisible();
-        expect(
-            screen.queryByRole('heading', { name: 'Inspect a mission' }),
-        ).not.toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'View all lessons' })).toHaveAttribute(
-            'href',
-            '/docs#workspace-lessons',
-        );
+        expect(await screen.findByText('1 of 25 lessons completed')).toBeVisible();
+        expect(screen.queryByRole('heading', { name: curriculum.lessons[1].title })).not.toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'View all lessons' })).toHaveAttribute('href', '/docs#workspace-lessons');
     });
 
-    it('makes no backend calls in demo mode', () => {
-        setDemoMode(true);
+    it('keeps malformed custom bodies visible as unavailable without enabling completion', async () => {
+        pb.__setRecords('tutorials', [{ ...lesson, lesson: { schema_version: 99 } }]);
         renderWithProviders(<TutorialCatalog />);
-        expect(screen.getByText('Demonstration data.')).toBeVisible();
-        expect(pb.collection).not.toHaveBeenCalled();
+        const { reader } = await read();
+        expect(reader.getByText(/lesson body is unavailable or uses an unsupported format/)).toBeVisible();
+        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
     });
 
-    it('clears saved progress when the signed-in account changes', async () => {
-        const first = createAuthValue();
-        pb.__setRecords('tutorial_progress', [
-            { id: 'first-progress', tutorial: lesson.id, status: 'completed' },
-        ]);
-        const view = renderWithProviders(
-            <AuthContext.Provider value={first}>
-                <TutorialCatalog />
-            </AuthContext.Provider>,
-        );
-        expect(await screen.findByText('1 of 1 lessons completed')).toBeVisible();
-        const second = createAuthValue({ user: { id: 'second-user' } });
-        pb.__setAuth({ record: second.user, isValid: true });
-        pb.__setRecords('tutorial_progress', []);
-        view.rerender(
-            <AuthContext.Provider value={second}>
-                <TutorialCatalog />
-            </AuthContext.Provider>,
-        );
-        expect(screen.queryByText('1 of 1 lessons completed')).not.toBeInTheDocument();
-        expect(await screen.findByText('0 of 1 lessons completed')).toBeVisible();
-    });
-
-    it('does not refresh or show a pending save after logout', async () => {
+    it('discards an open reader and a pending save when the account logs out', async () => {
         const auth = createAuthValue();
-        const view = renderWithProviders(
-            <AuthContext.Provider value={auth}>
-                <TutorialCatalog />
-            </AuthContext.Provider>,
-        );
-        const start = await screen.findByRole('button', { name: 'Start Inspect evidence' });
-        await waitFor(() => expect(start).toBeEnabled());
+        const view = renderWithProviders(<AuthContext.Provider value={auth}><TutorialCatalog /></AuthContext.Provider>);
+        const { reader, user } = await read();
         let resolveSave;
-        pb.__collection('tutorial_progress').create.mockImplementationOnce(
-            () =>
-                new Promise((resolve) => {
-                    resolveSave = resolve;
-                }),
-        );
-        await setupUser().click(start);
+        pb.__collection('tutorial_progress').create.mockImplementationOnce(() => new Promise((resolve) => { resolveSave = resolve; }));
+        await user.click(reader.getByRole('button', { name: 'Save reading progress' }));
         const reads = pb.__collection('tutorial_progress').getFullList.mock.calls.length;
         pb.authStore.clear();
-        view.rerender(
-            <AuthContext.Provider value={createAuthValue({ user: null, isAuthed: false })}>
-                <TutorialCatalog />
-            </AuthContext.Provider>,
-        );
-        await act(async () => {
-            resolveSave({ id: 'saved-progress' });
-        });
-        expect(screen.queryByText('Progress saved for Inspect evidence.')).not.toBeInTheDocument();
+        view.rerender(<AuthContext.Provider value={createAuthValue({ user: null, isAuthed: false })}><TutorialCatalog /></AuthContext.Provider>);
+        await act(async () => { resolveSave({ id: 'saved-progress' }); });
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(screen.queryByText(`Progress saved for ${lesson.title}.`)).not.toBeInTheDocument();
         expect(pb.__collection('tutorial_progress').getFullList).toHaveBeenCalledTimes(reads);
     });
 });

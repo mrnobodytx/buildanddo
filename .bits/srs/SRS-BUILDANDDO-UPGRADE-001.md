@@ -17,7 +17,7 @@
 
 # SRS-BUILDANDDO-UPGRADE-001 — BuildAndDo site upgrades
 
-**Status:** in_progress **Risk:** A1 **Seat:** BITS-CODEGEN
+**Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
 ## Authority
@@ -245,3 +245,82 @@ client workflow cases. Selected workflow source coverage is 100% lines, 97.53%
 branches and 98.46% functions under Node contract doubles. Vitest/coverage,
 repository lint and Vite remain blocked by missing packages. Native PocketBase
 and browser acceptance are not claimed. The dispatch remains in progress.
+
+## Delivery continuation — private-agent handoff, 2026-09-15
+
+The owner asked to merge the accumulated changes into main without relying on
+GitHub Actions and use the Datadog agent in the other repository. This continues
+the public handoff scope of VCC-BUILDANDDO-UPGRADE-001 at A1. The receiving
+private seat owns its execution dispatch and existing release authority; this
+source session cannot publish refs, merge remotely or start that private agent.
+
+1. Establish which session changes are on provider main using current PR metadata
+   and local ancestry against the matching remote-tracking revision. Distinguish
+   the remaining workflow source from the already merged upgrades and an older
+   staging PR that is outside this session's changes.
+2. Preserve the observed candidate and Cloudflare failures. Moving validation to
+   a private runner must retain the boundary, actor, dependency, test and build
+   gates; no successful status, deployment receipt or live version is inferred.
+3. File a CMAX-B/IDE1 handoff for the published source revision, missing frontend
+   and native PocketBase acceptance, an existing private deployment path, and
+   served-version evidence for staging and production. This request does not
+   restart the deferred Rig 1 implementation or add public deployment controls.
+4. Validate the handoff, measured context, public boundary and memory payload.
+   Keep application evidence historical unless the corresponding tests run.
+
+## Authorized continuation — ERP, content production and 25 tutorials
+
+On 2026-09-15 the owner also requested enhanced ERP and content production plus
+the first 25 properly formatted tutorials for testing. This extends the same
+in-progress source dispatch at A2 for reviewed schema additions. The first
+curriculum mixes BuildAndDo operation
+with practical business workflows; the content desk supports human-reviewed
+blog, tutorial and social drafts. No shared data, external publishing or private
+agent execution is performed by the public source implementation.
+
+Acceptance:
+
+1. Extend existing ERP records with measurable objectives, editable tasks,
+   priority, due dates and workspace-local objective/contact links. Provide
+   search/status views, explicit task states and recoverable create/edit forms.
+   Derive totals from saved records and distinguish failed reads from empty data.
+2. Extend social_content into a content desk: audience/brief, reusable draft
+   outlines, safe formatted preview, objective links, review, planned dates and
+   a manually recorded publication URL. Server hooks attribute approval and
+   publication receipts and reject skipped review or edits to approved copy.
+   A saved plan is not a scheduled external job; a receipt is not auto-publishing.
+3. Enforce existing workspace roles, immutable owner/workspace relations and
+   readable same-workspace references on the server. Preserve collection rules
+   and demo/account isolation; no alternate authentication or credential is added.
+4. Author 25 complete structured lessons with outcomes, why, preparation,
+   instruction, a worked example, an exercise, a knowledge check and references.
+   Use one versioned curriculum for the web preview and additive PocketBase seed.
+   Hydrate unchanged legacy seed summaries without losing progress identities;
+   repeated migration runs must not duplicate or overwrite edited lessons.
+5. Add a searchable/category-filtered catalogue and keyboard-accessible lesson
+   reader on the existing Field Manual, Home and Docs surfaces. Public starter
+   content can be previewed without private reads; progress requires a persisted
+   lesson and authenticated account. Show backend unavailability explicitly.
+   Reviewing a completed lesson must not erase completion. Render content as
+   text/structured elements, never executable HTML.
+6. Test migration replay, retention and authorization failures, content review
+   transitions, data selectors, all 25 lesson bodies, progress recovery and
+   component flows. Run available gates and document missing frontend/native
+   dependencies separately. Extend the delivery handoff with this source wave.
+
+All migrations include explicit down behavior and preserve existing access
+rules. New data fields are additive; the rollback must describe retention of
+learning progress and publication history. CK, CAPS and CKS remain pending.
+
+Observed local evidence: the full Node regression passes 86/86 and Python
+passes 18/18. Twenty new Node cases execute the migration, policy/hooks and
+selectors, including all 25 lesson bodies, identity-preserving replay/down,
+workspace relation denials, review/receipt attribution and completed-progress
+retention. Selected new-source coverage is 100% lines, 96.41% branches and
+100% functions. The source checker parses 191 frontend modules without core
+errors. Component tests for ERP, content and the reader are authored but cannot
+start because Vitest is absent; lint/build and native PocketBase also remain
+unavailable. These results establish source contracts, not complete TEVV.
+docs/business-learning.md and the BuildAndDo delivery handoff define remaining
+native, keyboard/mobile/theme and served-version acceptance. No live release
+or private agent was started in this public session.

@@ -13,7 +13,7 @@
       "lines": 409,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Record the current pipelines, governance and 22-file Vitest test surface so the next session can verify the repository state.",
+      "intent_statement": "Record current pipelines, governance findings and the 24-file Vitest inventory so acceptance gaps remain reproducible.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "stored",
       "supersedes": false,
@@ -106,11 +106,13 @@
       ],
       "enum_type": "ConfigDoc",
       "functions": [],
-      "dependencies": [],
-      "lines": 7890,
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
+      ],
+      "lines": 8758,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Carry cumulative source relationships and honest mission-system validation evidence into the authorized post-merge memory flow.",
+      "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "stored",
       "supersedes": false,
@@ -169,7 +171,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 327,
+      "lines": 414,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -236,7 +238,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 211,
+      "lines": 284,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -396,7 +398,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 247,
+      "lines": 326,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1746,23 +1748,15 @@
       ],
       "enum_type": "Widget",
       "functions": [
+        "CatalogView",
         "SignedInCatalog",
         "TutorialCatalog"
       ],
       "dependencies": [
-        "@/components/site/ui",
-        "@/components/workspace/WorkspaceNotices",
-        "@/contexts/AuthContext",
-        "@/hooks/useDemoMode",
-        "@/hooks/useWorkspaceRecords",
-        "@/lib/observability/mutations",
-        "@/lib/pocketbaseClient",
         "apps/web/src/hooks/useWorkspaceRecords.js",
-        "apps/web/src/lib/observability/mutations.js",
-        "lucide-react",
-        "react"
+        "apps/web/src/lib/observability/mutations.js"
       ],
-      "lines": 265,
+      "lines": 129,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.",
@@ -1873,21 +1867,13 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [],
-      "dependencies": [
-        "@/components/workspace/TutorialCatalog",
-        "@/contexts/AuthContext",
-        "@/lib/demoWorkspace",
-        "@/lib/pocketbaseClient",
-        "@/pages/DocsPage",
-        "@/pages/workspace/TutorialsPage",
-        "@/test/utils",
-        "@testing-library/react",
-        "apps/web/src/components/workspace/TutorialCatalog.jsx",
-        "react",
-        "vitest"
+      "functions": [
+        "read"
       ],
-      "lines": 257,
+      "dependencies": [
+        "apps/web/src/components/workspace/TutorialCatalog.jsx"
+      ],
+      "lines": 194,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise shared lesson progress across pages without anonymous reads, demo writes or duplicate retries.",
@@ -3195,21 +3181,14 @@
       ],
       "enum_type": "Test",
       "functions": [
-        "Scene"
+        "Scene",
+        "now",
+        "section"
       ],
       "dependencies": [
-        "@/contexts/AuthContext",
-        "@/contexts/WorkspaceContext",
-        "@/lib/demoWorkspace",
-        "@/lib/pocketbaseClient",
-        "@/pages/HomePage",
-        "@/test/utils",
-        "@testing-library/react",
-        "apps/web/src/pages/HomePage.jsx",
-        "react",
-        "vitest"
+        "apps/web/src/pages/HomePage.jsx"
       ],
-      "lines": 321,
+      "lines": 322,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify real home records, submission recovery, demo isolation and clearing on workspace or account changes.",
@@ -3301,10 +3280,10 @@
         "lucide-react",
         "react"
       ],
-      "lines": 686,
+      "lines": 546,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Keep workspace writes attributed to real backend outcomes and expose actionable failure states in this page.",
+      "intent_statement": "Keep community coordination and pending social connections separate from reviewed content production using scoped mutations and demo guards.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3421,10 +3400,8 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "ContactsTab",
-        "ErpPage",
-        "ObjectivesTab",
-        "TasksTab"
+        "ErpDesk",
+        "ErpPage"
       ],
       "dependencies": [
         "@/components/site/ui",
@@ -3442,10 +3419,10 @@
         "lucide-react",
         "react"
       ],
-      "lines": 452,
+      "lines": 153,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Keep workspace writes attributed to real backend outcomes and expose actionable failure states in this page.",
+      "intent_statement": "Connect measurable objectives, editable tasks and contacts while retaining failed edits and exposing unavailable workspace data.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3867,16 +3844,9 @@
         "TutorialsPage"
       ],
       "dependencies": [
-        "@/components/site/ui",
-        "@/components/ui/tabs",
-        "@/components/workspace/TutorialCatalog",
-        "@/components/workspace/missions/MissionGuide",
-        "@/components/workspace/workspaceHelpers",
-        "apps/web/src/components/workspace/ComponentCatalog.jsx",
         "apps/web/src/components/workspace/TutorialCatalog.jsx",
-        "apps/web/src/components/workspace/missions/MissionGuide.jsx",
-        "lucide-react",
-        "react"
+        "apps/web/src/components/workspace/ComponentCatalog.jsx",
+        "apps/web/src/components/workspace/missions/MissionGuide.jsx"
       ],
       "lines": 64,
       "caps_grade": "pending",
@@ -4273,13 +4243,10 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [
-        "@vitejs/plugin-react",
-        "apps/web/src/test/setup.js",
         "apps/web/vite.config.js",
-        "node:url",
-        "vitest/config"
+        "apps/web/src/test/setup.js"
       ],
-      "lines": 78,
+      "lines": 81,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the web test suite on the existing Vite transform, resolving the same \"@\" alias the app builds with.",
@@ -7873,12 +7840,913 @@
       "timestamp": "2026-09-15T03:53:15.293341+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/handoffs/TEMPLATE.md",
+        "docs/workflow-system.md",
+        "scripts/ci/release.mjs"
+      ],
+      "lines": 180,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the private delivery seat verified source boundaries and acceptance requirements for releasing BuildAndDo without relying on GitHub Actions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/business-policy.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "content",
+        "erp",
+        "httpsLink",
+        "progress",
+        "relation",
+        "removeContent",
+        "workspace"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workflow-policy.js"
+      ],
+      "lines": 159,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve workspace relations and require attributed review before recording content publication.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/business.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/business-policy.js"
+      ],
+      "lines": 24,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Apply ERP relation, editorial review and learning-progress policies to native PocketBase requests.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+        "apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js"
+      ],
+      "lines": 123,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Add business planning fields and reviewed content receipts while hydrating 25 lessons without replacing edited content or progress identities.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/data/starter-tutorials.json"
+      ],
+      "lines": 1777,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Attribute 25 authored lessons shared by the catalogue preview and persistent tutorial seed.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/data/starter-tutorials.json.cgrf.yaml",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/data/starter-tutorials.json"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Attribute 25 authored lessons shared by the catalogue preview and persistent tutorial seed.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/ContentStudio.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "ContentStudio",
+        "Studio"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useWorkspaceRecords.js",
+        "apps/web/src/lib/businessPlanning.js",
+        "apps/web/src/components/workspace/StructuredContent.jsx"
+      ],
+      "lines": 184,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Turn workspace briefs into recoverable drafts with readable previews, explicit review and honest publication receipts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/StructuredContent.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "StructuredContent"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/businessPlanning.js"
+      ],
+      "lines": 31,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Render authored draft structure with React text nodes so preview content cannot execute markup.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/TutorialReader.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "TutorialReader"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/tutorialCurriculum.js",
+        "apps/web/src/components/ui/dialog.jsx"
+      ],
+      "lines": 104,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let learners read complete lessons, practice and check understanding with accessible focus and explicit progress persistence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/businessPlanning.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "contentOutline",
+        "dateInput",
+        "draftBlocks",
+        "localDay",
+        "overdue",
+        "publicationUrl",
+        "retainedFields",
+        "selectTasks"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useWorkspaceRecords.js"
+      ],
+      "lines": 104,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Derive ERP planning and editable content outlines from saved records and explicit operator input.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/tutorialCurriculum.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "lessonLink",
+        "lessonProgress",
+        "mergeTutorials",
+        "selectTutorials",
+        "validLesson"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/data/starter-tutorials.json"
+      ],
+      "lines": 77,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Merge authored lesson previews with persistent catalogue identities without claiming unsaved or unreadable progress.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/workspace/ErpPage.jsx",
+        "apps/web/src/components/workspace/ContentStudio.jsx",
+        "apps/web/src/components/workspace/StructuredContent.jsx"
+      ],
+      "lines": 221,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise real ERP and editorial components through failed saves, retained fields, review decisions and workspace changes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/business-learning.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js",
+        "apps/pocketbase/pb_hooks/business-policy.js",
+        "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+        "apps/web/src/components/workspace/ContentStudio.jsx",
+        "apps/web/src/components/workspace/TutorialReader.jsx",
+        "apps/web/src/pages/workspace/ErpPage.jsx"
+      ],
+      "lines": 168,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain how to test business planning, reviewed content and the first 25 tutorials without confusing source, learning or publication records with live delivery.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/business-learning.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "approve",
+        "fixture",
+        "plain",
+        "reject",
+        "source"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/business-policy.js",
+        "apps/pocketbase/pb_hooks/business.pb.js",
+        "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js",
+        "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+        "apps/web/src/lib/businessPlanning.js",
+        "apps/web/src/lib/tutorialCurriculum.js"
+      ],
+      "lines": 413,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise authored lesson structure, migration retention and replay, ERP isolation and content approval against the production source contracts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "business-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
+      "target": "docs/workflow-system.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md depends on docs/workflow-system.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
+      "target": "scripts/ci/release.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md depends on scripts/ci/release.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
+      "target": ".bits/handoffs/TEMPLATE.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md uses template .bits/handoffs/TEMPLATE.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
+      "target": ".github/workflows/candidate-to-gitlab.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md validates .github/workflows/candidate-to-gitlab.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/business-policy.js",
+      "target": "apps/pocketbase/pb_hooks/workflow-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/business-policy.js depends on apps/pocketbase/pb_hooks/workflow-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/business.pb.js",
+      "target": "apps/pocketbase/pb_hooks/business-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/business.pb.js consumes apps/pocketbase/pb_hooks/business-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js",
+      "target": "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js consumes apps/pocketbase/pb_migrations/data/starter-tutorials.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js",
+      "target": "apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js depends on apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/data/starter-tutorials.json.cgrf.yaml",
+      "target": "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/data/starter-tutorials.json.cgrf.yaml validates apps/pocketbase/pb_migrations/data/starter-tutorials.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ContentStudio.jsx",
+      "target": "apps/web/src/components/workspace/StructuredContent.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/ContentStudio.jsx consumes apps/web/src/components/workspace/StructuredContent.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ContentStudio.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceRecords.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/ContentStudio.jsx consumes apps/web/src/hooks/useWorkspaceRecords.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ContentStudio.jsx",
+      "target": "apps/web/src/lib/businessPlanning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/ContentStudio.jsx consumes apps/web/src/lib/businessPlanning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/StructuredContent.jsx",
+      "target": "apps/web/src/lib/businessPlanning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/StructuredContent.jsx consumes apps/web/src/lib/businessPlanning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "target": "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialCatalog.jsx consumes apps/pocketbase/pb_migrations/data/starter-tutorials.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "target": "apps/web/src/components/workspace/TutorialReader.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialCatalog.jsx consumes apps/web/src/components/workspace/TutorialReader.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "target": "apps/web/src/lib/tutorialCurriculum.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialCatalog.jsx consumes apps/web/src/lib/tutorialCurriculum.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialReader.jsx",
+      "target": "apps/web/src/components/ui/dialog.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialReader.jsx consumes apps/web/src/components/ui/dialog.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialReader.jsx",
+      "target": "apps/web/src/lib/tutorialCurriculum.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialReader.jsx consumes apps/web/src/lib/tutorialCurriculum.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/businessPlanning.js",
+      "target": "apps/web/src/hooks/useWorkspaceRecords.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/businessPlanning.js consumes apps/web/src/hooks/useWorkspaceRecords.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/tutorialCurriculum.js",
+      "target": "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/tutorialCurriculum.js consumes apps/pocketbase/pb_migrations/data/starter-tutorials.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx",
+      "target": "apps/web/src/components/workspace/ContentStudio.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx validates apps/web/src/components/workspace/ContentStudio.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx",
+      "target": "apps/web/src/components/workspace/StructuredContent.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx validates apps/web/src/components/workspace/StructuredContent.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx",
+      "target": "apps/web/src/pages/workspace/ErpPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx validates apps/web/src/pages/workspace/ErpPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/business-learning.md",
+      "target": "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/business-learning.md consumes apps/pocketbase/pb_migrations/data/starter-tutorials.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/business-learning.md",
+      "target": "apps/web/src/components/workspace/ContentStudio.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/business-learning.md consumes apps/web/src/components/workspace/ContentStudio.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/business-learning.md",
+      "target": "apps/web/src/components/workspace/TutorialReader.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/business-learning.md consumes apps/web/src/components/workspace/TutorialReader.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/business-learning.md",
+      "target": "apps/web/src/pages/workspace/ErpPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/business-learning.md consumes apps/web/src/pages/workspace/ErpPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/business-learning.md",
+      "target": "apps/pocketbase/pb_hooks/business-policy.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "docs/business-learning.md validates apps/pocketbase/pb_hooks/business-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/business-learning.md",
+      "target": "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "docs/business-learning.md validates apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-learning.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/business-policy.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/business-learning.test.mjs validates apps/pocketbase/pb_hooks/business-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-learning.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/business.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/business-learning.test.mjs validates apps/pocketbase/pb_hooks/business.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-learning.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/business-learning.test.mjs validates apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-learning.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/business-learning.test.mjs validates apps/pocketbase/pb_migrations/data/starter-tutorials.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-learning.test.mjs",
+      "target": "apps/web/src/lib/businessPlanning.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/business-learning.test.mjs validates apps/web/src/lib/businessPlanning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-learning.test.mjs",
+      "target": "apps/web/src/lib/tutorialCurriculum.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/business-learning.test.mjs validates apps/web/src/lib/tutorialCurriculum.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
+      "description": "Delivery investigation: Provider main matches local origin/main at ff8af6c81090eaa016155f418c6fd98076ee8cfb. PRs 19-21 merged the first four session revisions; workflow revision af63ab4a64aa2708487e3a2f20b5c229e4da2d83 remains outside main. Candidate job 34924483806 did not start because GitHub reported an account billing lock; Cloudflare check 104239520899 failed independently. No remote write, private-agent activation or release was performed. The public handoff requires equivalent private validation and served-version evidence for the complete subsequently published source head.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Private delivery acceptance awaits source publication, an authorized private session and successful build/runtime verification.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T04:24:05+00:00",
+      "commit_sha": "ff8af6c81090eaa016155f418c6fd98076ee8cfb",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/business-learning.test.mjs",
+      "description": "Business and learning contracts: All 86 Node regressions and 18 Python regressions passed. Twenty new Node cases execute ERP/content/progress policies, hook registration, migration replay/down and curriculum selectors. All 25 authored lesson bodies satisfy the structured-reader contract. Selected new source coverage is 100% lines, 96.41% branches and 100% functions. Storage doubles establish source contracts without claiming native PocketBase or React acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Business planning, editorial receipts and the 25-lesson curriculum are ready for source review; native and component acceptance remain pending.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T05:08:03.114792+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx",
+      "description": "Business and learning frontend acceptance: Targeted ERP/content/catalogue/Home Vitest and coverage could not start because Vitest is absent. Official lint lacks eslint-plugin-import, and build cannot spawn Vite. The limited checker parsed 191 frontend modules without core errors. Native PocketBase is absent. Authored interaction tests, real migration/hook concurrency, browser/mobile/theme/keyboard checks and live delivery remain unverified. No network installation or gate bypass was attempted.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "A dependency-enabled private runner and isolated PocketBase 0.28.4 acceptance are required before release.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T05:08:03.114901+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "description": "Business and learning evidence gates: Context, public-boundary and memory verification passed. The boundary scanner checked 442 tracked files without failures; all 88 files new since the original base have CGRF provenance. Memory verification confirmed 152 file vectors and 263 declared relationships with complete IOO and no orphan vectors. Application smoke remains 4/7 because frontend tests, lint and build cannot start. Six prior findings and four unwired gates remain visible. No shared data, private runtime or release was activated.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "The complete source and private delivery handoff are reviewable; remaining native/frontend and release acceptance is explicit.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T05:08:38+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 138,
-    "type_b_count": 227,
-    "type_c_count": 20,
+    "type_a_count": 152,
+    "type_b_count": 263,
+    "type_c_count": 24,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

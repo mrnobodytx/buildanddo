@@ -82,7 +82,8 @@ describe('home workspace edition', () => {
     it('shows account setup while leaving shared lessons accessible without a workspace', async () => {
         renderWithProviders(<HomePage />, { workspace: { active: null, hasWorkspaces: false } });
         expect(screen.getByRole('link', { name: 'Set up workspace' })).toBeVisible();
-        expect(await screen.findByText('No lessons available yet.')).toBeVisible();
+        expect(await screen.findByText(/Apply the tutorial catalogue migration/)).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Read Welcome to BuildAndDo' })).toBeVisible();
         for (const name of privateCollections)
             expect(pb.__collection(name).getFullList).not.toHaveBeenCalled();
     });
