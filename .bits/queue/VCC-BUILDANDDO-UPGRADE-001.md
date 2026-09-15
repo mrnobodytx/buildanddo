@@ -481,3 +481,55 @@ The existing PR governance workflow now has an independent ci:test / Discord SDK
 job that installs the declared bot runtime and requires native serialization and
 source coverage. The contribution step and AGENTS table describe the same check.
 This hosted job has not executed here; its missing-SDK failure is observed locally.
+
+## Mission research continuation authorized 2026-09-15
+
+The owner requested connected Discord/website mission and evidence submissions,
+self-hosted Firecrawl search and document/audio/video parsing. The current A2
+source dispatch includes their public application contracts, schema and tests.
+No private deployment, credentials or live workspace/Discord operation is granted.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| BG | Register research scope after PR 26 | `python scripts/ci/agent_context.py --check` | done — existing SRS/dispatch extended before source implementation |
+| BH | Persist protected sources with current authority and evidence review | Research policy/migration Node suites | done — local policy, migration, protected-file and atomic evidence contracts pass; native PocketBase acceptance pending |
+| BI | Connect Discord identity, missions, evidence and explicit submissions | Discord research Python suites | partial — thirteen connected research/Discord tests pass; native SDK and approved-server acceptance pending |
+| BJ | Connect website upload, research review and Discord linking | Research client/component suites | partial — twelve client contracts pass and twelve component/hook cases are authored; Vitest/browser execution unavailable |
+| BK | Add bounded self-hosted processing adapters and leased results | Research processor Python suites | partial — local extraction, HTTP/provider and lease contracts pass; native PDF and deployed providers remain unverified |
+| BL | Verify source and runtime limits | Node/Python, SDK, frontend and native checks | done — source evidence, red/green fixes and all unavailable gates recorded |
+| BM | Record source evidence and private activation requirements | Context, boundary and memory checks | done — current report/memory/handoff, context and boundary checks prepared and verified |
+
+Memory brief: PR 26 is merged and contains the 13-command public bot. Missions,
+Evidence Ledger, current-member authorization, revisioned audited commands and
+non-secret integration requests already exist. No Discord account mapping,
+protected research intake or parser contract exists in this repository. Reuse
+PocketBase users auth and OAuth links rather than introducing another login.
+Firecrawl has a registered binding control but no inspected deployment/version;
+media/document parser details are requested. No live seat is supplied, so no
+seat event is fabricated. Frontend, Discord.py and native PocketBase were absent
+on this resumed runner; their tests must remain explicit acceptance gates.
+
+Research continuation evidence (current source):
+199 Node and 107 Python tests pass; two native dependency tests are skipped.
+The targeted bot/research checker passes 89 cases with the same two explicit
+skips and at least 83.72% statement coverage in each Python module. Its required
+native variant fails because Discord.py and pypdf are unavailable. Thirty-one
+connected Node contracts measure 99.87% lines, 85.18% branches and 94.44%
+functions across the selected backend, migration and browser/OAuth clients.
+Ruff, strict typing for six new Python source files and the 225-module source
+diagnostic pass. Full SDK typing, pytest/branch coverage, Vitest/coverage, official
+web lint, Vite, native PocketBase, rendered/mobile/OAuth and live provider checks
+remain open. No acceptance gate or dependency was removed.
+
+Red/green source checks corrected bounded queue scans starving later eligible
+work and non-BMP Unicode excerpts exceeding child-message/backend bounds. Earlier
+adapter test-loader exception identities were corrected without changing the
+production exception policy. Native and live limits are explicit in
+docs/mission-research.md and the existing community handoff.
+
+Source work covers all seven continuation phases; four phase gates are complete
+and three retain native/rendered acceptance. Cumulative completed gates are 34/65;
+application smoke remains 4/7. The dispatch remains in progress. Current memory
+and provenance counts are recorded in the cumulative report, with all 41 baseline
+memory events preserved. No Discord message, shared mutation or live seat event
+was sent by this source session.

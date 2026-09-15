@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     docs/workspace-administration.md, apps/pocketbase/pb_hooks/workspace-administration.js, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md, docs/discord-bot.md
+# Depends:     docs/workspace-administration.md, apps/pocketbase/pb_hooks/workspace-administration.js, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md, docs/discord-bot.md, docs/mission-research.md
 # EnumType:    Doc
-# EnumEdges:   DEPENDS_ON docs/workspace-administration.md; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; EXTENDS .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md; CONSUMES docs/discord-bot.md
+# EnumEdges:   DEPENDS_ON docs/workspace-administration.md; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; EXTENDS .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md; CONSUMES docs/discord-bot.md; CONSUMES docs/mission-research.md
 # DAG Node:    none
 # Intent:      Define the private execution and acceptance boundary for audited BuildAndDo integration requests without adding credentials or deployment control to the public repository.
 # ───────────────────────────────────────────────────────────────
@@ -154,3 +154,66 @@ PR validation now includes a separate ci:test / Discord SDK job that installs
 the declared runtime and invokes the native-required checker without credentials
 or login. Its hosted result is still required; the local dependency failure
 does not establish that the job passed or that shared activation is ready.
+
+## Mission research continuation — native and live acceptance required
+
+The public source now connects Discord and website submissions to the same
+mission/evidence workflow. The additive research migration, authenticated command
+handlers, protected uploads, Discord account linking, optional bot bridge and
+leased worker are implemented. This supplies a concrete command consumer for
+mission research; it does not provision private identities or replace the
+generic integration health/check receipt consumer described above.
+
+CMAX-B and IDE1 should use `docs/mission-research.md` as the source contract. The
+runtime remains unactivated here. Obtain the receiving dispatch and verify:
+
+1. **Native backend:** apply the complete current PocketBase 0.28.4 source bundle
+   and the additive migration through the existing authorized release path.
+   Exercise up/replay/down/re-up, native rules and hooks, concurrent same-key
+   commands, audit failure rollback, protected file storage and current-member
+   denial. The down migration retains uploads, source results and evidence.
+2. **Identity and scope:** configure the existing native Discord OAuth provider
+   for the site's same-account link flow. Register distinct bot and worker user
+   identities using existing secret-management practice; neither is a PocketBase
+   superuser. `BUILDANDDO_RESEARCH_BINDINGS` binds those identities to an exact
+   workspace/server/channel and capability set. Confirm an unlinked caller, a
+   foreign server/channel, a viewer write and a removed member are denied. A
+   changed OAuth link must not reattribute a pending request.
+3. **Desired settings:** save matching enabled Discord and Firecrawl research
+   bindings through the existing workspace administration API/UI. Verify that
+   disablement, capability changes and integration revisions fence claims and
+   completions. Do not write `observed_state=healthy` from those settings: generic
+   health/check receipts still need an actual integration observation.
+4. **Processor contracts:** inspect the actual self-hosted Firecrawl version and
+   prove the selected v1/v2 search and scrape responses. Search may be absent in
+   a particular self-hosted configuration; do not advertise it until it works.
+   Verify crawler-side DNS, redirect and destination controls before setting
+   the egress-attestation flag. The flag itself enforces no network boundary.
+5. **Documents and media:** install the declared `pypdf` dependency and verify a
+   known PDF/DOCX/text sample. Supply an actual self-hosted endpoint/model matching
+   the multipart transcription contract for audio and supported video containers.
+   This adapter transcribes audio; it performs no visual video analysis or OCR.
+   Set only available capabilities. Supply private process/container resource
+   limits, especially for Windows document parsing. No parser URL is accepted
+   from website or Discord submissions.
+6. **Complete packages:** the bot requires `scripts/discordbot` and `apps/research`;
+   the worker uses the configured native backend identity and provider bindings.
+   Preserve original bot credential management. Validate through
+   `python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf`,
+   complete strict typing, branch coverage and the rendered frontend gates in
+   the documentation. The updated PR job requires both native dependencies.
+7. **Controlled acceptance:** in an approved test server, deliberately register
+   the twenty-command set only after configuring the bridge. Link the test
+   account, submit to an unfinished mission, observe a real worker extraction,
+   review on the website and read back exactly one observed evidence record.
+   Confirm mission verification is unchanged. Repeat for each enabled input
+   type, malformed input, unavailable provider, expired lease, cancelled work
+   and lost replies. The test must use actual protected downloads and native
+   OAuth/rules, not the local storage/transport doubles.
+
+Record bot, backend, worker and served web revisions independently, together
+with redacted submission/evidence IDs, timestamps, input digests and the actual
+processor version/model. Never include credentials, raw uploads or private
+source text in public validation logs. No live Discord post, command sync,
+OAuth activation, private provider request, token provisioning, seat event or
+shared deployment was performed by this source session.

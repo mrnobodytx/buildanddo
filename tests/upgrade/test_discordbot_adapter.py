@@ -34,6 +34,9 @@ from discord_sdk_double import sdk_double
 from scripts.discordbot.contracts import Caller, Page, Quiz, Reply, Settings
 from scripts.discordbot.public_data import Observation, PublicClient
 from scripts.discordbot.service import COMMANDS
+from scripts.discordbot.research import Binding, ResearchBridge
+from apps.research.transport import HttpClient
+from apps.research.contracts import Endpoint
 
 ROOT = Path(__file__).resolve().parents[2]
 NATIVE_SDK = importlib.util.find_spec("discord") is not None
@@ -329,3 +332,12 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         view = ADAPTER.ReplyView(self.service, self.caller, reply)
         self.addCleanup(view.stop)
         self.assertTrue(view.to_components())
+        bridge = ResearchBridge(HttpClient(Endpoint('http://127.0.0.1:8090')), (Binding(12345678901234567, 23456789012345678, 'ws1'),))
+        bot = ADAPTER.BuildAndDoBot(Settings(), research=bridge)
+        self.addAsyncCleanup(bot.close)
+        private = bot.group.to_dict(bot.tree)
+        self.assertEqual(len(private['options']), 20)
+        submit = next(item for item in private['options'] if item['name'] == 'submit')
+        attachment = next(item for item in submit['options'] if item['name'] == 'file')
+        self.assertEqual(attachment['type'], 11)
+        self.assertFalse(attachment.get('required', False))

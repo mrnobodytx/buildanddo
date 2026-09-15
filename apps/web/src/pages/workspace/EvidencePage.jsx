@@ -39,6 +39,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
+import { Link } from 'react-router-dom';
 import ListToolbar from '@/components/workspace/ListToolbar';
 import {
     EVIDENCE_TYPE,
@@ -158,6 +159,7 @@ export default function EvidencePage() {
             />
 
 
+            <Link to="/app/research" className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">Submit and review research sources</Link>
             <div className="flex flex-wrap gap-2">
                 {Object.keys(EVIDENCE_TYPE).map((key) => (
                     <StatusBadge key={key} map={EVIDENCE_TYPE} value={key} />

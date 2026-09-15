@@ -1,0 +1,141 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/research/processing.py
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-15
+# Depends:     apps/research/transport.py, apps/research/documents.py
+# EnumType:    Adapter
+# EnumEdges:   CONSUMES apps/research/transport.py; CONSUMES apps/research/documents.py
+# DAG Node:    none
+# Intent:      Produce actual source excerpts through self-hosted Firecrawl, local document parsing and configured audio transcription.
+# ───────────────────────────────────────────────────────────────
+
+"""Dispatch source extraction to an explicitly configured capability."""
+from __future__ import annotations
+
+from collections.abc import Callable
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+
+from apps.research.contracts import Citation, Parsed, ProcessorSettings, ResearchError, clip_text, file_kind, object_value, public_url, text
+from apps.research.transport import BoundedIO, HttpClient, decode_json, multipart
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def parse_document(data: bytes, name: str) -> dict[str, object]:
+    """Run the document parser with a deadline and automatic temporary-file cleanup."""
+    with tempfile.TemporaryDirectory(prefix="buildanddo-research-") as folder:
+        path = Path(folder) / "input"
+        path.write_bytes(data)
+        try:
+            result = subprocess.run([sys.executable, "-m", "apps.research.documents", str(path), "--name", name],
+                                    cwd=ROOT, capture_output=True, timeout=30, check=False)
+        except subprocess.TimeoutExpired:
+            raise ResearchError("timeout") from None
+    if len(result.stdout) > 150000:
+        raise ResearchError("too_large")
+    parsed = decode_json(result.stdout)
+    if result.returncode or "failure" in parsed:
+        code = parsed.get("failure")
+        raise ResearchError(str(code) if code in {"unsupported", "too_large", "capability_unavailable", "invalid_data"} else "invalid_data")
+    return parsed
+
+
+class Processor:
+    """Separate public web extraction from private file transcription."""
+
+    def __init__(self, settings: ProcessorSettings, *, firecrawl: HttpClient | None = None,
+                 transcription: HttpClient | None = None, guard: Callable[[object], str] = lambda value: public_url(value, resolve=True),
+                 documents: Callable[[bytes, str], dict[str, object]] = parse_document) -> None:
+        self.settings = settings
+        self.firecrawl = firecrawl
+        self.transcription = transcription
+        self.guard, self.documents, self.io = guard, documents, BoundedIO(slots=1, deadline=40)
+
+    async def process(self, job: dict[str, object], data: bytes | None = None, name: str = "") -> Parsed:
+        """Extract source text without approving, verifying or executing its instructions."""
+        kind = job.get("kind")
+        source = text(job.get("input"), 2048, empty=True)
+        digest = hashlib.sha256(data if data is not None else source.encode()).hexdigest()
+        citations: list[Citation] = []
+        truncated = False
+        if kind in {"search", "url"}:
+            if not self.firecrawl or not self.settings.firecrawl:
+                raise ResearchError("capability_unavailable")
+            if data is not None:
+                raise ResearchError("invalid_data")
+            if kind == "url":
+                await self.io.run(lambda: self.guard(source))
+                body: dict[str, object] = {"url": source, "formats": ["markdown"], "onlyMainContent": True, "timeout": 30000}
+                response = await self.firecrawl.json(f"/{self.settings.firecrawl_version}/scrape", body=body)
+                if response.get("success") is not True:
+                    raise ResearchError("unavailable")
+                record = object_value(response.get("data"))
+                value = text(record.get("markdown"), 1000000)
+                metadata = object_value(record.get("metadata", {}))
+                resolved = public_url(metadata.get("sourceURL", source))
+                citations = [{"title": clip_text(str(metadata.get("title") or source), 160), "url": resolved}]
+            else:
+                text(source, 500)
+                response = await self.firecrawl.json(f"/{self.settings.firecrawl_version}/search", body={"query": source, "limit": 5})
+                if response.get("success") is not True:
+                    raise ResearchError("unavailable")
+                records = response.get("data")
+                if self.settings.firecrawl_version == "v2":
+                    records = object_value(records).get("web")
+                if not isinstance(records, list) or not records or len(records) > 10:
+                    raise ResearchError("invalid_data")
+                parts: list[str] = []
+                for entry in records:
+                    row = object_value(entry)
+                    url = public_url(row.get("url"))
+                    title = clip_text(text(row.get("title"), 500), 160)
+                    excerpt = text(row.get("markdown") or row.get("description"), 200000)
+                    citations.append({"title": title, "url": url})
+                    parts.append(title + "\n" + url + "\n" + excerpt)
+                value = "\n\n".join(parts)
+            processor, version = "firecrawl", self.settings.firecrawl_version
+        else:
+            if data is None or file_kind(name, len(data)) != kind:
+                raise ResearchError("invalid_data")
+            if kind == "document":
+                document = await self.io.run(lambda: self.documents(data, name))
+                value = text(document.get("text"), 16000)
+                version = text(document.get("version"), 80)
+                if not isinstance(document.get("truncated"), bool):
+                    raise ResearchError("invalid_data")
+                truncated, processor = bool(document["truncated"]), "local-document"
+            elif kind in {"audio", "video"}:
+                if not self.transcription or not self.settings.transcription or not self.settings.transcription_model:
+                    raise ResearchError("capability_unavailable")
+                body_bytes, content_type = multipart({"model": self.settings.transcription_model, "response_format": "json"}, name, data)
+                response = decode_json(await self.transcription.raw("", method="POST", body=body_bytes, content_type=content_type))
+                value = text(response.get("text"), 1000000)
+                processor, version = "self-hosted-transcription", self.settings.transcription_model
+            else:
+                raise ResearchError("unsupported")
+        excerpt = clip_text(value, 16000)
+        result: Parsed = {"text": excerpt, "citations": citations, "processor": processor, "version": version,
+                          "input_sha256": digest, "truncated": truncated or excerpt != value}
+        # Stay inside the server command's byte budget even with multibyte text.
+        while len(json.dumps(result, ensure_ascii=False).encode()) > 55000:
+            result["text"] = result["text"][:max(1, len(result["text"]) - 1000)]
+            result["truncated"] = True
+        return result
+
+    async def close(self) -> None:
+        """Drain provider and document work before releasing the worker."""
+        await self.io.close()
+        for client in (self.firecrawl, self.transcription):
+            if client:
+                await client.close()

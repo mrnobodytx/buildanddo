@@ -32,6 +32,7 @@ const OperationsPage = lazy(() => import('./pages/workspace/OperationsPage'));
 const FleetPage = lazy(() => import('./pages/workspace/FleetPage'));
 const PlatformHealthPage = lazy(() => import('./pages/workspace/PlatformHealthPage'));
 const EvidencePage = lazy(() => import('./pages/workspace/EvidencePage'));
+const ResearchPage = lazy(() => import('./pages/workspace/ResearchPage'));
 const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
 // Capability Passport viewer; file path retained from the former desks page so
 // existing /app/desks bookmarks keep resolving (SRS-BUILDANDDO-WITNESS-001).
@@ -66,6 +67,7 @@ const WORKSPACE_ROUTES = [
     { path: 'fleet', label: 'Fleet', element: FleetPage },
     { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
+    { path: 'research', label: 'Mission research', element: ResearchPage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
     { path: 'desks', label: 'Capability Passport', element: CapabilityPassportPage },
     { path: 'passport', label: 'Capability Passport', element: CapabilityPassportPage },

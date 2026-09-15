@@ -1,0 +1,17 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/research/requirements.txt
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-15
+# Depends:     apps/research/documents.py
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON apps/research/documents.py
+# DAG Node:    none
+# Intent:      Declare the PDF text parser required by the opt-in self-hosted research worker.
+# ───────────────────────────────────────────────────────────────
+pypdf>=5,<7

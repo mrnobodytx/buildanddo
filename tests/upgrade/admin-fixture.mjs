@@ -70,7 +70,7 @@ function predicate(filter, values, params) {
     const result = or(); assert.equal(i, tokens.length, filter); return result;
 }
 
-export function fixture({ migrated = true } = {}) {
+export function fixture({ migrated = true, runtime = {} } = {}) {
     let data = {}; const collections = {};
     let count = 0; const denied = new Set(); const config = { failAudit: false, foreignMember: false };
     const app = {
@@ -108,7 +108,7 @@ export function fixture({ migrated = true } = {}) {
             try { callback(this); } catch (error) { data = before; for (const key of Object.keys(collections)) delete collections[key]; Object.assign(collections, beforeCollections); throw error; }
         },
     };
-    const globals = { Collection, Field, Record, ApiError, BadRequestError, ForbiddenError, NotFoundError, __hooks: '/hooks' };
+    const globals = { Collection, Field, Record, ApiError, BadRequestError, ForbiddenError, NotFoundError, __hooks: '/hooks', ...runtime };
     const cache = {};
     const load = (name) => {
         if (cache[name]) return cache[name]; const module = { exports: {} };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MotionSettings from '@/components/motion/MotionSettings';
+import DiscordAccountLink from '@/components/workspace/DiscordAccountLink';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -32,8 +33,8 @@ import {
 export default function SettingsPage() {
     const navigate = useNavigate();
     const { hash } = useLocation();
-    const [settingsTab, setSettingsTab] = useState(hash === '#motion-settings' ? 'motion' : 'appearance');
-    useEffect(() => { if (hash === '#motion-settings') setSettingsTab('motion'); }, [hash]);
+    const [settingsTab, setSettingsTab] = useState(hash === '#discord-account' ? 'account' : hash === '#motion-settings' ? 'motion' : 'appearance');
+    useEffect(() => { if (hash === '#motion-settings') setSettingsTab('motion'); else if (hash === '#discord-account') setSettingsTab('account'); }, [hash]);
     const { user, logout } = useAuth();
     const { active, workspaces, refresh } = useWorkspace();
     const access = useWorkspaceAccess();
@@ -224,6 +225,7 @@ export default function SettingsPage() {
 
                 </TabsContent>
                 <TabsContent value="account" className="space-y-8">
+                    <DiscordAccountLink />
                     {/* Account */}
                     <section className="space-y-3">
                         <h2 className="font-display text-lg font-semibold tracking-tight">
@@ -235,9 +237,6 @@ export default function SettingsPage() {
                                     <p className="break-all text-sm font-medium">{user?.email}</p>
                                     <p className="mt-2 break-all text-xs text-muted-foreground">Account ID: <span className="select-all font-evidence">{user?.id}</span></p>
                                     <p className="mt-1 text-xs text-muted-foreground">Share this ID with a workspace owner to request team access.</p>
-                                    <p className="mt-0.5 text-xs text-muted-foreground">
-                                        BuildAndDo sign-in · no external provider connected
-                                    </p>
                                 </div>
                                 <Button variant="secondary" size="sm" onClick={handleLogout}>
                                     <LogOut className="h-4 w-4" />

@@ -10,10 +10,10 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 410,
+      "lines": 411,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Keep the registered Discord continuation and measured repository inventory reviewable while retaining existing test and delivery findings.",
+      "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "stored",
       "supersedes": false,
@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 14146,
+      "lines": 15801,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 309,
+      "lines": 314,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 483,
+      "lines": 535,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 545,
+      "lines": 620,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1007,10 +1007,10 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "App",
-        "AppRoutes",
         "RedirectIfAuthed",
-        "WorkspaceGate"
+        "WorkspaceGate",
+        "AppRoutes",
+        "App"
       ],
       "dependencies": [
         "./components/ScrollToTop",
@@ -1028,7 +1028,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 214,
+      "lines": 216,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve route loading and offer retry when the workspace list cannot be read instead of treating an outage as a new account.",
@@ -1057,13 +1057,9 @@
       "enum_type": "Test",
       "functions": [],
       "dependencies": [
-        "@/App",
-        "@/lib/pocketbaseClient",
-        "@/test/utils",
-        "apps/web/src/App.jsx",
-        "vitest"
+        "apps/web/src/App.jsx"
       ],
-      "lines": 106,
+      "lines": 107,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Load every real workspace route and the five public entries while preserving authentication gates.",
@@ -1804,10 +1800,10 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "BrandMark",
         "NavList",
-        "WorkspaceLayout",
-        "WorkspaceSwitcher"
+        "BrandMark",
+        "WorkspaceSwitcher",
+        "WorkspaceLayout"
       ],
       "dependencies": [
         "./WorkspaceNotices",
@@ -1826,7 +1822,7 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 269,
+      "lines": 270,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
@@ -2566,7 +2562,7 @@
       "dependencies": [
         "apps/web/src/lib/observability/context.js"
       ],
-      "lines": 69,
+      "lines": 71,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Centralize browser sampling and the bounded workspace mutation action vocabulary.",
@@ -3497,24 +3493,10 @@
         "EvidencePage"
       ],
       "dependencies": [
-        "@/components/site/ui",
-        "@/components/ui/dialog",
-        "@/components/ui/input",
-        "@/components/ui/label",
-        "@/components/ui/select",
-        "@/components/ui/textarea",
-        "@/components/workspace/EmptyState",
-        "@/components/workspace/ListToolbar",
-        "@/components/workspace/WorkspaceNotices",
-        "@/components/workspace/workspaceHelpers",
-        "@/hooks/useWorkspaceRecords",
-        "@/lib/format",
         "apps/web/src/hooks/useWorkspaceRecords.js",
-        "apps/web/src/lib/workspaceActions.js",
-        "lucide-react",
-        "react"
+        "apps/web/src/lib/workspaceActions.js"
       ],
-      "lines": 435,
+      "lines": 437,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the evidence trail searchable and linkable, so a ledger stays a ledger past its first thirty entries.",
@@ -3542,43 +3524,20 @@
       ],
       "enum_type": "Widget",
       "functions": [
+        "SavedPlan",
         "MissionDesk",
-        "MissionsPage",
-        "SavedPlan"
+        "MissionsPage"
       ],
       "dependencies": [
-        "@/components/motion/MotionPrimitives",
-        "@/components/site/ui",
-        "@/components/ui/dialog",
-        "@/components/workspace/EmptyState",
-        "@/components/workspace/ListToolbar",
-        "@/components/workspace/PreviousWorkNote",
-        "@/components/workspace/WorkspaceNotices",
-        "@/components/workspace/missions/MissionBuilder",
-        "@/components/workspace/missions/MissionGuide",
-        "@/components/workspace/missions/MissionLearning",
-        "@/components/workspace/missions/MissionReview",
-        "@/components/workspace/workspaceHelpers",
-        "@/contexts/AuthContext",
-        "@/contexts/MotionContext",
-        "@/contexts/WorkspaceContext",
-        "@/hooks/useDemoMode",
-        "@/hooks/usePreviousWork",
-        "@/hooks/useWorkspaceRecords",
-        "@/lib/format",
-        "@/lib/missionLearning",
-        "@/lib/utils",
-        "apps/web/src/components/workspace/ListToolbar.jsx",
-        "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
-        "apps/web/src/components/workspace/missions/MissionGuide.jsx",
-        "apps/web/src/components/workspace/missions/MissionLearning.jsx",
-        "apps/web/src/components/workspace/missions/MissionReview.jsx",
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/workspaceActions.js",
-        "lucide-react",
-        "react"
+        "apps/web/src/components/workspace/ListToolbar.jsx",
+        "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
+        "apps/web/src/components/workspace/missions/MissionReview.jsx",
+        "apps/web/src/components/workspace/missions/MissionLearning.jsx",
+        "apps/web/src/components/workspace/missions/MissionGuide.jsx"
       ],
-      "lines": 701,
+      "lines": 703,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
@@ -3779,7 +3738,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 259,
+      "lines": 258,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace writes attributed to real backend outcomes and expose actionable failure states in this page.",
@@ -4300,13 +4259,10 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [
-        "@vitejs/plugin-react",
-        "apps/web/src/test/setup.js",
         "apps/web/vite.config.js",
-        "node:url",
-        "vitest/config"
+        "apps/web/src/test/setup.js"
       ],
-      "lines": 88,
+      "lines": 92,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the web test suite on the existing Vite transform, resolving the same \"@\" alias the app builds with.",
@@ -9584,9 +9540,10 @@
         "docs/workspace-administration.md",
         "apps/pocketbase/pb_hooks/workspace-administration.js",
         ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
-        "docs/discord-bot.md"
+        "docs/discord-bot.md",
+        "docs/mission-research.md"
       ],
-      "lines": 156,
+      "lines": 219,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define the private execution and acceptance boundary for audited BuildAndDo integration requests without adding credentials or deployment control to the public repository.",
@@ -10427,16 +10384,12 @@
       ],
       "enum_type": "Test",
       "functions": [
-        "fixture",
-        "predicate"
+        "predicate",
+        "fixture"
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js",
-        "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js",
-        "node:assert/strict",
-        "node:fs",
-        "node:url",
-        "node:vm"
+        "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js"
       ],
       "lines": 153,
       "caps_grade": "pending",
@@ -13308,9 +13261,11 @@
         "scripts/discordbot/service.py",
         "apps/web/tools/generate-community.mjs",
         "tests/upgrade/check_discordbot.py",
-        ".github/workflows/pr-governance.yml"
+        ".github/workflows/pr-governance.yml",
+        "docs/mission-research.md",
+        "scripts/discordbot/research.py"
       ],
-      "lines": 187,
+      "lines": 211,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the implemented Discord experience, its real public data sources and the remaining private activation requirements.",
@@ -13347,9 +13302,10 @@
       ],
       "dependencies": [
         "scripts/discordbot/service.py",
-        "scripts/discordbot/contracts.py"
+        "scripts/discordbot/contracts.py",
+        "scripts/discordbot/research.py"
       ],
-      "lines": 423,
+      "lines": 493,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Serve useful public Discord interactions with explicit scope, private replies and no import-time activation.",
@@ -13493,7 +13449,7 @@
         "scripts/discordbot/catalogue.py",
         "scripts/discordbot/public_data.py"
       ],
-      "lines": 294,
+      "lines": 295,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect useful community commands to dated public evidence and the site's authored teaching content.",
@@ -13526,9 +13482,11 @@
       "dependencies": [
         "tests/upgrade/test_discordbot_public.py",
         "tests/upgrade/test_discordbot_commands.py",
-        "tests/upgrade/test_discordbot_adapter.py"
+        "tests/upgrade/test_discordbot_adapter.py",
+        "tests/upgrade/test_discordbot_research.py",
+        "tests/upgrade/test_research_runtime.py"
       ],
-      "lines": 81,
+      "lines": 92,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Produce reproducible bot coverage evidence and a separate native-SDK gate without installing packages or hiding skipped acceptance.",
@@ -13593,7 +13551,7 @@
       "dependencies": [
         "scripts/discordbot/bot.py"
       ],
-      "lines": 195,
+      "lines": 197,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Isolate Discord transport in offline behavior tests without substituting those tests for native SDK acceptance.",
@@ -13629,7 +13587,7 @@
         "tests/upgrade/discord_sdk_double.py",
         "apps/web/tools/generate-community.mjs"
       ],
-      "lines": 331,
+      "lines": 343,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify private replies, owned controls and deliberate synchronization while keeping SDK-double results distinct from native acceptance.",
@@ -14129,12 +14087,1709 @@
       "timestamp": "2026-09-15T18:52:47.962309+00:00",
       "commit_sha": null,
       "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/mission-research.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "assign",
+        "commandInput",
+        "source",
+        "output",
+        "audit",
+        "context",
+        "submitInput",
+        "proposed",
+        "perform",
+        "execute",
+        "command",
+        "snapshot",
+        "detail",
+        "resultInput",
+        "queue",
+        "work",
+        "discordCommand",
+        "discordUpload"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/research-policy.js",
+        "apps/pocketbase/pb_hooks/mission-policy.js"
+      ],
+      "lines": 300,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect both intake channels to durable research, fenced processing attempts and explicitly reviewed mission evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/research-policy.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "schema",
+        "bindings",
+        "binding",
+        "integration",
+        "capabilities",
+        "mission",
+        "publicUrl",
+        "fileInfo",
+        "prepareUpload",
+        "upload",
+        "removeUpload",
+        "worker",
+        "currentJob",
+        "download",
+        "discord"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_migrations/1790100000_mission_research.js"
+      ],
+      "lines": 172,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind research inputs and protected downloads to current workspace roles and registered service identities.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/research.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/mission-research.js",
+        "apps/pocketbase/pb_hooks/research-policy.js"
+      ],
+      "lines": 50,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose authenticated research routes and protect native file operations without alternate bearer authentication.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1790100000_mission_research.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js"
+      ],
+      "lines": 100,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain protected research inputs and processing provenance without allowing clients to forge results or evidence receipts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/contracts.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "clip_text",
+        "object_value",
+        "text",
+        "identifier",
+        "file_kind",
+        "public_url"
+      ],
+      "dependencies": [
+        "scripts/discordbot/contracts.py"
+      ],
+      "lines": 181,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound source types, parser results and configured service endpoints without assuming deployed capabilities.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/documents.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "extract",
+        "main",
+        "limit_resources"
+      ],
+      "dependencies": [
+        "apps/research/contracts.py"
+      ],
+      "lines": 120,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Parse uploaded documents in a bounded child process without publishing protected file URLs or executing their contents.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/processing.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "parse_document"
+      ],
+      "dependencies": [
+        "apps/research/transport.py",
+        "apps/research/documents.py"
+      ],
+      "lines": 141,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Produce actual source excerpts through self-hosted Firecrawl, local document parsing and configured audio transcription.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/requirements.txt",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "apps/research/documents.py"
+      ],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Declare the PDF text parser required by the opt-in self-hosted research worker.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/transport.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "encode_json",
+        "multipart",
+        "decode_json"
+      ],
+      "dependencies": [
+        "apps/research/contracts.py"
+      ],
+      "lines": 166,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound authenticated research transport without redirects, ambient credentials or automatic mutation retries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/worker.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "configured",
+        "main"
+      ],
+      "dependencies": [
+        "apps/research/processing.py",
+        "apps/pocketbase/pb_hooks/research.pb.js"
+      ],
+      "lines": 212,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Consume authorized research leases and persist actual parser results while rejecting stale or cancelled work.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/DiscordAccountLink.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "DiscordAccountLink"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/discordAccount.js",
+        "apps/web/src/contexts/AuthContext.jsx"
+      ],
+      "lines": 49,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give signed-in members an explicit native account-linking flow before Discord can access their mission scope.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/__tests__/DiscordAccountLink.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/workspace/DiscordAccountLink.jsx",
+        "apps/web/src/lib/discordAccount.js"
+      ],
+      "lines": 56,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify visible native-link outcomes and recovery without switching identities or enabling demonstration writes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/__tests__/useMissionResearch.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Wrapper"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useMissionResearch.js"
+      ],
+      "lines": 71,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject late research data and receipts across account, workspace and demonstration changes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/useMissionResearch.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "useMissionResearch"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/missionResearch.js",
+        "apps/web/src/contexts/WorkspaceContext.jsx"
+      ],
+      "lines": 68,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Clear research views on scope changes and preserve uncertain commands until their saved receipts are recovered.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/discordAccount.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "createDiscordAccountLink"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/pocketbaseClient.js"
+      ],
+      "lines": 64,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Link Discord through native PocketBase OAuth without replacing the signed-in account or trusting a typed Discord identifier.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/missionResearch.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "createResearchClient"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/research.pb.js"
+      ],
+      "lines": 140,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve research retry identity and reject stale account responses while uploading protected source material.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/ResearchPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "ResearchDesk",
+        "ResearchView",
+        "ResearchPage"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useMissionResearch.js",
+        "apps/web/src/hooks/useWorkspaceRecords.js",
+        "apps/web/src/lib/missionResearch.js"
+      ],
+      "lines": 179,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let members submit and review mission sources from either channel without presenting machine extraction as verified evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/ResearchFlow.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/workspace/ResearchPage.jsx",
+        "tests/upgrade/research-fixture.mjs"
+      ],
+      "lines": 149,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise rendered submission, recovery and review against the real command policy rather than advancing state in UI fixtures.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/mission-research.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/mission-research.js",
+        "apps/pocketbase/pb_hooks/research-policy.js",
+        "apps/pocketbase/pb_migrations/1790100000_mission_research.js",
+        "apps/web/src/pages/workspace/ResearchPage.jsx",
+        "apps/web/src/lib/discordAccount.js",
+        "scripts/discordbot/research.py",
+        "apps/research/worker.py",
+        "tests/upgrade/mission-research.test.mjs",
+        "tests/upgrade/test_discordbot_research.py",
+        "tests/upgrade/test_research_runtime.py"
+      ],
+      "lines": 254,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the connected mission-source workflow and exact receiving-runtime contracts without claiming private activation or verification from extracted content.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/discordbot/research.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "bindings_from_env",
+        "configured_bridge"
+      ],
+      "dependencies": [
+        "apps/research/transport.py",
+        "apps/pocketbase/pb_hooks/research.pb.js",
+        "scripts/discordbot/contracts.py"
+      ],
+      "lines": 281,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind private Discord mission commands to linked native accounts and recover uncertain submissions without duplicating their evidence inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/mission-research.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ready"
+      ],
+      "dependencies": [
+        "tests/upgrade/research-fixture.mjs",
+        "apps/pocketbase/pb_hooks/research.pb.js"
+      ],
+      "lines": 258,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove source-connected identity, upload, lease, retry and evidence boundaries across website and Discord intake.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/research-backend-driver.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/research-fixture.mjs",
+        "apps/pocketbase/pb_hooks/mission-research.js"
+      ],
+      "lines": 49,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect actual Python bot and worker source to the actual JavaScript command policy in one persistent storage double.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/research-client.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "connected",
+        "oauth"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/missionResearch.js",
+        "apps/web/src/lib/discordAccount.js",
+        "tests/upgrade/research-fixture.mjs"
+      ],
+      "lines": 167,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise browser-to-backend retries, account revocation and native OAuth isolation without claiming rendered or native-runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/research-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "researchFixture"
+      ],
+      "dependencies": [
+        "tests/upgrade/admin-fixture.mjs",
+        "apps/pocketbase/pb_hooks/mission-research.js"
+      ],
+      "lines": 52,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise research source contracts with registered identities and transactional storage while retaining native acceptance as a separate gate.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/research_support.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/research-backend-driver.mjs"
+      ],
+      "lines": 109,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise cross-language client and processing contracts against one real policy execution with explicitly simulated native storage.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_discordbot_research.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "scripts/discordbot/research.py",
+        "apps/research/worker.py",
+        "tests/upgrade/research_support.py"
+      ],
+      "lines": 240,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove Discord-to-mission-to-parser-to-evidence flows and lost-response recovery using connected application source.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_research_runtime.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/research/contracts.py",
+        "apps/research/transport.py",
+        "apps/research/documents.py",
+        "apps/research/processing.py",
+        "apps/research/worker.py"
+      ],
+      "lines": 437,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify bounded HTTP, real document extraction, provider contracts and fenced worker outcomes without live provider or deployment claims.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mission-research"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md",
+      "target": "docs/mission-research.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md consumes docs/mission-research.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "docs/mission-research.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md consumes docs/mission-research.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/mission-research.js",
+      "target": "apps/pocketbase/pb_hooks/mission-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/mission-research.js consumes apps/pocketbase/pb_hooks/mission-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/mission-research.js",
+      "target": "apps/pocketbase/pb_hooks/research-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/mission-research.js depends on apps/pocketbase/pb_hooks/research-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/research-policy.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/research-policy.js depends on apps/pocketbase/pb_hooks/workspace-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/research-policy.js",
+      "target": "apps/pocketbase/pb_migrations/1790100000_mission_research.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/research-policy.js depends on apps/pocketbase/pb_migrations/1790100000_mission_research.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/research.pb.js",
+      "target": "apps/pocketbase/pb_hooks/mission-research.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/research.pb.js consumes apps/pocketbase/pb_hooks/mission-research.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/research.pb.js",
+      "target": "apps/pocketbase/pb_hooks/research-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/research.pb.js consumes apps/pocketbase/pb_hooks/research-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1790100000_mission_research.js",
+      "target": "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1790100000_mission_research.js depends on apps/pocketbase/pb_migrations/1790000000_workspace_administration.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/contracts.py",
+      "target": "scripts/discordbot/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/research/contracts.py depends on scripts/discordbot/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/documents.py",
+      "target": "apps/research/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/research/documents.py depends on apps/research/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/processing.py",
+      "target": "apps/research/documents.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/processing.py consumes apps/research/documents.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/processing.py",
+      "target": "apps/research/transport.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/processing.py consumes apps/research/transport.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/requirements.txt",
+      "target": "apps/research/documents.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/research/requirements.txt depends on apps/research/documents.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/transport.py",
+      "target": "apps/research/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/research/transport.py depends on apps/research/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/worker.py",
+      "target": "apps/pocketbase/pb_hooks/research.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/worker.py consumes apps/pocketbase/pb_hooks/research.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/worker.py",
+      "target": "apps/research/processing.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/worker.py consumes apps/research/processing.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/DiscordAccountLink.jsx",
+      "target": "apps/web/src/contexts/AuthContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/DiscordAccountLink.jsx consumes apps/web/src/contexts/AuthContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/DiscordAccountLink.jsx",
+      "target": "apps/web/src/lib/discordAccount.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/DiscordAccountLink.jsx consumes apps/web/src/lib/discordAccount.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/DiscordAccountLink.test.jsx",
+      "target": "apps/web/src/lib/discordAccount.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/__tests__/DiscordAccountLink.test.jsx consumes apps/web/src/lib/discordAccount.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/DiscordAccountLink.test.jsx",
+      "target": "apps/web/src/components/workspace/DiscordAccountLink.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/__tests__/DiscordAccountLink.test.jsx validates apps/web/src/components/workspace/DiscordAccountLink.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/__tests__/useMissionResearch.test.jsx",
+      "target": "apps/web/src/hooks/useMissionResearch.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/__tests__/useMissionResearch.test.jsx validates apps/web/src/hooks/useMissionResearch.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useMissionResearch.js",
+      "target": "apps/web/src/contexts/WorkspaceContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/useMissionResearch.js consumes apps/web/src/contexts/WorkspaceContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useMissionResearch.js",
+      "target": "apps/web/src/lib/missionResearch.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/useMissionResearch.js consumes apps/web/src/lib/missionResearch.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/discordAccount.js",
+      "target": "apps/web/src/lib/pocketbaseClient.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/discordAccount.js consumes apps/web/src/lib/pocketbaseClient.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/missionResearch.js",
+      "target": "apps/pocketbase/pb_hooks/research.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/missionResearch.js consumes apps/pocketbase/pb_hooks/research.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/ResearchPage.jsx",
+      "target": "apps/web/src/hooks/useMissionResearch.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/ResearchPage.jsx consumes apps/web/src/hooks/useMissionResearch.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/ResearchPage.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceRecords.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/ResearchPage.jsx consumes apps/web/src/hooks/useWorkspaceRecords.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/ResearchPage.jsx",
+      "target": "apps/web/src/lib/missionResearch.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/ResearchPage.jsx consumes apps/web/src/lib/missionResearch.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/ResearchFlow.test.jsx",
+      "target": "tests/upgrade/research-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/ResearchFlow.test.jsx consumes tests/upgrade/research-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/ResearchFlow.test.jsx",
+      "target": "apps/web/src/pages/workspace/ResearchPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/ResearchFlow.test.jsx validates apps/web/src/pages/workspace/ResearchPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "docs/mission-research.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-bot.md consumes docs/mission-research.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "scripts/discordbot/research.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-bot.md consumes scripts/discordbot/research.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "apps/pocketbase/pb_hooks/mission-research.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mission-research.md consumes apps/pocketbase/pb_hooks/mission-research.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "apps/pocketbase/pb_hooks/research-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mission-research.md consumes apps/pocketbase/pb_hooks/research-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "apps/pocketbase/pb_migrations/1790100000_mission_research.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mission-research.md consumes apps/pocketbase/pb_migrations/1790100000_mission_research.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "apps/research/worker.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mission-research.md consumes apps/research/worker.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "apps/web/src/lib/discordAccount.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mission-research.md consumes apps/web/src/lib/discordAccount.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "apps/web/src/pages/workspace/ResearchPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mission-research.md consumes apps/web/src/pages/workspace/ResearchPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "scripts/discordbot/research.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mission-research.md consumes scripts/discordbot/research.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "tests/upgrade/mission-research.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/mission-research.md verified by tests/upgrade/mission-research.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "tests/upgrade/test_discordbot_research.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/mission-research.md verified by tests/upgrade/test_discordbot_research.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "tests/upgrade/test_research_runtime.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/mission-research.md verified by tests/upgrade/test_research_runtime.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/bot.py",
+      "target": "scripts/discordbot/research.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/bot.py consumes scripts/discordbot/research.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/research.py",
+      "target": "apps/pocketbase/pb_hooks/research.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/research.py consumes apps/pocketbase/pb_hooks/research.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/research.py",
+      "target": "apps/research/transport.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/research.py consumes apps/research/transport.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/research.py",
+      "target": "scripts/discordbot/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/research.py consumes scripts/discordbot/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_discordbot.py",
+      "target": "tests/upgrade/test_discordbot_research.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_discordbot.py consumes tests/upgrade/test_discordbot_research.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_discordbot.py",
+      "target": "tests/upgrade/test_research_runtime.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_discordbot.py consumes tests/upgrade/test_research_runtime.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/mission-research.test.mjs",
+      "target": "tests/upgrade/research-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/mission-research.test.mjs depends on tests/upgrade/research-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/mission-research.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/research.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/mission-research.test.mjs validates apps/pocketbase/pb_hooks/research.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/research-backend-driver.mjs",
+      "target": "tests/upgrade/research-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/research-backend-driver.mjs consumes tests/upgrade/research-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/research-backend-driver.mjs",
+      "target": "apps/pocketbase/pb_hooks/mission-research.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/research-backend-driver.mjs validates apps/pocketbase/pb_hooks/mission-research.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/research-client.test.mjs",
+      "target": "tests/upgrade/research-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/research-client.test.mjs consumes tests/upgrade/research-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/research-client.test.mjs",
+      "target": "apps/web/src/lib/discordAccount.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/research-client.test.mjs validates apps/web/src/lib/discordAccount.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/research-client.test.mjs",
+      "target": "apps/web/src/lib/missionResearch.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/research-client.test.mjs validates apps/web/src/lib/missionResearch.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/research-fixture.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/research-fixture.mjs depends on tests/upgrade/admin-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/research-fixture.mjs",
+      "target": "apps/pocketbase/pb_hooks/mission-research.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/research-fixture.mjs validates apps/pocketbase/pb_hooks/mission-research.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/research_support.py",
+      "target": "tests/upgrade/research-backend-driver.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/research_support.py consumes tests/upgrade/research-backend-driver.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_research.py",
+      "target": "tests/upgrade/research_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_research.py consumes tests/upgrade/research_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_research.py",
+      "target": "apps/research/worker.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_research.py validates apps/research/worker.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_research.py",
+      "target": "scripts/discordbot/research.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_research.py validates scripts/discordbot/research.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_research_runtime.py",
+      "target": "apps/research/contracts.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_research_runtime.py validates apps/research/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_research_runtime.py",
+      "target": "apps/research/documents.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_research_runtime.py validates apps/research/documents.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_research_runtime.py",
+      "target": "apps/research/processing.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_research_runtime.py validates apps/research/processing.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_research_runtime.py",
+      "target": "apps/research/transport.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_research_runtime.py validates apps/research/transport.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_research_runtime.py",
+      "target": "apps/research/worker.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_research_runtime.py validates apps/research/worker.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/mission-research.test.mjs",
+      "description": "Mission research continuation: 199 Node tests passed, including 31 research policy/migration/browser/OAuth contracts. Selected source coverage measured 99.87 percent lines, 85.20 percent branches and 94.44 percent functions; native PocketBase storage/auth/concurrency remains unverified.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T22:57:01.119255+00:00",
+      "commit_sha": null,
+      "smoke_result": "199/199"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_discordbot.py",
+      "description": "Mission research continuation: 107 Python tests passed with two native dependency skips. The targeted bot/research checker passed 89 cases with the same two skips and at least 83.72 percent trace statement coverage in every module. Discord intake, actual handler code, a worker, protected-file fixtures and reviewed evidence are connected; this is not native or live transport acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T22:57:01.119255+00:00",
+      "commit_sha": null,
+      "smoke_result": "107/109"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_research_runtime.py",
+      "description": "Mission research continuation: Observed red/green regressions repaired starvation beyond a bounded queue scan and non-BMP document text overflowing child/backend limits. The same tests now reach later eligible work and retain a correctly truncated ready source with its original-byte digest.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T22:57:01.119255+00:00",
+      "commit_sha": null,
+      "smoke_result": "2/2"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "scripts/discordbot/bot.py",
+      "description": "Mission research continuation: The required native SDK/PDF gate fails because Discord.py and pypdf are absent. Full SDK typing, pytest/branch coverage, Vitest/coverage, official web lint and Vite remain unavailable. Native PocketBase, browser/OAuth and deployed Firecrawl/transcription/Discord acceptance were not inferred from fixtures.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T22:57:01.119255+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": null,
+      "description": "Mission research continuation: Application smoke remains 4/7. Core strict typing, Ruff, source parsing, context and boundary checks pass. The CI job requires both native dependencies; the concrete receiving-runtime, parser, binding, retention and review contracts are documented without any shared mutation or external message.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T22:57:01.119255+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "apps/pocketbase/pb_hooks/research-policy.js",
+      "description": "Mission research file-access review: an observed red/green source regression now denies downloads when the linked mission is unreadable, including leased worker downloads, and keeps unsubmitted uploads private to their uploader. Full regression remains 199 Node and 107 Python passes with two native skips. Selected JS coverage is 99.87 percent lines, 85.18 percent branches and 94.44 percent functions; native file/auth acceptance remains pending.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-15T23:03:38.608358+00:00",
+      "commit_sha": null,
+      "smoke_result": "199/199"
     }
   ],
   "summary": {
-    "type_a_count": 236,
-    "type_b_count": 453,
-    "type_c_count": 41,
+    "type_a_count": 263,
+    "type_b_count": 520,
+    "type_c_count": 47,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

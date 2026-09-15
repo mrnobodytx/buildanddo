@@ -9,9 +9,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     scripts/discordbot/service.py, scripts/discordbot/contracts.py
+# Depends:     scripts/discordbot/service.py, scripts/discordbot/contracts.py, scripts/discordbot/research.py
 # EnumType:    Service
-# EnumEdges:   DEPENDS_ON scripts/discordbot/service.py; DEPENDS_ON scripts/discordbot/contracts.py
+# EnumEdges:   DEPENDS_ON scripts/discordbot/service.py; DEPENDS_ON scripts/discordbot/contracts.py; CONSUMES scripts/discordbot/research.py
 # DAG Node:    none
 # Intent:      Serve useful public Discord interactions with explicit scope, private replies and no import-time activation.
 # ───────────────────────────────────────────────────────────────
@@ -40,6 +40,8 @@ from scripts.discordbot.contracts import (
 )
 from scripts.discordbot.public_data import PublicClient
 from scripts.discordbot.service import COMMANDS, CommandService, WORKSPACE_AREAS
+from scripts.discordbot.research import Attachment, RESEARCH_COMMANDS, ResearchBridge, configured_bridge
+from apps.research.contracts import ResearchError
 
 logger = logging.getLogger("buildanddo.discord")
 
@@ -274,13 +276,14 @@ class PublicCommandTree(app_commands.CommandTree[discord.Client]):
 class BuildAndDoBot(discord.Client):
     """Expose public commands with opt-in prefix intent and deliberate synchronization."""
 
-    def __init__(self, settings: Settings, public_client: PublicClient | None = None) -> None:
+    def __init__(self, settings: Settings, public_client: PublicClient | None = None, research: ResearchBridge | None = None) -> None:
         intents = discord.Intents.default()
         intents.message_content = settings.legacy_prefix
         super().__init__(intents=intents, allowed_mentions=discord.AllowedMentions.none())
         self.settings = settings
         self.public_client = public_client or PublicClient()
         self.service = CommandService(settings, self.public_client)
+        self.research = research
         self.tree = PublicCommandTree(self)
         self.group = app_commands.Group(
             name="buildanddo", description="Learn, navigate and inspect public BuildAndDo evidence.",
@@ -289,6 +292,8 @@ class BuildAndDoBot(discord.Client):
         self.tree.add_command(self.group)
         for name in COMMANDS:
             self.register_command(name)
+        if research:
+            self.register_research()
         self._synchronized = False
 
     def register_command(self, name: str) -> None:
@@ -317,6 +322,68 @@ class BuildAndDoBot(discord.Client):
             app_commands.Choice(name=option.label, value=option.value)
             for option in self.service.suggestions(current, caller_from(interaction))
         ]
+
+    def register_research(self) -> None:
+        """Register typed private commands only for an explicitly configured bridge."""
+        async def missions(interaction: discord.Interaction, page: int = 1) -> None:
+            await self.respond_research(interaction, 'missions', {'page': page})
+
+        async def mission(interaction: discord.Interaction, title: str, description: str = '') -> None:
+            await self.respond_research(interaction, 'mission', {'title': title, 'description': description})
+
+        async def evidence(interaction: discord.Interaction, mission: str, page: int = 1) -> None:
+            await self.respond_research(interaction, 'evidence', {'mission': mission, 'page': page})
+
+        async def submissions(interaction: discord.Interaction, mission: str = '', page: int = 1) -> None:
+            await self.respond_research(interaction, 'submissions', {'mission': mission, 'page': page})
+
+        async def submission(interaction: discord.Interaction, id: str) -> None:
+            await self.respond_research(interaction, 'submission', {'id': id})
+
+        async def recover(interaction: discord.Interaction) -> None:
+            await self.respond_research(interaction, 'recover', {})
+
+        async def submit(interaction: discord.Interaction, mission: str, kind: str, title: str,
+                         input: str = '', context: str = '', file: discord.Attachment | None = None) -> None:
+            await self.respond_research(interaction, 'submit', {'mission': mission, 'kind': kind, 'title': title, 'input': input, 'context': context}, file)
+
+        submit = app_commands.choices(kind=[app_commands.Choice(name=label, value=key) for key, label in
+            [('search', 'Web search'), ('url', 'Web page'), ('document', 'Document'), ('audio', 'Audio'), ('video', 'Video')]])(submit)
+        for name, callback in [('missions', missions), ('mission', mission), ('evidence', evidence), ('submissions', submissions),
+                               ('submission', submission), ('recover', recover), ('submit', submit)]:
+            self.group.add_command(app_commands.Command(name=name, description=RESEARCH_COMMANDS[name], callback=callback))
+
+    async def respond_research(self, interaction: discord.Interaction, name: str, arguments: dict[str, object],
+                               file: discord.Attachment | None = None) -> None:
+        """Acknowledge privately and reauthorize every request without retained private readers."""
+        await interaction.response.defer(ephemeral=True, thinking=True)
+        caller = caller_from(interaction)
+        started = time.monotonic()
+        outcome = 'unavailable'
+        try:
+            if not self.research or not self.service.permitted(caller):
+                raise ResearchError('forbidden', 403)
+            attachment = Attachment(file.id, file.filename, file.size, file.url) if file else None
+            reply = await self.research.execute(name, arguments, caller, interaction.id, attachment)
+            await interaction.edit_original_response(embed=render(reply.page), view=None, allowed_mentions=discord.AllowedMentions.none())
+            self.research.delivered(caller, reply.request_key)
+            outcome = 'delivered'
+        except ResearchError as error:
+            messages = {
+                'forbidden': 'Link Discord in BuildAndDo Account settings and check your current workspace role and the configured server/channel.',
+                'rate_limited': 'Too many requests are active. Wait briefly before retrying.',
+                'unsupported': 'Choose a supported document, audio or video attachment.',
+                'too_large': 'Choose an attachment of at most 20 MiB.',
+                'unsafe_source': 'Use a public HTTPS web source or an explicit Discord attachment.',
+                'conflict': 'The saved request changed. Open BuildAndDo research to review its current state.',
+            }
+            message = messages.get(error.reason, 'Could not confirm the request. Use /buildanddo recover, or inspect /buildanddo submissions before starting another submission.')
+            await interaction.edit_original_response(embed=render(Page('Research request', message, 'https://buildanddo.tech/app/research')),
+                                                     view=None, allowed_mentions=discord.AllowedMentions.none())
+            outcome = error.reason
+        finally:
+            logger.info('discord.research.command', extra={'command': name if name in RESEARCH_COMMANDS else 'unknown', 'outcome': outcome,
+                                                         'duration_ms': round((time.monotonic() - started) * 1000)})
 
     async def setup_hook(self) -> None:
         """Synchronize once only when the receiving operator configured that action."""
@@ -377,6 +444,8 @@ class BuildAndDoBot(discord.Client):
     async def close(self) -> None:
         """Drain bounded public HTTP work before closing the gateway client."""
         await self.public_client.close()
+        if self.research:
+            await self.research.close()
         await super().close()
 
 
@@ -404,13 +473,14 @@ def main() -> int:
     logger.propagate = False
     try:
         settings = Settings.from_env(os.environ)
+        research = configured_bridge(os.environ)
         token = os.environ.get("BAD_DISCORD", "").strip()
         if not token:
             raise ConfigurationError("The existing BAD_DISCORD runtime binding is unavailable.")
-    except ConfigurationError:
+    except (ConfigurationError, ResearchError):
         logger.error("discord.startup.blocked", extra={"reason": "configuration"})
         return 1
-    client = BuildAndDoBot(settings)
+    client = BuildAndDoBot(settings, research=research)
     try:
         client.run(token, log_handler=None)
     except (discord.LoginFailure, discord.PrivilegedIntentsRequired, discord.HTTPException):
