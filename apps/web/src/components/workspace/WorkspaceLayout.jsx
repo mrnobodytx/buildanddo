@@ -22,12 +22,15 @@ import {
     Network,
     Plug,
     Plus,
+    BookOpen,
+    Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Helmet } from 'react-helmet';
 import { ThemeToggle } from '@/components/ThemeControls';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { WorkspaceAccessProvider, useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/site/ui';
@@ -47,17 +50,22 @@ const NAV = [
     { to: '/app/erp', label: 'ERP', icon: Boxes },
     { to: '/app/support', label: 'Support & Revenue', icon: Coins },
     { to: '/app/community', label: 'Community & Social', icon: MessageCircle },
+    { to: '/app/wiki', label: 'Workspace wiki', icon: BookOpen },
+    { to: '/app/forums', label: 'Workspace forum', icon: Users },
     { to: '/app/roadmap', label: 'Roadmap', icon: Gauge },
     { to: '/app/operations', label: 'Operations Desk', icon: Server },
     { to: '/app/fleet', label: 'Fleet', icon: Network },
     { to: '/app/platforms', label: 'Platform Health', icon: Plug },
+    { to: '/app/integrations', label: 'Sinks & extensions', icon: Plug },
+    { to: '/app/admin', label: 'Administration', icon: ShieldCheck, admin: true },
     { to: '/app/settings', label: 'Settings', icon: Settings },
 ];
 
 function NavList({ onNavigate }) {
+    const access = useWorkspaceAccess();
     return (
         <nav className="flex flex-col gap-1" aria-label="Workspace">
-            {NAV.map((item) => (
+            {NAV.filter((item) => !item.admin || access.data?.can_admin).map((item) => (
                 <NavLink
                     key={item.to}
                     to={item.to}
@@ -138,6 +146,7 @@ export default function WorkspaceLayout() {
     const domainStatus = domainRecord?.status || (active && !active.domain ? 'selected' : null);
 
     return (
+        <WorkspaceAccessProvider key={`${user?.id}:${active?.id}:${demo}`}>
         <div className="min-h-screen bg-background text-foreground">
             <Helmet>
                 <meta name="robots" content="noindex,nofollow" />
@@ -253,5 +262,6 @@ export default function WorkspaceLayout() {
                 </div>
             </Sheet>
         </div>
+        </WorkspaceAccessProvider>
     );
 }

@@ -324,3 +324,50 @@ declared edges and 28 observed events with complete IOO and no orphan vectors.
 The cumulative report records 18/37 acceptance gates complete. Six existing
 findings and four unwired gates remain visible. No live deployment, native
 acceptance or private-agent execution is inferred from these source results.
+
+## Administration and community continuation authorized 2026-09-15
+
+The owner requested RBAC, row isolation, admin settings and control of sinks,
+extensions, wiki, forums, Discord bot and Reddit. The existing A2 dispatch covers
+their public source and application records; private execution remains a handoff.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| AL | Reconcile PR 23 and register administration scope | `python scripts/ci/agent_context.py --check` | done — PR 23 baseline reconciled and scope registered |
+| AM | Enforce current membership and immutable record scope | Admin security and migration regressions | partial — current-role and migration source contracts pass; native rules pending |
+| AN | Persist audited role, profile and integration commands | Admin command, retry and rollback regressions | partial — command, retry and rollback source contracts pass; native concurrency pending |
+| AO | Persist wiki publication and moderated forums | Community policy and isolation regressions | partial — wiki/forum source policies pass; native acceptance pending |
+| AP | Connect Settings, navigation and integration controls | Admin and integration component suites | partial — source and connected UI suites authored; frontend execution unavailable |
+| AQ | Add wiki/forum readers, editors and moderation | Community interaction suites | partial — source and connected UI suites authored; frontend execution unavailable |
+| AR | Verify the complete source wave | Node/Python, coverage, web and governance gates | done — available checks pass; frontend/native blockers recorded |
+| AS | Record evidence and private executor contract | Context, boundary, provenance and memory verification | done — public handoff and evidence prepared; private activation pending |
+
+Memory brief: PR 23 is merged and its source is locally available. The resumed
+checkout was fast-forwarded to that source before edits. Existing membership
+rules have no management UI, preserve a record-owner access shortcut and use
+cross-collection role filters. Service/channel cards accept operator-entered
+states. No wiki/forum store or private runtime transport exists in this public
+repository. Frontend packages and the native PocketBase binary are still absent.
+No authenticated live workspace is supplied; no seat event is fabricated.
+
+Administration phase evidence: AL PASS. AM, AN and AO source gates PASS; native
+rules, JSVM and concurrent transactions remain unverified. AP and AQ source and
+interaction suites are authored; their frontend gates FAIL to start. AR and AS
+available-evidence gates PASS. The full Node suite passes 144/144 and Python
+passes 18/18. Selected administration/migration/browser-adapter coverage is
+100% lines, 95.41% branches and 97.37% functions. The offline source checker
+parses 204 frontend modules without core or JSX binding errors.
+
+Vitest/coverage are unavailable; official lint cannot load eslint-plugin-import;
+Vite cannot start. The lock audit still has eight missing resolutions and two
+manifest differences. The native PocketBase binary is absent. These are open
+acceptance gates, not successful skips. The context inventories 28 frontend
+suites, six prior findings and four unwired gates. Boundary scanning passes all
+475 tracked files and provenance passes 121/121 files new since the original base.
+The cumulative acceptance count is 21/45, with application smoke still 4/7.
+
+docs/workspace-administration.md records the role matrix, command/retry contract,
+wiki/forum flows, integration request/observation distinction and native/browser
+acceptance. The community-controls handoff specifies private execution and
+minimal dated receipts. No live seat event, Discord/Reddit post, sink activation,
+credential provisioning, shared migration or deployment occurred here.

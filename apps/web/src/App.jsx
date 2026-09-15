@@ -39,6 +39,10 @@ const SupportRevenuePage = lazy(() => import('./pages/workspace/SupportRevenuePa
 const CommunitySocialPage = lazy(() => import('./pages/workspace/CommunitySocialPage'));
 const WorkspaceRoadmapPage = lazy(() => import('./pages/workspace/RoadmapPage'));
 const SettingsPage = lazy(() => import('./pages/workspace/SettingsPage'));
+const AdminPage = lazy(() => import('./pages/workspace/AdminPage'));
+const IntegrationsPage = lazy(() => import('./pages/workspace/IntegrationsPage'));
+const WikiPage = lazy(() => import('./pages/workspace/WikiPage'));
+const ForumsPage = lazy(() => import('./pages/workspace/ForumsPage'));
 const PricingPage = lazy(() => import('./pages/PricingPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const DocsPage = lazy(() => import('./pages/DocsPage'));
@@ -68,6 +72,10 @@ const WORKSPACE_ROUTES = [
     { path: 'community', label: 'Community & Social', element: CommunitySocialPage },
     { path: 'roadmap', label: 'Roadmap', element: WorkspaceRoadmapPage },
     { path: 'settings', label: 'Settings', element: SettingsPage },
+    { path: 'admin', label: 'Administration', element: AdminPage },
+    { path: 'integrations', label: 'Sinks & extensions', element: IntegrationsPage },
+    { path: 'wiki', label: 'Workspace wiki', element: WikiPage },
+    { path: 'forums', label: 'Workspace forum', element: ForumsPage },
 ];
 
 // Redirect already-authenticated users away from the auth screens.

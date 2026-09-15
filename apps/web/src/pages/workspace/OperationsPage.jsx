@@ -8,13 +8,14 @@
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     apps/web/src/hooks/useWorkspaceRecords.js,
-//              apps/pocketbase/pb_migrations/1789000000_extend_workspace_operations.js
+//              apps/pocketbase/pb_migrations/1789000000_extend_workspace_operations.js,
+//              apps/web/src/components/workspace/IntegrationControls.jsx
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
 //              PRODUCES workspace.operation_run.create;
 //              PRODUCES workspace.operation.create;
 //              PRODUCES workspace.operation.update;
-//              PRODUCES workspace.service.update
+//              CONSUMES apps/web/src/components/workspace/IntegrationControls.jsx
 // Intent:      Give the operations surface the two things it was missing — the
 //              runbook text and the record of each time a human ran it.
 // ───────────────────────────────────────────────────────────────
@@ -30,7 +31,8 @@ import {
     Server,
     ShieldAlert,
 } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Button, Card } from '@/components/site/ui';
 import {
@@ -67,6 +69,8 @@ import {
     WriteErrorNotice,
 } from '@/components/workspace/WorkspaceNotices';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
+import IntegrationControls from '@/components/workspace/IntegrationControls';
 import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
@@ -178,36 +182,20 @@ function OperationCard({ operation, runs, onLogRun, busy }) {
 }
 
 export default function OperationsPage() {
+    const access = useWorkspaceAccess();
     const services = useWorkspaceRecords('services', { sort: 'created' });
     const operations = useWorkspaceRecords('operations', { sort: '-created' });
     const runs = useWorkspaceRecords('operation_runs', { sort: '-created' });
 
-    const [updatingId, setUpdatingId] = useState(null);
     const [operationOpen, setOperationOpen] = useState(false);
     const [operationForm, setOperationForm] = useState(EMPTY_OPERATION);
     const [runFor, setRunFor] = useState(null);
     const [runForm, setRunForm] = useState(EMPTY_RUN);
     const [validation, setValidation] = useState('');
 
-    const connectedCount = useMemo(
-        () => services.records.filter((service) => service.status === 'connected').length,
-        [services.records],
-    );
-
-    const updateServiceStatus = async (service, status) => {
-        setUpdatingId(service.id);
-        await services.update(service.id, {
-            status,
-            // A health-check timestamp is only meaningful for a check that
-            // actually passed; leave the old value alone otherwise.
-            last_health_check:
-                status === 'connected' ? new Date().toISOString() : service.last_health_check || null,
-        });
-        setUpdatingId(null);
-    };
-
     const submitOperation = async (event) => {
         event.preventDefault();
+        if (!access.data?.can_write) return;
         if (!operationForm.name.trim()) {
             setValidation('Name the operation.');
             return;
@@ -228,6 +216,7 @@ export default function OperationsPage() {
 
     const submitRun = async (event) => {
         event.preventDefault();
+        if (!access.data?.can_write) return;
         const result = await runs.create({
             operation: runFor.id,
             result: runForm.result,
@@ -270,13 +259,14 @@ export default function OperationsPage() {
             </Card>
 
             <Tabs defaultValue="runbooks">
-                <TabsList className="w-full sm:w-auto">
+                <TabsList className="h-auto w-full flex-wrap justify-start sm:w-auto">
                     <TabsTrigger value="runbooks" className="flex-1 sm:flex-none">
                         Runbooks
                     </TabsTrigger>
                     <TabsTrigger value="services" className="flex-1 sm:flex-none">
-                        Connections
+                        Recorded service cards
                     </TabsTrigger>
+                    <TabsTrigger value="integrations" className="flex-1 sm:flex-none">Sinks & extensions</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="runbooks" className="mt-6 space-y-6">
@@ -289,6 +279,7 @@ export default function OperationsPage() {
                         </p>
                         <Button
                             size="sm"
+                            disabled={!access.data?.can_write}
                             onClick={() => {
                                 setOperationForm(EMPTY_OPERATION);
                                 setValidation('');
@@ -321,7 +312,7 @@ export default function OperationsPage() {
                             description="An operation is a procedure you own — a backup check, a credit top-up, an access review. Write the steps once, then log each run so the history is a record rather than a memory."
                             action={
                                 <div className="flex flex-wrap items-center justify-center gap-2">
-                                    <Button size="sm" onClick={() => setOperationOpen(true)}>
+                                    <Button size="sm" disabled={!access.data?.can_write} onClick={() => setOperationOpen(true)}>
                                         <Plus className="h-4 w-4" />
                                         Add an operation
                                     </Button>
@@ -336,7 +327,7 @@ export default function OperationsPage() {
                                     <OperationCard
                                         operation={operation}
                                         runs={runs.records}
-                                        busy={runs.saving}
+                                        busy={runs.saving || !access.data?.can_write}
                                         onLogRun={(target) => {
                                             setRunForm(EMPTY_RUN);
                                             runs.clearWriteError();
@@ -356,10 +347,10 @@ export default function OperationsPage() {
                         </span>
                         <div className="text-sm">
                             <p className="font-medium">
-                                {connectedCount} of {services.records.length} services connected
+                                {services.records.length} recorded service cards
                             </p>
                             <p className="text-muted-foreground">
-                                Connection status is recorded per workspace.
+                                Historical inventory is retained here. Sinks & extensions shows requests and dated runtime observations.
                             </p>
                         </div>
                     </Card>
@@ -413,7 +404,7 @@ export default function OperationsPage() {
                                             <div className="flex items-center gap-2">
                                                 <Clock className="h-3.5 w-3.5 shrink-0" />
                                                 <span>
-                                                    Last health check:{' '}
+                                                    Previously reported check:{' '}
                                                     {formatDate(service.last_health_check)}
                                                 </span>
                                             </div>
@@ -425,33 +416,9 @@ export default function OperationsPage() {
                                             )}
                                         </dl>
 
-                                        <div className="mt-4 flex items-center gap-2">
-                                            <Select
-                                                value={service.status}
-                                                onValueChange={(value) =>
-                                                    updateServiceStatus(service, value)
-                                                }
-                                                disabled={updatingId === service.id}
-                                            >
-                                                <SelectTrigger
-                                                    className="h-9 w-44"
-                                                    aria-label={`Status for ${service.name}`}
-                                                >
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {Object.entries(SERVICE_STATUS).map(
-                                                        ([key, meta]) => (
-                                                            <SelectItem key={key} value={key}>
-                                                                {meta.label}
-                                                            </SelectItem>
-                                                        ),
-                                                    )}
-                                                </SelectContent>
-                                            </Select>
-                                            {updatingId === service.id && (
-                                                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                                            )}
+                                        <div className="mt-4 space-y-2">
+                                            <p className="text-xs text-muted-foreground">This recorded status does not establish a current connection.</p>
+                                            <Link to="/app/integrations" className="text-sm underline underline-offset-4">Open integration controls</Link>
                                         </div>
                                     </Card>
                                 </li>
@@ -459,6 +426,7 @@ export default function OperationsPage() {
                         </ul>
                     )}
                 </TabsContent>
+                <TabsContent value="integrations" className="mt-6"><IntegrationControls kinds={['sink', 'extension']} /></TabsContent>
             </Tabs>
 
             <Dialog open={operationOpen} onOpenChange={setOperationOpen}>

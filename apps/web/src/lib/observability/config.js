@@ -46,6 +46,10 @@ export const WORKSPACE_ENTITIES = Object.freeze({
     erp_contacts: 'contact',
     social_channels: 'social_channel',
     social_content: 'social_content',
+    workspace_controls: 'workspace_control',
+    wiki_pages: 'wiki_page',
+    forum_topics: 'forum_topic',
+    forum_replies: 'forum_reply',
 });
 
 export const MUTATION_ACTIONS = Object.freeze(

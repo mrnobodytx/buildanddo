@@ -59,6 +59,10 @@ describe('lazy route entry points', () => {
         '/community',
         '/roadmap',
         '/settings',
+        '/admin',
+        '/integrations',
+        '/wiki',
+        '/forums',
     ])('mounts the real /app%s page inside the workspace shell', async (suffix) => {
         renderWithProviders(<AppRoutes />, { route: `/app${suffix}` });
         expect(await screen.findByRole('heading', { level: 1 })).toBeVisible();

@@ -8,14 +8,21 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     docs/workflow-system.md, apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js, tests/upgrade/workspace-integration.test.mjs, tests/upgrade/work-history.test.mjs
+# Depends:     docs/workflow-system.md, apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js, tests/upgrade/workspace-integration.test.mjs, tests/upgrade/work-history.test.mjs, docs/workspace-administration.md
 # EnumType:    Doc
-# EnumEdges:   DEPENDS_ON docs/workflow-system.md; CONSUMES apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js; VERIFIED_BY tests/upgrade/workspace-integration.test.mjs; VERIFIED_BY tests/upgrade/work-history.test.mjs
+# EnumEdges:   DEPENDS_ON docs/workflow-system.md; CONSUMES apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js; VERIFIED_BY tests/upgrade/workspace-integration.test.mjs; VERIFIED_BY tests/upgrade/work-history.test.mjs; DEPENDS_ON docs/workspace-administration.md
 # DAG Node:    none
 # Intent:      Make repaired workspace connections and remaining runtime acceptance explicit so recorded work cannot be mistaken for an activated integration.
 # ───────────────────────────────────────────────────────────────
 
 # Workspace connections and acceptance
+
+The subsequent administration continuation adds current-role write enforcement,
+workspace settings/membership commands, wiki/forum moderation and shared sink
+and extension controls. See docs/workspace-administration.md for the current
+role matrix and additional migrations. The original repairs below remain part
+of the acceptance baseline; workspace management now uses audited owner/admin
+commands while canonical ownership stays fixed.
 
 The integration review after PR 22 found a missing icon import in the shared
 workspace layout, omitted workspace/evidence read access for members, and
@@ -33,6 +40,8 @@ deployment or private agent.
 | Evidence/runs → Previous work | Single and batch readers include receipts as well as seat events. Failed/truncated reads are marked incomplete. Successful local writes refresh their history. | Execute the component tests against a configured backend. These summaries are bounded reads, not a realtime feed. |
 | ERP → tasks/content | Saved tasks and drafts can reference workspace objectives; publication is an operator-recorded receipt. | Apply the business schema/hooks. No external scheduler or publishing connector is implemented here. |
 | Tutorials → learning progress | Public starter lessons are readable; saving progress requires a persisted lesson and signed-in account. | Install the bundled curriculum migration and its data directory. |
+| Settings → permissions/wiki/forum | Administration commands manage current membership and feature settings; community writes and publication are enforced on the server. | Install and validate both administration migrations and request hooks using docs/workspace-administration.md. |
+| Sinks/extensions/community → integration requests | Settings, Operations and Community use one configuration and observation surface, including Discord and Reddit. | An approved private executor must apply requests and produce matching dated receipts; a saved request is not activation. |
 | Agent/service → automated execution | The private runtime, ingress, service credentials and external executors remain outside this application. | Complete the existing private delivery/runtime handoffs. A planned service card is not a connection. |
 
 ```mermaid

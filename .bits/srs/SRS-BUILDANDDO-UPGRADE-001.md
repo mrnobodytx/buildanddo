@@ -370,3 +370,63 @@ Selected history/evidence source coverage is 100% lines/functions and 96.83%
 branches. Native PocketBase and frontend execution remain acceptance blockers;
 docs/workspace-integration.md specifies their tests and the remaining external
 integration boundary.
+
+## Authorized continuation — administration and community controls
+
+On 2026-09-15 the owner requested the remaining BuildAndDo connections, RBAC,
+row-level isolation, settings, admin controls, sinks/extensions, wiki, forums,
+Discord and Reddit. This extends VCC-BUILDANDDO-UPGRADE-001 at A2 for local
+source and reviewed migrations. The starting source includes merged PR 23.
+The existing workspace owner is the authority root; a workspace administrator
+receives no site-wide, PocketBase superuser, infrastructure or deployment power.
+
+Acceptance:
+
+1. Make current membership authoritative for shared workspace records, including
+   records authored before membership removal. Bind workspace, user and role
+   together; reject record reassignment, viewer writes and foreign relations.
+   Preserve per-account tutorial progress and existing mission/evidence policies.
+2. Provide an administration desk with editable workspace profile and community
+   settings, member grants/removals and an immutable audit. Only the canonical
+   owner may grant/change administrator authority. Administrators may manage
+   editors/viewers; nobody may remove the canonical owner or promote themselves.
+   Use exact existing account IDs without exposing an account directory.
+3. Enforce settings and role mutations through authenticated PocketBase commands,
+   locked native writes, expected revisions, retry keys and atomic audit records.
+   Unknown/custom schema rules require review rather than silent replacement.
+4. Provide one workspace-scoped integration control surface used by Settings,
+   Community and Operations. Support Discord bot, Reddit, Datadog/PostHog sinks
+   and the existing extension catalogue with bounded non-secret configuration,
+   enable/disable requests and health-check requests. Separate desired state,
+   pending requests and dated runtime observations. Browser requests cannot set
+   health, acknowledge execution or send external messages.
+5. Implement a persisted workspace wiki with drafts, admin publication and
+   archiving, plus forums with topics, replies, moderation and thread locking.
+   Enforce disabled features and moderation settings on the server. Scope drafts
+   and pending contributions to their author and workspace moderators. Render
+   user content as text, with bounded paginated reads and conflict recovery.
+6. Add accessible routes/navigation and admin entry points, both themes and
+   narrow layouts. Hide privileged controls from other roles, explain unavailable
+   backend upgrades, prevent demo writes and discard prior account/workspace
+   state. A failed request must preserve entered work without claiming success.
+7. Test direct API bypasses, cross-workspace access, revoked roles, privilege
+   escalation, retries, conflicts, transactional rollback, moderation and stale
+   UI responses. Record actual Node/coverage and component/native gate results.
+8. Hand off private executor activation and sink delivery with exact public
+   request/receipt contracts. Do not add bot credentials, arbitrary executable
+   extensions, service installers, live network writes or deployment controls.
+
+RLS here means PocketBase API record rules plus authoritative request/command
+policy; it is not a claim of PostgreSQL policies or SQLite-engine row security.
+Native PocketBase 0.28.4 and browser acceptance remain required before activation.
+
+Administration implementation evidence: 144 Node and 18 Python tests pass.
+Thirty-four new Node cases cover current authority, native write policies,
+custom-schema rejection, command/audit rollback, retries, wiki/forum moderation
+and browser-adapter response isolation. Selected new server/migration/client
+source coverage is 100% lines, 95.41% branches and 97.37% functions. Three new
+Vitest files exercise the actual views and hooks, including source-connected
+admin/community flows; execution remains blocked by missing frontend packages.
+Native PocketBase, UI coverage, lint/build, browser acceptance and live private
+execution are not claimed. See docs/workspace-administration.md and the dispatch
+report for runnable validation and the remaining private executor boundary.

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
     Globe,
     ShieldCheck,
@@ -8,10 +8,10 @@ import {
     Info,
     Plus,
 } from 'lucide-react';
-import pb from '@/lib/pocketbaseClient';
 import { workspaceCollection } from '@/lib/observability/mutations';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import {
     PageHeader,
     StatusBadge,
@@ -31,6 +31,7 @@ export default function SettingsPage() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const { active, workspaces, refresh } = useWorkspace();
+    const access = useWorkspaceAccess();
     const [savingDomain, setSavingDomain] = useState(false);
     const [domainError, setDomainError] = useState('');
 
@@ -55,7 +56,7 @@ export default function SettingsPage() {
     };
 
     return (
-        <div className="space-y-8">
+        <div className="ph-no-capture space-y-8" data-dd-privacy="mask">
             <PageHeader
                 title="Settings"
                 description="Workspace profile, domain authorization, and your account. The selected domain stays visible across the workspace so you always know which business you're operating on."
@@ -64,6 +65,21 @@ export default function SettingsPage() {
             <section className="space-y-3">
                 <h2 className="font-display text-lg font-semibold tracking-tight">Appearance</h2>
                 <Card className="p-5"><ThemeSelect /></Card>
+            </section>
+
+            <section className="space-y-3">
+                <h2 className="font-display text-lg font-semibold tracking-tight">Workspace permissions</h2>
+                <Card className="space-y-3 p-5">
+                    <p className="text-sm">{access.loading ? 'Checking workspace access…' : access.data ? `Your workspace role: ${access.data.role}.` : 'Workspace permissions are unavailable.'}</p>
+                    {access.error && <p className="text-sm text-muted-foreground">{access.error}</p>}
+                    <p className="text-sm text-muted-foreground">Owners and administrators manage settings, members, integration requests and community moderation. Editors contribute records; viewers read them.</p>
+                    <div className="flex flex-wrap gap-4 text-sm">
+                        {access.data?.can_admin && <Link to="/app/admin" className="underline underline-offset-4">Open administration</Link>}
+                        <Link to="/app/integrations" className="underline underline-offset-4">Sinks & extensions</Link>
+                        <Link to="/app/wiki" className="underline underline-offset-4">Workspace wiki</Link>
+                        <Link to="/app/forums" className="underline underline-offset-4">Workspace forum</Link>
+                    </div>
+                </Card>
             </section>
 
             {/* Workspace profile */}
@@ -195,6 +211,8 @@ export default function SettingsPage() {
                     <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
                         <div>
                             <p className="break-all text-sm font-medium">{user?.email}</p>
+                            <p className="mt-2 break-all text-xs text-muted-foreground">Account ID: <span className="select-all font-evidence">{user?.id}</span></p>
+                            <p className="mt-1 text-xs text-muted-foreground">Share this ID with a workspace owner to request team access.</p>
                             <p className="mt-0.5 text-xs text-muted-foreground">
                                 BuildAndDo sign-in · no external provider connected
                             </p>
@@ -209,9 +227,8 @@ export default function SettingsPage() {
 
             <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground/70">
                 <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                Multi-workspace support is intentionally lightweight for now —
-                you can create and switch between workspaces, but advanced
-                multi-tenant management arrives later.
+                Permissions are checked by the backend for each workspace. Changing
+                browser settings or switching workspaces cannot grant another role.
             </p>
         </div>
     );
