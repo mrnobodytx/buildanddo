@@ -1,0 +1,196 @@
+/* ─── CGRF Header ───────────────────────────────────────────────
+ * File:        apps/web/src/motion.css
+ * Stage:       07_BUILD
+ * SRS:         SRS-BUILDANDDO-UPGRADE-001
+ * CAPS:        pending
+ * CK:          pending
+ * Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+ * Seat:        BITS-CODEGEN
+ * Owner:       Citadel Nexus Inc.
+ * Created:     2026-09-15
+ * Depends:     apps/web/src/contexts/MotionContext.jsx
+ * EnumType:    Widget
+ * EnumEdges:   DEPENDS_ON apps/web/src/contexts/MotionContext.jsx
+ * DAG Node:    none
+ * Intent:      Apply shared editorial feedback and category controls to existing CSS and portal-based UI.
+ * ───────────────────────────────────────────────────────────────
+ */
+
+:root {
+  --motion-micro: 0ms;
+  --motion-control: 0ms;
+  --motion-panel: 0ms;
+  --motion-layout: 0ms;
+  --motion-route: 0ms;
+  --motion-reveal: 0ms;
+  --motion-milestone: 0ms;
+  --motion-distance: 0px;
+  --motion-stagger: 0ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Motion always enhances readable content; initial styles never hide a page. */
+button, [role="button"], input, select, textarea, summary {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: var(--motion-micro);
+  transition-timing-function: var(--motion-ease);
+}
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 3px;
+}
+:where(input, textarea, select):focus-visible { box-shadow: 0 0 0 3px hsl(var(--ring) / 0.1); }
+.motion-button {
+  transition: color var(--motion-micro), background-color var(--motion-micro),
+    border-color var(--motion-micro), scale var(--motion-micro) var(--motion-ease);
+}
+.motion-button:active:not(:disabled) { scale: 0.98; }
+.motion-button:disabled { scale: 1; }
+.motion-small-button {
+  min-height: 2.5rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid hsl(var(--border));
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.motion-small-button:disabled { opacity: 0.5; cursor: not-allowed; }
+.motion-small-button:hover:not(:disabled) { background: hsl(var(--secondary)); }
+.motion-select {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid hsl(var(--input));
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border-radius: 0;
+}
+.motion-settings { scroll-margin-top: 5rem; }
+.motion-settings input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--primary)); }
+.motion-link { position: relative; }
+.motion-link::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--motion-control) var(--motion-ease);
+}
+.motion-link:is(:hover, :focus-visible, [aria-current="page"])::after { transform: scaleX(1); }
+.motion-nav-link { position: relative; }
+.motion-nav-link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  inset: 0.5rem auto 0.5rem 0;
+  width: 2px;
+  background: currentColor;
+  animation: motion-rule var(--motion-panel) var(--motion-ease);
+}
+[role="tab"] { position: relative; }
+[role="tab"][data-state="active"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 0.65rem 0.2rem;
+  height: 1px;
+  background: currentColor;
+  animation: motion-rule var(--motion-control) var(--motion-ease);
+}
+[role="tabpanel"][data-state="active"], details[open] > :not(summary) {
+  animation: motion-fade var(--motion-panel) var(--motion-ease);
+}
+[data-motion-kind="navigation"] {
+  animation-duration: var(--motion-panel) !important;
+  transition-duration: var(--motion-panel);
+  animation-timing-function: var(--motion-ease);
+}
+[role="alert"], .motion-feedback, [role="status"]:not([data-route-loading]) {
+  animation: motion-fade var(--motion-panel) var(--motion-ease);
+}
+.motion-stamp { animation: motion-stamp var(--motion-milestone) var(--motion-ease); }
+.motion-rule { transform-origin: left; animation: motion-rule var(--motion-reveal) var(--motion-ease); }
+.motion-heading { animation: motion-heading var(--motion-reveal) var(--motion-ease); }
+.motion-image { animation: motion-fade var(--motion-reveal) var(--motion-ease); }
+.motion-image-frame { overflow: hidden; }
+.motion-pointer-surface {
+  position: relative;
+  transition: transform var(--motion-layout) var(--motion-ease);
+}
+.motion-pointer-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at var(--pointer-x, 50%) var(--pointer-y, 50%), hsl(var(--primary) / 0.12), transparent 65%);
+}
+html[data-motion-pointer="on"] .motion-pointer-surface:hover::after { opacity: 1; }
+.motion-ambient {
+  background-image: repeating-linear-gradient(0deg, transparent 0 15px, hsl(var(--foreground) / 0.04) 15px 16px);
+}
+html[data-motion-ambient="on"] .motion-ambient[data-visible="true"]::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, hsl(var(--primary) / 0.09), transparent 60%);
+  animation: motion-drift 14s ease-in-out infinite alternate;
+}
+.motion-reading { position: sticky; top: 0; z-index: 5; }
+html[data-motion-theme="on"] :is(body, header, main, aside, [role="dialog"], .bg-card, .bg-background) {
+  transition-property: background-color, color, border-color;
+  transition-duration: var(--motion-panel);
+}
+html[data-motion-theme="on"] .motion-theme-icon { animation: motion-fade var(--motion-panel) var(--motion-ease); }
+.mission-progress { transition: width var(--motion-layout) var(--motion-ease); }
+.mission-reward { animation: motion-stamp var(--motion-milestone) var(--motion-ease); }
+
+@keyframes motion-fade { from { opacity: 0.6; } to { opacity: 1; } }
+@keyframes motion-rule { from { transform: scaleX(0.15); } to { transform: scaleX(1); } }
+@keyframes motion-heading { from { opacity: 0.65; clip-path: inset(0 0 20% 0); } to { opacity: 1; clip-path: inset(0); } }
+@keyframes motion-stamp { from { opacity: 0.6; } 65% { opacity: 1; } }
+@keyframes motion-drift { from { transform: translate3d(-3%, -2%, 0); } to { transform: translate3d(3%, 2%, 0); } }
+
+/* Disable category motion in portals too; data lives on the document root. */
+html[data-motion-controls="off"] :is(button, [role="button"], input, select, textarea, summary),
+html[data-motion-controls="off"] .motion-link::after { transition: none !important; }
+html[data-motion-controls="off"] .motion-button { scale: none !important; }
+html[data-motion-navigation="off"] :is([data-motion-kind="navigation"], [role="tabpanel"], details[open] > :not(summary)),
+html[data-motion-navigation="off"] [role="tab"]::after,
+html[data-motion-navigation="off"] .motion-nav-link::before { animation: none !important; transition: none !important; }
+html[data-motion-feedback="off"] :is([role="alert"], [role="status"], .motion-feedback, .animate-spin, .animate-pulse, [data-sonner-toast], [data-motion-kind="feedback"]) { animation: none !important; transition: none !important; }
+html[data-motion-data="off"] :is([role="progressbar"] > *, .animate-ping, .animate-flow-pulse) { animation: none !important; transition: none !important; }
+html[data-motion-editorial="off"] :is(.motion-heading, .motion-rule, .motion-image) { animation: none !important; }
+html[data-motion-learning="off"] :is(.motion-stamp, .mission-reward, .mission-progress) { animation: none !important; transition: none !important; }
+html[data-motion-community="off"] [data-motion-kind="community"] { animation: none !important; transition: none !important; }
+html[data-motion-media="off"] .motion-image { animation: none !important; }
+html[data-motion-automatic="off"] :is(.animate-marquee, .animate-flow-pulse, .animate-ping),
+html[data-motion-automatic="off"] .motion-ambient::before { animation-play-state: paused !important; }
+html[data-motion="off"] *, html[data-motion="reduced"] *,
+html[data-motion="off"] *::before, html[data-motion="off"] *::after,
+html[data-motion="reduced"] *::before, html[data-motion="reduced"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+html:is([data-motion="off"], [data-motion="reduced"]) .motion-button { scale: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .motion-button { scale: none !important; }
+}
+@media (pointer: coarse) {
+  .motion-pointer-surface { transform: none !important; }
+  .motion-pointer-surface::after { display: none; }
+}
+@media (max-width: 639px) {
+  .motion-select { font-size: 1rem; }
+  .motion-settings :is(button, select, summary) { min-height: 2.75rem; }
+}
+
+
+html[data-motion-controls="off"] :is([role="switch"] *, [role="checkbox"] *, [role="radio"] *, [role="slider"] *) { transition: none !important; animation: none !important; }
+html[data-motion-navigation="off"] [data-motion-kind="navigation"] * { animation-duration: 0ms !important; }
+html[data-motion-layout="off"] .motion-layout { transition: none !important; }
+html[data-motion-learning="off"] .mission-effects .mission-step { animation: none !important; }

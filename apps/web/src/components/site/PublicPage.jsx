@@ -18,6 +18,8 @@
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import Seo from '@/components/Seo';
+import ReadingProgress from '@/components/motion/ReadingProgress';
+import { MotionReveal } from '@/components/motion/MotionPrimitives';
 import { SectionLabel } from '@/components/site/ui';
 import { PUBLIC_PAGES } from '@/lib/publicPages';
 
@@ -33,16 +35,17 @@ export default function PublicPage({ path, eyebrow, title, intro, children, stru
             />
             <Header />
             <main id="main-content" tabIndex={-1} className="public-content pt-14">
+                <ReadingProgress className="mx-auto max-w-6xl px-4" />
                 <div className="mx-auto max-w-6xl px-4 pb-16 pt-10 sm:px-6 sm:pt-16">
-                    <div className="border-b-4 border-double border-foreground pb-8">
+                    <MotionReveal className="border-b-4 border-double border-foreground pb-8">
                         <SectionLabel>{eyebrow}</SectionLabel>
-                        <h1 className="mt-4 max-w-4xl font-display text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
+                        <h1 className="motion-heading mt-4 max-w-4xl font-display text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
                             {title}
                         </h1>
                         <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
                             {intro}
                         </p>
-                    </div>
+                    </MotionReveal>
                     <div className="mt-10 space-y-12">{children}</div>
                 </div>
             </main>

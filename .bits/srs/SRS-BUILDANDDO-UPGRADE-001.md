@@ -430,3 +430,59 @@ admin/community flows; execution remains blocked by missing frontend packages.
 Native PocketBase, UI coverage, lint/build, browser acceptance and live private
 execution are not claimed. See docs/workspace-administration.md and the dispatch
 report for runnable validation and the remaining private executor boundary.
+
+
+## Authorized continuation — shared motion and organized preferences
+
+On 2026-09-15 the owner requested implementation of the preceding 50-area
+animation catalogue and organized usage controls in Settings. This continuation
+uses the existing registered SRS and in-progress dispatch. It covers local
+frontend source, documentation and tests after merged PR 24; no runtime grants,
+backend state changes, private executor or deployment work is introduced.
+
+Acceptance:
+
+1. Provide shared editorial timing, easing, distance, intensity and choreography
+   tokens. Persist validated, versioned personal device preferences with live
+   cross-tab updates, reset and resilient storage. Group navigation/controls,
+   reading/storytelling, data/work, learning/community, media and expressive
+   effects in Settings with descriptions, actual usage and interactive previews.
+2. Respect the OS reduced-motion setting even when expressive preferences are
+   selected. Offer explicit reduced/off modes and pause automatic decoration.
+   Stop offscreen/hidden timers and render loops; clean up animation, observers,
+   listeners and media. Touch, keyboard and static fallbacks remain complete.
+3. Apply the system to existing CSS, React motion, number, graph and 3D effects;
+   public/auth/workspace navigation; menus/dialogs/forms/loading/save/error
+   feedback; tabs/disclosures; theme changes; and changed records. Preferences
+   must control existing effects as well as new examples.
+4. Add actual editorial reveals, reading orientation, linked card/detail motion,
+   layout and list transitions, diagrams and controllable teaching sequences.
+   Connect confirmed mission/workflow/task/tutorial/community/admin state to
+   visual feedback without advancing state, fabricating progress or retaining
+   private content across account/workspace boundaries.
+5. Provide optional, explicitly demonstrated image comparison/gallery, draggable
+   planning, media controls, pointer/depth and spatial effects. Reuse existing
+   animation/graphics dependencies. Ordinary product actions remain predictable;
+   demonstrators do not write business records or imply external activation.
+6. Account for all 50 catalogue areas in a usage reference, including engineering
+   aspects (physics, interruption, performance, responsive behavior, progressive
+   enhancement, testing and implementation choices). Do not present alternative
+   animation libraries as new requirements or add dependencies for a checklist.
+7. Verify preference normalization, interruption/cleanup, observer fallbacks,
+   hidden/offscreen suspension and confirmed-state behavior using runnable source
+   tests and real component tests where tools exist. Record separate source,
+   React/build/browser and deployment evidence with their actual limits.
+
+Motion implementation evidence: the six-group, 14-category preference system,
+seven preview collections and all 50 usage entries are present in source. The
+public header and workspace Settings share personal controls. Existing controls,
+navigation, charts, diagrams, themes, lessons, lists and saved-state feedback
+consume the shared policy. OS reduced motion, interruption, viewport/document
+activity, storage failure and the legacy mission preference have behavioral cases.
+The full Node run passes 163/163 (19 new motion tests) and Python passes 18/18;
+selected motion libraries measure 100% lines, branches and functions. Real React
+suites are authored but cannot run without the missing frontend packages. Source
+review corrected platform component-name shadowing, disabled-category selectors
+and gallery focus return; those UI fixes still require rendered acceptance.
+No screenshot, device performance, native backend or deployment result is inferred.
+The detailed use and acceptance reference is docs/motion-system.md.

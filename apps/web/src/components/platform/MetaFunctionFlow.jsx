@@ -15,8 +15,9 @@
 // Intent:      Make each governed step from Guildmaster request to causal edge inspectable.
 // ───────────────────────────────────────────────────────────────
 
+import { useMotionActivity, useMotionCategory } from '@/contexts/MotionContext';
 import React, { useEffect, useId, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
     BarChart3,
     Cable,
@@ -148,6 +149,7 @@ const TONE_CLASS = {
 };
 
 function Connector({ tone, active, reduce }) {
+    const { motion: policy } = useMotionCategory('data');
     const stroke = TONE_CLASS[tone].stroke;
     return (
         <>
@@ -164,7 +166,7 @@ function Connector({ tone, active, reduce }) {
                     strokeWidth="2"
                     initial={false}
                     animate={{ pathLength: active ? 1 : 0, opacity: active ? 1 : 0.25 }}
-                    transition={{ duration: reduce ? 0 : 0.65, ease: 'easeOut' }}
+                    transition={{ duration: reduce ? 0 : policy.duration.layout / 1000, ease: 'easeOut' }}
                 />
             </svg>
             <svg
@@ -180,7 +182,7 @@ function Connector({ tone, active, reduce }) {
                     strokeWidth="2"
                     initial={false}
                     animate={{ pathLength: active ? 1 : 0, opacity: active ? 1 : 0.25 }}
-                    transition={{ duration: reduce ? 0 : 0.55 }}
+                    transition={{ duration: reduce ? 0 : policy.duration.layout / 1000 }}
                 />
             </svg>
         </>
@@ -188,11 +190,12 @@ function Connector({ tone, active, reduce }) {
 }
 
 export default function MetaFunctionFlow({ autoPlay = true }) {
-    const reduce = useReducedMotion();
+    const { reduced: reduce, motion: policy } = useMotionCategory('data');
+    const activity = useMotionActivity('data');
     const [activeIndex, setActiveIndex] = useState(0);
     const [playing, setPlaying] = useState(autoPlay && !reduce);
     const detailId = useId();
-    const playbackActive = playing && !reduce;
+    const playbackActive = playing && activity.active && !reduce;
     const active = FLOW[activeIndex];
     const activeTone = TONE_CLASS[active.tone];
 
@@ -216,6 +219,7 @@ export default function MetaFunctionFlow({ autoPlay = true }) {
 
     return (
         <div
+            ref={activity.ref}
             className="border-y border-foreground/70 bg-card"
             style={{ '--mf-violet': '268 42% 43%' }}
         >
@@ -232,7 +236,7 @@ export default function MetaFunctionFlow({ autoPlay = true }) {
                     <button
                         type="button"
                         onClick={() => setPlaying((value) => !value)}
-                        disabled={reduce}
+                        disabled={reduce || !policy.automatic}
                         className="inline-flex h-9 items-center gap-2 border border-border px-3 text-xs font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-45"
                         aria-pressed={playbackActive}
                     >
@@ -265,7 +269,7 @@ export default function MetaFunctionFlow({ autoPlay = true }) {
                                 className={`relative z-10 flex min-h-[7.4rem] w-full flex-row items-center gap-4 border bg-card px-4 py-3 text-left transition-colors lg:flex-col lg:items-start lg:gap-2 lg:px-3 ${selected ? `${tone.border} ${tone.wash}` : 'border-border hover:border-foreground/50'}`}
                                 initial={false}
                                 animate={{ y: selected && !reduce ? -3 : 0 }}
-                                transition={{ duration: reduce ? 0 : 0.25 }}
+                                transition={{ duration: reduce ? 0 : policy.duration.layout / 1000 }}
                             >
                                 <span className={`flex h-9 w-9 shrink-0 items-center justify-center border ${selected ? tone.border : 'border-border'} ${selected ? tone.text : 'text-muted-foreground'}`}>
                                     <Icon className="h-4 w-4" strokeWidth={2} />
@@ -308,7 +312,7 @@ export default function MetaFunctionFlow({ autoPlay = true }) {
                         initial={{ opacity: 0, y: reduce ? 0 : 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: reduce ? 0 : -4 }}
-                        transition={{ duration: reduce ? 0 : 0.24 }}
+                        transition={{ duration: reduce ? 0 : policy.duration.layout / 1000 }}
                         className="grid gap-4 md:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] md:items-center"
                     >
                         <div>

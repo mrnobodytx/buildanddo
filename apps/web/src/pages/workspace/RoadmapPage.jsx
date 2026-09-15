@@ -21,6 +21,7 @@
 //              in-place status changes that still cannot fake a verification.
 // ───────────────────────────────────────────────────────────────
 
+import { useMotionActivity } from '@/contexts/MotionContext';
 import { AlertCircle, Gauge, Info, Loader2, Pencil, Plus, RefreshCw, X } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
@@ -95,6 +96,7 @@ function isVerified(record) {
 }
 
 export default function WorkspaceRoadmapPage() {
+    const chartMotion = useMotionActivity('data');
     const {
         records,
         loading,
@@ -301,7 +303,7 @@ export default function WorkspaceRoadmapPage() {
                         counted here.
                     </p>
 
-                    <ChartContainer config={CHART_CONFIG} className="mt-5 aspect-[3/1] w-full">
+                    <ChartContainer ref={chartMotion.ref} config={CHART_CONFIG} className="mt-5 aspect-[3/1] w-full">
                         <BarChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
                             <CartesianGrid vertical={false} strokeDasharray="3 3" />
                             <XAxis
@@ -317,7 +319,7 @@ export default function WorkspaceRoadmapPage() {
                                 width={28}
                             />
                             <ChartTooltip content={<ChartTooltipContent />} />
-                            <Bar dataKey="count" fill="var(--color-count)" radius={2} />
+                            <Bar isAnimationActive={chartMotion.active} animationDuration={chartMotion.motion.duration.reveal} dataKey="count" fill="var(--color-count)" radius={2} />
                         </BarChart>
                     </ChartContainer>
                 </Card>

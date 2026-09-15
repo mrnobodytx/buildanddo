@@ -1,3 +1,4 @@
+import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -206,7 +207,7 @@ export default function OnboardingPage() {
                     content="Choose the domain or business BuildAndDo should understand. A found domain is only marked for analysis — not ownership or access."
                 />
             </Helmet>
-            <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+            <main id="main-content" tabIndex={-1} className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
                 <div className="flex items-center gap-2.5">
                     <span className="flex h-9 w-9 items-center justify-center rounded-md border border-primary/40 bg-primary/10 text-primary">
                         <Activity className="h-4 w-4" strokeWidth={2.4} />
@@ -271,6 +272,7 @@ export default function OnboardingPage() {
                         </p>
                     </form>
 
+                    <MotionEntrance category="learning" animationKey={phase}>
                     {/* States */}
                     {phase === 'invalid' && (
                         <div
@@ -406,6 +408,7 @@ export default function OnboardingPage() {
                             </p>
                         </div>
                     )}
+                    </MotionEntrance>
                 </PaperCard>
 
                 <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
@@ -414,7 +417,7 @@ export default function OnboardingPage() {
                     around your chosen domain and takes you to your dashboard —
                     starting empty, with clear next actions.
                 </p>
-            </div>
+            </main>
         </div>
     );
 }

@@ -31,7 +31,23 @@
 #              VALIDATES apps/web/src/pages/workspace/ErpPage.jsx;
 #              VALIDATES apps/web/src/pages/workspace/SupportRevenuePage.jsx;
 #              VALIDATES apps/web/src/pages/workspace/TutorialsPage.jsx;
-#              VALIDATES apps/web/tools/build.mjs
+#              VALIDATES apps/web/tools/build.mjs;
+#              VALIDATES apps/web/src/components/CountUp.jsx;
+#              VALIDATES apps/web/src/components/Reveal.jsx;
+#              VALIDATES apps/web/src/components/site/Hero.jsx;
+#              VALIDATES apps/web/src/components/ui/accordion.jsx;
+#              VALIDATES apps/web/src/components/ui/alert-dialog.jsx;
+#              VALIDATES apps/web/src/components/ui/button.jsx;
+#              VALIDATES apps/web/src/components/ui/context-menu.jsx;
+#              VALIDATES apps/web/src/components/ui/dropdown-menu.jsx;
+#              VALIDATES apps/web/src/components/ui/hover-card.jsx;
+#              VALIDATES apps/web/src/components/ui/menubar.jsx;
+#              VALIDATES apps/web/src/components/ui/navigation-menu.jsx;
+#              VALIDATES apps/web/src/components/ui/popover.jsx;
+#              VALIDATES apps/web/src/components/ui/select.jsx;
+#              VALIDATES apps/web/src/components/ui/toast.jsx;
+#              VALIDATES apps/web/src/components/ui/tooltip.jsx;
+#              VALIDATES apps/web/src/pages/OnboardingPage.jsx;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -45,25 +61,25 @@ Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
 Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 21/45 acceptance gates complete; cumulative upgrades and workspace administration/community source
-Smoke: 4/7 application gates; frontend/native/browser and private activation pending
+Tasks: 24/51 cumulative acceptance gates complete; all motion areas implemented in source
+Smoke: 4/7 application gates; frontend/browser/native and delivery acceptance remain open
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: 7 prior source revisions (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b, e820f8f220632405b910f9ebd9d71e2e20a00e41, af63ab4a64aa2708487e3a2f20b5c229e4da2d83, 203a08ced7348e551f810ed90b0a869b29532427, 858ccf52c82b58bdcd3b44db68b77e69c347d379); current evidence prepared before the administration source commit
+Commits: 8 prior source revisions (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b, e820f8f220632405b910f9ebd9d71e2e20a00e41, af63ab4a64aa2708487e3a2f20b5c229e4da2d83, 203a08ced7348e551f810ed90b0a869b29532427, 858ccf52c82b58bdcd3b44db68b77e69c347d379, b609039afde504eae73bd969890a2e06c1a5b48e); motion evidence prepared before its final source commit
 
-The source now enforces current workspace membership and owner/admin boundaries,
-provides audited settings and role management, and connects sink/extension,
-Discord/Reddit requests to separate runtime observations. The wiki and forum
-persist contributions with server-enforced publication, moderation and feature
-settings. A browser cannot grant itself a role or assert an integration is healthy.
+The current continuation unifies motion across the public site, authentication
+and workspace. Personal settings provide six groups, 14 categories, seven local
+preview collections and a searchable reference for all 50 requested areas.
+Reduced-motion precedence, responsive limits, visible activity and immediate
+private-record removal constrain effects. Saved state and executor observations
+continue to come from the existing application, not the animation layer.
 
-The baseline includes merged PR 23 and all previous site, mission, workflow,
-business/learning and history work. Earlier delivery statements in prior reports
-are historical. This source wave passes 144 Node and 18 Python tests, with 34
-new Node cases. Required frontend dependencies and native PocketBase remain
-unavailable. No current deployment or private executor is verified here.
+PR 24 and earlier site/workspace upgrades are already in the source baseline.
+This frontend wave passes 163 Node and 18 Python regressions. The required React,
+lint and build tools remain unavailable; browser/performance and served-release
+acceptance are not established. This wave adds no backend or deployment control.
 
 ## §2 TASK RESULTS
 
@@ -71,7 +87,7 @@ unavailable. No current deployment or private executor is verified here.
 |---|---|---|---|---|---|
 | A — Register original scope | PASS | Eight-area umbrella, registry and owner dispatch | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs_registry.yml, .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md |
 | B — Public pages | PARTIAL | Pricing, About, Docs, Blog, Contact and navigation | `npm --prefix apps/web test -- src/pages/__tests__/PublicPages.test.jsx` | 07_BUILD / 08_TEST | apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/AboutPage.jsx, apps/web/src/pages/DocsPage.jsx, apps/web/src/pages/BlogPage.jsx, apps/web/src/pages/ContactPage.jsx |
-| C — Component coverage | PARTIAL | Public/workspace interaction suites; 28 Vitest files inventoried; frontend execution remains blocked | `npm --prefix apps/web run test:coverage` | 08_TEST | apps/web/src/pages/__tests__/PublicPages.test.jsx, apps/web/vitest.config.js |
+| C — Component coverage | PARTIAL | Public/workspace interaction suites; 30 Vitest files inventoried; frontend execution remains blocked | `npm --prefix apps/web run test:coverage` | 08_TEST | apps/web/src/pages/__tests__/PublicPages.test.jsx, apps/web/vitest.config.js |
 | D — Route loading | PARTIAL | Lazy routes, Suspense feedback and workspace error isolation | `npm --prefix apps/web run build` | 07_BUILD | apps/web/src/App.jsx |
 | E — Mobile layouts | PARTIAL | Responsive shared navigation, controls and dialogs; new previews wrap at narrow widths | Production preview at 320, 375 and 1280 px after build | 07_BUILD | apps/web/src/components/site/Header.jsx, apps/web/src/components/ui/sheet.jsx |
 | F — Telemetry adapters | PASS locally | Real-result mutation events/timing, shared release, supply collection and opt-in PocketBase hooks | `node --test tests/upgrade/*.test.mjs`; `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | 07_BUILD / 11_COMMIT | apps/pocketbase/pb_hooks/telemetry.js, scripts/ci/supply_chain.py |
@@ -114,138 +130,138 @@ unavailable. No current deployment or private executor is verified here.
 | AQ — Wiki/forum UI | PARTIAL — frontend execution unavailable | Safe readers, draft forms, moderation, locked replies and bounded pages; account/workspace/demo isolation | CommunityFlow and useWorkspaceControl Vitest suites in docs/workspace-administration.md | 07_BUILD / 08_TEST | apps/web/src/pages/workspace/WikiPage.jsx, apps/web/src/pages/workspace/ForumsPage.jsx |
 | AR — Complete-wave verification | PASS with acceptance blockers recorded | 144 Node/18 Python tests and limited source parsing pass; frontend/native failures remain explicit | Node/Python/web commands below | 08_TEST / 11_COMMIT | tests/upgrade/workspace-administration.test.mjs, tests/upgrade/workspace-community.test.mjs, tests/upgrade/workspace-control-client.test.mjs |
 | AS — Administration evidence/handoff | PASS for public artifact | Current context, boundary, provenance, report/memory and private execution acceptance contract | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | 06_PLAN / 11_COMMIT | docs/workspace-administration.md, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md |
+| AT — Motion scope | PASS | PR 24 baseline reconciled; all 50 areas and Settings registered before edits | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md |
+| AU — Shared policy and lifecycle | PASS locally | Bounded tokens, OS precedence, personal storage/migration, category limits and interruptible visible activity | `node --test tests/upgrade/motion-system.test.mjs` | 07_BUILD / 08_TEST | apps/web/src/lib/motion/preferences.js, apps/web/src/lib/motion/runtime.js, tests/upgrade/motion-system.test.mjs |
+| AV — Shared UI and existing effects | PARTIAL — rendered acceptance pending | Common controls/portals/navigation/themes and platform effects consume the same preferences; static and cleanup paths retained | MotionRuntime Vitest command in docs/motion-system.md | 07_BUILD / 08_TEST | apps/web/src/contexts/MotionContext.jsx, apps/web/src/motion.css, apps/web/src/components/motion/MotionPrimitives.jsx |
+| AW — Editorial, learning and records | PARTIAL — rendered acceptance pending | Public explanation, measured reading, lesson steps, title continuity, keyed lists, exact data and saved-state emphasis | MotionRuntime and mission Vitest commands in docs/motion-system.md | 07_BUILD / 08_TEST | apps/web/src/components/motion/EditorialStory.jsx, apps/web/src/components/motion/ReadingProgress.jsx, apps/web/src/components/motion/StepSequence.jsx |
+| AX — Organized settings and usage | PARTIAL — catalogue source passes; UI unexecuted | Six groups, 14 categories, seven local previews and all 50 searchable usage entries; public controls and workspace tab | `node --test tests/upgrade/motion-system.test.mjs`; MotionSettings Vitest suite | 07_BUILD / 08_TEST | apps/web/src/components/motion/MotionSettings.jsx, apps/web/src/components/motion/MotionPlayground.jsx, apps/web/src/lib/motion/catalog.js |
+| AY — Motion evidence | PASS with acceptance blockers recorded | 163 Node/18 Python tests; current context/boundary/provenance and explicit frontend/browser limits | Node/Python/frontend commands below; memory verifier | 06_PLAN / 11_COMMIT | docs/motion-system.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md, .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json |
 
-Earlier phases retain their observed acceptance limits. The current implementation
-and native/browser matrix are in docs/workspace-administration.md. Workspace
-ownership is canonical; legacy membership labels do not mint owner authority.
-RLS is enforced through PocketBase API rules and request policy, not PostgreSQL
-or a restriction on trusted database administrators.
 
-New control/community native writes are locked. Revision checks and actor-scoped
-retry keys save each command and its audit atomically. Content remains scoped;
-rendered wiki text cannot execute HTML. Configurations are closed non-secret
-fields, and observations require dated matching receipts. The old service
-status selector no longer fabricates a health-check timestamp.
+Earlier phase results are preserved with their original limits. The current
+implementation covers controls, menus, route entrances, layout/reading continuity,
+data and state feedback, tutorials, community and administrative presentations,
+editorial storytelling, media examples and optional pointer/ambient/3D effects.
+Every technique has an actual usage description in the shared catalogue; examples
+are explicitly local and engineering guarantees are not optional checkboxes.
+
+The source review corrected a platform component-factory naming collision,
+selectors for disabled pseudo-element effects and image-dialog focus return.
+The new real component suites cover those interactions but are not a passing
+browser receipt. Personal preferences migrate the old mission-effect choice,
+handle blocked storage and sync across tabs without storing workspace data.
+Account/workspace state keys, immediate record removal and existing authorization
+remain unchanged. No animation sends a message or invents completion/health.
+
+See docs/motion-system.md for the complete 50-area mapping, file-size limits,
+timings, preference behavior, cleanup contracts and browser acceptance matrix.
 
 ## §3 SMOKE TEST RESULTS
 
-| # | Command | Expected | Observed | Result |
+| Check | Command | Expected | Actual | Result |
 |---|---|---|---|---|
-| 1 | Targeted administration/community Vitest command below | Real UI interactions pass | Exit 127; vitest: not found | FAIL — environment |
-| 2 | `npm --prefix apps/web run lint` | Official lint passes | Exit 2; missing eslint-plugin-import | FAIL — environment |
-| 3 | `npm --prefix apps/web run build` | Production bundle emitted | Exit 1; spawnSync vite ENOENT | FAIL — environment |
-| 4 | `node --test tests/upgrade/*.test.mjs` | Source regressions pass | 144/144 pass | PASS |
-| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Adapter/contrast regressions pass | 18/18 pass | PASS |
-| 6 | `python scripts/ci/agent_context.py --check` | Measured context matches source | 28 frontend suites; six existing findings/four unwired gates | PASS |
-| 7 | `python scripts/ci/verify_public_boundary.py` | Public paths/contents pass | 475 tracked files; zero failures | PASS |
+| 1 | `npm --prefix apps/web test -- src/components/motion/__tests__/MotionSettings.test.jsx src/components/motion/__tests__/MotionRuntime.test.jsx src/pages/workspace/__tests__/MissionsPage.test.jsx` | Rendered flows pass | Vitest missing; exit 127 | FAIL |
+| 2 | `npm --prefix apps/web run lint` | Repository lint passes | eslint-plugin-import missing; exit 2 | FAIL |
+| 3 | `npm --prefix apps/web run build` | Vite bundle emitted | spawnSync vite ENOENT; exit 1 | FAIL |
+| 4 | `node --test tests/upgrade/*.test.mjs` | Behavioral regressions pass | 163/163 | PASS |
+| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Regressions pass | 18/18 | PASS |
+| 6 | `python scripts/ci/agent_context.py --check` | Context matches | 30 Vitest files; six earlier findings/four unwired gates retained | PASS |
+| 7 | `python scripts/ci/verify_public_boundary.py` | Public boundary clean | 491 tracked files; zero failures | PASS |
+
+All three failed application gates are blocked by unavailable frontend packages.
+The unchanged lock also lacks eight resolutions and differs in two dependency
+groups. No source workaround, dependency removal, invented resolution or gate
+relaxation was applied. Reconcile/install the declared dependencies on a runner
+with package access, then rerun the exact failed commands above and
+`npm --prefix apps/web run test:coverage`. Native PocketBase and complete served
+application acceptance from earlier phases remain independently required.
+
+The following measured additional diagnostics passed:
 
 ```bash
-npm --prefix apps/web test -- src/pages/workspace/__tests__/AdministrationFlow.test.jsx src/pages/workspace/__tests__/CommunityFlow.test.jsx src/hooks/__tests__/useWorkspaceControl.test.jsx src/__tests__/AppRoutes.test.jsx src/pages/workspace/__tests__/OperationsPage.test.jsx
-npm --prefix apps/web run test:coverage
+node --test --experimental-test-coverage \
+  --test-coverage-include='apps/web/src/lib/motion/*.js' \
+  tests/upgrade/*.test.mjs
 node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs
-python scripts/ci/supply_chain.py --skip-audit --check-lock --output /tmp/buildanddo-admin-supply.json
 ```
 
-Coverage also exits 127 without Vitest. The lock audit exits 1 with eight missing
-resolutions and two manifest dependency-group mismatches. Registry vulnerability
-data is unknown because this check explicitly skips the unavailable audit.
-No dependency removal, fabricated resolution or gate bypass was applied. Restore
-declared dependencies and reconcile the existing lock on a registry-enabled
-runner, then rerun the same frontend gates. Their root cause remains unresolved
-in this environment. The limited checker passes 204 frontend modules with no
-core/JSX binding errors; it does not replace lint, React execution or UI proof.
+Coverage is 100% lines, branches and functions for preferences, catalogue and
+browser lifecycle helpers. Nineteen new Node cases cover actual source behavior,
+including the legacy preference, interruption and finite scheduling contracts.
+The limited checker parses 217 frontend modules with zero core/JSX binding errors;
+it does not replace repository lint or component execution. Two new component
+suites cover organization, live controls, reduced mode, previews, media cleanup,
+focus, platform rendering, manual playback and private list removal.
 
-The Node suite exercises current-role denials, canonical owner protection,
-foreign relation rejection, native-write constraints, replay/down and custom
-schema preflight, stale revisions, lost responses and audit rollback. Connected
-cases pass the real browser adapter to actual server policy with transactional
-storage doubles and recover one membership grant, wiki page and topic per retry
-identity. Incomplete backend response shapes fail explicitly before rendering.
-The three new Vitest files cover actual screens/hooks and connected policy paths,
-but their execution and 80% coverage thresholds remain unverified.
-
-Selected production-source coverage:
+The read-only lock check still fails and performs no vulnerability-network audit:
 
 ```bash
-node --test --experimental-test-coverage --test-coverage-include=apps/pocketbase/pb_hooks/workspace-access.js --test-coverage-include=apps/pocketbase/pb_hooks/workspace-administration.js --test-coverage-include=apps/pocketbase/pb_hooks/workspace-community.js --test-coverage-include=apps/pocketbase/pb_hooks/workspace-record-policy.js --test-coverage-include=apps/pocketbase/pb_hooks/administration.pb.js --test-coverage-include=apps/pocketbase/pb_migrations/1789900000_secure_workspace_rbac.js --test-coverage-include=apps/pocketbase/pb_migrations/1790000000_workspace_administration.js --test-coverage-include=apps/web/src/lib/workspaceControl.js tests/upgrade/*.test.mjs
+python scripts/ci/supply_chain.py --skip-audit --check-lock --output /tmp/buildanddo-motion-supply.json
 ```
 
-Observed: 100% lines, 95.41% branches, 97.37% functions. These measurements concern
-source exercised by Node, not native PocketBase/SQLite/JSVM behavior. The native
-binary is absent. Isolated 0.28.4 API-rule, field API, transaction concurrency,
-revocation, expansion, replay/down and rollback acceptance remains required.
-Browser checks at 320/375/1280 px, both themes, keyboard/focus and account/workspace
-changes remain unexecuted. docs/workspace-administration.md supplies the matrix.
+No screenshots, mobile frame-rate results, live performance comparison, private
+runtime acceptance or staging/production validation were produced here.
 
 ## §4 MEMORY INGEST
 
-Type A count: 188
-Type B count: 353
-Type C count: 32
+Type A count: 223
+Type B count: 418
+Type C count: 36
 IOO compliance: true
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
-All 28 earlier events are retained. Four new events record source reconciliation,
-observed source tests, unavailable runtime checks and public governance/handoff
-evidence with real timestamps. The baseline event references an actual source
-revision; pre-commit test events use null commit_sha. Every file vector has a
-declared relationship and current line count. Memory ingestion and CK signing
-were not invoked; their values remain pending.
+All 32 earlier event vectors remain unchanged. Four current observed events were
+added with real timestamps. New metadata describes each file's intent and its
+declared relationships. No direct memory ingestion or signature computation ran.
 
 ## §5 CKET FILING
 
-06_PLAN: docs/workspace-administration.md and updated workspace-integration documentation.
-04_HYPOTHESIZE: registered SRS continuation and existing registry notes.
-07_BUILD: current-role policies, two migrations, authenticated commands, scoped browser client/hooks, admin/integration/wiki/forum pages and shared navigation/settings.
-08_TEST: three new Node suites plus their storage fixture; three new frontend suites; route/operation test and coverage configuration updates.
-11_COMMIT: dispatch, report/memory/context and community-controls/delivery handoffs.
+06_PLAN: docs/motion-system.md.
+04_HYPOTHESIZE: existing upgrade SRS continuation.
+07_BUILD: motion policy, runtime, provider, shared styles/components and page integration.
+08_TEST: motion source/component suites, mission preference regression and Vitest coverage targets.
+11_COMMIT: registry, dispatch, measured context, report and memory.
 13_SAVE: none.
 
-The continuation adds 25 files. Paths follow the actual BuildAndDo AGENTS.md and
-public path policy. CGRF provenance is present on 121/121 files new since the
-original base, including existing JSON/PNG sibling metadata. Existing header
-ownership/provenance is retained. REFLEX remains deferred to the private
-post-merge validator. Run the memory verifier above for headers and edges.
+Paths follow this repository's AGENTS.md and public boundary. This continuation
+adds 16 files. CGRF provenance is present on all 137/137 files new since the
+original base. Existing headers remain attributable to their original work;
+base files without headers have substantive metadata and report validation edges.
+REFLEX remains deferred to the private validator; CK/CAPS/CKS remain pending.
 
 ## §6 GOVERNANCE
 
 Entity: Citadel Nexus Inc. (Delaware C-Corporation)
 License posture: unchanged; commercial contact licensing@citadel-nexus.com
 Hard-NO scan: PASS; zero public-boundary failures
-Secret scan: PASS; zero scanner failures
-Stripe mode: not applicable; no checkout or payment-processing code added
+Secret scan: PASS under the repository boundary scanner
+Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: A2 source/schema/access-policy work; no shared mutation or deployment
+Risk / authority: A2 umbrella, frontend source only in this continuation
 
-Workspace owners and administrators receive bounded app controls, not site-wide
-superuser or private execution authority. New API collections remain locked;
-credentials and external actions stay behind the existing private boundary.
-No live seat event is fabricated because no authenticated live workspace was
-supplied. No external message, token generation, private installer, production
-write or deployment-control file is included. One registered umbrella SRS covers
-the owner-authorized continuation; unrelated prior findings remain visible.
+Motion choices are per-device preferences, not workspace roles or service state.
+Local preview actions do not publish, activate integrations or change records.
+Media object URLs are local, bounded and released; text remains masked from replay
+and excluded from PostHog autocapture. No private runtime, credential, shared
+schema, deployment control or live seat event was introduced.
 
 ## §7 NEXT ACTIONS
 
-Blockers: declared frontend packages and lock alignment; Vitest/coverage,
-official lint and Vite build; native PocketBase 0.28.4 rules/JSVM/concurrency;
-browser/mobile/theme/keyboard acceptance; actual private executor and delivery.
+Blockers: frontend packages/lock, Vitest/coverage, official lint/build, browser
+and device performance acceptance. Earlier native PocketBase 0.28.4, private
+executor and served-release gates also remain open.
 
-Handoffs requested: CMAX-B/IDE1 and the community operator through
-.bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md and the existing
-BuildAndDo delivery note. These are local artifacts, not activated seats.
-Suggested next dispatch: private acceptance and integration request/receipt
-activation for the complete published source, followed by an authorized release
-and served-version/flow verification. The receiving repository supplies its own
-dispatch and authority. Bugs filed: none; no issue target or provider-write
-capability is supplied. Six prior findings and four unwired gates remain open.
+Handoffs: existing BuildAndDo delivery and community-controls artifacts continue
+to apply; no receiving seat was activated. The motion-specific acceptance matrix
+is in docs/motion-system.md. Suggested next dispatch: dependency-enabled frontend
+and native acceptance for the complete source, then authorized delivery and
+matching served-version/flow verification. Bugs filed: none; no issue target or
+provider-write capability supplied. Six earlier governance/gate findings remain.
 
-Rollback: retain stricter access rules and additive records for a frontend
-rollback. Administration down retains settings, contributions and audit history
-and removes the protocol marker to disable commands. RBAC down restores older
-permissions and is an explicit compatibility rollback, not default recovery.
-Coordinate policy/hook rollback with the private security owner; do not remove
-hooks while permissive writes remain or down unrelated destructive migrations.
-No shared rollback, release or private activation was performed here.
+Rollback: revert the frontend motion continuation as one change, including its
+provider and imports. The local preference key has no business data and can be
+ignored by the prior frontend. No database migration or record deletion is needed;
+retain earlier access-rule and administration protections. No release or shared
+rollback ran in this session.

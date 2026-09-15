@@ -15,6 +15,7 @@
 // Intent:      Show scoped paginated run history and approval checkpoints with distinct loading, empty, unavailable and demo states.
 // ───────────────────────────────────────────────────────────────
 
+import { MotionList } from '@/components/motion/MotionPrimitives';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -100,9 +101,9 @@ export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, d
                 history.loading ? <ListSkeleton rows={2} /> : history.error ?
                     <div role="alert" className="border border-border p-4 text-sm">{history.error}</div> :
                     history.items.length === 0 ? <p className="text-sm text-muted-foreground">No recorded runs match this view.</p> :
-                        <ul aria-label="Workflow runs" className="space-y-3">{history.items.map((run) => {
+                        <MotionList as="ul" category="data" itemsKey={history.items.map((run) => run.id).join(':')} aria-label="Workflow runs" className="space-y-3">{history.items.map((run) => {
                             const snapshot = readRunSnapshot(run);
-                            return <li key={run.id}>
+                            return <li key={run.id} data-motion-key={run.id}>
                                 <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div className="min-w-0 break-words">
                                         <p className="font-medium">{snapshot?.name || 'Saved workflow run'}</p>
@@ -116,7 +117,7 @@ export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, d
                                     </div>
                                 </Card>
                             </li>;
-                        })}</ul>}
+                        })}</MotionList>}
             {!demo && !history.loading && !history.error && history.totalPages > 0 &&
                 <nav aria-label="Run history pages" className="flex flex-wrap items-center justify-between gap-3 text-sm">
                     <Button type="button" variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous runs</Button>

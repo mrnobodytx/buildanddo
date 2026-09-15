@@ -1,4 +1,6 @@
 import React, { lazy, Suspense } from 'react';
+import { MotionProvider } from '@/contexts/MotionContext';
+import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import { ThemeProvider } from 'next-themes';
 import RouteLoading from '@/components/RouteLoading';
 import SkipNavigation from '@/components/SkipNavigation';
@@ -169,7 +171,7 @@ export function AppRoutes() {
                             element={
                                 <PageBoundary key={path || 'index'} name={label}>
                                     <Suspense fallback={<RouteLoading />}>
-                                        <Element />
+                                        <MotionEntrance><Element /></MotionEntrance>
                                     </Suspense>
                                 </PageBoundary>
                             }
@@ -191,18 +193,20 @@ function App() {
             enableSystem
             storageKey="buildanddo.theme"
         >
-            <TelemetryBoundary>
-                <Router>
-                    <SkipNavigation />
-                    <AuthProvider>
-                        <WorkspaceProvider>
-                            <ScrollToTop />
-                            <RouteTelemetry />
-                            <AppRoutes />
-                        </WorkspaceProvider>
-                    </AuthProvider>
-                </Router>
-            </TelemetryBoundary>
+            <MotionProvider>
+                <TelemetryBoundary>
+                    <Router>
+                        <SkipNavigation />
+                        <AuthProvider>
+                            <WorkspaceProvider>
+                                <ScrollToTop />
+                                <RouteTelemetry />
+                                <AppRoutes />
+                            </WorkspaceProvider>
+                        </AuthProvider>
+                    </Router>
+                </TelemetryBoundary>
+            </MotionProvider>
         </ThemeProvider>
     );
 }

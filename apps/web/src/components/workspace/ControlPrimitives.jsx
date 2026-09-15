@@ -15,6 +15,7 @@
 // Intent:      Make control loading, denied access, pending saves and paginated text readable with keyboard and mobile layouts.
 // ───────────────────────────────────────────────────────────────
 
+import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
@@ -43,7 +44,7 @@ export function ControlFeedback({ control }) {
         {control.uncertain && <Button type="button" data-workspace-retry="true" variant="secondary" size="sm" disabled={control.saving} onClick={control.retry}>Retry previous save</Button>}
         {control.writeError && !control.uncertain && <div className="space-y-2"><p className="text-xs text-muted-foreground">Reloading replaces open drafts with the saved records.</p>
             <Button type="button" variant="secondary" size="sm" disabled={control.saving} onClick={control.refresh}>Reload current records</Button></div>}
-        {control.saved && <p role="status" className="text-sm text-success">{control.saved.action.startsWith('integration.') ? 'Request saved. Waiting for an operator receipt.' : 'Saved and recorded in workspace history.'}</p>}
+        {control.saved && <MotionEntrance as="p" category="community" role="status" className="text-sm text-success">{control.saved.action.startsWith('integration.') ? 'Request saved. Waiting for an operator receipt.' : 'Saved and recorded in workspace history.'}</MotionEntrance>}
     </div>;
 }
 

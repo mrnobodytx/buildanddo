@@ -15,6 +15,7 @@
 // Intent:      Connect workspace discussion, replies and explicit moderation to persisted records and current member permissions.
 // ───────────────────────────────────────────────────────────────
 
+import { MotionList, MotionValue } from '@/components/motion/MotionPrimitives';
 import React, { useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -61,12 +62,12 @@ function Replies({ control, onPage }) {
             {data.can_admin && <Moderation record={data.topic} kind="topic" control={control} />}
         </Card>
         <h3 className="font-display text-xl font-semibold">Replies</h3>
-        <ol className="space-y-4" aria-label="Discussion replies">{data.items.map((reply) => <li key={reply.id}><Card className="space-y-3 p-5">
+        <MotionList as="ol" category="community" itemsKey={data.items.map((item) => item.id).join(':')} className="space-y-4" aria-label="Discussion replies">{data.items.map((reply) => <li key={reply.id} data-motion-key={reply.id}><Card className="space-y-3 p-5">
             <p className="break-all text-xs capitalize text-muted-foreground">{reply.status} · {reply.owner} · {dateLabel(reply.created)}</p>
             <PlainArticle text={reply.body} />
             {reply.moderation_note && <p className="text-sm text-muted-foreground">Moderator note: {reply.moderation_note}</p>}
             {data.can_admin && <Moderation record={reply} kind="reply" control={control} />}
-        </Card></li>)}</ol>
+        </Card></li>)}</MotionList>
         {!data.items.length && <p className="text-sm text-muted-foreground">No replies visible on this page.</p>}
         <PageControls label="Replies" page={data.page} hasMore={data.has_more} onPage={onPage} disabled={disabled} />
         {data.can_write && data.topic.status === 'open' ? <form className="space-y-3" onSubmit={submit}>
@@ -93,13 +94,13 @@ function ForumDesk({ control, onPage }) {
         <p className="text-sm text-muted-foreground">Discuss the work with your team. Pending contributions are visible to their author and moderators.</p>
         {data.can_write && <Button disabled={disabled} onClick={() => setCreating(true)}>New discussion</Button>}
         <ControlFeedback control={control} />
-        <ol className="space-y-4" aria-label="Discussions">{data.items.map((record) => <li key={record.id}><Card className="space-y-3 p-5">
+        <MotionList as="ol" category="community" itemsKey={data.items.map((item) => item.id).join(':')} className="space-y-4" aria-label="Discussions">{data.items.map((record) => <li key={record.id} data-motion-key={record.id}><Card className="space-y-3 p-5">
             <div className="flex flex-wrap items-start justify-between gap-2"><h2 className="break-words font-display text-xl font-semibold">{record.title}</h2>
-                <span className="rounded border border-border px-2 py-1 text-xs capitalize">{record.status}</span></div>
+                <MotionValue value={record.status} category="community" className="rounded border border-border px-2 py-1 text-xs capitalize" /></div>
             <p className="line-clamp-3 whitespace-pre-wrap break-words text-sm text-muted-foreground">{record.body}</p>
             <p className="break-all text-xs text-muted-foreground">{record.owner} · {dateLabel(record.created)}</p>
             <Button variant="secondary" size="sm" disabled={disabled} onClick={() => setThread(record.id)}>Open discussion</Button>
-        </Card></li>)}</ol>
+        </Card></li>)}</MotionList>
         {!data.items.length && <p className="text-sm text-muted-foreground">No discussions visible on this page.</p>}
         <PageControls label="Discussions" page={data.page} hasMore={data.has_more} onPage={onPage} disabled={disabled} />
         <Dialog open={creating} onOpenChange={(open) => { if (!control.saving) setCreating(open); }}><DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl" onCloseAutoFocus={(event) => { if (control.uncertain) focusPendingRetry(event); }}>

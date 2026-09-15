@@ -36,7 +36,7 @@ srs:
     status: in_progress
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
-    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella including workspace administration, record isolation, community publishing and integration controls; private execution and deployment excluded
+    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella including workspace administration, record isolation, community publishing, integration controls and the shared motion system with organized personal preferences; private execution and deployment excluded
 
   - code: SRS-BUILDANDDO-BOOTSTRAP-001
     title: Machine-facing governance bootstrap

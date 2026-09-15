@@ -17,9 +17,10 @@
 // Intent:      Give the public an inspectable visual model of the governed capability fabric.
 // ───────────────────────────────────────────────────────────────
 
+import { useMotionCategory } from '@/contexts/MotionContext';
 import React, { lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
     ArrowDown,
     ArrowRight,
@@ -72,10 +73,10 @@ const NAMESPACE_TONES = {
     blue: 'border-t-[hsl(var(--mf-blue))] text-[hsl(var(--mf-blue))]',
 };
 
-const fade = (delay, reduce) => ({
-    initial: { opacity: 0, y: reduce ? 0 : 14 },
+const fade = (delay, reduce, policy) => ({
+    initial: { opacity: reduce ? 1 : 0.65, y: reduce ? 0 : policy.distance },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: reduce ? 0 : 0.52, delay: reduce ? 0 : delay, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: reduce ? 0 : policy.duration.reveal / 1000, delay: reduce ? 0 : Math.min(delay, 0.2), ease: policy.curve },
 });
 
 function HeroReceipt() {
@@ -116,7 +117,7 @@ function ArchitectureStage({ stage }) {
 }
 
 export default function PlatformPage() {
-    const reduce = useReducedMotion();
+    const { reduced: reduce, motion: policy } = useMotionCategory('editorial');
 
     return (
         <div
@@ -143,7 +144,7 @@ export default function PlatformPage() {
                     <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-70" />
                     <div className="relative mx-auto grid min-h-[calc(100vh-3.5rem)] max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-12">
                         <div className="lg:col-span-5">
-                            <motion.div {...fade(0, reduce)}>
+                            <motion.div {...fade(0, reduce, policy)}>
                                 <SectionLabel icon={Network}>The platform · MetaFunction Fabric</SectionLabel>
                                 <div className="mt-5 flex flex-wrap gap-2">
                                     <Badge tone="paper">Deterministic registry</Badge>
@@ -153,19 +154,19 @@ export default function PlatformPage() {
                             </motion.div>
 
                             <motion.h1
-                                {...fade(0.08, reduce)}
+                                {...fade(0.08, reduce, policy)}
                                 className="mt-6 max-w-xl font-display text-5xl font-semibold leading-[0.94] tracking-[-0.035em] sm:text-6xl lg:text-[4.35rem]"
                             >
                                 One governed fabric for every capability.
                             </motion.h1>
                             <motion.p
-                                {...fade(0.16, reduce)}
+                                {...fade(0.16, reduce, policy)}
                                 className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
                             >
                                 Guildmasters ask for outcomes by stable capability ID. The fabric resolves the provider, checks authority, normalizes the result and leaves an evidence trail.
                             </motion.p>
 
-                            <motion.div {...fade(0.24, reduce)} className="mt-7 flex flex-col gap-3 sm:flex-row">
+                            <motion.div {...fade(0.24, reduce, policy)} className="mt-7 flex flex-col gap-3 sm:flex-row">
                                 <Button href="#fabric" size="lg">
                                     Trace a request
                                     <ArrowDown className="h-4 w-4" />
@@ -176,7 +177,7 @@ export default function PlatformPage() {
                                 </Button>
                             </motion.div>
 
-                            <motion.div {...fade(0.31, reduce)} className="mt-8 grid grid-cols-3 border-y border-border py-4">
+                            <motion.div {...fade(0.31, reduce, policy)} className="mt-8 grid grid-cols-3 border-y border-border py-4">
                                 {[
                                     ['01', 'Capability ID'],
                                     ['A1–A9', 'Authority'],
@@ -190,7 +191,7 @@ export default function PlatformPage() {
                             </motion.div>
                         </div>
 
-                        <motion.div {...fade(0.22, reduce)} className="lg:col-span-7">
+                        <motion.div {...fade(0.22, reduce, policy)} className="lg:col-span-7">
                             <Suspense fallback={<CapabilityMeshFallback />}>
                                 <MetaFunctionOrb />
                             </Suspense>
@@ -234,10 +235,10 @@ export default function PlatformPage() {
                             {NAMESPACES.map((namespace, index) => (
                                 <motion.article
                                     key={namespace.id}
-                                    initial={{ opacity: 0, y: reduce ? 0 : 10 }}
+                                    initial={{ opacity: reduce ? 1 : 0.65, y: reduce ? 0 : policy.distance }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true, amount: 0.25 }}
-                                    transition={{ duration: reduce ? 0 : 0.35, delay: reduce ? 0 : index * 0.035 }}
+                                    transition={{ duration: reduce ? 0 : policy.duration.layout / 1000, delay: reduce ? 0 : Math.min(index, 4) * policy.stagger / 1000 }}
                                     className={`border border-t-2 border-border bg-card p-4 ${NAMESPACE_TONES[namespace.tone]}`}
                                 >
                                     <div className="flex items-center justify-between gap-3">

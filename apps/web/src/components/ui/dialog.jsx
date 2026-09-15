@@ -14,6 +14,7 @@ const DialogClose = DialogPrimitive.Close;
 
 const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
     <DialogPrimitive.Overlay
+        data-motion-kind="navigation"
         ref={ref}
         className={cn(
             'fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
@@ -31,6 +32,7 @@ const DialogContent = React.forwardRef(
             <DialogPortal>
                 <DialogOverlay />
                 <DialogPrimitive.Content
+                    data-motion-kind="navigation"
                     ref={ref}
                     aria-describedby={undefined}
                     onOpenAutoFocus={(event) => {

@@ -36,6 +36,8 @@ import Footer from '@/components/site/Footer';
 import EarlyAccess from '@/components/site/EarlyAccess';
 import Faq, { FAQ_ITEMS } from '@/components/site/Faq';
 import Seo from '@/components/Seo';
+import EditorialStory from '@/components/motion/EditorialStory';
+import ReadingProgress from '@/components/motion/ReadingProgress';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import {
     DemoModeBanner,
@@ -920,7 +922,9 @@ export default function HomePage() {
             <Header />
             <main id="main-content" tabIndex={-1}>
                 <Masthead />
+                <ReadingProgress className="mx-auto max-w-6xl px-4" />
                 <HomeEdition />
+                <EditorialStory />
                 <EarlyAccess />
                 <Faq />
                 <div className="mx-auto max-w-6xl px-4 pb-4 text-center text-[10px] text-muted-foreground/40 sm:px-6">

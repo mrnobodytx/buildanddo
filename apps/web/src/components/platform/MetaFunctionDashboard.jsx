@@ -17,8 +17,9 @@
 // Intent:      Preview capability health, authority and receipts without exposing private telemetry.
 // ───────────────────────────────────────────────────────────────
 
+import { useMotionActivity, useMotionCategory } from '@/contexts/MotionContext';
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
     Activity,
     Clock3,
@@ -201,6 +202,7 @@ function RegistryTable({ capabilities }) {
 }
 
 function InvocationFeed({ invocations, activeIndex, reduce }) {
+    const { motion: policy } = useMotionCategory('data');
     return (
         <Card className="overflow-hidden">
             <div className="flex items-center justify-between border-b border-foreground/70 px-4 py-3">
@@ -222,7 +224,7 @@ function InvocationFeed({ invocations, activeIndex, reduce }) {
                             className={`relative px-4 py-3 ${active ? 'bg-secondary/55' : 'bg-card'}`}
                             initial={false}
                             animate={{ x: active && !reduce ? 2 : 0 }}
-                            transition={{ duration: reduce ? 0 : 0.22 }}
+                            transition={{ duration: reduce ? 0 : policy.duration.panel / 1000 }}
                         >
                             {active && <span aria-hidden="true" className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
                             <div className="flex items-start justify-between gap-3">
@@ -251,10 +253,11 @@ export default function MetaFunctionDashboard({
     actorAuthority = 'A3',
     animate = true,
 }) {
-    const reduce = useReducedMotion();
+    const reduce = useMotionCategory('data').reduced;
+    const activity = useMotionActivity('data');
     const [activeInvocation, setActiveInvocation] = useState(0);
     const [paused, setPaused] = useState(false);
-    const playbackActive = animate && !paused && !reduce;
+    const playbackActive = animate && !paused && !reduce && activity.active;
     const activeProvider = useMemo(() => {
         const current = invocations[activeInvocation]?.capabilityId || '';
         return providers.findIndex((provider) => current.includes(provider.name.toUpperCase()));
@@ -270,6 +273,7 @@ export default function MetaFunctionDashboard({
 
     return (
         <div
+            ref={activity.ref}
             className="border border-foreground/80 bg-background shadow-[8px_8px_0_hsl(var(--foreground)/0.07)]"
             style={{
                 '--mf-violet': '268 42% 43%',

@@ -17,6 +17,7 @@
 // Intent:      Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.
 // ───────────────────────────────────────────────────────────────
 
+import { MotionList } from '@/components/motion/MotionPrimitives';
 import React, { useEffect, useRef, useState } from 'react';
 import { BookOpen, Clock } from 'lucide-react';
 import curriculum from '../../../../pocketbase/pb_migrations/data/starter-tutorials.json';
@@ -37,6 +38,7 @@ function CatalogView({ lessons, progress = [], progressKnown = false, canPersist
     const [category, setCategory] = useState('all');
     const [selected, setSelected] = useState(null);
     const opener = useRef(null);
+    const origin = useRef(null);
     const categories = [...new Set(lessons.map((lesson) => lesson.category).filter(Boolean))];
     const matches = selectTutorials(lessons, { query, category });
     const visible = limit ? matches.slice(0, limit) : matches;
@@ -50,25 +52,25 @@ function CatalogView({ lessons, progress = [], progressKnown = false, canPersist
             <div className="space-y-1"><Label htmlFor="lesson-search">Search lessons</Label><Input id="lesson-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Topic or skill" /></div>
             <div className="space-y-1"><Label htmlFor="lesson-category">Learning path</Label><select id="lesson-category" value={category} onChange={(event) => setCategory(event.target.value)} className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm"><option value="all">All paths</option>{categories.map((name) => <option key={name}>{name}</option>)}</select></div>
         </div>}
-        {!visible.length ? <p role="status" className="text-sm text-muted-foreground">No lessons match these filters.</p> : <ul className="grid gap-4 sm:grid-cols-2">
+        {!visible.length ? <p role="status" className="text-sm text-muted-foreground">No lessons match these filters.</p> : <MotionList as="ul" itemsKey={visible.map((item) => item.catalogueKey).join(':')} className="grid gap-4 sm:grid-cols-2">
             {visible.map((tutorial) => {
                 const status = progressKnown && tutorial.persistedId ? lessonProgress(progress, tutorial.persistedId)?.status || 'not_started' : 'preview';
                 const action = status === 'completed' ? 'Review' : status === 'in_progress' ? 'Continue' : 'Read';
-                return <li key={tutorial.catalogueKey} className="min-w-0"><Card className="flex h-full flex-col gap-3 p-5">
+                return <li key={tutorial.catalogueKey} data-motion-key={tutorial.catalogueKey} className="min-w-0"><Card className="flex h-full flex-col gap-3 p-5">
                     <div className="flex flex-wrap items-start justify-between gap-2"><p className="text-xs font-semibold uppercase tracking-wider text-primary">{tutorial.category || 'Field Manual'}</p><StatePill state={status} /></div>
                     <h3 className="break-words font-display text-lg font-semibold">{tutorial.title}</h3>
                     <p className="text-sm leading-6 text-muted-foreground">{tutorial.summary}</p>
                     <p className="flex items-center gap-2 text-xs text-muted-foreground"><Clock className="h-3.5 w-3.5" aria-hidden="true" />About {tutorial.effort_minutes || 10} minutes</p>
                     {tutorial.prerequisites && <p className="text-xs leading-5 text-muted-foreground">Prerequisite: {tutorial.prerequisites}</p>}
-                    <Button size="sm" variant="secondary" className="mt-auto self-start" aria-label={`${action} ${tutorial.title}`} onClick={(event) => { opener.current = event.currentTarget; setSelected(tutorial.catalogueKey); }}>{action} lesson</Button>
+                    <Button size="sm" variant="secondary" className="mt-auto self-start" aria-label={`${action} ${tutorial.title}`} onClick={(event) => { opener.current = event.currentTarget; const bounds = event.currentTarget.closest('li')?.getBoundingClientRect(); origin.current = bounds ? { left: bounds.left, top: bounds.top } : null; setSelected(tutorial.catalogueKey); }}>{action} lesson</Button>
                 </Card></li>;
             })}
-        </ul>}
+        </MotionList>}
         {limit > 0 && matches.length > limit && <Button href="/docs#workspace-lessons" variant="secondary" size="sm">View all lessons</Button>}
         {current && <TutorialReader key={current.catalogueKey} tutorial={current}
             completed={lessonProgress(progress, current.persistedId)?.status === 'completed'}
             canSave={canPersist && progressKnown && Boolean(current.persistedId)} busy={Boolean(busy)} error={error} saved={saved}
-            onSave={(status) => onSave?.(current, status)} onClose={() => setSelected(null)} opener={opener.current} />}
+            onSave={(status) => onSave?.(current, status)} onClose={() => setSelected(null)} opener={opener.current} origin={origin.current} />}
     </div>;
 }
 

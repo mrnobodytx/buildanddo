@@ -16,6 +16,7 @@ const SheetPortal = SheetPrimitive.Portal;
 
 const SheetOverlay = React.forwardRef(({ className, ...props }, ref) => (
     <SheetPrimitive.Overlay
+        data-motion-kind="navigation"
         className={cn(
             'fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
             className,
@@ -47,6 +48,7 @@ const SheetContent = React.forwardRef(({ side = 'right', className, children, ..
     <SheetPortal>
         <SheetOverlay />
         <SheetPrimitive.Content
+            data-motion-kind="navigation"
             ref={ref}
             className={cn(sheetVariants({ side }), className)}
             {...props}

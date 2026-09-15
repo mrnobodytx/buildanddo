@@ -15,6 +15,7 @@
 // Intent:      Let authorized workspace administrators manage profile, members and community settings with visible audit and conflict recovery.
 // ───────────────────────────────────────────────────────────────
 
+import { MotionList } from '@/components/motion/MotionPrimitives';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
@@ -124,11 +125,11 @@ function AdminDesk({ control, membersPage, auditPage, tab, setTab }) {
             <TabsContent value="members" className="mt-5"><Members control={control} onPage={membersPage} /></TabsContent>
             <TabsContent value="audit" className="mt-5 space-y-4">
                 <p className="text-sm text-muted-foreground">Saved settings, permission changes, integration requests and community decisions. Entries cannot be edited from BuildAndDo.</p>
-                <ol className="space-y-3">{control.data.audit.items.map((item) => <li key={item.id} className="space-y-1 rounded-md border border-border p-4">
+                <MotionList as="ol" category="community" itemsKey={control.data.audit.items.map((item) => item.id).join(':')} className="space-y-3">{control.data.audit.items.map((item) => <li key={item.id} data-motion-key={item.id} className="space-y-1 rounded-md border border-border p-4">
                     <p className="text-sm font-semibold">{actionNames[item.action] || 'Workspace change'}</p>
                     <p className="break-all text-xs text-muted-foreground">Account {item.actor} · {dateLabel(item.created)}</p>
                     <p className="break-all text-xs text-muted-foreground">Record {item.target} · revision {item.revision}</p>
-                </li>)}</ol>
+                </li>)}</MotionList>
                 {!control.data.audit.items.length && <p className="text-sm text-muted-foreground">No audit entries on this page.</p>}
                 <PageControls label="Audit" page={control.data.audit.page} hasMore={control.data.audit.has_more} onPage={auditPage} disabled={control.saving || control.uncertain} />
             </TabsContent>

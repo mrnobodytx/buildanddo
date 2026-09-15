@@ -1,9 +1,16 @@
 import { useLocation } from 'react-router-dom';
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useMotionCategory } from '@/contexts/MotionContext';
+import { animateElement } from '@/lib/motion/runtime';
 
 export default function ScrollToTop() {
     const { pathname, hash } = useLocation();
     const previousPath = useRef(pathname);
+    const policy = useMotionCategory('navigation');
+    const latestPolicy = useRef(policy);
+    latestPolicy.current = policy;
+    const cancel = useRef(() => {});
+    useEffect(() => { if (!policy.enabled) cancel.current(); }, [policy.enabled]);
 
     useLayoutEffect(() => {
         const changedPage = previousPath.current !== pathname;
@@ -24,10 +31,16 @@ export default function ScrollToTop() {
             } else if (changedPage || !anchor) {
                 window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             }
-            if (changedPage) main.focus({ preventScroll: true });
+            if (changedPage) {
+                main.focus({ preventScroll: true });
+                const { enabled, motion } = latestPolicy.current;
+                cancel.current = animateElement(main, [{ opacity: 0.65 }, { opacity: 1 }], {
+                    duration: motion.duration.route, easing: motion.ease,
+                }, enabled);
+            }
             return true;
         };
-        if (settle()) return undefined;
+        if (settle()) return () => cancel.current();
         // A lazy page may mount after this router effect. Wait for real content
         // so deep links and keyboard focus do not land on the loading fallback.
         const observer = new MutationObserver(() => {
@@ -37,7 +50,7 @@ export default function ScrollToTop() {
             childList: true,
             subtree: true,
         });
-        return () => observer.disconnect();
+        return () => { observer.disconnect(); cancel.current(); };
     }, [pathname, hash]);
     return null;
 }
