@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowRight, Loader2, AlertCircle, ShieldCheck } from 'lucide-react';
 import AuthLayout from '@/components/auth/AuthLayout';
 import { Button } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
+import { workspaceDestination } from '@/lib/navigationIntent';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -32,6 +33,8 @@ const STRENGTH_TONE = [
 export default function SignupPage() {
     const { signup } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnTo = workspaceDestination(location.state?.returnTo);
     const [form, setForm] = useState({ name: '', email: '', password: '' });
     const [errors, setErrors] = useState({});
     const [status, setStatus] = useState('idle');
@@ -71,7 +74,7 @@ export default function SignupPage() {
                 name: form.name.trim(),
             });
             // New accounts always go through onboarding first.
-            navigate('/onboarding');
+            navigate('/onboarding', { replace: true, state: { returnTo } });
         } catch (err) {
             const data = err?.response?.data;
             if (data?.email) {
@@ -99,6 +102,7 @@ export default function SignupPage() {
                     Already have an account?{' '}
                     <Link
                         to="/login"
+                        state={{ returnTo }}
                         className="font-semibold text-primary hover:brightness-125"
                     >
                         Sign in

@@ -1,4 +1,5 @@
 import posthog from 'posthog-js';
+import { scrubClassroomProperties } from './navigationIntent';
 
 // VITE_BUILDANDDO_PH is written into apps/web/.env before every build by
 // scripts/deploy/ship.py (sourced from workspace.env's BUILDANDDO_PH - a
@@ -16,6 +17,7 @@ export function initTelemetry() {
 		person_profiles: 'identified_only',
 		capture_pageview: true,
 		capture_pageleave: true,
+		before_send: scrubClassroomProperties,
 	});
 	initialized = true;
 }

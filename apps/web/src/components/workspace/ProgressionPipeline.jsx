@@ -100,7 +100,7 @@ export const PIPELINE_STEPS = [
             'Lint passes',
             'Web coverage and public telemetry adapter suites pass',
             'Native Discord commands and research parser checks pass with source coverage',
-            'Native PocketBase dossier and suite auth, storage, leases and retry checks pass for both declared runtimes',
+            'Native PocketBase dossier, suite and classroom auth, storage, presence, leases and retry checks pass for both declared runtimes',
             'Portable mission suite behavior, replay, packaging and source coverage pass on Python 3.11 and 3.12',
             'Federal foundry execution, evidence integrity, replay and portfolio exports pass on Python 3.11 and 3.12',
             'Federal portfolio packets, provider-independent adapters, evidence checks and source coverage pass on Python 3.11 and 3.12',

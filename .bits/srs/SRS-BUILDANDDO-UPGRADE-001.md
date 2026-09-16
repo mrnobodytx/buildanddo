@@ -20,6 +20,47 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Classroom source continuation — 2026-09-16
+
+The owner reports that live classrooms and educational rooms still do not work
+or appear on the website. This continues the existing A2 dispatch for public
+application source, reviewed PocketBase migrations and local verification.
+Inspection finds an authored lesson catalogue but no classroom route, room
+store, attendance, shared lesson state or join client in this checkout.
+
+Acceptance:
+
+1. Surface Classrooms in public navigation, the home learning section, Docs,
+   the workspace and Field Manual. Preserve classroom destinations through
+   sign-in and onboarding without allowing external redirects. Public pages
+   show authored learning content without reading private room records.
+2. Use native PocketBase users and current workspace membership for room lists,
+   scheduling, host start/end, shared installed-lesson selection, join/leave,
+   expiring presence and bounded discussion. Only current editors or workspace
+   administrators host/write; all current members may follow a session and
+   manage their own presence. Hosts cannot administer another workspace.
+3. Keep scheduled, in-session and ended states distinct. Recheck authorization
+   inside transactions, fence stale revisions and presence generations, and
+   replay lost command responses without duplicating rooms or discussion.
+   Lock native collection APIs; retain session history on migration rollback.
+4. Reuse the Field Manual reader and personal progress. Poll shared state with
+   explicit connection errors, bounded pages and account/workspace cleanup.
+   Never render old private state after identity changes or treat demo mode as
+   a real room. Discussion content and membership stay out of telemetry.
+5. Verify cross-workspace denial, revoked roles, lifecycle, retry/concurrency,
+   migration replay/down, client isolation, navigation and rendered workflows
+   with available tooling. Record missing dependencies and runtime acceptance.
+
+The earlier missing media-provider contract remains a separate dependency. The
+owner has been asked to identify the existing service. Shared lesson/discussion
+rooms use this repository's PocketBase; no SFU, video client, provider token or
+private service is invented. Public source completion cannot establish hosted
+audio/video, an applied production migration or deployed website behavior.
+
+Verify: `node --test tests/upgrade/classroom-*.test.mjs`, the classroom Vitest
+cases, context, public-boundary and dispatch-memory gates. Actual multi-user
+PocketBase and browser acceptance must be distinguished from source doubles.
+
 ## Governance fast-path and Citadel telemetry continuation — 2026-09-16
 
 The owner authorized two A2 repository changes under the existing dispatch:
@@ -57,6 +98,15 @@ Verify with `python -m unittest tests.upgrade.test_datadog_metrics`,
 `python scripts/ci/agent_context.py --check`, and
 `python scripts/ci/verify_public_boundary.py`. A dry run proves payload shape,
 not live Datadog ingestion; no private operational state is committed.
+
+Classroom source outcome: public and workspace entry points, safe sign-in
+destinations, native room/attendance/discussion contracts and shared lesson
+controls are implemented. Twenty focused tests pass with 100% selected-source
+lines; full regression passes 276 Node and 201 Python cases with 12 native skips.
+Nine rendered and three hook cases and three native cases are authored; missing
+frontend/native dependencies prevent their execution here. Source diagnostics
+and typing pass, but no deployed classroom or audio/video acceptance is claimed.
+The guide and classroom handoff name the remaining installed/media contracts.
 
 ## Field Interviewer v1.3.0 continuation — private handoff, 2026-09-16
 

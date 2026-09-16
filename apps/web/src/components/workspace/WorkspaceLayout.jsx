@@ -51,6 +51,7 @@ const NAV = [
     { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },
     { to: '/app/corrections', label: 'Corrections', icon: Scale },
     { to: '/app/tutorials', label: 'Field Manual', icon: GraduationCap },
+    { to: '/app/classrooms', label: 'Classrooms', icon: Users },
     { to: '/app/erp', label: 'ERP', icon: Boxes },
     { to: '/app/support', label: 'Support & Revenue', icon: Coins },
     { to: '/app/community', label: 'Community & Social', icon: MessageCircle },

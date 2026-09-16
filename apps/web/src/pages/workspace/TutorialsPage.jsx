@@ -36,7 +36,7 @@ export default function TutorialsPage() {
                 title="Field Manual"
                 description="Work through business planning, mission evidence and government-submission lessons. Read a worked example, practice and check your understanding."
             />
-            <div className="flex flex-wrap gap-4 text-sm"><Link className="underline underline-offset-4" to="/app/missions">Create a government submission mission</Link><Link className="underline underline-offset-4" to="/app/suite">Open mission suite</Link></div>
+            <div className="flex flex-wrap gap-4 text-sm"><Link className="underline underline-offset-4" to="/app/classrooms">Learn together in Classrooms</Link><Link className="underline underline-offset-4" to="/app/missions">Create a government submission mission</Link><Link className="underline underline-offset-4" to="/app/suite">Open mission suite</Link></div>
 
             <Tabs defaultValue="lessons">
                 <TabsList className="h-auto flex-wrap justify-start">
@@ -59,7 +59,7 @@ export default function TutorialsPage() {
                     </Suspense>
                 </TabsContent>
                 <TabsContent value="lessons" className="mt-6">
-                    <TutorialCatalog initialCategory={search.get('path') === 'government' ? 'Government submissions' : 'all'} />
+                    <TutorialCatalog initialCategory={search.get('path') === 'government' ? 'Government submissions' : 'all'} initialLesson={search.get('lesson') || ''} />
                 </TabsContent>
             </Tabs>
         </div>

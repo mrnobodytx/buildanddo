@@ -22,6 +22,7 @@
 // ───────────────────────────────────────────────────────────────
 
 import { identifyRumUser, clearRumUser, initDatadogRum } from '@/lib/datadogRum';
+import { classroomTelemetryLocation } from '@/lib/navigationIntent';
 
 import { describeRuntime, navigationType, resolveEnvironment, resolveRelease } from './context';
 import { configureDeltas, flushBaselines, incrementCounter, metricSnapshot } from './deltas';
@@ -101,6 +102,8 @@ export function initObservability() {
  */
 export function trackRouteChange({ from, to, dwellMs, search }) {
 	if (!isReporting()) return;
+	from = classroomTelemetryLocation(from);
+	to = classroomTelemetryLocation(to);
 
 	incrementCounter('route.changes', { route: to });
 
@@ -130,6 +133,7 @@ export function trackRouteChange({ from, to, dwellMs, search }) {
  */
 export function trackRouteRender(route, durationMs) {
 	if (!isReporting()) return;
+	route = classroomTelemetryLocation(route);
 	reportMetric('route.render', durationMs, { unit: 'millisecond', tags: { route } });
 }
 
@@ -143,11 +147,11 @@ export function trackRouteRender(route, durationMs) {
 export function trackRenderError(error, info = {}) {
 	if (!isReporting()) return;
 
-	incrementCounter('app.render_errors', { route: window.location.pathname });
+	incrementCounter('app.render_errors', { route: classroomTelemetryLocation(window.location.pathname) });
 	reportError(error, {
 		error_source: 'react_render',
 		page: info.page || 'app',
-		route: window.location.pathname,
+		route: classroomTelemetryLocation(window.location.pathname),
 		component_stack: info.componentStack,
 		api_health: networkSummary(),
 	});

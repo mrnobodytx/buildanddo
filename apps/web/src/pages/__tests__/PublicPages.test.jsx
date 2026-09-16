@@ -22,6 +22,7 @@ import AboutPage from '@/pages/AboutPage';
 import DocsPage from '@/pages/DocsPage';
 import BlogPage from '@/pages/BlogPage';
 import ContactPage from '@/pages/ContactPage';
+import ClassroomLandingPage from '@/pages/ClassroomLandingPage';
 import { renderWithProviders, screen, setupUser, waitFor, within } from '@/test/utils';
 
 const pages = [
@@ -30,6 +31,7 @@ const pages = [
     ['/docs', DocsPage, 'From the first signal to the final receipt.'],
     ['/blog', BlogPage, 'Notes from the work.'],
     ['/contact', ContactPage, 'Tell us what you are working on.'],
+    ['/classrooms', ClassroomLandingPage, 'A classroom for the work ahead.'],
 ];
 
 function renderPage(Component, route) {
@@ -45,7 +47,7 @@ describe('public pages', () => {
                 within(screen.getByRole('main')).getByRole('heading', { level: 1, name: heading }),
             ).toBeVisible();
             const navigation = within(screen.getByRole('navigation', { name: 'Primary' }));
-            for (const route of ['/pricing', '/about', '/docs', '/blog', '/contact']) {
+            for (const route of ['/pricing', '/about', '/docs', '/classrooms', '/blog', '/contact']) {
                 const page = PUBLIC_PAGES.find((entry) => entry.path === route);
                 expect(navigation.getByRole('link', { name: page.label })).toHaveAttribute(
                     'href',
@@ -107,7 +109,7 @@ describe('public pages', () => {
         expect(screen.getByRole('status')).toHaveTextContent('0 guides found');
         expect(screen.getByText(/No matching guides/)).toBeVisible();
         await user.clear(search);
-        expect(screen.getByRole('status')).toHaveTextContent('6 guides found');
+        expect(screen.getByRole('status')).toHaveTextContent('7 guides found');
     });
 
     it('lets a reader open and close a complete journal entry with the native disclosure', async () => {

@@ -781,6 +781,7 @@ function FieldManual() {
                 Read the catalogue and update your saved progress here, in Docs, or in your
                 workspace.
             </p>
+            <div className="mb-6 flex flex-wrap items-center gap-4"><Button href="/classrooms" variant="secondary">Learn together in Classrooms</Button><p className="text-sm text-muted-foreground">Shared lessons, questions and workspace sessions.</p></div>
             <TutorialCatalog limit={4} />
         </Section>
     );

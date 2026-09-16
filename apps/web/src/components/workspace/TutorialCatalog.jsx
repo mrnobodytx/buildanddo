@@ -35,12 +35,18 @@ import { lessonProgress, mergeTutorials, selectTutorials } from '@/lib/tutorialC
 import pb from '@/lib/pocketbaseClient';
 
 const authoredLessons = [...curriculum.lessons, ...government.lessons];
-function CatalogView({ lessons, progress = [], progressKnown = false, canPersist = false, onSave, busy = '', error = '', saved = '', limit = 0, initialCategory = 'all' }) {
+function CatalogView({ lessons, progress = [], progressKnown = false, canPersist = false, onSave, busy = '', error = '', saved = '', limit = 0, initialCategory = 'all', initialLesson = '', onLinkedLesson }) {
     const [query, setQuery] = useState('');
     const [category, setCategory] = useState(initialCategory);
     const [selected, setSelected] = useState(null);
     const opener = useRef(null);
     const origin = useRef(null);
+    const openedLink = useRef('');
+    useEffect(() => {
+        if (!initialLesson || openedLink.current === initialLesson) return;
+        const lesson = lessons.find((item) => item.persistedId === initialLesson || item.catalogueKey === initialLesson);
+        if (lesson) { openedLink.current = initialLesson; setSelected(lesson.catalogueKey); onLinkedLesson?.(initialLesson); }
+    }, [initialLesson, lessons, onLinkedLesson]);
     const categories = [...new Set(lessons.map((lesson) => lesson.category).filter(Boolean))];
     const matches = selectTutorials(lessons, { query, category });
     const visible = limit ? matches.slice(0, limit) : matches;
@@ -76,12 +82,13 @@ function CatalogView({ lessons, progress = [], progressKnown = false, canPersist
     </div>;
 }
 
-function SignedInCatalog({ userId, limit, initialCategory }) {
+function SignedInCatalog({ userId, limit, initialCategory, initialLesson }) {
     const tutorials = useRecords('tutorials', { sort: 'order' });
     const progress = useRecords('tutorial_progress', { sort: '-created' });
     const [busy, setBusy] = useState('');
     const [writeError, setWriteError] = useState('');
     const [saved, setSaved] = useState('');
+    const [openedLink, setOpenedLink] = useState('');
     const saving = useRef(false);
     const mounted = useRef(true);
     useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
@@ -116,18 +123,19 @@ function SignedInCatalog({ userId, limit, initialCategory }) {
         {progress.degraded && <DegradedNotice message="Your saved progress is unavailable. You can read lessons; retry before saving progress." onRetry={progress.refresh} />}
         {!tutorials.loading && !tutorials.degraded && lessons.some((lesson) => !lesson.persistedId) && <p className="text-sm leading-6 text-muted-foreground">Starter previews are ready to read. Apply the tutorial catalogue migration to save progress for lessons not yet installed.</p>}
         {tutorials.loading ? <ListSkeleton label="Loading lessons…" /> : <CatalogView lessons={lessons} progress={progress.records} progressKnown={progressKnown}
-            canPersist onSave={saveProgress} busy={busy} error={writeError} saved={saved} limit={limit} initialCategory={initialCategory} />}
+            canPersist onSave={saveProgress} busy={busy} error={writeError} saved={saved} limit={limit} initialCategory={initialCategory}
+            initialLesson={openedLink === initialLesson ? '' : initialLesson} onLinkedLesson={setOpenedLink} />}
     </div>;
 }
 
-/** @param {{limit?: number, initialCategory?: string}} props Preview length and starting learning path. @returns {React.ReactElement} Authored lessons and account-scoped progress. */
-export default function TutorialCatalog({ limit = 0, initialCategory = 'all' }) {
+/** @param {{limit?: number, initialCategory?: string, initialLesson?: string}} props Preview length, learning path and optional saved lesson link. @returns {React.ReactElement} Authored lessons and account-scoped progress. */
+export default function TutorialCatalog({ limit = 0, initialCategory = 'all', initialLesson = '' }) {
     const { isAuthed, user } = useAuth();
     const { demo } = useDemoMode();
     if (!isAuthed || !user?.id || demo) return <div className="space-y-5">
         <p className="text-sm leading-6 text-muted-foreground">{demo ? 'Demo mode: read the starter lessons without writing progress.' : 'Explore the starter lessons. Sign in to keep progress on installed lessons.'}</p>
         {!demo && <Button href="/login" size="sm">Sign in for lessons</Button>}
-        <CatalogView key={`${demo ? 'demo' : 'public'}:${initialCategory}`} lessons={mergeTutorials([], authoredLessons)} limit={limit} initialCategory={initialCategory} />
+        <CatalogView key={`${demo ? 'demo' : 'public'}:${initialCategory}`} lessons={mergeTutorials([], authoredLessons)} limit={limit} initialCategory={initialCategory} initialLesson={initialLesson} />
     </div>;
-    return <SignedInCatalog key={`${user.id}:${initialCategory}`} userId={user.id} limit={limit} initialCategory={initialCategory} />;
+    return <SignedInCatalog key={`${user.id}:${initialCategory}`} userId={user.id} limit={limit} initialCategory={initialCategory} initialLesson={initialLesson} />;
 }

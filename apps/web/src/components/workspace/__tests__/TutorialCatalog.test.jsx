@@ -36,6 +36,19 @@ vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMet
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 vi.mock('@/components/workspace/ComponentCatalog', () => ({ default: () => <p>Component reference</p> }));
 const lesson = curriculum.lessons[0];
+it('opens the saved lesson linked by a classroom and keeps personal progress separate', async () => {
+    const user = setupUser();
+    renderWithProviders(<TutorialsPage />, { route: `/app/tutorials?lesson=${lesson.id}` });
+    const dialog = within(await screen.findByRole('dialog'));
+    expect(dialog.getByRole('heading', { name: lesson.title })).toBeVisible();
+    expect(pb.collection('tutorial_progress').create).not.toHaveBeenCalled();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Refresh lessons' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Refresh lessons' })).not.toBeDisabled());
+    // Refreshing the catalogue must not reopen a dismissed deep link.
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+});
 beforeEach(() => { pb.__reset(); setDemoMode(false); pb.__setRecords('tutorials', curriculum.lessons); });
 afterEach(() => vi.restoreAllMocks());
 const read = async (prefix = 'Read') => {
