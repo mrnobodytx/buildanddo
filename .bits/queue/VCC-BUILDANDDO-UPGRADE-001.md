@@ -20,6 +20,36 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Field Interviewer v1.3.0 handoff authorized 2026-09-16
+
+The owner selected the supplied product/operational knowledge architecture.
+This continuation records the public interface and private receiving work at
+A0 under the existing dispatch. Runtime/provider changes remain private work.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CX | Register the owner decision and inspect public reuse boundaries | `python scripts/ci/agent_context.py --check` | done — existing dispatch and public source boundaries verified |
+| CY | Record the knowledge contract and private-seat implementation handoff | Document/source audit in report.md | done — six document definitions and FI-00 through FI-05 receiving work |
+| CZ | Preserve evidence and validate the public handoff | Context, public-boundary and dispatch-memory gates | done — 4/4 document gates; 745 public files; all 85 prior events retained |
+
+Memory brief: the prior foundry/base integration is the committed baseline.
+Its 85 memory events remain historical. The public source provides a bounded
+authored community catalogue, authenticated workspace wiki and human-reviewed
+content desk. No Field Interviewer or ElevenLabs content lab implementation
+was found in the inspected public docs/web source. The owner reports an existing
+private ElevenLabs bridge, active interviewer, operational probers and canonical
+analytics; their source/runtime receipts are unavailable in this public session.
+The earlier Rig 1 handoff records the public/private repository attachment
+boundary. Reuse requires discovery in a private session, not another clone
+attempt here. No authenticated workspace is supplied, so no seat event is sent.
+
+Current smoke for this documentation continuation: the document/source audit in
+report.md, `python scripts/ci/agent_context.py --check`,
+`python scripts/ci/verify_public_boundary.py`, and
+`python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`.
+These checks establish public artifact consistency only. Existing Workers,
+frontend, native and private runtime acceptance retain their recorded limits.
+
 ## Federal portfolio continuation authorized 2026-09-16
 
 The owner supplied five parallel research lanes and requested model-independent
@@ -720,3 +750,106 @@ application smoke remains 4/7. The dispatch remains in progress. Current memory
 and provenance counts are recorded in the cumulative report, with all 41 baseline
 memory events preserved. No Discord message, shared mutation or live seat event
 was sent by this source session.
+
+## Federal R&D Foundry continuation authorized 2026-09-16
+
+The owner requested one public-source evidence and portfolio substrate for five
+isolated federal research lanes. This A2 continuation covers offline files,
+compilers and local validation only. Official solicitations, controlled inputs,
+hardware runs, private infrastructure, pricing approval and submissions remain
+outside this dispatch.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CJ | Register the foundry scope and preserve public/private boundaries | `python scripts/ci/agent_context.py --check` | done — registered before source work; context gate passes |
+| CK | Define and validate five opportunity records | Foundry registry test module | done — five records validate; unknown deadlines and eligibility remain open |
+| CL | Scaffold reusable and lane-specific submission artifacts | Foundry structure and template tests | done — 14 tracked files per lane including results provenance and slides workspace |
+| CM | Implement requirement, claim, experiment and benchmark contracts | Foundry unit tests | done — unsupported requirement and claim promotion fails closed |
+| CN | Compile deterministic review bundles without promoting unsupported claims | Foundry portfolio integration tests | done — two complete portfolio builds are byte-identical and leave source unchanged |
+| CO | Verify source, governance and memory evidence | Foundry tests, context, boundary and dispatch-memory checks | done — 9/13 smoke; four pre-existing frontend tools unavailable and recorded |
+
+Memory brief: PR 29 provides a portable mission/research worker, submission
+readiness concepts and deterministic replay; PR 28 provides the public Sentinel
+Maritime planning baseline. Neither establishes official federal requirements,
+current deadlines, corporate eligibility, physical hardware results or filing
+authority. The owner-supplied source conversation defines the five planning
+lanes and requested artifacts. This checkout has no authenticated seat or live
+workspace, so no seat event is fabricated. New work must keep planning,
+observed, verified and missing evidence states distinct.
+
+Current source evidence: 13 foundry tests pass. The standard-library trace gate
+measures 82.73 to 100 percent statement coverage in each executable shared
+module; strict mypy and Ruff pass. The registry holds five opportunities and
+every lane has the complete 14-file tracked surface (the requested outputs plus
+JSON provenance). Two portfolio compilations produce identical relative bytes
+and do not change lane source. The first test run exposed two fixture expectations
+and a later wording assertion; all were corrected before this passing gate.
+
+Pytest and coverage.py cannot start because those packages are not installed;
+the repository's existing trace-based coverage pattern supplies the measured
+local alternative. Vitest, Vite and the official ESLint import plugin remain
+unavailable for the pre-existing web smoke. This foundry adds no frontend source.
+
+## Foundry execution continuation authorized 2026-09-16
+
+The owner requested working functionality beyond the initial scaffold. The same
+in-progress source dispatch covers the common runner, reference workloads and
+derived evidence workflow. Public synthetic inputs are explicit; hardware,
+official-source review and external submission retain their existing gates.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CP | Validate contracts and evidence bytes/scope | Foundry validation and evidence tests | done — actual bytes, scoped reviews and atomic updates; stale-plan regression fails before the fix and passes afterward |
+| CQ | Execute isolated bounded experiments and record attempts | Foundry runner tests with real child processes | done — real subprocess, timeout, log bound, input tamper, cancellation and replay cases pass |
+| CR | Compare five lane reference workloads over repeated seeds | Foundry baseline and benchmark tests | done — five algorithms, ten candidates and a 60-attempt comparison execute; fixture scope is explicit |
+| CS | Compile measured reports, briefs and independently verifiable bundles | Foundry end-to-end and tamper tests | done — measured reports, five source slides per lane, portable ZIP and standalone HTML pass integrity and determinism checks |
+| CT | Run a complete local portfolio and preserve verification evidence | `python tests/foundry/check_foundry.py`; context, boundary and memory checks | done — 70 source tests, 60 attempts, deterministic export/replay and provenance; hosted and scientific acceptance remain open |
+
+Memory brief: the initial substrate has thirteen source tests but only protocol
+interfaces, unchecked evidence locators and copied paper drafts. All five lane
+results are empty. PyYAML, mypy and Ruff are installed; pytest, coverage.py and
+the previously missing frontend/native tools remain unavailable. The existing
+portable maritime engine is reusable public source. No authenticated seat or
+live workspace is available, so execution receipts remain local.
+
+Observed execution outcome: all 60 reference attempts completed across five
+lanes and ten candidates. The verified export contains 574 files and 25 source
+slides; two exports are byte-identical and a fresh NAVAIR replay matches. The
+final source suite passes 70/70 with 90.62–100% statement coverage per executable
+module. All 15 foundry modules pass strict typing; Ruff lint/format, 256 Node
+regressions and 23 reused mission-suite tests pass. The independent Python
+3.11/3.12 CI matrix is authored; hosted execution is not claimed. Exact source,
+input, archive, resource and replay observations are recorded in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json. Local synthetic
+results do not resolve official, eligibility, hardware or submission acceptance.
+
+## PR 31 integration continuation authorized 2026-09-16
+
+The owner reported five conflicts against main and a failing Workers build.
+The existing A2 source dispatch covers merging the actual PR base, preserving
+both public foundry implementations and diagnosing the reported build. Private
+Cloudflare configuration and release authority remain with the receiving owner.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CU | Resolve all five conflicts while preserving both source implementations and historical evidence | Conflict-marker and parent-history audit in the dispatch report | done — five conflicts resolved; both parents and all 83 historical events retained |
+| CV | Validate the integrated foundry, portfolio, suite and contribution checks | Both foundry coverage runners, suite/Node regression, typing and source diagnostic | done — 389 tests pass; required source and provenance checks pass |
+| CW | Diagnose Workers failure and record integration acceptance | Provider check/annotations, local build, context, boundary and memory checks | partial — diagnosis recorded; real Workers log unavailable; existing npm lock/build blockers remain |
+
+Memory brief: PR 30 added apps/federal_foundry, five proposed lane SRS scopes,
+the portable package extension and a separate federal-foundry CI job to main.
+PR 31 provides foundry/shared/federal_foundry and its executable reference
+campaigns. Both changed shared governance files. Preserve all 77 PR-head events
+and all 72 base-branch events, deduplicating their 66 identical common events.
+GitHub reports Workers check 104836645636 failed with no error text or
+annotations; scoped Datadog lookups returned no diagnostic data. That does not
+establish a source-code cause. No authenticated workspace or seat is available.
+
+Observed integration acceptance: 13/15 local check groups pass. Both foundry
+coverage gates pass (70 and 40 cases), the portable suite passes 23 cases and
+Node passes 256. Context, boundary and memory checks pass on 743 tracked files.
+Workers check 104836645636 has no exposed error text or annotations, and no
+correlated Datadog logs were found. The unchanged npm lock has ten failures
+also present on main; local npm build stops because concurrently is absent.
+The root cause of the hosted Workers failure is not inferred from those local
+limitations. The report preserves both histories and their receiving contracts.

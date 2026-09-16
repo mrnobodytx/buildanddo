@@ -97,6 +97,45 @@ jobs:
             dist/apps/web
           retention-days: 14
 
+  foundry:
+    name: ci:test / Federal foundry (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install foundry parser and source-check tools
+        run: python -m pip install -r foundry/shared/requirements.txt mypy==1.13.0 ruff==0.14.8
+      - name: Require real trials, negative cases and per-module source coverage
+        run: python tests/foundry/check_foundry.py
+      - name: Check typed foundry source
+        run: python -m mypy --strict --follow-imports=silent foundry/shared/federal_foundry
+      - name: Check Python style
+        run: python -m ruff check foundry/shared/federal_foundry tests/foundry
+      - name: Check Python formatting
+        run: python -m ruff format --check foundry/shared/federal_foundry tests/foundry
+      - name: Execute all five reference lanes
+        run: python -m foundry.shared.federal_foundry run --all --output "$RUNNER_TEMP/foundry-runs"
+      - name: Verify every campaign input and outcome
+        run: python -m foundry.shared.federal_foundry verify "$RUNNER_TEMP/foundry-runs"
+      - name: Compile the observed review portfolio
+        run: python -m foundry.shared.federal_foundry compile --runs "$RUNNER_TEMP/foundry-runs" --output "$RUNNER_TEMP/foundry-review" --archive "$RUNNER_TEMP/foundry-review.zip"
+      - name: Verify the self-contained export
+        run: python -m foundry.shared.federal_foundry verify "$RUNNER_TEMP/foundry-review"
+      - name: Retain measured reports, technical briefs, slides and receipts
+        uses: actions/upload-artifact@v4
+        with:
+          name: federal-foundry-review-python-${{ matrix.python }}
+          path: ${{ runner.temp }}/foundry-review.zip
+          if-no-files-found: error
+          retention-days: 14
+
   discord:
     name: ci:test / Discord SDK
     runs-on: ubuntu-latest

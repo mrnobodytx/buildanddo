@@ -1,0 +1,60 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/lanes/diu-sentinel-maritime/experiment.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/experiment.schema.json, foundry/fixtures/diu-sentinel-maritime.json
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON foundry/registry/experiment.schema.json; DEPENDS_ON foundry/fixtures/diu-sentinel-maritime.json
+# DAG Node:    none
+# Intent:      Preregister a finite diu-sentinel-maritime candidate comparison against a fingerprinted public fixture.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.experiment/v1
+lane_id: diu-sentinel-maritime
+dataset: foundry/fixtures/diu-sentinel-maritime.json
+dataset_sha256: 3327bf386a38a193c5d9ff070a0dfec5b3916c976fca7abee1573bbdef99b74b
+candidates: ["ordered-observations","shuffled-observations"]
+seeds: [17, 29, 43]
+repetitions: 2
+timeout_seconds: 30
+requirement_ids: ["MAR-REQ-02","MAR-REQ-04"]
+scope: "Existing public mission-suite source with explicit synthetic observations; private Sentinel and NNC are outside this run."
+purpose: "Reproduce analysis under input permutations, retain contradictory observations and demonstrate that candidates remain HOLD."
+primary_metric: analysis_replay_match
+metrics:
+  - name: analysis_replay_match
+    unit: "matching analysis / reference"
+    direction: higher
+    threshold:
+      operator: "=="
+      value: 1
+  - name: hold_fraction
+    unit: "held / generated candidates"
+    direction: higher
+    threshold:
+      operator: "=="
+      value: 1
+  - name: candidates
+    unit: "candidates"
+    direction: neutral
+    threshold:
+      operator: ">="
+      value: 1
+  - name: admitted
+    unit: "admitted candidates"
+    direction: neutral
+    threshold:
+      operator: "=="
+      value: 0
+  - name: elapsed_ms
+    unit: "milliseconds with tracemalloc enabled"
+    direction: lower
+  - name: peak_python_bytes
+    unit: "traced Python allocation bytes"
+    direction: lower

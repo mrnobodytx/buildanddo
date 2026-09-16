@@ -1,0 +1,372 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://buildanddo.tech/schemas/foundry/opportunity-v1.json",
+  "title": "Citadel Federal R&D Foundry Opportunity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "lane_id",
+    "topic",
+    "requirements",
+    "eligibility",
+    "deliverables",
+    "metrics",
+    "milestones",
+    "claims",
+    "evidence_required",
+    "evidence_available",
+    "evidence_missing",
+    "deadline",
+    "submission_format"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "foundry.opportunity/v1"
+    },
+    "lane_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/requirement"
+      },
+      "minItems": 1
+    },
+    "eligibility": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eligibility"
+      },
+      "minItems": 1
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/deliverable"
+      },
+      "minItems": 1
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/metric"
+      },
+      "minItems": 1
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/milestone"
+      },
+      "minItems": 1
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      },
+      "minItems": 1
+    },
+    "evidence_required": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_required"
+      },
+      "minItems": 1
+    },
+    "evidence_available": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_available"
+      }
+    },
+    "evidence_missing": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_missing"
+      }
+    },
+    "deadline": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "submission_format": {
+      "type": "object",
+      "minProperties": 1
+    }
+  },
+  "$defs": {
+    "identity": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9._-]*$"
+    },
+    "requirement": {
+      "type": "object",
+      "required": [
+        "id",
+        "text",
+        "acceptance",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identity"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "acceptance": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "open",
+            "partial",
+            "satisfied",
+            "blocked",
+            "not_applicable"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identity"
+          },
+          "uniqueItems": true
+        },
+        "justification": {
+          "type": "string"
+        }
+      }
+    },
+    "eligibility": {
+      "type": "object",
+      "required": [
+        "id",
+        "criterion",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identity"
+        },
+        "criterion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "unverified",
+            "eligible",
+            "ineligible"
+          ]
+        }
+      }
+    },
+    "deliverable": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identity"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identity"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string"
+        },
+        "target": {},
+        "status": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identity"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requirement_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identity"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": [
+        "id",
+        "text",
+        "assertion_level"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identity"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assertion_level": {
+          "enum": [
+            "proposed",
+            "observed",
+            "verified"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identity"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "evidence_required": {
+      "type": "object",
+      "required": [
+        "id",
+        "description",
+        "acceptance"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identity"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "acceptance": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "evidence_available": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "state",
+        "locator"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identity"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "planned",
+            "observed",
+            "verified",
+            "rejected"
+          ]
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "requirement_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identity"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "evidence_missing": {
+      "type": "object",
+      "required": [
+        "id",
+        "description"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identity"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identity"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

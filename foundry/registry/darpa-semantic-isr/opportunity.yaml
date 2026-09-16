@@ -1,0 +1,147 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/registry/darpa-semantic-isr/opportunity.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/opportunity.schema.json
+# EnumType:    ConfigDoc
+# EnumEdges:   EXTENDS foundry/registry/opportunity.schema.json
+# DAG Node:    foundry.lane.darpa-semantic-isr
+# Intent:      Record Semantic ISR software work while preserving the unresolved DP2 and physical-hardware gates.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.opportunity/v1
+lane_id: darpa-semantic-isr
+topic: DARPA Semantic ISR — low-bandwidth semantic EO video with traceable uncertainty
+requirements:
+  - id: ISR-REQ-01
+    text: Compare H.264, H.265 and AV1 transmission baselines on a frozen EO video set.
+    acceptance: Encoder versions, settings, bytes, latency and reconstruction metrics are preserved per sequence.
+    status: open
+    evidence_ids: []
+  - id: ISR-REQ-02
+    text: Build temporal scene memory, mission relevance, ROI or behavior selection and semantic packet generation.
+    acceptance: Every packet traces to source frames, model versions, selections, confidence and uncertainty.
+    status: open
+    evidence_ids: []
+  - id: ISR-REQ-03
+    text: Reconstruct a useful low-bandwidth receiver view and quantify information loss.
+    acceptance: Preregistered mission utility and reconstruction measures compare semantic and codec baselines.
+    status: open
+    evidence_ids: []
+  - id: ISR-REQ-04
+    text: Demonstrate measured feasibility on the required edge-hardware class before making a DP2 claim.
+    acceptance: Actual device receipts report sustained wattage, memory, temperature, latency and failures.
+    status: blocked
+    evidence_ids: []
+eligibility:
+  - id: ISR-ELIG-01
+    criterion: The proposed entity and team satisfy current DARPA DP2 qualification rules.
+    status: unverified
+  - id: ISR-ELIG-02
+    criterion: Required prior evidence, facilities and hardware access are available by the official gate.
+    status: unverified
+deliverables:
+  - id: ISR-DEL-01
+    name: Semantic ISR prototype and packet schema
+    status: planned
+  - id: ISR-DEL-02
+    name: Codec, bandwidth, reconstruction and uncertainty benchmark report
+    status: scaffolded
+  - id: ISR-DEL-03
+    name: Edge-hardware feasibility evidence and SBOM
+    status: blocked on physical run
+metrics:
+  - id: ISR-MET-01
+    name: Transmitted bandwidth
+    unit: bits per second and bytes per sequence
+    target: null
+    status: unmeasured
+  - id: ISR-MET-02
+    name: Mission utility and receiver reconstruction
+    unit: preregistered utility and reconstruction scores
+    target: null
+    status: unmeasured
+  - id: ISR-MET-03
+    name: Confidence calibration and uncertainty
+    unit: preregistered calibration metrics
+    target: null
+    status: unmeasured
+  - id: ISR-MET-04
+    name: Edge latency, wattage and memory
+    unit: milliseconds, watts and megabytes on named hardware
+    target: null
+    status: hardware evidence missing
+milestones:
+  - id: ISR-MS-01
+    name: Freeze dataset, codec baselines and mission utility.
+    status: planned
+    requirement_ids: [ISR-REQ-01]
+  - id: ISR-MS-02
+    name: Implement temporal memory, semantic packets and receiver reconstruction.
+    status: planned
+    requirement_ids: [ISR-REQ-02, ISR-REQ-03]
+  - id: ISR-MS-03
+    name: Execute physical edge-hardware qualification campaign.
+    status: blocked
+    requirement_ids: [ISR-REQ-04]
+claims:
+  - id: ISR-CLM-01
+    text: Semantic packets may preserve declared mission utility at lower bandwidth than standard codec baselines.
+    assertion_level: proposed
+    evidence_ids: []
+  - id: ISR-CLM-02
+    text: Existing public Sentinel planning provides reusable semantic and provenance concepts, not runtime proof.
+    assertion_level: observed
+    evidence_ids: [ISR-EV-SENTINEL-PLAN]
+  - id: ISR-CLM-03
+    text: The prototype qualifies for DP2.
+    assertion_level: proposed
+    evidence_ids: []
+evidence_required:
+  - id: ISR-NEED-01
+    description: Current official topic and DP2 qualification rules
+    acceptance: Archived official bytes and independent eligibility review
+  - id: ISR-NEED-02
+    description: Rights-cleared EO video benchmark corpus
+    acceptance: Dataset manifest, rights, digests and fixed splits
+  - id: ISR-NEED-03
+    description: Codec and semantic receiver benchmark artifacts
+    acceptance: Repeated raw results, exact software and statistical comparison
+  - id: ISR-NEED-04
+    description: Physical edge-hardware feasibility receipts
+    acceptance: Named device, power instrumentation, sustained runs, thermal and failure records
+  - id: ISR-NEED-05
+    description: Software bill of materials and reproducible build
+    acceptance: Source and image identities with dependency and license inventory
+evidence_available:
+  - id: ISR-EV-PLAN
+    title: Owner-supplied Semantic ISR planning brief
+    state: observed
+    locator: source conversation dated 2026-09-16
+    requirement_ids: []
+  - id: ISR-EV-SENTINEL-PLAN
+    title: Public Sentinel Maritime semantic planning baseline
+    state: observed
+    locator: docs/sentinel-maritime
+    requirement_ids: []
+evidence_missing:
+  - id: ISR-GAP-DP2
+    description: DP2 eligibility and current official requirements have not been verified.
+    blocks: [ISR-ELIG-01, ISR-ELIG-02]
+  - id: ISR-GAP-DATA
+    description: No rights-cleared frozen EO benchmark corpus is attached.
+    blocks: [ISR-REQ-01, ISR-REQ-02, ISR-REQ-03]
+  - id: ISR-GAP-HARDWARE
+    description: No physical edge-hardware power, thermal, memory or latency run exists.
+    blocks: [ISR-REQ-04, ISR-CLM-03]
+deadline: null
+submission_format:
+  primary: DP2 qualification package and technical artifacts
+  hardware_evidence: required by planning brief
+  status: page, volume, qualification and attachment rules are unverified

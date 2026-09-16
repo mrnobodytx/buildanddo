@@ -1,0 +1,133 @@
+{
+  "lane_id": "darpa-dv026-influence",
+  "classification": "PUBLIC",
+  "kind": "synthetic",
+  "license": "Authored synthetic fixture; distributed under the repository license.",
+  "id": "market-v1",
+  "rounds": 6,
+  "supply": {
+    "ALPHA": 3,
+    "BETA": 2,
+    "GAMMA": 2
+  },
+  "agents": [
+    {
+      "id": "stock-agent-01",
+      "values": {
+        "ALPHA": 20,
+        "BETA": 15,
+        "GAMMA": 18
+      }
+    },
+    {
+      "id": "stock-agent-02",
+      "values": {
+        "ALPHA": 27,
+        "BETA": 26,
+        "GAMMA": 31
+      }
+    },
+    {
+      "id": "stock-agent-03",
+      "values": {
+        "ALPHA": 34,
+        "BETA": 37,
+        "GAMMA": 44
+      }
+    },
+    {
+      "id": "stock-agent-04",
+      "values": {
+        "ALPHA": 41,
+        "BETA": 48,
+        "GAMMA": 26
+      }
+    },
+    {
+      "id": "stock-agent-05",
+      "values": {
+        "ALPHA": 48,
+        "BETA": 22,
+        "GAMMA": 39
+      }
+    },
+    {
+      "id": "stock-agent-06",
+      "values": {
+        "ALPHA": 22,
+        "BETA": 33,
+        "GAMMA": 21
+      }
+    },
+    {
+      "id": "stock-agent-07",
+      "values": {
+        "ALPHA": 29,
+        "BETA": 44,
+        "GAMMA": 34
+      }
+    },
+    {
+      "id": "stock-agent-08",
+      "values": {
+        "ALPHA": 36,
+        "BETA": 18,
+        "GAMMA": 47
+      }
+    },
+    {
+      "id": "stock-agent-09",
+      "values": {
+        "ALPHA": 43,
+        "BETA": 29,
+        "GAMMA": 29
+      }
+    },
+    {
+      "id": "stock-agent-10",
+      "values": {
+        "ALPHA": 50,
+        "BETA": 40,
+        "GAMMA": 42
+      }
+    },
+    {
+      "id": "stock-agent-11",
+      "values": {
+        "ALPHA": 24,
+        "BETA": 51,
+        "GAMMA": 24
+      }
+    },
+    {
+      "id": "stock-agent-12",
+      "values": {
+        "ALPHA": 31,
+        "BETA": 25,
+        "GAMMA": 37
+      }
+    }
+  ],
+  "news": [
+    {
+      "round": 1,
+      "asset": "ALPHA",
+      "delta": 8
+    },
+    {
+      "round": 2,
+      "asset": "BETA",
+      "delta": -4
+    },
+    {
+      "round": 3,
+      "asset": "GAMMA",
+      "delta": 10
+    },
+    {
+      "round": 4,
+      "asset": "ALPHA",
+      "delta": -12
+    }
+  ]
+}

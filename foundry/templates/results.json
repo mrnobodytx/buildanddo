@@ -1,0 +1,9 @@
+{
+  "schema_version": "foundry.results/v1",
+  "lane_id": "{{lane_id}}",
+  "requirement_updates": [],
+  "claim_updates": [],
+  "evidence": [],
+  "experiments": [],
+  "benchmarks": []
+}
