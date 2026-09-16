@@ -57,6 +57,9 @@
 #              CONSUMES docs/private-dossiers.md;
 #              CONSUMES docs/discord-activation.md;
 #              VALIDATES tests/upgrade/test_dossier_native.py;
+#              CONSUMES docs/mission-suite.md;
+#              VALIDATES tests/upgrade/check_mission_suite.py;
+#              VALIDATES tests/upgrade/test_suite_native.py;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -65,68 +68,65 @@
 
 ## §1 SUMMARY
 
-Status: PARTIAL — Sentinel Maritime narrative and work-order plan complete; private execution and earlier runtime acceptance remain open
+Status: PARTIAL — callable mission suite and curriculum implemented; native/browser and deployed acceptance remain open
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
 Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 46/80 cumulative phase gates complete; current BY–CB public narrative/contract continuation has 4/4 complete gates
-Smoke: 4/4 public document checks; earlier application smoke remains 4/7 with native/frontend acceptance pending
+Tasks: 5/6 current source phase gates; CF rendered acceptance remains open; historical phase counts are not product completion
+Smoke: 10/14 current check groups pass; four required environment checks unavailable, as detailed in §3
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: 1 focused continuation; its final source identity is resolved by the verify command rather than embedded into its own input
+Commits: 1 focused continuation; resolve final source identity using the command below
 Verify source identity: `git log -1 --format='%H %s'`
 
-The owner's white-paper and master build brief now share SM-BL-1.1. WP-1.0 has
-seven planned page sections covering the mission scenario, capability evidence,
-ThreatCue/NNC, detection/noise examples, reproducibility, demo metrics,
-integration/security and company/data/pricing model. The source is not a rendered
-PDF. Ten official requirements remain pending; team/headcount and existing
-Sentinel operation are owner-reported, and customer/ARR/pilot figures are absent.
-The one-document submission choice remains subject to official/portal review.
+BuildAndDo now has one authenticated mission-suite API and a portable Python
+worker for an operator-selected CPU box. The API owns current mission permissions,
+source rights, immutable inputs/results, leases, retry receipts and reviewed
+Evidence Ledger attachments. The worker performs bounded maritime analysis and
+government-submission readiness review using the existing research transport and
+evidence-epoch implementation. It creates no additional authentication, NNC,
+Merkle authority, service manager or government submission mechanism.
 
-SM-EXEC-1.0 binds 13 work orders with all 23 required fields to discovery of the
-existing Sentinel product. All 55 brief sections and 24 negative requirements
-are mapped. No receiving dispatch, verified owner/path, runtime or remote grant
-is fabricated. Security/rights apply from the first schema; candidate/model/UI
-output cannot acquire NNC authority. Real implementation requires one complete
-live observation-to-outcome/replay chain and same-candidate release evidence.
+The government mission starter saves through the existing proposed/approved/
+running lifecycle. Eight substantive tutorials, exercises and quizzes share the
+website and public Discord catalogue, bringing the catalogue to 33 lessons.
+The suite desk provides configuration, PDF metadata and requirement review,
+queue/status/recovery and explicit human attachment as observed evidence.
+Maritime candidates remain HOLD; readiness means declared evidence is ready for
+human review, with no portal receipt or compliance certification.
 
-The inventory retains 33 components, 12 planes and all 12 historical source
-fingerprints; its 42 flow edges distinguish candidates, admitted cues, proofs,
-review and receipts. Eleven root definitions and fourteen cue-artifact
-definitions are acyclic. Release/rights/epoch and public/commercial/future CUI
-domains remain separate. Later proof/epoch/receipt links are detached from their
-own inputs. Eight in-memory corruptions are rejected by the structural audit.
-These checks prove document consistency, not maritime performance or runtime.
-Current commands and prior application evidence are separated in §3.
+Source regression passes 256 Node and 152 Python tests, with nine native cases
+skipped. The suite-specific checker passes 23 tests with 87.96–99.55% statement
+coverage per Python module. Selected JavaScript coverage is 100% lines, 86.64%
+branches and 98.92% functions. A freshly unpacked archive executes both explicit
+synthetic scenarios and replays MATCH with the same source fingerprint. These
+results establish portable source behavior, not a deployed box or live feed.
 
-The prior website's My dossier and five private Discord commands share one
-personal encrypted entity store under canonical PocketBase user identity.
-Explicit notes retain dates and source references; owners can recall, correct
-and remove content. Workspace administrators cannot access another user's
-dossier. Saved receipts prevent duplicate writes and resurrection after deletion.
-No passive channel collection, inferred entity matching or mission verification
-is added. Source, native acceptance and deployed activation remain separate.
-
-The read-only doctor inspects existing local prerequisites without printing
-values, authenticating, synchronizing commands, sending messages or starting
-services. Compose starts web/PocketBase only; the actual bot/worker launcher is
-not in the checkout. Both declared PocketBase versions now have independent
-required native CI coverage; their hosted results were not observed here.
-
-Historical dossier-wave source evidence: 227 Node tests passed; 129 Python tests passed
-with six native skips. The targeted Python checker passes 111 cases with two
-native skips and at least 83.72% trace statement coverage per module. Selected
-JavaScript coverage is 99.85% lines, 92.87% branches and 99.04% functions.
-Native PocketBase/SDK/PDF, rendered/mobile/OAuth, providers and runtime activation
-remain unverified. Earlier source waves are preserved below as historical work.
+Nineteen rendered cases and three native suite cases are authored. The sandbox
+lacks Vitest, Vite, the official lint plugin and PocketBase. Independent source
+CI runs on Python 3.11/3.12; both declared PocketBase versions have required
+native suite gates. Hosted results and box activation have not been observed.
+The receiving handoff covers actual application release, box selection, native
+identity, supervision, browser acceptance, telemetry and rollback. Earlier
+Sentinel plans and their 13 unexecuted work orders retain their acceptance state.
 
 ## §2 TASK RESULTS
 
-### Current continuation — Sentinel Maritime narrative and Astra contract, 2026-09-16
+### Current continuation — callable mission suite and government learning, 2026-09-16
+
+| Phase | Status | Result | Verify | CKET | Files |
+|---|---|---|---|---|---|
+| CC — Register source scope | PASS | Owner's revised package/mission scope registered before implementation | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | SRS, registry, dispatch and lock |
+| CD — Mission API and persistence | PASS for source; native acceptance open | Scoped controls/runs/receipts, current auth, revision/lease recovery and reviewed observed evidence; 18 system cases | `node --test tests/upgrade/suite-system.test.mjs` | 07_BUILD / 08_TEST | Suite hooks, migration and source fixtures |
+| CE — Portable worker and replay | PASS for source | 23 tests, exact source closure, two actual unpacked synthetic executions and matching replay | `python tests/upgrade/check_mission_suite.py`; package procedure in docs/mission-suite.md | 07_BUILD / 08_TEST | apps/mission_suite and Python behavior/packaging tests |
+| CF — Mission and government tutorials | PARTIAL — source tests pass | Eight lessons, mission starter, suite desk, account cleanup and human evidence review; 11 client/curriculum cases pass, 19 rendered cases unexecuted | `node --test tests/upgrade/suite-client.test.mjs tests/upgrade/government-learning.test.mjs`; `npm --prefix apps/web test` | 07_BUILD / 08_TEST | Government curriculum/migration, suite UI/client/hook, mission/tutorial entry points |
+| CG — Verify source and retain acceptance gaps | PASS with blockers recorded | 256 Node, 152 Python passes; coverage, typing/static checks and archive evidence; four missing runtime checks | Commands in §3 | 08_TEST / 11_COMMIT | Behavior, native and rendered tests; independent CI source/native jobs |
+| CH — Report, memory and box handoff | PASS | All 60 baseline events preserved; public boundaries, context and declared metadata verified | Commands in §4 and §6 | 06_PLAN / 11_COMMIT | docs/mission-suite.md, new box handoff, report and memory |
+
+### Prior continuation — Sentinel Maritime narrative and Astra contract, 2026-09-16
 
 | Phase | Status | Result | Verify | CKET | Files |
 |---|---|---|---|---|---|
@@ -231,7 +231,63 @@ and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
-Current document validation:
+Current suite checks (source and required runtime gates remain separate):
+
+| Check | Runnable verification | Expected / observed |
+|---|---|---|
+| 1. Node regression | `node --test tests/upgrade/*.test.mjs` | PASS: 256/256 |
+| 2. Python regression | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | PASS for available source: 152 passes, nine native skips out of 161; skipped cases are not runtime acceptance |
+| 3. Selected JavaScript coverage | Command below | PASS: 29 cases; 100% lines, 86.64% branches, 98.92% functions across the selected policy/client/migrations |
+| 4. Portable Python coverage | `python tests/upgrade/check_mission_suite.py` | PASS: 23/23; CLI 98.82%, bundle 97.37%, engine 99.55%, worker 87.96% statement lines |
+| 5. Python source typing/lint | `python -m mypy --strict --explicit-package-bases --follow-imports=silent apps/mission_suite`; `python -m ruff check apps/mission_suite tests/upgrade/test_mission_suite.py tests/upgrade/test_suite_native.py tests/upgrade/check_mission_suite.py` | PASS: four source modules typed; checked source/tests lint clean |
+| 6. Web source diagnostic | `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs` | PASS: 239 modules, zero static errors; does not replace repository lint or rendered tests |
+| 7. Portable archive | `python -m unittest discover -s tests/upgrade -p 'test_mission_suite.py'`; package/replay instructions in docs/mission-suite.md | PASS: repeat archives match; unpacked identity matches source; both explicit synthetic scenarios execute and replay MATCH; no activation |
+| 8. Rendered web tests | `npm --prefix apps/web test` | FAIL/unavailable: Vitest missing; 19 new rendered cases remain unexecuted |
+| 9. Repository web lint | `npm --prefix apps/web run lint` | FAIL/unavailable: eslint-plugin-import missing |
+| 10. Web build | `npm --prefix apps/web run build` | FAIL/unavailable: Vite cannot start; generated projections are not a built website |
+| 11. Native suite API | `python tests/upgrade/test_suite_native.py --require-binary` | FAIL/unavailable: PocketBase binary missing; three native suite cases remain unexecuted |
+| 12. Context | `python scripts/ci/agent_context.py --check` | PASS: six existing findings and four unwired gates retained |
+| 13. Public boundary | `python scripts/ci/verify_public_boundary.py` | PASS: 590 tracked files; zero boundary or secret-scan failures |
+| 14. Memory | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | PASS: file counts, IOO, declared edges and all 60 baseline events preserved |
+
+```bash
+node --test --experimental-test-coverage --test-coverage-include='apps/pocketbase/pb_hooks/*suite*.js' --test-coverage-include='apps/pocketbase/pb_migrations/1790[34]*.js' --test-coverage-include='apps/web/src/lib/missionSuite.js' tests/upgrade/suite-system.test.mjs tests/upgrade/suite-client.test.mjs tests/upgrade/government-learning.test.mjs
+```
+
+The existing Discord/research source checker also passes 111 cases with two
+native skips and at least 83.72% statement coverage per module:
+`python tests/upgrade/check_discordbot.py --include-research`. It exercises all
+33 lessons and quizzes through the public catalogue without private reads.
+
+Observed failures and fixes:
+
+- API read-back omitted the exact worker result string, so reserializing display
+  JSON could change numeric spelling and the replay hash. A connected worker
+  regression first failed on the missing canonical field. Authorized detail now
+  retains `result_canonical` alongside its hash and parsed display value; the same
+  API round trip replays MATCH. Verify: `python -m unittest tests.upgrade.test_mission_suite.WorkerTests.test_one_box_worker_completes_the_real_api_chain_and_recovers_lost_claim`.
+- A targeted lease regression failed because PocketBase DateField values use a
+  space separator while observation inputs require ISO UTC. Only stored lease
+  reads now normalize that native representation; strict external timestamps
+  remain required. Red then green: `node --test --test-name-pattern='native PocketBase date-field' tests/upgrade/suite-system.test.mjs`.
+- Initial source fixture tests exposed a research-schema dependency and an array
+  helper shadowing the DB pagination helper; suite schema access is now separate
+  and the bounded array helper has its own name. Missing rights return a typed
+  denial. The 18 suite system cases pass after these fixes.
+- The full catalogue regression first expected 25 lessons, then exercised 66
+  commands inside one channel's rate window. It now expects 33 and advances an
+  injected clock while retaining the real rate limiter and cache. The complete
+  161-test Python discovery passes with nine explicit native skips.
+- Ruff found an unused test import and standalone native-runner import ordering;
+  the unused import was removed, and only the three imports requiring the script
+  path bootstrap carry the documented E402 exception. Source/test Ruff passes.
+- Runtime checks 8–11 cannot execute because dependencies/binary are missing.
+  No replacement runtime was substituted. Native-required CI and the receiving
+  handoff provide the unresolved installation/acceptance steps; source checks
+  do not promote these failures into passes. The pre-existing dependency lock
+  mismatch remains outside this continuation and is recorded in prior evidence.
+
+Historical document validation (prior continuation):
 
 | Check | Runnable verification | Expected and observed |
 |---|---|---|
@@ -339,13 +395,13 @@ no hosted success, browser screenshots or shared activation is claimed here.
 
 ## §4 MEMORY INGEST
 
-Type A count: 294
-Type B count: 624
-Type C count: 60
+Type A count: 323
+Type B count: 693
+Type C count: 66
 IOO compliance: complete
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
-Prior history: all 56 planning-baseline Type C events are preserved without rewriting, including the earlier 53 dossier and 47 research events.
+Prior history: all 60 baseline Type C events are preserved without rewriting, including the earlier narrative, planning, dossier and research evidence.
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
 Reproduce prior-event preservation:
@@ -356,23 +412,23 @@ import json
 import subprocess
 from pathlib import Path
 path = '.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json'
-baseline = json.loads(subprocess.check_output(['git', 'show', 'b1e81ac2b54453aa60eb34f24cc09cd4394d0715:' + path], text=True))
+baseline = json.loads(subprocess.check_output(['git', 'show', '60b952bf784d67bb2a000602df4d8dfed8aad045:' + path], text=True))
 old = [row for row in baseline['vectors'] if row['type'] == 'C']
 new = [row for row in json.loads(Path(path).read_text())['vectors'] if row['type'] == 'C']
-assert len(old) == 56 and new[:len(old)] == old
-print('PASS: all 56 baseline events preserved without rewriting.')
+assert len(old) == 60 and new[:len(old)] == old
+print('PASS: all 60 baseline events preserved without rewriting.')
 PY
 ```
 
 ## §5 CKET FILING
 
-06_PLAN: current docs/sentinel-maritime/white-paper.md, implementation-contract.md, work-orders.json and sidecar; aligned blueprint.md, contracts.md, integrity.md, system-plan.json and sidecar
-04_HYPOTHESIZE: registered umbrella SRS and contribution governance
-07_BUILD: private dossier hooks/migration, web components/client/hook, bot bridge and doctor
-08_TEST: connected source fixtures, rendered flow/hook tests and native acceptance runner
-11_COMMIT: current public maritime handoff, dispatch, context and report/memory; earlier CI and community handoff retained
+06_PLAN: docs/mission-suite.md; earlier Sentinel planning artifacts retained
+04_HYPOTHESIZE: umbrella SRS, registry and current contribution gate descriptions
+07_BUILD: apps/mission_suite; suite hooks/migrations; government curriculum; mission/suite/tutorial UI and clients
+08_TEST: connected source and packaging tests; 19 new rendered cases; three new native acceptance cases
+11_COMMIT: independent source/native CI, box handoff, dispatch, context and report/memory
 13_SAVE: none
-CGRF headers: 4/4 new this continuation; 207/207 cumulative files created since the original base
+CGRF headers: 29/29 new this continuation; 236/236 cumulative files created since the original base
 REFLEX check: deferred to private post-merge validator; no signing values fabricated
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
@@ -384,7 +440,7 @@ Hard-NO scan: zero public-boundary violations
 Secret scan: clean under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: current A0 public planning within the A2 source dispatch; no private implementation or operating authority
+Risk / authority: owner-authorized A2 public application source and local validation; no shared deployment, native account provisioning or government submission authority
 Verify: `python scripts/ci/verify_public_boundary.py`
 
 No key generation/provisioning, bot login, Discord synchronization/message,
@@ -395,7 +451,23 @@ not end-to-end encryption or physical erasure of existing backups.
 
 ## §7 NEXT ACTIONS
 
-Next single implementation blocker: a receiving private dispatch with the actual
+Current package acceptance: the BuildAndDo application/box operator must accept
+its native PocketBase release and the rendered mission flow, select an existing
+CPU box, bind the approved native user and exact source package, then observe a
+real queue → worker → human review → evidence result and replay. The guide gives
+exact inputs and commands; no Sentinel repository is required for this bounded
+package. Independent CI retains a downloadable worker archive only after source
+gates pass. Hosted CI results and actual activation have not been observed.
+Handoff: .bits/handoffs/2026-09-16-bits-codegen-cmax-b-mission-suite.md.
+
+Package rollback: disable the worker binding or mission suite and stop the
+worker under its existing supervisor. Restore the application through its normal
+release owner. The suite down migration retains runs and receipts while removing
+protocol markers; re-up validates schema and restores them. Lesson rollback
+retains lessons and progress. Do not delete replay/evidence history or loosen
+native authentication to recover service.
+
+Separate Sentinel implementation blocker: a receiving private dispatch with the actual
 Sentinel repository and accountable owners for SM-WO-00. CMAX-B/IDE1 must accept
 discovery and reuse/path/auth/integrity mappings before code, then follow the
 13 work orders and mandatory return in SM-EXEC-1.0. No Astra seat is activated.
@@ -407,7 +479,7 @@ government integration, root admission or CUI processing was performed. The
 seven-part paper and 15-slide map share one qualified narrative; unverified
 operating, commercial and solicitation claims cannot become established facts.
 
-Planning rollback: revert the public artifacts or record an owner-reviewed new
+Historical planning rollback: revert the public artifacts or record an owner-reviewed new
 baseline version with superseded decisions. No runtime, database, dependency,
 release or policy mutation needs compensation. Preserve historical source
 fingerprints and governance events.

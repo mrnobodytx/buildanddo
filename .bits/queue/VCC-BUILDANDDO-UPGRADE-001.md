@@ -20,6 +20,45 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Callable mission suite authorized 2026-09-16
+
+The owner requested one API backed by a box-operated suite and a BuildAndDo
+mission with government-submission tutorials. Public source packaging replaces
+the unavailable Sentinel repository prerequisite for this bounded continuation.
+No service launch, external message, portal submission or private mutation is
+performed by the public coding session.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CC | Register revised scope and inspect reusable mission/worker contracts | `python scripts/ci/agent_context.py --check` | done — existing source dispatch extended before implementation |
+| CD | Add one authenticated suite API with durable scoped runs and reviews | Suite backend/migration Node tests | done for source — 18 system tests; native PocketBase acceptance remains open |
+| CE | Implement portable analysis, readiness and replay worker | `python tests/upgrade/check_mission_suite.py` | done for source — 23 tests; 87.96–99.55% statement coverage per module; unpacked analysis/replay passes |
+| CF | Add mission starter, government tutorials and suite desk | Catalogue/client Node and rendered mission tests | partial — 11 client/curriculum tests pass; 19 new rendered cases await Vitest |
+| CG | Verify package, negative cases and source regression | Node/Python, package and available frontend/native gates | done — 256 Node and 152 Python passes; nine native skips; unavailable browser/native gates recorded |
+| CH | Record measured completion, memory and host handoff | Context, boundary and dispatch-memory checks | done — source report and box handoff; all 60 prior memory events retained |
+
+Memory brief: the source baseline has mission plans, current-role authorization,
+native PocketBase users, research worker transport, immutable evidence epochs
+and a tutorial catalogue. Their source tests previously passed; native PocketBase
+and frontend packages remain absent. There is no authenticated live workspace,
+so no mission row or seat event can be created here. Implement a selectable
+starter and runnable protocol, with local evidence rather than fabricated records.
+
+Observed source acceptance: selected JavaScript has 100% lines, 86.64% branches
+and 98.92% functions. Strict typing passes all four Python source modules; Ruff
+passes, and the web diagnostic parses 239 modules with no static errors. The
+generated archive contains eight Python modules, the guide and its manifest.
+Both explicit synthetic scenarios execute from the unpacked archive and replay
+MATCH; the source identity is identical to the repository. No box was activated.
+
+The full Python discovery finds 161 tests: 152 pass and nine native cases skip.
+The existing Discord/research checker passes 111 cases with two native skips,
+including all 33 authored lessons/quizzes. Native PocketBase, Vitest, Vite and
+the repository ESLint import plugin are missing. Required native commands fail
+closed; the independent Python source and native CI jobs remain acceptance work
+until their hosted results exist. Phase counts do not measure Maritime product
+completion. Handoff: .bits/handoffs/2026-09-16-bits-codegen-cmax-b-mission-suite.md.
+
 ## Sentinel Maritime narrative and Astra contract authorized 2026-09-16
 
 The owner supplied the seven-part white-paper outline and 55-section master

@@ -45,6 +45,7 @@ const NAV = [
     { to: '/app/workflows', label: 'Workflows', icon: Workflow },
     { to: '/app/evidence', label: 'Evidence Ledger', icon: FileSearch },
     { to: '/app/research', label: 'Mission research', icon: FileSearch },
+    { to: '/app/suite', label: 'Mission suite', icon: Boxes },
     { to: '/app/dossier', label: 'My dossier', icon: BookOpen },
     { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },
     { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },

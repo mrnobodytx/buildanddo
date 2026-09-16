@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/pocketbase/pb_migrations/data/government-submissions.json.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     apps/pocketbase/pb_migrations/data/government-submissions.json
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES apps/pocketbase/pb_migrations/data/government-submissions.json
+# DAG Node:    none
+# Intent:      Describe provenance for an authored government-submission mission and eight practical lessons.
+# ───────────────────────────────────────────────────────────────
+file: apps/pocketbase/pb_migrations/data/government-submissions.json
+curriculum_version: '2026.09.gov.1'
+lesson_count: 8
+purpose: Teach an evidence-backed government-submission mission without granting submission or compliance authority.

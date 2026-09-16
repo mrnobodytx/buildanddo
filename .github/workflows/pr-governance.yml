@@ -119,7 +119,7 @@ jobs:
         run: python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf
 
   dossier-native:
-    name: ci:test / PocketBase dossier (${{ matrix.runtime }})
+    name: ci:test / PocketBase dossier and suite (${{ matrix.runtime }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
@@ -165,3 +165,38 @@ jobs:
         env:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
         run: python tests/upgrade/test_dossier_native.py --require-binary
+
+      - name: Require native suite leases, scoped processing, reviews and rollback
+        env:
+          BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
+        run: python tests/upgrade/test_suite_native.py --require-binary
+
+  mission-suite:
+    name: ci:test / Mission suite (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Require suite behavior, replay, package identity and source coverage
+        run: python tests/upgrade/check_mission_suite.py
+      - name: Verify suite API, client and government curriculum
+        run: node --test tests/upgrade/suite-system.test.mjs tests/upgrade/suite-client.test.mjs tests/upgrade/government-learning.test.mjs
+      - name: Package the verified source worker
+        run: python -m apps.mission_suite package "$RUNNER_TEMP/buildanddo-mission-suite.tgz"
+      - name: Retain the portable worker for operator review
+        uses: actions/upload-artifact@v4
+        with:
+          name: buildanddo-mission-suite-python-${{ matrix.python }}
+          path: ${{ runner.temp }}/buildanddo-mission-suite.tgz
+          if-no-files-found: error
+          retention-days: 14

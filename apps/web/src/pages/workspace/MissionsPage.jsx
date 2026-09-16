@@ -245,6 +245,10 @@ function MissionDesk() {
                     </Button>
                 }
             />
+            <div className="flex flex-wrap gap-4 text-sm">
+                <Link to="/app/tutorials?path=government" className="underline underline-offset-4">Government submission learning path</Link>
+                <Link to="/app/suite" className="underline underline-offset-4">Mission analysis and submission readiness</Link>
+            </div>
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <p className="text-sm text-muted-foreground">
                     {openMissions.length} open · {overdueCount} past due · {records.length} total.
@@ -623,6 +627,7 @@ function MissionDesk() {
                         <div key={detail.id} className="space-y-7">
                             <SavedPlan mission={detail} />
                             <Link to={`/app/research?mission=${encodeURIComponent(detail.id)}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">Open this mission’s research and source review</Link>
+                            <Link to={`/app/suite?mission=${encodeURIComponent(detail.id)}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">Open this mission’s suite and submission review</Link>
                             <MissionLearning
                                 mission={detail}
                                 evidence={evidence.degraded ? [] : evidence.records}

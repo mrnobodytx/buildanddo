@@ -20,6 +20,62 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Authorized continuation — callable mission suite and government-submission learning
+
+On 2026-09-16 the owner revised the unavailable-Sentinel dependency: package a
+suite callable through one API and operated on an existing box, then make it a
+BuildAndDo mission with government-submission tutorials. This authorizes A2
+public application source, migrations, portable packaging and local tests under
+the existing dispatch. It supersedes the requirement to locate Sentinel before
+building this bounded worker package; it does not establish any private owner,
+NNC interface, live maritime feed, deployment or government-submission authority.
+
+Acceptance:
+
+1. Reuse PocketBase authentication, current workspace/mission authorization and
+   the existing Evidence Ledger. One versioned command endpoint queues bounded
+   jobs for an operator-bound worker on a box; no new login or public mutation
+   route bypasses the native account or mission approval lifecycle.
+2. Persist mission-scoped source rights, observation history, immutable run
+   inputs/results and review receipts. Fence revisions, leases, cancellation,
+   account revocation, duplicate saves and lost responses inside transactions.
+   Fail closed for CUI, unknown rights, disabled bindings and stale workers.
+3. Ship a portable worker for strict observation normalization, exact-identifier
+   world-state/track assembly, deterministic anomaly candidates, supporting and
+   conflicting evidence, GeoJSON, proof fingerprints and deterministic replay.
+   Reuse the existing evidence-epoch implementation. Candidates remain HOLD
+   without actual NNC admission; no new Merkle authority or external handoff.
+4. Add a government-submission mission starter, an executable submission-readiness
+   review and substantive tutorials with exercises, checks and official reference
+   links. Track requirements, claimed capability evidence, data/pricing rights,
+   review and human portal receipt. Tutorial completion is not approval, filing,
+   compliance certification or mission verification.
+5. Connect the mission to authenticated suite controls, enqueue/status/recovery,
+   inspection and reviewed evidence attachment. Reuse catalogue/progress, themed
+   controls and account/workspace cleanup. Keep pending, failed and reviewed
+   states explicit; do not automatically create work in a shared workspace.
+6. Build an offline allowlisted source bundle and document its one-API caller and
+   worker configuration. Verify engine behavior, replay/tamper, protocol/security,
+   packaging and actual connected adapters. Record native/browser/live tests
+   separately and measure source milestones separately from deployed acceptance.
+
+Private host selection, runtime account provisioning, infrastructure changes,
+feed acquisition, NNC/release binding and external submission are receiving-seat
+work. The SM-BL-1.1 plans remain historical design requirements; this package
+does not relabel their 13 unexecuted work orders as runtime-complete.
+
+Source outcome: one authenticated suite API, persistent mission runs, portable
+Python worker, submission-readiness checker, mission starter and eight government
+lessons are implemented. Local evidence is 256 Node and 152 Python passes (nine
+native skips); the 23-test suite checker measures at least 87.96% statement lines
+in each new Python module. Selected JavaScript has 100% lines and 86.64% branches.
+Both scenarios run and replay from the unpacked source archive. Nineteen rendered
+cases and three native suite cases are authored; browser, native PocketBase,
+actual box activation and any live government/maritime integration remain open.
+The source guide and receiving box handoff provide the actual API and acceptance
+commands. A suite result remains observed evidence until the existing human
+review process verifies it; no shared mission row or portal receipt is fabricated.
+
 ## Authorized continuation — Sentinel Maritime narrative and implementation contract
 
 On 2026-09-16 the owner supplied the white-paper outline and 55-section master

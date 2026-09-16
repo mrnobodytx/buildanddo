@@ -72,6 +72,17 @@ afterEach(() => {
 });
 
 describe('guided mission planning', () => {
+    it('creates a reviewable government submission draft with no implied approval', async () => {
+        const user = setupUser(); const save = vi.fn().mockResolvedValue({ ok: true });
+        renderWithProviders(<MissionBuilder onSave={save} onCancel={vi.fn()} />);
+        await user.click(screen.getByRole('button', { name: 'Use government submission starter' }));
+        expect(screen.getByLabelText('Goal')).toHaveValue('Prepare an evidence-backed government solution brief');
+        await user.click(screen.getByRole('button', { name: 'Save draft' }));
+        await waitFor(() => expect(save).toHaveBeenCalledTimes(1));
+        const draft = save.mock.calls[0][0]; expect(draft.status).toBe('proposed'); expect(draft.mission_plan.risk).toBe('A2');
+        expect(draft.mission_plan.baseline).toMatch(/no measurement is claimed/); expect(draft.mission_approved_by).toBeUndefined();
+    });
+
     it('keeps incomplete drafts and saved approval as distinct actions', async () => {
         const user = setupUser();
         const save = vi.fn().mockResolvedValue({ ok: true });
