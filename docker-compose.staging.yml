@@ -1,0 +1,118 @@
+# ─── CGRF Header ──────────────────────────────
+# File:        docker-compose.staging.yml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     apps/web/Dockerfile, apps/pocketbase/Dockerfile, scripts/deploy/staging-readback.sh
+# EnumType:    ConfigDoc
+# EnumEdges:   CONSUMES apps/web/Dockerfile; TRIGGERS apps/pocketbase/pb_migrations; PRODUCES http://127.0.0.1:3500; VERIFIED_BY scripts/deploy/staging-readback.sh
+# DAG Node:    buildanddo.staging.stack
+# Intent:      Define an isolated staging stack without changing the existing SSH production path.
+# ───────────────────────────────────────────────────────────
+
+name: buildanddo-staging
+
+services:
+  pocketbase-migrate:
+    build:
+      context: ./apps/pocketbase
+      dockerfile: Dockerfile
+      args:
+        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.28.4}
+    image: buildanddo/pocketbase:staging
+    command: ["migrate", "up", "--dir=/pb/pb_data", "--migrationsDir=/pb/pb_migrations"]
+    environment:
+      PB_SUPERUSER_EMAIL: ${PB_SUPERUSER_EMAIL:?Set PB_SUPERUSER_EMAIL in the staging project}
+      PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD:?Set PB_SUPERUSER_PASSWORD in the staging project}
+      NODE_ENV: staging
+      STRIPE_TEST_MODE: "1"
+    volumes:
+      - pocketbase_staging_data:/pb/pb_data
+    restart: "no"
+    networks: [staging]
+
+  pocketbase:
+    build:
+      context: ./apps/pocketbase
+      dockerfile: Dockerfile
+      args:
+        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.28.4}
+    image: buildanddo/pocketbase:staging
+    command:
+      - serve
+      - --http=0.0.0.0:8090
+      - --dir=/pb/pb_data
+      - --migrationsDir=/pb/pb_migrations
+      - --hooksDir=/pb/pb_hooks
+      - --hooksWatch=false
+    environment:
+      PB_SUPERUSER_EMAIL: ${PB_SUPERUSER_EMAIL:?Set PB_SUPERUSER_EMAIL in the staging project}
+      PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD:?Set PB_SUPERUSER_PASSWORD in the staging project}
+      NODE_ENV: staging
+      STRIPE_TEST_MODE: "1"
+      BUILDER_MAILER_API_URL: ${BUILDER_MAILER_API_URL:-}
+      BUILDER_MAILER_API_KEY: ${BUILDER_MAILER_API_KEY:-}
+      BUILDER_MAILER_SENDER_ADDRESS: ${BUILDER_MAILER_SENDER_ADDRESS:-}
+      REACH_API_URL: ${REACH_API_URL:-}
+      REACH_API_TOKEN: ${REACH_API_TOKEN:-}
+    volumes:
+      - pocketbase_staging_data:/pb/pb_data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8090/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    depends_on:
+      pocketbase-migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+    networks: [staging]
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        BUILD_SHA: ${BUILD_SHA:?Set BUILD_SHA to the full 40-character candidate commit}
+        VITE_POCKETBASE_API_URL: /
+        VITE_DD_APPLICATION_ID: ${VITE_DD_APPLICATION_ID:-}
+        VITE_DD_CLIENT_TOKEN: ${VITE_DD_CLIENT_TOKEN:-}
+        VITE_DD_ENV: staging
+        VITE_DD_SESSION_SAMPLE_RATE: ${VITE_DD_SESSION_SAMPLE_RATE:-}
+        VITE_DD_REPLAY_SAMPLE_RATE: ${VITE_DD_REPLAY_SAMPLE_RATE:-}
+        VITE_DD_TRACE_SAMPLE_RATE: ${VITE_DD_TRACE_SAMPLE_RATE:-}
+        VITE_BUILDANDDO_PH: ${VITE_BUILDANDDO_PH:-}
+    image: buildanddo/web:staging
+    ports:
+      - "${STAGING_WEB_BIND:-127.0.0.1}:${STAGING_WEB_PORT:-3500}:80"
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/staging-readback.sh", "http://127.0.0.1", "full"]
+      interval: 15s
+      timeout: 8s
+      retries: 8
+      start_period: 15s
+    depends_on:
+      pocketbase:
+        condition: service_healthy
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    security_opt: [no-new-privileges:true]
+    networks: [staging]
+
+volumes:
+  pocketbase_staging_data:
+
+networks:
+  staging:
+    driver: bridge

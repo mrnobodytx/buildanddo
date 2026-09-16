@@ -13,7 +13,10 @@ import { resolveBuildRelease } from '../../../scripts/ci/release.mjs';
 import { generatePublicAssets, generatePageHeads } from './generate-seo.mjs';
 import { generateCommunityCatalogue } from './generate-community.mjs';
 
-const release = resolveBuildRelease();
+// Container build contexts deliberately exclude .git. The staging image passes
+// the exact candidate SHA instead, keeping the release stamped into RUM and the
+// generated catalogue tied to the source that produced the image.
+const release = resolveBuildRelease({ commitSha: process.env.BUILD_SHA });
 const output = fileURLToPath(new URL('../../../dist/apps/web', import.meta.url));
 
 generatePublicAssets(fileURLToPath(new URL('../public', import.meta.url)));

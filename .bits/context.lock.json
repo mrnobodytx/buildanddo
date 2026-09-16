@@ -126,7 +126,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-16T13:10:02.335190+00:00",
+  "generated_at": "2026-09-16T16:23:14.623081+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -418,14 +418,15 @@
       "apps/web/tools/observability-smoke.mjs",
       "apps/web/vite.config.js",
       "scripts/deploy/roadmap_status.py",
-      "scripts/deploy/ship.py"
+      "scripts/deploy/ship.py",
+      "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 30,
     "python_files": 81,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 606,
+    "tracked_files": 611,
     "web_source_files": 242
   },
   "schema_version": 1,
