@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 414,
+      "lines": 452,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 19907,
+      "lines": 21037,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 504,
+      "lines": 697,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 685,
+      "lines": 722,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 831,
+      "lines": 892,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -432,7 +432,7 @@
         ".bits/context.md",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 143,
+      "lines": 178,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
@@ -555,7 +555,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 202,
+      "lines": 237,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate contribution review on manifest integrity, component coverage and public adapter tests.",
@@ -618,7 +618,7 @@
         "CONTRIBUTING.md",
         ".buildanddo/public/path-policy.json"
       ],
-      "lines": 160,
+      "lines": 176,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define machine-facing governance for agents working in buildanddo.",
@@ -1721,7 +1721,7 @@
         "apps/web/src/components/site/ui.jsx",
         ".github/workflows/pr-governance.yml"
       ],
-      "lines": 291,
+      "lines": 292,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
@@ -18151,9 +18151,10 @@
       ],
       "dependencies": [
         "scripts/ci/evidence_epoch.py",
-        "apps/research/contracts.py"
+        "apps/research/contracts.py",
+        "apps/federal_foundry/__main__.py"
       ],
-      "lines": 129,
+      "lines": 147,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Package an explicit source closure for a box worker without copying credentials, runtime data or deployment authority.",
@@ -18813,7 +18814,7 @@
         "apps/pocketbase/pb_hooks/suite.pb.js",
         "apps/pocketbase/pb_migrations/data/government-submissions.json"
       ],
-      "lines": 318,
+      "lines": 321,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the callable box-worker suite and government-submission mission with reproducible source checks and explicit runtime acceptance.",
@@ -19066,7 +19067,7 @@
         "tests/upgrade/suite-backend-driver.mjs",
         "tests/upgrade/research_support.py"
       ],
-      "lines": 713,
+      "lines": 720,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify real bounded computation, cross-language worker recovery and portable-source replay without claiming live government or native PocketBase acceptance.",
@@ -19890,12 +19891,1141 @@
       "timestamp": "2026-09-16T03:58:06.471112+00:00",
       "commit_sha": null,
       "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-federal-foundry.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/federal-foundry.md",
+        "apps/federal_foundry/protocol.py",
+        "apps/federal_foundry/opportunities.json"
+      ],
+      "lines": 87,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide concrete model-independent portfolio intake to the existing private Bits runtime without claiming it was activated.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-FEDERAL-INFLUENCE-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 48,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reserve a separately verifiable influence benchmarks lane without claiming its research has run.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 48,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reserve a separately verifiable brain-inspired low-swap research lane without claiming its research has run.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-FEDERAL-MARITIME-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 48,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reserve a separately verifiable sentinel maritime hardening lane without claiming its research has run.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-FEDERAL-NAVAIR-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 48,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reserve a separately verifiable acquisition analysis lane without claiming its research has run.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 48,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reserve a separately verifiable semantic isr research lane without claiming its research has run.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/__main__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "read_json",
+        "main"
+      ],
+      "dependencies": [
+        "apps/federal_foundry/compiler.py",
+        "apps/federal_foundry/evidence.py",
+        "apps/federal_foundry/protocol.py"
+      ],
+      "lines": 120,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose offline portfolio compilation and evidence verification to any authorized Bits or model runtime.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/catalog.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "FoundryError",
+        "reject",
+        "require",
+        "objects",
+        "strings",
+        "slug",
+        "relative_path",
+        "named",
+        "seeds",
+        "validate_lane",
+        "validate_catalog",
+        "load_catalog",
+        "lane_for"
+      ],
+      "dependencies": [
+        "apps/mission_suite/engine.py",
+        "apps/federal_foundry/opportunities.json"
+      ],
+      "lines": 322,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Validate research-lane identities, requirements and evidence policies before agent intake or artifact generation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/compiler.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "json_text",
+        "yaml_text",
+        "markdown",
+        "table",
+        "cgrf",
+        "lane_documents",
+        "compile_portfolio"
+      ],
+      "dependencies": [
+        "apps/federal_foundry/catalog.py",
+        "apps/federal_foundry/protocol.py",
+        "apps/federal_foundry/evidence.py",
+        "apps/mission_suite/bundle.py"
+      ],
+      "lines": 546,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compile model-independent Bits packets and proposal projections from one catalogue and inspected evidence instead of invented claims.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/evidence.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Receipt",
+        "read_artifact",
+        "metric_values",
+        "aggregate",
+        "measurement",
+        "load_evidence",
+        "record_state",
+        "evaluate",
+        "compare"
+      ],
+      "dependencies": [
+        "apps/federal_foundry/catalog.py",
+        "apps/mission_suite/engine.py",
+        "scripts/ci/evidence_epoch.py"
+      ],
+      "lines": 563,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject unsupported claims and unmatched bakeoffs by checking scoped receipt bytes, measurement kinds and independent declared reviews.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/opportunities.json",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "apps/federal_foundry/opportunities.json",
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
+      ],
+      "lines": 1479,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe the five owner-requested research lanes without asserting unverified solicitation or runtime evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/opportunities.json.cgrf.yaml",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "apps/federal_foundry/opportunities.json",
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe the five owner-requested research lanes without asserting unverified solicitation or runtime evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/protocol.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "ModelBinding",
+        "DispatchBinding",
+        "ModelAdapter",
+        "make_task",
+        "request_for",
+        "accept_output",
+        "run_task"
+      ],
+      "dependencies": [
+        "apps/federal_foundry/catalog.py",
+        "apps/mission_suite/bundle.py",
+        "scripts/ci/evidence_epoch.py"
+      ],
+      "lines": 298,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Separate Bits execution identity from model choice while fencing unreviewed model output to its authorized task.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/federal-foundry.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/federal_foundry/__main__.py",
+        "apps/federal_foundry/protocol.py",
+        "apps/federal_foundry/evidence.py",
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
+      ],
+      "lines": 239,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the five model-independent Bits research lanes callable while preserving actual-evidence and human-submission boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/check_federal_foundry.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ReportResult",
+        "main"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_federal_foundry.py",
+        "apps/federal_foundry/catalog.py",
+        "apps/federal_foundry/evidence.py",
+        "apps/federal_foundry/compiler.py"
+      ],
+      "lines": 134,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require measured portable portfolio behavior and coverage independently of unavailable browser or hosted-model dependencies.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_federal_foundry.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "checksum",
+        "SyntheticEvidence",
+        "CatalogueTests",
+        "FixtureAdapter",
+        "OtherFixtureAdapter",
+        "AdapterTests",
+        "EvidenceTests",
+        "ComparisonTests",
+        "CompilerTests"
+      ],
+      "dependencies": [
+        "apps/federal_foundry/catalog.py",
+        "apps/federal_foundry/protocol.py",
+        "apps/federal_foundry/evidence.py",
+        "apps/federal_foundry/compiler.py",
+        "apps/mission_suite/bundle.py"
+      ],
+      "lines": 1249,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify five-lane intake, provider independence, exact evidence checks and portable compilation using clearly labeled synthetic test data.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "docs/federal-foundry.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md consumes docs/federal-foundry.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/check_federal_foundry.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates tests/upgrade/check_federal_foundry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "AGENTS.md",
+      "target": "docs/federal-foundry.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "AGENTS.md consumes docs/federal-foundry.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/mission_suite/bundle.py",
+      "target": "apps/federal_foundry/__main__.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/mission_suite/bundle.py consumes apps/federal_foundry/__main__.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-federal-foundry.md",
+      "target": "docs/federal-foundry.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-federal-foundry.md depends on docs/federal-foundry.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-federal-foundry.md",
+      "target": "apps/federal_foundry/protocol.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-federal-foundry.md depends on apps/federal_foundry/protocol.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-federal-foundry.md",
+      "target": "apps/federal_foundry/opportunities.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-federal-foundry.md depends on apps/federal_foundry/opportunities.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-INFLUENCE-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-INFLUENCE-001.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-INFLUENCE-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-INFLUENCE-001.md depends on .bits/srs_registry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001.md depends on .bits/srs_registry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-MARITIME-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-MARITIME-001.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-MARITIME-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-MARITIME-001.md depends on .bits/srs_registry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-NAVAIR-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-NAVAIR-001.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-NAVAIR-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-NAVAIR-001.md depends on .bits/srs_registry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md depends on .bits/srs_registry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/__main__.py",
+      "target": "apps/federal_foundry/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/__main__.py depends on apps/federal_foundry/compiler.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/__main__.py",
+      "target": "apps/federal_foundry/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/__main__.py depends on apps/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/__main__.py",
+      "target": "apps/federal_foundry/protocol.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/__main__.py depends on apps/federal_foundry/protocol.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/catalog.py",
+      "target": "apps/mission_suite/engine.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/catalog.py depends on apps/mission_suite/engine.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/catalog.py",
+      "target": "apps/federal_foundry/opportunities.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/catalog.py depends on apps/federal_foundry/opportunities.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/compiler.py",
+      "target": "apps/federal_foundry/catalog.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/compiler.py depends on apps/federal_foundry/catalog.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/compiler.py",
+      "target": "apps/federal_foundry/protocol.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/compiler.py depends on apps/federal_foundry/protocol.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/compiler.py",
+      "target": "apps/federal_foundry/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/compiler.py depends on apps/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/compiler.py",
+      "target": "apps/mission_suite/bundle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/compiler.py depends on apps/mission_suite/bundle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/evidence.py",
+      "target": "apps/federal_foundry/catalog.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/evidence.py depends on apps/federal_foundry/catalog.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/evidence.py",
+      "target": "apps/mission_suite/engine.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/evidence.py depends on apps/mission_suite/engine.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/evidence.py",
+      "target": "scripts/ci/evidence_epoch.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/evidence.py depends on scripts/ci/evidence_epoch.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/opportunities.json.cgrf.yaml",
+      "target": "apps/federal_foundry/opportunities.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/opportunities.json.cgrf.yaml depends on apps/federal_foundry/opportunities.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/opportunities.json.cgrf.yaml",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/opportunities.json.cgrf.yaml depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/protocol.py",
+      "target": "apps/federal_foundry/catalog.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/protocol.py depends on apps/federal_foundry/catalog.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/protocol.py",
+      "target": "apps/mission_suite/bundle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/protocol.py depends on apps/mission_suite/bundle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/protocol.py",
+      "target": "scripts/ci/evidence_epoch.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/protocol.py depends on scripts/ci/evidence_epoch.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/federal-foundry.md",
+      "target": "apps/federal_foundry/__main__.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/federal-foundry.md depends on apps/federal_foundry/__main__.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/federal-foundry.md",
+      "target": "apps/federal_foundry/protocol.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/federal-foundry.md depends on apps/federal_foundry/protocol.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/federal-foundry.md",
+      "target": "apps/federal_foundry/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/federal-foundry.md depends on apps/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/federal-foundry.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/federal-foundry.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_federal_foundry.py",
+      "target": "tests/upgrade/test_federal_foundry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_federal_foundry.py depends on tests/upgrade/test_federal_foundry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_federal_foundry.py",
+      "target": "apps/federal_foundry/catalog.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_federal_foundry.py depends on apps/federal_foundry/catalog.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_federal_foundry.py",
+      "target": "apps/federal_foundry/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_federal_foundry.py depends on apps/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_federal_foundry.py",
+      "target": "apps/federal_foundry/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_federal_foundry.py depends on apps/federal_foundry/compiler.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_federal_foundry.py",
+      "target": "apps/federal_foundry/catalog.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_federal_foundry.py depends on apps/federal_foundry/catalog.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_federal_foundry.py",
+      "target": "apps/federal_foundry/protocol.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_federal_foundry.py depends on apps/federal_foundry/protocol.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_federal_foundry.py",
+      "target": "apps/federal_foundry/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_federal_foundry.py depends on apps/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_federal_foundry.py",
+      "target": "apps/federal_foundry/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_federal_foundry.py depends on apps/federal_foundry/compiler.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_federal_foundry.py",
+      "target": "apps/mission_suite/bundle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_federal_foundry.py depends on apps/mission_suite/bundle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/test_federal_foundry.py",
+      "description": "The first 38-case federal suite exposed exclusion of a valid below-target baseline from matched comparisons. One separate corrupt-fixture setup error prevented the intended receipt validator from running. Neither outcome was reported as a passing experiment.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T12:51:25.456826+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "apps/federal_foundry/evidence.py",
+      "description": "The targeted below-target baseline regression passed after ranking completed matched measurements with an explicit meets_target=false while retaining actual failed experiments as unrankable. Corrupt fixture setup was corrected before the final full suite; no metric threshold or review rule was relaxed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T12:52:47.285362+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_federal_foundry.py",
+      "description": "Forty federal behavior cases passed with no skips. Python trace statement coverage is CLI 97.53%, catalogue/compiler 100%, evidence/protocol 99.50%. Two explicitly in-process model adapters and synthetic public receipts exercise runtime-bound provenance, cancellation, tamper, candidate isolation, comparisons, compiler/CLI and portable extraction; zero live model calls or research campaigns.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T13:02:54.843346+00:00",
+      "commit_sha": null,
+      "smoke_result": "40/40"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "apps/mission_suite/bundle.py",
+      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96–99.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T13:02:18.643108+00:00",
+      "commit_sha": null,
+      "smoke_result": "448/457"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "apps/federal_foundry/compiler.py",
+      "description": "Actual local compilation produced five lane draft sets, ten PREPARED builder/verifier packets and 105 files. All generated hashes and five YAML round-trips matched. The deterministic 23-file suite archive runs the real portfolio CLI from clean extraction. Source SHA-256 d1420ba6546e53f76a727edc76aebc48f3182ffc5f6cd5cc81af805c5fc6981c; catalogue SHA-256 4e5f4f2c8a9d089845bd42c02a3ce900749a2a723efddca3ef32f525c3c6a13e. No hosted task or scientific claim was activated.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T13:05:58.121281+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-federal-foundry.md",
+      "description": "Public source intake guidance and five proposed SRS scopes are prepared for runtime-assigned per-lane dispatches and model adapters. Required web tests/lint/build and native suite checks fail before acceptance because Vitest, eslint-plugin-import, Vite and PocketBase are absent. Context matches with six retained findings; boundary passes 606 tracked files. All 66 preceding events remain unchanged; actual hosted jobs, official eligibility, research/physical evidence and final submissions remain open.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T13:18:06.636585+00:00",
+      "commit_sha": null,
+      "smoke_result": "10/14"
     }
   ],
   "summary": {
-    "type_a_count": 323,
-    "type_b_count": 693,
-    "type_c_count": 66,
+    "type_a_count": 339,
+    "type_b_count": 740,
+    "type_c_count": 72,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

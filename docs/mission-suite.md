@@ -206,11 +206,14 @@ python -m apps.mission_suite identity
 python -m apps.mission_suite package /tmp/buildanddo-mission-suite.tgz
 ```
 
-The archive contains an explicit eight-file Python source closure, this guide
-and `suite-manifest.json`, plus root distribution terms when present. It excludes workspace
+The archive contains an explicit source closure for the mission worker and the
+model-independent federal portfolio compiler, their opportunity catalogue, guides,
+proposed lane specifications and `suite-manifest.json`, plus root distribution
+terms when present. It excludes workspace
 data, environment files, credentials and deployment controls. It is reproducible
-for the same file bytes. The source fingerprint binds engine, worker and reused
-transport/evidence code. The manifest is a source closure; it is not a generated
+for the same file bytes. The source fingerprint binds engine, worker, portfolio
+source/catalogue and reused transport/evidence code. The manifest is a source
+closure; it is not a generated
 container/runtime SBOM or a release-admission receipt.
 After its source gates pass, the independent mission-suite CI job retains this
 archive as `buildanddo-mission-suite-python-3.11` or `buildanddo-mission-suite-python-3.12`

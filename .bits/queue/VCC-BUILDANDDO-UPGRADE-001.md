@@ -20,6 +20,43 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Federal portfolio continuation authorized 2026-09-16
+
+The owner supplied five parallel research lanes and requested model-independent
+Datadog Bits intake. This dispatch implements the shared public compiler and
+prepares the lanes; it does not claim live model execution, launch a hosted
+agent or perform the research experiments. The five proposed SRS codes reserve
+separate future execution scopes without changing the current branch.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CI | Register portfolio scope and lane specifications | `python scripts/ci/agent_context.py --check` | done — five proposed lane SRS entries and current compiler scope |
+| CJ | Add catalogue and provider-independent task contracts | Catalogue and adapter behavior tests | done for source — two in-process adapter implementations; no hosted LLM call |
+| CK | Compile evidence projections and comparable bakeoffs | Evidence/compiler behavior and negative tests | done — exact receipts, per-candidate claims, matched experiments and human gates |
+| CL | Connect portable packaging and Bits/CI discovery | Fresh archive execution and CI contract checks | done for source — ten packets, five draft sets and independent Python CI matrix |
+| CM | Verify complete source scope | `python tests/upgrade/check_federal_foundry.py` and source regressions | done — 40 new tests; 97.53–100% statement coverage; required browser/native gates unavailable |
+| CN | Record evidence, preserved memory and operator intake | Dispatch-memory, context and public-boundary checks | done for public artifacts — report, retained history and CMAX-B intake contract |
+
+Memory brief: the merged portable suite supplies source packaging, strict JSON,
+SHA-256 evidence identity and deterministic replay. Existing mission research,
+PocketBase roles and human review remain the application authority. No public
+Bits scheduler API or media-provider implementation exists in this checkout.
+The previous public/private repository attachment was rejected; no alternate
+private access is attempted. There is no authenticated workspace for seat events.
+
+Observed source evidence: 40 new tests pass; five modules have 97.53–100%
+statement coverage. Existing suite coverage passes 23 cases. Full regression
+passes 256 Node and 192 Python cases with nine native skips. Typing, Ruff,
+239-module JavaScript parsing and fresh-archive compilation pass. Five YAML
+opportunities round-trip to the catalogue and every generated artifact hash
+matches its manifest. No scientific measurement or model execution is inferred.
+
+The required web test, web lint, build and native suite checks remain unavailable
+because Vitest, eslint-plugin-import, Vite and PocketBase are absent. The
+public/private boundary, memory history and context gates are recorded in the
+report. All 66 preceding memory events remain intact. The receiving operator
+assigns actual execution dispatches and models through the existing Bits intake.
+
 ## Callable mission suite authorized 2026-09-16
 
 The owner requested one API backed by a box-operated suite and a BuildAndDo

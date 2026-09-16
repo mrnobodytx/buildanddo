@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     scripts/ci/evidence_epoch.py, apps/research/contracts.py
+# Depends:     scripts/ci/evidence_epoch.py, apps/research/contracts.py, apps/federal_foundry/__main__.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES scripts/ci/evidence_epoch.py; DEPENDS_ON apps/research/contracts.py
+# EnumEdges:   CONSUMES scripts/ci/evidence_epoch.py; DEPENDS_ON apps/research/contracts.py; CONSUMES apps/federal_foundry/__main__.py
 # DAG Node:    none
 # Intent:      Package an explicit source closure for a box worker without copying credentials, runtime data or deployment authority.
 # ───────────────────────────────────────────────────────────────
@@ -38,6 +38,23 @@ SOURCE_FILES = (
     "apps/research/transport.py",
     "scripts/discordbot/contracts.py",
     "scripts/ci/evidence_epoch.py",
+    "apps/federal_foundry/__main__.py",
+    "apps/federal_foundry/catalog.py",
+    "apps/federal_foundry/compiler.py",
+    "apps/federal_foundry/evidence.py",
+    "apps/federal_foundry/protocol.py",
+    "apps/federal_foundry/opportunities.json",
+)
+
+EXTRA_FILES = (
+    "docs/mission-suite.md",
+    "docs/federal-foundry.md",
+    "apps/federal_foundry/opportunities.json.cgrf.yaml",
+    ".bits/srs/SRS-BUILDANDDO-FEDERAL-INFLUENCE-001.md",
+    ".bits/srs/SRS-BUILDANDDO-FEDERAL-NAVAIR-001.md",
+    ".bits/srs/SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001.md",
+    ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md",
+    ".bits/srs/SRS-BUILDANDDO-FEDERAL-MARITIME-001.md",
 )
 
 
@@ -89,8 +106,9 @@ def package(output: Path, root: Path | None = None) -> dict[str, object]:
     base = root or Path(__file__).resolve().parents[2]
     manifest = source_manifest(base)
     manifest["source_sha256"] = sha256_json(manifest)
-    extras = ("docs/mission-suite.md",)
-    contents = {name: archive_bytes(base, name) for name in (*SOURCE_FILES, *extras)}
+    contents = {
+        name: archive_bytes(base, name) for name in (*SOURCE_FILES, *EXTRA_FILES)
+    }
     packaged_source = [
         {"path": name, "sha256": hashlib.sha256(contents[name]).hexdigest()}
         for name in SOURCE_FILES

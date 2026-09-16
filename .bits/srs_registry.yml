@@ -36,7 +36,42 @@ srs:
     status: in_progress
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
-    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella including public/workspace/community upgrades, dossiers, Maritime planning and a callable box-worker mission suite with government-submission tutorials; private infrastructure, activation and deployment excluded
+    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella including public/workspace/community upgrades, dossiers, Maritime planning, the box-worker suite and a model-independent federal research portfolio compiler; private infrastructure, activation and deployment excluded
+
+  - code: SRS-BUILDANDDO-FEDERAL-INFLUENCE-001
+    title: Influence benchmarks
+    status: proposed
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-FEDERAL-INFLUENCE-001.md
+    notes: Prepared by the owner-authorized portfolio continuation; separate execution dispatch and independent verification required before lane implementation
+
+  - code: SRS-BUILDANDDO-FEDERAL-NAVAIR-001
+    title: Acquisition analysis
+    status: proposed
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-FEDERAL-NAVAIR-001.md
+    notes: Prepared by the owner-authorized portfolio continuation; separate execution dispatch and independent verification required before lane implementation
+
+  - code: SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001
+    title: Brain-inspired low-SWaP research
+    status: proposed
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001.md
+    notes: Prepared by the owner-authorized portfolio continuation; separate execution dispatch and independent verification required before lane implementation
+
+  - code: SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001
+    title: Semantic ISR research
+    status: proposed
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md
+    notes: Prepared by the owner-authorized portfolio continuation; separate execution dispatch and independent verification required before lane implementation
+
+  - code: SRS-BUILDANDDO-FEDERAL-MARITIME-001
+    title: Sentinel Maritime hardening
+    status: proposed
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-FEDERAL-MARITIME-001.md
+    notes: Prepared by the owner-authorized portfolio continuation; separate execution dispatch and independent verification required before lane implementation
 
   - code: SRS-BUILDANDDO-BOOTSTRAP-001
     title: Machine-facing governance bootstrap
