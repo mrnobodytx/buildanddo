@@ -9,9 +9,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     scripts/discordbot/service.py, scripts/discordbot/contracts.py, scripts/discordbot/research.py
+# Depends:     scripts/discordbot/service.py, scripts/discordbot/contracts.py, scripts/discordbot/research.py, scripts/discordbot/dossier.py
 # EnumType:    Service
-# EnumEdges:   DEPENDS_ON scripts/discordbot/service.py; DEPENDS_ON scripts/discordbot/contracts.py; CONSUMES scripts/discordbot/research.py
+# EnumEdges:   DEPENDS_ON scripts/discordbot/service.py; DEPENDS_ON scripts/discordbot/contracts.py; CONSUMES scripts/discordbot/research.py; CONSUMES scripts/discordbot/dossier.py
 # DAG Node:    none
 # Intent:      Serve useful public Discord interactions with explicit scope, private replies and no import-time activation.
 # ───────────────────────────────────────────────────────────────
@@ -41,6 +41,7 @@ from scripts.discordbot.contracts import (
 from scripts.discordbot.public_data import PublicClient
 from scripts.discordbot.service import COMMANDS, CommandService, WORKSPACE_AREAS
 from scripts.discordbot.research import Attachment, RESEARCH_COMMANDS, ResearchBridge, configured_bridge
+from scripts.discordbot.dossier import DOSSIER_COMMANDS, KINDS as ENTITY_KINDS, DossierBridge
 from apps.research.contracts import ResearchError
 
 logger = logging.getLogger("buildanddo.discord")
@@ -284,6 +285,7 @@ class BuildAndDoBot(discord.Client):
         self.public_client = public_client or PublicClient()
         self.service = CommandService(settings, self.public_client)
         self.research = research
+        self.dossier = DossierBridge(research) if research else None
         self.tree = PublicCommandTree(self)
         self.group = app_commands.Group(
             name="buildanddo", description="Learn, navigate and inspect public BuildAndDo evidence.",
@@ -294,6 +296,7 @@ class BuildAndDoBot(discord.Client):
             self.register_command(name)
         if research:
             self.register_research()
+            self.register_dossier()
         self._synchronized = False
 
     def register_command(self, name: str) -> None:
@@ -385,6 +388,58 @@ class BuildAndDoBot(discord.Client):
             logger.info('discord.research.command', extra={'command': name if name in RESEARCH_COMMANDS else 'unknown', 'outcome': outcome,
                                                          'duration_ms': round((time.monotonic() - started) * 1000)})
 
+    def register_dossier(self) -> None:
+        """Register five private entity commands within Discord's 25-command group limit."""
+        async def dossier(interaction: discord.Interaction, recover: bool = False) -> None:
+            await self.respond_dossier(interaction, 'dossier', {'recover': recover})
+
+        async def recall(interaction: discord.Interaction, query: str = '', page: int = 1) -> None:
+            await self.respond_dossier(interaction, 'recall', {'query': query, 'page': page})
+
+        async def entity(interaction: discord.Interaction, id: str) -> None:
+            await self.respond_dossier(interaction, 'entity', {'id': id})
+
+        async def forget(interaction: discord.Interaction, id: str, revision: int, confirm: bool) -> None:
+            await self.respond_dossier(interaction, 'forget', {'id': id, 'revision': revision, 'confirm': confirm})
+
+        async def remember(interaction: discord.Interaction, note: str, label: str = '', kind: str = 'topic', entity_id: str = '',
+                           revision: int = 0, source_url: str = '', source_label: str = '') -> None:
+            await self.respond_dossier(interaction, 'remember', {'note': note, 'label': label, 'kind': kind, 'entity_id': entity_id,
+                                                               'revision': revision, 'source_url': source_url, 'source_label': source_label})
+
+        remember = app_commands.choices(kind=[app_commands.Choice(name=kind.title(), value=kind) for kind in ENTITY_KINDS])(remember)
+        for name, callback in [('dossier', dossier), ('remember', remember), ('recall', recall), ('entity', entity), ('forget', forget)]:
+            self.group.add_command(app_commands.Command(name=name, description=DOSSIER_COMMANDS[name], callback=callback))
+
+    async def respond_dossier(self, interaction: discord.Interaction, name: str, arguments: dict[str, object]) -> None:
+        """Keep entity content in private replies and retain uncertain delivery for recovery."""
+        await interaction.response.defer(ephemeral=True, thinking=True)
+        started = time.monotonic()
+        outcome = 'unavailable'
+        caller = caller_from(interaction)
+        try:
+            if not self.dossier or not self.service.permitted(caller):
+                raise ResearchError('forbidden', 403)
+            reply = await self.dossier.execute(name, arguments, caller, interaction.id)
+            await interaction.edit_original_response(embed=render(reply.page), view=None, allowed_mentions=discord.AllowedMentions.none())
+            self.dossier.delivered(caller, reply.request_key)
+            outcome = 'delivered'
+        except ResearchError as error:
+            messages = {
+                'forbidden': 'Link your Discord account in BuildAndDo Settings and check the enabled server/channel and current workspace membership.',
+                'confirmation': 'Review the entity and its revision, then use confirm:true only if you intend to delete it.',
+                'conflict': 'The record changed. Review its current revision in your dossier before making another change.',
+                'invalid_data': 'Check the entity ID, revision and input limits. For an uncertain save, use /buildanddo dossier recover:true.',
+                'rate_limited': 'Too many requests are active. Wait briefly before retrying.',
+            }
+            message = messages.get(error.reason, 'Private storage could not confirm this request. Use /buildanddo dossier recover:true or check your website dossier before saving again.')
+            await interaction.edit_original_response(embed=render(Page('Private dossier', message, 'https://buildanddo.tech/app/dossier')),
+                                                     view=None, allowed_mentions=discord.AllowedMentions.none())
+            outcome = error.reason
+        finally:
+            logger.info('discord.dossier.command', extra={'command': name if name in DOSSIER_COMMANDS else 'unknown', 'outcome': outcome,
+                                                        'duration_ms': round((time.monotonic() - started) * 1000)})
+
     async def setup_hook(self) -> None:
         """Synchronize once only when the receiving operator configured that action."""
         if self._synchronized or self.settings.sync == "none":
@@ -444,6 +499,8 @@ class BuildAndDoBot(discord.Client):
     async def close(self) -> None:
         """Drain bounded public HTTP work before closing the gateway client."""
         await self.public_client.close()
+        if self.dossier:
+            self.dossier.close()
         if self.research:
             await self.research.close()
         await super().close()

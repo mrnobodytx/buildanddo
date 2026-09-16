@@ -20,16 +20,24 @@ export const SCHEMA = 'apps/pocketbase/pb_migrations/1790100000_mission_research
 export const GUILD = '12345678901234567';
 export const CHANNEL = '23456789012345678';
 export const DISCORD = '34567890123456789';
-export function researchFixture() {
+export function researchFixture({ runtime = {} } = {}) {
     const registered = [{ workspace: 'ws1', bot_user: 'bot', worker_user: 'worker', guild_id: GUILD, channel_id: CHANNEL,
         binding: 'research', capabilities: ['search', 'url', 'document', 'audio', 'video'] }];
     const env = { value: JSON.stringify(registered) };
-    const f = fixture({ runtime: { $os: { getenv: () => env.value } } });
+    const f = fixture({ runtime: { ...runtime, $dbx: { hashExp: (value) => plain(value) },
+        $os: { getenv: (name) => name === 'BUILDANDDO_RESEARCH_BINDINGS' ? env.value : runtime.$os?.getenv(name) || '' } } });
     f.migration(SCHEMA).up();
     for (const id of ['bot', 'worker', 'worker2']) f.seed('users', { id });
     const Collection = f.collections.users.constructor;
     f.app.save(new Collection({ name: '_externalAuths', type: 'base', fields: [] }));
     f.seed('_externalAuths', { id: 'discordlink', provider: 'discord', providerId: DISCORD, collectionRef: f.collections.users.id, recordRef: 'editor' });
+    // Native PocketBase OAuth links are ExternalAuth models, not record collections.
+    // The array above remains fixture storage; expose the model query separately.
+    f.app.findFirstExternalAuthByExpr = (expression) => {
+        const rows = f.data._externalAuths.filter((row) => Object.entries(expression).every(([key, value]) => row[key] === value));
+        if (rows.length !== 1) throw new Error('sql: no rows in result set');
+        return plain(rows[0]);
+    };
     f.seed('missions', { id: 'mission1', workspace: 'ws1', owner: 'owner', title: 'Research appointments', status: 'running' });
     f.seed('missions', { id: 'mission2', workspace: 'ws2', owner: 'otherowner', title: 'Other work', status: 'running' });
     f.command('integration.save', { provider: 'firecrawl', enabled: true, configuration: { binding: 'research', mode: 'read' } });

@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_migrations/1790100000_mission_research.js, apps/web/src/pages/workspace/ResearchPage.jsx, apps/web/src/lib/discordAccount.js, scripts/discordbot/research.py, apps/research/worker.py, tests/upgrade/mission-research.test.mjs, tests/upgrade/test_discordbot_research.py, tests/upgrade/test_research_runtime.py
+# Depends:     apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_migrations/1790100000_mission_research.js, apps/web/src/pages/workspace/ResearchPage.jsx, apps/web/src/lib/discordAccount.js, scripts/discordbot/research.py, apps/research/worker.py, tests/upgrade/mission-research.test.mjs, tests/upgrade/test_discordbot_research.py, tests/upgrade/test_research_runtime.py, docs/discord-activation.md, docs/private-dossiers.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/mission-research.js; CONSUMES apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_migrations/1790100000_mission_research.js; CONSUMES apps/web/src/pages/workspace/ResearchPage.jsx; CONSUMES apps/web/src/lib/discordAccount.js; CONSUMES scripts/discordbot/research.py; CONSUMES apps/research/worker.py; VERIFIED_BY tests/upgrade/mission-research.test.mjs; VERIFIED_BY tests/upgrade/test_discordbot_research.py; VERIFIED_BY tests/upgrade/test_research_runtime.py
+# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/mission-research.js; CONSUMES apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_migrations/1790100000_mission_research.js; CONSUMES apps/web/src/pages/workspace/ResearchPage.jsx; CONSUMES apps/web/src/lib/discordAccount.js; CONSUMES scripts/discordbot/research.py; CONSUMES apps/research/worker.py; VERIFIED_BY tests/upgrade/mission-research.test.mjs; VERIFIED_BY tests/upgrade/test_discordbot_research.py; VERIFIED_BY tests/upgrade/test_research_runtime.py; CONSUMES docs/discord-activation.md; CONSUMES docs/private-dossiers.md
 # DAG Node:    none
 # Intent:      Explain the connected mission-source workflow and exact receiving-runtime contracts without claiming private activation or verification from extracted content.
 # ───────────────────────────────────────────────────────────────
@@ -25,6 +25,9 @@ complete or verify the mission; its existing TEVV review still makes that decisi
 
 The source implements these adapters; their deployment and the operator's
 Firecrawl/transcription configuration have not been observed in this session.
+The checked-in Compose setup does not start the bot or worker. Use
+`docs/discord-activation.md` to distinguish their entry points from the actual
+receiving service launcher; the read-only worker doctor performs no activation.
 
 ## Use the website
 
@@ -67,6 +70,9 @@ the current website sign-in. Pasting a Discord ID does not link an account.
 The configured bridge adds seven commands to the existing thirteen public
 `/buildanddo` commands. They are private slash replies in the bound server and
 channel; legacy prefix messages cannot invoke them.
+Five additional personal dossier commands now share that native linked identity;
+see `docs/private-dossiers.md`. Dossier notes remain private to their user and
+are not automatically copied into a workspace mission or its Evidence Ledger.
 
 | Command | Result |
 |---|---|

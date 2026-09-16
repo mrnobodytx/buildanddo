@@ -20,6 +20,63 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Authorized continuation — private entity dossiers and activation evidence
+
+The owner requested the remaining Discord gaps, correction of the assumed local
+activation procedure, and secure entity storage/recall tied to user identity and
+the user's dossier. This extends the existing in-progress A2 source dispatch
+after PR 27. SRS self-bootstrap remains authorized. Runtime keys, shared services,
+Discord registration/messages and private deployment remain receiving-seat work.
+
+Acceptance:
+
+1. Reuse canonical PocketBase `users` and native Discord OAuth links. Provide one
+   private personal dossier per account, reachable from Settings and navigation.
+   A workspace administrator receives no access to another user's dossier. The
+   dossier remains personal across workspaces; Discord additionally requires the
+   current registered bot, enabled server/channel binding and workspace membership.
+2. Track explicitly saved entities (person, organization, project, place, topic)
+   with names, aliases, tags, dated notes and explicit source references. Reuse
+   entity IDs for additional notes; never silently merge people with equal names
+   or collect channel conversation. Provide bounded search, detail, corrections,
+   note removal, entity deletion and a history of content-free mutation receipts.
+3. Encrypt dossier/entity content and retry fingerprints with PocketBase's native
+   authenticated encryption and operator-provided key bindings. Bind ciphertext
+   to account, dossier, record and revision. Lock raw collection APIs. Missing or
+   unreadable keys fail closed; no plaintext fallback or generated secret. This
+   is server-side encryption, not end-to-end encryption or a backup-erasure claim.
+4. Authorize within atomic transactions; fence stale revisions and replay retries
+   without duplication or resurrection after deletion. Do not retain old note
+   text in audit records. Store no private dossier data in browser persistence,
+   telemetry, public catalogues or bot caches beyond bounded undelivered intent.
+   Discard late results after account/link changes; search terms stay out of URLs.
+5. Connect website dossier editing and private Discord dossier/remember/recall/
+   entity/forget commands to the same records. Keep Discord responses ephemeral,
+   bounded and mention-suppressed. Preserve current research and teaching flows.
+6. Add a read-only local startup diagnostic. Report actual package/configuration
+   readiness without printing bindings, contacting services, logging in, syncing
+   commands or implying the bot is running. Document that the inspected Compose
+   stack starts web/PocketBase only and the deployed service configuration is
+   outside this checkout. Extend the existing activation handoff with exact gaps.
+7. Verify actual backend, migration, browser-client and Discord application modules
+   for tenant isolation, identity changes, encrypted persistence, recovery,
+   corrections, deletion, corruption and absent configuration. Add meaningful
+   rendered and native acceptance checks; report unavailable runners separately.
+   Preserve earlier governance events and record runnable evidence for this wave.
+
+Private personal storage is the conservative initial scope while the owner can
+clarify workspace sharing. Private key custody, transport termination, backup
+retention/erasure and actual service launch ownership require runtime evidence.
+
+Source outcome recorded 2026-09-16: the personal store, five Discord commands,
+website dossier and read-only startup doctor are implemented. Connected tests
+cover isolation, relinking, corrections, deletion and lost-response recovery.
+The shared OAuth lookup now uses PocketBase's native ExternalAuth model and
+transactional dossier requests preserve non-enumerable event properties.
+An independent native CI matrix requires both declared PocketBase versions;
+the local native SDK/parser/backend and rendered acceptance remain unavailable.
+Verification and the retained event history are in the current dispatch report.
+
 ## Authority
 
 Dmitry Richard (mr.nobody@citadel-nexus.com) explicitly authorized this dispatch,

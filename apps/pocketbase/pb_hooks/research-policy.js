@@ -158,14 +158,24 @@ function discord(e, body) {
         throw new ForbiddenError('Discord is disabled or its requested binding changed.');
     if (typeof body.discord_user_id !== 'string' || !/^[1-9][0-9]{16,19}$/.test(body.discord_user_id))
         access.invalid('Supply the verified Discord caller.');
-    const links = e.app.findRecordsByFilter('_externalAuths', 'provider = "discord" && providerId = {:id} && collectionRef = {:collection}', '', 2, 0,
-        { id: body.discord_user_id, collection: e.app.findCollectionByNameOrId('users').id });
-    if (links.length !== 1) throw new ForbiddenError('Link Discord in your BuildAndDo account settings first.');
-    if (body.link_id && body.link_id !== links[0].id) throw new ForbiddenError('The Discord account link changed. Start a new request.');
-    const auth = access.find(e.app, 'users', links[0].getString('recordRef'));
+    const collection = e.app.findCollectionByNameOrId('users').id;
+    // OAuth links are native ExternalAuth models. They are not API record
+    // collections and cannot be read with findRecordsByFilter. PocketBase's
+    // unique (collectionRef, provider, providerId) index defines this identity.
+    let link;
+    try {
+        link = e.app.findFirstExternalAuthByExpr($dbx.hashExp({ provider: 'discord', providerId: body.discord_user_id, collectionRef: collection }));
+    } catch (error) {
+        if (!String(error.message).includes('no rows in result set')) throw error;
+        throw new ForbiddenError('Link Discord in your BuildAndDo account settings first.');
+    }
+    if (!link?.id || link.provider !== 'discord' || link.providerId !== body.discord_user_id || link.collectionRef !== collection)
+        throw new ForbiddenError('Link Discord in your BuildAndDo account settings first.');
+    if (body.link_id && body.link_id !== link.id) throw new ForbiddenError('The Discord account link changed. Start a new request.');
+    const auth = access.find(e.app, 'users', link.recordRef);
     access.requireRole(e.app, auth, workspace);
     const info = e.requestInfo(); info.auth = auth;
-    return { workspace, auth, info, linkId: links[0].id };
+    return { workspace, auth, info, linkId: link.id };
 }
 
 module.exports = { ...access, KINDS, WRITERS, MAX_FILE, FILES, schema, bindings, binding, integration, capabilities, mission,

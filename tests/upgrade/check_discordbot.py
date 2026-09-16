@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     tests/upgrade/test_discordbot_public.py, tests/upgrade/test_discordbot_commands.py, tests/upgrade/test_discordbot_adapter.py, tests/upgrade/test_discordbot_research.py, tests/upgrade/test_research_runtime.py
+# Depends:     tests/upgrade/test_discordbot_public.py, tests/upgrade/test_discordbot_commands.py, tests/upgrade/test_discordbot_adapter.py, tests/upgrade/test_discordbot_research.py, tests/upgrade/test_research_runtime.py, tests/upgrade/test_discordbot_dossier.py, tests/upgrade/test_discordbot_doctor.py
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_discordbot_public.py; CONSUMES tests/upgrade/test_discordbot_commands.py; CONSUMES tests/upgrade/test_discordbot_adapter.py; CONSUMES tests/upgrade/test_discordbot_research.py; CONSUMES tests/upgrade/test_research_runtime.py
+# EnumEdges:   CONSUMES tests/upgrade/test_discordbot_public.py; CONSUMES tests/upgrade/test_discordbot_commands.py; CONSUMES tests/upgrade/test_discordbot_adapter.py; CONSUMES tests/upgrade/test_discordbot_research.py; CONSUMES tests/upgrade/test_research_runtime.py; CONSUMES tests/upgrade/test_discordbot_dossier.py; CONSUMES tests/upgrade/test_discordbot_doctor.py
 # DAG Node:    none
 # Intent:      Produce reproducible bot coverage evidence and a separate native-SDK gate without installing packages or hiding skipped acceptance.
 # ───────────────────────────────────────────────────────────────

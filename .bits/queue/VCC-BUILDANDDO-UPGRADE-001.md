@@ -20,6 +20,40 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Entity dossier continuation authorized 2026-09-15
+
+The owner's current request extends this registered SRS at A2 for private
+identity-linked entity storage/recall and source-backed activation diagnostics.
+The local branch was reconciled with the already-merged PR 27 source before work.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| BN | Register dossier scope and inspect activation | `python scripts/ci/agent_context.py --check` | done |
+| BO | Persist encrypted private dossiers with native identity and atomic retries | `node --test tests/upgrade/dossier-system.test.mjs` | partial — 19 local tests pass; native encryption/auth/concurrency acceptance pending |
+| BP | Connect private Discord entity commands and recovery | `python -m unittest discover -s tests/upgrade -p 'test_discordbot_dossier.py'` | partial — 15 connected source cases pass; native SDK/server acceptance pending |
+| BQ | Add account-linked dossier editing and recall | `node --test tests/upgrade/dossier-client.test.mjs`; rendered suites in docs/private-dossiers.md | partial — 9 client cases pass; 16 rendered cases authored, runner unavailable |
+| BR | Add read-only startup diagnostics and actual activation handoff | `python -m unittest discover -s tests/upgrade -p 'test_discordbot_doctor.py'` | done — 7 cases pass; actual launcher remains unverified |
+| BS | Verify connected source and record native/frontend limits | Node/Python, coverage, static and frontend gates | done — available source checks pass; unavailable acceptance recorded |
+| BT | Preserve memory and refresh report, context and boundary evidence | Context, boundary and memory checks | done — see current §15 report and verified memory payload |
+
+Current continuation evidence (2026-09-16): 227 Node passes; 129 Python passes
+and six native skips. The targeted Python source checker passes 111 cases with
+two skips and at least 83.72% statement coverage per module. Selected JavaScript
+coverage is 99.85% lines, 92.87% branches, 99.04% functions. Source diagnostics
+parse 231 modules with zero errors. Application smoke remains 4/7; native and
+frontend acceptance must run on a dependency-enabled runner. No activation,
+credential provisioning, command synchronization or external message occurred.
+
+Memory brief at the PR 27 baseline: the public bot has 13 public and seven optional research
+commands. Native Discord OAuth links and authenticated research service bindings
+exist, but no dossier/entity store exists. The local Compose stack runs web and
+PocketBase only. The old bot referenced a VPS service; its service definition is
+not present. No deployed service, authenticated seat or live bot is attached.
+The first source inspection confirms Discord.py, pypdf and the native PocketBase
+executable are absent. Do not infer activation from merges or fixture results.
+No seat message is fabricated. The initial dossier scope is private to each
+canonical user, with explicit entry and no passive Discord collection.
+
 ## Authorization and objective
 
 Owner Dmitry Richard explicitly authorized task-table creation, SRS registration

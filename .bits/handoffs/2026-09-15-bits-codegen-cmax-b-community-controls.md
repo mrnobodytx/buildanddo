@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     docs/workspace-administration.md, apps/pocketbase/pb_hooks/workspace-administration.js, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md, docs/discord-bot.md, docs/mission-research.md
+# Depends:     docs/workspace-administration.md, apps/pocketbase/pb_hooks/workspace-administration.js, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md, docs/discord-bot.md, docs/mission-research.md, docs/private-dossiers.md, docs/discord-activation.md
 # EnumType:    Doc
-# EnumEdges:   DEPENDS_ON docs/workspace-administration.md; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; EXTENDS .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md; CONSUMES docs/discord-bot.md; CONSUMES docs/mission-research.md
+# EnumEdges:   DEPENDS_ON docs/workspace-administration.md; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; EXTENDS .bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md; CONSUMES docs/discord-bot.md; CONSUMES docs/mission-research.md; CONSUMES docs/private-dossiers.md; CONSUMES docs/discord-activation.md
 # DAG Node:    none
 # Intent:      Define the private execution and acceptance boundary for audited BuildAndDo integration requests without adding credentials or deployment control to the public repository.
 # ───────────────────────────────────────────────────────────────
@@ -203,7 +203,8 @@ runtime remains unactivated here. Obtain the receiving dispatch and verify:
    complete strict typing, branch coverage and the rendered frontend gates in
    the documentation. The updated PR job requires both native dependencies.
 7. **Controlled acceptance:** in an approved test server, deliberately register
-   the twenty-command set only after configuring the bridge. Link the test
+   the configured command set only after configuring the bridge (now 25 with
+   the personal dossier continuation below). Link the test
    account, submit to an unfinished mission, observe a real worker extraction,
    review on the website and read back exactly one observed evidence record.
    Confirm mission verification is unchanged. Repeat for each enabled input
@@ -217,3 +218,57 @@ processor version/model. Never include credentials, raw uploads or private
 source text in public validation logs. No live Discord post, command sync,
 OAuth activation, private provider request, token provisioning, seat event or
 shared deployment was performed by this source session.
+
+## Personal dossiers and activation clarification — 2026-09-16
+
+The owner requested explicit entity tracking, protected storage and recall
+connected to the user's identity and dossier. Public source now implements a
+personal encrypted record store shared by the website and five private Discord
+commands. It reuses canonical PocketBase users and the native ExternalAuth
+lookup, current membership and exact registered bot binding. No workspace role
+grants access to another person's personal dossier. No passive channel capture,
+inferred matching or external memory write is introduced.
+
+The handoff's older version/count observations describe their source wave.
+For this continuation, use `docs/private-dossiers.md` and
+`docs/discord-activation.md` as the receiving contracts:
+
+1. Identify the actual existing launcher before changing startup instructions.
+   Compose includes web/PocketBase/migration only, with no bot or worker. The
+   original VPS systemd reference does not supply an inspected live unit.
+   Record non-secret working directory, Python environment and running source
+   revisions. Do not start a second bot merely to test the proposed entry point.
+2. Resolve the backend version on that installation. The package declares
+   0.39.8 while Compose/Dockerfile default to 0.28.4. Required native CI now
+   checks both declarations; neither a fixture pass nor this handoff proves
+   either native result. The hosted gate must pass and receiving-version
+   acceptance must precede shared migration.
+3. Apply the additive dossier migration and hooks together through the existing
+   receiving authority. Resolve `BUILDANDDO_DOSSIER_KEYS` only from existing
+   server secret management. Preserve historical keys and retained receipts;
+   no key is created or provisioned here. Verify native encryption and locked
+   raw APIs; key/schema failure must deny reads and writes rather than save
+   plaintext. Set operator-owned backup retention and erasure expectations.
+4. Verify an actual same-account Discord OAuth link, unlink/relink and current
+   membership removal. The native acceptance fixture seeds a synthetic link
+   through a test migration; it does not exercise the external OAuth handshake.
+   The public shared research-policy fix now uses PocketBase's native
+   ExternalAuth model API rather than querying it as a record collection.
+5. In the approved test guild, register the configured 25-command group and
+   prove both clients see one personal entity. Test stale revisions, loss after
+   accepted writes, corrections, deletion followed by replay, foreign-user
+   denial, key loss/recovery and process restart. The dossier down migration
+   retains encrypted data/receipts and disables its protocol. Do not delete
+   these receipts to clear an error: that would remove replay protection.
+6. Confirm mobile/keyboard behavior and absence of private content in browser
+   replay, automatic action names and logs. Reads use POST/no-store; decrypted
+   state and pending writes stay in memory, with account-transition fencing.
+   Discord itself processes explicit slash input and ephemeral output; do not
+   promise end-to-end secrecy or erase copies retained outside PocketBase.
+
+The new doctor reports local prerequisites only and never starts a process,
+reads dotenv files, authenticates, synchronizes commands or sends messages.
+Its runtime/launcher fields remain unverified. Generic integration health
+receipts and actual Firecrawl/transcription activation remain receiving work.
+No private runtime, OAuth provider, encryption key, command registration or
+shared database was changed by this source continuation.

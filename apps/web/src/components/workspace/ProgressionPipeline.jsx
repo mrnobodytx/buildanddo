@@ -100,6 +100,7 @@ export const PIPELINE_STEPS = [
             'Lint passes',
             'Web coverage and public telemetry adapter suites pass',
             'Native Discord commands and research parser checks pass with source coverage',
+            'Native PocketBase dossier auth, encrypted storage and retry checks pass for both declared runtimes',
             'Every manifest matches the dependency lockfile',
             'Verification commands from the issue produce their stated output',
         ],

@@ -52,6 +52,7 @@ describe('lazy route entry points', () => {
         '/platforms',
         '/evidence',
         '/research',
+        '/dossier',
         '/edition',
         '/desks',
         '/passport',

@@ -54,6 +54,9 @@
 #              VALIDATES tests/upgrade/check_discordbot.py;
 #              VALIDATES .github/workflows/pr-governance.yml;
 #              CONSUMES docs/mission-research.md;
+#              CONSUMES docs/private-dossiers.md;
+#              CONSUMES docs/discord-activation.md;
+#              VALIDATES tests/upgrade/test_dossier_native.py;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -62,40 +65,56 @@
 
 ## §1 SUMMARY
 
-Status: PARTIAL — connected source implemented; native, rendered and live acceptance remain open
+Status: PARTIAL — private dossier source complete; native, rendered and live acceptance remain open
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
 Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 34/65 cumulative phase gates complete; current source implementation covers BG–BM with 4/7 phase gates complete
-Smoke: 4/7 application gates; native SDK/PDF gate remains failing on missing dependencies
+Tasks: 38/72 cumulative phase gates complete; current BN–BT continuation has 4/7 complete gates
+Smoke: 4/7 application gates; native dependency and backend gates fail closed on unavailable runtimes
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: 10 earlier source revisions (8a1c407d12e830a041a454d3bc668f4d94e104c9, c84008b5b0a1630d8543006b7529a7da1d7badd9, 9b69cb79429f551dda5629a18bc025dce8ced29b, e820f8f220632405b910f9ebd9d71e2e20a00e41, af63ab4a64aa2708487e3a2f20b5c229e4da2d83, 203a08ced7348e551f810ed90b0a869b29532427, 858ccf52c82b58bdcd3b44db68b77e69c347d379, b609039afde504eae73bd969890a2e06c1a5b48e, 295725ac49a8131a888fb344322b32f9cfb6f2f6, 58772dee3296d6f73f2ee583ce639ba617848830); current research evidence prepared before its final source bookkeeping
+Commits: PR 27 baseline bc7ede30124d27d39090577cab536eb20ee4ca83; this continuation's evidence is prepared before its final source bookkeeping
 Verify source identity: `git log -1 --format='%H %s'`
 
-Discord and the website now submit to one protected workspace/mission research
-queue. The bot resolves native Discord OAuth links and current workspace roles,
-can propose missions and list existing evidence, and submits explicit search,
-URL or file sources. The website reviews actual extraction results before
-atomically creating one observed evidence record and its audit. Mission approval
-and verification remain with the existing mission lifecycle.
+The website's My dossier and five private Discord commands now share one
+personal encrypted entity store under canonical PocketBase user identity.
+Explicit notes retain dates and source references; owners can recall, correct
+and remove content. Workspace administrators cannot access another user's
+dossier. Saved receipts prevent duplicate writes and resurrection after deletion.
+No passive channel collection, inferred entity matching or mission verification
+is added. Source, native acceptance and deployed activation remain separate.
 
-The source worker uses selected self-hosted Firecrawl v1/v2 contracts, local
-document extraction and a configured self-hosted transcription endpoint. It
-records input digests, citations, processor/version, truncation and dated results
-under fenced leases. No private deployment, credentials, live Discord message,
-OAuth activation or provider operation was performed by this source session.
+The read-only doctor inspects existing local prerequisites without printing
+values, authenticating, synchronizing commands, sending messages or starting
+services. Compose starts web/PocketBase only; the actual bot/worker launcher is
+not in the checkout. Both declared PocketBase versions now have independent
+required native CI coverage; their hosted results were not observed here.
 
-Merged PR 26 is the source baseline. Current checks pass 199 Node and 107 Python
-cases with two native dependency skips. The targeted source checker passes 89
-cases with those same two skips; its native-required variant correctly fails.
-Native auth/rules/concurrency, browser/mobile/OAuth, deployed providers and
-Discord gateway acceptance remain separate from the source fixtures.
+Current observed source evidence: 227 Node tests pass; 129 Python tests pass
+with six native skips. The targeted Python checker passes 111 cases with two
+native skips and at least 83.72% trace statement coverage per module. Selected
+JavaScript coverage is 99.85% lines, 92.87% branches and 99.04% functions.
+Native PocketBase/SDK/PDF, rendered/mobile/OAuth, providers and runtime activation
+remain unverified. Earlier source waves are preserved below as historical work.
 
 ## §2 TASK RESULTS
+
+### Current continuation — 2026-09-16
+
+| Phase | Status | Result | Verify | CKET | Files |
+|---|---|---|---|---|---|
+| BN — Register scope and inspect activation | PASS | Existing SRS/dispatch extended before source work; local PR 27 baseline reconciled | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs_registry.yml, .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md |
+| BO — Private persistence | PARTIAL — local tests pass | Locked native APIs, authenticated encryption, owner/revision fencing, content-free receipts and retained rollback | `node --test tests/upgrade/dossier-system.test.mjs`; native command below | 07_BUILD / 08_TEST | apps/pocketbase/pb_hooks/private-dossier.js, dossier-vault.js, dossier.pb.js, apps/pocketbase/pb_migrations/1790200000_private_dossiers.js |
+| BP — Discord dossiers | PARTIAL — local tests pass | Five private commands use native account links, current membership, expiring intent and delivery recovery; no read cache | `python -m unittest discover -s tests/upgrade -p 'test_discordbot_dossier.py'` | 07_BUILD / 08_TEST | scripts/discordbot/dossier.py, scripts/discordbot/bot.py |
+| BQ — Website dossier | PARTIAL — client tests pass | Personal context, recall, note correction/deletion, revision review, history, account cleanup and masked dialogs; 16 rendered tests authored | `node --test tests/upgrade/dossier-client.test.mjs`; rendered command below | 07_BUILD / 08_TEST | apps/web/src/pages/workspace/DossierPage.jsx, apps/web/src/components/workspace/DossierEditors.jsx, apps/web/src/lib/privateDossier.js, apps/web/src/hooks/usePrivateDossier.js |
+| BR — Startup diagnostics | PASS | Seven source cases; current process prerequisites FAIL, runtime/launcher UNVERIFIED; factual operator handoff | `python -m unittest discover -s tests/upgrade -p 'test_discordbot_doctor.py'`; `python -m scripts.discordbot.doctor` | 07_BUILD / 08_TEST / 06_PLAN | scripts/discordbot/doctor.py, docs/discord-activation.md, docs/private-dossiers.md |
+| BS — Verification | PASS with acceptance blockers recorded | Full source regression, per-module coverage, Ruff, strict core typing and source diagnostics; native CI requires actual runtimes | Commands in §3 | 08_TEST / 11_COMMIT | tests/upgrade/dossier-*.mjs, test_discordbot_dossier.py, test_discordbot_doctor.py, test_dossier_native.py, .github/workflows/pr-governance.yml |
+| BT — Evidence and handoff | PASS | Prior 47 Type C events preserved; refreshed memory, context and public boundary | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | 11_COMMIT | .bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md, memory.json, .bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md |
+
+### Earlier phases — retained source history
 
 | Phase | Status | Result | Verify | CKET | Files |
 |---|---|---|---|---|---|
@@ -170,113 +189,92 @@ and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
-| Check | Command | Expected | Actual | Result |
-|---|---|---|---|---|
-| 1 | `npm --prefix apps/web test` (targeted research suites attempted) | Vitest executes | exit 127; Vitest unavailable | FAIL — environment |
-| 2 | `npm --prefix apps/web run lint` | Official repository lint executes | exit 2; eslint-plugin-import unavailable | FAIL — environment |
-| 3 | `npm --prefix apps/web run build` | Vite produces production output | exit 1; spawnSync vite ENOENT | FAIL — environment |
-| 4 | `node --test tests/upgrade/*.test.mjs` | No failing source contracts | 199/199 pass | PASS |
-| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | No failing source contracts | 107 pass, two native dependency skips, 109 total | PASS for local source; native not covered |
-| 6 | `python scripts/ci/agent_context.py --check` | Current measured context | Matches; 33 Vitest files, six earlier findings, four unwired gates | PASS |
-| 7 | `python scripts/ci/verify_public_boundary.py` | No public-boundary failures | 530 files; zero failures | PASS |
+| Gate | Runnable command | Expected | Actual |
+|---|---|---|---|
+| 1. Web interaction tests | `npm --prefix apps/web test` | Rendered user flows pass | FAIL: Vitest absent; targeted dossier/route run fails before execution |
+| 2. Official web lint | `npm --prefix apps/web run lint` | Repository lint passes | FAIL: eslint-plugin-import absent |
+| 3. Production build | `npm --prefix apps/web run build` | Vite produces the site artifact | FAIL: Vite executable absent |
+| 4. Node source regression | `node --test tests/upgrade/*.test.mjs` | All cases pass | PASS: 227/227, including 19 dossier backend/migration and 9 connected browser-client cases |
+| 5. Python source regression | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Available source cases pass; explicit native skips | PASS: 129 passes / 135 discovered; six skips are SDK, PDF and four PocketBase cases |
+| 6. Context lock | `python scripts/ci/agent_context.py --check` | Inventory matches source | PASS: six retained findings, four unwired gates |
+| 7. Public boundary | `python scripts/ci/verify_public_boundary.py` | No forbidden public paths or detected secret literals | PASS: 551 tracked files, zero failures; provider actor label not tested locally |
 
-Application smoke is 4/7. The dispatch stays in progress; missing environment
-checks are not counted as passing tests. Prior lock-resolution findings are
-retained in the earlier report/history; no dependencies or gates were weakened.
+The three application smoke failures have the same unavailable dependency root
+causes as the preceding wave. No package or lock workaround was applied. The
+receiving dependency-enabled runner must execute these exact gates before
+acceptance. Static diagnostics cannot substitute for rendering or a build.
 
-| Additional check | Command | Observed result |
+Additional measured checks:
+
+| Check | Command | Observed result and limit |
 |---|---|---|
-| Connected source coverage | `node --test --experimental-test-coverage --test-coverage-include='apps/pocketbase/pb_hooks/mission-research.js' --test-coverage-include='apps/pocketbase/pb_hooks/research-policy.js' --test-coverage-include='apps/pocketbase/pb_migrations/1790100000_mission_research.js' --test-coverage-include='apps/web/src/lib/missionResearch.js' --test-coverage-include='apps/web/src/lib/discordAccount.js' tests/upgrade/mission-research.test.mjs tests/upgrade/research-client.test.mjs` | 31/31; 99.87% lines, 85.18% branches, 94.44% functions; every selected module exceeds 80% in each measure |
-| Bot/research source | `python tests/upgrade/check_discordbot.py --include-research` | 89 pass, two native skips; per-module statement gate PASS |
-| Required native SDK/PDF | `python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf` | FAIL, exit 1; Discord.py and pypdf unavailable; neither skip becomes native acceptance |
-| Python lint | `python -m ruff check apps/research scripts/discordbot tests/upgrade/*discord*.py tests/upgrade/*research*.py` | PASS |
-| New Python typing | `python -m mypy --strict --explicit-package-bases apps/research scripts/discordbot/research.py` | PASS; six source files |
-| Complete SDK typing | `python -m mypy --strict --explicit-package-bases apps/research scripts/discordbot` | FAIL; missing discord import and ten resulting untyped SDK errors |
-| Python branch coverage | `python -m pytest tests/upgrade/test_discordbot_*.py tests/upgrade/test_research_runtime.py --cov=scripts/discordbot --cov=apps/research --cov-branch --cov-fail-under=80` | Cannot run; pytest unavailable |
-| Web coverage | `npm --prefix apps/web run test:coverage` | Cannot run; Vitest unavailable |
-| Limited source diagnostic | `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs` | PASS; 225 modules, zero static errors; does not render UI or replace repository lint |
-| Provenance and memory | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | PASS; 263 file vectors, 520 edges, 47 events |
+| Python source coverage | `python tests/upgrade/check_discordbot.py --include-research` | PASS: 111 cases, two native skips; new dossier module 97.55%, doctor 97.65%; minimum across modules 83.72% trace statements |
+| Required native SDK/PDF | `python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf` | FAIL: Discord.py and pypdf absent; same 111 source passes do not satisfy native gate |
+| Required PocketBase | `python tests/upgrade/test_dossier_native.py --require-binary` | FAIL: BUILDANDDO_TEST_POCKETBASE executable unavailable; no native test ran |
+| Python branch coverage | `python -m pytest tests/upgrade/test_discordbot_dossier.py tests/upgrade/test_discordbot_doctor.py --cov=scripts/discordbot --cov-branch --cov-fail-under=80` | FAIL before collection: pytest absent; trace statement coverage is reported separately |
+| Core typing | `python -m mypy --strict --explicit-package-bases scripts/discordbot/dossier.py scripts/discordbot/doctor.py apps/research/contracts.py apps/research/documents.py apps/research/processing.py apps/research/worker.py` | PASS: six source modules; complete SDK typing still requires Discord.py |
+| Python lint | `python -m ruff check scripts/discordbot apps/research tests/upgrade/test_discordbot_*.py tests/upgrade/test_dossier_native.py tests/upgrade/research_support.py tests/upgrade/check_discordbot.py` | PASS |
+| JavaScript source coverage | See exact command below | PASS: 59 connected cases; 99.85% lines, 92.87% branches, 99.04% functions over five selected modules |
+| Source diagnostics | `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs` | PASS: 231 modules, zero static errors; includes new test syntax, not execution |
+| Rendered dossier acceptance | `npm --prefix apps/web run test -- --run src/pages/workspace/__tests__/DossierFlow.test.jsx src/hooks/__tests__/usePrivateDossier.test.jsx src/__tests__/AppRoutes.test.jsx` | FAIL before execution: Vitest absent; 11 page and five hook cases remain authored, unverified |
+| Web coverage | `npm --prefix apps/web run test:coverage` | FAIL: Vitest absent; new modules retain 80% CI thresholds |
+| Bot startup doctor | `python -m scripts.discordbot.doctor --component bot` | Expected local FAIL here: missing SDK/token, private bridge disabled; launcher and runtime UNVERIFIED |
+| Worker startup doctor | `python -m scripts.discordbot.doctor --component worker` | Expected local FAIL here: missing token/parser/backend configuration; launcher and runtime UNVERIFIED |
 
-Python trace statement lines measure actual source execution under local HTTP,
-document subprocesses and explicit backend/transport fixtures. They do not
-measure branches, native PocketBase transactions or the Discord gateway.
+```bash
+node --test --experimental-test-coverage --test-coverage-include='**/dossier-vault.js' --test-coverage-include='**/private-dossier.js' --test-coverage-include='**/1790200000_private_dossiers.js' --test-coverage-include='**/privateDossier.js' --test-coverage-include='**/research-policy.js' tests/upgrade/dossier-system.test.mjs tests/upgrade/dossier-client.test.mjs tests/upgrade/mission-research.test.mjs tests/upgrade/research-client.test.mjs
+```
 
-| Module | Statement coverage |
-|---|---|
-| apps/research/contracts.py | 98.25% |
-| apps/research/documents.py | 83.72% |
-| apps/research/processing.py | 90.57% |
-| apps/research/transport.py | 98.21% |
-| apps/research/worker.py | 88.05% |
-| scripts/discordbot/bot.py | 91.35% |
-| scripts/discordbot/catalogue.py | 96.79% |
-| scripts/discordbot/contracts.py | 99.43% |
-| scripts/discordbot/public_data.py | 97.32% |
-| scripts/discordbot/research.py | 92.49% |
-| scripts/discordbot/service.py | 99.56% |
+Observed red/green fixes: the shared OAuth path queried a native ExternalAuth
+model as an API record collection. A regression first failed, then passed after
+using findFirstExternalAuthByExpr with a native expression. A second regression
+failed when non-enumerable request properties disappeared during object spread;
+the transactional adapter now passes the required native event properties
+explicitly. Reproduce both with:
 
-Red/green evidence and applied fixes:
+```bash
+node --test --test-name-pattern='native ExternalAuth' tests/upgrade/dossier-system.test.mjs
+```
 
-- `python -m unittest discover -s tests/upgrade -p 'test_research_runtime.py' -k unclaimable`
-  initially failed because every bounded poll restarted before the same 200
-  unclaimable jobs. The worker now resumes later pages; the next eligible job
-  processes on the following poll. The same regression passes.
-- `python -m unittest discover -s tests/upgrade -p 'test_discordbot_research.py' -k unicode_document`
-  initially recorded failure for long non-BMP text: escaped child JSON and
-  JavaScript UTF-16 bounds disagreed with Python code-point counts. Shared
-  character-safe truncation now fits both boundaries, marks truncation, preserves
-  the original-byte digest and reaches ready through the actual handler source.
-  The same regression passes.
-- `node --test --test-name-pattern='file downloads' tests/upgrade/mission-research.test.mjs`
-  initially allowed file access after the linked mission became unreadable.
-  Downloads now recheck mission readability for members and leased workers;
-  unused uploads are owner-only. The same regression and full connected suites
-  pass. Native PocketBase file-token enforcement still requires native acceptance.
-- Combined SDK-double discovery initially created distinct exception classes
-  when patch.dict restored newly imported modules. Importing shared research
-  modules before the SDK patch fixes the fixture lifecycle; the complete checker
-  passes its source tests without broadening production exception handling.
-  An incorrect fixture import and a limiter-count test expectation were also
-  corrected; the full Node/Python commands above pass.
+Source review also corrected a missing closure in a newly authored rendered
+fixture and bounded its text queries to the selected-entity region. The static
+diagnostic passes afterward; absent Vitest means no rendered red/green claim.
+Tests cover encrypted persistence/corruption, owner isolation, relinking,
+revision conflicts, atomic rollback, deleted-content replay and delivery loss.
+Node uses an explicit crypto/storage boundary double and Python an SDK transport
+double; neither establishes native PocketBase encryption or Discord compatibility.
 
-Unresolved failures: declared native SDK/PDF and frontend dependencies are absent;
-complete SDK typing and pytest/branch coverage consequently remain unavailable.
-The receiving runner must install declared dependencies and rerun the exact
-commands above. The independent CI job has been parsed and checked to require
-both native dependencies and corresponding ci:test descriptions, with no login,
-credentials, skip suppression or continue-on-error. Its hosted result is unobserved.
-
-The current interpreter is Python 3.12.13 and local Node is 24.13.0. CI uses
-Python 3.12 and Node 22; that runner's results are still required. Native
-PocketBase 0.28.4, Discord OAuth/SDK/gateway, rendered mobile/keyboard/theme,
-served revision, self-hosted Firecrawl/transcription and real resource limits
-remain receiving-runtime checks. No browser screenshot or live result is claimed.
+The independent native CI matrix parses correctly and requires both declared
+PocketBase versions (package 0.39.8; Compose 0.28.4), with no continue-on-error,
+secret inputs or dependency on the web job. It reuses the existing Dockerfile
+only on the hosted runner. The isolated test applies actual hooks and migrations,
+then tests native auth, locked APIs, model lookup, crypto and concurrent retries.
+Its test migration seeds a link; real Discord OAuth is still receiving acceptance.
+Verify hosted results and receiving runtime through docs/discord-activation.md;
+no hosted success, browser screenshots or shared activation is claimed here.
 
 ## §4 MEMORY INGEST
 
-Type A count: 263
-Type B count: 520
-Type C count: 47
-IOO compliance: true
+Type A count: 284
+Type B count: 589
+Type C count: 53
+IOO compliance: complete
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+Prior history: all 47 baseline Type C events are preserved without rewriting.
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
-
-All 41 baseline Type C events are preserved without rewriting their historical
-facts. New events record source results, the observed red/green fixes and native
-environment limits. No direct memory service write occurred.
 
 ## §5 CKET FILING
 
-06_PLAN: docs/mission-research.md and updated docs/discord-bot.md
-04_HYPOTHESIZE: existing umbrella spec/registry and contribution governance
-07_BUILD: research backend/migration, Python processors, bot bridge and web flow
-08_TEST: connected source, transport/storage fixtures and rendered suites
-11_COMMIT: CI, dispatch, context, report, handoff and memory payload
+06_PLAN: docs/private-dossiers.md, docs/discord-activation.md, updated Discord/research documentation
+04_HYPOTHESIZE: registered umbrella SRS and contribution governance
+07_BUILD: private dossier hooks/migration, web components/client/hook, bot bridge and doctor
+08_TEST: connected source fixtures, rendered flow/hook tests and native acceptance runner
+11_COMMIT: CI, dispatch, context, report/memory and receiving handoff
 13_SAVE: none
-CGRF headers: 27/27 new this continuation; 176/176 cumulatively
-REFLEX validator: deferred to the private validator; no signing values fabricated
-Verify paths and headers: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+CGRF headers: 21/21 new this continuation; 197/197 cumulative files created since the original base
+REFLEX check: deferred to private post-merge validator; no signing values fabricated
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
 ## §6 GOVERNANCE
 
@@ -286,29 +284,30 @@ Hard-NO scan: zero public-boundary violations
 Secret scan: clean under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: A2 public application source, additive schemas and isolated tests
-Verify boundary: `python scripts/ci/verify_public_boundary.py`
+Risk / authority: A2 public source, additive schema and isolated validation
+Verify: `python scripts/ci/verify_public_boundary.py`
 
-Credentials are read only through existing native runtime bindings at explicit
-startup. Discord identity is resolved through native OAuth links, not typed IDs
-or Discord roles. Review creates observed evidence, never verification. No
-shared database operation, Discord message/registration, token provisioning,
-private infrastructure, seat event or provider activation was performed here.
+No key generation/provisioning, bot login, Discord synchronization/message,
+private service deployment, shared database migration, live OAuth/provider call
+or seat message occurred. Runtime key custody, transport, native acceptance and
+backup retention remain operator responsibilities. Server-side encryption is
+not end-to-end encryption or physical erasure of existing backups.
 
 ## §7 NEXT ACTIONS
 
-Blockers: native SDK/PDF, full typing/branch coverage, frontend dependencies,
-native PocketBase and OAuth/rule/concurrency/file acceptance, actual provider
-contracts and controlled test-server/served-version evidence.
-Handoffs requested: CMAX-B/IDE1/community operator via
+Blockers: native Discord/PDF/PocketBase, frontend dependencies and browser
+acceptance; actual service launcher, runtime key binding, OAuth and providers.
+Handoffs requested: CMAX-B/IDE1/community operator through
 .bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md.
-No receiving seat was activated. The existing delivery handoff also applies.
-Suggested next dispatch: receiver-owned native research and controlled provider
-acceptance; its private dispatch ID belongs to that receiving owner.
-Bugs filed: none; no provider write. Six earlier context findings remain visible.
+No receiving seat was activated. Suggested next dispatch: receiver-owned native
+dossier/Discord acceptance and identification of the existing launcher; the
+receiving owner supplies its own dispatch ID. Bugs filed: none; no provider
+write. Six pre-existing context findings remain visible.
 
-Rollback: the research down migration removes its protocol marker and retains
-protected files, submissions, audit history and observed evidence links. Do not
-down unrelated migrations or restore older membership permissions. Coordinate
-complete frontend/bot/worker bundles and registered commands with the private
-operator. docs/mission-research.md contains the actual contracts and test sequence.
+Rollback: restore complete bot/web bundles under the receiving release process
+and coordinate registered command definitions. The dossier down migration
+retains encrypted content and deletion receipts while disabling its protocol;
+re-up restores the marker only after schema checks. Preserve required keys and
+backup policy. Do not drop receipt history or roll back unrelated workspace or
+research evidence. Exact contracts and receiving tests are in
+docs/private-dossiers.md and docs/discord-activation.md.
