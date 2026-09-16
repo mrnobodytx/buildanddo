@@ -1,0 +1,1479 @@
+{
+  "schema_version": "federal.portfolio/v1",
+  "owner": "Citadel Nexus Inc.",
+  "source_status": "Owner brief received 2026-09-16; official solicitation has not been inspected.",
+  "registration": {
+    "srs_code": "SRS-BUILDANDDO-UPGRADE-001",
+    "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001"
+  },
+  "max_parallel_lanes": 5,
+  "shared_components": [
+    {
+      "id": "requirements",
+      "intent": "One versioned catalogue maps requirements, metrics, claims and external gates.",
+      "source_paths": [
+        "apps/federal_foundry/catalog.py"
+      ]
+    },
+    {
+      "id": "experiment",
+      "intent": "Provider-independent requests bind identities, versions, budgets and repeated experiment controls.",
+      "source_paths": [
+        "apps/federal_foundry/protocol.py",
+        "apps/mission_suite/bundle.py"
+      ]
+    },
+    {
+      "id": "evidence",
+      "intent": "Validate receipt bytes and declared review, then project claims and comparable measurements.",
+      "source_paths": [
+        "apps/federal_foundry/evidence.py",
+        "scripts/ci/evidence_epoch.py"
+      ]
+    },
+    {
+      "id": "mission-review",
+      "intent": "Use existing PocketBase mission permissions and human-reviewed Evidence Ledger attachments after operator intake.",
+      "source_paths": [
+        "apps/pocketbase/pb_hooks/mission-suite.js",
+        "apps/web/src/lib/missionSuite.js"
+      ]
+    }
+  ],
+  "human_gates": [
+    "Official solicitation, deadline and submission-format verification",
+    "Applicant eligibility and federal certifications",
+    "Final claim truthfulness and independent technical review",
+    "IP, data rights and public-release decisions",
+    "Cost proposal and funding request",
+    "Team and key-personnel representation",
+    "Required physical test evidence",
+    "Customer and partner commitments",
+    "Final submission and portal receipt"
+  ],
+  "inactive_lanes": [
+    {
+      "id": "xtech-search-10",
+      "state": "submission_reported_by_owner",
+      "verification": "not_observed",
+      "active": false
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "influence",
+      "srs_code": "SRS-BUILDANDDO-FEDERAL-INFLUENCE-001",
+      "title": "Influence benchmarks",
+      "mode": "full_effort",
+      "topic": {
+        "agency": "DARPA",
+        "reference": "DV026 (owner supplied)",
+        "status": "unverified",
+        "official_url": null
+      },
+      "objective": "Build a reproducible auction and multi-agent laboratory with seeded news, counterfactual scenarios, observable behavior and resource accounting.",
+      "eligibility": {
+        "status": "unverified",
+        "checks": [
+          "Verify the exact topic, Phase I eligibility and current funding terms.",
+          "Confirm applicant and data/IP rights before any submission."
+        ]
+      },
+      "requirements": [
+        {
+          "id": "market-kernel",
+          "statement": "Deterministic orders record time, asset, quantity and price; auction clearing respects balances, quantities, valuations and utility.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "llm-stock-agents",
+          "statement": "Demonstrate at least ten LLM-based stock-agent identities with actual provider/model/version and prompt receipts; they need not use ten providers.",
+          "kind": "empirical",
+          "metric_id": "llm_agent_count"
+        },
+        {
+          "id": "efficiency",
+          "statement": "Measure allocative efficiency against a disclosed optimum on repeated seeded valuation and news scenarios.",
+          "kind": "simulation",
+          "metric_id": "allocative_efficiency"
+        },
+        {
+          "id": "behavior",
+          "statement": "Evaluate collaboration, deception, anchoring, herding and risk-preference classifiers on independently labeled controls.",
+          "kind": "empirical",
+          "metric_id": "behavior_f1"
+        },
+        {
+          "id": "replay",
+          "statement": "Replay orders, news, interactions and temporal/causal graph provenance from exact inputs; counterfactual labels alone do not establish causality.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "runtime",
+          "statement": "Measure end-to-end latency and resource use including provider calls, retries and failures.",
+          "kind": "empirical",
+          "metric_id": "latency_ms"
+        }
+      ],
+      "metrics": [
+        {
+          "id": "llm_agent_count",
+          "unit": "agents",
+          "direction": "maximize",
+          "target": 10,
+          "comparator": "gte",
+          "aggregate": "min"
+        },
+        {
+          "id": "allocative_efficiency",
+          "unit": "ratio",
+          "direction": "maximize",
+          "target": 0.9,
+          "comparator": "gt",
+          "aggregate": "mean"
+        },
+        {
+          "id": "behavior_f1",
+          "unit": "ratio",
+          "direction": "maximize",
+          "target": null,
+          "comparator": "gte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "latency_ms",
+          "unit": "ms",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "compute_cost",
+          "unit": "USD",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "auction-baseline",
+          "approach": "Standard auction engine with independently configured LLM stock agents."
+        },
+        {
+          "id": "graph-interactions",
+          "approach": "Graph-mediated interactions with otherwise identical auctions and news."
+        },
+        {
+          "id": "event-sourced",
+          "approach": "Deterministic event-sourced market with replayed prompts and orders."
+        },
+        {
+          "id": "task-market",
+          "approach": "Adapt existing task-market abstractions only after source inspection."
+        },
+        {
+          "id": "marketplace-baseline",
+          "approach": "Reproduce an available marketplace reference under documented licensing."
+        }
+      ],
+      "architecture": [
+        "Seeded asset/value model -> validated order book -> deterministic auction clearing -> utility and allocative-efficiency report.",
+        "Configured model adapters -> ten or more isolated stock-agent identities -> bounded interactions and news consumption.",
+        "Event receipts -> temporal/causal hypotheses -> labeled behavior evaluation -> claim/evidence projection."
+      ],
+      "risks": [
+        {
+          "risk": "Classifiers confuse correlation with influence.",
+          "mitigation": "Use randomized interventions, null controls and an independent domain review."
+        },
+        {
+          "risk": "Different model costs or seeds bias a candidate bakeoff.",
+          "mitigation": "Match models, budgets and experiments; report failures and unmatched cases."
+        }
+      ],
+      "reuse": [
+        "apps/mission_suite/engine.py",
+        "apps/research/transport.py",
+        "scripts/ci/evidence_epoch.py"
+      ],
+      "deadline": {
+        "value": null,
+        "status": "unverified"
+      },
+      "submission_format": {
+        "status": "unverified",
+        "notes": "Owner reports a ten-page white paper, five slides and a $300,000 Phase I. Verify the current solicitation before relying on these limits."
+      },
+      "deliverables": [
+        "requirements_matrix.md",
+        "claim_evidence_matrix.md",
+        "architecture.md",
+        "experiment_plan.md",
+        "results.json",
+        "benchmark_report.md",
+        "gap_report.md",
+        "risk_register.md",
+        "SOW.md",
+        "commercialization.md",
+        "whitepaper.md",
+        "slides/outline.md",
+        "submission_checklist.md"
+      ],
+      "milestones": [
+        {
+          "id": "scope",
+          "objective": "Verify official scope, rights, prerequisites and experiment targets.",
+          "depends_on": []
+        },
+        {
+          "id": "baseline",
+          "objective": "Reproduce the disclosed baseline and freeze experiment inputs.",
+          "depends_on": [
+            "scope"
+          ]
+        },
+        {
+          "id": "candidates",
+          "objective": "Build isolated candidates and retain all measurements and failures.",
+          "depends_on": [
+            "baseline"
+          ]
+        },
+        {
+          "id": "verify",
+          "objective": "Assign a distinct verifier, evaluate matched conditions and record gaps.",
+          "depends_on": [
+            "candidates"
+          ]
+        },
+        {
+          "id": "review",
+          "objective": "Project evidence into drafts for human truth, eligibility and submission review.",
+          "depends_on": [
+            "verify"
+          ]
+        }
+      ],
+      "claims": [
+        {
+          "id": "market-kernel",
+          "statement": "Deterministic orders record time, asset, quantity and price; auction clearing respects balances, quantities, valuations and utility.",
+          "requirements": [
+            "market-kernel"
+          ]
+        },
+        {
+          "id": "llm-stock-agents",
+          "statement": "Demonstrate at least ten LLM-based stock-agent identities with actual provider/model/version and prompt receipts; they need not use ten providers.",
+          "requirements": [
+            "llm-stock-agents"
+          ]
+        },
+        {
+          "id": "efficiency",
+          "statement": "Measure allocative efficiency against a disclosed optimum on repeated seeded valuation and news scenarios.",
+          "requirements": [
+            "efficiency"
+          ]
+        },
+        {
+          "id": "behavior",
+          "statement": "Evaluate collaboration, deception, anchoring, herding and risk-preference classifiers on independently labeled controls.",
+          "requirements": [
+            "behavior"
+          ]
+        },
+        {
+          "id": "replay",
+          "statement": "Replay orders, news, interactions and temporal/causal graph provenance from exact inputs; counterfactual labels alone do not establish causality.",
+          "requirements": [
+            "replay"
+          ]
+        },
+        {
+          "id": "runtime",
+          "statement": "Measure end-to-end latency and resource use including provider calls, retries and failures.",
+          "requirements": [
+            "runtime"
+          ]
+        }
+      ],
+      "evidence_required": [
+        {
+          "requirement_id": "market-kernel",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "llm-stock-agents",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "efficiency",
+          "kind": "simulation"
+        },
+        {
+          "requirement_id": "behavior",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "replay",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "runtime",
+          "kind": "empirical"
+        }
+      ],
+      "evidence_available": [],
+      "evidence_missing": [
+        "Official topic source and eligibility decision.",
+        "Actual model runtime bindings and permitted spending.",
+        "Labeled behavior controls, optimum calculation audit and statistically justified sample size."
+      ],
+      "experiment": {
+        "seeds": [
+          101,
+          202,
+          303,
+          404,
+          505
+        ],
+        "dataset_status": "required",
+        "controls": [
+          "Hold valuations, auction rules, seeds and news fixed for candidate comparisons.",
+          "Reserve evaluation labels and scenarios before tuning; include null and adversarial controls.",
+          "Record provider sampling configuration and responses; replay is exact-byte replay, not a promise of deterministic LLM output."
+        ]
+      }
+    },
+    {
+      "id": "navair",
+      "srs_code": "SRS-BUILDANDDO-FEDERAL-NAVAIR-001",
+      "title": "NAVAIR acquisition analysis",
+      "mode": "full_effort",
+      "topic": {
+        "agency": "NAVAIR",
+        "reference": "Acquisition analysis (exact topic unverified)",
+        "status": "unverified",
+        "official_url": null
+      },
+      "objective": "Rank related acquisition records with deterministic top-N behavior, source explanations and a reproducible evaluation package.",
+      "eligibility": {
+        "status": "unverified",
+        "checks": [
+          "Locate the exact solicitation and current applicant requirements.",
+          "Resolve corpus licensing, government-furnished information and public-release rights."
+        ]
+      },
+      "requirements": [
+        {
+          "id": "parser",
+          "statement": "Extract bounded document text and metadata; report malformed, duplicate, excluded and unsupported inputs.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "ranking",
+          "statement": "Return stable top-N rankings and tie-breaking with document/model provenance and reproducible query settings.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "retrieval",
+          "statement": "Evaluate held-out retrieval quality using independently labeled queries and leakage controls.",
+          "kind": "empirical",
+          "metric_id": "ndcg_at_10"
+        },
+        {
+          "id": "latency",
+          "statement": "Measure complete parsing/indexing/query latency under a disclosed workload.",
+          "kind": "empirical",
+          "metric_id": "latency_ms"
+        },
+        {
+          "id": "memory",
+          "statement": "Measure peak memory for the same corpus, model and hardware configuration.",
+          "kind": "empirical",
+          "metric_id": "peak_memory_mb"
+        },
+        {
+          "id": "package",
+          "statement": "Build and execute a reproducible container or reviewed portable package with an SBOM and result receipts.",
+          "kind": "source_test",
+          "metric_id": null
+        }
+      ],
+      "metrics": [
+        {
+          "id": "ndcg_at_10",
+          "unit": "ratio",
+          "direction": "maximize",
+          "target": null,
+          "comparator": "gte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "recall_at_10",
+          "unit": "ratio",
+          "direction": "maximize",
+          "target": null,
+          "comparator": "gte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "latency_ms",
+          "unit": "ms",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "peak_memory_mb",
+          "unit": "MiB",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "max"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "bm25",
+          "approach": "Lexical BM25 baseline."
+        },
+        {
+          "id": "embedding",
+          "approach": "Embedding-only retrieval with a pinned model."
+        },
+        {
+          "id": "hybrid",
+          "approach": "Calibrated lexical/vector retrieval."
+        },
+        {
+          "id": "graph",
+          "approach": "Relationship graph retrieval with traceable edges."
+        },
+        {
+          "id": "cluster-retrieval",
+          "approach": "Cluster-aware retrieval with held-out tuning."
+        },
+        {
+          "id": "reranker",
+          "approach": "Rerank the same candidate set and count added compute."
+        }
+      ],
+      "architecture": [
+        "Authorized corpus -> parser/metadata -> lexical/vector index -> relationship graph/clustering.",
+        "Query -> deterministic candidate retrieval -> optional reranker -> ranked explanations and provenance.",
+        "Disclosed corpus/query split -> reproducibility/quality/runtime/memory receipts -> validation package."
+      ],
+      "risks": [
+        {
+          "risk": "Restricted acquisition text is accidentally treated as public.",
+          "mitigation": "Use an explicitly rights-cleared public corpus and retain exclusion receipts."
+        },
+        {
+          "risk": "High retrieval scores reflect benchmark leakage.",
+          "mitigation": "Keep held-out relevance labels and an independent verifier."
+        }
+      ],
+      "reuse": [
+        "apps/research/documents.py",
+        "apps/research/contracts.py",
+        "apps/mission_suite/bundle.py"
+      ],
+      "deadline": {
+        "value": null,
+        "status": "unverified"
+      },
+      "submission_format": {
+        "status": "unverified",
+        "notes": "The owner describes a containerized analysis package and validation report; official submission format and deadline are unknown."
+      },
+      "deliverables": [
+        "requirements_matrix.md",
+        "claim_evidence_matrix.md",
+        "architecture.md",
+        "experiment_plan.md",
+        "results.json",
+        "benchmark_report.md",
+        "gap_report.md",
+        "risk_register.md",
+        "SOW.md",
+        "commercialization.md",
+        "whitepaper.md",
+        "slides/outline.md",
+        "submission_checklist.md"
+      ],
+      "milestones": [
+        {
+          "id": "scope",
+          "objective": "Verify official scope, rights, prerequisites and experiment targets.",
+          "depends_on": []
+        },
+        {
+          "id": "baseline",
+          "objective": "Reproduce the disclosed baseline and freeze experiment inputs.",
+          "depends_on": [
+            "scope"
+          ]
+        },
+        {
+          "id": "candidates",
+          "objective": "Build isolated candidates and retain all measurements and failures.",
+          "depends_on": [
+            "baseline"
+          ]
+        },
+        {
+          "id": "verify",
+          "objective": "Assign a distinct verifier, evaluate matched conditions and record gaps.",
+          "depends_on": [
+            "candidates"
+          ]
+        },
+        {
+          "id": "review",
+          "objective": "Project evidence into drafts for human truth, eligibility and submission review.",
+          "depends_on": [
+            "verify"
+          ]
+        }
+      ],
+      "claims": [
+        {
+          "id": "parser",
+          "statement": "Extract bounded document text and metadata; report malformed, duplicate, excluded and unsupported inputs.",
+          "requirements": [
+            "parser"
+          ]
+        },
+        {
+          "id": "ranking",
+          "statement": "Return stable top-N rankings and tie-breaking with document/model provenance and reproducible query settings.",
+          "requirements": [
+            "ranking"
+          ]
+        },
+        {
+          "id": "retrieval",
+          "statement": "Evaluate held-out retrieval quality using independently labeled queries and leakage controls.",
+          "requirements": [
+            "retrieval"
+          ]
+        },
+        {
+          "id": "latency",
+          "statement": "Measure complete parsing/indexing/query latency under a disclosed workload.",
+          "requirements": [
+            "latency"
+          ]
+        },
+        {
+          "id": "memory",
+          "statement": "Measure peak memory for the same corpus, model and hardware configuration.",
+          "requirements": [
+            "memory"
+          ]
+        },
+        {
+          "id": "package",
+          "statement": "Build and execute a reproducible container or reviewed portable package with an SBOM and result receipts.",
+          "requirements": [
+            "package"
+          ]
+        }
+      ],
+      "evidence_required": [
+        {
+          "requirement_id": "parser",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "ranking",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "retrieval",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "latency",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "memory",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "package",
+          "kind": "source_test"
+        }
+      ],
+      "evidence_available": [],
+      "evidence_missing": [
+        "Official topic and submission instructions.",
+        "Rights-cleared corpus, independent relevance judgments and query split.",
+        "Approved quality/runtime/memory targets and representative machine."
+      ],
+      "experiment": {
+        "seeds": [
+          101,
+          202,
+          303,
+          404,
+          505
+        ],
+        "dataset_status": "required",
+        "controls": [
+          "Freeze the corpus, query relevance labels and top-N tie policy before comparisons.",
+          "Use the same hardware and include index construction, parser exclusions and warm/cold timing policy.",
+          "Disclose embedding and reranker versions; keep evaluation queries out of tuning."
+        ]
+      }
+    },
+    {
+      "id": "low-swap",
+      "srs_code": "SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001",
+      "title": "Brain-inspired low-SWaP",
+      "mode": "research_prototype",
+      "topic": {
+        "agency": "DAF (owner supplied)",
+        "reference": "NV027 (owner supplied)",
+        "status": "unverified",
+        "official_url": null
+      },
+      "objective": "Compare a fixed monolithic baseline with a heterogeneous neural runtime and dynamic compute gate using controlled tasks and ablations.",
+      "eligibility": {
+        "status": "unverified",
+        "checks": [
+          "Verify the exact topic and whether the proposed experiment fits its Phase I scope.",
+          "Confirm scientific reviewers, public datasets and any hardware restrictions."
+        ]
+      },
+      "requirements": [
+        {
+          "id": "harness",
+          "statement": "Run a common task/dataset interface for baseline and heterogeneous candidates with repeatable seeds and configuration receipts.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "accuracy",
+          "statement": "Measure task accuracy, switching, novelty response and failure modes against a held-out baseline.",
+          "kind": "empirical",
+          "metric_id": "accuracy"
+        },
+        {
+          "id": "latency",
+          "statement": "Measure complete latency including perception, temporal state, memory and compute-gate overhead.",
+          "kind": "empirical",
+          "metric_id": "latency_ms"
+        },
+        {
+          "id": "energy",
+          "statement": "Measure physical energy on the actual device with power instrumentation, sampling method and idle/preprocessing policy.",
+          "kind": "physical",
+          "metric_id": "energy_joules"
+        },
+        {
+          "id": "ablations",
+          "statement": "Run ablations that isolate compute gating, temporal, spiking and memory contributions from orchestration overhead.",
+          "kind": "simulation",
+          "metric_id": null
+        },
+        {
+          "id": "memory",
+          "statement": "Measure peak device memory and active parameters on a declared runtime.",
+          "kind": "empirical",
+          "metric_id": "peak_memory_mb"
+        }
+      ],
+      "metrics": [
+        {
+          "id": "accuracy",
+          "unit": "ratio",
+          "direction": "maximize",
+          "target": null,
+          "comparator": "gte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "latency_ms",
+          "unit": "ms",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "energy_joules",
+          "unit": "J",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "peak_memory_mb",
+          "unit": "MiB",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "max"
+        },
+        {
+          "id": "active_parameters",
+          "unit": "parameters",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "monolithic",
+          "approach": "Fixed monolithic model baseline."
+        },
+        {
+          "id": "heterogeneous",
+          "approach": "Perception plus temporal/SSM/RNN, small transformer, spiking subsystem and graph/vector memory."
+        },
+        {
+          "id": "gated",
+          "approach": "The same heterogeneous components with a measured dynamic compute gate."
+        },
+        {
+          "id": "ablated",
+          "approach": "Remove one component or gate at a time under identical controls."
+        }
+      ],
+      "architecture": [
+        "Frozen tasks -> baseline or heterogeneous perception/temporal/transformer/spiking modules -> common outputs.",
+        "Graph/vector memory and dynamic compute gating -> observable decisions and resource receipts.",
+        "Held-out quality/task-switching runs + ablations + physical instrument receipts -> scientific review."
+      ],
+      "risks": [
+        {
+          "risk": "Biological terminology substitutes for a research contribution.",
+          "mitigation": "Require ablations, a falsifiable hypothesis and independent scientific review."
+        },
+        {
+          "risk": "Estimated power is presented as physical feasibility.",
+          "mitigation": "Require physical evidence kind and raw measurement method for hardware claims."
+        }
+      ],
+      "reuse": [
+        "apps/mission_suite/bundle.py",
+        "scripts/ci/evidence_epoch.py"
+      ],
+      "deadline": {
+        "value": null,
+        "status": "unverified"
+      },
+      "submission_format": {
+        "status": "unverified",
+        "notes": "The owner reports that simulations and small Phase I prototypes are permitted. Official requirements and submission limits remain unverified."
+      },
+      "deliverables": [
+        "requirements_matrix.md",
+        "claim_evidence_matrix.md",
+        "architecture.md",
+        "experiment_plan.md",
+        "results.json",
+        "benchmark_report.md",
+        "gap_report.md",
+        "risk_register.md",
+        "SOW.md",
+        "commercialization.md",
+        "whitepaper.md",
+        "slides/outline.md",
+        "submission_checklist.md"
+      ],
+      "milestones": [
+        {
+          "id": "scope",
+          "objective": "Verify official scope, rights, prerequisites and experiment targets.",
+          "depends_on": []
+        },
+        {
+          "id": "baseline",
+          "objective": "Reproduce the disclosed baseline and freeze experiment inputs.",
+          "depends_on": [
+            "scope"
+          ]
+        },
+        {
+          "id": "candidates",
+          "objective": "Build isolated candidates and retain all measurements and failures.",
+          "depends_on": [
+            "baseline"
+          ]
+        },
+        {
+          "id": "verify",
+          "objective": "Assign a distinct verifier, evaluate matched conditions and record gaps.",
+          "depends_on": [
+            "candidates"
+          ]
+        },
+        {
+          "id": "review",
+          "objective": "Project evidence into drafts for human truth, eligibility and submission review.",
+          "depends_on": [
+            "verify"
+          ]
+        }
+      ],
+      "claims": [
+        {
+          "id": "harness",
+          "statement": "Run a common task/dataset interface for baseline and heterogeneous candidates with repeatable seeds and configuration receipts.",
+          "requirements": [
+            "harness"
+          ]
+        },
+        {
+          "id": "accuracy",
+          "statement": "Measure task accuracy, switching, novelty response and failure modes against a held-out baseline.",
+          "requirements": [
+            "accuracy"
+          ]
+        },
+        {
+          "id": "latency",
+          "statement": "Measure complete latency including perception, temporal state, memory and compute-gate overhead.",
+          "requirements": [
+            "latency"
+          ]
+        },
+        {
+          "id": "energy",
+          "statement": "Measure physical energy on the actual device with power instrumentation, sampling method and idle/preprocessing policy.",
+          "requirements": [
+            "energy"
+          ]
+        },
+        {
+          "id": "ablations",
+          "statement": "Run ablations that isolate compute gating, temporal, spiking and memory contributions from orchestration overhead.",
+          "requirements": [
+            "ablations"
+          ]
+        },
+        {
+          "id": "memory",
+          "statement": "Measure peak device memory and active parameters on a declared runtime.",
+          "requirements": [
+            "memory"
+          ]
+        }
+      ],
+      "evidence_required": [
+        {
+          "requirement_id": "harness",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "accuracy",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "latency",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "energy",
+          "kind": "physical"
+        },
+        {
+          "requirement_id": "ablations",
+          "kind": "simulation"
+        },
+        {
+          "requirement_id": "memory",
+          "kind": "empirical"
+        }
+      ],
+      "evidence_available": [],
+      "evidence_missing": [
+        "Official topic and domain-review assessment of novelty.",
+        "Pinned baseline/components, held-out tasks and candidate implementations.",
+        "Instrumented hardware and empirical power, latency and memory receipts."
+      ],
+      "experiment": {
+        "seeds": [
+          101,
+          202,
+          303,
+          404,
+          505
+        ],
+        "dataset_status": "required",
+        "controls": [
+          "Keep tasks, preprocessing, dataset splits and seeds identical across candidates.",
+          "Record measured watts separately from estimated energy; estimates cannot satisfy physical evidence.",
+          "State device, idle draw, sampling frequency, warm-up and system boundary for every power result."
+        ]
+      }
+    },
+    {
+      "id": "semantic-isr",
+      "srs_code": "SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001",
+      "title": "Semantic ISR",
+      "mode": "prototype_and_evidence",
+      "topic": {
+        "agency": "DARPA (owner supplied)",
+        "reference": "Semantic ISR (exact topic unverified)",
+        "status": "unverified",
+        "official_url": null
+      },
+      "objective": "Compare semantic video packets and receiver reconstruction with standard codecs on public video, preserving mission relevance and uncertainty.",
+      "eligibility": {
+        "status": "unverified",
+        "checks": [
+          "Verify the exact topic and Direct-to-Phase-II feasibility/eligibility requirements.",
+          "Separate public prototype data from controlled information and required physical feasibility evidence."
+        ]
+      },
+      "requirements": [
+        {
+          "id": "codecs",
+          "statement": "Produce H.264/H.265/AV1 baselines with matched video, rate, quality and runtime configuration.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "packets",
+          "statement": "Validate versioned semantic packets, temporal scene memory, ROI selection, bounded receiver reconstruction and packet-loss recovery.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "bandwidth",
+          "statement": "Measure transmitted bytes including metadata, retransmission and temporal refresh under the same task and video conditions.",
+          "kind": "empirical",
+          "metric_id": "bandwidth_kbps"
+        },
+        {
+          "id": "utility",
+          "statement": "Evaluate receiver task utility and confidence/uncertainty calibration using held-out labels.",
+          "kind": "empirical",
+          "metric_id": "task_utility"
+        },
+        {
+          "id": "device-latency",
+          "statement": "Measure actual edge-device end-to-end latency including capture, processing, transport and reconstruction.",
+          "kind": "physical",
+          "metric_id": "latency_ms"
+        },
+        {
+          "id": "device-energy",
+          "statement": "Measure device power or energy with actual instrumentation; Jetson build artifacts alone are insufficient.",
+          "kind": "physical",
+          "metric_id": "energy_joules"
+        }
+      ],
+      "metrics": [
+        {
+          "id": "bandwidth_kbps",
+          "unit": "kbit/s",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "task_utility",
+          "unit": "ratio",
+          "direction": "maximize",
+          "target": null,
+          "comparator": "gte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "latency_ms",
+          "unit": "ms",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "energy_joules",
+          "unit": "J",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "calibration_error",
+          "unit": "ratio",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "h264",
+          "approach": "Pinned H.264 encoder/decoder baseline."
+        },
+        {
+          "id": "h265",
+          "approach": "Pinned H.265 encoder/decoder baseline."
+        },
+        {
+          "id": "av1",
+          "approach": "Pinned AV1 encoder/decoder baseline."
+        },
+        {
+          "id": "roi",
+          "approach": "ROI-aware encoding with transmitted metadata accounted."
+        },
+        {
+          "id": "semantic",
+          "approach": "Temporal graph and mission-relevance packets with traceable uncertainty."
+        }
+      ],
+      "architecture": [
+        "Rights-cleared EO video -> codec baseline or temporal scene memory -> mission-relevant ROI/behavior selection.",
+        "Semantic packet + confidence -> bounded low-bandwidth channel -> receiver reconstruction.",
+        "Matched public video and labels -> bandwidth/utility/calibration receipts -> physical edge-device campaign."
+      ],
+      "risks": [
+        {
+          "risk": "Compression savings destroy mission-relevant information.",
+          "mitigation": "Measure receiver task utility, uncertainty and failure cases alongside bandwidth."
+        },
+        {
+          "risk": "Simulated deployment is confused with DP2 feasibility.",
+          "mitigation": "Hold physical requirements open until actual device receipts and review exist."
+        }
+      ],
+      "reuse": [
+        "docs/sentinel-maritime/contracts.md",
+        "apps/research/documents.py",
+        "scripts/ci/evidence_epoch.py"
+      ],
+      "deadline": {
+        "value": null,
+        "status": "unverified"
+      },
+      "submission_format": {
+        "status": "unverified",
+        "notes": "The owner reports DP2 qualification uncertainty and empirical device evidence requirements. No eligibility, funding or format is confirmed."
+      },
+      "deliverables": [
+        "requirements_matrix.md",
+        "claim_evidence_matrix.md",
+        "architecture.md",
+        "experiment_plan.md",
+        "results.json",
+        "benchmark_report.md",
+        "gap_report.md",
+        "risk_register.md",
+        "SOW.md",
+        "commercialization.md",
+        "whitepaper.md",
+        "slides/outline.md",
+        "submission_checklist.md"
+      ],
+      "milestones": [
+        {
+          "id": "scope",
+          "objective": "Verify official scope, rights, prerequisites and experiment targets.",
+          "depends_on": []
+        },
+        {
+          "id": "baseline",
+          "objective": "Reproduce the disclosed baseline and freeze experiment inputs.",
+          "depends_on": [
+            "scope"
+          ]
+        },
+        {
+          "id": "candidates",
+          "objective": "Build isolated candidates and retain all measurements and failures.",
+          "depends_on": [
+            "baseline"
+          ]
+        },
+        {
+          "id": "verify",
+          "objective": "Assign a distinct verifier, evaluate matched conditions and record gaps.",
+          "depends_on": [
+            "candidates"
+          ]
+        },
+        {
+          "id": "review",
+          "objective": "Project evidence into drafts for human truth, eligibility and submission review.",
+          "depends_on": [
+            "verify"
+          ]
+        }
+      ],
+      "claims": [
+        {
+          "id": "codecs",
+          "statement": "Produce H.264/H.265/AV1 baselines with matched video, rate, quality and runtime configuration.",
+          "requirements": [
+            "codecs"
+          ]
+        },
+        {
+          "id": "packets",
+          "statement": "Validate versioned semantic packets, temporal scene memory, ROI selection, bounded receiver reconstruction and packet-loss recovery.",
+          "requirements": [
+            "packets"
+          ]
+        },
+        {
+          "id": "bandwidth",
+          "statement": "Measure transmitted bytes including metadata, retransmission and temporal refresh under the same task and video conditions.",
+          "requirements": [
+            "bandwidth"
+          ]
+        },
+        {
+          "id": "utility",
+          "statement": "Evaluate receiver task utility and confidence/uncertainty calibration using held-out labels.",
+          "requirements": [
+            "utility"
+          ]
+        },
+        {
+          "id": "device-latency",
+          "statement": "Measure actual edge-device end-to-end latency including capture, processing, transport and reconstruction.",
+          "requirements": [
+            "device-latency"
+          ]
+        },
+        {
+          "id": "device-energy",
+          "statement": "Measure device power or energy with actual instrumentation; Jetson build artifacts alone are insufficient.",
+          "requirements": [
+            "device-energy"
+          ]
+        }
+      ],
+      "evidence_required": [
+        {
+          "requirement_id": "codecs",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "packets",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "bandwidth",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "utility",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "device-latency",
+          "kind": "physical"
+        },
+        {
+          "requirement_id": "device-energy",
+          "kind": "physical"
+        }
+      ],
+      "evidence_available": [],
+      "evidence_missing": [
+        "Official DP2 topic and independent eligibility review.",
+        "Public dataset/video rights and task labels.",
+        "Working encoder/receiver candidates, device build, SBOM and physical feasibility campaign."
+      ],
+      "experiment": {
+        "seeds": [
+          101,
+          202,
+          303,
+          404,
+          505
+        ],
+        "dataset_status": "required",
+        "controls": [
+          "Freeze input video, ground truth, frame rate, image dimensions and packet-loss conditions.",
+          "Account for every byte, metadata update and reconstruction cost.",
+          "Compare on the same physical device for device claims; synthetic scenes and estimates stay labeled."
+        ]
+      }
+    },
+    {
+      "id": "maritime",
+      "srs_code": "SRS-BUILDANDDO-FEDERAL-MARITIME-001",
+      "title": "DIU Sentinel Maritime",
+      "mode": "harden_existing",
+      "topic": {
+        "agency": "DIU (owner supplied)",
+        "reference": "Sentinel Maritime opportunity (exact topic unverified)",
+        "status": "unverified",
+        "official_url": null
+      },
+      "objective": "Harden the existing public candidate, evidence, replay and submission-preparation suite against the SM-BL-1.1 contract and explicit runtime gaps.",
+      "eligibility": {
+        "status": "unverified",
+        "checks": [
+          "Verify the actual DIU opportunity, submission window and applicant requirements.",
+          "Resolve live-feed rights, private source ownership, NNC authority and operational acceptance."
+        ]
+      },
+      "requirements": [
+        {
+          "id": "candidate-rights",
+          "statement": "Keep CandidateCue separate from admitted ThreatCue; enforce source rights, tenant/mission scope and conflicting evidence.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "replay",
+          "statement": "Run exact-byte replay, tamper tests and acyclic proof commitments using existing suite/epoch behavior.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "interrupted-handoff",
+          "statement": "Verify durable PENDING/UNKNOWN receipts and uncertain-response recovery without circular commitment dependencies.",
+          "kind": "source_test",
+          "metric_id": null
+        },
+        {
+          "id": "feed-campaign",
+          "statement": "Evaluate track/candidate precision on permitted representative feeds with held-out labels and provenance.",
+          "kind": "empirical",
+          "metric_id": "candidate_precision"
+        },
+        {
+          "id": "runtime",
+          "statement": "Measure end-to-end operating latency on the selected host with the actual bound runtime.",
+          "kind": "empirical",
+          "metric_id": "latency_ms"
+        },
+        {
+          "id": "operational",
+          "statement": "Observe accepted live operational behavior and NNC admission under receiving-seat authority; public candidates remain HOLD.",
+          "kind": "physical",
+          "metric_id": null
+        }
+      ],
+      "metrics": [
+        {
+          "id": "candidate_precision",
+          "unit": "ratio",
+          "direction": "maximize",
+          "target": null,
+          "comparator": "gte",
+          "aggregate": "mean"
+        },
+        {
+          "id": "latency_ms",
+          "unit": "ms",
+          "direction": "minimize",
+          "target": null,
+          "comparator": "lte",
+          "aggregate": "mean"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "public-suite",
+          "approach": "Existing bounded public mission suite."
+        },
+        {
+          "id": "hardened-suite",
+          "approach": "Targeted hardening with the same public regression fixtures."
+        },
+        {
+          "id": "bound-runtime",
+          "approach": "Private runtime candidate only after authorized source discovery and operator binding."
+        }
+      ],
+      "architecture": [
+        "Existing suite source and SM-BL-1.1 contracts -> candidate/rights/replay regression campaign.",
+        "Permitted live feeds and receiving-seat runtime -> independent operational evidence after authorization.",
+        "Candidate decisions, proofs and durable delivery receipts -> existing Evidence Ledger and human claim review."
+      ],
+      "risks": [
+        {
+          "risk": "Existing source tests are recounted as operational completion.",
+          "mitigation": "Keep source evidence separate from empirical and physical requirements."
+        },
+        {
+          "risk": "A new implementation forks proof or admission authority.",
+          "mitigation": "Reuse existing contracts, hash utilities and receiving-seat ownership."
+        }
+      ],
+      "reuse": [
+        "docs/sentinel-maritime/implementation-contract.md",
+        "docs/sentinel-maritime/work-orders.json",
+        "apps/mission_suite/engine.py",
+        "apps/pocketbase/pb_hooks/mission-suite.js"
+      ],
+      "deadline": {
+        "value": null,
+        "status": "unverified"
+      },
+      "submission_format": {
+        "status": "unverified",
+        "notes": "The public baseline and mission suite already exist. Their source-test counts and planning work orders do not establish DIU readiness or product-completion percentage."
+      },
+      "deliverables": [
+        "requirements_matrix.md",
+        "claim_evidence_matrix.md",
+        "architecture.md",
+        "experiment_plan.md",
+        "results.json",
+        "benchmark_report.md",
+        "gap_report.md",
+        "risk_register.md",
+        "SOW.md",
+        "commercialization.md",
+        "whitepaper.md",
+        "slides/outline.md",
+        "submission_checklist.md"
+      ],
+      "milestones": [
+        {
+          "id": "scope",
+          "objective": "Verify official scope, rights, prerequisites and experiment targets.",
+          "depends_on": []
+        },
+        {
+          "id": "baseline",
+          "objective": "Reproduce the disclosed baseline and freeze experiment inputs.",
+          "depends_on": [
+            "scope"
+          ]
+        },
+        {
+          "id": "candidates",
+          "objective": "Build isolated candidates and retain all measurements and failures.",
+          "depends_on": [
+            "baseline"
+          ]
+        },
+        {
+          "id": "verify",
+          "objective": "Assign a distinct verifier, evaluate matched conditions and record gaps.",
+          "depends_on": [
+            "candidates"
+          ]
+        },
+        {
+          "id": "review",
+          "objective": "Project evidence into drafts for human truth, eligibility and submission review.",
+          "depends_on": [
+            "verify"
+          ]
+        }
+      ],
+      "claims": [
+        {
+          "id": "candidate-rights",
+          "statement": "Keep CandidateCue separate from admitted ThreatCue; enforce source rights, tenant/mission scope and conflicting evidence.",
+          "requirements": [
+            "candidate-rights"
+          ]
+        },
+        {
+          "id": "replay",
+          "statement": "Run exact-byte replay, tamper tests and acyclic proof commitments using existing suite/epoch behavior.",
+          "requirements": [
+            "replay"
+          ]
+        },
+        {
+          "id": "interrupted-handoff",
+          "statement": "Verify durable PENDING/UNKNOWN receipts and uncertain-response recovery without circular commitment dependencies.",
+          "requirements": [
+            "interrupted-handoff"
+          ]
+        },
+        {
+          "id": "feed-campaign",
+          "statement": "Evaluate track/candidate precision on permitted representative feeds with held-out labels and provenance.",
+          "requirements": [
+            "feed-campaign"
+          ]
+        },
+        {
+          "id": "runtime",
+          "statement": "Measure end-to-end operating latency on the selected host with the actual bound runtime.",
+          "requirements": [
+            "runtime"
+          ]
+        },
+        {
+          "id": "operational",
+          "statement": "Observe accepted live operational behavior and NNC admission under receiving-seat authority; public candidates remain HOLD.",
+          "requirements": [
+            "operational"
+          ]
+        }
+      ],
+      "evidence_required": [
+        {
+          "requirement_id": "candidate-rights",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "replay",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "interrupted-handoff",
+          "kind": "source_test"
+        },
+        {
+          "requirement_id": "feed-campaign",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "runtime",
+          "kind": "empirical"
+        },
+        {
+          "requirement_id": "operational",
+          "kind": "physical"
+        }
+      ],
+      "evidence_available": [],
+      "evidence_missing": [
+        "Current DIU opportunity and eligibility decision.",
+        "Private runtime source discovery, live feed rights, host/account binding and NNC interface.",
+        "Browser/native/runtime acceptance and independently reviewed empirical/physical receipts."
+      ],
+      "experiment": {
+        "seeds": [
+          101,
+          202,
+          303,
+          404,
+          505
+        ],
+        "dataset_status": "required",
+        "controls": [
+          "Reuse the existing 13 work-order acceptance states; do not replace runtime gaps with document counts.",
+          "Keep CUI, unknown rights and unavailable private interfaces outside public execution.",
+          "Hold outward cues without actual NNC admission; preserve contradictory evidence and failed delivery."
+        ]
+      }
+    }
+  ]
+}

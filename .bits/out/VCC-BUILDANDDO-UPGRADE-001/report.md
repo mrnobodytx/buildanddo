@@ -60,6 +60,8 @@
 #              CONSUMES docs/mission-suite.md;
 #              VALIDATES tests/upgrade/check_mission_suite.py;
 #              VALIDATES tests/upgrade/test_suite_native.py;
+#              CONSUMES docs/federal-foundry.md;
+#              VALIDATES tests/upgrade/check_federal_foundry.py;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -67,6 +69,76 @@
 # Dispatch implementation report
 
 ## §1 SUMMARY
+
+Status: PARTIAL — federal compiler and source work packages implemented; hosted execution, research evidence and official acceptance remain open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
+Tasks: 6/6 current source phases; these counts do not measure scientific or submission completion
+Smoke: 10/14 current check groups pass; four required environment checks unavailable, as detailed in §3
+CKS Gate: B+ (global minimum)
+CKS: pending
+CAPS: pending
+CK: pending
+Commits: 1 focused continuation; resolve final source identity using the command below
+Verify source identity: `git log -1 --format='%H %s'`
+
+The shared federal portfolio compiler prepares Influence Benchmarks, NAVAIR
+Acquisition Analysis, Brain-Inspired Low-SWaP, Semantic ISR and Sentinel Maritime
+as separately scoped research lanes. Each has a proposed registered SRS, builder
+and independent-verifier packets, requirement and claim matrices, experiment
+controls, draft proposal sections and explicit human gates. The catalogue
+preserves the owner's opportunity descriptions as unverified until current
+official topic, deadline, eligibility and submission references are reviewed.
+The reported xTech submission is retained as owner-reported history only.
+
+The async model interface accepts a runtime-supplied provider, model, version
+and configuration fingerprint. It binds a verified execution dispatch and exact
+task bytes, bounds one completion, preserves timeout/cancellation failures and
+records model responses as unreviewed drafts. Tests exercise two independent
+in-process adapter implementations; no real provider call or hosted Bits
+dispatch was made. The source compiler creates ten PREPARED work packets, not
+five running research projects.
+
+Evidence checks bind public receipt bytes, declared identities, exact reviews,
+requirement scope, metric units and repeated seeds. Claims cannot splice results
+from different candidates. Comparisons require matching benchmark, dataset,
+scenario and execution conditions; below-target measurements remain visible,
+and ties or incomparable inputs never become an automatic promotion. Hash and
+schema validation do not authenticate a reviewer or establish scientific truth.
+All proposal projections remain HOLD with pending human approval.
+
+Forty new tests pass with 97.53–100% statement coverage across five modules.
+Full regression passes 256 Node and 192 Python cases, with nine native skips.
+The existing suite checker passes 23 cases after extending its portable archive.
+A clean extraction runs the actual portfolio CLI with the same source identity;
+five YAML opportunities round-trip exactly, all 103 content hashes recorded in
+the manifest match, and the 23-file package remains deterministic. Strict source typing,
+Ruff and the 239-module JavaScript diagnostic pass.
+
+Vitest, Vite, the official ESLint import plugin and PocketBase are unavailable.
+Their required commands were attempted and failed before runtime acceptance.
+Independent Python 3.11/3.12 CI now retains the generated public packets and
+measured test reports; hosted results have not been observed. The receiving
+operator must bind actual lane dispatches and model clients through the existing
+Bits runtime, then run the experiments. Existing mission/native/browser and
+private Sentinel acceptance states remain unchanged.
+
+## §2 TASK RESULTS
+
+### Current continuation — model-independent federal portfolio, 2026-09-16
+
+| Phase | Status | Result | Verify | CKET | Files |
+|---|---|---|---|---|---|
+| CI — Register portfolio scope | PASS | Shared compiler registered before source edits; five proposed lane specifications reserve distinct future execution scopes | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | Registry, umbrella and five lane SRS specifications, dispatch and lock |
+| CJ — Model-independent intake | PASS for source | Strict catalogue and async provider interface; runtime-bound provenance, separate verifier and bounded completion; two in-process adapter implementations | `python -m unittest tests.upgrade.test_federal_foundry.CatalogueTests tests.upgrade.test_federal_foundry.AdapterTests` | 07_BUILD / 08_TEST | apps/federal_foundry/catalog.py, protocol.py, opportunities.json and behavior tests |
+| CK — Evidence projections | PASS for source | Exact-byte receipts, preserved failures, one-candidate claims, matched comparisons, draft proposal and pending human gates | `python -m unittest tests.upgrade.test_federal_foundry.EvidenceTests tests.upgrade.test_federal_foundry.ComparisonTests tests.upgrade.test_federal_foundry.CompilerTests` | 07_BUILD / 08_TEST | Evidence evaluator, compiler, CLI and behavior tests |
+| CL — Portable package and CI intake | PASS for source; hosted execution open | Five lane draft sets, ten packets, fresh extraction and independent Python CI with retained artifacts | Fresh archive test and guide commands in §3 | 07_BUILD / 08_TEST / 11_COMMIT | Suite bundle, independent CI job, agent guidance and pipeline check description |
+| CM — Source verification | PASS with runtime gaps recorded | 40 new tests with at least 97.53% statement coverage; full source regression, typing and source diagnostics pass | Commands in §3 | 08_TEST / 11_COMMIT | New foundry behavior/coverage runner and adjusted existing suite package regression |
+| CN — Report and receiver contract | PASS for public artifacts | All 66 previous memory events preserved; metadata/edges, context and public boundary verified; operator intake is explicit | Commands in §4–§6 | 06_PLAN / 11_COMMIT | docs/federal-foundry.md, receiving handoff, report and memory |
+
+### Prior continuation — callable mission suite and government learning, 2026-09-16
 
 Status: PARTIAL — callable mission suite and curriculum implemented; native/browser and deployed acceptance remain open
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
@@ -112,10 +184,6 @@ native suite gates. Hosted results and box activation have not been observed.
 The receiving handoff covers actual application release, box selection, native
 identity, supervision, browser acceptance, telemetry and rollback. Earlier
 Sentinel plans and their 13 unexecuted work orders retain their acceptance state.
-
-## §2 TASK RESULTS
-
-### Current continuation — callable mission suite and government learning, 2026-09-16
 
 | Phase | Status | Result | Verify | CKET | Files |
 |---|---|---|---|---|---|
@@ -231,7 +299,105 @@ and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
-Current suite checks (source and required runtime gates remain separate):
+Current federal checks (source and required runtime gates remain separate):
+
+| Check | Runnable verification | Expected / observed |
+|---|---|---|
+| 1. Node regression | `node --test tests/upgrade/*.test.mjs` | PASS: 256/256 |
+| 2. Python regression | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | PASS for available source: 192 passes, nine native skips out of 201; skipped cases are not runtime acceptance |
+| 3. Federal behavior and coverage | `python tests/upgrade/check_federal_foundry.py` | PASS: 40/40, no skips; five modules at 97.53–100% trace statement coverage |
+| 4. Existing portable suite coverage | `python tests/upgrade/check_mission_suite.py` | PASS: 23/23; CLI 98.82%, bundle 97.40%, engine 99.55%, worker 87.96% statement lines |
+| 5. Python typing and lint | `mypy --strict --explicit-package-bases --follow-imports=silent apps/federal_foundry apps/mission_suite/bundle.py`; `ruff check apps/federal_foundry apps/mission_suite/bundle.py tests/upgrade/test_federal_foundry.py tests/upgrade/check_federal_foundry.py tests/upgrade/test_mission_suite.py` | PASS: six source modules typed; source and changed tests lint clean |
+| 6. Static web and CI contracts | `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`; CI audit below | PASS: 239 modules, no static errors; independent Python 3.11/3.12 job with two required artifact uploads |
+| 7. Package and generated artifacts | `python -m unittest tests.upgrade.test_federal_foundry.CompilerTests.test_portable_archive_runs_the_real_cli_from_fresh_extraction_without_repository_paths`; YAML/artifact audit below | PASS: clean extraction runs the real CLI; same source identity; 105 files, ten PREPARED packets; all hashes and five YAML round-trips match; 23-file archive |
+| 8. Rendered web tests | `npm --prefix apps/web test` | FAIL/unavailable: Vitest missing; no rendered acceptance claimed |
+| 9. Repository web lint | `npm --prefix apps/web run lint` | FAIL/unavailable: eslint-plugin-import missing |
+| 10. Web build | `npm --prefix apps/web run build` | FAIL/unavailable: Vite cannot start; generator output is not a built website |
+| 11. Native suite API | `python tests/upgrade/test_suite_native.py --require-binary` | FAIL/unavailable: PocketBase binary missing |
+| 12. Context | `python scripts/ci/agent_context.py --check` | PASS: six retained findings and four unwired gates |
+| 13. Public boundary | `python scripts/ci/verify_public_boundary.py` | PASS: 606 tracked files, zero scanner failures; provider actor-label check not executed |
+| 14. Memory and provenance | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`; preservation check in §4 | PASS: current file/edge counts, IOO and all 66 prior events preserved |
+
+The new coverage checker writes reports/coverage/federal-foundry.json and
+reports/junit/federal-foundry.xml. It uses Python trace statement lines, not
+branch coverage. All evidence fixtures and model adapters are explicitly
+synthetic; no research campaign or physical/device benchmark ran.
+
+| Module | Covered / measured statements | Percent |
+|---|---|---|
+| apps/federal_foundry/__main__.py | 79/81 | 97.53 |
+| apps/federal_foundry/catalog.py | 190/190 | 100.00 |
+| apps/federal_foundry/compiler.py | 385/385 | 100.00 |
+| apps/federal_foundry/evidence.py | 401/403 | 99.50 |
+| apps/federal_foundry/protocol.py | 200/201 | 99.50 |
+
+Observed red/green evidence: the first new suite found that a completed baseline
+measurement below the target was excluded from comparisons. The evaluator now
+ranks matched observed measurements while retaining `meets_target: false`;
+actual failed experiments remain unrankable. The targeted regression failed
+then passed:
+`python -m unittest tests.upgrade.test_federal_foundry.ComparisonTests.test_baseline_below_target_is_still_a_valid_comparison_and_is_reported_as_below_target`.
+The same first run contained a corrupt-fixture setup error that prevented
+validation from being reached; the fixture now mutates the valid receipt after
+creation. Both cases and the complete 40-test suite pass. No threshold, failure
+or independent-review rule was relaxed to satisfy the tests.
+
+Environment checks 8–11 remain unavailable for the exact missing components
+shown above. No installation workaround, live model result or hosted CI pass is
+inferred. Runtime intake and native/browser acceptance are receiving-operator
+work. Source package expansion changes its fingerprint; existing worker bindings
+must use their normal reviewed update and stale bindings remain fenced.
+
+Re-running the report commands caught an incorrect catalogue key in the YAML
+audit example: it used lanes where the source schema names opportunities. The
+example now reads the actual key; the same compile, hash and YAML verification
+passes. The compiler and its already-passing behavior tests were unchanged.
+
+Reproduce the independent CI contract audit (PyYAML is available locally):
+
+```bash
+python - <<'PY'
+from pathlib import Path
+import yaml
+job = yaml.safe_load(Path('.github/workflows/pr-governance.yml').read_text())['jobs']['federal-foundry']
+assert not job.get('needs') and not job.get('continue-on-error')
+assert job['strategy']['matrix']['python'] == ['3.11', '3.12']
+assert not any(step.get('continue-on-error') for step in job['steps'])
+uploads = [step for step in job['steps'] if str(step.get('uses', '')).startswith('actions/upload-artifact@')]
+assert len(uploads) == 2
+assert all(step['with']['if-no-files-found'] == 'error' for step in uploads)
+print('PASS: independent federal CI and required artifact retention.')
+PY
+```
+
+Reproduce fresh compilation and YAML/hash inspection without a hosted service:
+
+```bash
+python - <<'PY'
+from hashlib import sha256
+import json
+from pathlib import Path
+import subprocess
+import sys
+from tempfile import TemporaryDirectory
+import yaml
+from apps.federal_foundry.catalog import load_catalog
+with TemporaryDirectory() as temporary:
+    output = Path(temporary) / 'portfolio'
+    result = json.loads(subprocess.check_output([sys.executable, '-m', 'apps.federal_foundry', 'compile', '--output', str(output), '--at', '2026-09-16T12:00:00Z'], text=True))
+    assert (result['opportunities'], result['tasks'], result['files']) == (5, 10, 105)
+    manifest = json.loads((output / 'portfolio-manifest.json').read_text())
+    for item in manifest['files']:
+        assert sha256((output / item['path']).read_bytes()).hexdigest() == item['sha256']
+    catalogue = load_catalog()
+    for lane in catalogue['opportunities']:
+        assert yaml.safe_load((output / lane['id'] / 'opportunity.yaml').read_text()) == lane
+    assert result['hosted_dispatches_created'] == 0 and result['submission_authorized'] is False
+    print('PASS: five YAML round-trips, all generated hashes, ten prepared packets.')
+PY
+```
+
+Historical suite checks (prior continuation; retained without relabeling as current evidence):
 
 | Check | Runnable verification | Expected / observed |
 |---|---|---|
@@ -395,13 +561,13 @@ no hosted success, browser screenshots or shared activation is claimed here.
 
 ## §4 MEMORY INGEST
 
-Type A count: 323
-Type B count: 693
-Type C count: 66
+Type A count: 339
+Type B count: 740
+Type C count: 72
 IOO compliance: complete
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
-Prior history: all 60 baseline Type C events are preserved without rewriting, including the earlier narrative, planning, dossier and research evidence.
+Prior history: all 66 baseline Type C events are preserved without rewriting, including the callable suite, narrative, planning, dossier and research evidence.
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
 Reproduce prior-event preservation:
@@ -412,23 +578,23 @@ import json
 import subprocess
 from pathlib import Path
 path = '.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json'
-baseline = json.loads(subprocess.check_output(['git', 'show', '60b952bf784d67bb2a000602df4d8dfed8aad045:' + path], text=True))
+baseline = json.loads(subprocess.check_output(['git', 'show', 'c307edb65bde32034e53799c2d757cf2e585d1f9:' + path], text=True))
 old = [row for row in baseline['vectors'] if row['type'] == 'C']
 new = [row for row in json.loads(Path(path).read_text())['vectors'] if row['type'] == 'C']
-assert len(old) == 60 and new[:len(old)] == old
-print('PASS: all 60 baseline events preserved without rewriting.')
+assert len(old) == 66 and new[:len(old)] == old
+print('PASS: all 66 baseline events preserved without rewriting.')
 PY
 ```
 
 ## §5 CKET FILING
 
-06_PLAN: docs/mission-suite.md; earlier Sentinel planning artifacts retained
-04_HYPOTHESIZE: umbrella SRS, registry and current contribution gate descriptions
-07_BUILD: apps/mission_suite; suite hooks/migrations; government curriculum; mission/suite/tutorial UI and clients
-08_TEST: connected source and packaging tests; 19 new rendered cases; three new native acceptance cases
-11_COMMIT: independent source/native CI, box handoff, dispatch, context and report/memory
+06_PLAN: docs/federal-foundry.md and updated portable suite guide; earlier Sentinel planning retained
+04_HYPOTHESIZE: five proposed lane specifications, umbrella SRS, registry and agent work-package guidance
+07_BUILD: apps/federal_foundry, expanded suite package closure and existing pipeline check description
+08_TEST: 40 federal behavior tests, per-module coverage runner and adjusted suite package regression
+11_COMMIT: independent federal CI, CMAX-B intake handoff, dispatch, context and report/memory
 13_SAVE: none
-CGRF headers: 29/29 new this continuation; 236/236 cumulative files created since the original base
+CGRF headers: 16/16 new this continuation; 252/252 cumulative files created since the original base
 REFLEX check: deferred to private post-merge validator; no signing values fabricated
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
@@ -440,16 +606,43 @@ Hard-NO scan: zero public-boundary violations
 Secret scan: clean under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: owner-authorized A2 public application source and local validation; no shared deployment, native account provisioning or government submission authority
+Risk / authority: owner-authorized A2 public compiler/application source and local validation; no shared deployment, hosted task launch, native account provisioning or government submission authority
 Verify: `python scripts/ci/verify_public_boundary.py`
 
-No key generation/provisioning, bot login, Discord synchronization/message,
-private service deployment, shared database migration, live OAuth/provider call
-or seat message occurred. Runtime key custody, transport, native acceptance and
-backup retention remain operator responsibilities. Server-side encryption is
-not end-to-end encryption or physical erasure of existing backups.
+The federal compiler made no model calls, scheduled no hosted work and sent no
+external messages or submissions. It changed no shared database, private runtime
+or key material. Provider selection and identity verification belong to the
+receiving runtime; scientific validity, eligibility and final claims require
+observed evidence and human approval. This source continuation neither validates
+nor changes prior dossier encryption, service activation or deployment claims.
 
 ## §7 NEXT ACTIONS
+
+Current federal intake: the receiving Bits operator assigns a distinct
+Ready/In-progress execution dispatch and repository session per lane, verifies
+the current official topic and rights, and binds any selected LLM client to the
+public ModelAdapter contract. Builder/verifier seats must differ. Exercise one
+real bounded completion with runtime-derived provenance, then run the actual
+candidate experiments and preserve measurement/review receipts. No lane has
+research-result evidence or an assigned hosted execution dispatch in this change.
+Handoff: .bits/handoffs/2026-09-16-bits-codegen-cmax-b-federal-foundry.md.
+
+Suggested next dispatch: a receiver-assigned SRS-BUILDANDDO-FEDERAL-INFLUENCE-001
+execution dispatch for current-topic validation, frozen market benchmark and
+first candidate experiment; the other four registered scopes may proceed in
+their own sessions when their dispatches are ready. This is a recommendation,
+not a fabricated VCC database row or live scheduler call.
+Out-of-scope bugs filed: none; the six prior context findings are retained.
+
+Federal rollback: stop intake of these prepared packets and revert the focused
+public compiler/package change through the normal release owner. Preserve
+existing evidence and reviews. The extended archive has a different source
+fingerprint; update installed worker bindings only through their existing
+operator review. There is no new runtime service or database migration to undo.
+All five proposal outputs remain HOLD until their actual evidence and human
+gates are satisfied.
+
+Earlier mission-suite acceptance:
 
 Current package acceptance: the BuildAndDo application/box operator must accept
 its native PocketBase release and the rendered mission flow, select an existing

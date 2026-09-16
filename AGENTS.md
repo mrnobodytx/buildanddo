@@ -9,7 +9,7 @@
 # Created:     2026-09-09
 # Depends:     CONTRIBUTING.md, .buildanddo/public/path-policy.json
 # EnumType:    ConfigDoc
-# EnumEdges:   GATES bits/SRS-* branches; VALIDATES .github/PULL_REQUEST_TEMPLATE.md
+# EnumEdges:   GATES bits/SRS-* branches; VALIDATES .github/PULL_REQUEST_TEMPLATE.md; CONSUMES docs/federal-foundry.md
 # Intent:      Define machine-facing governance for agents working in buildanddo.
 # ───────────────────────────────────────────────────────────────
 
@@ -114,6 +114,22 @@ Rules that make the protocol worth having:
 - Seat events stay on the public plane inside PocketBase. Bridging them to
   `citadel.bits.*` on NATS is private-stack work — write a handoff and stop.
 
+## Federal research work packages
+
+The owner-requested Influence, NAVAIR, low-SWaP, semantic ISR and Maritime lanes
+are registered as separate proposed SRS scopes. Use
+`python -m apps.federal_foundry compile --output <new-directory>` to produce
+their opportunity files, model-independent Bits builder/verifier packets and
+evidence-driven proposal drafts. Read `docs/federal-foundry.md` for the contract.
+
+The current upgrade dispatch implements the shared compiler and registers the
+lanes. An execution runtime assigns each lane its own verified dispatch and
+repository session. Select the provider/model/version at runtime by capability;
+the Bits seat is an execution identity, not a model requirement. Keep producer
+and verifier seats distinct, preserve exact receipts and failed experiments,
+and require actual physical evidence for hardware claims. Prepared packets do
+not launch hosted agents or approve federal claims or submission.
+
 ## Progression pipeline tags
 
 `apps/web/src/components/workspace/ProgressionPipeline.jsx` is the single source
@@ -123,7 +139,7 @@ component says so rather than implying a check exists.
 
 | Tag                          | Step             | What it actually checks                                     |
 |------------------------------|------------------|-------------------------------------------------------------|
-| `ci:test`                    | Test             | Lint, web coverage, public adapters, native Discord/research parser, PocketBase dossier/suite checks, portable suite coverage, and manifest/lock integrity |
+| `ci:test`                    | Test             | Lint, web coverage, public adapters, native Discord/research parser, PocketBase dossier/suite checks, portable suite and federal portfolio coverage, and manifest/lock integrity |
 | `ci:build`                   | Pull request     | `npm run build` produces `dist/apps/web/index.html`         |
 | `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, one actor label, `agent_context.py --check` |
 | `deploy:staging-probe`       | Staging deploy   | Candidate mirror to the private plane succeeds on `main`    |

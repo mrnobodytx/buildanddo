@@ -171,6 +171,41 @@ jobs:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
         run: python tests/upgrade/test_suite_native.py --require-binary
 
+  federal-foundry:
+    name: ci:test / Federal portfolio (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Require portfolio contracts, evidence checks, portability and coverage
+        run: python tests/upgrade/check_federal_foundry.py
+      - name: Compile the five model-independent Bits work packages
+        run: python -m apps.federal_foundry compile --output "$RUNNER_TEMP/buildanddo-federal-portfolio"
+      - name: Retain the prepared packets for existing Bits intake
+        uses: actions/upload-artifact@v4
+        with:
+          name: buildanddo-federal-portfolio-python-${{ matrix.python }}
+          path: ${{ runner.temp }}/buildanddo-federal-portfolio
+          if-no-files-found: error
+          retention-days: 14
+      - name: Retain measured portfolio test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: buildanddo-federal-tests-python-${{ matrix.python }}
+          path: |
+            reports/junit/federal-foundry.xml
+            reports/coverage/federal-foundry.json
+          if-no-files-found: error
+          retention-days: 14
+
   mission-suite:
     name: ci:test / Mission suite (Python ${{ matrix.python }})
     runs-on: ubuntu-latest
