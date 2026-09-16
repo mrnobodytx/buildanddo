@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 28194,
+      "lines": 28432,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1076,
+      "lines": 1216,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 825,
+      "lines": 855,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1016,
+      "lines": 1054,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -28177,12 +28177,250 @@
       "file_path": "package-lock.json",
       "description": "The integrated branch reproduces ten dependency-lock failures (two manifest-group differences and eight absent resolutions) identical to main; npm run build stops because concurrently is missing and no Vite/concurrently cache entries are present. GitHub Workers check 104836645636 reports failure without error text or annotations; PR insights and exact-job Datadog logs provide no diagnosis. The real Cloudflare log was requested; the hosted root cause and build acceptance remain unresolved.",
       "smoke_result": "13/15 local groups; hosted Workers error unknown"
+    },
+    {
+      "type": "A",
+      "file_path": "docs/field-interviewer-v1.3.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        "docs/business-learning.md",
+        "docs/workspace-administration.md",
+        "docs/mission-system.md",
+        "apps/web/tools/generate-community.mjs",
+        "apps/web/src/pages/workspace/WikiPage.jsx",
+        "apps/pocketbase/pb_hooks/business-policy.js"
+      ],
+      "lines": 214,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the owner's interviewer knowledge boundary so private implementation can reuse public product contracts without exporting workspace or operational authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "field-interviewer-v1.3-handoff"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/field-interviewer-v1.3.md",
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/handoffs/TEMPLATE.md",
+        ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+        ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md"
+      ],
+      "lines": 257,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the private receiving seat concrete discovery, bridge, knowledge, recovery and acceptance work for the owner-adopted Field Interviewer without exporting private runtime authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "field-interviewer-v1.3-handoff"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md",
+      "target": "docs/field-interviewer-v1.3.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md consumes docs/field-interviewer-v1.3.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md",
+      "target": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md extends .bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md",
+      "target": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md extends .bits/handoffs/2026-09-15-bits-codegen-cmax-b-rig1-repo-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md",
+      "target": ".bits/handoffs/TEMPLATE.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md uses template .bits/handoffs/TEMPLATE.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md consumes .bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "docs/field-interviewer-v1.3.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md consumes docs/field-interviewer-v1.3.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/field-interviewer-v1.3.md",
+      "target": "apps/pocketbase/pb_hooks/business-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/field-interviewer-v1.3.md consumes apps/pocketbase/pb_hooks/business-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/field-interviewer-v1.3.md",
+      "target": "apps/web/src/pages/workspace/WikiPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/field-interviewer-v1.3.md consumes apps/web/src/pages/workspace/WikiPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/field-interviewer-v1.3.md",
+      "target": "apps/web/tools/generate-community.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/field-interviewer-v1.3.md consumes apps/web/tools/generate-community.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/field-interviewer-v1.3.md",
+      "target": "docs/business-learning.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/field-interviewer-v1.3.md consumes docs/business-learning.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/field-interviewer-v1.3.md",
+      "target": "docs/mission-system.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/field-interviewer-v1.3.md consumes docs/mission-system.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/field-interviewer-v1.3.md",
+      "target": "docs/workspace-administration.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/field-interviewer-v1.3.md consumes docs/workspace-administration.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/field-interviewer-v1.3.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/field-interviewer-v1.3.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T15:53:16.354009+00:00",
+      "commit_sha": null,
+      "event_type": "test_pass",
+      "file_path": "docs/field-interviewer-v1.3.md",
+      "description": "The owner-adopted Field Interviewer contract defines six audience-scoped knowledge documents and preserves the public/private implementation boundary. The local document audit verifies six unchanged public source references, six private receiving work steps, both new CGRF headers and all 85 preceding events. The inspected wiki publishes only to workspace members; provider export approval stays separate. No application or provider runtime source changed.",
+      "smoke_result": "1/1 document/source/history audit"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T15:53:16.354009+00:00",
+      "commit_sha": null,
+      "event_type": "smoke_run",
+      "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md",
+      "description": "The public interviewer handoff passes its document audit, measured context check, 745-file public boundary and memory provenance gate. CMAX-B with IDE1 must discover the actual private content lab and ElevenLabsBridge, implement and test audience-isolated compilation and uncertain-write recovery, and return independent provider/configuration readback. Reported live interviewer/prober status remains owner-reported; no private dispatch, provider mutation, seat message or activation occurred.",
+      "smoke_result": "4/4 documentation gates"
     }
   ],
   "summary": {
-    "type_a_count": 477,
-    "type_b_count": 985,
-    "type_c_count": 85,
+    "type_a_count": 479,
+    "type_b_count": 999,
+    "type_c_count": 87,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

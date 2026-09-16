@@ -65,6 +65,8 @@
 #              VALIDATES tests/foundry/check_foundry.py;
 #              CONSUMES docs/federal-foundry.md;
 #              VALIDATES tests/upgrade/check_federal_foundry.py;
+#              CONSUMES docs/field-interviewer-v1.3.md;
+#              CONSUMES .bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -72,6 +74,48 @@
 # Dispatch implementation report
 
 ## §1 SUMMARY
+
+Status: PARTIAL — public interviewer contract and handoff prepared; private implementation and activation pending
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-federal-foundry
+Tasks: 3/3 public documentation phases complete; private FI-00 through FI-05 remain receiving work
+Smoke: 4/4 local documentation gates pass; no runtime/provider acceptance claimed
+CKS Gate: B+ (global minimum)
+CKS: pending
+CAPS: pending
+CK: pending
+Commits: one focused documentation continuation; verify with the command below
+Verify source identity: `git log -1 --format='%H %s'`
+
+The owner adopted the Field Interviewer v1.3.0 architecture. This public wave
+records its product/operational knowledge boundary and concrete receiving work.
+Six managed documents, public/internal separation, scoped evidence states,
+freshness, deterministic topics, sanitizer, provider readback/recovery and the
+human publication gate are specified in docs/field-interviewer-v1.3.md. The
+CMAX-B handoff assigns private discovery and implementation with IDE1 bridge
+coordination and independent verification.
+
+Observed public reuse includes the authored community catalogue, the workspace
+wiki and the reviewed content desk. Wiki publication only grants workspace
+visibility; external knowledge export requires separate approval. Reported live
+interviewer, private bridge, probers and analytics capabilities remain owner
+inputs until the private receiving seat supplies source and runtime evidence.
+This continuation adds documentation only. Earlier foundry and PR integration
+results, including unresolved Workers/frontend acceptance, remain historical.
+
+## §2 TASK RESULTS
+
+### Current continuation — Field Interviewer public handoff, 2026-09-16
+
+| Phase | Status | Result | Verify | CKET | Files |
+|---|---|---|---|---|---|
+| CX — Register and inspect reuse | PASS | Existing dispatch records the owner decision; public product/wiki/editorial boundaries inspected | Document/source audit and context check in §3 | 04_HYPOTHESIZE / 11_COMMIT | SRS and queue |
+| CY — Define the receiving contract | PASS for public artifact | Six knowledge documents and FI-00 through FI-05 receiving work; no private implementation claim | Document/source audit in §3 | 06_PLAN / 11_COMMIT | docs/field-interviewer-v1.3.md and .bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md |
+| CZ — Preserve evidence | PASS for public artifact | Public source references and prior event history retained | Four documentation gates in §3 | 11_COMMIT | Report, memory and context |
+
+### Prior continuation — PR 31 integration summary, 2026-09-16
 
 Status: PARTIAL — source integration resolved; Workers build diagnostics and frontend build acceptance remain open
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
@@ -113,9 +157,7 @@ The Cloudflare build log has been requested. Local npm build cannot start
 because concurrently is absent; the unchanged dependency lock has ten failures
 also present on main. Neither observation is attributed to the hosted failure.
 
-## §2 TASK RESULTS
-
-### Current continuation — PR 31 integration, 2026-09-16
+### Prior continuation — PR 31 integration, 2026-09-16
 
 | Phase | Status | Result | Verify | CKET | Files |
 |---|---|---|---|---|---|
@@ -124,8 +166,8 @@ also present on main. Neither observation is attributed to the hosted failure.
 | CW — Diagnose Workers and finalize evidence | PARTIAL | GitHub exposes failure without diagnostics; local build/dependency limitations reproduced; Cloudflare log requested | Provider and local build commands in §3 | 11_COMMIT | Dispatch report and preserved memory |
 
 Historical outcomes below describe the source each preceding continuation
-validated. They are retained as evidence history; only the current integration
-table in §3 describes checks rerun on the merged source.
+validated. They are retained as evidence history; the integration
+table in §3 describes checks run during that earlier integration wave.
 
 ### Prior continuation — executable Federal R&D Foundry, 2026-09-16
 
@@ -417,7 +459,74 @@ and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
-Current integration checks (observed on the merged source):
+Current Field Interviewer documentation checks:
+
+| Check | Runnable verification | Expected / observed |
+|---|---|---|
+| 1. Document/source/history audit | Embedded Python command below | PASS: six document definitions, six pinned source references, six receiving steps, two headers and all 85 preceding events |
+| 2. Context | `python scripts/ci/agent_context.py --check` | PASS: current inventory, six retained findings and four unwired gates |
+| 3. Public boundary | `python scripts/ci/verify_public_boundary.py` | PASS: 745 tracked files; zero failures; provider actor-label enforcement not run |
+| 4. Memory | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | PASS: metadata, declared edges, IOO and source line counts; historical events retained |
+
+All four documentation gates passed without a failed check.
+No executable application or provider module changes in this wave. The audit
+checks documentation structure, source identity and history, not runtime
+behavior. Private implementation tests and real KB/configuration readback are
+receiving acceptance; they have not run here. The PowerShell commands in the
+handoff are owner-supplied private checks and were not executed in this repo.
+Historical foundry, web, native and Workers results below retain their scope.
+
+```bash
+python - <<'PYINTERVIEW'
+from pathlib import Path
+import importlib.util
+import json
+import re
+import subprocess
+
+base = 'c55212b4389689dbf69d713e8e0bfa5209ce2e96'
+doc = Path('docs/field-interviewer-v1.3.md')
+handoff = Path('.bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md')
+spec = importlib.util.spec_from_file_location('dispatch_verify', '.bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py')
+verify = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(verify)
+for source, stage in ((doc, '06_PLAN'), (handoff, '11_COMMIT')):
+    header = verify.header_fields(source)
+    assert header['File'] == source.as_posix() and header['Stage'] == stage
+    assert header['Dispatch'] == 'VCC-BUILDANDDO-UPGRADE-001'
+    assert header['SRS'] == 'SRS-BUILDANDDO-UPGRADE-001'
+    assert header['Owner'] == 'Citadel Nexus Inc.'
+    assert header['CAPS'] == header['CK'] == 'pending'
+    for dependency in header['Depends'].split(','):
+        assert Path(dependency.strip()).is_file(), dependency
+    assert not re.search(r'^(?:<{7}|={7}|>{7})(?: |$)', source.read_text(), re.M)
+content = doc.read_text()
+rows = [line.split('|')[1:-1] for line in content.splitlines() if line.startswith('| ')]
+keys = ('core-contract', 'product', 'architecture-glossary', 'operational-system-map', 'current-verified-state', 'recent-build-journal')
+documents = [row for row in rows if row[0].strip() in keys]
+assert [row[0].strip() for row in documents] == list(keys)
+assert all(row[-1].strip() == 'public / internal' for row in documents[:3])
+assert all(row[-1].strip() == 'internal' for row in documents[3:])
+sources = [row[0].strip() for row in rows if row[0].strip().startswith(('apps/', 'docs/'))]
+assert len(sources) == 6
+for source in sources:
+    assert Path(source).read_bytes() == subprocess.check_output(['git', 'show', base + ':' + source]), source
+assert re.findall(r'^### (FI-[0-9]{2}) ', handoff.read_text(), re.M) == [f'FI-{i:02d}' for i in range(6)]
+for heading in ('What was asked', 'Why it cannot be done on the public plane', 'What was done instead', 'What the receiving seat needs to do', 'Blocking'):
+    assert '## ' + heading in handoff.read_text()
+assert 'FI-KB-1.3.0' in content and 'FI-KB-1.3.0' in handoff.read_text()
+subprocess.run(['git', 'diff', '--quiet', base, '--', 'apps', 'foundry', 'tests', 'scripts', '.github', 'AGENTS.md', 'package.json', 'package-lock.json'], check=True)
+memory_path = '.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json'
+prior = json.loads(subprocess.check_output(['git', 'show', base + ':' + memory_path]))
+current = json.loads(Path(memory_path).read_text())
+old = [row for row in prior['vectors'] if row['type'] == 'C']
+new = [row for row in current['vectors'] if row['type'] == 'C']
+assert len(old) == 85 and new[:len(old)] == old
+print('PASS: six knowledge documents, six pinned source references, six receiving steps, both CGRF headers and all 85 prior events; application/runtime source unchanged.')
+PYINTERVIEW
+```
+
+Historical PR 31 integration checks (observed on that merged source):
 
 | Check | Runnable verification | Expected / observed |
 |---|---|---|
@@ -894,9 +1003,13 @@ no hosted success, browser screenshots or shared activation is claimed here.
 
 ## §4 MEMORY INGEST
 
-Type A count: 477
-Type B count: 985
-Type C count: 85
+All 85 pre-interviewer events remain verbatim and in order; reproduce with the
+current document/source/history command in §3. Two new documentation events
+describe only this handoff and its observed checks.
+
+Type A count: 479
+Type B count: 999
+Type C count: 87
 IOO compliance: complete
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
@@ -926,6 +1039,17 @@ PYMEM
 
 ## §5 CKET FILING
 
+Current interviewer continuation:
+06_PLAN: docs/field-interviewer-v1.3.md
+04_HYPOTHESIZE: umbrella SRS continuation
+11_COMMIT: private-seat handoff, queue, context, report and memory
+13_SAVE: none
+New artifacts: two documentation files with CGRF headers; no runtime code
+REFLEX: deferred to private post-merge validation; CK/CAPS remain pending
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+Historical integration filing:
+
 06_PLAN: retain both foundry guides, public fixtures, plans, lane artifacts and portable suite documentation
 04_HYPOTHESIZE: merged agent guidance, umbrella integration acceptance, registry and five incoming proposed lane specifications
 07_BUILD: both existing public foundry packages, incoming portable suite extension and merged contribution checklist
@@ -944,7 +1068,7 @@ Hard-NO scan: zero public-boundary violations
 Secret scan: clean under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: owner-authorized A2 public source and local validation; no official-source approval, shared deployment, hardware operation or government submission authority
+Risk / authority: A0 public documentation continuation within the existing A2 dispatch; private runtime/provider implementation and activation require the receiving dispatch
 Verify: `python scripts/ci/verify_public_boundary.py`
 
 No key generation, live provider call, controlled-data ingest, hardware run,
@@ -960,6 +1084,22 @@ observed evidence and human approval. This source continuation neither validates
 nor changes prior dossier encryption, service activation or deployment claims.
 
 ## §7 NEXT ACTIONS
+
+Current interviewer work: CMAX-B must accept the private repository handoff,
+verify the existing content lab and ElevenLabsBridge, register the receiving
+execution dispatch and implement FI-00 through FI-05. IDE1 coordinates generic
+bridge APIs; the product owner/COPILOT owns disclosure and editorial review.
+The prepared document does not dispatch a seat, grant provider mutation authority
+or attest that an agent is live. Blockers and the exact required return are in
+.bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md.
+
+Suggested next dispatch: receiver-assigned Field Interviewer v1.3.0 execution;
+no private dispatch ID is fabricated here. Out-of-scope bugs filed: none.
+
+Rollback: withdraw these two public planning artifacts through normal review;
+no provider KB, agent, service or data needs rollback because none was changed.
+
+Historical integration and research acceptance:
 
 Current integration: synchronize this prepared result through the coding-agent
 Update PR button. Hosted mergeability and check results can change only after

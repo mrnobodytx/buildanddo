@@ -20,6 +20,44 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Field Interviewer v1.3.0 continuation — private handoff, 2026-09-16
+
+The owner adopted the supplied architecture: BuildAndDo product knowledge plus
+a sanitized operational/evidence projection from data_dog_private, using its
+existing ElevenLabsBridge as the sole provider transport. Record that decision
+under this in-progress dispatch and its existing SRS self-bootstrap authority.
+This continuation is A0 public documentation and local document validation;
+private source implementation, provider writes and activation require the
+receiving repository's dispatch and authority.
+
+Acceptance for this public continuation:
+
+1. Map reusable public product, tutorial, wiki and editorial contracts from
+   this checkout. Distinguish workspace publication from approval to export
+   knowledge to a provider. Mark remote wiki/product and private runtime claims
+   as owner-reported until inspected; do not copy private source or records.
+2. Record the owner's six knowledge documents, separate public/internal
+   audiences, scoped evidence states, freshness, sanitizer, deterministic topic
+   selection, readback-bound knowledge receipts and human publication gate.
+3. Prepare a CMAX-B handoff with IDE1 bridge coordination. Require discovery of
+   the existing content lab and bridge, current provider API verification,
+   recovery for uncertain writes, independent acceptance and scrubbed telemetry.
+   Do not create another ElevenLabs client or represent a prepared plan as live.
+4. Validate the new public artifacts, source references, context, boundary and
+   memory while preserving all 85 preceding events. Earlier foundry and merge
+   evidence remains historical; this documentation wave does not rerun or
+   resolve its Workers/frontend/native acceptance.
+
+The implementation contract is docs/field-interviewer-v1.3.md. Private execution
+is requested through .bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md.
+No private receiving dispatch, provider receipt or activated version is invented.
+
+Public outcome: the six-document contract and CMAX-B/IDE1 receiving work are
+recorded. Four local documentation gates pass; six source references match
+the inspected revision, both new files carry provenance and all 85 prior
+events are retained. Runtime implementation, provider API compatibility, real
+readback and activated interviewer behavior remain unverified receiving work.
+
 ## Authorized continuation — model-independent federal research portfolio
 
 On 2026-09-16 the owner asked to add the Influence, NAVAIR, low-SWaP, semantic

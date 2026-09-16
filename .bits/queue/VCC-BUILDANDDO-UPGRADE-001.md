@@ -20,6 +20,36 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Field Interviewer v1.3.0 handoff authorized 2026-09-16
+
+The owner selected the supplied product/operational knowledge architecture.
+This continuation records the public interface and private receiving work at
+A0 under the existing dispatch. Runtime/provider changes remain private work.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CX | Register the owner decision and inspect public reuse boundaries | `python scripts/ci/agent_context.py --check` | done — existing dispatch and public source boundaries verified |
+| CY | Record the knowledge contract and private-seat implementation handoff | Document/source audit in report.md | done — six document definitions and FI-00 through FI-05 receiving work |
+| CZ | Preserve evidence and validate the public handoff | Context, public-boundary and dispatch-memory gates | done — 4/4 document gates; 745 public files; all 85 prior events retained |
+
+Memory brief: the prior foundry/base integration is the committed baseline.
+Its 85 memory events remain historical. The public source provides a bounded
+authored community catalogue, authenticated workspace wiki and human-reviewed
+content desk. No Field Interviewer or ElevenLabs content lab implementation
+was found in the inspected public docs/web source. The owner reports an existing
+private ElevenLabs bridge, active interviewer, operational probers and canonical
+analytics; their source/runtime receipts are unavailable in this public session.
+The earlier Rig 1 handoff records the public/private repository attachment
+boundary. Reuse requires discovery in a private session, not another clone
+attempt here. No authenticated workspace is supplied, so no seat event is sent.
+
+Current smoke for this documentation continuation: the document/source audit in
+report.md, `python scripts/ci/agent_context.py --check`,
+`python scripts/ci/verify_public_boundary.py`, and
+`python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`.
+These checks establish public artifact consistency only. Existing Workers,
+frontend, native and private runtime acceptance retain their recorded limits.
+
 ## Federal portfolio continuation authorized 2026-09-16
 
 The owner supplied five parallel research lanes and requested model-independent
