@@ -20,6 +20,43 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Federal portfolio continuation authorized 2026-09-16
+
+The owner supplied five parallel research lanes and requested model-independent
+Datadog Bits intake. This dispatch implements the shared public compiler and
+prepares the lanes; it does not claim live model execution, launch a hosted
+agent or perform the research experiments. The five proposed SRS codes reserve
+separate future execution scopes without changing the current branch.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CI | Register portfolio scope and lane specifications | `python scripts/ci/agent_context.py --check` | done — five proposed lane SRS entries and current compiler scope |
+| CJ | Add catalogue and provider-independent task contracts | Catalogue and adapter behavior tests | done for source — two in-process adapter implementations; no hosted LLM call |
+| CK | Compile evidence projections and comparable bakeoffs | Evidence/compiler behavior and negative tests | done — exact receipts, per-candidate claims, matched experiments and human gates |
+| CL | Connect portable packaging and Bits/CI discovery | Fresh archive execution and CI contract checks | done for source — ten packets, five draft sets and independent Python CI matrix |
+| CM | Verify complete source scope | `python tests/upgrade/check_federal_foundry.py` and source regressions | done — 40 new tests; 97.53–100% statement coverage; required browser/native gates unavailable |
+| CN | Record evidence, preserved memory and operator intake | Dispatch-memory, context and public-boundary checks | done for public artifacts — report, retained history and CMAX-B intake contract |
+
+Memory brief: the merged portable suite supplies source packaging, strict JSON,
+SHA-256 evidence identity and deterministic replay. Existing mission research,
+PocketBase roles and human review remain the application authority. No public
+Bits scheduler API or media-provider implementation exists in this checkout.
+The previous public/private repository attachment was rejected; no alternate
+private access is attempted. There is no authenticated workspace for seat events.
+
+Observed source evidence: 40 new tests pass; five modules have 97.53–100%
+statement coverage. Existing suite coverage passes 23 cases. Full regression
+passes 256 Node and 192 Python cases with nine native skips. Typing, Ruff,
+239-module JavaScript parsing and fresh-archive compilation pass. Five YAML
+opportunities round-trip to the catalogue and every generated artifact hash
+matches its manifest. No scientific measurement or model execution is inferred.
+
+The required web test, web lint, build and native suite checks remain unavailable
+because Vitest, eslint-plugin-import, Vite and PocketBase are absent. The
+public/private boundary, memory history and context gates are recorded in the
+report. All 66 preceding memory events remain intact. The receiving operator
+assigns actual execution dispatches and models through the existing Bits intake.
+
 ## Callable mission suite authorized 2026-09-16
 
 The owner requested one API backed by a box-operated suite and a BuildAndDo
@@ -755,3 +792,34 @@ regressions and 23 reused mission-suite tests pass. The independent Python
 input, archive, resource and replay observations are recorded in
 .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json. Local synthetic
 results do not resolve official, eligibility, hardware or submission acceptance.
+
+## PR 31 integration continuation authorized 2026-09-16
+
+The owner reported five conflicts against main and a failing Workers build.
+The existing A2 source dispatch covers merging the actual PR base, preserving
+both public foundry implementations and diagnosing the reported build. Private
+Cloudflare configuration and release authority remain with the receiving owner.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CU | Resolve all five conflicts while preserving both source implementations and historical evidence | Conflict-marker and parent-history audit in the dispatch report | done — five conflicts resolved; both parents and all 83 historical events retained |
+| CV | Validate the integrated foundry, portfolio, suite and contribution checks | Both foundry coverage runners, suite/Node regression, typing and source diagnostic | done — 389 tests pass; required source and provenance checks pass |
+| CW | Diagnose Workers failure and record integration acceptance | Provider check/annotations, local build, context, boundary and memory checks | partial — diagnosis recorded; real Workers log unavailable; existing npm lock/build blockers remain |
+
+Memory brief: PR 30 added apps/federal_foundry, five proposed lane SRS scopes,
+the portable package extension and a separate federal-foundry CI job to main.
+PR 31 provides foundry/shared/federal_foundry and its executable reference
+campaigns. Both changed shared governance files. Preserve all 77 PR-head events
+and all 72 base-branch events, deduplicating their 66 identical common events.
+GitHub reports Workers check 104836645636 failed with no error text or
+annotations; scoped Datadog lookups returned no diagnostic data. That does not
+establish a source-code cause. No authenticated workspace or seat is available.
+
+Observed integration acceptance: 13/15 local check groups pass. Both foundry
+coverage gates pass (70 and 40 cases), the portable suite passes 23 cases and
+Node passes 256. Context, boundary and memory checks pass on 743 tracked files.
+Workers check 104836645636 has no exposed error text or annotations, and no
+correlated Datadog logs were found. The unchanged npm lock has ten failures
+also present on main; local npm build stops because concurrently is absent.
+The root cause of the hosted Workers failure is not inferred from those local
+limitations. The report preserves both histories and their receiving contracts.

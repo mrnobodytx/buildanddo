@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/federal_foundry/opportunities.json.cgrf.yaml
+# Stage:       04_HYPOTHESIZE
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     apps/federal_foundry/opportunities.json, .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON apps/federal_foundry/opportunities.json; DEPENDS_ON .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
+# DAG Node:    none
+# Intent:      Describe the five owner-requested research lanes without asserting unverified solicitation or runtime evidence.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: 1
+governs: apps/federal_foundry/opportunities.json

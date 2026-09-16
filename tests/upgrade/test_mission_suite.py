@@ -34,6 +34,7 @@ from unittest.mock import AsyncMock, patch
 
 from apps.mission_suite import __main__ as cli
 from apps.mission_suite.bundle import (
+    EXTRA_FILES,
     SOURCE_FILES,
     package,
     source_fingerprint,
@@ -598,6 +599,12 @@ class PackagingTests(unittest.TestCase):
                 package(base / "outside.tgz", base)
             guide.unlink()
             guide.write_text("Local guide")
+            for name in EXTRA_FILES:
+                if name == "docs/mission-suite.md":
+                    continue
+                target = base / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / name, target)
             manifest = source_manifest(base)
             manifest["files"][0]["sha256"] = "0" * 64
             with (

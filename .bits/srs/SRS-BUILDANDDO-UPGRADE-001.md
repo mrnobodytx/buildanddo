@@ -20,6 +20,67 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Authorized continuation — model-independent federal research portfolio
+
+On 2026-09-16 the owner asked to add the Influence, NAVAIR, low-SWaP, semantic
+ISR and Maritime lanes to the Datadog Bits workflow without binding them to a
+particular LLM. The owner-supplied portfolio is the blueprint for this A2 source
+continuation under the existing dispatch and SRS self-bootstrap authority.
+
+Acceptance:
+
+1. Register five separately identified lane specifications and a shared,
+   machine-readable opportunity catalogue. Keep unverified topic identifiers,
+   deadlines, eligibility, funding and submission formats explicitly unverified.
+   xTech remains inactive with submission reported by the owner, not observed here.
+2. Produce portable Bits task packets for parallel lane intake, with separate
+   builder/verifier roles, capability requirements, explicit resource limits and
+   distinct SRS/branch suggestions. Provider/model/version are caller bindings;
+   no named LLM is required. Child SRS registration does not launch a dispatch.
+3. Compile requirement/claim matrices, architecture, experiment plans, results,
+   benchmarks, gaps, risks, SOW, commercialization, white-paper and slide drafts
+   and human submission checklists from the same catalogue and evidence.
+4. Validate exact receipt bytes, lane/requirement scope, measurement kinds,
+   seeds/datasets/environments and independent declared review. Reject unsafe
+   artifact paths and tampered receipts; retain contradictions and missing
+   evidence. Compare candidates only under comparable experiment conditions.
+5. Reuse the existing mission-suite package, evidence hashing and local test
+   framework. Make the portfolio discoverable to Bits through AGENTS.md and
+   produce reviewable packets in CI. Verify provider independence with adapter
+   contract tests; test adapters do not establish live-model execution.
+6. Document the operator intake boundary and record truthful source evidence.
+   Current source scope implements the shared compiler and lane work packages;
+   research engines, hosted agent scheduling and federal submission are separate
+   execution stages. Model output never approves its own claims or submission.
+
+All files in this continuation carry the existing umbrella SRS. The five proposed
+lane specs partition later implementation; each needs its own execution dispatch,
+isolated checkout/session and independent verifier. No additional worktrees,
+live accounts, external messages, submissions or private scheduler changes are
+authorized by this source continuation. Existing room work remains dependent on
+the unavailable media source contract and is not represented as implemented.
+
+Verify with `python tests/upgrade/check_federal_foundry.py`,
+`python -m apps.federal_foundry compile --output <new-directory>`, the existing
+mission-suite and Node/Python regression suites, context and public-boundary
+checks. Claim evidence counts separately from scientific or product completion.
+
+Source outcome: the five proposed lane specs, shared catalogue, model-independent
+adapter contract and portfolio compiler are implemented. Compilation produces
+ten builder/verifier packets and 105 files across the five proposal draft sets.
+The existing source archive contains the compiler and runs it after fresh
+extraction. Forty new behavior tests pass with 97.53–100% statement coverage
+across five new modules; the complete source regression passes 256 Node and
+192 Python tests, with nine native skips. Strict typing and source lint pass.
+
+The baseline-below-target comparison regression was observed red and then green:
+valid baseline measurements remain ranked with a failed target marker. Receipt
+hashes, declared review independence, candidate-scoped composite claims and
+physical-evidence requirements are covered by negative tests. No model, hosted
+agent or scientific campaign ran. The four browser/native dependency failures
+remain open; operator intake and actual evidence are described in
+docs/federal-foundry.md and the CMAX-B federal-foundry handoff.
+
 ## Authorized continuation — callable mission suite and government-submission learning
 
 On 2026-09-16 the owner revised the unavailable-Sentinel dependency: package a
@@ -922,3 +983,34 @@ regressions and 23 reused mission-suite tests pass. The independent Python
 input, archive, resource and replay observations are recorded in
 .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json. Local synthetic
 results do not resolve official, eligibility, hardware or submission acceptance.
+
+## Foundry integration continuation — PR 31, 2026-09-16
+
+The owner requested resolution of the conflicts with main and investigation of
+Workers Builds: buildanddo. Continue the existing public-source dispatch at A2.
+
+Acceptance:
+
+1. Merge the PR's actual base branch, retaining the incoming federal portfolio
+   compiler, five proposed lane scopes, package extension and independent CI job
+   alongside the executable foundry. Keep both contribution-check descriptions.
+2. Reconcile the report and memory semantically, preserve both parents' original
+   events and regenerate the measured context from the integrated tracked tree.
+3. Run both foundry suites, the reused mission-suite and Node regressions, typing,
+   source diagnostics, and context, boundary and provenance gates. Distinguish
+   actual test execution from unavailable browser, native or hosted acceptance.
+4. Inspect the reported Workers check and available correlated diagnostics, then
+   reproduce repository-owned build checks where local tools permit. Record an
+   unresolved external error explicitly if its build log remains unavailable;
+   do not infer a Cloudflare cause from unrelated local dependency failures.
+
+No private deployment-control change or hosted submission is authorized here.
+
+Observed integration outcome: all five conflicts are reconciled and both CI
+jobs remain independent. All 389 targeted tests pass with the recorded source
+coverage; typing, lint, static web, context, public boundary and memory checks
+pass. All 83 distinct parent events are preserved. Workers diagnostics remain
+unavailable through GitHub and scoped telemetry, while the local build and
+dependency lock retain their independently reproduced pre-existing blockers.
+The source integration is ready for PR synchronization; hosted build success
+and final mergeability after publication are not claimed.
