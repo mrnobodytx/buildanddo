@@ -20,6 +20,44 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Governance fast-path and Citadel telemetry continuation — 2026-09-16
+
+The owner authorized two A2 repository changes under the existing dispatch:
+make agent authorization proportional to effect, and project locally available
+Citadel operational assessment state into Datadog. This continuation changes
+governance and CI source only. It does not authorize a deployment, retrieve
+private state, expose evidence records, or make an external write from this
+coding session.
+
+Acceptance:
+
+1. Define A0 as read-only, A1 as local additive work an agent seat may
+   self-authorize, A2 as shared mutation requiring a pre-existing registered
+   Ready or In progress SRS and dispatch, and A3 as staging, production,
+   external-write or secret work requiring an explicit human dispatch.
+2. Keep SRS, dispatch, PR, actor-label and one-PR-per-SRS evidence for every A1
+   code change. Self-authorization creates and registers the SRS and dispatch
+   before implementation; it removes waiting, not provenance.
+3. Add a standard-library collector for system assessment, fleet, incident,
+   surface-proof, evidence, provider, governance-session and pending-content
+   measurements. Every series carries `env:citadel`, `service:buildanddo` and
+   `team:citadel-nexus`; provider and content metrics carry bounded dimensions.
+4. Accept explicit source paths and discover conventional files below a local
+   state directory without copying private state into the public repository.
+   Missing or malformed inputs omit only their affected measurements.
+5. Submit through the Datadog metrics API when `DD_API_KEY` is present. Missing
+   credentials, missing state and intake failures print `SKIP` and exit zero so
+   observability cannot break the build it observes.
+6. Wire the collector into a read-only scheduled/manual GitHub workflow and add
+   focused tests for complete collection, state mappings, partial inputs,
+   malformed input, missing credentials and failed transport.
+
+Verify with `python -m unittest tests.upgrade.test_datadog_metrics`,
+`python scripts/ci/emit_datadog_metrics.py --dry-run`,
+`python scripts/ci/agent_context.py --check`, and
+`python scripts/ci/verify_public_boundary.py`. A dry run proves payload shape,
+not live Datadog ingestion; no private operational state is committed.
+
 ## Field Interviewer v1.3.0 continuation — private handoff, 2026-09-16
 
 The owner adopted the supplied architecture: BuildAndDo product knowledge plus

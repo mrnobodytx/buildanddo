@@ -1,7 +1,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        .bits/srs_registry.yml
 # Stage:       04_HYPOTHESIZE
-# SRS:         SRS-BUILDANDDO-AGENTCTX-001
+# SRS:         SRS-BUILDANDDO-AGENTCTX-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -19,11 +19,12 @@
 # `key: value` lines belong to it. No nesting, no anchors, no multi-line values.
 #
 # status: proposed | ready | in_progress | delivered | withdrawn
-#   proposed     written down, not authorised - needs a dispatch before work starts
+#   proposed     written down, not authorized; A1 agents may atomically promote
+#                it while creating the dispatch, A2/A3 work must stop
 #   ready        authorised, unstarted
 #   in_progress  a branch is claiming this code right now
 #   delivered    merged to main and verified
-# risk:   A0 | A1 | A2 | A3  (A3+ needs explicit human approval before work starts)
+# risk:   A0 | A1 | A2 | A3  (agent fast-path ends at A1; A3 always needs a human dispatch)
 #
 # An entry with a `spec:` path must have that file. A spec file under .bits/srs/
 # with no entry here is a governance failure - agent_context.py reports both.

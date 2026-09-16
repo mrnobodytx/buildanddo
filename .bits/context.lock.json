@@ -67,6 +67,13 @@
       "wired_into_ci": true
     },
     {
+      "path": "scripts/ci/emit_datadog_metrics.py",
+      "referenced_by": [
+        "tests/upgrade/test_datadog_metrics.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
       "path": "scripts/ci/evidence_epoch.py",
       "referenced_by": [
         "apps/federal_foundry/evidence.py",
@@ -126,7 +133,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-16T15:51:51.484739+00:00",
+  "generated_at": "2026-09-16T19:31:08.994145+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -319,6 +326,20 @@
       ]
     },
     {
+      "file": ".github/workflows/citadel-stack-telemetry.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo Citadel Stack Telemetry",
+      "npm_scripts": [],
+      "scripts": [
+        "scripts/ci/emit_datadog_metrics.py"
+      ],
+      "triggers": [
+        "schedule",
+        "workflow_dispatch"
+      ]
+    },
+    {
       "file": ".github/workflows/datadog-dora.yml",
       "kind": "workflow",
       "local_actions": [],
@@ -421,18 +442,18 @@
       "scripts/deploy/ship.py"
     ],
     "migrations": 30,
-    "python_files": 104,
+    "python_files": 106,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 745,
+    "tracked_files": 748,
     "web_source_files": 242
   },
   "schema_version": 1,
   "summary": {
     "findings": 6,
     "findings_high": 6,
-    "pipelines": 6,
+    "pipelines": 7,
     "srs_open": 19,
     "srs_total": 22,
     "unwired_gates": 4
