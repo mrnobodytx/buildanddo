@@ -20,6 +20,28 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Governance fast-path and Citadel telemetry authorized 2026-09-16
+
+The owner authorized A2 governance and CI source changes under this existing
+dispatch. External Datadog submission remains a future workflow effect using
+the existing CI secret; this session validates payloads without sending them.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DA | Reconcile tiered agent authorization across machine and contributor guidance | `python scripts/ci/agent_context.py --check` | done — tier guidance and measured briefing agree |
+| DB | Collect assessment, fleet, incident, proof, evidence, provider, governance and content metrics | `python -m unittest tests.upgrade.test_datadog_metrics` | done — 9 tests; 20 complete-fixture series; 90% trace coverage |
+| DC | Schedule best-effort Datadog emission without private-state publication | Workflow/source audit and collector dry run | done for source — hosted no-state run skips; live intake unverified |
+| DD | Refresh measured context, boundary evidence, report and memory | Context, public-boundary and dispatch-memory gates | done — source gates pass; all 87 prior events retained |
+
+Memory brief: the repository already submits CI, DORA and evidence-epoch data
+to Datadog with standard-library clients and exit-zero handling when the API key
+is absent. The public mirror ignores and forbids `state/`; operational records
+from data_dog_private are not available here and must not be copied in. The
+source conversation provides observed schema examples for assessment state,
+fleet totals, incident relevance, surface proof and pending content. Collect
+only aggregate numbers and bounded provider/surface tags. No authenticated
+workspace is attached, so no seat event is fabricated.
+
 ## Field Interviewer v1.3.0 handoff authorized 2026-09-16
 
 The owner selected the supplied product/operational knowledge architecture.

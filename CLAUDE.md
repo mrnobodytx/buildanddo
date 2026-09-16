@@ -1,7 +1,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        CLAUDE.md
 # Stage:       04_HYPOTHESIZE
-# SRS:         SRS-BUILDANDDO-AGENTCTX-001
+# SRS:         SRS-BUILDANDDO-AGENTCTX-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -31,10 +31,13 @@ read `.bits/context.md` for intent and priorities.
 
 ## Before you write code
 
-You need a dispatch ID and an SRS code from `.bits/srs_registry.yml`. If neither
-exists for what you were asked to do, write a spec into `.bits/srs/`, register
-it as `proposed`, and stop there. Branch `bits/<SRS-CODE>-<slug>`, one PR per
-code, exactly one `actor:` label, and fill in the PR template.
+Classify the effect first. A0 inspection needs no authorization. An agent seat
+may self-authorize A1 additive work by creating the spec, registering it
+`in_progress`, and creating the dispatch task table before implementation. A2
+shared code/configuration/CI/governance changes need a pre-existing `ready` or
+`in_progress` SRS and dispatch. A3 staging, production, external-write or secret
+work always needs an explicit human dispatch. Then branch
+`bits/<SRS-CODE>-<slug>`: one SRS and one `actor:` label per PR.
 
 ## The shape of this repo
 

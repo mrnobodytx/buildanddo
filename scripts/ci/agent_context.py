@@ -2,7 +2,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/agent_context.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-AGENTCTX-001
+# SRS:         SRS-BUILDANDDO-AGENTCTX-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -294,7 +294,8 @@ def briefing(inventory: dict) -> str:
         f"({s['findings_high']} high).",
         "",
         "Read .bits/context.md for the durable brief and AGENTS.md for the rules.",
-        "A dispatch ID and a registered SRS code are required before any code change.",
+        "A0 reads need no authorization; agents may self-authorize additive A1 work",
+        "by creating its SRS and dispatch first. A2/A3 require pre-existing authority.",
         "",
         "## Pipelines",
     ]

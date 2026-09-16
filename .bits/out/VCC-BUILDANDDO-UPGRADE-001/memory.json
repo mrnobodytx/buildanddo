@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 452,
+      "lines": 473,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 28432,
+      "lines": 28873,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1216,
+      "lines": 1259,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 855,
+      "lines": 877,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1054,
+      "lines": 1092,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -432,7 +432,7 @@
         ".bits/context.md",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 178,
+      "lines": 179,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
@@ -618,7 +618,7 @@
         "CONTRIBUTING.md",
         ".buildanddo/public/path-policy.json"
       ],
-      "lines": 176,
+      "lines": 199,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define machine-facing governance for agents working in buildanddo.",
@@ -3386,7 +3386,7 @@
       "lines": 441,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Show the day the edition is about — today's priorities, what was completed, what is blocked — beside the editions themselves.",
+      "intent_statement": "Show the day the edition is about \u2014 today's priorities, what was completed, what is blocked \u2014 beside the editions themselves.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3510,7 +3510,7 @@
       "lines": 708,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
+      "intent_statement": "Make a list of missions triageable \u2014 priority, progress, due dates, editing and deletion \u2014 instead of an append-only stack.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3565,7 +3565,7 @@
       "lines": 617,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give the operations surface the two things it was missing — the runbook text and the record of each time a human ran it.",
+      "intent_statement": "Give the operations surface the two things it was missing \u2014 the runbook text and the record of each time a human ran it.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3612,7 +3612,7 @@
       "lines": 504,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Answer \"what is happening in this workspace\" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
+      "intent_statement": "Answer \"what is happening in this workspace\" in one screen \u2014 one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3666,7 +3666,7 @@
       "lines": 625,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" — a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
+      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" \u2014 a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3894,7 +3894,7 @@
       "lines": 721,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give a workflow the sequence that makes it one — ordered, editable steps — so activating it says what would run.",
+      "intent_statement": "Give a workflow the sequence that makes it one \u2014 ordered, editable steps \u2014 so activating it says what would run.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -28117,7 +28117,7 @@
       "type": "C",
       "event_type": "smoke_run",
       "file_path": "apps/mission_suite/bundle.py",
-      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96–99.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
+      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96\u201399.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -28415,12 +28415,453 @@
       "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md",
       "description": "The public interviewer handoff passes its document audit, measured context check, 745-file public boundary and memory provenance gate. CMAX-B with IDE1 must discover the actual private content lab and ElevenLabsBridge, implement and test audience-isolated compilation and uncertain-write recovery, and return independent provider/configuration readback. Reported live interviewer/prober status remains owner-reported; no private dispatch, provider mutation, seat message or activation occurred.",
       "smoke_result": "4/4 documentation gates"
+    },
+    {
+      "type": "A",
+      "file_path": "CLAUDE.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "AGENTS.md",
+        ".bits/context.md",
+        "CONTRIBUTING.md"
+      ],
+      "lines": 67,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give IDE seats the same effect-based authorization fast path as the machine-facing governance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "governance-telemetry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "CONTRIBUTING.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "AGENTS.md"
+      ],
+      "lines": 183,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain to human contributors which work agent seats may self-authorize and which effects remain gated.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "governance-telemetry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/context.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "AGENTS.md",
+        ".bits/srs_registry.yml",
+        "scripts/ci/agent_context.py"
+      ],
+      "lines": 102,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep the durable turn briefing aligned with the effect-based A0 through A3 authorization model.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "governance-telemetry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/ci/agent_context.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "git_files",
+        "read",
+        "parse_registry",
+        "collect_pipelines",
+        "collect_gates",
+        "collect_tests",
+        "collect_findings",
+        "build_inventory",
+        "briefing",
+        "main"
+      ],
+      "dependencies": [
+        "AGENTS.md",
+        ".bits/context.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 386,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report the A1 self-authorization fast path in the measured repository briefing instead of restating obsolete all-change gating.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "governance-telemetry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".github/workflows/citadel-stack-telemetry.yml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Workflow",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/emit_datadog_metrics.py"
+      ],
+      "lines": 56,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Schedule best-effort emission of runner-local Citadel aggregate state without publishing private state or failing on absent telemetry.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "governance-telemetry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/ci/emit_datadog_metrics.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "state_value",
+        "discover_sources",
+        "collect_metrics",
+        "build_series",
+        "submit_series",
+        "run",
+        "main"
+      ],
+      "dependencies": [
+        "state/",
+        "scripts/ci/datadog_publish.py"
+      ],
+      "lines": 595,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Project aggregate local Citadel assessment state into Datadog without exposing private records or making observability a build dependency.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "governance-telemetry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_datadog_metrics.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "DatadogMetricTests"
+      ],
+      "dependencies": [
+        "scripts/ci/emit_datadog_metrics.py"
+      ],
+      "lines": 269,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove Citadel metric collection is complete for known projections and remains non-fatal when state, credentials, or Datadog are unavailable.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "governance-telemetry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": ".github/workflows/citadel-stack-telemetry.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates .github/workflows/citadel-stack-telemetry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "scripts/ci/emit_datadog_metrics.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates scripts/ci/emit_datadog_metrics.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/test_datadog_metrics.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates tests/upgrade/test_datadog_metrics.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "CONTRIBUTING.md",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates CONTRIBUTING.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "CLAUDE.md",
+      "target": "AGENTS.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "CLAUDE.md extends AGENTS.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "CLAUDE.md",
+      "target": ".bits/context.md",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "CLAUDE.md validates .bits/context.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/context.md",
+      "target": "bits/SRS-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": ".bits/context.md gates bits/SRS-* branches.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/context.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/context.md validates .bits/srs_registry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/agent_context.py",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/ci/agent_context.py consumes .bits/srs_registry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/agent_context.py",
+      "target": ".bits/context.lock.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "scripts/ci/agent_context.py produces .bits/context.lock.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/agent_context.py",
+      "target": "bits/SRS-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": "scripts/ci/agent_context.py gates bits/SRS-* branches.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/agent_context.py",
+      "target": ".github/workflows",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "scripts/ci/agent_context.py validates .github/workflows.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".github/workflows/citadel-stack-telemetry.yml",
+      "target": "scripts/ci/emit_datadog_metrics.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".github/workflows/citadel-stack-telemetry.yml consumes scripts/ci/emit_datadog_metrics.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".github/workflows/citadel-stack-telemetry.yml",
+      "target": "datadog.metrics.citadel",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": ".github/workflows/citadel-stack-telemetry.yml produces datadog.metrics.citadel.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/emit_datadog_metrics.py",
+      "target": "state/",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/ci/emit_datadog_metrics.py consumes state/.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/emit_datadog_metrics.py",
+      "target": "datadog.metrics.citadel",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "scripts/ci/emit_datadog_metrics.py produces datadog.metrics.citadel.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_datadog_metrics.py",
+      "target": "scripts/ci/emit_datadog_metrics.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_datadog_metrics.py validates scripts/ci/emit_datadog_metrics.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "The scheduled Citadel aggregate metric node is source-verified.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T19:37:36.990935+00:00",
+      "commit_sha": null,
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_datadog_metrics.py",
+      "description": "Nine focused tests pass for the complete 20-series projection, bounded tags, conventional state discovery, fail-closed state mapping, malformed and absent inputs, missing credentials, transport failure, successful submission shape and workflow bindings. Stdlib trace measures 90 percent statement coverage for the new collector; strict mypy and Ruff pass.",
+      "smoke_result": "9/9 focused tests; 90% trace coverage"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "A1 self-authorization and scheduled Citadel telemetry source are ready for review.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T19:37:36.990935+00:00",
+      "commit_sha": null,
+      "event_type": "smoke_run",
+      "file_path": ".github/workflows/citadel-stack-telemetry.yml",
+      "description": "The focused suite, Python and Node regressions, strict typing, lint, formatting, local no-state dry run, measured context and 748-file public-boundary scan pass. All 87 prior events remain. No private assessment state or Datadog API key was available, so live ingestion is not claimed and the hosted default remains an intentional SKIP until runner-local paths are configured.",
+      "smoke_result": "9/9 available source and governance checks"
     }
   ],
   "summary": {
-    "type_a_count": 479,
-    "type_b_count": 999,
-    "type_c_count": 87,
+    "type_a_count": 486,
+    "type_b_count": 1016,
+    "type_c_count": 89,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

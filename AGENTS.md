@@ -1,7 +1,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        AGENTS.md
 # Stage:       04_HYPOTHESIZE
-# SRS:         SRS-BUILDANDDO-BOOTSTRAP-001, SRS-BUILDANDDO-COMMUNITY-001
+# SRS:         SRS-BUILDANDDO-BOOTSTRAP-001, SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -38,19 +38,42 @@ plan, and `.bits/srs/<CODE>.md` for the spec your dispatch names.
 
 ## Authorization
 
-1. **A VCC Dispatch ID is required before any code change.** No dispatch, no
-   commit — post a comment asking for one and stop.
-2. Every change carries an **SRS code** (e.g. `SRS-BUILDANDDO-BOOTSTRAP-001`),
-   used in the branch name, commit footer, and PR title.
-3. Every PR carries exactly one **actor label**: `actor:human`, `actor:agent`,
-   or `actor:mixed`. `AAXP` = approved for execution; `TEVV` = tested,
-   evaluated, verified and validated — claim it only with observed results.
-4. Risk tiers `A0`–`A2` are normal; `A3`+ (shared/staging mutation or beyond)
-   needs explicit human approval before work starts.
+```yaml
+agent_authorization:
+  # A0: read-only inspection; no authorization or evidence artefact required
+  # A1: local additive docs, tests, scaffolding, README or new modules
+  #     an agent may create, register and dispatch its SRS before implementation
+  # A2: existing shared code, configuration, CI or governance mutation
+  #     requires a pre-existing SRS and dispatch in Ready or In progress state
+  # A3: staging, production, external writes or secret access
+  #     always requires an explicit human dispatch
+  self_authorize_threshold: A1
+  auto_register_srs: true
+```
 
-**Bootstrap exception:** This file and its companion `CLAUDE.md` are exempt from
-the pre-flight governance check during initial creation
-(SRS-BUILDANDDO-BOOTSTRAP-001). All subsequent dispatches require normal pre-flight.
+1. **A0 is read-only.** Inspection and reporting need no authorization because
+   they do not change the repository or an external system.
+2. **Agent seats may self-authorize A1 work.** Before implementation, create the
+   SRS spec, register it as `in_progress`, and create its VCC dispatch task table
+   in one governance step. The fast path permits those three bookkeeping edits;
+   it does not turn any other existing-file mutation into A1 work.
+3. **A2 requires pre-existing authority.** The SRS must already be registered
+   with status `ready` or `in_progress`, and its dispatch must exist before an
+   agent changes existing shared code, configuration, CI, or governance.
+4. **A3 always requires a human dispatch.** An agent may not self-authorize
+   staging/production effects, external writes, secret access, or a higher-risk
+   action even when the source change itself looks additive.
+5. Every code change still carries an **SRS code and VCC Dispatch ID**. Use the
+   SRS in the branch name, commit footer, and PR title; one PR carries one SRS.
+   Self-authorization lowers coordination cost, not the evidence standard.
+6. Every PR carries exactly one **actor label**: `actor:human`, `actor:agent`,
+   or `actor:mixed`. Agent self-authorized work uses `actor:agent`. `AAXP` =
+   approved for execution; `TEVV` = tested, evaluated, verified and validated —
+   claim it only with observed results.
+
+**Bootstrap exception:** This file and its companion `CLAUDE.md` were exempt
+from pre-flight during initial creation (SRS-BUILDANDDO-BOOTSTRAP-001). Later
+changes follow the tiered authorization rules above.
 
 ## Stack canon (do not substitute without a dispatch that says so)
 

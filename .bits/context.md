@@ -1,7 +1,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        .bits/context.md
 # Stage:       04_HYPOTHESIZE
-# SRS:         SRS-BUILDANDDO-AGENTCTX-001
+# SRS:         SRS-BUILDANDDO-AGENTCTX-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -32,12 +32,16 @@ you what exists and what is broken.
 
 ## Authorisation, in one paragraph
 
-A dispatch ID plus an SRS code registered in `.bits/srs_registry.yml` are
-required before any code change. One PR per SRS code. Branch
-`bits/<SRS-CODE>-<slug>`. Exactly one actor label. If the registry has no code
-for the work you were asked to do, propose a spec in `.bits/srs/` and stop —
-proposing is cheap, unauthorised merging is not. `AGENTS.md` has the full rules
-and the hard NO list; they are not duplicated here so they cannot drift.
+Authorization follows effect, not task size. A0 inspection is read-only and
+needs no authorization. For A1 additive work (docs, tests, scaffolding, README
+or a new module), an agent seat may self-authorize by creating the SRS spec,
+registering it `in_progress`, and creating its dispatch before implementation.
+A2 changes to existing shared code, configuration, CI or governance require a
+pre-existing registered SRS in `ready` or `in_progress` state plus its dispatch.
+A3 staging/production effects, external writes and secret access always require
+an explicit human dispatch. Every A1+ change still uses one SRS, one dispatch,
+one PR, branch `bits/<SRS-CODE>-<slug>`, and exactly one actor label. `AGENTS.md`
+defines the precise tiers and hard NO list.
 
 ## What is already wired
 

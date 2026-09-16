@@ -55,6 +55,17 @@ from the migrations. Read it before adding a collection.
 
 ## Before you open a PR
 
+BuildAndDo grades authority by effect. A0 is read-only. A1 covers additive local
+work such as documentation, tests, scaffolding, README changes and new modules.
+Agent seats may self-authorize A1 by creating the SRS spec, registry entry and
+dispatch task table before implementation; the PR still carries that complete
+evidence trail and the `actor:agent` label. A2 changes existing shared code,
+configuration, CI or governance and requires a pre-existing SRS in `ready` or
+`in_progress` state plus its dispatch. A3 staging/production actions, external
+writes and secret access always require an explicit human dispatch. Human
+contributors should name the applicable feature/mission or SRS in their PR and
+coordinate A2/A3 authority before starting.
+
 1. **Fork or branch**, make your change.
 2. **Run the build and lint locally**: `npm ci && npm run build && npm run lint`
    (from `apps/web` — see the root `package.json` workspaces).
@@ -99,9 +110,11 @@ Use the PR template (auto-filled). It requires:
   `actor:human` / `actor:agent` / `actor:mixed` labels must be applied; the
   `BuildAndDo PR Governance` workflow checks this automatically and fails the
   check if it's missing or ambiguous.
-- **Risk / authority tier** — `A0` (read-only) through `A2` (isolated low-risk
-  change) are normal for community contributions. Anything proposing `A3` or
-  higher (shared/staging mutation or beyond) needs explicit discussion first.
+- **Risk / authority tier** — `A0` is read-only, `A1` is additive local work,
+  `A2` mutates existing shared source/configuration/CI/governance, and `A3`
+  reaches staging, production, external systems or secrets. Agent seats may
+  self-authorize only through A1; A2 needs a pre-existing dispatch and A3 needs
+  an explicit human dispatch.
 - **Acceptance evidence** — what you actually verified, not what you expect to
   work. "It builds" is not evidence that a feature works; describe what you
   tested and how.

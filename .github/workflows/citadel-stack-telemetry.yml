@@ -1,0 +1,56 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/workflows/citadel-stack-telemetry.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     scripts/ci/emit_datadog_metrics.py
+# EnumType:    Workflow
+# EnumEdges:   CONSUMES scripts/ci/emit_datadog_metrics.py; PRODUCES datadog.metrics.citadel
+# DAG Node:    buildanddo.citadel_telemetry.schedule
+# Intent:      Periodically project runner-local Citadel assessment aggregates into Datadog without making missing telemetry a workflow failure.
+# ───────────────────────────────────────────────────────────────
+
+name: BuildAndDo Citadel Stack Telemetry
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: buildanddo-citadel-stack-telemetry
+  cancel-in-progress: true
+
+jobs:
+  emit:
+    # A private runner can expose its aggregate projections through the paths
+    # below. The hosted default is intentionally a clean no-state/no-op run.
+    runs-on: ${{ vars.CITADEL_TELEMETRY_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Emit available Citadel assessment metrics
+        env:
+          DD_API_KEY: ${{ secrets.DD_API_KEY }}
+          DD_SITE: ${{ secrets.DD_SITE || 'us5.datadoghq.com' }}
+          CITADEL_STATE_DIR: ${{ vars.CITADEL_STATE_DIR || 'state' }}
+          CITADEL_FLEET_MANIFEST: ${{ vars.CITADEL_FLEET_MANIFEST }}
+          CITADEL_INCIDENT_INDEX: ${{ vars.CITADEL_INCIDENT_INDEX }}
+          CITADEL_SURFACE_PROOF: ${{ vars.CITADEL_SURFACE_PROOF }}
+          CITADEL_EVIDENCE_INDEX: ${{ vars.CITADEL_EVIDENCE_INDEX }}
+          CITADEL_CONTENT_STATE: ${{ vars.CITADEL_CONTENT_STATE }}
+          CITADEL_PROVIDER_STATE: ${{ vars.CITADEL_PROVIDER_STATE }}
+        run: python scripts/ci/emit_datadog_metrics.py

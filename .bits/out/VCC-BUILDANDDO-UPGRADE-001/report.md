@@ -67,6 +67,10 @@
 #              VALIDATES tests/upgrade/check_federal_foundry.py;
 #              CONSUMES docs/field-interviewer-v1.3.md;
 #              CONSUMES .bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md;
+#              VALIDATES .github/workflows/citadel-stack-telemetry.yml;
+#              VALIDATES scripts/ci/emit_datadog_metrics.py;
+#              VALIDATES tests/upgrade/test_datadog_metrics.py;
+#              VALIDATES CONTRIBUTING.md;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -75,39 +79,46 @@
 
 ## §1 SUMMARY
 
-Status: PARTIAL — public interviewer contract and handoff prepared; private implementation and activation pending
+Status: PARTIAL — governance and telemetry source complete; live private-state ingestion unverified
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
-Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-federal-foundry
-Tasks: 3/3 public documentation phases complete; private FI-00 through FI-05 remain receiving work
-Smoke: 4/4 local documentation gates pass; no runtime/provider acceptance claimed
+Branch: bits/SRS-BUILDANDDO-UPGRADE-001-governance-telemetry
+Tasks: 4/4 source phases complete; scheduled ingestion awaits runner-local aggregate state
+Smoke: 9/9 available source and governance checks pass; no live Datadog request made
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: one focused documentation continuation; verify with the command below
+Commits: one focused continuation; verify with the command below
 Verify source identity: `git log -1 --format='%H %s'`
 
-The owner adopted the Field Interviewer v1.3.0 architecture. This public wave
-records its product/operational knowledge boundary and concrete receiving work.
-Six managed documents, public/internal separation, scoped evidence states,
-freshness, deterministic topics, sanitizer, provider readback/recovery and the
-human publication gate are specified in docs/field-interviewer-v1.3.md. The
-CMAX-B handoff assigns private discovery and implementation with IDE1 bridge
-coordination and independent verification.
+Agent authorization now follows effect: A0 reads are free, A1 additive changes
+may self-authorize by atomically creating their SRS, registry entry and dispatch,
+A2 shared mutations require pre-existing authority, and A3 external effects or
+secret access always require a human dispatch. One SRS, dispatch, PR and actor
+label remain mandatory for every A1+ code change.
 
-Observed public reuse includes the authored community catalogue, the workspace
-wiki and the reviewed content desk. Wiki publication only grants workspace
-visibility; external knowledge export requires separate approval. Reported live
-interviewer, private bridge, probers and analytics capabilities remain owner
-inputs until the private receiving seat supplies source and runtime evidence.
-This continuation adds documentation only. Earlier foundry and PR integration
-results, including unresolved Workers/frontend acceptance, remain historical.
+The scheduled collector reads only aggregate runner-local projections and maps
+them to the requested assessment, fleet, incident, surface-proof, evidence,
+provider, governance-session and content-draft series. All points carry the
+required `env`, `service` and `team` tags. Missing inputs, malformed JSON,
+missing `DD_API_KEY` and intake failures are SKIP outcomes with exit code zero.
+No private state is committed. This sandbox exercised dry-run and transport
+doubles only; it did not perform or verify a Datadog submission.
 
 ## §2 TASK RESULTS
 
-### Current continuation — Field Interviewer public handoff, 2026-09-16
+### Current continuation — governance fast-path and Citadel telemetry, 2026-09-16
+
+| Phase | Status | Result | Verify | CKET | Files |
+|---|---|---|---|---|---|
+| DA — Tiered authorization | PASS | A0–A3 effects and the A1 atomic self-authorization trail agree across machine, IDE and contributor guidance | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | Governance guidance, registry comments and measured context |
+| DB — Aggregate metric collector | PASS for source | Twenty requested series are produced from complete fixtures with bounded tags; partial/malformed inputs omit only affected measurements | `python -m unittest tests.upgrade.test_datadog_metrics` | 08_TEST / 11_COMMIT | Collector and focused tests |
+| DC — Scheduled emission | PASS for source; live intake unverified | Hourly/manual workflow uses the existing Datadog secret and configurable runner-local paths; hosted clean runners safely no-op | Workflow test and collector dry run in §3 | 11_COMMIT | Scheduled workflow |
+| DD — Evidence and boundary | PASS | Context lock, public boundary, static checks, regressions, report and memory updated without private state or external writes | Commands in §3–§4 | 11_COMMIT | Context, dispatch, report and memory |
+
+### Prior continuation — Field Interviewer public handoff, 2026-09-16
 
 | Phase | Status | Result | Verify | CKET | Files |
 |---|---|---|---|---|---|
@@ -459,7 +470,27 @@ and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
-Current Field Interviewer documentation checks:
+Current governance and Citadel telemetry checks:
+
+| Check | Runnable verification | Expected / observed |
+|---|---|---|
+| 1. Focused behavior | `python -m unittest tests.upgrade.test_datadog_metrics` | PASS: 9/9; complete 20-series extraction, discovery, state mapping, partial/malformed state, missing key, empty state, failed/successful transport doubles and workflow binding |
+| 2. New-source coverage | `python -m trace --count --summary --missing --coverdir <temporary-directory> --module unittest tests.upgrade.test_datadog_metrics` | PASS: 90% trace statement coverage for `scripts.ci.emit_datadog_metrics` |
+| 3. Strict typing | `python -m mypy --strict --explicit-package-bases scripts/ci/emit_datadog_metrics.py tests/upgrade/test_datadog_metrics.py` | PASS: no issues in two files |
+| 4. Python lint/format | `python -m ruff check scripts/ci/emit_datadog_metrics.py tests/upgrade/test_datadog_metrics.py`; `python -m ruff format --check scripts/ci/emit_datadog_metrics.py tests/upgrade/test_datadog_metrics.py` | PASS |
+| 5. Python regression | `python -m unittest discover -s tests/upgrade -p 'test_*.py' -q` | PASS: 210 tests; nine explicit native skips |
+| 6. Node regression | `node --test --test-reporter=dot tests/upgrade/*.test.mjs` | PASS: exit 0 |
+| 7. Collector local run | `python scripts/ci/emit_datadog_metrics.py --dry-run` | PASS: empty public checkout produces zero series and no request; full payload is covered by check 1 |
+| 8. Measured context | `python scripts/ci/agent_context.py --check` | PASS: seven pipelines, collector wired into CI, six retained findings and four unwired historical gates |
+| 9. Public boundary | `python scripts/ci/verify_public_boundary.py` | PASS: 748 public files; zero failures; provider actor-label enforcement not run locally |
+
+No current check failed. The tests use synthetic aggregate projections and
+transport doubles; they do not contain private records or establish live
+Datadog ingestion. On the hosted default runner, absent state is an intentional
+SKIP. A runner carrying current aggregate projections must bind the documented
+repository variables before the hourly workflow emits operational series.
+
+Prior Field Interviewer documentation checks:
 
 | Check | Runnable verification | Expected / observed |
 |---|---|---|
@@ -1003,13 +1034,13 @@ no hosted success, browser screenshots or shared activation is claimed here.
 
 ## §4 MEMORY INGEST
 
-All 85 pre-interviewer events remain verbatim and in order; reproduce with the
-current document/source/history command in §3. Two new documentation events
-describe only this handoff and its observed checks.
+All 87 preceding events remain verbatim and in order. Two new events describe
+the focused collector tests and the source/governance smoke run; neither claims
+a live Datadog request or private-state observation.
 
-Type A count: 479
-Type B count: 999
-Type C count: 87
+Type A count: 486
+Type B count: 1016
+Type C count: 89
 IOO compliance: complete
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
@@ -1039,12 +1070,13 @@ PYMEM
 
 ## §5 CKET FILING
 
-Current interviewer continuation:
-06_PLAN: docs/field-interviewer-v1.3.md
-04_HYPOTHESIZE: umbrella SRS continuation
-11_COMMIT: private-seat handoff, queue, context, report and memory
+Current governance and telemetry continuation:
+06_PLAN: none
+04_HYPOTHESIZE: AGENTS.md, CLAUDE.md, context, registry and umbrella SRS continuation
+08_TEST: tests/upgrade/test_datadog_metrics.py
+11_COMMIT: scheduled workflow, collector, queue, measured context, report and memory
 13_SAVE: none
-New artifacts: two documentation files with CGRF headers; no runtime code
+New artifacts: workflow, collector and test with CGRF headers
 REFLEX: deferred to private post-merge validation; CK/CAPS remain pending
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
@@ -1068,13 +1100,13 @@ Hard-NO scan: zero public-boundary violations
 Secret scan: clean under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: A0 public documentation continuation within the existing A2 dispatch; private runtime/provider implementation and activation require the receiving dispatch
+Risk / authority: A2 governance and CI source change under the pre-existing owner dispatch; the future scheduled metrics write is explicitly owner-requested and uses the existing secret
 Verify: `python scripts/ci/verify_public_boundary.py`
 
-No key generation, live provider call, controlled-data ingest, hardware run,
-private deployment, shared database mutation, federal portal interaction or seat
-message occurred. The compiler cannot approve eligibility, claims, certifications,
-costs, rights, team statements or a final package.
+No key generation, secret read, live provider call, Datadog request,
+controlled-data ingest, deployment, shared database mutation or seat message
+occurred. Only aggregate numeric fixtures were used in tests. The public mirror
+continues to ignore and reject private `state/` artifacts.
 
 Historical portfolio scope: The federal compiler made no model calls, scheduled no hosted work and sent no
 external messages or submissions. It changed no shared database, private runtime
@@ -1085,7 +1117,18 @@ nor changes prior dossier encryption, service activation or deployment claims.
 
 ## §7 NEXT ACTIONS
 
-Current interviewer work: CMAX-B must accept the private repository handoff,
+Current telemetry activation: configure `CITADEL_TELEMETRY_RUNNER` and the
+`CITADEL_*` aggregate projection paths for a runner that actually carries the
+current system assessment state. Keep `DD_API_KEY` in the existing CI secret.
+The hosted clean-runner default correctly emits SKIP until those bindings exist.
+Confirm the first accepted batch in Datadog before claiming live integration;
+no source blocker remains. Out-of-scope bugs filed: none.
+
+Rollback: disable the scheduled workflow or revert this focused change. No
+operational data, runtime service or database needs compensation because this
+session made no external write.
+
+Prior interviewer work: CMAX-B must accept the private repository handoff,
 verify the existing content lab and ElevenLabsBridge, register the receiving
 execution dispatch and implement FI-00 through FI-05. IDE1 coordinates generic
 bridge APIs; the product owner/COPILOT owns disclosure and editorial review.
