@@ -53,10 +53,22 @@ class ExperimentSpec:
     expected_artifacts: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
-        if not self.experiment_id.strip() or not self.command or self.seed < 0:
+        if (
+            not isinstance(self.experiment_id, str)
+            or not self.experiment_id.strip()
+            or not self.command
+            or not all(
+                isinstance(part, str) and part and "\x00" not in part
+                for part in self.command
+            )
+            or type(self.seed) is not int
+            or not 0 <= self.seed <= 2**32 - 1
+        ):
             raise FoundryValidationError(
                 "experiment id, command and nonnegative seed are required"
             )
+        if len(set(self.expected_artifacts)) != len(self.expected_artifacts):
+            raise FoundryValidationError("duplicate expected artifacts")
 
 
 @dataclass(frozen=True)

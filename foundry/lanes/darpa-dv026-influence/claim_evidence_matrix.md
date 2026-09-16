@@ -15,11 +15,12 @@
 # Intent:      Provide a lane-owned workspace for exact claims, falsifiers and evidence support.
 # ───────────────────────────────────────────────────────────────
 
-# Claim-evidence matrix — DARPA DV026 Influence Benchmarks
+# Claim-evidence matrix
 
-Status: scaffold. Preserve exact proposed language and its maximum support level.
+| ID | Claim | Requested | Supported | Evidence |
+|---|---|---|---|---|
+| DV026-CLM-01 | The proposed architecture can run a deterministic multi-agent market experiment. | proposed | unsupported | none |
+| DV026-CLM-02 | The experiment can distinguish named influence-related behaviors under preregistered tests. | proposed | unsupported | none |
+| DV026-CLM-03 | Existing BuildAndDo replay source is available for adaptation, without proving this lane. | observed | observed | DV026-EV-REPLAY |
 
-| Claim ID | Exact claim | Requested level | Supported level | Evidence IDs | Falsifier |
-|---|---|---|---|---|---|
-
-Final proposal language requires named human approval.
+The reference workload does not automatically promote these claims. See the generated evidence index for byte-checked observations and explicit source-locator limitations.

@@ -125,7 +125,7 @@ class RegistryTests(unittest.TestCase):
                 for path in lane_root.rglob("*")
                 if path.is_file()
             }
-            self.assertEqual(actual, OUTPUTS)
+            self.assertEqual(actual, OUTPUTS | {"experiment.yaml"})
             results = self.registry.load_results(lane_id)
             self.assertEqual(results.lane_id, lane_id)
             self.assertFalse(results.experiments)
@@ -192,6 +192,16 @@ class EvidenceTests(unittest.TestCase):
             "verified",
             "tests/fixture/verified.json",
             "a" * 64,
+            ("DV026-REQ-01",),
+            ("DV026-CLM-01",),
+            {
+                "reviewer": "fixture-reviewer",
+                "method": "fixture assertion",
+                "scope": "fixture-only requirement and claim",
+                "reviewed_at": "2026-09-16T00:00:00Z",
+                "outcome": "pass",
+                "digest": "a" * 64,
+            },
         )
 
     def test_satisfied_requirements_require_verified_evidence(self) -> None:

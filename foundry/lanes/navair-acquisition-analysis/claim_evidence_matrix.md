@@ -15,11 +15,11 @@
 # Intent:      Provide a lane-owned workspace for exact claims, falsifiers and evidence support.
 # ───────────────────────────────────────────────────────────────
 
-# Claim-evidence matrix — NAVAIR Acquisition Analysis
+# Claim-evidence matrix
 
-Status: scaffold. Preserve exact proposed language and its maximum support level.
+| ID | Claim | Requested | Supported | Evidence |
+|---|---|---|---|---|
+| NAVAIR-CLM-01 | The proposed system can rank related acquisition documents deterministically. | proposed | unsupported | none |
+| NAVAIR-CLM-02 | Every recommendation can retain a source and transformation path. | proposed | unsupported | none |
 
-| Claim ID | Exact claim | Requested level | Supported level | Evidence IDs | Falsifier |
-|---|---|---|---|---|---|
-
-Final proposal language requires named human approval.
+The reference workload does not automatically promote these claims. See the generated evidence index for byte-checked observations and explicit source-locator limitations.

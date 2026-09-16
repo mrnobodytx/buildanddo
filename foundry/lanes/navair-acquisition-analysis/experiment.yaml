@@ -1,0 +1,54 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/lanes/navair-acquisition-analysis/experiment.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/experiment.schema.json, foundry/fixtures/navair-acquisition-analysis.json
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON foundry/registry/experiment.schema.json; DEPENDS_ON foundry/fixtures/navair-acquisition-analysis.json
+# DAG Node:    none
+# Intent:      Preregister a finite navair-acquisition-analysis candidate comparison against a fingerprinted public fixture.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.experiment/v1
+lane_id: navair-acquisition-analysis
+dataset: foundry/fixtures/navair-acquisition-analysis.json
+dataset_sha256: 76fbbcdad7334dd3ea313a0dab38c7519738a68ffab97ba875a725e913327069
+candidates: ["bm25","tfidf"]
+seeds: [17, 29, 43]
+repetitions: 2
+timeout_seconds: 30
+requirement_ids: ["NAVAIR-REQ-01","NAVAIR-REQ-02","NAVAIR-REQ-03"]
+scope: "Public synthetic text fixtures and hand-authored relevance judgments; lexical candidates only."
+purpose: "Compare ranking quality and deterministic explanations on one fixed corpus; exercise the comparison machinery before a domain corpus is accepted."
+primary_metric: ndcg_at_k
+metrics:
+  - name: ndcg_at_k
+    unit: "ratio"
+    direction: higher
+    threshold:
+      operator: ">="
+      value: 0.8
+  - name: precision_at_k
+    unit: "ratio"
+    direction: higher
+  - name: recall_at_k
+    unit: "ratio"
+    direction: higher
+    threshold:
+      operator: ">="
+      value: 0.8
+  - name: mrr
+    unit: "ratio"
+    direction: higher
+  - name: elapsed_ms
+    unit: "milliseconds with tracemalloc enabled"
+    direction: lower
+  - name: peak_python_bytes
+    unit: "traced Python allocation bytes"
+    direction: lower

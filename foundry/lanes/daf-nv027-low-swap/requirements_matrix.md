@@ -15,12 +15,13 @@
 # Intent:      Provide a lane-owned workspace for requirement status and acceptance evidence.
 # ───────────────────────────────────────────────────────────────
 
-# Requirements matrix — DAF NV027 Brain-Inspired Low-SWaP
+# Requirements matrix
 
-Status: scaffold. The compiled matrix is generated from `foundry/registry/daf-nv027-low-swap/opportunity.yaml` and
-`results.json`.
+| ID | Requirement | Acceptance | Status | Evidence | Justification |
+|---|---|---|---|---|---|
+| NV027-REQ-01 | Compare a frozen monolithic baseline with a heterogeneous neural runtime under identical tasks. | Both candidates use the same datasets, splits, seeds, scoring and compute accounting. | open | none | none |
+| NV027-REQ-02 | Evaluate perception, temporal, transformer, spiking and graph or vector memory subsystems behind a dynamic compute gate. | Ablations identify each subsystem, gate decision and active compute path. | open | none | none |
+| NV027-REQ-03 | Establish a scientifically testable contribution rather than relabeling orchestration with biological terms. | The plan states novelty, falsifier, baselines and statistical test before candidate evaluation. | open | none | none |
+| NV027-REQ-04 | Produce a Phase I simulation or small prototype with reproducible resource measurements. | Frozen code, configuration and repeated results reproduce accuracy, latency and resource values. | open | none | none |
 
-| Requirement ID | Acceptance method | Status | Evidence IDs | Reviewer |
-|---|---|---|---|---|
-
-Only verified evidence can support `satisfied`.
+This is the registered source baseline. compile --runs derives partial requirement updates from the selected measured campaign; verified satisfaction still requires a scoped review.

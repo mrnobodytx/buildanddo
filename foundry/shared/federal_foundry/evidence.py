@@ -22,7 +22,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Iterable, Mapping
 
-from .models import EvidenceRecord, FoundryValidationError, Opportunity
+from .models import (
+    ASSERTION_LEVELS,
+    REQUIREMENT_STATES,
+    EvidenceRecord,
+    FoundryValidationError,
+    Opportunity,
+)
 
 
 def _cell(value: object) -> str:
@@ -34,6 +40,8 @@ def _identities(value: object, field: str) -> tuple[str, ...]:
         isinstance(item, str) and item for item in value
     ):
         raise FoundryValidationError(f"{field} must be a list of identities")
+    if len(set(value)) != len(value):
+        raise FoundryValidationError(f"{field} contains duplicate identities")
     return tuple(value)
 
 
@@ -85,6 +93,8 @@ class RequirementTracker:
             self._validate(row)
 
     def _validate(self, row: RequirementRow) -> None:
+        if row.status not in REQUIREMENT_STATES:
+            raise FoundryValidationError(f"unknown requirement status: {row.status}")
         unknown = sorted(set(row.evidence_ids) - set(self._evidence))
         if unknown:
             raise FoundryValidationError(
@@ -96,6 +106,13 @@ class RequirementTracker:
         ):
             raise FoundryValidationError(
                 f"requirement {row.requirement_id} needs verified evidence"
+            )
+        if row.status == "satisfied" and any(
+            row.requirement_id not in self._evidence[item].requirement_ids
+            for item in row.evidence_ids
+        ):
+            raise FoundryValidationError(
+                "verified evidence does not cover this requirement"
             )
         if row.status == "partial" and not any(
             state in {"observed", "verified"} for state in states
@@ -112,7 +129,15 @@ class RequirementTracker:
         """Apply validated requirement updates by identity."""
 
         seen: set[str] = set()
+        staged = dict(self._rows)
         for update in updates:
+            if not {"id", "status"}.issubset(update) or set(update) - {
+                "id",
+                "status",
+                "evidence_ids",
+                "justification",
+            }:
+                raise FoundryValidationError("unknown requirement update fields")
             identity = str(update["id"])
             if identity in seen:
                 raise FoundryValidationError(
@@ -134,7 +159,8 @@ class RequirementTracker:
                 justification=str(update.get("justification", "")),
             )
             self._validate(row)
-            self._rows[identity] = row
+            staged[identity] = row
+        self._rows = staged
 
     def rows(self) -> tuple[RequirementRow, ...]:
         """Return requirement rows in stable identity order."""
@@ -144,7 +170,9 @@ class RequirementTracker:
     def is_complete(self) -> bool:
         """Return whether every requirement is satisfied or justified as inapplicable."""
 
-        return all(row.status in {"satisfied", "not_applicable"} for row in self.rows())
+        return bool(self._rows) and all(
+            row.status in {"satisfied", "not_applicable"} for row in self.rows()
+        )
 
     def to_markdown(self) -> str:
         """Render a deterministic requirement matrix."""
@@ -202,6 +230,10 @@ class ClaimEvidenceCompiler:
         merged = {identity: dict(record) for identity, record in self._claims.items()}
         seen: set[str] = set()
         for update in updates:
+            if set(update) - {"id", "assertion_level", "evidence_ids"}:
+                raise FoundryValidationError(
+                    "claim updates cannot rewrite the claim text"
+                )
             identity = str(update["id"])
             if identity in seen:
                 raise FoundryValidationError(f"duplicate claim update: {identity}")
@@ -221,7 +253,9 @@ class ClaimEvidenceCompiler:
                     f"claim {identity} references unknown evidence: {unknown}"
                 )
             states = [self._evidence[item].state for item in references]
-            if states and all(state == "verified" for state in states):
+            if "rejected" in states:
+                support = "rejected"
+            elif states and all(state == "verified" for state in states):
                 support = "verified"
             elif states and all(state in {"observed", "verified"} for state in states):
                 support = "observed"
@@ -230,9 +264,17 @@ class ClaimEvidenceCompiler:
             else:
                 support = "unsupported"
             requested = str(claim["assertion_level"])
+            if requested not in ASSERTION_LEVELS:
+                raise FoundryValidationError("unknown claim assertion level")
             if requested == "verified" and support != "verified":
                 raise FoundryValidationError(
                     f"claim {identity} lacks verified evidence"
+                )
+            if requested == "verified" and any(
+                identity not in self._evidence[item].claim_ids for item in references
+            ):
+                raise FoundryValidationError(
+                    "verified evidence does not cover this claim"
                 )
             if requested == "observed" and support not in {"observed", "verified"}:
                 raise FoundryValidationError(

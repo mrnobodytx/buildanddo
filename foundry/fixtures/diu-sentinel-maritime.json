@@ -1,0 +1,96 @@
+{
+  "lane_id": "diu-sentinel-maritime",
+  "classification": "PUBLIC",
+  "kind": "synthetic",
+  "license": "Authored synthetic fixture; distributed under the repository license.",
+  "id": "maritime-v1",
+  "document": {
+    "schema_version": "mission-suite.input/v1",
+    "suite": "maritime",
+    "tenant_id": "demo-public",
+    "mission_id": "foundry-fixture",
+    "evaluated_at": "2026-01-01T01:00:00Z",
+    "rights": [
+      {
+        "source_id": "fixture-source-a",
+        "rights_id": "fixture-rights-0",
+        "license_ref": "Authored synthetic fixture; distributed under the repository license.",
+        "classification": "PUBLIC",
+        "processing_allowed": true,
+        "export_allowed": false,
+        "expires_at": "2099-01-01T00:00:00Z",
+        "independence_group": "fixture-group-0"
+      },
+      {
+        "source_id": "fixture-source-b",
+        "rights_id": "fixture-rights-1",
+        "license_ref": "Authored synthetic fixture; distributed under the repository license.",
+        "classification": "PUBLIC",
+        "processing_allowed": true,
+        "export_allowed": false,
+        "expires_at": "2099-01-01T00:00:00Z",
+        "independence_group": "fixture-group-1"
+      }
+    ],
+    "parameters": {
+      "gap_seconds": 900,
+      "max_speed_knots": 45,
+      "position_tolerance_m": 5000,
+      "stale_seconds": 3600
+    },
+    "payload": {
+      "observations": [
+        {
+          "observation_id": "obs-1",
+          "source_id": "fixture-source-a",
+          "source_record_id": "record-obs-1",
+          "entity_id": "fixture-entity-1",
+          "event_time": "2026-01-01T00:00:00Z",
+          "ingest_time": "2026-01-01T00:59:00Z",
+          "latitude": 0,
+          "longitude": 0
+        },
+        {
+          "observation_id": "obs-2",
+          "source_id": "fixture-source-a",
+          "source_record_id": "record-obs-2",
+          "entity_id": "fixture-entity-1",
+          "event_time": "2026-01-01T00:30:00Z",
+          "ingest_time": "2026-01-01T00:59:00Z",
+          "latitude": 0.01,
+          "longitude": 0.01
+        },
+        {
+          "observation_id": "obs-3",
+          "source_id": "fixture-source-a",
+          "source_record_id": "record-obs-3",
+          "entity_id": "fixture-entity-2",
+          "event_time": "2026-01-01T00:10:00Z",
+          "ingest_time": "2026-01-01T00:59:00Z",
+          "latitude": 1,
+          "longitude": 1
+        },
+        {
+          "observation_id": "obs-4",
+          "source_id": "fixture-source-b",
+          "source_record_id": "record-obs-4",
+          "entity_id": "fixture-entity-2",
+          "event_time": "2026-01-01T00:10:00Z",
+          "ingest_time": "2026-01-01T00:59:00Z",
+          "latitude": 1,
+          "longitude": 20
+        },
+        {
+          "observation_id": "obs-5",
+          "source_id": "fixture-source-a",
+          "source_record_id": "record-obs-5",
+          "entity_id": "fixture-entity-3",
+          "event_time": "2025-12-31T20:00:00Z",
+          "ingest_time": "2026-01-01T00:59:00Z",
+          "latitude": 2,
+          "longitude": 2
+        }
+      ]
+    }
+  }
+}

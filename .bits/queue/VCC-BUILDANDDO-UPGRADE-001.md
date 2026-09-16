@@ -722,3 +722,36 @@ Pytest and coverage.py cannot start because those packages are not installed;
 the repository's existing trace-based coverage pattern supplies the measured
 local alternative. Vitest, Vite and the official ESLint import plugin remain
 unavailable for the pre-existing web smoke. This foundry adds no frontend source.
+
+## Foundry execution continuation authorized 2026-09-16
+
+The owner requested working functionality beyond the initial scaffold. The same
+in-progress source dispatch covers the common runner, reference workloads and
+derived evidence workflow. Public synthetic inputs are explicit; hardware,
+official-source review and external submission retain their existing gates.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CP | Validate contracts and evidence bytes/scope | Foundry validation and evidence tests | done — actual bytes, scoped reviews and atomic updates; stale-plan regression fails before the fix and passes afterward |
+| CQ | Execute isolated bounded experiments and record attempts | Foundry runner tests with real child processes | done — real subprocess, timeout, log bound, input tamper, cancellation and replay cases pass |
+| CR | Compare five lane reference workloads over repeated seeds | Foundry baseline and benchmark tests | done — five algorithms, ten candidates and a 60-attempt comparison execute; fixture scope is explicit |
+| CS | Compile measured reports, briefs and independently verifiable bundles | Foundry end-to-end and tamper tests | done — measured reports, five source slides per lane, portable ZIP and standalone HTML pass integrity and determinism checks |
+| CT | Run a complete local portfolio and preserve verification evidence | `python tests/foundry/check_foundry.py`; context, boundary and memory checks | done — 70 source tests, 60 attempts, deterministic export/replay and provenance; hosted and scientific acceptance remain open |
+
+Memory brief: the initial substrate has thirteen source tests but only protocol
+interfaces, unchecked evidence locators and copied paper drafts. All five lane
+results are empty. PyYAML, mypy and Ruff are installed; pytest, coverage.py and
+the previously missing frontend/native tools remain unavailable. The existing
+portable maritime engine is reusable public source. No authenticated seat or
+live workspace is available, so execution receipts remain local.
+
+Observed execution outcome: all 60 reference attempts completed across five
+lanes and ten candidates. The verified export contains 574 files and 25 source
+slides; two exports are byte-identical and a fresh NAVAIR replay matches. The
+final source suite passes 70/70 with 90.62–100% statement coverage per executable
+module. All 15 foundry modules pass strict typing; Ruff lint/format, 256 Node
+regressions and 23 reused mission-suite tests pass. The independent Python
+3.11/3.12 CI matrix is authored; hosted execution is not claimed. Exact source,
+input, archive, resource and replay observations are recorded in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json. Local synthetic
+results do not resolve official, eligibility, hardware or submission acceptance.

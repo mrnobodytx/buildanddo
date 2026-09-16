@@ -105,12 +105,12 @@
       "srs_codes": [
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
-      "enum_type": "ConfigDoc",
+      "enum_type": "Schema",
       "functions": [],
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 25221,
+      "lines": 27038,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 568,
+      "lines": 685,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 724,
+      "lines": 757,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 880,
+      "lines": 924,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -555,7 +555,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 202,
+      "lines": 241,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate contribution review on manifest integrity, component coverage and public adapter tests.",
@@ -1721,7 +1721,7 @@
         "apps/web/src/components/site/ui.jsx",
         ".github/workflows/pr-governance.yml"
       ],
-      "lines": 291,
+      "lines": 292,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
@@ -19936,7 +19936,7 @@
         ".buildanddo/public/path-policy.json",
         "foundry/registry/opportunity.schema.json"
       ],
-      "lines": 103,
+      "lines": 184,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define an isolated evidence-first workflow for five public federal research lanes.",
@@ -19999,7 +19999,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/SOW.md"
       ],
-      "lines": 33,
+      "lines": 45,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure measurable lane work packages without creating government commitments.",
@@ -20031,7 +20031,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/architecture.md"
       ],
-      "lines": 33,
+      "lines": 64,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
@@ -20063,7 +20063,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/benchmark_report.md"
       ],
-      "lines": 31,
+      "lines": 37,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
@@ -20127,7 +20127,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/commercialization.md"
       ],
-      "lines": 30,
+      "lines": 44,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
@@ -20159,7 +20159,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/experiment_plan.md"
       ],
-      "lines": 35,
+      "lines": 49,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
@@ -20191,7 +20191,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/gap_report.md"
       ],
-      "lines": 32,
+      "lines": 37,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
@@ -20223,7 +20223,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/requirements_matrix.md"
       ],
-      "lines": 26,
+      "lines": 27,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
@@ -20319,7 +20319,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/risk_register.md"
       ],
-      "lines": 23,
+      "lines": 30,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
@@ -20351,7 +20351,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/slides/README.md"
       ],
-      "lines": 22,
+      "lines": 31,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
@@ -20415,7 +20415,7 @@
         "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
         "foundry/templates/whitepaper.md"
       ],
-      "lines": 36,
+      "lines": 68,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
@@ -20447,7 +20447,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/SOW.md"
       ],
-      "lines": 33,
+      "lines": 45,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure measurable lane work packages without creating government commitments.",
@@ -20479,7 +20479,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/architecture.md"
       ],
-      "lines": 33,
+      "lines": 64,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
@@ -20511,7 +20511,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/benchmark_report.md"
       ],
-      "lines": 31,
+      "lines": 37,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
@@ -20543,7 +20543,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/claim_evidence_matrix.md"
       ],
-      "lines": 25,
+      "lines": 26,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane-owned workspace for exact claims, falsifiers and evidence support.",
@@ -20575,7 +20575,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/commercialization.md"
       ],
-      "lines": 30,
+      "lines": 44,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
@@ -20607,7 +20607,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/experiment_plan.md"
       ],
-      "lines": 35,
+      "lines": 48,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
@@ -20639,7 +20639,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/gap_report.md"
       ],
-      "lines": 32,
+      "lines": 37,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
@@ -20671,7 +20671,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/requirements_matrix.md"
       ],
-      "lines": 26,
+      "lines": 28,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
@@ -20767,7 +20767,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/risk_register.md"
       ],
-      "lines": 23,
+      "lines": 30,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
@@ -20799,7 +20799,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/slides/README.md"
       ],
-      "lines": 22,
+      "lines": 31,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
@@ -20863,7 +20863,7 @@
         "foundry/registry/darpa-dv026-influence/opportunity.yaml",
         "foundry/templates/whitepaper.md"
       ],
-      "lines": 36,
+      "lines": 68,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
@@ -20895,7 +20895,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/SOW.md"
       ],
-      "lines": 33,
+      "lines": 45,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure measurable lane work packages without creating government commitments.",
@@ -20927,7 +20927,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/architecture.md"
       ],
-      "lines": 33,
+      "lines": 64,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
@@ -20959,7 +20959,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/benchmark_report.md"
       ],
-      "lines": 31,
+      "lines": 37,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
@@ -20991,7 +20991,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/claim_evidence_matrix.md"
       ],
-      "lines": 25,
+      "lines": 26,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane-owned workspace for exact claims, falsifiers and evidence support.",
@@ -21023,7 +21023,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/commercialization.md"
       ],
-      "lines": 30,
+      "lines": 44,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
@@ -21055,7 +21055,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/experiment_plan.md"
       ],
-      "lines": 35,
+      "lines": 49,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
@@ -21087,7 +21087,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/gap_report.md"
       ],
-      "lines": 32,
+      "lines": 38,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
@@ -21119,7 +21119,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/requirements_matrix.md"
       ],
-      "lines": 26,
+      "lines": 27,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
@@ -21215,7 +21215,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/risk_register.md"
       ],
-      "lines": 23,
+      "lines": 30,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
@@ -21247,7 +21247,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/slides/README.md"
       ],
-      "lines": 22,
+      "lines": 31,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
@@ -21311,7 +21311,7 @@
         "foundry/registry/darpa-semantic-isr/opportunity.yaml",
         "foundry/templates/whitepaper.md"
       ],
-      "lines": 36,
+      "lines": 68,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
@@ -21343,7 +21343,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/SOW.md"
       ],
-      "lines": 33,
+      "lines": 45,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure measurable lane work packages without creating government commitments.",
@@ -21375,7 +21375,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/architecture.md"
       ],
-      "lines": 33,
+      "lines": 64,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
@@ -21407,7 +21407,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/benchmark_report.md"
       ],
-      "lines": 31,
+      "lines": 37,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
@@ -21439,7 +21439,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/claim_evidence_matrix.md"
       ],
-      "lines": 25,
+      "lines": 26,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane-owned workspace for exact claims, falsifiers and evidence support.",
@@ -21471,7 +21471,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/commercialization.md"
       ],
-      "lines": 30,
+      "lines": 44,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
@@ -21503,7 +21503,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/experiment_plan.md"
       ],
-      "lines": 35,
+      "lines": 49,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
@@ -21535,7 +21535,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/gap_report.md"
       ],
-      "lines": 32,
+      "lines": 38,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
@@ -21567,7 +21567,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/requirements_matrix.md"
       ],
-      "lines": 26,
+      "lines": 27,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
@@ -21663,7 +21663,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/risk_register.md"
       ],
-      "lines": 23,
+      "lines": 30,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
@@ -21695,7 +21695,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/slides/README.md"
       ],
-      "lines": 22,
+      "lines": 31,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
@@ -21759,7 +21759,7 @@
         "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
         "foundry/templates/whitepaper.md"
       ],
-      "lines": 36,
+      "lines": 68,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
@@ -21791,7 +21791,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/SOW.md"
       ],
-      "lines": 33,
+      "lines": 45,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure measurable lane work packages without creating government commitments.",
@@ -21823,7 +21823,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/architecture.md"
       ],
-      "lines": 33,
+      "lines": 64,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
@@ -21855,7 +21855,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/benchmark_report.md"
       ],
-      "lines": 31,
+      "lines": 37,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
@@ -21919,7 +21919,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/commercialization.md"
       ],
-      "lines": 30,
+      "lines": 44,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
@@ -21951,7 +21951,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/experiment_plan.md"
       ],
-      "lines": 35,
+      "lines": 49,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
@@ -21983,7 +21983,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/gap_report.md"
       ],
-      "lines": 32,
+      "lines": 37,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
@@ -22015,7 +22015,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/requirements_matrix.md"
       ],
-      "lines": 26,
+      "lines": 27,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
@@ -22111,7 +22111,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/risk_register.md"
       ],
-      "lines": 23,
+      "lines": 30,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
@@ -22143,7 +22143,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/slides/README.md"
       ],
-      "lines": 22,
+      "lines": 31,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
@@ -22207,7 +22207,7 @@
         "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
         "foundry/templates/whitepaper.md"
       ],
-      "lines": 36,
+      "lines": 68,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
@@ -22456,7 +22456,7 @@
         "foundry/README.md",
         "foundry/shared/federal_foundry/__init__.py"
       ],
-      "lines": 31,
+      "lines": 39,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the reusable validation and compilation boundary shared by all foundry lanes.",
@@ -22518,9 +22518,11 @@
       "dependencies": [
         "foundry/shared/federal_foundry/evidence.py",
         "foundry/shared/federal_foundry/interfaces.py",
-        "foundry/shared/federal_foundry/portfolio.py"
+        "foundry/shared/federal_foundry/portfolio.py",
+        "foundry/shared/federal_foundry/execution.py",
+        "foundry/shared/federal_foundry/benchmarks.py"
       ],
-      "lines": 49,
+      "lines": 65,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose the supported public API for shared federal foundry components.",
@@ -22551,12 +22553,14 @@
         "main"
       ],
       "dependencies": [
-        "foundry/shared/federal_foundry/portfolio.py"
+        "foundry/shared/federal_foundry/portfolio.py",
+        "foundry/shared/federal_foundry/benchmarks.py",
+        "foundry/shared/federal_foundry/execution.py"
       ],
-      "lines": 51,
+      "lines": 168,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Provide a local command for compiling one lane or the complete review portfolio.",
+      "intent_statement": "Operate the foundry through one local execution, replay, inspection and review-bundle interface.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "success",
       "supersedes": false,
@@ -22592,7 +22596,7 @@
       "dependencies": [
         "foundry/shared/federal_foundry/models.py"
       ],
-      "lines": 277,
+      "lines": 319,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate requirement and claim status on explicit, referenced evidence states.",
@@ -22631,7 +22635,7 @@
       "dependencies": [
         "foundry/shared/federal_foundry/models.py"
       ],
-      "lines": 129,
+      "lines": 141,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Standardize bounded experiment and benchmark implementations without choosing a lane runtime.",
@@ -22659,6 +22663,7 @@
       ],
       "enum_type": "Schema",
       "functions": [
+        "CitadelError",
         "FoundryValidationError",
         "_text",
         "_string_list",
@@ -22670,7 +22675,7 @@
       "dependencies": [
         "foundry/registry/opportunity.schema.json"
       ],
-      "lines": 303,
+      "lines": 379,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Represent validated opportunity, result and evidence records without granting claim authority.",
@@ -22699,22 +22704,23 @@
       "enum_type": "Service",
       "functions": [
         "_write",
-        "_sha256",
-        "_available_evidence",
+        "_merge_results",
+        "_record",
+        "_evidence_bytes",
         "_gap_report",
-        "_benchmark_report",
-        "_submission_checklist",
-        "PortfolioCompiler"
+        "PortfolioCompiler",
+        "verify_bundle",
+        "package_bundle"
       ],
       "dependencies": [
         "foundry/shared/federal_foundry/evidence.py",
-        "foundry/shared/federal_foundry/registry.py",
-        "foundry/templates/submission_checklist.md"
+        "foundry/shared/federal_foundry/benchmarks.py",
+        "foundry/shared/federal_foundry/reporting.py"
       ],
-      "lines": 265,
+      "lines": 476,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Compile deterministic reviewer bundles from lane-authored plans and explicit evidence.",
+      "intent_statement": "Compile deterministic self-contained review bundles only after checking referenced evidence and measured campaign bytes.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "success",
       "supersedes": false,
@@ -22742,13 +22748,15 @@
         "_mapping",
         "_bounded_file",
         "validate_schema_contract",
+        "load_yaml",
         "OpportunityRegistry"
       ],
       "dependencies": [
         "foundry/shared/federal_foundry/models.py",
-        "foundry/registry/opportunity.schema.json"
+        "foundry/registry/opportunity.schema.json",
+        "foundry/shared/federal_foundry/validation.py"
       ],
-      "lines": 135,
+      "lines": 174,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Load deterministic opportunity and result records from bounded foundry paths.",
@@ -23276,6 +23284,10 @@
       ],
       "dependencies": [
         "tests/foundry/test_foundry.py",
+        "tests/foundry/test_validation.py",
+        "tests/foundry/test_workloads.py",
+        "tests/foundry/test_execution.py",
+        "tests/foundry/test_campaign.py",
         "foundry/shared/federal_foundry"
       ],
       "lines": 93,
@@ -23318,7 +23330,7 @@
         "foundry/shared/federal_foundry/portfolio.py",
         "foundry/shared/federal_foundry/registry.py"
       ],
-      "lines": 412,
+      "lines": 422,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify all five registries, evidence gates, runner contracts and deterministic portfolio output.",
@@ -24879,26 +24891,6 @@
     },
     {
       "type": "B",
-      "source": "foundry/shared/federal_foundry/portfolio.py",
-      "target": "foundry/shared/federal_foundry/registry.py",
-      "edge_type": "DEPENDS_ON",
-      "weight": 1.0,
-      "description": "foundry/shared/federal_foundry/portfolio.py depends on foundry/shared/federal_foundry/registry.py.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "foundry/shared/federal_foundry/portfolio.py",
-      "target": "foundry/templates/submission_checklist.md",
-      "edge_type": "USES_TEMPLATE",
-      "weight": 1.0,
-      "description": "foundry/shared/federal_foundry/portfolio.py uses template foundry/templates/submission_checklist.md.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
       "source": "foundry/shared/federal_foundry/registry.py",
       "target": "foundry/shared/federal_foundry/models.py",
       "edge_type": "DEPENDS_ON",
@@ -25204,12 +25196,1837 @@
       "timestamp": "2026-09-16T12:53:31.608528+00:00",
       "commit_sha": null,
       "smoke_result": "4/4"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/shared/federal_foundry/benchmarks.py",
+        "foundry/shared/federal_foundry/portfolio.py",
+        "tests/foundry/check_foundry.py"
+      ],
+      "lines": 1701,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve measured reference results and exact campaign/export fingerprints so reviewers can trace the executable foundry's local acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/shared/federal_foundry/benchmarks.py",
+        "foundry/shared/federal_foundry/portfolio.py",
+        "tests/foundry/check_foundry.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve measured reference results and exact campaign/export fingerprints so reviewers can trace the executable foundry's local acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/daf-nv027-low-swap.json",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/daf-nv027-low-swap.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 1430,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the daf-nv027-low-swap baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/daf-nv027-low-swap.json.cgrf.yaml",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/daf-nv027-low-swap.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the daf-nv027-low-swap baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/darpa-dv026-influence.json",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/darpa-dv026-influence.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 133,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the darpa-dv026-influence baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/darpa-dv026-influence.json.cgrf.yaml",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/darpa-dv026-influence.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the darpa-dv026-influence baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/darpa-semantic-isr.json",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/darpa-semantic-isr.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 1018,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the darpa-semantic-isr baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/darpa-semantic-isr.json.cgrf.yaml",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/darpa-semantic-isr.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the darpa-semantic-isr baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/diu-sentinel-maritime.json",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/diu-sentinel-maritime.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 96,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the diu-sentinel-maritime baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/diu-sentinel-maritime.json.cgrf.yaml",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/diu-sentinel-maritime.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the diu-sentinel-maritime baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/navair-acquisition-analysis.json",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/navair-acquisition-analysis.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 103,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the navair-acquisition-analysis baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/fixtures/navair-acquisition-analysis.json.cgrf.yaml",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/fixtures/navair-acquisition-analysis.json",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the navair-acquisition-analysis baseline reproducible using explicit public synthetic inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/experiment.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/experiment.schema.json",
+        "foundry/fixtures/daf-nv027-low-swap.json"
+      ],
+      "lines": 51,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister a finite daf-nv027-low-swap candidate comparison against a fingerprinted public fixture.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/experiment.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/experiment.schema.json",
+        "foundry/fixtures/darpa-dv026-influence.json"
+      ],
+      "lines": 51,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister a finite darpa-dv026-influence candidate comparison against a fingerprinted public fixture.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/experiment.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/experiment.schema.json",
+        "foundry/fixtures/darpa-semantic-isr.json"
+      ],
+      "lines": 54,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister a finite darpa-semantic-isr candidate comparison against a fingerprinted public fixture.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/experiment.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/experiment.schema.json",
+        "foundry/fixtures/diu-sentinel-maritime.json"
+      ],
+      "lines": 60,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister a finite diu-sentinel-maritime candidate comparison against a fingerprinted public fixture.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/experiment.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/experiment.schema.json",
+        "foundry/fixtures/navair-acquisition-analysis.json"
+      ],
+      "lines": 54,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister a finite navair-acquisition-analysis candidate comparison against a fingerprinted public fixture.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/registry/experiment.schema.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/experiment.schema.json",
+        "foundry/shared/federal_foundry/benchmarks.py"
+      ],
+      "lines": 153,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Declare the finite experiment vocabulary used by reference workloads and candidate comparisons.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/registry/experiment.schema.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/experiment.schema.json",
+        "foundry/shared/federal_foundry/benchmarks.py"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Declare the finite experiment vocabulary used by reference workloads and candidate comparisons.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/baselines.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "evaluate",
+        "main"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/market.py",
+        "foundry/shared/federal_foundry/retrieval.py",
+        "foundry/shared/federal_foundry/simulations.py"
+      ],
+      "lines": 107,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose five finite reference workloads through one measured local execution entry point.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/benchmarks.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "ExperimentPlan",
+        "plan_from_document",
+        "load_plan",
+        "_trial_path",
+        "_percentile",
+        "distribution",
+        "summarize_lane",
+        "_run_lane",
+        "run_campaign",
+        "verify_campaign",
+        "ReferenceBenchmarkHarness"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/execution.py",
+        "foundry/shared/federal_foundry/registry.py",
+        "foundry/shared/federal_foundry/baselines.py"
+      ],
+      "lines": 590,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compare candidates across frozen seed groups and derive portfolio evidence from verified local run receipts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/execution.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "source_manifest",
+        "computational_digest",
+        "_measurement",
+        "LocalExperimentRunner",
+        "verify_run",
+        "replay_run",
+        "builtin_command"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/interfaces.py",
+        "foundry/shared/federal_foundry/validation.py",
+        "apps/mission_suite/bundle.py"
+      ],
+      "lines": 419,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Execute bounded local workloads and retain reproducible inputs, actual outcomes and checked artifact bytes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/market.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Bid",
+        "evaluate"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/validation.py"
+      ],
+      "lines": 167,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a replayable auction reference workload with explicit welfare denominators and scripted-agent limits.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/reporting.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "cell",
+        "table",
+        "benchmark_report",
+        "readiness",
+        "experiment_report",
+        "technical_brief",
+        "slides",
+        "html_view"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/evidence.py",
+        "foundry/shared/federal_foundry/validation.py"
+      ],
+      "lines": 447,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Project actual comparison evidence into readable technical briefs, slides and portfolio readiness views.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/retrieval.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "tokens",
+        "evaluate"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/validation.py"
+      ],
+      "lines": 189,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compare real deterministic lexical retrieval candidates with transparent scores and explicit relevance denominators.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/simulations.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "low_swap",
+        "apply_packet",
+        "semantic",
+        "maritime"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/validation.py",
+        "apps/mission_suite/engine.py"
+      ],
+      "lines": 319,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise compute gating, semantic reconstruction and existing maritime replay without inventing hardware or operational evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/validation.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "mapping",
+        "records",
+        "strings",
+        "finite",
+        "integer",
+        "_json_value",
+        "canonical",
+        "digest",
+        "_pairs",
+        "decode",
+        "relative_path",
+        "contained",
+        "read_bytes",
+        "read_json",
+        "write_json",
+        "manifest",
+        "verify_manifest",
+        "staging",
+        "validate_contract"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/models.py"
+      ],
+      "lines": 393,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Validate public input bytes and the published local schema before executing or exporting evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/foundry/test_campaign.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "source_copy",
+        "invoke",
+        "PlanTests",
+        "CampaignTests",
+        "CampaignFailureTests"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/benchmarks.py",
+        "foundry/shared/federal_foundry/portfolio.py",
+        "foundry/shared/federal_foundry/reporting.py",
+        "foundry/shared/federal_foundry/__main__.py"
+      ],
+      "lines": 544,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify real multi-lane comparisons and self-contained reproducible review exports, including cancellation, corruption and explicit failed outcomes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/foundry/test_execution.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "command_spec",
+        "ExecutionTests"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/execution.py",
+        "foundry/shared/federal_foundry/interfaces.py"
+      ],
+      "lines": 349,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the concrete runner preserves failed and cancelled attempts and rejects altered evidence before replay or promotion.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/foundry/test_validation.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "reviewed",
+        "ValidationTests",
+        "PromotionTests"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/validation.py",
+        "foundry/shared/federal_foundry/models.py",
+        "foundry/shared/federal_foundry/evidence.py",
+        "foundry/shared/federal_foundry/registry.py",
+        "foundry/shared/federal_foundry/portfolio.py"
+      ],
+      "lines": 514,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject malformed and altered artifacts before scoped evidence changes requirements or exported research claims.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/foundry/test_workloads.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "fixture",
+        "AlgorithmTests"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/baselines.py",
+        "foundry/shared/federal_foundry/market.py",
+        "foundry/shared/federal_foundry/retrieval.py",
+        "foundry/shared/federal_foundry/simulations.py"
+      ],
+      "lines": 387,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify reference algorithms against counted allocations, retrieval judgments, compute operations, decoded packets and real public-engine outcomes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry-execution"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml",
+      "target": "foundry/shared/federal_foundry/benchmarks.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml depends on foundry/shared/federal_foundry/benchmarks.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml",
+      "target": "foundry/shared/federal_foundry/portfolio.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml depends on foundry/shared/federal_foundry/portfolio.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml",
+      "target": "tests/foundry/check_foundry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml depends on tests/foundry/check_foundry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml produces .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/daf-nv027-low-swap.json.cgrf.yaml",
+      "target": "foundry/fixtures/daf-nv027-low-swap.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/daf-nv027-low-swap.json.cgrf.yaml depends on foundry/fixtures/daf-nv027-low-swap.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/daf-nv027-low-swap.json.cgrf.yaml",
+      "target": "foundry/shared/federal_foundry/baselines.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/daf-nv027-low-swap.json.cgrf.yaml depends on foundry/shared/federal_foundry/baselines.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/darpa-dv026-influence.json.cgrf.yaml",
+      "target": "foundry/fixtures/darpa-dv026-influence.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/darpa-dv026-influence.json.cgrf.yaml depends on foundry/fixtures/darpa-dv026-influence.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/darpa-dv026-influence.json.cgrf.yaml",
+      "target": "foundry/shared/federal_foundry/baselines.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/darpa-dv026-influence.json.cgrf.yaml depends on foundry/shared/federal_foundry/baselines.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/darpa-semantic-isr.json.cgrf.yaml",
+      "target": "foundry/fixtures/darpa-semantic-isr.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/darpa-semantic-isr.json.cgrf.yaml depends on foundry/fixtures/darpa-semantic-isr.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/darpa-semantic-isr.json.cgrf.yaml",
+      "target": "foundry/shared/federal_foundry/baselines.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/darpa-semantic-isr.json.cgrf.yaml depends on foundry/shared/federal_foundry/baselines.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/diu-sentinel-maritime.json.cgrf.yaml",
+      "target": "foundry/fixtures/diu-sentinel-maritime.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/diu-sentinel-maritime.json.cgrf.yaml depends on foundry/fixtures/diu-sentinel-maritime.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/diu-sentinel-maritime.json.cgrf.yaml",
+      "target": "foundry/shared/federal_foundry/baselines.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/diu-sentinel-maritime.json.cgrf.yaml depends on foundry/shared/federal_foundry/baselines.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/navair-acquisition-analysis.json.cgrf.yaml",
+      "target": "foundry/fixtures/navair-acquisition-analysis.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/navair-acquisition-analysis.json.cgrf.yaml depends on foundry/fixtures/navair-acquisition-analysis.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/fixtures/navair-acquisition-analysis.json.cgrf.yaml",
+      "target": "foundry/shared/federal_foundry/baselines.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/fixtures/navair-acquisition-analysis.json.cgrf.yaml depends on foundry/shared/federal_foundry/baselines.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/experiment.yaml",
+      "target": "foundry/fixtures/daf-nv027-low-swap.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/experiment.yaml depends on foundry/fixtures/daf-nv027-low-swap.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/experiment.yaml",
+      "target": "foundry/registry/experiment.schema.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/experiment.yaml depends on foundry/registry/experiment.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/experiment.yaml",
+      "target": "foundry/fixtures/darpa-dv026-influence.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/experiment.yaml depends on foundry/fixtures/darpa-dv026-influence.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/experiment.yaml",
+      "target": "foundry/registry/experiment.schema.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/experiment.yaml depends on foundry/registry/experiment.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/experiment.yaml",
+      "target": "foundry/fixtures/darpa-semantic-isr.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/experiment.yaml depends on foundry/fixtures/darpa-semantic-isr.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/experiment.yaml",
+      "target": "foundry/registry/experiment.schema.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/experiment.yaml depends on foundry/registry/experiment.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/experiment.yaml",
+      "target": "foundry/fixtures/diu-sentinel-maritime.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/experiment.yaml depends on foundry/fixtures/diu-sentinel-maritime.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/experiment.yaml",
+      "target": "foundry/registry/experiment.schema.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/experiment.yaml depends on foundry/registry/experiment.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/experiment.yaml",
+      "target": "foundry/fixtures/navair-acquisition-analysis.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/experiment.yaml depends on foundry/fixtures/navair-acquisition-analysis.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/experiment.yaml",
+      "target": "foundry/registry/experiment.schema.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/experiment.yaml depends on foundry/registry/experiment.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/registry/experiment.schema.json.cgrf.yaml",
+      "target": "foundry/registry/experiment.schema.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/registry/experiment.schema.json.cgrf.yaml depends on foundry/registry/experiment.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/registry/experiment.schema.json.cgrf.yaml",
+      "target": "foundry/shared/federal_foundry/benchmarks.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/registry/experiment.schema.json.cgrf.yaml depends on foundry/shared/federal_foundry/benchmarks.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/__init__.py",
+      "target": "foundry/shared/federal_foundry/benchmarks.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/__init__.py extends foundry/shared/federal_foundry/benchmarks.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/__init__.py",
+      "target": "foundry/shared/federal_foundry/execution.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/__init__.py extends foundry/shared/federal_foundry/execution.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/__main__.py",
+      "target": "foundry/shared/federal_foundry/benchmarks.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/__main__.py depends on foundry/shared/federal_foundry/benchmarks.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/__main__.py",
+      "target": "foundry/shared/federal_foundry/execution.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/__main__.py depends on foundry/shared/federal_foundry/execution.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/baselines.py",
+      "target": "foundry/shared/federal_foundry/market.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/baselines.py depends on foundry/shared/federal_foundry/market.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/baselines.py",
+      "target": "foundry/shared/federal_foundry/retrieval.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/baselines.py depends on foundry/shared/federal_foundry/retrieval.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/baselines.py",
+      "target": "foundry/shared/federal_foundry/simulations.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/baselines.py depends on foundry/shared/federal_foundry/simulations.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/benchmarks.py",
+      "target": "foundry/shared/federal_foundry/baselines.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/benchmarks.py depends on foundry/shared/federal_foundry/baselines.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/benchmarks.py",
+      "target": "foundry/shared/federal_foundry/execution.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/benchmarks.py depends on foundry/shared/federal_foundry/execution.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/benchmarks.py",
+      "target": "foundry/shared/federal_foundry/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/benchmarks.py depends on foundry/shared/federal_foundry/registry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/execution.py",
+      "target": "apps/mission_suite/bundle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/execution.py depends on apps/mission_suite/bundle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/execution.py",
+      "target": "foundry/shared/federal_foundry/interfaces.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/execution.py depends on foundry/shared/federal_foundry/interfaces.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/execution.py",
+      "target": "foundry/shared/federal_foundry/validation.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/execution.py depends on foundry/shared/federal_foundry/validation.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/market.py",
+      "target": "foundry/shared/federal_foundry/validation.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/market.py depends on foundry/shared/federal_foundry/validation.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/portfolio.py",
+      "target": "foundry/shared/federal_foundry/benchmarks.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/portfolio.py depends on foundry/shared/federal_foundry/benchmarks.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/portfolio.py",
+      "target": "foundry/shared/federal_foundry/reporting.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/portfolio.py depends on foundry/shared/federal_foundry/reporting.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/registry.py",
+      "target": "foundry/shared/federal_foundry/validation.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/registry.py depends on foundry/shared/federal_foundry/validation.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/reporting.py",
+      "target": "foundry/shared/federal_foundry/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/reporting.py depends on foundry/shared/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/reporting.py",
+      "target": "foundry/shared/federal_foundry/validation.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/reporting.py depends on foundry/shared/federal_foundry/validation.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/retrieval.py",
+      "target": "foundry/shared/federal_foundry/validation.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/retrieval.py depends on foundry/shared/federal_foundry/validation.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/simulations.py",
+      "target": "apps/mission_suite/engine.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/simulations.py depends on apps/mission_suite/engine.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/simulations.py",
+      "target": "foundry/shared/federal_foundry/validation.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/simulations.py depends on foundry/shared/federal_foundry/validation.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/validation.py",
+      "target": "foundry/shared/federal_foundry/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/validation.py depends on foundry/shared/federal_foundry/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/check_foundry.py",
+      "target": "tests/foundry/test_campaign.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/foundry/check_foundry.py depends on tests/foundry/test_campaign.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/check_foundry.py",
+      "target": "tests/foundry/test_execution.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/foundry/check_foundry.py depends on tests/foundry/test_execution.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/check_foundry.py",
+      "target": "tests/foundry/test_validation.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/foundry/check_foundry.py depends on tests/foundry/test_validation.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/check_foundry.py",
+      "target": "tests/foundry/test_workloads.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/foundry/check_foundry.py depends on tests/foundry/test_workloads.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_campaign.py",
+      "target": "foundry/shared/federal_foundry/__main__.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_campaign.py validates foundry/shared/federal_foundry/__main__.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_campaign.py",
+      "target": "foundry/shared/federal_foundry/benchmarks.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_campaign.py validates foundry/shared/federal_foundry/benchmarks.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_campaign.py",
+      "target": "foundry/shared/federal_foundry/portfolio.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_campaign.py validates foundry/shared/federal_foundry/portfolio.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_campaign.py",
+      "target": "foundry/shared/federal_foundry/reporting.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_campaign.py validates foundry/shared/federal_foundry/reporting.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_execution.py",
+      "target": "foundry/shared/federal_foundry/execution.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_execution.py validates foundry/shared/federal_foundry/execution.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_execution.py",
+      "target": "foundry/shared/federal_foundry/interfaces.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_execution.py validates foundry/shared/federal_foundry/interfaces.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_validation.py",
+      "target": "foundry/shared/federal_foundry/evidence.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_validation.py validates foundry/shared/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_validation.py",
+      "target": "foundry/shared/federal_foundry/models.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_validation.py validates foundry/shared/federal_foundry/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_validation.py",
+      "target": "foundry/shared/federal_foundry/portfolio.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_validation.py validates foundry/shared/federal_foundry/portfolio.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_validation.py",
+      "target": "foundry/shared/federal_foundry/registry.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_validation.py validates foundry/shared/federal_foundry/registry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_validation.py",
+      "target": "foundry/shared/federal_foundry/validation.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_validation.py validates foundry/shared/federal_foundry/validation.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_workloads.py",
+      "target": "foundry/shared/federal_foundry/baselines.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_workloads.py validates foundry/shared/federal_foundry/baselines.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_workloads.py",
+      "target": "foundry/shared/federal_foundry/market.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_workloads.py validates foundry/shared/federal_foundry/market.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_workloads.py",
+      "target": "foundry/shared/federal_foundry/retrieval.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_workloads.py validates foundry/shared/federal_foundry/retrieval.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_workloads.py",
+      "target": "foundry/shared/federal_foundry/simulations.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_workloads.py validates foundry/shared/federal_foundry/simulations.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "foundry/shared/federal_foundry/models.py",
+      "description": "Recorded red/green validation: malformed result outcomes, boolean metrics and non-finite measurements were accepted by the initial result parser. Typed outcome and numeric checks now reject all three cases without weakening evidence requirements.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T14:16:28.995912+00:00",
+      "commit_sha": null,
+      "smoke_result": "12 validation cases pass"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "foundry/shared/federal_foundry/benchmarks.py",
+      "description": "A real saved campaign was accepted after its experiment plan changed. The regression failed before comparing the frozen design with the current registered plan and passes after that check; compilation cannot mix new plans with old measurements.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T14:16:28.995912+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1 regression passes"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "foundry/shared/federal_foundry/execution.py",
+      "description": "The generic receipt verifier treated argv as a set of unique identities and rejected a successful command with repeated literal arguments. Argv now preserves order and repetitions while ExperimentSpec validates its string elements; the real-child regression passes.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T14:16:28.995912+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1 regression passes"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/foundry/check_foundry.py",
+      "description": "All 70 foundry tests pass against the final source, including actual child processes, all five lane workloads, cancellation, tamper, scoped reviews, current-plan checks and deterministic exports. Every executable shared module measures 90.62 to 100 percent trace statement coverage; strict foundry typing and Ruff pass.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "CP through CS have executable local acceptance evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T14:16:28.995912+00:00",
+      "commit_sha": null,
+      "smoke_result": "70/70"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json",
+      "description": "The final public synthetic campaign completes 60 of 60 attempts across ten candidates. Its checked review archive has 574 files and 25 briefing slides, repeated ZIPs are byte-identical, and retained replay is MATCH. Existing Node regression passes 256 cases and the reused mission-suite gate passes 23; official, hardware, hosted CI and submission authority remain separate.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "The common public foundry supports run, verify, compare, replay and review export for all five lanes.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T14:16:28.995912+00:00",
+      "commit_sha": null,
+      "smoke_result": "60/60 attempts"
     }
   ],
   "summary": {
-    "type_a_count": 430,
-    "type_b_count": 872,
-    "type_c_count": 72,
+    "type_a_count": 461,
+    "type_b_count": 938,
+    "type_c_count": 77,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

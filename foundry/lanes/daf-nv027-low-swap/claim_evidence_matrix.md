@@ -15,11 +15,11 @@
 # Intent:      Provide a lane-owned workspace for exact claims, falsifiers and evidence support.
 # ───────────────────────────────────────────────────────────────
 
-# Claim-evidence matrix — DAF NV027 Brain-Inspired Low-SWaP
+# Claim-evidence matrix
 
-Status: scaffold. Preserve exact proposed language and its maximum support level.
+| ID | Claim | Requested | Supported | Evidence |
+|---|---|---|---|---|
+| NV027-CLM-01 | A heterogeneous gated runtime may reduce active compute while preserving task performance. | proposed | unsupported | none |
+| NV027-CLM-02 | Phase I can be evaluated through a simulation or small prototype under the planning brief. | proposed | unsupported | none |
 
-| Claim ID | Exact claim | Requested level | Supported level | Evidence IDs | Falsifier |
-|---|---|---|---|---|---|
-
-Final proposal language requires named human approval.
+The reference workload does not automatically promote these claims. See the generated evidence index for byte-checked observations and explicit source-locator limitations.

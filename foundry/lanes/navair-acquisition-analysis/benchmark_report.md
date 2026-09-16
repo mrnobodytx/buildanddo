@@ -17,15 +17,21 @@
 
 # Benchmark report — NAVAIR Acquisition Analysis
 
-Status: not run.
+The executable comparison is registered in experiment.yaml. Actual attempts,
+resource observations, candidate distributions and local acceptance outcomes are
+retained in the selected campaign and rendered by compile --runs.
 
-## Environment and source identity
+Current validation record: .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.
 
-## Results
+## What is measured
 
-| Benchmark | Candidate | Repetitions | Metrics | Evidence IDs | Status |
-|---|---|---|---|---|---|
+Ranked hits with explanations and citations; precision@k, recall@k, nDCG@k and reciprocal rank for each query and the aggregate.
 
-## Failure and exclusion analysis
+## Interpretation
 
-## Reproduction commands and expected digests
+The current comparison is lexical retrieval over authored fixtures. It establishes no government-corpus accuracy, embedding quality, CUI suitability or tested container.
+
+Only successful complete repeat groups enter aggregate statistics. Failed
+attempts remain visible with their actual return status; repeat agreement does
+not establish external validity. A future corpus or method requires a new pinned
+plan and a new campaign, preserving the earlier evidence for comparison.

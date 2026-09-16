@@ -15,21 +15,34 @@
 # Intent:      Preregister lane hypotheses, baselines, procedures and stopping rules.
 # ───────────────────────────────────────────────────────────────
 
-# Experiment plan — DARPA DV026 Influence Benchmarks
+# Experiment plan
 
-Status: scaffold; no experiment has run.
+Compare welfare from truthful and heterogeneous shaded bidding under identical supply and seed conditions.
 
-## Hypothesis and falsifier
+Scope: Scripted unit-demand auctions and counterfactual news only; no LLM agents or influence classification.
 
-## Frozen inputs and rights
+Dataset: foundry/fixtures/darpa-dv026-influence.json; SHA-256: 3e06f85257f3d797939d0e2391af2022917a059c203b1065c3155ecb663e7049.
 
-## Baselines and candidates
+Candidates: truthful-auction, shaded-auction.
 
-| ID | Role | Version | Parameters | Rationale |
-|---|---|---|---|---|
+Seeds: [17, 29, 43]; repeats: 2; timeout per attempt: 30 seconds.
 
-## Procedure, repetitions and resource bounds
+Each attempt starts in a new working directory with the frozen input. Candidates receive the same dataset and seed. Logs are bounded and unsuccessful outcomes stay in the comparison.
 
-## Metrics, denominators and uncertainty
+| Metric | Unit | Direction | Local threshold |
+|---|---|---|---|
+| allocative_efficiency_pct | percent | higher | {"operator": ">=", "value": 90} |
+| agent_count | scripted agents | neutral | {"operator": "==", "value": 12} |
+| counterfactual_changes | changed allocations | neutral | {} |
+| elapsed_ms | milliseconds with tracemalloc enabled | lower | {} |
+| peak_python_bytes | traced Python allocation bytes | lower | {} |
 
-## Acceptance and stopping rules
+Independent verification recomputes file fingerprints, run identities, sample counts and summaries. Replay checks computational bytes against the retained source closure; it does not reassert machine-dependent timing.
+
+## Method
+
+The market module clears unit-demand bids across multiple assets and rounds. It freezes seeded valuation adjustments, information sensitivity and bid shading once, then uses the same agents for factual news and the no-news counterfactual. Stable price/identity ordering resolves ties. Allocation value is compared with the feasible highest-value allocation at the same supply.
+
+## Next research study
+
+Add reviewed model-agent adapters, measured model latency/cost and behavioral hypotheses. Freeze a wider evaluation population and holdout protocol before testing interventions; obtain official topic and output constraints first.

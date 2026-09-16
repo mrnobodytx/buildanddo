@@ -1,0 +1,51 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/lanes/darpa-dv026-influence/experiment.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/experiment.schema.json, foundry/fixtures/darpa-dv026-influence.json
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON foundry/registry/experiment.schema.json; DEPENDS_ON foundry/fixtures/darpa-dv026-influence.json
+# DAG Node:    none
+# Intent:      Preregister a finite darpa-dv026-influence candidate comparison against a fingerprinted public fixture.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.experiment/v1
+lane_id: darpa-dv026-influence
+dataset: foundry/fixtures/darpa-dv026-influence.json
+dataset_sha256: 3e06f85257f3d797939d0e2391af2022917a059c203b1065c3155ecb663e7049
+candidates: ["truthful-auction","shaded-auction"]
+seeds: [17, 29, 43]
+repetitions: 2
+timeout_seconds: 30
+requirement_ids: ["DV026-REQ-01","DV026-REQ-03","DV026-REQ-05"]
+scope: "Scripted unit-demand auctions and counterfactual news only; no LLM agents or influence classification."
+purpose: "Compare welfare from truthful and heterogeneous shaded bidding under identical supply and seed conditions."
+primary_metric: allocative_efficiency_pct
+metrics:
+  - name: allocative_efficiency_pct
+    unit: "percent"
+    direction: higher
+    threshold:
+      operator: ">="
+      value: 90
+  - name: agent_count
+    unit: "scripted agents"
+    direction: neutral
+    threshold:
+      operator: "=="
+      value: 12
+  - name: counterfactual_changes
+    unit: "changed allocations"
+    direction: neutral
+  - name: elapsed_ms
+    unit: "milliseconds with tracemalloc enabled"
+    direction: lower
+  - name: peak_python_bytes
+    unit: "traced Python allocation bytes"
+    direction: lower

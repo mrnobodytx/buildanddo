@@ -33,7 +33,11 @@ LANE_ID = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
-class FoundryValidationError(ValueError):
+class CitadelError(Exception):
+    """Identify typed failures within the public foundry boundary."""
+
+
+class FoundryValidationError(CitadelError, ValueError):
     """Report a malformed or internally inconsistent foundry record."""
 
 
@@ -82,6 +86,45 @@ class EvidenceRecord:
     locator: str
     digest: str | None = None
     requirement_ids: tuple[str, ...] = ()
+    claim_ids: tuple[str, ...] = ()
+    review: dict[str, object] | None = None
+
+    def __post_init__(self) -> None:
+        from datetime import datetime
+
+        if self.state not in EVIDENCE_STATES:
+            raise FoundryValidationError("unknown evidence state")
+        for value in (self.evidence_id, self.title, self.locator):
+            _text(value, "evidence")
+        for references in (self.requirement_ids, self.claim_ids):
+            if len(references) != len(set(references)):
+                raise FoundryValidationError("duplicate evidence scope identity")
+        if self.digest is not None and (
+            not isinstance(self.digest, str) or SHA256.fullmatch(self.digest) is None
+        ):
+            raise FoundryValidationError("evidence digest must be a lowercase SHA-256")
+        if self.state == "verified":
+            review = self.review
+            if not self.digest or not isinstance(review, dict):
+                raise FoundryValidationError(
+                    "verified evidence needs a digest and review"
+                )
+            for field in ("reviewer", "method", "scope", "reviewed_at"):
+                _text(review.get(field), f"review.{field}")
+            if review.get("outcome") != "pass" or review.get("digest") != self.digest:
+                raise FoundryValidationError(
+                    "evidence review must pass against the same digest"
+                )
+            try:
+                reviewed_at = datetime.fromisoformat(
+                    str(review["reviewed_at"]).replace("Z", "+00:00")
+                )
+                if reviewed_at.tzinfo is None:
+                    raise ValueError("timezone required")
+            except ValueError as error:
+                raise FoundryValidationError(
+                    "review timestamp needs an ISO timezone"
+                ) from error
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, object], field: str) -> EvidenceRecord:
@@ -95,6 +138,9 @@ class EvidenceRecord:
             not isinstance(digest, str) or SHA256.fullmatch(digest) is None
         ):
             raise FoundryValidationError(f"{field}.digest must be a lowercase SHA-256")
+        raw_review = value.get("review")
+        if raw_review is not None and not isinstance(raw_review, Mapping):
+            raise FoundryValidationError("evidence review must be an object")
         return cls(
             evidence_id=_text(value.get("id"), f"{field}.id"),
             title=_text(value.get("title"), f"{field}.title"),
@@ -104,6 +150,8 @@ class EvidenceRecord:
             requirement_ids=_string_list(
                 value.get("requirement_ids", ()), f"{field}.requirement_ids"
             ),
+            claim_ids=_string_list(value.get("claim_ids", ()), f"{field}.claim_ids"),
+            review=dict(raw_review) if isinstance(raw_review, Mapping) else None,
         )
 
 
@@ -247,8 +295,20 @@ class LaneResults:
     def from_mapping(cls, value: Mapping[str, object]) -> LaneResults:
         """Validate a lane results document."""
 
+        from .validation import finite, mapping
+
         if value.get("schema_version") != "foundry.results/v1":
             raise FoundryValidationError("unsupported results schema_version")
+        if set(value) - {
+            "schema_version",
+            "lane_id",
+            "requirement_updates",
+            "claim_updates",
+            "evidence",
+            "experiments",
+            "benchmarks",
+        }:
+            raise FoundryValidationError("unknown results fields")
         lane_id = _text(value.get("lane_id"), "lane_id")
         requirement_updates = _records(
             value.get("requirement_updates"),
@@ -267,6 +327,22 @@ class LaneResults:
             value.get("experiments"), "experiments", ("id", "status")
         )
         benchmarks = _records(value.get("benchmarks"), "benchmarks", ("id", "status"))
+        for record in (*experiments, *benchmarks):
+            if record["status"] not in {
+                "planned",
+                "running",
+                "succeeded",
+                "failed",
+                "cancelled",
+                "blocked",
+            }:
+                raise FoundryValidationError("unknown experiment or benchmark outcome")
+            for name, measurement in mapping(
+                record.get("metrics", {}), "metrics"
+            ).items():
+                _text(name, "metric name")
+                finite(measurement, name)
+            _string_list(record.get("evidence_ids", ()), "result evidence_ids")
         evidence = tuple(
             EvidenceRecord.from_mapping(record, f"evidence[{index}]")
             for index, record in enumerate(evidence_raw)

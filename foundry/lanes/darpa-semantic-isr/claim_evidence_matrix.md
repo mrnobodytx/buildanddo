@@ -15,11 +15,12 @@
 # Intent:      Provide a lane-owned workspace for exact claims, falsifiers and evidence support.
 # ───────────────────────────────────────────────────────────────
 
-# Claim-evidence matrix — DARPA Semantic ISR
+# Claim-evidence matrix
 
-Status: scaffold. Preserve exact proposed language and its maximum support level.
+| ID | Claim | Requested | Supported | Evidence |
+|---|---|---|---|---|
+| ISR-CLM-01 | Semantic packets may preserve declared mission utility at lower bandwidth than standard codec baselines. | proposed | unsupported | none |
+| ISR-CLM-02 | Existing public Sentinel planning provides reusable semantic and provenance concepts, not runtime proof. | observed | observed | ISR-EV-SENTINEL-PLAN |
+| ISR-CLM-03 | The prototype qualifies for DP2. | proposed | unsupported | none |
 
-| Claim ID | Exact claim | Requested level | Supported level | Evidence IDs | Falsifier |
-|---|---|---|---|---|---|
-
-Final proposal language requires named human approval.
+The reference workload does not automatically promote these claims. See the generated evidence index for byte-checked observations and explicit source-locator limitations.

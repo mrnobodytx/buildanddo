@@ -1,0 +1,54 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/lanes/darpa-semantic-isr/experiment.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/experiment.schema.json, foundry/fixtures/darpa-semantic-isr.json
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON foundry/registry/experiment.schema.json; DEPENDS_ON foundry/fixtures/darpa-semantic-isr.json
+# DAG Node:    none
+# Intent:      Preregister a finite darpa-semantic-isr candidate comparison against a fingerprinted public fixture.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.experiment/v1
+lane_id: darpa-semantic-isr
+dataset: foundry/fixtures/darpa-semantic-isr.json
+dataset_sha256: 542f834a96d132082928f904fb9cdb7d9e54ff1e17bc0a295997fe10ca9cfc93
+candidates: ["full-scene-json","roi-delta-json"]
+seeds: [17, 29, 43]
+repetitions: 2
+timeout_seconds: 30
+requirement_ids: ["ISR-REQ-02","ISR-REQ-03"]
+scope: "Synthetic scene annotations with supplied relevance labels and JSON wire encoding; no EO detector, video codec or hardware proof."
+purpose: "Compare full-scene transfer with ordered ROI deltas and measure actual receiver recovery and coordinate loss."
+primary_metric: byte_ratio
+metrics:
+  - name: byte_ratio
+    unit: "encoded / full-scene bytes"
+    direction: lower
+  - name: wire_bytes
+    unit: "bytes"
+    direction: lower
+  - name: mission_object_recall
+    unit: "recovered / required objects"
+    direction: higher
+    threshold:
+      operator: "=="
+      value: 1
+  - name: position_mae
+    unit: "synthetic grid units"
+    direction: lower
+    threshold:
+      operator: "<="
+      value: 0.05
+  - name: elapsed_ms
+    unit: "milliseconds with tracemalloc enabled"
+    direction: lower
+  - name: peak_python_bytes
+    unit: "traced Python allocation bytes"
+    direction: lower

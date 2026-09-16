@@ -878,3 +878,47 @@ tests pass; executable shared modules measure 82.73 to 100 percent statement
 coverage under the repository's standard-library trace pattern. Strict typing
 and Ruff pass. No lane experiment, eligibility review, hardware run, official
 deadline, proposal approval or submission is claimed.
+
+## Foundry continuation — executable evidence workflow, 2026-09-16
+
+The owner rejected the scaffold as incomplete and requested substantial working
+functionality. This continues the same A2 public-source dispatch: implement and
+exercise the shared substrate, including local reference workloads for each lane.
+Reference workloads use authored public fixtures; they do not establish federal
+qualification or dispatch the private Sentinel product.
+
+Acceptance:
+
+1. Execute bounded local experiments with isolated working directories, explicit
+   seeds and inputs, finite concurrency, timeouts, cancellation, bounded logs and
+   immutable result receipts. Retain failed attempts and reject missing artifacts.
+2. Run candidate comparisons over frozen datasets, repeated seeds and repeats.
+   Record actual measurements, units, denominators, variance, acceptance outcomes,
+   code/input fingerprints and replay results. Separate computational outputs
+   from machine-dependent time and memory measurements.
+3. Provide executable reference workloads for deterministic auctions, acquisition
+   retrieval, conditional-compute simulation, semantic packet reconstruction and
+   the existing public maritime engine. Use no live model, feed or hardware claim.
+4. Validate the published opportunity schema and result references. Check local
+   evidence bytes and review scope before promotion; reject malformed, stale,
+   foreign, duplicate or tampered evidence and all partial bundle publication.
+5. Connect run, replay, verification, status and compilation commands. Produce
+   self-contained lane reports, technical paper annexes, briefing slides and a
+   portfolio view from measured runs. Preserve authored plans and explicit gaps.
+6. Exercise the complete five-lane path and negative cases, measure at least 80%
+   per-module statement coverage, and retain regression, public-boundary, context
+   and memory evidence. Source completeness and proposal readiness stay separate.
+7. Run the foundry in an independent Python 3.11/3.12 CI job and retain an observed
+   review archive. Keep the existing ci:test descriptions in AGENTS.md and the
+   contribution pipeline synchronized; preserve all earlier application gates.
+
+Observed execution outcome: all 60 reference attempts completed across five
+lanes and ten candidates. The verified export contains 574 files and 25 source
+slides; two exports are byte-identical and a fresh NAVAIR replay matches. The
+final source suite passes 70/70 with 90.62–100% statement coverage per executable
+module. All 15 foundry modules pass strict typing; Ruff lint/format, 256 Node
+regressions and 23 reused mission-suite tests pass. The independent Python
+3.11/3.12 CI matrix is authored; hosted execution is not claimed. Exact source,
+input, archive, resource and replay observations are recorded in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json. Local synthetic
+results do not resolve official, eligibility, hardware or submission acceptance.

@@ -17,7 +17,14 @@
 
 # Risk register — DIU Sentinel Maritime
 
-| ID | Risk | Probability | Impact | Trigger | Mitigation | Owner | Status |
-|---|---|---|---|---|---|---|---|
-| R-001 | Official requirements may differ from planning input. | medium | high | Official source conflicts with registry. | Reconcile before claims or execution scope advance. | unassigned | open |
-| R-002 | Experimental evidence may not support the proposed claim. | medium | high | Preregistered acceptance fails. | Preserve result, analyze failure and narrow the claim. | unassigned | open |
+| ID | Risk | Effect | Mitigation and acceptance | Owner / state |
+|---|---|---|---|---|
+| diu-sentinel-maritime-R1 | Source-level replay can be mistaken for operating readiness; keep public engine, private ownership, feed rights, admission and live-demo evidence as separate acceptance items. | Misleading research conclusion | Preserve fixed inputs, explicit denominators and negative cases; independent future evaluation | Lane receiving seat / open |
+| diu-sentinel-maritime-R2 | A fixture result is presented as an operating or qualifying capability | Unsupported proposal assertion | Record synthetic scope in every summary/brief; require scoped digest-bound reviews | Proposal owner / open |
+| diu-sentinel-maritime-R3 | Code, data or a result changes between execution and compilation | Report differs from evidence | Verify source/fixture/run manifests and recompute summaries; reject altered bytes | Common foundry / implemented local gate |
+| diu-sentinel-maritime-R4 | A process fails or is interrupted | Missing trials appear successful | Retain failed/cancelled receipts, exclude incomplete groups and keep candidate failed | Common foundry / implemented local gate |
+| diu-sentinel-maritime-R5 | Official topic, deadline, eligibility or data rights are assumed | Nonconforming submission | Attach current official sources and a named human review before final packaging | Proposal owner / unresolved |
+
+Rollback removes the reference candidate or reverts the source change through
+review. Retain experiment receipts for comparison; a new run gets a new output
+location. No shared database or deployment rollback is needed for local execution.

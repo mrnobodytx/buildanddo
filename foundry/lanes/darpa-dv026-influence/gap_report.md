@@ -17,16 +17,21 @@
 
 # Gap report — DARPA DV026 Influence Benchmarks
 
-Status: initialized from `foundry/registry/darpa-dv026-influence/opportunity.yaml`.
+## Implemented reference
 
-## Official-source and eligibility gaps
+The market module clears unit-demand bids across multiple assets and rounds. It freezes seeded valuation adjustments, information sensitivity and bid shading once, then uses the same agents for factual news and the no-news counterfactual. Stable price/identity ordering resolves ties. Allocation value is compared with the feasible highest-value allocation at the same supply.
 
-See `evidence_missing` in the opportunity record.
+## Declared opportunity evidence gaps
 
-## Engineering evidence gaps
+- DV026-GAP-OFFICIAL: Current official solicitation, deadline and eligibility determination are not attached.
+- DV026-GAP-RUNS: No Influence market, agent or classifier benchmark has run in this lane.
 
-No lane experiment or benchmark result is recorded yet.
+## Next acceptance boundary
 
-## Physical, data and integration gaps
+Add reviewed model-agent adapters, measured model latency/cost and behavioral hypotheses. Freeze a wider evaluation population and holdout protocol before testing interventions; obtain official topic and output constraints first.
 
-## Human truth, rights, cost and submission decisions
+A scripted auction is a mechanism baseline. It does not measure LLM-agent heterogeneity, persuasion effectiveness or a working influence classifier.
+
+The generated gap report combines this registry with current requirement states,
+failed attempts and human review blockers. Registry deadlines remain unknown and
+eligibility remains unverified until official source evidence is provided.

@@ -15,21 +15,35 @@
 # Intent:      Preregister lane hypotheses, baselines, procedures and stopping rules.
 # ───────────────────────────────────────────────────────────────
 
-# Experiment plan — NAVAIR Acquisition Analysis
+# Experiment plan
 
-Status: scaffold; no experiment has run.
+Compare ranking quality and deterministic explanations on one fixed corpus; exercise the comparison machinery before a domain corpus is accepted.
 
-## Hypothesis and falsifier
+Scope: Public synthetic text fixtures and hand-authored relevance judgments; lexical candidates only.
 
-## Frozen inputs and rights
+Dataset: foundry/fixtures/navair-acquisition-analysis.json; SHA-256: 76fbbcdad7334dd3ea313a0dab38c7519738a68ffab97ba875a725e913327069.
 
-## Baselines and candidates
+Candidates: bm25, tfidf.
 
-| ID | Role | Version | Parameters | Rationale |
-|---|---|---|---|---|
+Seeds: [17, 29, 43]; repeats: 2; timeout per attempt: 30 seconds.
 
-## Procedure, repetitions and resource bounds
+Each attempt starts in a new working directory with the frozen input. Candidates receive the same dataset and seed. Logs are bounded and unsuccessful outcomes stay in the comparison.
 
-## Metrics, denominators and uncertainty
+| Metric | Unit | Direction | Local threshold |
+|---|---|---|---|
+| ndcg_at_k | ratio | higher | {"operator": ">=", "value": 0.8} |
+| precision_at_k | ratio | higher | {} |
+| recall_at_k | ratio | higher | {"operator": ">=", "value": 0.8} |
+| mrr | ratio | higher | {} |
+| elapsed_ms | milliseconds with tracemalloc enabled | lower | {} |
+| peak_python_bytes | traced Python allocation bytes | lower | {} |
 
-## Acceptance and stopping rules
+Independent verification recomputes file fingerprints, run identities, sample counts and summaries. Replay checks computational bytes against the retained source closure; it does not reassert machine-dependent timing.
+
+## Method
+
+The retrieval module tokenizes a frozen corpus with a Unicode word/case-fold rule. BM25 and cosine TF-IDF score the same queries and documents. Term contributions and source hashes accompany every hit; document IDs resolve equal scores. Recall and precision use explicit relevant/retrieved denominators, nDCG uses graded judgments, and MRR uses the full ranking.
+
+## Next research study
+
+Acquire an explicitly releasable domain corpus, independent expert relevance judgments and a held-out query set. Add approved dense/hybrid retrieval baselines, then build and accept the required Docker deliverable on its declared runtime.

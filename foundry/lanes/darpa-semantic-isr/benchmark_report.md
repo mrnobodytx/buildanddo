@@ -17,15 +17,21 @@
 
 # Benchmark report — DARPA Semantic ISR
 
-Status: not run.
+The executable comparison is registered in experiment.yaml. Actual attempts,
+resource observations, candidate distributions and local acceptance outcomes are
+retained in the selected campaign and rendered by compile --runs.
 
-## Environment and source identity
+Current validation record: .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.
 
-## Results
+## What is measured
 
-| Benchmark | Candidate | Repetitions | Metrics | Evidence IDs | Status |
-|---|---|---|---|---|---|
+Actual wire bytes, packets and reconstructed scene history; byte ratio, relevant-object recall and coordinate error.
 
-## Failure and exclusion analysis
+## Interpretation
 
-## Reproduction commands and expected digests
+Relevance labels are supplied truth. JSON packet savings are not video compression performance, detector accuracy, a radio demonstration, physical feasibility or DP2 qualification.
+
+Only successful complete repeat groups enter aggregate statistics. Failed
+attempts remain visible with their actual return status; repeat agreement does
+not establish external validity. A future corpus or method requires a new pinned
+plan and a new campaign, preserving the earlier evidence for comparison.

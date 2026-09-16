@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     foundry/shared/federal_foundry/models.py, foundry/registry/opportunity.schema.json
+# Depends:     foundry/shared/federal_foundry/models.py, foundry/registry/opportunity.schema.json, foundry/shared/federal_foundry/validation.py
 # EnumType:    Service
-# EnumEdges:   DEPENDS_ON foundry/shared/federal_foundry/models.py; VALIDATES foundry/registry/opportunity.schema.json
+# EnumEdges:   DEPENDS_ON foundry/shared/federal_foundry/models.py; VALIDATES foundry/registry/opportunity.schema.json; DEPENDS_ON foundry/shared/federal_foundry/validation.py
 # DAG Node:    foundry.registry
 # Intent:      Load deterministic opportunity and result records from bounded foundry paths.
 # ───────────────────────────────────────────────────────────────
@@ -26,6 +26,7 @@ import json
 import yaml  # type: ignore[import-untyped]
 
 from .models import FoundryValidationError, LaneResults, Opportunity
+from .validation import contained, read_bytes, read_json, validate_contract
 
 
 REQUIRED_OPPORTUNITY_FIELDS = frozenset(
@@ -53,11 +54,9 @@ def _mapping(value: object, label: str) -> Mapping[str, object]:
 
 
 def _bounded_file(root: Path, path: Path) -> Path:
-    resolved_root = root.resolve()
-    resolved_path = path.resolve()
-    if not resolved_path.is_relative_to(resolved_root) or not resolved_path.is_file():
+    if not path.is_relative_to(root):
         raise FoundryValidationError(f"path is outside the foundry or missing: {path}")
-    return resolved_path
+    return contained(root, path.relative_to(root).as_posix())
 
 
 def validate_schema_contract(path: Path) -> None:
@@ -78,6 +77,50 @@ def validate_schema_contract(path: Path) -> None:
         )
 
 
+def load_yaml(root: Path, relative: str) -> Mapping[str, object]:
+    """Load finite, unambiguous YAML without aliases, merges or duplicate keys."""
+    try:
+        raw = read_bytes(root, relative).decode("utf-8")
+        for count, token in enumerate(yaml.scan(raw)):
+            if count > 100000 or isinstance(
+                token, (yaml.tokens.AliasToken, yaml.tokens.AnchorToken)
+            ):
+                raise FoundryValidationError(
+                    "YAML aliases or excessive tokens are not allowed"
+                )
+
+        def inspect_node(node: object, depth: int = 0) -> None:
+            if depth > 32:
+                raise FoundryValidationError("YAML nesting exceeds 32 levels")
+            if isinstance(node, yaml.nodes.MappingNode):
+                keys: set[str] = set()
+                for key, value in node.value:
+                    if (
+                        not isinstance(key, yaml.nodes.ScalarNode)
+                        or key.tag != "tag:yaml.org,2002:str"
+                    ):
+                        raise FoundryValidationError(
+                            "YAML keys must be strings; merge keys are not allowed"
+                        )
+                    if key.value in keys:
+                        raise FoundryValidationError(f"duplicate YAML key: {key.value}")
+                    keys.add(key.value)
+                    inspect_node(value, depth + 1)
+            elif isinstance(node, yaml.nodes.SequenceNode):
+                for value in node.value:
+                    inspect_node(value, depth + 1)
+
+        inspect_node(yaml.compose(raw))
+        value = _mapping(yaml.safe_load(raw), relative)
+        # Round-trip only as a validation step; preserve the original YAML bytes.
+        from .validation import canonical
+
+        canonical(value)
+        return value
+    except (OSError, UnicodeError, yaml.YAMLError) as error:
+        raise FoundryValidationError(f"cannot read {relative}: {error}") from error
+
+
 class OpportunityRegistry:
     """Discover validated opportunities under one foundry root."""
 
@@ -87,6 +130,7 @@ class OpportunityRegistry:
         validate_schema_contract(
             _bounded_file(self.root, self.registry_root / "opportunity.schema.json")
         )
+        self.schema = read_json(self.root, "registry/opportunity.schema.json")
 
     def lane_ids(self) -> tuple[str, ...]:
         """Return all registered lane identities in stable order."""
@@ -106,11 +150,9 @@ class OpportunityRegistry:
         path = _bounded_file(
             self.root, self.registry_root / lane_id / "opportunity.yaml"
         )
-        try:
-            value = yaml.safe_load(path.read_text(encoding="utf-8"))
-        except (OSError, yaml.YAMLError) as error:
-            raise FoundryValidationError(f"cannot read {path}: {error}") from error
-        opportunity = Opportunity.from_mapping(_mapping(value, str(path)))
+        value = load_yaml(self.root, path.relative_to(self.root).as_posix())
+        validate_contract(value, self.schema)
+        opportunity = Opportunity.from_mapping(value)
         if opportunity.lane_id != lane_id:
             raise FoundryValidationError(
                 f"lane_id {opportunity.lane_id} does not match registry path {lane_id}"
@@ -123,10 +165,7 @@ class OpportunityRegistry:
         if lane_id not in self.lane_ids():
             raise FoundryValidationError(f"unknown foundry lane: {lane_id}")
         path = _bounded_file(self.root, self.root / "lanes" / lane_id / "results.json")
-        try:
-            value = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as error:
-            raise FoundryValidationError(f"cannot read {path}: {error}") from error
+        value = read_json(self.root, path.relative_to(self.root).as_posix())
         results = LaneResults.from_mapping(_mapping(value, str(path)))
         if results.lane_id != lane_id:
             raise FoundryValidationError(

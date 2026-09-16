@@ -15,12 +15,13 @@
 # Intent:      Provide a lane-owned workspace for requirement status and acceptance evidence.
 # ───────────────────────────────────────────────────────────────
 
-# Requirements matrix — NAVAIR Acquisition Analysis
+# Requirements matrix
 
-Status: scaffold. The compiled matrix is generated from `foundry/registry/navair-acquisition-analysis/opportunity.yaml` and
-`results.json`.
+| ID | Requirement | Acceptance | Status | Evidence | Justification |
+|---|---|---|---|---|---|
+| NAVAIR-REQ-01 | Parse allowlisted acquisition documents with stable source and metadata identifiers. | Re-ingestion preserves identifiers and records parser version, source digest and rejected inputs. | open | none | none |
+| NAVAIR-REQ-02 | Build comparable lexical, embedding, graph, clustering and hybrid retrieval candidates. | Every candidate consumes the same frozen corpus, query set and relevance judgments. | open | none | none |
+| NAVAIR-REQ-03 | Return deterministic top-N recommendations with explanations and source provenance. | Repeated runs produce identical ranking, tie-breaking, excerpts and document locators. | open | none | none |
+| NAVAIR-REQ-04 | Package the selected pipeline as a bounded Docker deliverable. | An offline container build and run reproduce the declared validation report from frozen inputs. | open | none | none |
 
-| Requirement ID | Acceptance method | Status | Evidence IDs | Reviewer |
-|---|---|---|---|---|
-
-Only verified evidence can support `satisfied`.
+This is the registered source baseline. compile --runs derives partial requirement updates from the selected measured campaign; verified satisfaction still requires a scoped review.

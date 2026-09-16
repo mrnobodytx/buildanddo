@@ -1,0 +1,103 @@
+{
+  "lane_id": "navair-acquisition-analysis",
+  "classification": "PUBLIC",
+  "kind": "synthetic",
+  "license": "Authored synthetic fixture; distributed under the repository license.",
+  "id": "retrieval-v1",
+  "top_k": 3,
+  "documents": [
+    {
+      "id": "ACQ-001",
+      "title": "Aircraft maintenance analytics",
+      "text": "Aircraft maintenance sustainment uses component reliability, inspection records, depot schedules and supply forecasting."
+    },
+    {
+      "id": "ACQ-002",
+      "title": "Maritime radar evaluation",
+      "text": "Test a radar sensor with detection trials, antenna calibration, maritime clutter and signal processing."
+    },
+    {
+      "id": "ACQ-003",
+      "title": "Supplier cost analysis",
+      "text": "Compare acquisition supplier cost, historical pricing, contract line items and independent cost estimates."
+    },
+    {
+      "id": "ACQ-004",
+      "title": "Flight simulator training",
+      "text": "Develop pilot training scenarios with a cockpit flight simulator, instructor feedback and recorded exercises."
+    },
+    {
+      "id": "ACQ-005",
+      "title": "Secure software delivery",
+      "text": "Deliver software in a reproducible container with dependency licenses, source provenance, an SBOM and offline validation."
+    },
+    {
+      "id": "ACQ-006",
+      "title": "Fleet sustainment planning",
+      "text": "Forecast fleet component demand, supply inventory and depot repair capacity using maintenance histories."
+    },
+    {
+      "id": "ACQ-007",
+      "title": "Procurement document retrieval",
+      "text": "Rank acquisition requirements and contract documents with deterministic search, citation provenance and cost explanations."
+    },
+    {
+      "id": "ACQ-008",
+      "title": "Edge compute prototype",
+      "text": "Measure prototype compute latency, memory and power using embedded device trials and repeatable model workloads."
+    },
+    {
+      "id": "ACQ-009",
+      "title": "Public training material",
+      "text": "Write a learning curriculum and operator exercises for reading validation reports and interpreting uncertainty."
+    }
+  ],
+  "queries": [
+    {
+      "id": "Q1",
+      "text": "aircraft maintenance depot supply",
+      "relevance": {
+        "ACQ-001": 3,
+        "ACQ-006": 2
+      }
+    },
+    {
+      "id": "Q2",
+      "text": "supplier acquisition pricing cost",
+      "relevance": {
+        "ACQ-003": 3,
+        "ACQ-007": 1
+      }
+    },
+    {
+      "id": "Q3",
+      "text": "software container reproducible SBOM",
+      "relevance": {
+        "ACQ-005": 3
+      }
+    },
+    {
+      "id": "Q4",
+      "text": "deterministic acquisition document search",
+      "relevance": {
+        "ACQ-007": 3,
+        "ACQ-003": 1
+      }
+    },
+    {
+      "id": "Q5",
+      "text": "embedded latency compute power",
+      "relevance": {
+        "ACQ-008": 3
+      }
+    },
+    {
+      "id": "Q6",
+      "text": "training flight simulator pilot",
+      "relevance": {
+        "ACQ-004": 3,
+        "ACQ-009": 1
+      }
+    }
+  ]
+}

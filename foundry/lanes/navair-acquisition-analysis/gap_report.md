@@ -17,16 +17,21 @@
 
 # Gap report — NAVAIR Acquisition Analysis
 
-Status: initialized from `foundry/registry/navair-acquisition-analysis/opportunity.yaml`.
+## Implemented reference
 
-## Official-source and eligibility gaps
+The retrieval module tokenizes a frozen corpus with a Unicode word/case-fold rule. BM25 and cosine TF-IDF score the same queries and documents. Term contributions and source hashes accompany every hit; document IDs resolve equal scores. Recall and precision use explicit relevant/retrieved denominators, nDCG uses graded judgments, and MRR uses the full ranking.
 
-See `evidence_missing` in the opportunity record.
+## Declared opportunity evidence gaps
 
-## Engineering evidence gaps
+- NAVAIR-GAP-OFFICIAL: Current official instructions, eligible corpus and deadline are not attached.
+- NAVAIR-GAP-CORPUS: No frozen acquisition corpus, judgments or container benchmark exists in this lane.
 
-No lane experiment or benchmark result is recorded yet.
+## Next acceptance boundary
 
-## Physical, data and integration gaps
+Acquire an explicitly releasable domain corpus, independent expert relevance judgments and a held-out query set. Add approved dense/hybrid retrieval baselines, then build and accept the required Docker deliverable on its declared runtime.
 
-## Human truth, rights, cost and submission decisions
+The current comparison is lexical retrieval over authored fixtures. It establishes no government-corpus accuracy, embedding quality, CUI suitability or tested container.
+
+The generated gap report combines this registry with current requirement states,
+failed attempts and human review blockers. Registry deadlines remain unknown and
+eligibility remains unverified until official source evidence is provided.

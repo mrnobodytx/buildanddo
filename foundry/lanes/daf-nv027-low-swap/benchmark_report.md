@@ -17,15 +17,21 @@
 
 # Benchmark report — DAF NV027 Brain-Inspired Low-SWaP
 
-Status: not run.
+The executable comparison is registered in experiment.yaml. Actual attempts,
+resource observations, candidate distributions and local acceptance outcomes are
+retained in the selected campaign and rendered by compile --runs.
 
-## Environment and source identity
+Current validation record: .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.
 
-## Results
+## What is measured
 
-| Benchmark | Candidate | Repetitions | Metrics | Evidence IDs | Status |
-|---|---|---|---|---|---|
+Frame predictions, label agreement, active/dense multiplication counts, active frames, gate-check counts and Python timing/allocation observations.
 
-## Failure and exclusion analysis
+## Interpretation
 
-## Reproduction commands and expected digests
+Fixed temporal projection is a simulation reference, not a trained neural design. Multiplication savings exclude decay/control overhead and do not establish energy, watts, VRAM or edge-device performance.
+
+Only successful complete repeat groups enter aggregate statistics. Failed
+attempts remain visible with their actual return status; repeat agreement does
+not establish external validity. A future corpus or method requires a new pinned
+plan and a new campaign, preserving the earlier evidence for comparison.

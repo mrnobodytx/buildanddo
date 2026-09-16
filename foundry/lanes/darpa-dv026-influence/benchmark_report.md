@@ -17,15 +17,21 @@
 
 # Benchmark report — DARPA DV026 Influence Benchmarks
 
-Status: not run.
+The executable comparison is registered in experiment.yaml. Actual attempts,
+resource observations, candidate distributions and local acceptance outcomes are
+retained in the selected campaign and rendered by compile --runs.
 
-## Environment and source identity
+Current validation record: .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.
 
-## Results
+## What is measured
 
-| Benchmark | Candidate | Repetitions | Metrics | Evidence IDs | Status |
-|---|---|---|---|---|---|
+Per-round bid ledgers, clearing prices, winning allocations, achieved/optimal value and counterfactual allocation changes.
 
-## Failure and exclusion analysis
+## Interpretation
 
-## Reproduction commands and expected digests
+A scripted auction is a mechanism baseline. It does not measure LLM-agent heterogeneity, persuasion effectiveness or a working influence classifier.
+
+Only successful complete repeat groups enter aggregate statistics. Failed
+attempts remain visible with their actual return status; repeat agreement does
+not establish external validity. A future corpus or method requires a new pinned
+plan and a new campaign, preserving the earlier evidence for comparison.

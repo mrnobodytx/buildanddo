@@ -15,11 +15,12 @@
 # Intent:      Provide a lane-owned workspace for exact claims, falsifiers and evidence support.
 # ───────────────────────────────────────────────────────────────
 
-# Claim-evidence matrix — DIU Sentinel Maritime
+# Claim-evidence matrix
 
-Status: scaffold. Preserve exact proposed language and its maximum support level.
+| ID | Claim | Requested | Supported | Evidence |
+|---|---|---|---|---|
+| MAR-CLM-01 | A substantial public Sentinel Maritime planning baseline exists in this repository. | observed | observed | MAR-EV-BASELINE |
+| MAR-CLM-02 | Portable deterministic maritime analysis source exists for lane adaptation, without proving deployment. | observed | observed | MAR-EV-SUITE |
+| MAR-CLM-03 | Sentinel Maritime is an operating DIU-ready capability. | proposed | unsupported | none |
 
-| Claim ID | Exact claim | Requested level | Supported level | Evidence IDs | Falsifier |
-|---|---|---|---|---|---|
-
-Final proposal language requires named human approval.
+The reference workload does not automatically promote these claims. See the generated evidence index for byte-checked observations and explicit source-locator limitations.

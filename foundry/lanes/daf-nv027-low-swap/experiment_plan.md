@@ -15,21 +15,35 @@
 # Intent:      Preregister lane hypotheses, baselines, procedures and stopping rules.
 # ───────────────────────────────────────────────────────────────
 
-# Experiment plan — DAF NV027 Brain-Inspired Low-SWaP
+# Experiment plan
 
-Status: scaffold; no experiment has run.
+Demonstrate the accuracy versus compute comparison and preserve gate overhead separately from arithmetic savings.
 
-## Hypothesis and falsifier
+Scope: Fixed temporal projection and event gating on labelled synthetic sequences; measured Python resources and counted multiplications only.
 
-## Frozen inputs and rights
+Dataset: foundry/fixtures/daf-nv027-low-swap.json; SHA-256: fc53aa1f2d389492ab4917884abc6135628855ced648b455f1c1bc38f7f61af7.
 
-## Baselines and candidates
+Candidates: dense-temporal, event-gated.
 
-| ID | Role | Version | Parameters | Rationale |
-|---|---|---|---|---|
+Seeds: [17, 29, 43]; repeats: 2; timeout per attempt: 30 seconds.
 
-## Procedure, repetitions and resource bounds
+Each attempt starts in a new working directory with the frozen input. Candidates receive the same dataset and seed. Logs are bounded and unsuccessful outcomes stay in the comparison.
 
-## Metrics, denominators and uncertainty
+| Metric | Unit | Direction | Local threshold |
+|---|---|---|---|
+| accuracy | fraction of labelled frames | higher | {"operator": ">=", "value": 0.95} |
+| compute_fraction | active / dense multiplications | lower | {} |
+| active_multiplications | multiplications | lower | {} |
+| gate_feature_checks | feature checks | neutral | {} |
+| elapsed_ms | milliseconds with tracemalloc enabled | lower | {} |
+| peak_python_bytes | traced Python allocation bytes | lower | {} |
 
-## Acceptance and stopping rules
+Independent verification recomputes file fingerprints, run identities, sample counts and summaries. Replay checks computational bytes against the retained source closure; it does not reassert machine-dependent timing.
+
+## Method
+
+The simulation applies a fixed projection and leaky temporal state to labelled sequences. Dense execution projects every frame. Event-gated execution skips the projection when input activity is below the frozen gate threshold. Both use identical weights, states and tie rules; multiplication counts and the additional gate-feature checks are recorded separately.
+
+## Next research study
+
+Register a trained brain-inspired architecture, real datasets, accuracy budgets and dense-model controls. Measure wall-clock latency and power on declared target hardware with an accepted instrumentation procedure after simulation evidence warrants it.

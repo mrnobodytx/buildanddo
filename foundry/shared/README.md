@@ -17,15 +17,23 @@
 
 # Shared foundry components
 
-The `federal_foundry` package is deliberately independent of React, PocketBase,
-live providers and government portals. It provides:
+The package contains working implementations of the public interfaces:
 
-- schema and cross-reference validation for opportunity and result records;
-- requirement state tracking with verified-evidence gates;
-- claim-to-evidence compilation that rejects unsupported promotion;
-- typed asynchronous experiment-runner and benchmark-harness protocols; and
-- deterministic lane and portfolio bundle generation.
+| Component | API | Responsibility |
+|---|---|---|
+| Requirements | RequirementTracker | Validate an entire update batch before changing any requirement; require scoped reviewed evidence for satisfaction |
+| Claims | ClaimEvidenceCompiler | Preserve claim wording and reject unsupported or foreign evidence promotion |
+| Local execution | LocalExperimentRunner.run | Execute reviewed argv, bound time/logs, preserve inputs and failure/cancellation receipts |
+| Benchmark harness | ReferenceBenchmarkHarness.run | Run a registered candidate against its pinned fixture and aggregate repeated seed groups |
+| Campaign | run_campaign / verify_campaign | Schedule bounded trials across lanes and recompute all summaries from their receipts |
+| Replay | replay_run | Rerun the built-in workload with identical input/source and compare computational bytes |
+| Portfolio | PortfolioCompiler | Derive matrices, reports, white-paper sources, slides and a read-only HTML index from checked evidence |
+| Export | verify_bundle / package_bundle | Check the complete manifest and produce a reproducible ZIP |
 
-Implementations of the runner protocols belong in lane branches. They must return
-bounded, serializable results and evidence locators; an interface result is not
-automatically trusted or verified.
+Runtime imports use Python's standard library, PyYAML and the existing public
+mission-suite engine. The maritime reference reuses that engine and its evidence
+epoch code. It introduces no alternate signing, auth, Merkle or admission owner.
+
+See foundry/README.md for the runnable CLI, input/output contracts, coverage gates
+and the explicit limits of each research reference. No frontend or live service
+is needed to execute this workflow.

@@ -15,12 +15,13 @@
 # Intent:      Provide a lane-owned workspace for requirement status and acceptance evidence.
 # ───────────────────────────────────────────────────────────────
 
-# Requirements matrix — DIU Sentinel Maritime
+# Requirements matrix
 
-Status: scaffold. The compiled matrix is generated from `foundry/registry/diu-sentinel-maritime/opportunity.yaml` and
-`results.json`.
+| ID | Requirement | Acceptance | Status | Evidence | Justification |
+|---|---|---|---|---|---|
+| MAR-REQ-01 | Preserve observation, world-state, cue, admission, evidence and outcome semantics from the public baseline. | The lane maps each implementation and experiment artifact to the versioned contracts without semantic drift. | open | none | none |
+| MAR-REQ-02 | Demonstrate deterministic replay, conflicting evidence handling and fail-closed release behavior. | Repeated bounded scenarios match source and result identities while unadmitted cues remain HOLD. | open | none | none |
+| MAR-REQ-03 | Produce a measurable 48-hour demonstration and government integration plan. | The plan defines denominators, data rights, operator actions, failure handling and preserved receipts. | open | none | none |
+| MAR-REQ-04 | Separate public source evidence from private Sentinel, NNC, feed, release and deployment acceptance. | No compiled claim treats planned private work or fixture behavior as an operating capability. | open | none | none |
 
-| Requirement ID | Acceptance method | Status | Evidence IDs | Reviewer |
-|---|---|---|---|---|
-
-Only verified evidence can support `satisfied`.
+This is the registered source baseline. compile --runs derives partial requirement updates from the selected measured campaign; verified satisfaction still requires a scoped review.

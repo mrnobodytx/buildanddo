@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/foundry/test_foundry.py, foundry/shared/federal_foundry
+# Depends:     tests/foundry/test_foundry.py, tests/foundry/test_validation.py, tests/foundry/test_workloads.py, tests/foundry/test_execution.py, tests/foundry/test_campaign.py, foundry/shared/federal_foundry
 # EnumType:    Test
-# EnumEdges:   DEPENDS_ON tests/foundry/test_foundry.py; VALIDATES foundry/shared/federal_foundry
+# EnumEdges:   DEPENDS_ON tests/foundry/test_foundry.py; DEPENDS_ON tests/foundry/test_validation.py; DEPENDS_ON tests/foundry/test_workloads.py; DEPENDS_ON tests/foundry/test_execution.py; DEPENDS_ON tests/foundry/test_campaign.py; VALIDATES foundry/shared/federal_foundry
 # DAG Node:    foundry.coverage
 # Intent:      Require passing behavior and at least 80 percent trace statement coverage in every executable shared foundry module.
 # ───────────────────────────────────────────────────────────────

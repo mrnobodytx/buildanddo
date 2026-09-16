@@ -17,16 +17,21 @@
 
 # Gap report — DAF NV027 Brain-Inspired Low-SWaP
 
-Status: initialized from `foundry/registry/daf-nv027-low-swap/opportunity.yaml`.
+## Implemented reference
 
-## Official-source and eligibility gaps
+The simulation applies a fixed projection and leaky temporal state to labelled sequences. Dense execution projects every frame. Event-gated execution skips the projection when input activity is below the frozen gate threshold. Both use identical weights, states and tie rules; multiplication counts and the additional gate-feature checks are recorded separately.
 
-See `evidence_missing` in the opportunity record.
+## Declared opportunity evidence gaps
 
-## Engineering evidence gaps
+- NV027-GAP-OFFICIAL: Current official topic, deadline and simulation acceptance are not attached.
+- NV027-GAP-SCIENCE: No preregistration, model implementation or benchmark result exists in this lane.
 
-No lane experiment or benchmark result is recorded yet.
+## Next acceptance boundary
 
-## Physical, data and integration gaps
+Register a trained brain-inspired architecture, real datasets, accuracy budgets and dense-model controls. Measure wall-clock latency and power on declared target hardware with an accepted instrumentation procedure after simulation evidence warrants it.
 
-## Human truth, rights, cost and submission decisions
+Fixed temporal projection is a simulation reference, not a trained neural design. Multiplication savings exclude decay/control overhead and do not establish energy, watts, VRAM or edge-device performance.
+
+The generated gap report combines this registry with current requirement states,
+failed attempts and human review blockers. Registry deadlines remain unknown and
+eligibility remains unverified until official source evidence is provided.

@@ -1,0 +1,51 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/lanes/daf-nv027-low-swap/experiment.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/experiment.schema.json, foundry/fixtures/daf-nv027-low-swap.json
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON foundry/registry/experiment.schema.json; DEPENDS_ON foundry/fixtures/daf-nv027-low-swap.json
+# DAG Node:    none
+# Intent:      Preregister a finite daf-nv027-low-swap candidate comparison against a fingerprinted public fixture.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.experiment/v1
+lane_id: daf-nv027-low-swap
+dataset: foundry/fixtures/daf-nv027-low-swap.json
+dataset_sha256: fc53aa1f2d389492ab4917884abc6135628855ced648b455f1c1bc38f7f61af7
+candidates: ["dense-temporal","event-gated"]
+seeds: [17, 29, 43]
+repetitions: 2
+timeout_seconds: 30
+requirement_ids: ["NV027-REQ-04"]
+scope: "Fixed temporal projection and event gating on labelled synthetic sequences; measured Python resources and counted multiplications only."
+purpose: "Demonstrate the accuracy versus compute comparison and preserve gate overhead separately from arithmetic savings."
+primary_metric: compute_fraction
+metrics:
+  - name: accuracy
+    unit: "fraction of labelled frames"
+    direction: higher
+    threshold:
+      operator: ">="
+      value: 0.95
+  - name: compute_fraction
+    unit: "active / dense multiplications"
+    direction: lower
+  - name: active_multiplications
+    unit: "multiplications"
+    direction: lower
+  - name: gate_feature_checks
+    unit: "feature checks"
+    direction: neutral
+  - name: elapsed_ms
+    unit: "milliseconds with tracemalloc enabled"
+    direction: lower
+  - name: peak_python_bytes
+    unit: "traced Python allocation bytes"
+    direction: lower
