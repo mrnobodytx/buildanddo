@@ -829,3 +829,52 @@ Frontend tools, native PocketBase, OAuth/browser, full SDK typing, pytest/branch
 coverage and live Firecrawl/transcription/test-server evidence remain pending.
 The report, docs/mission-research.md and community-controls handoff contain actual
 commands, rollback/retention and receiving-runtime responsibilities.
+
+## Authorized continuation — Citadel Federal R&D Foundry
+
+On 2026-09-16 the owner requested a shared public-source substrate for five
+parallel federal research and proposal lanes. This continues
+VCC-BUILDANDDO-UPGRADE-001 at A2 for offline registries, templates, compilers and
+local tests. It does not authorize a submission, certify eligibility, import
+controlled information, operate a federal system or deploy shared infrastructure.
+
+Acceptance:
+
+1. Define one machine-validated opportunity contract and five separate lane
+   records for DARPA DV026 Influence Benchmarks, NAVAIR Acquisition Analysis,
+   DAF NV027 Brain-Inspired Low-SWaP, DARPA Semantic ISR and DIU Sentinel
+   Maritime. Preserve unknown deadlines, official-source references and
+   eligibility decisions as unresolved rather than inventing values.
+2. Scaffold each lane with requirements, claims, architecture, experiments,
+   results, benchmarks, gaps, risk, SOW, commercialization, white-paper, slide
+   and submission-checklist artifacts derived from reusable templates. Draft
+   artifacts must not imply measured performance or approved submission status.
+3. Add a standard-library Python evidence fabric for requirement status,
+   claim-evidence compilation, experiment and benchmark interfaces, deterministic
+   file loading and portfolio compilation. Reject unknown references, duplicate
+   identities, malformed results and claims promoted without sufficient evidence.
+4. Compile a deterministic, reviewable portfolio bundle from lane registries and
+   evidence without changing source lanes. Generated readiness is advisory;
+   human review remains required for claims, eligibility, data rights, pricing,
+   certifications, physical evidence and final submission.
+5. Document isolated common and lane branch flows. Every lane starts from its
+   own SRS and acceptance criteria, records experiments, uses an independent
+   verifier and merges reusable work through review rather than writing to main.
+6. Verify all five registry records against the schema, exercise the real shared
+   module with temporary lane evidence, compile twice byte-for-byte, and run the
+   repository context and public-boundary gates. No network, credential, live
+   workspace, hardware or government portal is required by local tests.
+
+Initial lane data comes from the owner-supplied planning brief and is explicitly
+planning input, not an official solicitation record. Semantic ISR hardware proof,
+all final deadlines and unresolved eligibility facts remain evidence gaps. The
+Maritime lane may reference the existing public planning baseline but may not
+promote its unverified runtime claims.
+
+Foundry source outcome: five schema-validated registries, reusable templates,
+complete lane scaffolds, typed experiment and benchmark interfaces, evidence
+gates and a deterministic portfolio compiler are implemented. Thirteen local
+tests pass; executable shared modules measure 82.73 to 100 percent statement
+coverage under the repository's standard-library trace pattern. Strict typing
+and Ruff pass. No lane experiment, eligibility review, hardware run, official
+deadline, proposal approval or submission is claimed.

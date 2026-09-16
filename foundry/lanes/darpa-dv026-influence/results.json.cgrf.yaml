@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/lanes/darpa-dv026-influence/results.json.cgrf.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/lanes/darpa-dv026-influence/results.json, foundry/registry/darpa-dv026-influence/opportunity.yaml
+# EnumType:    Schema
+# EnumEdges:   VALIDATES foundry/lanes/darpa-dv026-influence/results.json; DEPENDS_ON foundry/registry/darpa-dv026-influence/opportunity.yaml
+# DAG Node:    foundry.lane.darpa-dv026-influence.results
+# Intent:      Preserve governance provenance for this lane's machine-readable experiment and evidence record.
+# ───────────────────────────────────────────────────────────────
+
+json_file: foundry/lanes/darpa-dv026-influence/results.json
+comment_syntax: sibling

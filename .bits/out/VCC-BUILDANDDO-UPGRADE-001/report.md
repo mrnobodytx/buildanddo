@@ -60,6 +60,9 @@
 #              CONSUMES docs/mission-suite.md;
 #              VALIDATES tests/upgrade/check_mission_suite.py;
 #              VALIDATES tests/upgrade/test_suite_native.py;
+#              CONSUMES foundry/README.md;
+#              VALIDATES foundry/shared/federal_foundry/portfolio.py;
+#              VALIDATES tests/foundry/check_foundry.py;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -68,13 +71,13 @@
 
 ## §1 SUMMARY
 
-Status: PARTIAL — callable mission suite and curriculum implemented; native/browser and deployed acceptance remain open
+Status: PARTIAL — Federal R&D Foundry source complete; official, empirical and submission acceptance remain open
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
-Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 5/6 current source phase gates; CF rendered acceptance remains open; historical phase counts are not product completion
-Smoke: 10/14 current check groups pass; four required environment checks unavailable, as detailed in §3
+Branch: bits/SRS-BUILDANDDO-UPGRADE-001-federal-foundry
+Tasks: 6/6 current local source phases; federal opportunity and submission acceptance remain outside this source gate
+Smoke: 9/13 current check groups pass; four pre-existing frontend tools remain unavailable, as detailed in §3
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
@@ -82,40 +85,45 @@ CK: pending
 Commits: 1 focused continuation; resolve final source identity using the command below
 Verify source identity: `git log -1 --format='%H %s'`
 
-BuildAndDo now has one authenticated mission-suite API and a portable Python
-worker for an operator-selected CPU box. The API owns current mission permissions,
-source rights, immutable inputs/results, leases, retry receipts and reviewed
-Evidence Ledger attachments. The worker performs bounded maritime analysis and
-government-submission readiness review using the existing research transport and
-evidence-epoch implementation. It creates no additional authentication, NNC,
-Merkle authority, service manager or government submission mechanism.
+BuildAndDo now has a public, offline Federal R&D Foundry with five isolated lanes:
+DARPA DV026 Influence Benchmarks, NAVAIR Acquisition Analysis, DAF NV027
+Brain-Inspired Low-SWaP, DARPA Semantic ISR and DIU Sentinel Maritime. Each lane
+has a schema-validated opportunity, a complete authored artifact surface and an
+empty machine result record. Unknown deadlines and all eligibility decisions are
+preserved as unresolved. The planning brief is not relabeled as an official source.
 
-The government mission starter saves through the existing proposed/approved/
-running lifecycle. Eight substantive tutorials, exercises and quizzes share the
-website and public Discord catalogue, bringing the catalogue to 33 lessons.
-The suite desk provides configuration, PDF metadata and requirement review,
-queue/status/recovery and explicit human attachment as observed evidence.
-Maritime candidates remain HOLD; readiness means declared evidence is ready for
-human review, with no portal receipt or compliance certification.
+The shared Python package tracks requirement state, compiles claim-to-evidence
+support, defines typed asynchronous experiment and benchmark interfaces and emits
+deterministic reviewer bundles. It rejects unknown identities, duplicate evidence,
+malformed results, satisfied requirements without verified evidence and claims
+promoted beyond their support. Two complete compilations produced identical bytes
+without modifying lane source. A bundle always retains a human-review requirement.
 
-Source regression passes 256 Node and 152 Python tests, with nine native cases
-skipped. The suite-specific checker passes 23 tests with 87.96–99.55% statement
-coverage per Python module. Selected JavaScript coverage is 100% lines, 86.64%
-branches and 98.92% functions. A freshly unpacked archive executes both explicit
-synthetic scenarios and replays MATCH with the same source fingerprint. These
-results establish portable source behavior, not a deployed box or live feed.
+Thirteen foundry tests pass. Executable shared modules measure 82.73–100% Python
+trace statement coverage; strict mypy and Ruff pass. Existing regressions also
+pass: 256 Node tests and 161 Python tests, with nine explicit native skips. The
+repository still lacks Vitest, Vite and eslint-plugin-import, so web tests,
+coverage, lint and build cannot start. No frontend source changed in this wave.
 
-Nineteen rendered cases and three native suite cases are authored. The sandbox
-lacks Vitest, Vite, the official lint plugin and PocketBase. Independent source
-CI runs on Python 3.11/3.12; both declared PocketBase versions have required
-native suite gates. Hosted results and box activation have not been observed.
-The receiving handoff covers actual application release, box selection, native
-identity, supervision, browser acceptance, telemetry and rollback. Earlier
-Sentinel plans and their 13 unexecuted work orders retain their acceptance state.
+This source does not establish an official solicitation, deadline, eligibility,
+measured lane performance, DP2 qualification, physical hardware feasibility,
+pricing, certification, customer commitment or submission. Those remain named
+human, empirical or receiving-environment gates.
 
 ## §2 TASK RESULTS
 
-### Current continuation — callable mission suite and government learning, 2026-09-16
+### Current continuation — Federal R&D Foundry, 2026-09-16
+
+| Phase | Status | Result | Verify | CKET | Files |
+|---|---|---|---|---|---|
+| CJ — Register public foundry scope | PASS | Existing A2 dispatch extended before source; official, hardware, private and submission boundaries retained | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | umbrella SRS and dispatch queue |
+| CK — Opportunity registry | PASS | Five semantic records validate; DV026 10-page/five-slide/$300K planning values, NAVAIR Docker, NV027 simulation, ISR DP2/hardware and Maritime prior-work boundaries are represented | `python -m unittest tests.foundry.test_foundry.RegistryTests` | 06_PLAN / 08_TEST | foundry/registry and schema |
+| CL — Lane and template scaffolds | PASS | Every lane has all requested outputs, a slides workspace and JSON provenance; reusable templates retain human gates | same registry test command | 06_PLAN | foundry/templates and foundry/lanes |
+| CM — Shared evidence contracts | PASS | Requirement and claim promotion fail closed; async runner and benchmark protocols accept bounded implementations | `python -m unittest tests.foundry.test_foundry.EvidenceTests tests.foundry.test_foundry.InterfaceTests` | 07_BUILD / 08_TEST | foundry/shared/federal_foundry |
+| CN — Portfolio compiler | PASS | Two five-lane bundles are byte-identical; lane source is unchanged; output refuses overwrite and retains advisory status | `python -m unittest tests.foundry.test_foundry.PortfolioTests` | 07_BUILD / 08_TEST | portfolio compiler and CLI |
+| CO — Verification and evidence | PASS with frontend blockers recorded | 13 foundry tests, per-module coverage, typing, lint, prior regressions, context, boundary and memory gates recorded | commands in §3 | 08_TEST / 11_COMMIT | foundry tests, report, memory and context lock |
+
+### Prior continuation — callable mission suite and government learning, 2026-09-16
 
 | Phase | Status | Result | Verify | CKET | Files |
 |---|---|---|---|---|---|
@@ -231,7 +239,49 @@ and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
-Current suite checks (source and required runtime gates remain separate):
+Current foundry checks (source, frontend and federal acceptance remain separate):
+
+| Check | Runnable verification | Expected / observed |
+|---|---|---|
+| 1. Foundry behavior and coverage | `python tests/foundry/check_foundry.py` | PASS: 13/13; each executable shared module has 82.73–100% trace statement coverage |
+| 2. Strict typing | `python -m mypy --strict foundry/shared/federal_foundry` | PASS: seven source files, no issues |
+| 3. Python lint | `python -m ruff check foundry/shared/federal_foundry tests/foundry` | PASS |
+| 4. Existing Node regression | `node --test --test-reporter=dot tests/upgrade/*.test.mjs` | PASS: 256/256 |
+| 5. Existing Python regression | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | PASS: 161 discovered, nine native skips |
+| 6. Diff whitespace | `git diff --check` | PASS |
+| 7. Context | `python scripts/ci/agent_context.py --check` | PASS after final staged inventory regeneration; six existing findings and four unwired gates retained |
+| 8. Public boundary | `python scripts/ci/verify_public_boundary.py` | PASS after staging; foundry is an allowed public prefix and no forbidden or secret-like files are present |
+| 9. Memory | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | PASS: current counts, IOO, CGRF edges and prior event history agree |
+| 10. Rendered web tests | `npm --prefix apps/web test` | FAIL before tests: Vitest executable is absent |
+| 11. Web coverage | `npm --prefix apps/web run test:coverage` | FAIL before tests: Vitest executable is absent; foundry coverage is measured separately by check 1 |
+| 12. Repository web lint | `npm --prefix apps/web run lint` | FAIL before lint: eslint-plugin-import is absent |
+| 13. Web build | `npm --prefix apps/web run build` | FAIL after deterministic data generation: Vite executable is absent |
+
+The first foundry run exposed an incomplete evidence index in one isolated test
+and two assertions coupled to scaffold rather than generated wording. Those
+fixtures were corrected; the full 13-test gate then passed. Strict typing next
+identified four generic JSON-list paths and absent PyYAML type stubs. Runtime
+list guards now preserve validation, and only the third-party untyped import is
+scoped as such. Strict mypy passes. No production evidence rule was weakened.
+
+The first cached diff check found an extra blank line at EOF in files produced
+by the scaffold batch. A bounded formatting pass normalized only `foundry/` and
+`tests/foundry/` to one terminal newline; `git diff --cached --check` then passed.
+
+The first memory refresh recalculated a pre-existing PNG using binary split-lines,
+but this dispatch records PNG line counts as zero. The PNG entry was restored to
+that established convention; the complete memory verifier then passed.
+
+Ruff's format-only check identified six Python files with noncanonical wrapping.
+The formatter changed layout only; behavior, coverage, strict typing, lint and
+the cached diff check passed afterward.
+
+Pytest/pytest-cov and coverage.py are unavailable, so their commands fail before
+collection. The checked-in standard-library trace gate follows the repository's
+existing mission-suite pattern and enforces at least 80% statement coverage per
+executable module. It does not claim branch, provider, hardware or portal coverage.
+
+Prior callable mission-suite checks (source and required runtime gates remain separate):
 
 | Check | Runnable verification | Expected / observed |
 |---|---|---|
@@ -395,13 +445,13 @@ no hosted success, browser screenshots or shared activation is claimed here.
 
 ## §4 MEMORY INGEST
 
-Type A count: 323
-Type B count: 693
-Type C count: 66
+Type A count: 430
+Type B count: 872
+Type C count: 72
 IOO compliance: complete
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
-Prior history: all 60 baseline Type C events are preserved without rewriting, including the earlier narrative, planning, dossier and research evidence.
+Prior history: all 66 baseline Type C events are preserved without rewriting, including earlier planning, dossier, research and mission-suite evidence.
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
 Reproduce prior-event preservation:
@@ -412,23 +462,23 @@ import json
 import subprocess
 from pathlib import Path
 path = '.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json'
-baseline = json.loads(subprocess.check_output(['git', 'show', '60b952bf784d67bb2a000602df4d8dfed8aad045:' + path], text=True))
+baseline = json.loads(subprocess.check_output(['git', 'show', 'c307edb65bde32034e53799c2d757cf2e585d1f9:' + path], text=True))
 old = [row for row in baseline['vectors'] if row['type'] == 'C']
 new = [row for row in json.loads(Path(path).read_text())['vectors'] if row['type'] == 'C']
-assert len(old) == 60 and new[:len(old)] == old
-print('PASS: all 60 baseline events preserved without rewriting.')
+assert len(old) == 66 and new[:len(old)] == old
+print('PASS: all 66 baseline events preserved without rewriting.')
 PY
 ```
 
 ## §5 CKET FILING
 
-06_PLAN: docs/mission-suite.md; earlier Sentinel planning artifacts retained
-04_HYPOTHESIZE: umbrella SRS, registry and current contribution gate descriptions
-07_BUILD: apps/mission_suite; suite hooks/migrations; government curriculum; mission/suite/tutorial UI and clients
-08_TEST: connected source and packaging tests; 19 new rendered cases; three new native acceptance cases
-11_COMMIT: independent source/native CI, box handoff, dispatch, context and report/memory
+06_PLAN: foundry README, opportunity registry/schema, reusable templates and five complete lane scaffold trees
+04_HYPOTHESIZE: umbrella SRS continuation; earlier specifications retained
+07_BUILD: importable shared requirement, evidence, runner, benchmark and portfolio compiler modules
+08_TEST: foundry behavior suite and per-module standard-library trace coverage gate
+11_COMMIT: dispatch queue, measured context lock and cumulative report/memory
 13_SAVE: none
-CGRF headers: 29/29 new this continuation; 236/236 cumulative files created since the original base
+CGRF provenance: 106/106 new source, registry, template, lane and test files; JSON files use sibling sidecars
 REFLEX check: deferred to private post-merge validator; no signing values fabricated
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
@@ -440,16 +490,30 @@ Hard-NO scan: zero public-boundary violations
 Secret scan: clean under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: owner-authorized A2 public application source and local validation; no shared deployment, native account provisioning or government submission authority
+Risk / authority: owner-authorized A2 public source and local validation; no official-source approval, shared deployment, hardware operation or government submission authority
 Verify: `python scripts/ci/verify_public_boundary.py`
 
-No key generation/provisioning, bot login, Discord synchronization/message,
-private service deployment, shared database migration, live OAuth/provider call
-or seat message occurred. Runtime key custody, transport, native acceptance and
-backup retention remain operator responsibilities. Server-side encryption is
-not end-to-end encryption or physical erasure of existing backups.
+No key generation, live provider call, controlled-data ingest, hardware run,
+private deployment, shared database mutation, federal portal interaction or seat
+message occurred. The compiler cannot approve eligibility, claims, certifications,
+costs, rights, team statements or a final package.
 
 ## §7 NEXT ACTIONS
+
+Foundry next action: assign a separate registered SRS to each `research/*` lane,
+attach the current official opportunity bytes and complete eligibility review,
+then preregister and run the first bounded experiment. Promote reusable mechanics
+through `research/common-federal-evidence`; do not merge lane results laterally.
+The first compiled bundles correctly remain not evidence-complete.
+
+Lane blockers: all five lack a verified current deadline and eligibility decision.
+Influence lacks market/agent/classifier runs; NAVAIR lacks a rights-cleared corpus
+and container benchmark; NV027 lacks a preregistration and scientific results;
+Semantic ISR additionally lacks EO data and physical edge-hardware receipts;
+Maritime lacks official DIU instructions, representative rights-cleared data and
+private Sentinel/NNC runtime acceptance. Handoffs requested: none in this public
+scaffolding wave. Suggested next dispatch: one lane-specific SRS for the DV026
+market-kernel baseline after official-source review. Bugs filed: none.
 
 Current package acceptance: the BuildAndDo application/box operator must accept
 its native PocketBase release and the rendered mission flow, select an existing

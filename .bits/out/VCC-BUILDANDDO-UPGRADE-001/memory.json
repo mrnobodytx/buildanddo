@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 19907,
+      "lines": 25221,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 504,
+      "lines": 568,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 685,
+      "lines": 724,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 831,
+      "lines": 880,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -19890,12 +19890,5326 @@
       "timestamp": "2026-09-16T03:58:06.471112+00:00",
       "commit_sha": null,
       "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": ".buildanddo/public/path-policy.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 63,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Allow the public federal foundry without admitting private infrastructure paths.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "AGENTS.md",
+        ".buildanddo/public/path-policy.json",
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 103,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define an isolated evidence-first workflow for five public federal research lanes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/__init__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the public federal foundry importable without coupling it to the web application.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/SOW.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/SOW.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure measurable lane work packages without creating government commitments.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/architecture.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/architecture.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/benchmark_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/benchmark_report.md"
+      ],
+      "lines": 31,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/claim_evidence_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/claim_evidence_matrix.md"
+      ],
+      "lines": 25,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for exact claims, falsifiers and evidence support.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/commercialization.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/commercialization.md"
+      ],
+      "lines": 30,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/experiment_plan.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/experiment_plan.md"
+      ],
+      "lines": 35,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/gap_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/gap_report.md"
+      ],
+      "lines": 32,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/requirements_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/requirements_matrix.md"
+      ],
+      "lines": 26,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/results.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/daf-nv027-low-swap/results.json",
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml"
+      ],
+      "lines": 9,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/results.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/daf-nv027-low-swap/results.json",
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/risk_register.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/risk_register.md"
+      ],
+      "lines": 23,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/slides/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/slides/README.md"
+      ],
+      "lines": 22,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/submission_checklist.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/submission_checklist.md"
+      ],
+      "lines": 34,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Separate deterministic package checks from human approval and portal submission.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/daf-nv027-low-swap/whitepaper.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+        "foundry/templates/whitepaper.md"
+      ],
+      "lines": 36,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/SOW.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/SOW.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure measurable lane work packages without creating government commitments.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/architecture.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/architecture.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/benchmark_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/benchmark_report.md"
+      ],
+      "lines": 31,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/claim_evidence_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/claim_evidence_matrix.md"
+      ],
+      "lines": 25,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for exact claims, falsifiers and evidence support.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/commercialization.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/commercialization.md"
+      ],
+      "lines": 30,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/experiment_plan.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/experiment_plan.md"
+      ],
+      "lines": 35,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/gap_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/gap_report.md"
+      ],
+      "lines": 32,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/requirements_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/requirements_matrix.md"
+      ],
+      "lines": 26,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/results.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/darpa-dv026-influence/results.json",
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml"
+      ],
+      "lines": 9,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/results.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/darpa-dv026-influence/results.json",
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/risk_register.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/risk_register.md"
+      ],
+      "lines": 23,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/slides/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/slides/README.md"
+      ],
+      "lines": 22,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/submission_checklist.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/submission_checklist.md"
+      ],
+      "lines": 34,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Separate deterministic package checks from human approval and portal submission.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-dv026-influence/whitepaper.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+        "foundry/templates/whitepaper.md"
+      ],
+      "lines": 36,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/SOW.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/SOW.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure measurable lane work packages without creating government commitments.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/architecture.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/architecture.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/benchmark_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/benchmark_report.md"
+      ],
+      "lines": 31,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/claim_evidence_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/claim_evidence_matrix.md"
+      ],
+      "lines": 25,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for exact claims, falsifiers and evidence support.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/commercialization.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/commercialization.md"
+      ],
+      "lines": 30,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/experiment_plan.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/experiment_plan.md"
+      ],
+      "lines": 35,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/gap_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/gap_report.md"
+      ],
+      "lines": 32,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/requirements_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/requirements_matrix.md"
+      ],
+      "lines": 26,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/results.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/darpa-semantic-isr/results.json",
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml"
+      ],
+      "lines": 9,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/results.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/darpa-semantic-isr/results.json",
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/risk_register.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/risk_register.md"
+      ],
+      "lines": 23,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/slides/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/slides/README.md"
+      ],
+      "lines": 22,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/submission_checklist.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/submission_checklist.md"
+      ],
+      "lines": 34,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Separate deterministic package checks from human approval and portal submission.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/darpa-semantic-isr/whitepaper.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+        "foundry/templates/whitepaper.md"
+      ],
+      "lines": 36,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/SOW.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/SOW.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure measurable lane work packages without creating government commitments.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/architecture.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/architecture.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/benchmark_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/benchmark_report.md"
+      ],
+      "lines": 31,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/claim_evidence_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/claim_evidence_matrix.md"
+      ],
+      "lines": 25,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for exact claims, falsifiers and evidence support.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/commercialization.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/commercialization.md"
+      ],
+      "lines": 30,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/experiment_plan.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/experiment_plan.md"
+      ],
+      "lines": 35,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/gap_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/gap_report.md"
+      ],
+      "lines": 32,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/requirements_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/requirements_matrix.md"
+      ],
+      "lines": 26,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/results.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/diu-sentinel-maritime/results.json",
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml"
+      ],
+      "lines": 9,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/results.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/diu-sentinel-maritime/results.json",
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/risk_register.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/risk_register.md"
+      ],
+      "lines": 23,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/slides/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/slides/README.md"
+      ],
+      "lines": 22,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/submission_checklist.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/submission_checklist.md"
+      ],
+      "lines": 34,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Separate deterministic package checks from human approval and portal submission.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/diu-sentinel-maritime/whitepaper.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+        "foundry/templates/whitepaper.md"
+      ],
+      "lines": 36,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/SOW.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/SOW.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure measurable lane work packages without creating government commitments.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/architecture.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/architecture.md"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Capture the lane architecture, ownership, interfaces and failure boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/benchmark_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/benchmark_report.md"
+      ],
+      "lines": 31,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report lane measurements, source identities and failed runs without inventing results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/claim_evidence_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/claim_evidence_matrix.md"
+      ],
+      "lines": 25,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for exact claims, falsifiers and evidence support.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/commercialization.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/commercialization.md"
+      ],
+      "lines": 30,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure sourced transition, market, funding, IP and data-rights decisions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/experiment_plan.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/experiment_plan.md"
+      ],
+      "lines": 35,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister lane hypotheses, baselines, procedures and stopping rules.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/gap_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/gap_report.md"
+      ],
+      "lines": 32,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep official-source, engineering, physical and human-approval gaps visible.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/requirements_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/requirements_matrix.md"
+      ],
+      "lines": 26,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane-owned workspace for requirement status and acceptance evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/results.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/navair-acquisition-analysis/results.json",
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml"
+      ],
+      "lines": 9,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/results.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/lanes/navair-acquisition-analysis/results.json",
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for this lane's machine-readable experiment and evidence record.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/risk_register.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/risk_register.md"
+      ],
+      "lines": 23,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Track lane technical, scientific, rights, schedule and submission risks.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/slides/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/slides/README.md"
+      ],
+      "lines": 22,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a numbered, evidence-linked slide workspace for this lane.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/submission_checklist.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/submission_checklist.md"
+      ],
+      "lines": 34,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Separate deterministic package checks from human approval and portal submission.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/lanes/navair-acquisition-analysis/whitepaper.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+        "foundry/templates/whitepaper.md"
+      ],
+      "lines": 36,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a lane paper whose quantitative and capability claims remain evidence-linked.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 137,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record a simulation-first Low-SWaP research lane without overstating biological novelty or hardware performance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 155,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the Influence Benchmarks lane scope while keeping solicitation and benchmark facts unverified.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 147,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record Semantic ISR software work while preserving the unresolved DP2 and physical-hardware gates.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 147,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect the existing Maritime planning baseline to a lane without promoting unexecuted runtime claims.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 133,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the deterministic acquisition-analysis lane and its container evidence obligations.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/registry/opportunity.schema.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 372,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for the machine-readable opportunity schema.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/registry/opportunity.schema.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for the machine-readable opportunity schema.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md",
+        "foundry/shared/federal_foundry/__init__.py"
+      ],
+      "lines": 31,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe the reusable validation and compilation boundary shared by all foundry lanes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/__init__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "foundry/shared/federal_foundry/__init__.py"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a stable namespace for reusable federal evidence components.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/__init__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "foundry/shared/federal_foundry/evidence.py",
+        "foundry/shared/federal_foundry/interfaces.py",
+        "foundry/shared/federal_foundry/portfolio.py"
+      ],
+      "lines": 49,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose the supported public API for shared federal foundry components.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/__main__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/portfolio.py"
+      ],
+      "lines": 51,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a local command for compiling one lane or the complete review portfolio.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/evidence.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_cell",
+        "_identities",
+        "evidence_index",
+        "RequirementRow",
+        "RequirementTracker",
+        "ClaimRow",
+        "ClaimEvidenceCompiler"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/models.py"
+      ],
+      "lines": 277,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Gate requirement and claim status on explicit, referenced evidence states.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/interfaces.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "_metrics",
+        "ExperimentSpec",
+        "ExperimentResult",
+        "ExperimentRunner",
+        "BenchmarkSpec",
+        "BenchmarkResult",
+        "BenchmarkHarness"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/models.py"
+      ],
+      "lines": 129,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Standardize bounded experiment and benchmark implementations without choosing a lane runtime.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/models.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "FoundryValidationError",
+        "_text",
+        "_string_list",
+        "_records",
+        "EvidenceRecord",
+        "Opportunity",
+        "LaneResults"
+      ],
+      "dependencies": [
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 303,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Represent validated opportunity, result and evidence records without granting claim authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/portfolio.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_write",
+        "_sha256",
+        "_available_evidence",
+        "_gap_report",
+        "_benchmark_report",
+        "_submission_checklist",
+        "PortfolioCompiler"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/evidence.py",
+        "foundry/shared/federal_foundry/registry.py",
+        "foundry/templates/submission_checklist.md"
+      ],
+      "lines": 265,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compile deterministic reviewer bundles from lane-authored plans and explicit evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/federal_foundry/registry.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_mapping",
+        "_bounded_file",
+        "validate_schema_contract",
+        "OpportunityRegistry"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/models.py",
+        "foundry/registry/opportunity.schema.json"
+      ],
+      "lines": 135,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Load deterministic opportunity and result records from bounded foundry paths.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/shared/requirements.txt",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "foundry/shared/federal_foundry/registry.py"
+      ],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Declare the safe YAML parser used by the offline opportunity registry.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 25,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain how lane scaffolds and compiled artifacts use the reusable output templates.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/SOW.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 40,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Translate verified lane requirements into measurable work packages and acceptance evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/architecture.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 39,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Capture one lane architecture with interfaces, trust boundaries and reuse decisions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/benchmark_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 37,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report candidate measurements and failures against frozen benchmark inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/claim_evidence_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 24,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep proposal claims at or below the support level of their referenced evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/commercialization.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 39,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Structure a reviewable commercialization and data-rights plan without inventing customers or prices.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/experiment_plan.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 43,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preregister lane experiments, baselines, falsifiers and stopping rules.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/gap_report.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 34,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose evidence, eligibility, integration and submission gaps before claims advance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/requirements_matrix.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 26,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide a traceable requirement, acceptance and evidence matrix for every lane.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/results.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/templates/results.json"
+      ],
+      "lines": 9,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for the reusable machine-readable lane result template.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/results.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "foundry/templates/results.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve governance provenance for the reusable machine-readable lane result template.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/risk_register.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 25,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Track technical, scientific, schedule, rights and submission risks with owners and triggers.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/slides/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 24,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define an evidence-linked slide workflow with rendered-byte review.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/submission_checklist.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 38,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep machine checks separate from the human and portal approvals needed for submission.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "foundry/templates/whitepaper.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "foundry/README.md"
+      ],
+      "lines": 48,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide an evidence-linked white-paper skeleton that does not promote unverified results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/foundry/check_foundry.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "tests/foundry/test_foundry.py",
+        "foundry/shared/federal_foundry"
+      ],
+      "lines": 93,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require passing behavior and at least 80 percent trace statement coverage in every executable shared foundry module.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/foundry/test_foundry.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "files",
+        "RegistryTests",
+        "EvidenceTests",
+        "InterfaceTests",
+        "PortfolioTests"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/evidence.py",
+        "foundry/shared/federal_foundry/interfaces.py",
+        "foundry/shared/federal_foundry/portfolio.py",
+        "foundry/shared/federal_foundry/registry.py"
+      ],
+      "lines": 412,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify all five registries, evidence gates, runner contracts and deterministic portfolio output.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "federal-foundry"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "foundry/README.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md consumes foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "foundry/shared/federal_foundry/portfolio.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates foundry/shared/federal_foundry/portfolio.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/foundry/check_foundry.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates tests/foundry/check_foundry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/README.md",
+      "target": ".buildanddo/public/path-policy.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/README.md depends on .buildanddo/public/path-policy.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/README.md",
+      "target": "foundry/registry/opportunity.schema.json",
+      "edge_type": "OWNS",
+      "weight": 1.0,
+      "description": "foundry/README.md owns foundry/registry/opportunity.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/README.md",
+      "target": "foundry/shared/federal_foundry/portfolio.py",
+      "edge_type": "OWNS",
+      "weight": 1.0,
+      "description": "foundry/README.md owns foundry/shared/federal_foundry/portfolio.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/__init__.py",
+      "target": "foundry/README.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/__init__.py depends on foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/SOW.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/SOW.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/SOW.md",
+      "target": "foundry/templates/SOW.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/SOW.md uses template foundry/templates/SOW.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/architecture.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/architecture.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/architecture.md",
+      "target": "foundry/templates/architecture.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/architecture.md uses template foundry/templates/architecture.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/benchmark_report.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/benchmark_report.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/benchmark_report.md",
+      "target": "foundry/templates/benchmark_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/benchmark_report.md uses template foundry/templates/benchmark_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/claim_evidence_matrix.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/claim_evidence_matrix.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/claim_evidence_matrix.md",
+      "target": "foundry/templates/claim_evidence_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/claim_evidence_matrix.md uses template foundry/templates/claim_evidence_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/commercialization.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/commercialization.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/commercialization.md",
+      "target": "foundry/templates/commercialization.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/commercialization.md uses template foundry/templates/commercialization.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/experiment_plan.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/experiment_plan.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/experiment_plan.md",
+      "target": "foundry/templates/experiment_plan.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/experiment_plan.md uses template foundry/templates/experiment_plan.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/gap_report.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/gap_report.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/gap_report.md",
+      "target": "foundry/templates/gap_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/gap_report.md uses template foundry/templates/gap_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/requirements_matrix.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/requirements_matrix.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/requirements_matrix.md",
+      "target": "foundry/templates/requirements_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/requirements_matrix.md uses template foundry/templates/requirements_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/results.json.cgrf.yaml",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/results.json.cgrf.yaml depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/results.json.cgrf.yaml",
+      "target": "foundry/lanes/daf-nv027-low-swap/results.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/results.json.cgrf.yaml validates foundry/lanes/daf-nv027-low-swap/results.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/risk_register.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/risk_register.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/risk_register.md",
+      "target": "foundry/templates/risk_register.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/risk_register.md uses template foundry/templates/risk_register.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/slides/README.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/slides/README.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/slides/README.md",
+      "target": "foundry/templates/slides/README.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/slides/README.md uses template foundry/templates/slides/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/submission_checklist.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/submission_checklist.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/submission_checklist.md",
+      "target": "foundry/templates/submission_checklist.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/submission_checklist.md uses template foundry/templates/submission_checklist.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/whitepaper.md",
+      "target": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/whitepaper.md depends on foundry/registry/daf-nv027-low-swap/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/daf-nv027-low-swap/whitepaper.md",
+      "target": "foundry/templates/whitepaper.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/daf-nv027-low-swap/whitepaper.md uses template foundry/templates/whitepaper.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/SOW.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/SOW.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/SOW.md",
+      "target": "foundry/templates/SOW.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/SOW.md uses template foundry/templates/SOW.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/architecture.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/architecture.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/architecture.md",
+      "target": "foundry/templates/architecture.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/architecture.md uses template foundry/templates/architecture.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/benchmark_report.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/benchmark_report.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/benchmark_report.md",
+      "target": "foundry/templates/benchmark_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/benchmark_report.md uses template foundry/templates/benchmark_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/claim_evidence_matrix.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/claim_evidence_matrix.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/claim_evidence_matrix.md",
+      "target": "foundry/templates/claim_evidence_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/claim_evidence_matrix.md uses template foundry/templates/claim_evidence_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/commercialization.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/commercialization.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/commercialization.md",
+      "target": "foundry/templates/commercialization.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/commercialization.md uses template foundry/templates/commercialization.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/experiment_plan.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/experiment_plan.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/experiment_plan.md",
+      "target": "foundry/templates/experiment_plan.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/experiment_plan.md uses template foundry/templates/experiment_plan.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/gap_report.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/gap_report.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/gap_report.md",
+      "target": "foundry/templates/gap_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/gap_report.md uses template foundry/templates/gap_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/requirements_matrix.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/requirements_matrix.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/requirements_matrix.md",
+      "target": "foundry/templates/requirements_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/requirements_matrix.md uses template foundry/templates/requirements_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/results.json.cgrf.yaml",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/results.json.cgrf.yaml depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/results.json.cgrf.yaml",
+      "target": "foundry/lanes/darpa-dv026-influence/results.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/results.json.cgrf.yaml validates foundry/lanes/darpa-dv026-influence/results.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/risk_register.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/risk_register.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/risk_register.md",
+      "target": "foundry/templates/risk_register.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/risk_register.md uses template foundry/templates/risk_register.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/slides/README.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/slides/README.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/slides/README.md",
+      "target": "foundry/templates/slides/README.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/slides/README.md uses template foundry/templates/slides/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/submission_checklist.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/submission_checklist.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/submission_checklist.md",
+      "target": "foundry/templates/submission_checklist.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/submission_checklist.md uses template foundry/templates/submission_checklist.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/whitepaper.md",
+      "target": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/whitepaper.md depends on foundry/registry/darpa-dv026-influence/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-dv026-influence/whitepaper.md",
+      "target": "foundry/templates/whitepaper.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-dv026-influence/whitepaper.md uses template foundry/templates/whitepaper.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/SOW.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/SOW.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/SOW.md",
+      "target": "foundry/templates/SOW.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/SOW.md uses template foundry/templates/SOW.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/architecture.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/architecture.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/architecture.md",
+      "target": "foundry/templates/architecture.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/architecture.md uses template foundry/templates/architecture.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/benchmark_report.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/benchmark_report.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/benchmark_report.md",
+      "target": "foundry/templates/benchmark_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/benchmark_report.md uses template foundry/templates/benchmark_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/claim_evidence_matrix.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/claim_evidence_matrix.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/claim_evidence_matrix.md",
+      "target": "foundry/templates/claim_evidence_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/claim_evidence_matrix.md uses template foundry/templates/claim_evidence_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/commercialization.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/commercialization.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/commercialization.md",
+      "target": "foundry/templates/commercialization.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/commercialization.md uses template foundry/templates/commercialization.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/experiment_plan.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/experiment_plan.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/experiment_plan.md",
+      "target": "foundry/templates/experiment_plan.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/experiment_plan.md uses template foundry/templates/experiment_plan.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/gap_report.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/gap_report.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/gap_report.md",
+      "target": "foundry/templates/gap_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/gap_report.md uses template foundry/templates/gap_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/requirements_matrix.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/requirements_matrix.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/requirements_matrix.md",
+      "target": "foundry/templates/requirements_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/requirements_matrix.md uses template foundry/templates/requirements_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/results.json.cgrf.yaml",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/results.json.cgrf.yaml depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/results.json.cgrf.yaml",
+      "target": "foundry/lanes/darpa-semantic-isr/results.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/results.json.cgrf.yaml validates foundry/lanes/darpa-semantic-isr/results.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/risk_register.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/risk_register.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/risk_register.md",
+      "target": "foundry/templates/risk_register.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/risk_register.md uses template foundry/templates/risk_register.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/slides/README.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/slides/README.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/slides/README.md",
+      "target": "foundry/templates/slides/README.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/slides/README.md uses template foundry/templates/slides/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/submission_checklist.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/submission_checklist.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/submission_checklist.md",
+      "target": "foundry/templates/submission_checklist.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/submission_checklist.md uses template foundry/templates/submission_checklist.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/whitepaper.md",
+      "target": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/whitepaper.md depends on foundry/registry/darpa-semantic-isr/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/darpa-semantic-isr/whitepaper.md",
+      "target": "foundry/templates/whitepaper.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/darpa-semantic-isr/whitepaper.md uses template foundry/templates/whitepaper.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/SOW.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/SOW.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/SOW.md",
+      "target": "foundry/templates/SOW.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/SOW.md uses template foundry/templates/SOW.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/architecture.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/architecture.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/architecture.md",
+      "target": "foundry/templates/architecture.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/architecture.md uses template foundry/templates/architecture.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/benchmark_report.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/benchmark_report.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/benchmark_report.md",
+      "target": "foundry/templates/benchmark_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/benchmark_report.md uses template foundry/templates/benchmark_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/claim_evidence_matrix.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/claim_evidence_matrix.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/claim_evidence_matrix.md",
+      "target": "foundry/templates/claim_evidence_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/claim_evidence_matrix.md uses template foundry/templates/claim_evidence_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/commercialization.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/commercialization.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/commercialization.md",
+      "target": "foundry/templates/commercialization.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/commercialization.md uses template foundry/templates/commercialization.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/experiment_plan.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/experiment_plan.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/experiment_plan.md",
+      "target": "foundry/templates/experiment_plan.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/experiment_plan.md uses template foundry/templates/experiment_plan.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/gap_report.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/gap_report.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/gap_report.md",
+      "target": "foundry/templates/gap_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/gap_report.md uses template foundry/templates/gap_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/requirements_matrix.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/requirements_matrix.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/requirements_matrix.md",
+      "target": "foundry/templates/requirements_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/requirements_matrix.md uses template foundry/templates/requirements_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/results.json.cgrf.yaml",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/results.json.cgrf.yaml depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/results.json.cgrf.yaml",
+      "target": "foundry/lanes/diu-sentinel-maritime/results.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/results.json.cgrf.yaml validates foundry/lanes/diu-sentinel-maritime/results.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/risk_register.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/risk_register.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/risk_register.md",
+      "target": "foundry/templates/risk_register.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/risk_register.md uses template foundry/templates/risk_register.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/slides/README.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/slides/README.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/slides/README.md",
+      "target": "foundry/templates/slides/README.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/slides/README.md uses template foundry/templates/slides/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/submission_checklist.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/submission_checklist.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/submission_checklist.md",
+      "target": "foundry/templates/submission_checklist.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/submission_checklist.md uses template foundry/templates/submission_checklist.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/whitepaper.md",
+      "target": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/whitepaper.md depends on foundry/registry/diu-sentinel-maritime/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/diu-sentinel-maritime/whitepaper.md",
+      "target": "foundry/templates/whitepaper.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/diu-sentinel-maritime/whitepaper.md uses template foundry/templates/whitepaper.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/SOW.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/SOW.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/SOW.md",
+      "target": "foundry/templates/SOW.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/SOW.md uses template foundry/templates/SOW.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/architecture.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/architecture.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/architecture.md",
+      "target": "foundry/templates/architecture.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/architecture.md uses template foundry/templates/architecture.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/benchmark_report.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/benchmark_report.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/benchmark_report.md",
+      "target": "foundry/templates/benchmark_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/benchmark_report.md uses template foundry/templates/benchmark_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/claim_evidence_matrix.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/claim_evidence_matrix.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/claim_evidence_matrix.md",
+      "target": "foundry/templates/claim_evidence_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/claim_evidence_matrix.md uses template foundry/templates/claim_evidence_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/commercialization.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/commercialization.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/commercialization.md",
+      "target": "foundry/templates/commercialization.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/commercialization.md uses template foundry/templates/commercialization.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/experiment_plan.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/experiment_plan.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/experiment_plan.md",
+      "target": "foundry/templates/experiment_plan.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/experiment_plan.md uses template foundry/templates/experiment_plan.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/gap_report.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/gap_report.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/gap_report.md",
+      "target": "foundry/templates/gap_report.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/gap_report.md uses template foundry/templates/gap_report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/requirements_matrix.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/requirements_matrix.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/requirements_matrix.md",
+      "target": "foundry/templates/requirements_matrix.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/requirements_matrix.md uses template foundry/templates/requirements_matrix.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/results.json.cgrf.yaml",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/results.json.cgrf.yaml depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/results.json.cgrf.yaml",
+      "target": "foundry/lanes/navair-acquisition-analysis/results.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/results.json.cgrf.yaml validates foundry/lanes/navair-acquisition-analysis/results.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/risk_register.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/risk_register.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/risk_register.md",
+      "target": "foundry/templates/risk_register.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/risk_register.md uses template foundry/templates/risk_register.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/slides/README.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/slides/README.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/slides/README.md",
+      "target": "foundry/templates/slides/README.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/slides/README.md uses template foundry/templates/slides/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/submission_checklist.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/submission_checklist.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/submission_checklist.md",
+      "target": "foundry/templates/submission_checklist.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/submission_checklist.md uses template foundry/templates/submission_checklist.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/whitepaper.md",
+      "target": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/whitepaper.md depends on foundry/registry/navair-acquisition-analysis/opportunity.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/lanes/navair-acquisition-analysis/whitepaper.md",
+      "target": "foundry/templates/whitepaper.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/lanes/navair-acquisition-analysis/whitepaper.md uses template foundry/templates/whitepaper.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/registry/daf-nv027-low-swap/opportunity.yaml",
+      "target": "foundry/registry/opportunity.schema.json",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/registry/daf-nv027-low-swap/opportunity.yaml extends foundry/registry/opportunity.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/registry/darpa-dv026-influence/opportunity.yaml",
+      "target": "foundry/registry/opportunity.schema.json",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/registry/darpa-dv026-influence/opportunity.yaml extends foundry/registry/opportunity.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/registry/darpa-semantic-isr/opportunity.yaml",
+      "target": "foundry/registry/opportunity.schema.json",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/registry/darpa-semantic-isr/opportunity.yaml extends foundry/registry/opportunity.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/registry/diu-sentinel-maritime/opportunity.yaml",
+      "target": "foundry/registry/opportunity.schema.json",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/registry/diu-sentinel-maritime/opportunity.yaml extends foundry/registry/opportunity.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/registry/navair-acquisition-analysis/opportunity.yaml",
+      "target": "foundry/registry/opportunity.schema.json",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/registry/navair-acquisition-analysis/opportunity.yaml extends foundry/registry/opportunity.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/registry/opportunity.schema.json.cgrf.yaml",
+      "target": "foundry/registry/opportunity.schema.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "foundry/registry/opportunity.schema.json.cgrf.yaml validates foundry/registry/opportunity.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/README.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/shared/README.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/README.md",
+      "target": "foundry/shared/federal_foundry/__init__.py",
+      "edge_type": "OWNS",
+      "weight": 1.0,
+      "description": "foundry/shared/README.md owns foundry/shared/federal_foundry/__init__.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/__init__.py",
+      "target": "foundry/shared/federal_foundry/__init__.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/shared/__init__.py extends foundry/shared/federal_foundry/__init__.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/__init__.py",
+      "target": "foundry/shared/federal_foundry/evidence.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/__init__.py extends foundry/shared/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/__init__.py",
+      "target": "foundry/shared/federal_foundry/interfaces.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/__init__.py extends foundry/shared/federal_foundry/interfaces.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/__init__.py",
+      "target": "foundry/shared/federal_foundry/portfolio.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/__init__.py extends foundry/shared/federal_foundry/portfolio.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/__main__.py",
+      "target": "foundry/shared/federal_foundry/portfolio.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/__main__.py depends on foundry/shared/federal_foundry/portfolio.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/evidence.py",
+      "target": "foundry/shared/federal_foundry/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/evidence.py depends on foundry/shared/federal_foundry/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/interfaces.py",
+      "target": "foundry/shared/federal_foundry/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/interfaces.py depends on foundry/shared/federal_foundry/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/models.py",
+      "target": "foundry/registry/opportunity.schema.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/models.py consumes foundry/registry/opportunity.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/portfolio.py",
+      "target": "foundry/shared/federal_foundry/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/portfolio.py depends on foundry/shared/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/portfolio.py",
+      "target": "foundry/shared/federal_foundry/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/portfolio.py depends on foundry/shared/federal_foundry/registry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/portfolio.py",
+      "target": "foundry/templates/submission_checklist.md",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/portfolio.py uses template foundry/templates/submission_checklist.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/registry.py",
+      "target": "foundry/shared/federal_foundry/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/registry.py depends on foundry/shared/federal_foundry/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/federal_foundry/registry.py",
+      "target": "foundry/registry/opportunity.schema.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "foundry/shared/federal_foundry/registry.py validates foundry/registry/opportunity.schema.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/shared/requirements.txt",
+      "target": "foundry/shared/federal_foundry/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "foundry/shared/requirements.txt depends on foundry/shared/federal_foundry/registry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/README.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/README.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/SOW.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/SOW.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/architecture.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/architecture.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/benchmark_report.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/benchmark_report.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/claim_evidence_matrix.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/claim_evidence_matrix.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/commercialization.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/commercialization.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/experiment_plan.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/experiment_plan.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/gap_report.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/gap_report.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/requirements_matrix.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/requirements_matrix.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/results.json.cgrf.yaml",
+      "target": "foundry/templates/results.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "foundry/templates/results.json.cgrf.yaml validates foundry/templates/results.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/risk_register.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/risk_register.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/slides/README.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/slides/README.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/submission_checklist.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/submission_checklist.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "foundry/templates/whitepaper.md",
+      "target": "foundry/README.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "foundry/templates/whitepaper.md extends foundry/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/check_foundry.py",
+      "target": "tests/foundry/test_foundry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/foundry/check_foundry.py depends on tests/foundry/test_foundry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/check_foundry.py",
+      "target": "foundry/shared/federal_foundry",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/check_foundry.py validates foundry/shared/federal_foundry.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_foundry.py",
+      "target": "foundry/shared/federal_foundry/evidence.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_foundry.py validates foundry/shared/federal_foundry/evidence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_foundry.py",
+      "target": "foundry/shared/federal_foundry/interfaces.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_foundry.py validates foundry/shared/federal_foundry/interfaces.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_foundry.py",
+      "target": "foundry/shared/federal_foundry/portfolio.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_foundry.py validates foundry/shared/federal_foundry/portfolio.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/foundry/test_foundry.py",
+      "target": "foundry/shared/federal_foundry/registry.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/foundry/test_foundry.py validates foundry/shared/federal_foundry/registry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "tests/foundry/test_foundry.py",
+      "description": "The first foundry test gate exposed an incomplete evidence index in an isolated claim fixture and two assertions coupled to scaffold wording. The fixtures were corrected without weakening production evidence gates.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T12:49:01.042564+00:00",
+      "commit_sha": null,
+      "smoke_result": "8/11"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/foundry/check_foundry.py",
+      "description": "Thirteen foundry tests pass across all five registries, evidence promotion, runner contracts and two byte-identical portfolio builds. Each executable shared module measures 82.73 to 100 percent trace statement coverage; strict mypy and Ruff pass.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Federal foundry source phases CK through CN have local acceptance evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T12:49:01.042564+00:00",
+      "commit_sha": null,
+      "smoke_result": "13/13"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "foundry/README.md",
+      "description": "Foundry tests, per-module coverage, strict typing, Ruff, 256 Node regressions, 161 Python discoveries, context, public boundary and dispatch memory pass. Four pre-existing frontend commands fail before execution because Vitest, Vite and eslint-plugin-import are absent; no frontend source changed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Federal foundry local source verification phase CO is complete; official, empirical and submission gates remain open.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T12:49:19.894913+00:00",
+      "commit_sha": null,
+      "smoke_result": "9/13"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "foundry/templates/README.md",
+      "description": "The first cached diff check found extra blank lines at EOF from the scaffold batch. A bounded formatting pass normalized only foundry and its tests to one terminal newline; the cached diff check then passed and memory line counts were refreshed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T12:50:41.048270+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1 after fix"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "description": "The first final memory verification found that a mechanical line refresh counted binary PNG split-lines instead of retaining the dispatch convention of zero. PNG metadata was restored to zero and the complete verifier was rerun.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T12:51:20.338167+00:00",
+      "commit_sha": null,
+      "smoke_result": "PASS after convention fix"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "foundry/shared/federal_foundry/portfolio.py",
+      "description": "Ruff format check initially selected six Python files. After canonical formatting, 13 behavior and coverage tests, strict mypy, Ruff lint and Ruff format check all pass; only layout changed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T12:53:31.608528+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/4"
     }
   ],
   "summary": {
-    "type_a_count": 323,
-    "type_b_count": 693,
-    "type_c_count": 66,
+    "type_a_count": 430,
+    "type_b_count": 872,
+    "type_c_count": 72,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

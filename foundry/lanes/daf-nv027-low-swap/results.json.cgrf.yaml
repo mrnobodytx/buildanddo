@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/lanes/daf-nv027-low-swap/results.json.cgrf.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/lanes/daf-nv027-low-swap/results.json, foundry/registry/daf-nv027-low-swap/opportunity.yaml
+# EnumType:    Schema
+# EnumEdges:   VALIDATES foundry/lanes/daf-nv027-low-swap/results.json; DEPENDS_ON foundry/registry/daf-nv027-low-swap/opportunity.yaml
+# DAG Node:    foundry.lane.daf-nv027-low-swap.results
+# Intent:      Preserve governance provenance for this lane's machine-readable experiment and evidence record.
+# ───────────────────────────────────────────────────────────────
+
+json_file: foundry/lanes/daf-nv027-low-swap/results.json
+comment_syntax: sibling

@@ -683,3 +683,42 @@ application smoke remains 4/7. The dispatch remains in progress. Current memory
 and provenance counts are recorded in the cumulative report, with all 41 baseline
 memory events preserved. No Discord message, shared mutation or live seat event
 was sent by this source session.
+
+## Federal R&D Foundry continuation authorized 2026-09-16
+
+The owner requested one public-source evidence and portfolio substrate for five
+isolated federal research lanes. This A2 continuation covers offline files,
+compilers and local validation only. Official solicitations, controlled inputs,
+hardware runs, private infrastructure, pricing approval and submissions remain
+outside this dispatch.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CJ | Register the foundry scope and preserve public/private boundaries | `python scripts/ci/agent_context.py --check` | done — registered before source work; context gate passes |
+| CK | Define and validate five opportunity records | Foundry registry test module | done — five records validate; unknown deadlines and eligibility remain open |
+| CL | Scaffold reusable and lane-specific submission artifacts | Foundry structure and template tests | done — 14 tracked files per lane including results provenance and slides workspace |
+| CM | Implement requirement, claim, experiment and benchmark contracts | Foundry unit tests | done — unsupported requirement and claim promotion fails closed |
+| CN | Compile deterministic review bundles without promoting unsupported claims | Foundry portfolio integration tests | done — two complete portfolio builds are byte-identical and leave source unchanged |
+| CO | Verify source, governance and memory evidence | Foundry tests, context, boundary and dispatch-memory checks | done — 9/13 smoke; four pre-existing frontend tools unavailable and recorded |
+
+Memory brief: PR 29 provides a portable mission/research worker, submission
+readiness concepts and deterministic replay; PR 28 provides the public Sentinel
+Maritime planning baseline. Neither establishes official federal requirements,
+current deadlines, corporate eligibility, physical hardware results or filing
+authority. The owner-supplied source conversation defines the five planning
+lanes and requested artifacts. This checkout has no authenticated seat or live
+workspace, so no seat event is fabricated. New work must keep planning,
+observed, verified and missing evidence states distinct.
+
+Current source evidence: 13 foundry tests pass. The standard-library trace gate
+measures 82.73 to 100 percent statement coverage in each executable shared
+module; strict mypy and Ruff pass. The registry holds five opportunities and
+every lane has the complete 14-file tracked surface (the requested outputs plus
+JSON provenance). Two portfolio compilations produce identical relative bytes
+and do not change lane source. The first test run exposed two fixture expectations
+and a later wording assertion; all were corrected before this passing gate.
+
+Pytest and coverage.py cannot start because those packages are not installed;
+the repository's existing trace-based coverage pattern supplies the measured
+local alternative. Vitest, Vite and the official ESLint import plugin remain
+unavailable for the pre-existing web smoke. This foundry adds no frontend source.
