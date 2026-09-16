@@ -20,6 +20,44 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Field Interviewer v1.3.0 continuation — private handoff, 2026-09-16
+
+The owner adopted the supplied architecture: BuildAndDo product knowledge plus
+a sanitized operational/evidence projection from data_dog_private, using its
+existing ElevenLabsBridge as the sole provider transport. Record that decision
+under this in-progress dispatch and its existing SRS self-bootstrap authority.
+This continuation is A0 public documentation and local document validation;
+private source implementation, provider writes and activation require the
+receiving repository's dispatch and authority.
+
+Acceptance for this public continuation:
+
+1. Map reusable public product, tutorial, wiki and editorial contracts from
+   this checkout. Distinguish workspace publication from approval to export
+   knowledge to a provider. Mark remote wiki/product and private runtime claims
+   as owner-reported until inspected; do not copy private source or records.
+2. Record the owner's six knowledge documents, separate public/internal
+   audiences, scoped evidence states, freshness, sanitizer, deterministic topic
+   selection, readback-bound knowledge receipts and human publication gate.
+3. Prepare a CMAX-B handoff with IDE1 bridge coordination. Require discovery of
+   the existing content lab and bridge, current provider API verification,
+   recovery for uncertain writes, independent acceptance and scrubbed telemetry.
+   Do not create another ElevenLabs client or represent a prepared plan as live.
+4. Validate the new public artifacts, source references, context, boundary and
+   memory while preserving all 85 preceding events. Earlier foundry and merge
+   evidence remains historical; this documentation wave does not rerun or
+   resolve its Workers/frontend/native acceptance.
+
+The implementation contract is docs/field-interviewer-v1.3.md. Private execution
+is requested through .bits/handoffs/2026-09-16-bits-codegen-cmax-b-field-interviewer.md.
+No private receiving dispatch, provider receipt or activated version is invented.
+
+Public outcome: the six-document contract and CMAX-B/IDE1 receiving work are
+recorded. Four local documentation gates pass; six source references match
+the inspected revision, both new files carry provenance and all 85 prior
+events are retained. Runtime implementation, provider API compatibility, real
+readback and activated interviewer behavior remain unverified receiving work.
+
 ## Authorized continuation — model-independent federal research portfolio
 
 On 2026-09-16 the owner asked to add the Influence, NAVAIR, low-SWaP, semantic
@@ -890,3 +928,127 @@ Frontend tools, native PocketBase, OAuth/browser, full SDK typing, pytest/branch
 coverage and live Firecrawl/transcription/test-server evidence remain pending.
 The report, docs/mission-research.md and community-controls handoff contain actual
 commands, rollback/retention and receiving-runtime responsibilities.
+
+## Authorized continuation — Citadel Federal R&D Foundry
+
+On 2026-09-16 the owner requested a shared public-source substrate for five
+parallel federal research and proposal lanes. This continues
+VCC-BUILDANDDO-UPGRADE-001 at A2 for offline registries, templates, compilers and
+local tests. It does not authorize a submission, certify eligibility, import
+controlled information, operate a federal system or deploy shared infrastructure.
+
+Acceptance:
+
+1. Define one machine-validated opportunity contract and five separate lane
+   records for DARPA DV026 Influence Benchmarks, NAVAIR Acquisition Analysis,
+   DAF NV027 Brain-Inspired Low-SWaP, DARPA Semantic ISR and DIU Sentinel
+   Maritime. Preserve unknown deadlines, official-source references and
+   eligibility decisions as unresolved rather than inventing values.
+2. Scaffold each lane with requirements, claims, architecture, experiments,
+   results, benchmarks, gaps, risk, SOW, commercialization, white-paper, slide
+   and submission-checklist artifacts derived from reusable templates. Draft
+   artifacts must not imply measured performance or approved submission status.
+3. Add a standard-library Python evidence fabric for requirement status,
+   claim-evidence compilation, experiment and benchmark interfaces, deterministic
+   file loading and portfolio compilation. Reject unknown references, duplicate
+   identities, malformed results and claims promoted without sufficient evidence.
+4. Compile a deterministic, reviewable portfolio bundle from lane registries and
+   evidence without changing source lanes. Generated readiness is advisory;
+   human review remains required for claims, eligibility, data rights, pricing,
+   certifications, physical evidence and final submission.
+5. Document isolated common and lane branch flows. Every lane starts from its
+   own SRS and acceptance criteria, records experiments, uses an independent
+   verifier and merges reusable work through review rather than writing to main.
+6. Verify all five registry records against the schema, exercise the real shared
+   module with temporary lane evidence, compile twice byte-for-byte, and run the
+   repository context and public-boundary gates. No network, credential, live
+   workspace, hardware or government portal is required by local tests.
+
+Initial lane data comes from the owner-supplied planning brief and is explicitly
+planning input, not an official solicitation record. Semantic ISR hardware proof,
+all final deadlines and unresolved eligibility facts remain evidence gaps. The
+Maritime lane may reference the existing public planning baseline but may not
+promote its unverified runtime claims.
+
+Foundry source outcome: five schema-validated registries, reusable templates,
+complete lane scaffolds, typed experiment and benchmark interfaces, evidence
+gates and a deterministic portfolio compiler are implemented. Thirteen local
+tests pass; executable shared modules measure 82.73 to 100 percent statement
+coverage under the repository's standard-library trace pattern. Strict typing
+and Ruff pass. No lane experiment, eligibility review, hardware run, official
+deadline, proposal approval or submission is claimed.
+
+## Foundry continuation — executable evidence workflow, 2026-09-16
+
+The owner rejected the scaffold as incomplete and requested substantial working
+functionality. This continues the same A2 public-source dispatch: implement and
+exercise the shared substrate, including local reference workloads for each lane.
+Reference workloads use authored public fixtures; they do not establish federal
+qualification or dispatch the private Sentinel product.
+
+Acceptance:
+
+1. Execute bounded local experiments with isolated working directories, explicit
+   seeds and inputs, finite concurrency, timeouts, cancellation, bounded logs and
+   immutable result receipts. Retain failed attempts and reject missing artifacts.
+2. Run candidate comparisons over frozen datasets, repeated seeds and repeats.
+   Record actual measurements, units, denominators, variance, acceptance outcomes,
+   code/input fingerprints and replay results. Separate computational outputs
+   from machine-dependent time and memory measurements.
+3. Provide executable reference workloads for deterministic auctions, acquisition
+   retrieval, conditional-compute simulation, semantic packet reconstruction and
+   the existing public maritime engine. Use no live model, feed or hardware claim.
+4. Validate the published opportunity schema and result references. Check local
+   evidence bytes and review scope before promotion; reject malformed, stale,
+   foreign, duplicate or tampered evidence and all partial bundle publication.
+5. Connect run, replay, verification, status and compilation commands. Produce
+   self-contained lane reports, technical paper annexes, briefing slides and a
+   portfolio view from measured runs. Preserve authored plans and explicit gaps.
+6. Exercise the complete five-lane path and negative cases, measure at least 80%
+   per-module statement coverage, and retain regression, public-boundary, context
+   and memory evidence. Source completeness and proposal readiness stay separate.
+7. Run the foundry in an independent Python 3.11/3.12 CI job and retain an observed
+   review archive. Keep the existing ci:test descriptions in AGENTS.md and the
+   contribution pipeline synchronized; preserve all earlier application gates.
+
+Observed execution outcome: all 60 reference attempts completed across five
+lanes and ten candidates. The verified export contains 574 files and 25 source
+slides; two exports are byte-identical and a fresh NAVAIR replay matches. The
+final source suite passes 70/70 with 90.62–100% statement coverage per executable
+module. All 15 foundry modules pass strict typing; Ruff lint/format, 256 Node
+regressions and 23 reused mission-suite tests pass. The independent Python
+3.11/3.12 CI matrix is authored; hosted execution is not claimed. Exact source,
+input, archive, resource and replay observations are recorded in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json. Local synthetic
+results do not resolve official, eligibility, hardware or submission acceptance.
+
+## Foundry integration continuation — PR 31, 2026-09-16
+
+The owner requested resolution of the conflicts with main and investigation of
+Workers Builds: buildanddo. Continue the existing public-source dispatch at A2.
+
+Acceptance:
+
+1. Merge the PR's actual base branch, retaining the incoming federal portfolio
+   compiler, five proposed lane scopes, package extension and independent CI job
+   alongside the executable foundry. Keep both contribution-check descriptions.
+2. Reconcile the report and memory semantically, preserve both parents' original
+   events and regenerate the measured context from the integrated tracked tree.
+3. Run both foundry suites, the reused mission-suite and Node regressions, typing,
+   source diagnostics, and context, boundary and provenance gates. Distinguish
+   actual test execution from unavailable browser, native or hosted acceptance.
+4. Inspect the reported Workers check and available correlated diagnostics, then
+   reproduce repository-owned build checks where local tools permit. Record an
+   unresolved external error explicitly if its build log remains unavailable;
+   do not infer a Cloudflare cause from unrelated local dependency failures.
+
+No private deployment-control change or hosted submission is authorized here.
+
+Observed integration outcome: all five conflicts are reconciled and both CI
+jobs remain independent. All 389 targeted tests pass with the recorded source
+coverage; typing, lint, static web, context, public boundary and memory checks
+pass. All 83 distinct parent events are preserved. Workers diagnostics remain
+unavailable through GitHub and scoped telemetry, while the local build and
+dependency lock retain their independently reproduced pre-existing blockers.
+The source integration is ready for PR synchronization; hosted build success
+and final mergeability after publication are not claimed.

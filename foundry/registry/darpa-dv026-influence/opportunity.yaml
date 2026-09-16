@@ -1,0 +1,155 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/registry/darpa-dv026-influence/opportunity.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/opportunity.schema.json
+# EnumType:    ConfigDoc
+# EnumEdges:   EXTENDS foundry/registry/opportunity.schema.json
+# DAG Node:    foundry.lane.darpa-dv026-influence
+# Intent:      Record the Influence Benchmarks lane scope while keeping solicitation and benchmark facts unverified.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.opportunity/v1
+lane_id: darpa-dv026-influence
+topic: DARPA DV026 Influence Benchmarks — Phase I market and auction proof of concept
+requirements:
+  - id: DV026-REQ-01
+    text: Implement a deterministic market kernel with assets, values, order books, bids and clearing.
+    acceptance: Repeated runs with the same seed produce byte-identical trades, allocations and utility records.
+    status: open
+    evidence_ids: []
+  - id: DV026-REQ-02
+    text: Run at least ten versioned LLM-based stock agents through bounded provider adapters.
+    acceptance: A manifest identifies every model and adapter version and a run includes at least ten isolated agents.
+    status: open
+    evidence_ids: []
+  - id: DV026-REQ-03
+    text: Supply dynamic news, randomized events, repeated seeds and counterfactual scenarios.
+    acceptance: The event manifest and seed ledger reproduce both factual and counterfactual trials.
+    status: open
+    evidence_ids: []
+  - id: DV026-REQ-04
+    text: Classify collaboration, deception, anchoring, herding, risk preference and influence behavior.
+    acceptance: Preregistered labels, denominators and held-out evaluations accompany each classifier result.
+    status: open
+    evidence_ids: []
+  - id: DV026-REQ-05
+    text: Measure allocative efficiency without promoting the stated greater-than-90-percent goal before testing.
+    acceptance: The harness reports utility denominator, uncertainty and repeated-seed distribution.
+    status: open
+    evidence_ids: []
+eligibility:
+  - id: DV026-ELIG-01
+    criterion: Citadel Nexus Inc. satisfies the current official proposer and small-business rules.
+    status: unverified
+  - id: DV026-ELIG-02
+    criterion: The proposed team, subcontractors and foreign-involvement disclosures are allowable.
+    status: unverified
+  - id: DV026-ELIG-03
+    criterion: The current topic remains open and this submission path accepts the planned entity.
+    status: unverified
+deliverables:
+  - id: DV026-DEL-01
+    name: Phase I architecture and working market or auction proof of concept
+    status: planned
+  - id: DV026-DEL-02
+    name: Ten-page white paper
+    status: scaffolded
+  - id: DV026-DEL-03
+    name: Five-slide briefing
+    status: scaffolded
+metrics:
+  - id: DV026-MET-01
+    name: Allocative efficiency
+    unit: percent
+    target: greater than 90
+    status: unmeasured
+  - id: DV026-MET-02
+    name: Behavioral classifier discrimination
+    unit: preregistered score
+    target: null
+    status: unmeasured
+  - id: DV026-MET-03
+    name: Replay identity
+    unit: matching runs per repeated seed
+    target: 100 percent
+    status: unmeasured
+  - id: DV026-MET-04
+    name: Compute cost and latency
+    unit: provider cost and milliseconds per round
+    target: null
+    status: unmeasured
+milestones:
+  - id: DV026-MS-01
+    name: Freeze market, bid and event contracts.
+    status: planned
+    requirement_ids: [DV026-REQ-01, DV026-REQ-03]
+  - id: DV026-MS-02
+    name: Execute baseline and candidate agent bakeoff.
+    status: planned
+    requirement_ids: [DV026-REQ-02, DV026-REQ-04]
+  - id: DV026-MS-03
+    name: Complete repeated-seed efficiency report and proposal review.
+    status: planned
+    requirement_ids: [DV026-REQ-05]
+claims:
+  - id: DV026-CLM-01
+    text: The proposed architecture can run a deterministic multi-agent market experiment.
+    assertion_level: proposed
+    evidence_ids: []
+  - id: DV026-CLM-02
+    text: The experiment can distinguish named influence-related behaviors under preregistered tests.
+    assertion_level: proposed
+    evidence_ids: []
+  - id: DV026-CLM-03
+    text: Existing BuildAndDo replay source is available for adaptation, without proving this lane.
+    assertion_level: observed
+    evidence_ids: [DV026-EV-REPLAY]
+evidence_required:
+  - id: DV026-NEED-01
+    description: Current official topic, FAQ and submission instructions
+    acceptance: Archived official bytes, retrieval date and reviewer-confirmed requirement mapping
+  - id: DV026-NEED-02
+    description: Deterministic market and counterfactual run artifacts
+    acceptance: Repeated seed manifests, result hashes and replay comparison
+  - id: DV026-NEED-03
+    description: Ten-or-more-agent provider and version receipts
+    acceptance: Bounded run manifest with model, adapter, parameters and cost fields
+  - id: DV026-NEED-04
+    description: Statistical classifier and allocative-efficiency report
+    acceptance: Preregistered methods, denominators, confidence intervals and held-out results
+  - id: DV026-NEED-05
+    description: Human-approved corporate, team, IP and commercialization facts
+    acceptance: Named reviewer approval tied to the final paper bytes
+evidence_available:
+  - id: DV026-EV-PLAN
+    title: Owner-supplied five-lane planning brief
+    state: observed
+    locator: source conversation dated 2026-09-16
+    requirement_ids: []
+  - id: DV026-EV-REPLAY
+    title: Existing portable mission-suite replay implementation
+    state: observed
+    locator: apps/mission_suite
+    requirement_ids: []
+evidence_missing:
+  - id: DV026-GAP-OFFICIAL
+    description: Current official solicitation, deadline and eligibility determination are not attached.
+    blocks: [DV026-ELIG-01, DV026-ELIG-02, DV026-ELIG-03]
+  - id: DV026-GAP-RUNS
+    description: No Influence market, agent or classifier benchmark has run in this lane.
+    blocks: [DV026-REQ-01, DV026-REQ-02, DV026-REQ-03, DV026-REQ-04, DV026-REQ-05]
+deadline: null
+submission_format:
+  primary: white paper
+  page_limit: 10
+  slide_count: 5
+  phase: Phase I
+  funding_ceiling_usd: 300000
+  status: planning brief only; confirm against current official instructions

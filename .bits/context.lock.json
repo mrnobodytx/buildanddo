@@ -126,7 +126,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-16T13:10:02.335190+00:00",
+  "generated_at": "2026-09-16T15:51:51.484739+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -421,11 +421,11 @@
       "scripts/deploy/ship.py"
     ],
     "migrations": 30,
-    "python_files": 81,
+    "python_files": 104,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 606,
+    "tracked_files": 745,
     "web_source_files": 242
   },
   "schema_version": 1,

@@ -1,0 +1,137 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/registry/daf-nv027-low-swap/opportunity.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/opportunity.schema.json
+# EnumType:    ConfigDoc
+# EnumEdges:   EXTENDS foundry/registry/opportunity.schema.json
+# DAG Node:    foundry.lane.daf-nv027-low-swap
+# Intent:      Record a simulation-first Low-SWaP research lane without overstating biological novelty or hardware performance.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.opportunity/v1
+lane_id: daf-nv027-low-swap
+topic: DAF NV027 Brain-Inspired Low-SWaP — Phase I heterogeneous neural runtime research
+requirements:
+  - id: NV027-REQ-01
+    text: Compare a frozen monolithic baseline with a heterogeneous neural runtime under identical tasks.
+    acceptance: Both candidates use the same datasets, splits, seeds, scoring and compute accounting.
+    status: open
+    evidence_ids: []
+  - id: NV027-REQ-02
+    text: Evaluate perception, temporal, transformer, spiking and graph or vector memory subsystems behind a dynamic compute gate.
+    acceptance: Ablations identify each subsystem, gate decision and active compute path.
+    status: open
+    evidence_ids: []
+  - id: NV027-REQ-03
+    text: Establish a scientifically testable contribution rather than relabeling orchestration with biological terms.
+    acceptance: The plan states novelty, falsifier, baselines and statistical test before candidate evaluation.
+    status: open
+    evidence_ids: []
+  - id: NV027-REQ-04
+    text: Produce a Phase I simulation or small prototype with reproducible resource measurements.
+    acceptance: Frozen code, configuration and repeated results reproduce accuracy, latency and resource values.
+    status: open
+    evidence_ids: []
+eligibility:
+  - id: NV027-ELIG-01
+    criterion: Citadel Nexus Inc. and the proposed team meet the current DAF topic rules.
+    status: unverified
+  - id: NV027-ELIG-02
+    criterion: A simulation or small prototype remains an accepted Phase I evidence form.
+    status: unverified
+deliverables:
+  - id: NV027-DEL-01
+    name: Phase I simulation or small heterogeneous-runtime prototype
+    status: planned
+  - id: NV027-DEL-02
+    name: Baseline, ablation and Low-SWaP benchmark report
+    status: scaffolded
+  - id: NV027-DEL-03
+    name: Scientific contribution and transition plan
+    status: scaffolded
+metrics:
+  - id: NV027-MET-01
+    name: Task accuracy and novelty response
+    unit: preregistered task score
+    target: null
+    status: unmeasured
+  - id: NV027-MET-02
+    name: Inference latency
+    unit: milliseconds
+    target: null
+    status: unmeasured
+  - id: NV027-MET-03
+    name: Energy or bounded estimate
+    unit: joules, watts or explicitly labeled estimate
+    target: null
+    status: unmeasured
+  - id: NV027-MET-04
+    name: Peak memory and active parameters
+    unit: megabytes and parameter count
+    target: null
+    status: unmeasured
+  - id: NV027-MET-05
+    name: Task-switching and failure behavior
+    unit: preregistered score and failure count
+    target: null
+    status: unmeasured
+milestones:
+  - id: NV027-MS-01
+    name: Preregister scientific hypothesis, baseline and falsifier.
+    status: planned
+    requirement_ids: [NV027-REQ-01, NV027-REQ-03]
+  - id: NV027-MS-02
+    name: Implement the heterogeneous runtime and ablations.
+    status: planned
+    requirement_ids: [NV027-REQ-02]
+  - id: NV027-MS-03
+    name: Run repeated Phase I simulation benchmarks.
+    status: planned
+    requirement_ids: [NV027-REQ-04]
+claims:
+  - id: NV027-CLM-01
+    text: A heterogeneous gated runtime may reduce active compute while preserving task performance.
+    assertion_level: proposed
+    evidence_ids: []
+  - id: NV027-CLM-02
+    text: Phase I can be evaluated through a simulation or small prototype under the planning brief.
+    assertion_level: proposed
+    evidence_ids: []
+evidence_required:
+  - id: NV027-NEED-01
+    description: Current official topic, Phase I evidence rules and eligibility
+    acceptance: Archived official sources with reviewer-approved mapping
+  - id: NV027-NEED-02
+    description: Preregistered scientific hypothesis, baselines and ablations
+    acceptance: Immutable plan dated before candidate results
+  - id: NV027-NEED-03
+    description: Repeated model-quality and resource results
+    acceptance: Raw result bytes, environment manifest, seeds and uncertainty analysis
+  - id: NV027-NEED-04
+    description: Independent scientific and proposal review
+    acceptance: Named reviewer decisions tied to exact artifacts
+evidence_available:
+  - id: NV027-EV-PLAN
+    title: Owner-supplied Low-SWaP experimental-harness brief
+    state: observed
+    locator: source conversation dated 2026-09-16
+    requirement_ids: []
+evidence_missing:
+  - id: NV027-GAP-OFFICIAL
+    description: Current official topic, deadline and simulation acceptance are not attached.
+    blocks: [NV027-ELIG-01, NV027-ELIG-02]
+  - id: NV027-GAP-SCIENCE
+    description: No preregistration, model implementation or benchmark result exists in this lane.
+    blocks: [NV027-REQ-01, NV027-REQ-02, NV027-REQ-03, NV027-REQ-04]
+deadline: null
+submission_format:
+  primary: Phase I technical proposal
+  prototype_evidence: simulation or small prototype per planning brief
+  status: confirm page, volume and attachment limits against current official instructions

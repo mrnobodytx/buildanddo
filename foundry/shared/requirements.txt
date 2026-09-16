@@ -1,0 +1,17 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/shared/requirements.txt
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/shared/federal_foundry/registry.py
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON foundry/shared/federal_foundry/registry.py
+# DAG Node:    foundry.shared.dependencies
+# Intent:      Declare the safe YAML parser used by the offline opportunity registry.
+# ───────────────────────────────────────────────────────────────
+PyYAML>=6.0,<7

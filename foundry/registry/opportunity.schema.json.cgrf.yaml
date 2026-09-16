@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/registry/opportunity.schema.json.cgrf.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/opportunity.schema.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES foundry/registry/opportunity.schema.json
+# DAG Node:    foundry.registry.schema
+# Intent:      Preserve governance provenance for the machine-readable opportunity schema.
+# ───────────────────────────────────────────────────────────────
+
+json_file: foundry/registry/opportunity.schema.json
+comment_syntax: sibling

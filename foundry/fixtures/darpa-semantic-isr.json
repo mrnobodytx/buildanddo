@@ -1,0 +1,1018 @@
+{
+  "lane_id": "darpa-semantic-isr",
+  "classification": "PUBLIC",
+  "kind": "synthetic",
+  "license": "Authored synthetic fixture; distributed under the repository license.",
+  "id": "scene-v1",
+  "keyframe_every": 6,
+  "frames": [
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 0,
+          "y": 0,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 10,
+          "y": 5,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": false,
+          "x": 20,
+          "y": 10,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 0.23,
+          "y": 0.17,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 10.23,
+          "y": 5.17,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": false,
+          "x": 20.23,
+          "y": 10.17,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 0.46,
+          "y": 0.34,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 10.46,
+          "y": 5.34,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": false,
+          "x": 20.46,
+          "y": 10.34,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 0.69,
+          "y": 0.51,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 10.69,
+          "y": 5.51,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": false,
+          "x": 20.69,
+          "y": 10.51,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 0.92,
+          "y": 0.68,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 10.92,
+          "y": 5.68,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 20.92,
+          "y": 10.68,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 1.15,
+          "y": 0.85,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 11.15,
+          "y": 5.85,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 21.15,
+          "y": 10.85,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 1.38,
+          "y": 1.02,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 11.38,
+          "y": 6.02,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 21.38,
+          "y": 11.02,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 1.61,
+          "y": 1.19,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 11.61,
+          "y": 6.19,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 21.61,
+          "y": 11.19,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 1.84,
+          "y": 1.36,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 11.84,
+          "y": 6.36,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 21.84,
+          "y": 11.36,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 2.07,
+          "y": 1.53,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 12.07,
+          "y": 6.53,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": false,
+          "x": 22.07,
+          "y": 11.53,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 2.3,
+          "y": 1.7,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 12.3,
+          "y": 6.7,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": false,
+          "x": 22.3,
+          "y": 11.7,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "objects": [
+        {
+          "id": "object-0",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 2.53,
+          "y": 1.87,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-1",
+          "class": "moving-fixture",
+          "relevant": true,
+          "x": 12.53,
+          "y": 6.87,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-2",
+          "class": "moving-fixture",
+          "relevant": false,
+          "x": 22.53,
+          "y": 11.87,
+          "confidence": 0.8
+        },
+        {
+          "id": "object-3",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 30,
+          "y": 15,
+          "confidence": 1
+        },
+        {
+          "id": "object-4",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 40,
+          "y": 20,
+          "confidence": 1
+        },
+        {
+          "id": "object-5",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 50,
+          "y": 25,
+          "confidence": 1
+        },
+        {
+          "id": "object-6",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 60,
+          "y": 30,
+          "confidence": 1
+        },
+        {
+          "id": "object-7",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 70,
+          "y": 35,
+          "confidence": 1
+        },
+        {
+          "id": "object-8",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 80,
+          "y": 40,
+          "confidence": 1
+        },
+        {
+          "id": "object-9",
+          "class": "background-fixture",
+          "relevant": false,
+          "x": 90,
+          "y": 45,
+          "confidence": 1
+        }
+      ]
+    }
+  ]
+}

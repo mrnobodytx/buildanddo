@@ -1,0 +1,147 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/registry/diu-sentinel-maritime/opportunity.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/opportunity.schema.json
+# EnumType:    ConfigDoc
+# EnumEdges:   EXTENDS foundry/registry/opportunity.schema.json
+# DAG Node:    foundry.lane.diu-sentinel-maritime
+# Intent:      Connect the existing Maritime planning baseline to a lane without promoting unexecuted runtime claims.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.opportunity/v1
+lane_id: diu-sentinel-maritime
+topic: DIU Sentinel Maritime — harden the existing public planning and mission-suite baseline
+requirements:
+  - id: MAR-REQ-01
+    text: Preserve observation, world-state, cue, admission, evidence and outcome semantics from the public baseline.
+    acceptance: The lane maps each implementation and experiment artifact to the versioned contracts without semantic drift.
+    status: open
+    evidence_ids: []
+  - id: MAR-REQ-02
+    text: Demonstrate deterministic replay, conflicting evidence handling and fail-closed release behavior.
+    acceptance: Repeated bounded scenarios match source and result identities while unadmitted cues remain HOLD.
+    status: open
+    evidence_ids: []
+  - id: MAR-REQ-03
+    text: Produce a measurable 48-hour demonstration and government integration plan.
+    acceptance: The plan defines denominators, data rights, operator actions, failure handling and preserved receipts.
+    status: open
+    evidence_ids: []
+  - id: MAR-REQ-04
+    text: Separate public source evidence from private Sentinel, NNC, feed, release and deployment acceptance.
+    acceptance: No compiled claim treats planned private work or fixture behavior as an operating capability.
+    status: open
+    evidence_ids: []
+eligibility:
+  - id: MAR-ELIG-01
+    criterion: The current DIU solicitation, entity and team eligibility requirements are satisfied.
+    status: unverified
+  - id: MAR-ELIG-02
+    criterion: The proposed commercial solution and data-rights posture satisfy current DIU rules.
+    status: unverified
+deliverables:
+  - id: MAR-DEL-01
+    name: Hardened public Sentinel Maritime prototype and replay package
+    status: partially available as reusable source
+  - id: MAR-DEL-02
+    name: Benchmark, gap and risk evidence
+    status: scaffolded
+  - id: MAR-DEL-03
+    name: White paper, slides and submission checklist
+    status: scaffolded
+metrics:
+  - id: MAR-MET-01
+    name: Observation and replay identity
+    unit: matching source and result digests
+    target: 100 percent for frozen scenarios
+    status: existing mission-suite evidence does not yet prove this lane
+  - id: MAR-MET-02
+    name: Cue precision, recall and false-alert burden
+    unit: preregistered event-level measures
+    target: null
+    status: unmeasured
+  - id: MAR-MET-03
+    name: End-to-end latency and operator workload
+    unit: milliseconds and review actions per scenario
+    target: null
+    status: unmeasured
+  - id: MAR-MET-04
+    name: Rights and release-policy violations
+    unit: count
+    target: 0
+    status: unmeasured in lane
+milestones:
+  - id: MAR-MS-01
+    name: Reconcile foundry lane with SM-BL-1.1 and current source.
+    status: planned
+    requirement_ids: [MAR-REQ-01, MAR-REQ-04]
+  - id: MAR-MS-02
+    name: Run representative replay and conflict scenarios.
+    status: planned
+    requirement_ids: [MAR-REQ-02]
+  - id: MAR-MS-03
+    name: Execute reviewed demonstration and submission readiness campaign.
+    status: planned
+    requirement_ids: [MAR-REQ-03]
+claims:
+  - id: MAR-CLM-01
+    text: A substantial public Sentinel Maritime planning baseline exists in this repository.
+    assertion_level: observed
+    evidence_ids: [MAR-EV-BASELINE]
+  - id: MAR-CLM-02
+    text: Portable deterministic maritime analysis source exists for lane adaptation, without proving deployment.
+    assertion_level: observed
+    evidence_ids: [MAR-EV-SUITE]
+  - id: MAR-CLM-03
+    text: Sentinel Maritime is an operating DIU-ready capability.
+    assertion_level: proposed
+    evidence_ids: []
+evidence_required:
+  - id: MAR-NEED-01
+    description: Current official DIU solicitation and eligibility determination
+    acceptance: Archived official bytes and named human review
+  - id: MAR-NEED-02
+    description: Rights-cleared representative maritime observations and truth labels
+    acceptance: Dataset, rights, lineage, denominators and independent label review
+  - id: MAR-NEED-03
+    description: Actual Sentinel and NNC runtime discovery
+    acceptance: Receiving-seat source, ownership, interface and release receipts
+  - id: MAR-NEED-04
+    description: End-to-end benchmark and operator demonstration
+    acceptance: Frozen inputs, replay, error analysis, latency and reviewer receipts
+  - id: MAR-NEED-05
+    description: Human-approved company, commercial, IP, team and cost facts
+    acceptance: Named approval bound to final rendered bytes
+evidence_available:
+  - id: MAR-EV-BASELINE
+    title: Sentinel Maritime public planning baseline and integrity contract
+    state: observed
+    locator: docs/sentinel-maritime
+    requirement_ids: []
+  - id: MAR-EV-SUITE
+    title: Portable mission-suite maritime analysis and replay source
+    state: observed
+    locator: apps/mission_suite
+    requirement_ids: []
+evidence_missing:
+  - id: MAR-GAP-OFFICIAL
+    description: Current official DIU instructions, deadline and eligibility review are not attached.
+    blocks: [MAR-ELIG-01, MAR-ELIG-02]
+  - id: MAR-GAP-RUNTIME
+    description: Private Sentinel, NNC, live feed, release and deployment acceptance are unavailable here.
+    blocks: [MAR-REQ-02, MAR-REQ-03, MAR-CLM-03]
+  - id: MAR-GAP-DATA
+    description: No rights-cleared representative maritime dataset or independent truth set is attached.
+    blocks: [MAR-REQ-03]
+deadline: null
+submission_format:
+  primary: DIU solution brief or current portal package
+  existing_targets: 15-slide claim map and white-paper source
+  status: all current limits and portal requirements require official confirmation

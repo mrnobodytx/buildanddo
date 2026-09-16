@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/lanes/navair-acquisition-analysis/results.json.cgrf.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/lanes/navair-acquisition-analysis/results.json, foundry/registry/navair-acquisition-analysis/opportunity.yaml
+# EnumType:    Schema
+# EnumEdges:   VALIDATES foundry/lanes/navair-acquisition-analysis/results.json; DEPENDS_ON foundry/registry/navair-acquisition-analysis/opportunity.yaml
+# DAG Node:    foundry.lane.navair-acquisition-analysis.results
+# Intent:      Preserve governance provenance for this lane's machine-readable experiment and evidence record.
+# ───────────────────────────────────────────────────────────────
+
+json_file: foundry/lanes/navair-acquisition-analysis/results.json
+comment_syntax: sibling

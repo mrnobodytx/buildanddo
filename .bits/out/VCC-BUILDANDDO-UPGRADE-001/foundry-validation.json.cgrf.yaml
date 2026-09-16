@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/shared/federal_foundry/benchmarks.py, foundry/shared/federal_foundry/portfolio.py, tests/foundry/check_foundry.py
+# EnumType:    Schema
+# EnumEdges:   DEPENDS_ON foundry/shared/federal_foundry/benchmarks.py; DEPENDS_ON foundry/shared/federal_foundry/portfolio.py; DEPENDS_ON tests/foundry/check_foundry.py; PRODUCES .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json
+# DAG Node:    none
+# Intent:      Preserve measured reference results and exact campaign/export fingerprints so reviewers can trace the executable foundry's local acceptance.
+# ───────────────────────────────────────────────────────────────
+
+artifact: foundry-validation.json
+encoding: utf-8
+evidence_state: observed

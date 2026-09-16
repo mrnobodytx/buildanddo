@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/templates/results.json.cgrf.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/templates/results.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES foundry/templates/results.json
+# DAG Node:    foundry.templates
+# Intent:      Preserve governance provenance for the reusable machine-readable lane result template.
+# ───────────────────────────────────────────────────────────────
+
+json_file: foundry/templates/results.json
+comment_syntax: sibling

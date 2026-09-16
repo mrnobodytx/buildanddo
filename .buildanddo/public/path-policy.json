@@ -21,6 +21,7 @@
     "apps/",
     "docs/",
     "features/",
+    "foundry/",
     "missions/",
     "tests/",
     "scripts/ci/",

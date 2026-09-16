@@ -1,0 +1,133 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/registry/navair-acquisition-analysis/opportunity.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/opportunity.schema.json
+# EnumType:    ConfigDoc
+# EnumEdges:   EXTENDS foundry/registry/opportunity.schema.json
+# DAG Node:    foundry.lane.navair-acquisition-analysis
+# Intent:      Record the deterministic acquisition-analysis lane and its container evidence obligations.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: foundry.opportunity/v1
+lane_id: navair-acquisition-analysis
+topic: NAVAIR Acquisition Analysis — deterministic retrieval and recommendation package
+requirements:
+  - id: NAVAIR-REQ-01
+    text: Parse allowlisted acquisition documents with stable source and metadata identifiers.
+    acceptance: Re-ingestion preserves identifiers and records parser version, source digest and rejected inputs.
+    status: open
+    evidence_ids: []
+  - id: NAVAIR-REQ-02
+    text: Build comparable lexical, embedding, graph, clustering and hybrid retrieval candidates.
+    acceptance: Every candidate consumes the same frozen corpus, query set and relevance judgments.
+    status: open
+    evidence_ids: []
+  - id: NAVAIR-REQ-03
+    text: Return deterministic top-N recommendations with explanations and source provenance.
+    acceptance: Repeated runs produce identical ranking, tie-breaking, excerpts and document locators.
+    status: open
+    evidence_ids: []
+  - id: NAVAIR-REQ-04
+    text: Package the selected pipeline as a bounded Docker deliverable.
+    acceptance: An offline container build and run reproduce the declared validation report from frozen inputs.
+    status: open
+    evidence_ids: []
+eligibility:
+  - id: NAVAIR-ELIG-01
+    criterion: The current acquisition-analysis opportunity accepts this entity and teaming structure.
+    status: unverified
+  - id: NAVAIR-ELIG-02
+    criterion: Proposed data, model and software licenses meet the current data-rights terms.
+    status: unverified
+deliverables:
+  - id: NAVAIR-DEL-01
+    name: Docker-packaged acquisition analysis application
+    status: planned
+  - id: NAVAIR-DEL-02
+    name: Deterministic retrieval validation report
+    status: scaffolded
+  - id: NAVAIR-DEL-03
+    name: Architecture, deployment and operator documentation
+    status: scaffolded
+metrics:
+  - id: NAVAIR-MET-01
+    name: Top-N ranking identity
+    unit: identical ranked lists per repeated run
+    target: 100 percent
+    status: unmeasured
+  - id: NAVAIR-MET-02
+    name: Retrieval quality
+    unit: preregistered precision, recall and ranking metrics
+    target: null
+    status: unmeasured
+  - id: NAVAIR-MET-03
+    name: Query runtime
+    unit: milliseconds
+    target: null
+    status: unmeasured
+  - id: NAVAIR-MET-04
+    name: Peak memory and compute
+    unit: megabytes and CPU or accelerator utilization
+    target: null
+    status: unmeasured
+milestones:
+  - id: NAVAIR-MS-01
+    name: Freeze corpus, parser and relevance-judgment contracts.
+    status: planned
+    requirement_ids: [NAVAIR-REQ-01]
+  - id: NAVAIR-MS-02
+    name: Run retrieval candidate bakeoff.
+    status: planned
+    requirement_ids: [NAVAIR-REQ-02, NAVAIR-REQ-03]
+  - id: NAVAIR-MS-03
+    name: Reproduce the selected result from the container.
+    status: planned
+    requirement_ids: [NAVAIR-REQ-04]
+claims:
+  - id: NAVAIR-CLM-01
+    text: The proposed system can rank related acquisition documents deterministically.
+    assertion_level: proposed
+    evidence_ids: []
+  - id: NAVAIR-CLM-02
+    text: Every recommendation can retain a source and transformation path.
+    assertion_level: proposed
+    evidence_ids: []
+evidence_required:
+  - id: NAVAIR-NEED-01
+    description: Official opportunity, corpus and deliverable constraints
+    acceptance: Reviewer-approved mapping to archived official source bytes
+  - id: NAVAIR-NEED-02
+    description: Frozen public or properly licensed acquisition corpus and query judgments
+    acceptance: Corpus manifest, rights record, digests and independent relevance review
+  - id: NAVAIR-NEED-03
+    description: Candidate retrieval benchmark results
+    acceptance: Same-corpus repeated runs with quality, runtime, memory and failure metrics
+  - id: NAVAIR-NEED-04
+    description: Container reproduction evidence
+    acceptance: Image digest, SBOM, build log and offline result identity
+evidence_available:
+  - id: NAVAIR-EV-PLAN
+    title: Owner-supplied deterministic acquisition-analysis planning brief
+    state: observed
+    locator: source conversation dated 2026-09-16
+    requirement_ids: []
+evidence_missing:
+  - id: NAVAIR-GAP-OFFICIAL
+    description: Current official instructions, eligible corpus and deadline are not attached.
+    blocks: [NAVAIR-ELIG-01, NAVAIR-ELIG-02]
+  - id: NAVAIR-GAP-CORPUS
+    description: No frozen acquisition corpus, judgments or container benchmark exists in this lane.
+    blocks: [NAVAIR-REQ-01, NAVAIR-REQ-02, NAVAIR-REQ-03, NAVAIR-REQ-04]
+deadline: null
+submission_format:
+  primary: technical package
+  software_deliverable: Docker image
+  validation_report: required by planning brief
+  status: confirm all limits and attachments against current official instructions

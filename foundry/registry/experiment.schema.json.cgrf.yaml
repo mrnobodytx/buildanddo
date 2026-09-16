@@ -1,0 +1,18 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        foundry/registry/experiment.schema.json.cgrf.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     foundry/registry/experiment.schema.json, foundry/shared/federal_foundry/benchmarks.py
+# EnumType:    Schema
+# EnumEdges:   DEPENDS_ON foundry/registry/experiment.schema.json; DEPENDS_ON foundry/shared/federal_foundry/benchmarks.py
+# DAG Node:    none
+# Intent:      Declare the finite experiment vocabulary used by reference workloads and candidate comparisons.
+# ───────────────────────────────────────────────────────────────
+
+artifact: experiment.schema.json
