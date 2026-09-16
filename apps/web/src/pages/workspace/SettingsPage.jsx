@@ -226,6 +226,11 @@ export default function SettingsPage() {
                 </TabsContent>
                 <TabsContent value="account" className="space-y-8">
                     <DiscordAccountLink />
+                    <Card className="space-y-3 p-5">
+                        <h2 className="font-display text-lg font-semibold">My dossier</h2>
+                        <p className="text-sm text-muted-foreground">Keep private entities, source notes and personal context under this account. Your linked Discord identity uses the same dossier.</p>
+                        <Link to="/app/dossier" className="text-sm underline underline-offset-4">Open my private dossier</Link>
+                    </Card>
                     {/* Account */}
                     <section className="space-y-3">
                         <h2 className="font-display text-lg font-semibold tracking-tight">

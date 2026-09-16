@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 15801,
+      "lines": 17734,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 314,
+      "lines": 387,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 535,
+      "lines": 601,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 620,
+      "lines": 725,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -555,7 +555,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 119,
+      "lines": 167,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate contribution review on manifest integrity, component coverage and public adapter tests.",
@@ -1028,7 +1028,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 216,
+      "lines": 218,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve route loading and offer retry when the workspace list cannot be read instead of treating an outage as a new account.",
@@ -1059,7 +1059,7 @@
       "dependencies": [
         "apps/web/src/App.jsx"
       ],
-      "lines": 107,
+      "lines": 108,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Load every real workspace route and the five public entries while preserving authentication gates.",
@@ -1721,7 +1721,7 @@
         "apps/web/src/components/site/ui.jsx",
         ".github/workflows/pr-governance.yml"
       ],
-      "lines": 289,
+      "lines": 290,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
@@ -1822,7 +1822,7 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 270,
+      "lines": 271,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
@@ -3738,7 +3738,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 258,
+      "lines": 263,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace writes attributed to real backend outcomes and expose actionable failure states in this page.",
@@ -4262,7 +4262,7 @@
         "apps/web/vite.config.js",
         "apps/web/src/test/setup.js"
       ],
-      "lines": 92,
+      "lines": 96,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the web test suite on the existing Vite transform, resolving the same \"@\" alias the app builds with.",
@@ -9541,9 +9541,11 @@
         "apps/pocketbase/pb_hooks/workspace-administration.js",
         ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-buildanddo-delivery.md",
         "docs/discord-bot.md",
-        "docs/mission-research.md"
+        "docs/mission-research.md",
+        "docs/private-dossiers.md",
+        "docs/discord-activation.md"
       ],
-      "lines": 219,
+      "lines": 274,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define the private execution and acceptance boundary for audited BuildAndDo integration requests without adding credentials or deployment control to the public repository.",
@@ -13263,9 +13265,11 @@
         "tests/upgrade/check_discordbot.py",
         ".github/workflows/pr-governance.yml",
         "docs/mission-research.md",
-        "scripts/discordbot/research.py"
+        "scripts/discordbot/research.py",
+        "docs/private-dossiers.md",
+        "docs/discord-activation.md"
       ],
-      "lines": 211,
+      "lines": 227,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the implemented Discord experience, its real public data sources and the remaining private activation requirements.",
@@ -13303,9 +13307,10 @@
       "dependencies": [
         "scripts/discordbot/service.py",
         "scripts/discordbot/contracts.py",
-        "scripts/discordbot/research.py"
+        "scripts/discordbot/research.py",
+        "scripts/discordbot/dossier.py"
       ],
-      "lines": 493,
+      "lines": 550,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Serve useful public Discord interactions with explicit scope, private replies and no import-time activation.",
@@ -13484,7 +13489,9 @@
         "tests/upgrade/test_discordbot_commands.py",
         "tests/upgrade/test_discordbot_adapter.py",
         "tests/upgrade/test_discordbot_research.py",
-        "tests/upgrade/test_research_runtime.py"
+        "tests/upgrade/test_research_runtime.py",
+        "tests/upgrade/test_discordbot_dossier.py",
+        "tests/upgrade/test_discordbot_doctor.py"
       ],
       "lines": 92,
       "caps_grade": "pending",
@@ -14168,7 +14175,7 @@
         "apps/pocketbase/pb_hooks/workspace-access.js",
         "apps/pocketbase/pb_migrations/1790100000_mission_research.js"
       ],
-      "lines": 172,
+      "lines": 182,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Bind research inputs and protected downloads to current workspace roles and registered service identities.",
@@ -14745,9 +14752,11 @@
         "apps/research/worker.py",
         "tests/upgrade/mission-research.test.mjs",
         "tests/upgrade/test_discordbot_research.py",
-        "tests/upgrade/test_research_runtime.py"
+        "tests/upgrade/test_research_runtime.py",
+        "docs/discord-activation.md",
+        "docs/private-dossiers.md"
       ],
-      "lines": 254,
+      "lines": 260,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the connected mission-source workflow and exact receiving-runtime contracts without claiming private activation or verification from extracted content.",
@@ -14919,7 +14928,7 @@
         "tests/upgrade/admin-fixture.mjs",
         "apps/pocketbase/pb_hooks/mission-research.js"
       ],
-      "lines": 52,
+      "lines": 60,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise research source contracts with registered identities and transactional storage while retaining native acceptance as a separate gate.",
@@ -15784,12 +15793,1936 @@
       "timestamp": "2026-09-15T23:03:38.608358+00:00",
       "commit_sha": null,
       "smoke_result": "199/199"
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/dossier-vault.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "keyring",
+        "schema",
+        "identity",
+        "seal",
+        "open"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js"
+      ],
+      "lines": 65,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Encrypt private content with native authenticated encryption and reject missing keys, ciphertext substitution and schema drift.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/dossier.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/private-dossier.js"
+      ],
+      "lines": 29,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose native-authenticated private dossier commands with no-store responses and no search terms in request URLs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/private-dossier.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "fresh",
+        "owned",
+        "dossier",
+        "entityRows",
+        "strings",
+        "labelInput",
+        "noteInput",
+        "output",
+        "rootOutput",
+        "readIn",
+        "commandInput",
+        "perform",
+        "executeIn",
+        "eventRead",
+        "transact"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/dossier-vault.js",
+        "apps/pocketbase/pb_hooks/research-policy.js"
+      ],
+      "lines": 212,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect personal entity recall and corrections to canonical user identity with atomic encrypted saves and deletion-safe retries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1790100000_mission_research.js"
+      ],
+      "lines": 76,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Store account-owned encrypted dossiers and content-free retry receipts behind locked native collection APIs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/DossierEditors.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "Field",
+        "SourceFields",
+        "Feedback",
+        "EntityForm",
+        "EntityEditor",
+        "NoteForm",
+        "NoteEditor",
+        "ForgetEntity"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/privateDossier.js",
+        "apps/web/src/components/ui/dialog.jsx"
+      ],
+      "lines": 149,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let account owners explicitly save, correct and remove entity notes through accessible privacy-masked dialogs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/__tests__/usePrivateDossier.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Wrapper"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/usePrivateDossier.js"
+      ],
+      "lines": 92,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify private view cleanup, stale-request fencing, StrictMode remounts and uncertain save recovery across account boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/usePrivateDossier.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "usePrivateDossier"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/privateDossier.js",
+        "apps/web/src/contexts/AuthContext.jsx"
+      ],
+      "lines": 68,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Clear decrypted dossier views across account changes and preserve only recoverable in-memory write intent.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/privateDossier.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "createDossierClient"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/dossier.pb.js"
+      ],
+      "lines": 118,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Recall and revise only the current user's private dossier without URL leakage, browser persistence or duplicated uncertain saves.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/DossierPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "Profile",
+        "History",
+        "EntityDetail",
+        "DossierDesk",
+        "DossierSession",
+        "DossierPage"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/usePrivateDossier.js",
+        "apps/web/src/components/workspace/DossierEditors.jsx",
+        "apps/web/src/lib/privateDossier.js"
+      ],
+      "lines": 158,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make encrypted personal entity context, provenance, recall and corrections usable from the same account linked to Discord.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/DossierFlow.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/workspace/DossierPage.jsx",
+        "apps/web/src/components/workspace/DossierEditors.jsx",
+        "tests/upgrade/dossier-fixture.mjs"
+      ],
+      "lines": 214,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise rendered private dossier editing, recall, deletion, keyboard dialogs and account transitions against the actual backend policy.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/discord-activation.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docker-compose.yml",
+        "apps/pocketbase/.pocketbase-version",
+        "scripts/discordbot/doctor.py",
+        "docs/discord-bot.md",
+        "docs/mission-research.md",
+        "docs/private-dossiers.md",
+        ".github/workflows/pr-governance.yml"
+      ],
+      "lines": 108,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Separate inspected local startup contracts from unverified bot activation and identify the evidence the receiving runtime must supply.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/private-dossiers.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/private-dossier.js",
+        "apps/pocketbase/pb_hooks/dossier-vault.js",
+        "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js",
+        "apps/web/src/pages/workspace/DossierPage.jsx",
+        "scripts/discordbot/dossier.py",
+        "tests/upgrade/test_dossier_native.py",
+        "docs/discord-activation.md"
+      ],
+      "lines": 182,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define the personal dossier experience, encryption and deletion guarantees, and remaining native acceptance without confusing saved context with verified evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/discordbot/doctor.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "installed",
+        "inspect_startup",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/discordbot/contracts.py",
+        "scripts/discordbot/research.py",
+        "scripts/discordbot/dossier.py",
+        "apps/research/contracts.py"
+      ],
+      "lines": 120,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report actual local bot and worker prerequisites without exposing configuration values, contacting services or implying runtime activation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/discordbot/dossier.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "integer"
+      ],
+      "dependencies": [
+        "scripts/discordbot/research.py",
+        "apps/pocketbase/pb_hooks/dossier.pb.js"
+      ],
+      "lines": 212,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect private Discord entity recall to native linked accounts while retaining only expiring undelivered write intent.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/dossier-backend-driver.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/dossier-fixture.mjs"
+      ],
+      "lines": 38,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect Python Discord commands and website commands to one actual dossier policy with explicit native storage and crypto boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/dossier-client.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "connected"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/privateDossier.js",
+        "tests/upgrade/dossier-fixture.mjs"
+      ],
+      "lines": 131,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify the browser and backend share private identity, loss recovery and deletion semantics without persisting decrypted client data.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/dossier-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "dossierFixture"
+      ],
+      "dependencies": [
+        "tests/upgrade/research-fixture.mjs",
+        "apps/pocketbase/pb_hooks/private-dossier.js"
+      ],
+      "lines": 56,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise actual dossier handlers using explicit storage and native-crypto boundary doubles with no live identity or key material.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/dossier-system.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/dossier-fixture.mjs",
+        "apps/pocketbase/pb_hooks/dossier.pb.js",
+        "apps/pocketbase/pb_hooks/dossier-vault.js",
+        "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js"
+      ],
+      "lines": 256,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify cross-account denial, encrypted persistence, source-aware recall, corrections and deletion-safe transactional retry behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_discordbot_doctor.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "scripts/discordbot/doctor.py"
+      ],
+      "lines": 111,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify startup diagnostics expose only prerequisites and never read credential files, contact services or assert activation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_discordbot_dossier.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "scripts/discordbot/dossier.py",
+        "scripts/discordbot/bot.py",
+        "tests/upgrade/dossier-backend-driver.mjs",
+        "tests/upgrade/research_support.py",
+        "tests/upgrade/test_discordbot_adapter.py"
+      ],
+      "lines": 274,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise connected private Discord saves, encrypted backend recall, account revocation and uncertain-response recovery without a live bot login.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_dossier_native.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/dossier.pb.js",
+        "apps/pocketbase/pb_hooks/private-dossier.js",
+        "apps/pocketbase/pb_hooks/dossier-vault.js",
+        "apps/pocketbase/pb_hooks/research-policy.js",
+        "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js"
+      ],
+      "lines": 450,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require real PocketBase authentication, native OAuth models, encrypted persistence and concurrent retry behavior in an isolated loopback database.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "private-dossiers"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md",
+      "target": "docs/discord-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md consumes docs/discord-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md",
+      "target": "docs/private-dossiers.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-15-bits-codegen-cmax-b-community-controls.md consumes docs/private-dossiers.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "docs/discord-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md consumes docs/discord-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "docs/private-dossiers.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md consumes docs/private-dossiers.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/test_dossier_native.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates tests/upgrade/test_dossier_native.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/dossier-vault.js",
+      "target": "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/dossier-vault.js depends on apps/pocketbase/pb_migrations/1790200000_private_dossiers.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/dossier.pb.js",
+      "target": "apps/pocketbase/pb_hooks/private-dossier.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/dossier.pb.js consumes apps/pocketbase/pb_hooks/private-dossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/private-dossier.js",
+      "target": "apps/pocketbase/pb_hooks/research-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/private-dossier.js consumes apps/pocketbase/pb_hooks/research-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/private-dossier.js",
+      "target": "apps/pocketbase/pb_hooks/dossier-vault.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/private-dossier.js depends on apps/pocketbase/pb_hooks/dossier-vault.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js",
+      "target": "apps/pocketbase/pb_migrations/1790100000_mission_research.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js depends on apps/pocketbase/pb_migrations/1790100000_mission_research.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/DossierEditors.jsx",
+      "target": "apps/web/src/components/ui/dialog.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/DossierEditors.jsx consumes apps/web/src/components/ui/dialog.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/DossierEditors.jsx",
+      "target": "apps/web/src/lib/privateDossier.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/DossierEditors.jsx consumes apps/web/src/lib/privateDossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/__tests__/usePrivateDossier.test.jsx",
+      "target": "apps/web/src/hooks/usePrivateDossier.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/__tests__/usePrivateDossier.test.jsx validates apps/web/src/hooks/usePrivateDossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/usePrivateDossier.js",
+      "target": "apps/web/src/contexts/AuthContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/usePrivateDossier.js consumes apps/web/src/contexts/AuthContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/usePrivateDossier.js",
+      "target": "apps/web/src/lib/privateDossier.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/usePrivateDossier.js consumes apps/web/src/lib/privateDossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/privateDossier.js",
+      "target": "apps/pocketbase/pb_hooks/dossier.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/privateDossier.js consumes apps/pocketbase/pb_hooks/dossier.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/DossierPage.jsx",
+      "target": "apps/web/src/components/workspace/DossierEditors.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/DossierPage.jsx consumes apps/web/src/components/workspace/DossierEditors.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/DossierPage.jsx",
+      "target": "apps/web/src/hooks/usePrivateDossier.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/DossierPage.jsx consumes apps/web/src/hooks/usePrivateDossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/DossierPage.jsx",
+      "target": "apps/web/src/lib/privateDossier.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/DossierPage.jsx consumes apps/web/src/lib/privateDossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/DossierFlow.test.jsx",
+      "target": "tests/upgrade/dossier-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/DossierFlow.test.jsx consumes tests/upgrade/dossier-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/DossierFlow.test.jsx",
+      "target": "apps/web/src/components/workspace/DossierEditors.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/DossierFlow.test.jsx validates apps/web/src/components/workspace/DossierEditors.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/DossierFlow.test.jsx",
+      "target": "apps/web/src/pages/workspace/DossierPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/DossierFlow.test.jsx validates apps/web/src/pages/workspace/DossierPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-activation.md",
+      "target": ".github/workflows/pr-governance.yml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-activation.md consumes .github/workflows/pr-governance.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-activation.md",
+      "target": "apps/pocketbase/.pocketbase-version",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-activation.md consumes apps/pocketbase/.pocketbase-version.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-activation.md",
+      "target": "docker-compose.yml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-activation.md consumes docker-compose.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-activation.md",
+      "target": "docs/discord-bot.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-activation.md consumes docs/discord-bot.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-activation.md",
+      "target": "docs/mission-research.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-activation.md consumes docs/mission-research.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-activation.md",
+      "target": "docs/private-dossiers.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-activation.md consumes docs/private-dossiers.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-activation.md",
+      "target": "scripts/discordbot/doctor.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-activation.md consumes scripts/discordbot/doctor.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "docs/discord-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-bot.md consumes docs/discord-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "docs/private-dossiers.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/discord-bot.md consumes docs/private-dossiers.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "docs/discord-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mission-research.md consumes docs/discord-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mission-research.md",
+      "target": "docs/private-dossiers.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mission-research.md consumes docs/private-dossiers.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/private-dossiers.md",
+      "target": "apps/pocketbase/pb_hooks/dossier-vault.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/private-dossiers.md consumes apps/pocketbase/pb_hooks/dossier-vault.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/private-dossiers.md",
+      "target": "apps/pocketbase/pb_hooks/private-dossier.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/private-dossiers.md consumes apps/pocketbase/pb_hooks/private-dossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/private-dossiers.md",
+      "target": "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/private-dossiers.md consumes apps/pocketbase/pb_migrations/1790200000_private_dossiers.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/private-dossiers.md",
+      "target": "apps/web/src/pages/workspace/DossierPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/private-dossiers.md consumes apps/web/src/pages/workspace/DossierPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/private-dossiers.md",
+      "target": "docs/discord-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/private-dossiers.md consumes docs/discord-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/private-dossiers.md",
+      "target": "scripts/discordbot/dossier.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/private-dossiers.md consumes scripts/discordbot/dossier.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/private-dossiers.md",
+      "target": "tests/upgrade/test_dossier_native.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/private-dossiers.md verified by tests/upgrade/test_dossier_native.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/bot.py",
+      "target": "scripts/discordbot/dossier.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/bot.py consumes scripts/discordbot/dossier.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/doctor.py",
+      "target": "apps/research/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/doctor.py consumes apps/research/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/doctor.py",
+      "target": "scripts/discordbot/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/doctor.py consumes scripts/discordbot/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/doctor.py",
+      "target": "scripts/discordbot/dossier.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/doctor.py consumes scripts/discordbot/dossier.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/doctor.py",
+      "target": "scripts/discordbot/research.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/doctor.py consumes scripts/discordbot/research.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/dossier.py",
+      "target": "apps/pocketbase/pb_hooks/dossier.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/dossier.py consumes apps/pocketbase/pb_hooks/dossier.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/dossier.py",
+      "target": "scripts/discordbot/research.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/discordbot/dossier.py consumes scripts/discordbot/research.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_discordbot.py",
+      "target": "tests/upgrade/test_discordbot_doctor.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_discordbot.py consumes tests/upgrade/test_discordbot_doctor.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_discordbot.py",
+      "target": "tests/upgrade/test_discordbot_dossier.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_discordbot.py consumes tests/upgrade/test_discordbot_dossier.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/dossier-backend-driver.mjs",
+      "target": "tests/upgrade/dossier-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/dossier-backend-driver.mjs consumes tests/upgrade/dossier-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/dossier-client.test.mjs",
+      "target": "tests/upgrade/dossier-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/dossier-client.test.mjs consumes tests/upgrade/dossier-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/dossier-client.test.mjs",
+      "target": "apps/web/src/lib/privateDossier.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/dossier-client.test.mjs validates apps/web/src/lib/privateDossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/dossier-fixture.mjs",
+      "target": "tests/upgrade/research-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/dossier-fixture.mjs consumes tests/upgrade/research-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/dossier-fixture.mjs",
+      "target": "apps/pocketbase/pb_hooks/private-dossier.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/dossier-fixture.mjs validates apps/pocketbase/pb_hooks/private-dossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/dossier-system.test.mjs",
+      "target": "tests/upgrade/dossier-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/dossier-system.test.mjs consumes tests/upgrade/dossier-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/dossier-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/dossier-vault.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/dossier-system.test.mjs validates apps/pocketbase/pb_hooks/dossier-vault.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/dossier-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/dossier.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/dossier-system.test.mjs validates apps/pocketbase/pb_hooks/dossier.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/dossier-system.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/dossier-system.test.mjs validates apps/pocketbase/pb_migrations/1790200000_private_dossiers.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_doctor.py",
+      "target": "scripts/discordbot/doctor.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_doctor.py validates scripts/discordbot/doctor.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_dossier.py",
+      "target": "tests/upgrade/dossier-backend-driver.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_dossier.py consumes tests/upgrade/dossier-backend-driver.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_dossier.py",
+      "target": "tests/upgrade/research_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_dossier.py consumes tests/upgrade/research_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_dossier.py",
+      "target": "tests/upgrade/test_discordbot_adapter.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_dossier.py consumes tests/upgrade/test_discordbot_adapter.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_dossier.py",
+      "target": "scripts/discordbot/bot.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_dossier.py validates scripts/discordbot/bot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_discordbot_dossier.py",
+      "target": "scripts/discordbot/dossier.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_discordbot_dossier.py validates scripts/discordbot/dossier.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_dossier_native.py",
+      "target": "apps/pocketbase/pb_hooks/dossier-vault.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_dossier_native.py validates apps/pocketbase/pb_hooks/dossier-vault.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_dossier_native.py",
+      "target": "apps/pocketbase/pb_hooks/dossier.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_dossier_native.py validates apps/pocketbase/pb_hooks/dossier.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_dossier_native.py",
+      "target": "apps/pocketbase/pb_hooks/private-dossier.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_dossier_native.py validates apps/pocketbase/pb_hooks/private-dossier.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_dossier_native.py",
+      "target": "apps/pocketbase/pb_hooks/research-policy.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_dossier_native.py validates apps/pocketbase/pb_hooks/research-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_dossier_native.py",
+      "target": "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_dossier_native.py validates apps/pocketbase/pb_migrations/1790200000_private_dossiers.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/dossier-system.test.mjs",
+      "description": "Private dossier continuation: 227 Node cases pass, including 19 dossier backend/migration and nine connected browser-client cases. Selected coverage is 99.85 percent lines, 92.87 percent branches and 99.04 percent functions. Isolation, encrypted persistence, relinks, corrections, atomic rollback and replay after deletion are covered with explicit native storage/crypto boundary doubles.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:09:10.241328+00:00",
+      "commit_sha": null,
+      "smoke_result": "227/227"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_discordbot.py",
+      "description": "Private dossier continuation: 129 Python cases pass with six native skips. The targeted bot/worker checker passes 111 with two native skips and a minimum 83.72 percent trace statement coverage per module; dossier 97.55 percent and doctor 97.65 percent. Core strict typing and Ruff pass. SDK/PDF/native PocketBase compatibility is not inferred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:09:10.241328+00:00",
+      "commit_sha": null,
+      "smoke_result": "129/135"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "apps/pocketbase/pb_hooks/research-policy.js",
+      "description": "Private dossier continuation: Observed red/green regressions replaced OAuth-record collection lookup with the native ExternalAuth model API and preserved non-enumerable request properties in the transactional dossier adapter. The targeted regression and full connected suites pass; real native OAuth acceptance remains pending.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:09:10.241328+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "tests/upgrade/test_dossier_native.py",
+      "description": "Private dossier continuation: Required native SDK/PDF and PocketBase gates fail on absent runtimes. Vitest/coverage, official web lint, Vite and pytest branch coverage cannot run because dependencies are unavailable. The independent hosted PocketBase matrix requires both declared versions; no native or hosted success is claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:09:10.241328+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "scripts/discordbot/doctor.py",
+      "description": "Private dossier continuation: Seven doctor cases pass. Actual local bot and worker inspection reports failed prerequisites and unverified launcher/runtime without revealing values or contacting services. Compose does not start these processes; the existing launcher remains receiving evidence. No credentials, shared service or Discord registration were changed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:09:10.241328+00:00",
+      "commit_sha": null,
+      "smoke_result": "7/7"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": null,
+      "description": "Private dossier continuation: Application smoke remains 4/7 with three frontend dependency failures. Context and public boundary pass, 231 web modules parse without static errors, prior 47 events are preserved and the private-dossier/activation handoff records native, privacy, retention and runtime acceptance gaps.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:09:10.241328+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/blueprint.md",
+        "docs/sentinel-maritime/contracts.md",
+        "docs/sentinel-maritime/integrity.md",
+        "docs/sentinel-maritime/system-plan.json"
+      ],
+      "lines": 104,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Request private ownership and evidence for the frozen maritime design while keeping runtime, release, government and controlled-data authority outside the public repository.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/blueprint.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        "docs/sentinel-maritime/contracts.md",
+        "docs/sentinel-maritime/system-plan.json",
+        "docs/sentinel-maritime/integrity.md"
+      ],
+      "lines": 217,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Freeze the owner's maritime product decisions and separate them from capability and solicitation evidence still needed for the DIU deck.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/contracts.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/blueprint.md",
+        "docs/sentinel-maritime/integrity.md"
+      ],
+      "lines": 208,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define reviewable maritime evidence, cue, admission and measurement semantics before private adapters and government interfaces are implemented.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/integrity.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/system-plan.json",
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/supply_chain.py"
+      ],
+      "lines": 313,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Assign the maritime release, rights and evidence commitments to the existing integrity owner without inventing Merkle authority or a live system SBOM.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/system-plan.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/blueprint.md",
+        "docs/sentinel-maritime/system-plan.json",
+        "scripts/ci/evidence_epoch.py"
+      ],
+      "lines": 1621,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the maritime planning inventory CGRF provenance without treating proposed components or source fingerprints as an admitted live SBOM.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/system-plan.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/blueprint.md",
+        "docs/sentinel-maritime/system-plan.json",
+        "scripts/ci/evidence_epoch.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the maritime planning inventory CGRF provenance without treating proposed components or source fingerprints as an admitted live SBOM.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "target": "docs/sentinel-maritime/blueprint.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md consumes docs/sentinel-maritime/blueprint.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "target": "docs/sentinel-maritime/contracts.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md consumes docs/sentinel-maritime/contracts.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "target": "docs/sentinel-maritime/integrity.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md consumes docs/sentinel-maritime/integrity.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "target": "docs/sentinel-maritime/system-plan.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md consumes docs/sentinel-maritime/system-plan.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/blueprint.md",
+      "target": "docs/sentinel-maritime/contracts.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/blueprint.md consumes docs/sentinel-maritime/contracts.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/blueprint.md",
+      "target": "docs/sentinel-maritime/integrity.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/blueprint.md consumes docs/sentinel-maritime/integrity.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/blueprint.md",
+      "target": "docs/sentinel-maritime/system-plan.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/blueprint.md consumes docs/sentinel-maritime/system-plan.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/blueprint.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/blueprint.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/contracts.md",
+      "target": "docs/sentinel-maritime/integrity.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/contracts.md depends on docs/sentinel-maritime/integrity.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/contracts.md",
+      "target": "docs/sentinel-maritime/blueprint.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/contracts.md extends docs/sentinel-maritime/blueprint.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/integrity.md",
+      "target": "docs/sentinel-maritime/system-plan.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/integrity.md consumes docs/sentinel-maritime/system-plan.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/integrity.md",
+      "target": "scripts/ci/candidate_manifest.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/integrity.md consumes scripts/ci/candidate_manifest.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/integrity.md",
+      "target": "scripts/ci/evidence_epoch.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/integrity.md consumes scripts/ci/evidence_epoch.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/integrity.md",
+      "target": "scripts/ci/supply_chain.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/integrity.md consumes scripts/ci/supply_chain.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/system-plan.json.cgrf.yaml",
+      "target": "scripts/ci/evidence_epoch.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/system-plan.json.cgrf.yaml consumes scripts/ci/evidence_epoch.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/system-plan.json.cgrf.yaml",
+      "target": "docs/sentinel-maritime/blueprint.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/system-plan.json.cgrf.yaml depends on docs/sentinel-maritime/blueprint.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/system-plan.json.cgrf.yaml",
+      "target": "docs/sentinel-maritime/system-plan.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/system-plan.json.cgrf.yaml validates docs/sentinel-maritime/system-plan.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "docs/sentinel-maritime/blueprint.md",
+      "description": "Sentinel Maritime public planning: Recorded the owner-authored SM-BL-1.0 product decisions, semantic cue/admission/outcome contracts, 15 metric definitions and 15-slide claim map. Official DIU references and private operating capability claims remain pending; no deck submission or maritime implementation occurred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:47:09.145033+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "docs/sentinel-maritime/system-plan.json",
+      "description": "Sentinel Maritime public planning: The published inventory audit passes for 33 components, 12 planes, 32 planned flow edges, 12 source fingerprints checked at the recorded dossier baseline, and 11 acyclic commitment definitions. Planned REUSE/EXTEND/BUILD remains separate from runtime acceptance. No new Merkle implementation, emitted live SBOM, operational roots or numerical benchmarks are claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:47:09.145033+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "description": "Sentinel Maritime public planning: Public planning, context, boundary and memory checks pass. The private CMAX-B/IDE1 handoff names source/image/SBOM materialization, canonical integrity ownership and government/security acceptance requirements. Existing application results remain historical; no native/frontend rerun, receiving-seat activation, source acquisition or external operation occurred. All 53 baseline events are preserved.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:47:09.145033+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/4"
     }
   ],
   "summary": {
-    "type_a_count": 263,
-    "type_b_count": 520,
-    "type_c_count": 47,
+    "type_a_count": 290,
+    "type_b_count": 606,
+    "type_c_count": 56,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

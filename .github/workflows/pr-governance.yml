@@ -117,3 +117,51 @@ jobs:
 
       - name: Require native commands, document parsing and research source coverage
         run: python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf
+
+  dossier-native:
+    name: ci:test / PocketBase dossier (${{ matrix.runtime }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime: [compose, package]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve the repository's declared PocketBase runtime
+        env:
+          DOSSIER_TEST_RUNTIME: ${{ matrix.runtime }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import re
+          if os.environ['DOSSIER_TEST_RUNTIME'] == 'package':
+              version = Path('apps/pocketbase/.pocketbase-version').read_text().strip()
+          else:
+              version = re.search(r'POCKETBASE_VERSION:-([0-9.]+)', Path('docker-compose.yml').read_text()).group(1)
+          if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', version):
+              raise SystemExit('Invalid declared PocketBase test version')
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write('DOSSIER_TEST_PB_VERSION=' + version + '\n')
+          PY
+
+      - name: Build the existing local runtime image for validation
+        run: docker build --build-arg "POCKETBASE_VERSION=$DOSSIER_TEST_PB_VERSION" --tag buildanddo-dossier-native apps/pocketbase
+
+      - name: Extract the test binary without starting the packaged services
+        run: |
+          dossier_test_container=$(docker create buildanddo-dossier-native)
+          trap 'docker rm "$dossier_test_container" >/dev/null' EXIT
+          docker cp "$dossier_test_container:/pb/pocketbase" "$RUNNER_TEMP/dossier-pocketbase"
+          chmod +x "$RUNNER_TEMP/dossier-pocketbase"
+
+      - name: Require native auth, OAuth model lookup, encryption and concurrent retries
+        env:
+          BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
+        run: python tests/upgrade/test_dossier_native.py --require-binary

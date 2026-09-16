@@ -336,7 +336,7 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         bot = ADAPTER.BuildAndDoBot(Settings(), research=bridge)
         self.addAsyncCleanup(bot.close)
         private = bot.group.to_dict(bot.tree)
-        self.assertEqual(len(private['options']), 20)
+        self.assertEqual(len(private['options']), 25)
         submit = next(item for item in private['options'] if item['name'] == 'submit')
         attachment = next(item for item in submit['options'] if item['name'] == 'file')
         self.assertEqual(attachment['type'], 11)

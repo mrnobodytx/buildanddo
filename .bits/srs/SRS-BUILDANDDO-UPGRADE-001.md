@@ -20,6 +20,111 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Authorized continuation — Sentinel Maritime public planning baseline
+
+On 2026-09-16 the owner supplied the Sentinel Maritime Intelligence Engine
+blueprint and its release/evidence/SBOM map, requesting that this baseline be
+frozen before the DIU deck. Record that owner-authored design under the existing
+self-bootstrap authorization. This continuation is A0 public documentation and
+local validation within the A2 dispatch. It grants no Sentinel/NNC runtime,
+maritime collection, government interface, CUI or private release authority.
+
+Acceptance:
+
+1. Preserve the supplied product boundary, observation/world-state/cue lifecycle,
+   NNC admission role, government integration approach, commercial model and
+   explicit exclusions in a versioned public design baseline. Identify DIU
+   statements lacking an attached official solicitation/FAQ reference.
+2. Define reviewable observation, entity, cue, admission, handoff and outcome
+   contracts, the 48-hour demonstration plan and measurable TEVV denominators.
+   Do not claim deployed detectors, numerical performance or compliance.
+3. Record the 12 planes and all 33 supplied component IDs in a machine-readable
+   planning inventory. Use only REUSE, EXTEND and BUILD for planned lifecycle;
+   keep observed source evidence, owner-reported capabilities and runtime
+   acceptance separate. A planning inventory is not an emitted live SBOM.
+4. Define separate release, evidence-epoch and data-rights commitments, isolated
+   public/CUI proofs and an acyclic receipt chain. Reuse the existing Merkle
+   owner; add no hashing algorithm, signature, authority gate or fake digest.
+   Explain the limits of the public epoch and source-candidate implementations.
+5. Supply a private-seat handoff for actual source/image/SBOM materialization,
+   release-owner verification and controlled-data/integration acceptance. Keep
+   the supplied blueprint traceable to a 15-slide claim map without creating a
+   deck that promotes proposed work into operating capability.
+6. Validate inventory identifiers, graph references, lifecycle/evidence states,
+   cited source fingerprints and planning boundaries; preserve prior governance
+   events and update the report and context. Runtime application gates retain
+   their previously recorded acceptance state.
+
+The owner's design is the product decision source. Local code inspection is the
+source-evidence authority for this checkout only. The cited private
+`tools/citadel_evidence_epoch.py`, Sentinel/NNC runtime and DIU source documents
+are not present here; their behavior and deployment remain unverified. Stop at
+the handoff boundary for their implementation or activation.
+
+Public planning outcome: SM-BL-1.0 is recorded in docs/sentinel-maritime/ with
+semantic contracts, a 33-component/12-plane inventory, separate commitment
+domains and a 15-slide claim map. The local structural audit verifies source
+fingerprints and reference consistency; it establishes no operating maritime
+capability. Private reuse/admission, official solicitation references and actual
+SBOM/runtime evidence remain receiving-seat work under the explicit handoff.
+
+## Authorized continuation — private entity dossiers and activation evidence
+
+The owner requested the remaining Discord gaps, correction of the assumed local
+activation procedure, and secure entity storage/recall tied to user identity and
+the user's dossier. This extends the existing in-progress A2 source dispatch
+after PR 27. SRS self-bootstrap remains authorized. Runtime keys, shared services,
+Discord registration/messages and private deployment remain receiving-seat work.
+
+Acceptance:
+
+1. Reuse canonical PocketBase `users` and native Discord OAuth links. Provide one
+   private personal dossier per account, reachable from Settings and navigation.
+   A workspace administrator receives no access to another user's dossier. The
+   dossier remains personal across workspaces; Discord additionally requires the
+   current registered bot, enabled server/channel binding and workspace membership.
+2. Track explicitly saved entities (person, organization, project, place, topic)
+   with names, aliases, tags, dated notes and explicit source references. Reuse
+   entity IDs for additional notes; never silently merge people with equal names
+   or collect channel conversation. Provide bounded search, detail, corrections,
+   note removal, entity deletion and a history of content-free mutation receipts.
+3. Encrypt dossier/entity content and retry fingerprints with PocketBase's native
+   authenticated encryption and operator-provided key bindings. Bind ciphertext
+   to account, dossier, record and revision. Lock raw collection APIs. Missing or
+   unreadable keys fail closed; no plaintext fallback or generated secret. This
+   is server-side encryption, not end-to-end encryption or a backup-erasure claim.
+4. Authorize within atomic transactions; fence stale revisions and replay retries
+   without duplication or resurrection after deletion. Do not retain old note
+   text in audit records. Store no private dossier data in browser persistence,
+   telemetry, public catalogues or bot caches beyond bounded undelivered intent.
+   Discard late results after account/link changes; search terms stay out of URLs.
+5. Connect website dossier editing and private Discord dossier/remember/recall/
+   entity/forget commands to the same records. Keep Discord responses ephemeral,
+   bounded and mention-suppressed. Preserve current research and teaching flows.
+6. Add a read-only local startup diagnostic. Report actual package/configuration
+   readiness without printing bindings, contacting services, logging in, syncing
+   commands or implying the bot is running. Document that the inspected Compose
+   stack starts web/PocketBase only and the deployed service configuration is
+   outside this checkout. Extend the existing activation handoff with exact gaps.
+7. Verify actual backend, migration, browser-client and Discord application modules
+   for tenant isolation, identity changes, encrypted persistence, recovery,
+   corrections, deletion, corruption and absent configuration. Add meaningful
+   rendered and native acceptance checks; report unavailable runners separately.
+   Preserve earlier governance events and record runnable evidence for this wave.
+
+Private personal storage is the conservative initial scope while the owner can
+clarify workspace sharing. Private key custody, transport termination, backup
+retention/erasure and actual service launch ownership require runtime evidence.
+
+Source outcome recorded 2026-09-16: the personal store, five Discord commands,
+website dossier and read-only startup doctor are implemented. Connected tests
+cover isolation, relinking, corrections, deletion and lost-response recovery.
+The shared OAuth lookup now uses PocketBase's native ExternalAuth model and
+transactional dossier requests preserve non-enumerable event properties.
+An independent native CI matrix requires both declared PocketBase versions;
+the local native SDK/parser/backend and rendered acceptance remain unavailable.
+Verification and the retained event history are in the current dispatch report.
+
 ## Authority
 
 Dmitry Richard (mr.nobody@citadel-nexus.com) explicitly authorized this dispatch,

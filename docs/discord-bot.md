@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     scripts/discordbot/bot.py, scripts/discordbot/service.py, apps/web/tools/generate-community.mjs, tests/upgrade/check_discordbot.py, .github/workflows/pr-governance.yml, docs/mission-research.md, scripts/discordbot/research.py
+# Depends:     scripts/discordbot/bot.py, scripts/discordbot/service.py, apps/web/tools/generate-community.mjs, tests/upgrade/check_discordbot.py, .github/workflows/pr-governance.yml, docs/mission-research.md, scripts/discordbot/research.py, docs/private-dossiers.md, docs/discord-activation.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES scripts/discordbot/bot.py; CONSUMES scripts/discordbot/service.py; CONSUMES apps/web/tools/generate-community.mjs; VERIFIED_BY tests/upgrade/check_discordbot.py; CONSUMES .github/workflows/pr-governance.yml; CONSUMES docs/mission-research.md; CONSUMES scripts/discordbot/research.py
+# EnumEdges:   CONSUMES scripts/discordbot/bot.py; CONSUMES scripts/discordbot/service.py; CONSUMES apps/web/tools/generate-community.mjs; VERIFIED_BY tests/upgrade/check_discordbot.py; CONSUMES .github/workflows/pr-governance.yml; CONSUMES docs/mission-research.md; CONSUMES scripts/discordbot/research.py; CONSUMES docs/private-dossiers.md; CONSUMES docs/discord-activation.md
 # DAG Node:    none
 # Intent:      Explain the implemented Discord experience, its real public data sources and the remaining private activation requirements.
 # ───────────────────────────────────────────────────────────────
@@ -21,9 +21,11 @@ The public command bot helps community members learn BuildAndDo, open the
 appropriate workspace desk and inspect dated public evidence. It uses the same
 authored lessons and canonical site origin as the web application. These thirteen
 public commands do not authenticate to PocketBase or retrieve workspace records.
-An explicitly configured mission research bridge adds seven private commands
-through native PocketBase authentication and current workspace roles; see
-`docs/mission-research.md` for setup and the connected submission/review flow.
+An explicitly configured bridge adds seven mission/research commands and five
+personal dossier commands through native PocketBase authentication. See
+`docs/mission-research.md` and `docs/private-dossiers.md` for the connected flows.
+The actual local/VPS activation boundary and read-only prerequisite doctor are
+documented in `docs/discord-activation.md`; Compose does not start this bot.
 
 ## Commands
 
@@ -67,6 +69,14 @@ Evidence attachment happens through that website review and records observed
 evidence without changing the mission's verification. These commands require
 current workspace membership and the exact registered server/channel; they have
 no prefix variant. `docs/mission-research.md` lists their arguments and recovery.
+
+The same linked account can use `/buildanddo dossier`, `remember`, `recall`,
+`entity` and `forget` for encrypted personal entity context. Current membership
+and the registered channel still gate Discord access; workspace administrators
+cannot read someone else's dossier. The website's **My dossier** page supports
+full notes, explicit corrections and deletion. An uncertain dossier save uses
+`/buildanddo dossier recover:true`, independently of research recovery. The
+configured group now contains 25 commands, Discord's limit for this group.
 
 ## Sources and behavior
 
@@ -113,6 +123,12 @@ Text is escaped, mentions are suppressed and rendered reply sizes are bounded.
 Source work here does not install the bot, alter credentials, synchronize
 commands or send Discord messages. The existing private runtime operator owns
 those steps and the integration request consumer.
+
+Check the actual service environment with `python -m scripts.discordbot.doctor`.
+This reports prerequisites without starting, contacting or authenticating to
+anything, and never prints binding values. A local PASS is not a running-service
+or registered-command observation. See `docs/discord-activation.md` before
+treating the Python entry point as the existing installation's activation path.
 
 | Existing binding or option | Meaning |
 |---|---|

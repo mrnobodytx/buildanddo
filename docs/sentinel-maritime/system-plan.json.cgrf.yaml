@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        docs/sentinel-maritime/system-plan.json.cgrf.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     docs/sentinel-maritime/blueprint.md, docs/sentinel-maritime/system-plan.json, scripts/ci/evidence_epoch.py
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON docs/sentinel-maritime/blueprint.md; VALIDATES docs/sentinel-maritime/system-plan.json; CONSUMES scripts/ci/evidence_epoch.py
+# DAG Node:    none
+# Intent:      Give the maritime planning inventory CGRF provenance without treating proposed components or source fingerprints as an admitted live SBOM.
+# ───────────────────────────────────────────────────────────────
+artifact: docs/sentinel-maritime/system-plan.json
+baseline: SM-BL-1.0
+authority: product_planning_only

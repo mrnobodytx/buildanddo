@@ -1,0 +1,1621 @@
+{
+  "schema_version": "sentinel-maritime.system-plan/v1",
+  "baseline_id": "SM-BL-1.0",
+  "title": "Sentinel Maritime Intelligence Engine",
+  "owner": "Citadel Nexus Inc.",
+  "decision_source": "Owner-supplied BRIEF-2026-09-16",
+  "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs_codes": [
+    "SRS-BUILDANDDO-UPGRADE-001"
+  ],
+  "artifact_kind": "planning_inventory",
+  "design_status": "frozen",
+  "materialized_sbom": false,
+  "release_verified": false,
+  "authority": "product_planning_only",
+  "inspection": {
+    "inspected_at": "2026-09-16T00:39:06.677118+00:00",
+    "source_commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+    "sources": [
+      {
+        "id": "SRC-MISSIONS",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "apps/pocketbase/pb_hooks/mission-policy.js",
+        "sha256": "9c0d2e6ad5d61010968b7fba74f16d6d7f22b731c0c090f5f8eb8533460460de",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Mission transition/review source, without maritime entity semantics."
+      },
+      {
+        "id": "SRC-WORKFLOWS",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "apps/pocketbase/pb_hooks/workflow-runs.js",
+        "sha256": "d1ada92c2a1558ba528e2a544c150d39e93aed0cbece50cc775642a7e7f5230c",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Workflow decisions and evidence receipts; native execution not established by the file."
+      },
+      {
+        "id": "SRC-RESEARCH",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "apps/pocketbase/pb_hooks/mission-research.js",
+        "sha256": "44a25741a87ef1abae313f2741fe89526764ec41972859a9c08369caa6afad9a",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Research queue and reviewed evidence source, without maritime detectors."
+      },
+      {
+        "id": "SRC-DOSSIERS",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "apps/pocketbase/pb_hooks/private-dossier.js",
+        "sha256": "6ac919ea76c082f581b0a4bb8d867ba9934245a104537d919b513afe045ea82a",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Private personal dossier source; not authorization to reuse user content for maritime intelligence."
+      },
+      {
+        "id": "SRC-PYTHON",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "apps/research/worker.py",
+        "sha256": "b82668df04ea424d7b060d0c1801afda0bb875482cd89befa6e52d43dd501cce",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Python worker source; no Sentinel runtime/container inventory."
+      },
+      {
+        "id": "SRC-POCKETBASE",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "apps/pocketbase/package.json",
+        "sha256": "646c4af4b732f89e7c1f73f0bf552dbd2440693ba51e6d7de048d87f2ae6363d",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "BuildAndDo declares PocketBase startup; proposed Sentinel PostgreSQL is a separate boundary."
+      },
+      {
+        "id": "SRC-DATADOG",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "apps/web/src/lib/datadogRum.js",
+        "sha256": "5233694221b5fa0e9e70c915517c3af71fcac2f6dcb5e743e31c179dbfdc7bb6",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Browser instrumentation source; no live Sentinel ingestion measurement."
+      },
+      {
+        "id": "SRC-CANDIDATE",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "scripts/ci/candidate_manifest.py",
+        "sha256": "747579d7ef2d26f886fad7be54dcb6bd5cdca6226f498d407c888393fd91ab01",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Candidate-only source-file provenance producer; no image attestation."
+      },
+      {
+        "id": "SRC-INTAKE",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": ".github/workflows/candidate-to-gitlab.yml",
+        "sha256": "55e5e0a181fa4b4b0ec3498a73d93e28603fcdfb18f1dc05f768fe3cd3693f8f",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Public workflow definition for candidate intake; no observed private release execution."
+      },
+      {
+        "id": "SRC-EPOCH",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "scripts/ci/evidence_epoch.py",
+        "sha256": "b523975390bfbd0204e4b8cb8f84ca28825044e2cfdee917a15487676bb00243",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Non-authoritative public epoch implementation, not the cited private admission tool."
+      },
+      {
+        "id": "SRC-SUPPLY",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": "scripts/ci/supply_chain.py",
+        "sha256": "8b89da195b100ed96b96c11ca52885f55ff40086d131cc067d7ac29d88c3714a",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Dependency/license/advisory checks; not a generated complete runtime SBOM."
+      },
+      {
+        "id": "SRC-TEST-REPORT",
+        "repository": "https://github.com/mrnobodytx/buildanddo",
+        "commit": "aab43b3ed686b70df7c304d02566f0e93606dfd6",
+        "path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+        "sha256": "40ff16d716063fbe35b0427e67ccb0416ca665092c352bccc2b3e9b30264a51a",
+        "evidence_kind": "source_bytes",
+        "runtime_proof": false,
+        "scope": "Historical dossier-wave report: 227 Node/129 Python passing with six native skips; not rerun or maritime acceptance."
+      }
+    ]
+  },
+  "definitions": {
+    "planned_lifecycle": [
+      "REUSE",
+      "EXTEND",
+      "BUILD"
+    ],
+    "evidence_state": [
+      "source_inspected",
+      "owner_reported",
+      "planned"
+    ],
+    "lifecycle_note": "Planned disposition only. Admitted REUSE/EXTEND requires verified base and applicable source, runtime, rights and acceptance evidence.",
+    "flow_note": "Proposed data/dependency semantics; feedback cycles are expected here. These edges grant no action authority and are not proof of execution.",
+    "commitment_note": "Immutable commitment dependencies are acyclic. The existing private owner supplies canonical formats and actual roots.",
+    "unknown_note": "Null identities mean not supplied or measured; they are not admissible release identities."
+  },
+  "baseline_documents": [
+    "docs/sentinel-maritime/blueprint.md",
+    "docs/sentinel-maritime/contracts.md",
+    "docs/sentinel-maritime/integrity.md"
+  ],
+  "planes": [
+    {
+      "id": "P01",
+      "name": "Source / build",
+      "scope": [
+        "source repository and commit",
+        "locks and build definitions",
+        "builder, base and candidate image identities",
+        "CI/test contracts",
+        "generated package and system SBOM"
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "Observation / data",
+      "scope": [
+        "permitted open and commercial maritime adapters",
+        "geospatial, port, zone and weather context",
+        "later government observations by agreement",
+        "normalization and source identity",
+        "event/ingest time, provenance, rights and security tags"
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "Event transport",
+      "scope": [
+        "NATS JetStream observation, entity, cue, mission and audit contracts",
+        "durability, ordering, replay and access controls"
+      ]
+    },
+    {
+      "id": "P04",
+      "name": "Sentinel world model",
+      "scope": [
+        "entity resolution",
+        "vessel, voyage and track history",
+        "event, temporal, causal, provenance and knowledge graphs",
+        "contradictions, uncertainty and immutable snapshots"
+      ]
+    },
+    {
+      "id": "P05",
+      "name": "Detection / correlation",
+      "scope": [
+        "deterministic, temporal and graph features",
+        "statistical anomalies",
+        "optional model inference",
+        "correlation and candidate cue compilation"
+      ]
+    },
+    {
+      "id": "P06",
+      "name": "NNC authority",
+      "scope": [
+        "provenance, freshness, corroboration and uncertainty",
+        "purpose, policy, disclosure and jurisdiction",
+        "human authority, budget and handoff/compensation"
+      ]
+    },
+    {
+      "id": "P07",
+      "name": "Mission / evidence",
+      "scope": [
+        "bounded BuildAndDo missions",
+        "analyst disposition and verification",
+        "handoff receipts and outcomes",
+        "world-state feedback"
+      ]
+    },
+    {
+      "id": "P08",
+      "name": "Government integration",
+      "scope": [
+        "REST/JSON, events and subscriptions",
+        "geospatial output",
+        "cue and accessible evidence references",
+        "historical query",
+        "receiver-supplied adapter contracts"
+      ]
+    },
+    {
+      "id": "P09",
+      "name": "Durable state",
+      "scope": [
+        "proposed PostgreSQL/Supabase state",
+        "FAISS retrieval metadata",
+        "DKG",
+        "mission/evidence ledger references",
+        "separate BuildAndDo PocketBase authority"
+      ]
+    },
+    {
+      "id": "P10",
+      "name": "Observability / TEVV",
+      "scope": [
+        "proposed PostHog and Datadog telemetry",
+        "latency, detector and analyst measurements",
+        "replay and negative controls",
+        "provenance and authority-bypass tests",
+        "cost measurement"
+      ]
+    },
+    {
+      "id": "P11",
+      "name": "Security boundary",
+      "scope": [
+        "permitted public/commercial processing",
+        "separately accepted CUI isolation",
+        "access, markings, export, encryption and audit",
+        "training and media/retention/sanitization lifecycle"
+      ]
+    },
+    {
+      "id": "P12",
+      "name": "Deployment",
+      "scope": [
+        "OCI image and immutable digest",
+        "runtime, environment and route contracts",
+        "dependency closure and accepted security configuration",
+        "external activation/deployment receipts"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "id": "CN-SM-001",
+      "name": "Sentinel",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P04"
+      ],
+      "role": "Owner-reported world-model compiler.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No private Sentinel source, image or operating receipt inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-002",
+      "name": "NNC",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P06"
+      ],
+      "role": "Owner-reported action admission and escalation substrate.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No NNC policy/runtime or authority tests inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-003",
+      "name": "BuildAndDo mission/evidence",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P07"
+      ],
+      "role": "Bounded mission workflows and evidence/outcome records.",
+      "evidence_state": "source_inspected",
+      "evidence_refs": [
+        "SRC-MISSIONS",
+        "SRC-WORKFLOWS",
+        "SRC-RESEARCH",
+        "SRC-DOSSIERS",
+        "SRC-POCKETBASE",
+        "SRC-TEST-REPORT"
+      ],
+      "scope_limit": "Public PocketBase source and historical local-test report only; native and live acceptance remain pending. Personal dossiers are a separate private user domain.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-004",
+      "name": "Python runtime",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P01",
+        "P12"
+      ],
+      "role": "Execution substrate for Python application components.",
+      "evidence_state": "source_inspected",
+      "evidence_refs": [
+        "SRC-PYTHON"
+      ],
+      "scope_limit": "Python worker source exists; no Sentinel runtime version, container digest or installed closure inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-005",
+      "name": "LangGraph",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P05"
+      ],
+      "role": "Proposed orchestration of versioned execution graphs.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No pinned runtime/package or deterministic execution evidence inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-006",
+      "name": "NATS JetStream",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P03"
+      ],
+      "role": "Proposed durable event transport.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No running broker, version, permission/configuration or delivery evidence inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-007",
+      "name": "PostgreSQL / Supabase",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P09"
+      ],
+      "role": "Proposed durable Sentinel world/mission state.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "The inspected BuildAndDo backend is PocketBase; private Sentinel schemas and adapters remain unverified.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-008",
+      "name": "FAISS",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P09"
+      ],
+      "role": "Proposed similarity retrieval with versioned index metadata.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No index, package lock, access boundary or retrieval acceptance inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-009",
+      "name": "Dynamic Knowledge Graph",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P04",
+        "P09"
+      ],
+      "role": "Proposed entity and relationship graph.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No private graph implementation, schema or deployed state inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-010",
+      "name": "Causal graph",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P04"
+      ],
+      "role": "Proposed attributed causal hypotheses and lineage.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No causal inference validity or implementation inspected; association does not establish causation.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-011",
+      "name": "Temporal graph",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P04"
+      ],
+      "role": "Proposed historical state and temporal relations.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No temporal graph runtime, ordering or late-event acceptance inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-012",
+      "name": "Provenance graph",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P04",
+        "P07"
+      ],
+      "role": "Proposed source-to-assertion lineage.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "BuildAndDo evidence files do not establish the private graph's runtime or completeness.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-013",
+      "name": "PostHog",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P10"
+      ],
+      "role": "Proposed product/event telemetry.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No live project, configuration contract or maritime events inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-014",
+      "name": "Datadog",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P10"
+      ],
+      "role": "Runtime, CI and proposed maritime TEVV telemetry.",
+      "evidence_state": "source_inspected",
+      "evidence_refs": [
+        "SRC-DATADOG",
+        "SRC-INTAKE"
+      ],
+      "scope_limit": "BuildAndDo instrumentation/CI declarations exist; Sentinel ingestion and SLO performance are unverified.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-015",
+      "name": "Cloudflare",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P11",
+        "P12"
+      ],
+      "role": "Proposed public edge and gateway protection.",
+      "evidence_state": "owner_reported",
+      "evidence_refs": [],
+      "scope_limit": "No Sentinel edge configuration, deployed route or accepted security profile inspected.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-016",
+      "name": "GitLab / CI",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P01",
+        "P12"
+      ],
+      "role": "Private release/build provenance owner with public candidate intake.",
+      "evidence_state": "source_inspected",
+      "evidence_refs": [
+        "SRC-INTAKE",
+        "SRC-CANDIDATE",
+        "SRC-SUPPLY"
+      ],
+      "scope_limit": "Only public candidate/intake source inspected; private GitLab release and image/SBOM evidence unavailable.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "CN-SM-017",
+      "name": "Evidence epoch / Merkle owner",
+      "planned_lifecycle": "REUSE",
+      "planes": [
+        "P01",
+        "P07"
+      ],
+      "role": "Existing integrity mechanism for immutable evidence commitments.",
+      "evidence_state": "source_inspected",
+      "evidence_refs": [
+        "SRC-EPOCH",
+        "SRC-CANDIDATE"
+      ],
+      "scope_limit": "The local epoch is evidence-only. Owner-cited private tool/admission compatibility remains unverified.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-001",
+      "name": "Maritime Adapter SDK",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P02"
+      ],
+      "role": "Permitted open/commercial feed adapters and source manifests.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "No maritime adapter implementation or source license acceptance.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-002",
+      "name": "Maritime Ontology",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P04"
+      ],
+      "role": "Vessel, voyage, port, zone, observation and event contracts.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "Product semantics are documented; private wire schemas and ontology implementation are pending.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-003",
+      "name": "Maritime Entity Resolver",
+      "planned_lifecycle": "EXTEND",
+      "planes": [
+        "P04"
+      ],
+      "role": "Resolve observations into reversible vessel/entity hypotheses.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "EXTEND is conditional on CN-SM-001 base proof; otherwise owner must re-scope to BUILD.",
+      "receiving_seat": "IDE1",
+      "extends_component": "CN-SM-001",
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-004",
+      "name": "Track Continuity Engine",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P05"
+      ],
+      "role": "Preserve track identity and explicit observation gaps.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "No maritime implementation or continuity benchmark.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-005",
+      "name": "Maritime Feature Engine",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P05"
+      ],
+      "role": "Versioned deterministic, temporal and graph features.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "Candidate feature families are design intent; no operating detection claim.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-006",
+      "name": "Correlation Engine",
+      "planned_lifecycle": "EXTEND",
+      "planes": [
+        "P05"
+      ],
+      "role": "Associate cross-source features into candidate patterns.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "EXTEND is conditional on verified Sentinel inference/correlation base.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": "CN-SM-001",
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-007",
+      "name": "ThreatCue Compiler",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P05",
+        "P08"
+      ],
+      "role": "Compile explainable prioritized cue revisions.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "Semantic contract only; no implemented compiler or criminality classifier.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-008",
+      "name": "Maritime NNC Policy Pack",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P06"
+      ],
+      "role": "Evaluate evidence and authority for each requested cue action.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "No maritime policy thresholds, authority grants or bypass-test results.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-009",
+      "name": "Government Integration Gateway",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P08"
+      ],
+      "role": "Deliver admitted cue projections through receiving contracts.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "No Sextant, SPAR, MAGE or CSII interface access/integration inspected.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-010",
+      "name": "Geospatial Output Adapter",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P08"
+      ],
+      "role": "Project authorized state/cues to agreed geospatial features.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "Format and recipient mapping require receiving specifications and acceptance.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-011",
+      "name": "48-hour Demo Harness",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P10"
+      ],
+      "role": "Measure a permitted real-time window and replay package.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "Rehearsal timetable only; official rules, sources and harness pending.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-012",
+      "name": "Maritime Benchmark Pack",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P10"
+      ],
+      "role": "Adjudicated reference set, negative controls and metrics.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "No numeric target, label set or performance measurement is asserted.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-013",
+      "name": "Data Rights Registry",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P02",
+        "P11"
+      ],
+      "role": "Version source licenses, allowed uses and retention constraints.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "No feed agreement, government rights grant or redistributable dataset supplied.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-014",
+      "name": "CUI Isolation Profile",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P11",
+        "P12"
+      ],
+      "role": "Later controlled-data processing/export profile and acceptance.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "No compliance, cryptographic module validation or CUI handling authorization asserted.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-015",
+      "name": "CUI Evidence Epoch",
+      "planned_lifecycle": "EXTEND",
+      "planes": [
+        "P07",
+        "P11"
+      ],
+      "role": "Isolate controlled-data commitments under the existing integrity owner.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "EXTEND is conditional on CN-SM-017 compatibility and accepted export/security rules.",
+      "receiving_seat": "CMAX-B",
+      "extends_component": "CN-SM-017",
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    },
+    {
+      "id": "DBO-016",
+      "name": "Cost Meter",
+      "planned_lifecycle": "BUILD",
+      "planes": [
+        "P10"
+      ],
+      "role": "Attribute software/data/resource cost to monitored coverage.",
+      "evidence_state": "planned",
+      "evidence_refs": [],
+      "scope_limit": "No billing data, prices or cost-per-effect measurement supplied.",
+      "receiving_seat": "IDE1",
+      "extends_component": null,
+      "runtime_verified": false,
+      "admitted": false,
+      "release_identity": {
+        "source_commit": null,
+        "version": null,
+        "image_digest": null,
+        "sbom_ref": null,
+        "acceptance_ref": null
+      }
+    }
+  ],
+  "objects": [
+    {
+      "id": "OBJ-OBSERVATION",
+      "name": "Typed permitted observation",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-WORLD",
+      "name": "Versioned world model",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-FEATURES",
+      "name": "Versioned behavior features",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-CUE",
+      "name": "ThreatCue revision",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-VERDICT",
+      "name": "Action-specific NNC verdict",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-UI",
+      "name": "Sentinel demo / analyst UI",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-GOVERNMENT",
+      "name": "Contracted government/partner environment",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-OUTCOME",
+      "name": "Disposition, handoff and outcome evidence",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-RIGHTS",
+      "name": "Source rights snapshot",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-SBOM",
+      "name": "Generated candidate package/system SBOM",
+      "implemented": false
+    }
+  ],
+  "flow": [
+    {
+      "source": "DBO-001",
+      "relation": "PRODUCES",
+      "target": "OBJ-OBSERVATION",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-OBSERVATION",
+      "relation": "INGESTED_BY",
+      "target": "CN-SM-006",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-OBSERVATION",
+      "relation": "COMPILED_BY",
+      "target": "CN-SM-001",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-003",
+      "relation": "ASSOCIATES",
+      "target": "OBJ-OBSERVATION",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "CN-SM-001",
+      "relation": "WRITES",
+      "target": "OBJ-WORLD",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-WORLD",
+      "relation": "MATERIALIZED_IN",
+      "target": "CN-SM-007",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-WORLD",
+      "relation": "MATERIALIZED_IN",
+      "target": "CN-SM-009",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-WORLD",
+      "relation": "MATERIALIZED_IN",
+      "target": "CN-SM-010",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-WORLD",
+      "relation": "MATERIALIZED_IN",
+      "target": "CN-SM-011",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-WORLD",
+      "relation": "MATERIALIZED_IN",
+      "target": "CN-SM-012",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-WORLD",
+      "relation": "EVALUATED_BY",
+      "target": "DBO-004",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-WORLD",
+      "relation": "EVALUATED_BY",
+      "target": "DBO-005",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-004",
+      "relation": "PRODUCES",
+      "target": "OBJ-FEATURES",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-005",
+      "relation": "PRODUCES",
+      "target": "OBJ-FEATURES",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-006",
+      "relation": "CONSUMES",
+      "target": "OBJ-FEATURES",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-006",
+      "relation": "FEEDS",
+      "target": "DBO-007",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-007",
+      "relation": "PRODUCES",
+      "target": "OBJ-CUE",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-CUE",
+      "relation": "ADMITTED_BY",
+      "target": "DBO-008",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-008",
+      "relation": "USES",
+      "target": "CN-SM-002",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-008",
+      "relation": "PRODUCES",
+      "target": "OBJ-VERDICT",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-VERDICT",
+      "relation": "EMITTED_TO",
+      "target": "OBJ-UI",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-VERDICT",
+      "relation": "EMITTED_TO",
+      "target": "DBO-009",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-009",
+      "relation": "USES",
+      "target": "DBO-010",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-009",
+      "relation": "HANDS_OFF_TO",
+      "target": "OBJ-GOVERNMENT",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-GOVERNMENT",
+      "relation": "PRODUCES",
+      "target": "OBJ-OUTCOME",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-UI",
+      "relation": "PRODUCES",
+      "target": "OBJ-OUTCOME",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "OBJ-OUTCOME",
+      "relation": "RECORDED_BY",
+      "target": "CN-SM-003",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "CN-SM-003",
+      "relation": "CONTRIBUTES_TO",
+      "target": "OBJ-WORLD",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-013",
+      "relation": "PRODUCES",
+      "target": "OBJ-RIGHTS",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-008",
+      "relation": "CONSUMES",
+      "target": "OBJ-RIGHTS",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "DBO-009",
+      "relation": "CONSUMES",
+      "target": "OBJ-RIGHTS",
+      "state": "planned",
+      "authority_grant": false
+    },
+    {
+      "source": "CN-SM-016",
+      "relation": "PRODUCES",
+      "target": "OBJ-SBOM",
+      "state": "planned",
+      "authority_grant": false
+    }
+  ],
+  "required_materialization_proofs": [
+    {
+      "id": "PROOF-BASE",
+      "meaning": "Exact verified base for REUSE/EXTEND, with scope and declared interfaces."
+    },
+    {
+      "id": "PROOF-IDENTITY",
+      "meaning": "Applicable source/build/base/image identities or documented managed-service identity and observation."
+    },
+    {
+      "id": "PROOF-SBOM",
+      "meaning": "Generated image/package and system SBOM, locked installed closure, tool/format versions and recomputation evidence."
+    },
+    {
+      "id": "PROOF-RIGHTS",
+      "meaning": "Applicable software license, data rights, security marking, retention and redistribution evidence."
+    },
+    {
+      "id": "PROOF-CONTRACT",
+      "meaning": "Versioned schemas, interfaces, policies, authority and same-candidate TEVV contracts."
+    },
+    {
+      "id": "PROOF-ACCEPTANCE",
+      "meaning": "Actual native/candidate tests, negative controls, replay and source-coverage evidence."
+    },
+    {
+      "id": "PROOF-RUNTIME",
+      "meaning": "Dated observation of actual runtime and external activation receipt referencing the completed release."
+    },
+    {
+      "id": "PROOF-GOVERNMENT",
+      "meaning": "Official requirements and receiving integration/security contracts; no access inferred from product names."
+    }
+  ],
+  "integrity": {
+    "public_reference_tool": "scripts/ci/evidence_epoch.py",
+    "public_reference_algorithm": "sha256-merkle-v1",
+    "public_tool_authority": "evidence_only",
+    "private_owner_cited_tool": "tools/citadel_evidence_epoch.py",
+    "private_owner_tool_inspected": false,
+    "canonical_maritime_format_verified": false,
+    "new_merkle_implementation": false,
+    "commitments": [
+      {
+        "id": "SOFTWARE_ROOT",
+        "artifact_inputs": [
+          "source identity",
+          "application artifacts",
+          "dependency locks",
+          "builder/base/candidate image digests",
+          "image-derived SBOM"
+        ],
+        "commitment_inputs": [],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "CONTRACT_ROOT",
+        "artifact_inputs": [
+          "schema and interface artifacts",
+          "policy/authority pack",
+          "feature and TEVV contracts"
+        ],
+        "commitment_inputs": [],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "RUNTIME_ROOT",
+        "artifact_inputs": [
+          "runtime package provenance",
+          "deployment/environment/route contracts",
+          "dependency closure",
+          "candidate security/acceptance evidence"
+        ],
+        "commitment_inputs": [],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "RELEASE_ROOT",
+        "artifact_inputs": [],
+        "commitment_inputs": [
+          "SOFTWARE_ROOT",
+          "CONTRACT_ROOT",
+          "RUNTIME_ROOT"
+        ],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "DATA_RIGHTS_ROOT",
+        "artifact_inputs": [
+          "source identity",
+          "versioned agreements",
+          "purposes and recipients",
+          "retention and security constraints"
+        ],
+        "commitment_inputs": [],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "OBSERVATION_ROOT",
+        "artifact_inputs": [
+          "immutable observations"
+        ],
+        "commitment_inputs": [],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "WORLD_STATE_ROOT",
+        "artifact_inputs": [
+          "immutable world-state snapshots"
+        ],
+        "commitment_inputs": [],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "CUE_ROOT",
+        "artifact_inputs": [
+          "immutable cue revisions and admission references"
+        ],
+        "commitment_inputs": [],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "DISPOSITION_ROOT",
+        "artifact_inputs": [
+          "immutable analyst dispositions"
+        ],
+        "commitment_inputs": [],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "OUTCOME_ROOT",
+        "artifact_inputs": [
+          "immutable handoff receipts and outcome evidence"
+        ],
+        "commitment_inputs": [],
+        "digest": null,
+        "admission_receipt": null
+      },
+      {
+        "id": "EVIDENCE_EPOCH_ROOT",
+        "artifact_inputs": [
+          "window and coverage/completeness manifest"
+        ],
+        "commitment_inputs": [
+          "OBSERVATION_ROOT",
+          "WORLD_STATE_ROOT",
+          "CUE_ROOT",
+          "DISPOSITION_ROOT",
+          "OUTCOME_ROOT"
+        ],
+        "digest": null,
+        "admission_receipt": null
+      }
+    ],
+    "evidence_domains": [
+      {
+        "id": "PUBLIC_EVIDENCE_EPOCH_ROOT",
+        "template": "EVIDENCE_EPOCH_ROOT",
+        "boundary": "permitted_public_commercial",
+        "digest": null,
+        "export_requires_rights_review": true
+      },
+      {
+        "id": "CUI_EVIDENCE_EPOCH_ROOT",
+        "template": "EVIDENCE_EPOCH_ROOT",
+        "boundary": "later_isolated_CUI",
+        "digest": null,
+        "export_requires_rights_review": true
+      }
+    ],
+    "epoch_binding_refs": [
+      "RELEASE_ROOT",
+      "DATA_RIGHTS_ROOT"
+    ],
+    "activation_receipt": {
+      "outside_release_root": true,
+      "binds": [
+        "RELEASE_ROOT",
+        "observed_image_identity",
+        "observed_config_identity",
+        "time",
+        "outcome"
+      ],
+      "receipt": null
+    },
+    "cross_boundary_release": {
+      "default": "deny",
+      "requires": "Authorized content, marking, recipient and proof-material release review; hashing alone cannot sanitize CUI."
+    }
+  },
+  "official_requirements": [
+    {
+      "id": "REQ-01",
+      "source": "BRIEF-2026-09-16",
+      "official_reference": null,
+      "verification": "pending"
+    },
+    {
+      "id": "REQ-02",
+      "source": "BRIEF-2026-09-16",
+      "official_reference": null,
+      "verification": "pending"
+    },
+    {
+      "id": "REQ-03",
+      "source": "BRIEF-2026-09-16",
+      "official_reference": null,
+      "verification": "pending"
+    },
+    {
+      "id": "REQ-04",
+      "source": "BRIEF-2026-09-16",
+      "official_reference": null,
+      "verification": "pending"
+    },
+    {
+      "id": "REQ-05",
+      "source": "BRIEF-2026-09-16",
+      "official_reference": null,
+      "verification": "pending"
+    },
+    {
+      "id": "REQ-06",
+      "source": "BRIEF-2026-09-16",
+      "official_reference": null,
+      "verification": "pending"
+    },
+    {
+      "id": "REQ-07",
+      "source": "BRIEF-2026-09-16",
+      "official_reference": null,
+      "verification": "pending"
+    }
+  ],
+  "measurements": {
+    "metric_ids": [
+      "M-01",
+      "M-02",
+      "M-03",
+      "M-04",
+      "M-05",
+      "M-06",
+      "M-07",
+      "M-08",
+      "M-09",
+      "M-10",
+      "M-11",
+      "M-12",
+      "M-13",
+      "M-14",
+      "M-15"
+    ],
+    "status": "not_measured",
+    "numeric_results": null,
+    "numeric_targets": null
+  },
+  "handoff": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md"
+}

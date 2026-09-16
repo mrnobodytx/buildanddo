@@ -36,8 +36,8 @@ GUILD, CHANNEL, USER = 12345678901234567, 23456789012345678, 34567890123456789
 class Backend:
     """Keep one Node policy instance for both intake and processing clients."""
 
-    def __init__(self) -> None:
-        self.process = subprocess.Popen(['node', 'tests/upgrade/research-backend-driver.mjs'], cwd=ROOT,
+    def __init__(self, driver: str = 'tests/upgrade/research-backend-driver.mjs') -> None:
+        self.process = subprocess.Popen(['node', driver], cwd=ROOT,
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         self.lock = threading.Lock()
 

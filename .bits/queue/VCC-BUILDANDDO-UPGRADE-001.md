@@ -20,6 +20,72 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Sentinel Maritime planning continuation authorized 2026-09-16
+
+The owner supplied the product blueprint and infrastructure map. Freeze their
+public design and evidence requirements before deck production. This is an A0
+documentation continuation of the existing dispatch; private product code,
+infrastructure, data acquisition and deployment remain receiving-seat work.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| BU | Register owner-authored scope and inspect existing evidence tooling | `python scripts/ci/agent_context.py --check` | done — existing epoch and candidate-source boundaries inspected |
+| BV | Freeze product/contracts, inventory and deck claim map | Run the audit bash block in docs/sentinel-maritime/integrity.md | done — 33 components, 12 planes, 15 metric definitions and 15 slide anchors |
+| BW | Define integrity ownership and private implementation handoff | Same inventory audit, including source fingerprints and commitment dependencies | done — 12 source fingerprints, 32 planned flow edges and 11 acyclic commitment definitions |
+| BX | Preserve memory and verify public planning artifacts | Context, public-boundary and dispatch-memory checks | done — current §15 report records evidence and preserves prior events |
+
+Outcome: SM-BL-1.0 freezes the owner-authored public product decisions and proof
+obligations. The inventory is explicitly a plan: proposed reuse, source evidence
+and operating acceptance are distinct, and official DIU references are pending.
+Private source/image/SBOM materialization and runtime/integration/security work
+are assigned in .bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md.
+No maritime implementation, new Merkle logic, active SBOM, operational root,
+numeric benchmark, deployment or deck submission is claimed. Earlier application
+acceptance remains unchanged; those tests were not rerun for public documents.
+
+Memory brief: dossiers and research source are the committed baseline; their
+native/frontend/live acceptance is still pending. This public checkout contains
+BuildAndDo mission/evidence modules and `scripts/ci/evidence_epoch.py`, whose
+epochs are explicitly non-authoritative. `scripts/ci/candidate_manifest.py`
+fingerprints tracked source and declares candidate-only authority. No inspected
+Sentinel/NNC runtime, generated maritime SBOM, government API specification,
+official DIU reference or cited private epoch tool is available. No service,
+authenticated seat or private runtime is attached; no seat event is fabricated.
+
+## Entity dossier continuation authorized 2026-09-15
+
+The owner's current request extends this registered SRS at A2 for private
+identity-linked entity storage/recall and source-backed activation diagnostics.
+The local branch was reconciled with the already-merged PR 27 source before work.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| BN | Register dossier scope and inspect activation | `python scripts/ci/agent_context.py --check` | done |
+| BO | Persist encrypted private dossiers with native identity and atomic retries | `node --test tests/upgrade/dossier-system.test.mjs` | partial — 19 local tests pass; native encryption/auth/concurrency acceptance pending |
+| BP | Connect private Discord entity commands and recovery | `python -m unittest discover -s tests/upgrade -p 'test_discordbot_dossier.py'` | partial — 15 connected source cases pass; native SDK/server acceptance pending |
+| BQ | Add account-linked dossier editing and recall | `node --test tests/upgrade/dossier-client.test.mjs`; rendered suites in docs/private-dossiers.md | partial — 9 client cases pass; 16 rendered cases authored, runner unavailable |
+| BR | Add read-only startup diagnostics and actual activation handoff | `python -m unittest discover -s tests/upgrade -p 'test_discordbot_doctor.py'` | done — 7 cases pass; actual launcher remains unverified |
+| BS | Verify connected source and record native/frontend limits | Node/Python, coverage, static and frontend gates | done — available source checks pass; unavailable acceptance recorded |
+| BT | Preserve memory and refresh report, context and boundary evidence | Context, boundary and memory checks | done — see current §15 report and verified memory payload |
+
+Current continuation evidence (2026-09-16): 227 Node passes; 129 Python passes
+and six native skips. The targeted Python source checker passes 111 cases with
+two skips and at least 83.72% statement coverage per module. Selected JavaScript
+coverage is 99.85% lines, 92.87% branches, 99.04% functions. Source diagnostics
+parse 231 modules with zero errors. Application smoke remains 4/7; native and
+frontend acceptance must run on a dependency-enabled runner. No activation,
+credential provisioning, command synchronization or external message occurred.
+
+Memory brief at the PR 27 baseline: the public bot has 13 public and seven optional research
+commands. Native Discord OAuth links and authenticated research service bindings
+exist, but no dossier/entity store exists. The local Compose stack runs web and
+PocketBase only. The old bot referenced a VPS service; its service definition is
+not present. No deployed service, authenticated seat or live bot is attached.
+The first source inspection confirms Discord.py, pypdf and the native PocketBase
+executable are absent. Do not infer activation from merges or fixture results.
+No seat message is fabricated. The initial dossier scope is private to each
+canonical user, with explicit entry and no passive Discord collection.
+
 ## Authorization and objective
 
 Owner Dmitry Richard explicitly authorized task-table creation, SRS registration
