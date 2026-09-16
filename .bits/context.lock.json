@@ -418,7 +418,8 @@
       "apps/web/tools/observability-smoke.mjs",
       "apps/web/vite.config.js",
       "scripts/deploy/roadmap_status.py",
-      "scripts/deploy/ship.py"
+      "scripts/deploy/ship.py",
+      "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 30,
     "python_files": 104,
