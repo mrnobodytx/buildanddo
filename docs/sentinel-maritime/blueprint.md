@@ -15,9 +15,11 @@
 # Intent:      Freeze the owner's maritime product decisions and separate them from capability and solicitation evidence still needed for the DIU deck.
 # ───────────────────────────────────────────────────────────────
 
-# Sentinel Maritime Intelligence Engine — product baseline 1.0
+# Sentinel Maritime Intelligence Engine — product baseline 1.1
 
-Baseline: `SM-BL-1.0`, recorded 2026-09-16 from the owner's supplied blueprint.
+Baseline: `SM-BL-1.1`, recorded 2026-09-16 from the owner's supplied blueprint,
+white-paper outline and master implementation contract. Supersedes `SM-BL-1.0`
+at the historical planning revision identified in `system-plan.json`.
 Decision owner: Dmitry Richard, Citadel Nexus Inc. Engineering records the
 owner-authored design here; this is a public planning artifact. Maritime
 implementation, an operating system SBOM and government acceptance are pending.
@@ -37,7 +39,7 @@ customer need not adopt it as an operational common operating picture (COP).
 | DEC-01 | Sell Sentinel Maritime Intelligence Engine as the Deep Blue capability. Citadel is its underlying architecture; BuildAndDo supplies workflow/evidence functions behind the scenes. |
 | DEC-02 | Keep observations, identity hypotheses, observed state, inferred behavior and analyst judgments distinct. Preserve uncertainty and conflicting evidence. |
 | DEC-03 | Evaluate a composite detector architecture: deterministic, temporal, graph and statistical features, optional ML and external intelligence. A cue explains reasons for analyst attention. |
-| DEC-04 | NNC evaluates whether a specific surfacing, escalation, cross-cueing or handoff action has sufficient evidence and authority. Failed or unknown required gates hold that action. |
+| DEC-04 | NNC evaluates whether a specific surfacing, escalation, cross-cueing or handoff action has sufficient evidence and authority. Missing support holds that action; an explicit prohibition denies it. |
 | DEC-05 | Prioritize government API/data handoff. Implement destination adapters against contracts supplied by the receiving authority. |
 | DEC-06 | Trace every cue revision through observations, rights, model/detector/policy versions, release identity, disposition and outcome. |
 | DEC-07 | Keep release, evidence-epoch and data-rights commitments separate. Use the existing integrity owner; introduce no second Merkle implementation. |
@@ -45,6 +47,17 @@ customer need not adopt it as an operational common operating picture (COP).
 | DEC-09 | Separate software licensing from data rights and costs. Support customer-provided data or an optional transparently priced data bundle. |
 | DEC-10 | Publish measured results with methods and denominators. Unmeasured values remain targets to agree, without invented numbers. |
 | DEC-11 | Freeze the design version for deck consistency; revise claims only when their evidence changes. A new design revision records which decision it supersedes. |
+| DEC-12 | Extend the existing Sentinel at https://sentinel.citadel-nexus.com. Discover the existing UI, auth, services, graph, evidence, NNC and release owners before code. No parallel product shell or duplicate Merkle implementation. |
+| DEC-13 | Require tenant and mission scope through objects, graph queries, subscriptions, replay and exports. Separate public, commercial and future CUI evidence/proof domains. |
+| DEC-14 | Produce one self-contained submission format from one claim baseline. Keep company facts, official requirements, source evidence and runtime acceptance independently qualified. |
+
+Revision 1.1 records the owner's latest decisions: DEC-12–14 are added; DEC-04
+is refined by separating CandidateCue, three admission verdicts and orthogonal
+SUPPRESS/ESCALATE dispositions; DEC-07–08 gain explicit commercial proof isolation
+and detached cue/proof/epoch receipts. A known prohibition yields DENY, whereas
+missing conditions yield HOLD. The 1.0 source fingerprints remain unchanged.
+The seven-part paper is `white-paper.md`; the private execution contract and
+all 13 work orders are `implementation-contract.md` and `work-orders.json`.
 
 The exclusions remain explicit: no satellite constellation, new maritime sensors,
 UAS/USV/UUV platform, replacement government COP, black-box criminality verdict,
@@ -129,9 +142,9 @@ below. The windows here are a rehearsal plan, not measured service guarantees.
 |---|---|---|
 | 0–2 h | Validate permission/scope, connect permitted sources and establish initial world state. | Source receipt, clock/coverage checks, missing-source report. Initial state is not a historical behavioral baseline. |
 | 2–12 h | Associate observations and assemble track/route history. | Versioned association hypotheses and continuity/gap report. Use only permitted historical data; otherwise mark cold-start uncertainty. |
-| 12–36 h | Evaluate candidate features and cross-source patterns. | Feature snapshots, detector versions, candidates including negative controls. A qualifying event can produce a cue immediately; the windows do not delay alerts. |
-| 36–44 h | Review priorities, assemble dossiers and evaluate action admission. | Supporting/contradicting evidence, gate outcomes, held cues and reasons. |
-| 44–48 h | Produce presentation, machine-readable handoff and replay package. | Time-bounded manifest, benchmark results, simulated-versus-actual handoff labels and an export review. |
+| 12–24 h | Evaluate candidate features and cross-source patterns. | Feature snapshots, detector versions, candidates including negative controls. A qualifying event can produce a cue immediately; the windows do not delay alerts. |
+| 24–36 h | Evaluate NNC admission, review priorities and test suppression/escalation. | Supporting/contradicting evidence, admitted proofs, held/denied candidates and reasons. |
+| 36–48 h | Produce permitted machine-readable handoff, replay and metric review. | Time-bounded manifest, denominator-based results, simulated-versus-actual receipt labels and export review. |
 
 Configure geography, authorized use, observation interval, source budget,
 recipient, data rights and evaluation rules before T0. A feed outage produces a
@@ -178,6 +191,9 @@ must be resolved before an externally submitted deck calls them DIU requirements
 | REQ-05 | Sextant, SPAR, MAGE and CSII are relevant receiving environments. | Named interfaces, disclosure permissions, sandbox and recipient acceptance contract. |
 | REQ-06 | Later controlled data requires the listed CUI/security duties. | Applicable clauses, versions, MOU and security authority's evidence checklist. |
 | REQ-07 | Software license fees and data costs must be described. | Submission format, required pricing granularity and rights assumptions. |
+| REQ-08 | Submit one solution document: a 16:9 deck up to 15 slides OR a white paper up to 10 pages. | Official solicitation/FAQ revision and portal constraints, including any appendix/cover rules; verify rendered pages before submission. |
+| REQ-09 | Technical and company viability include ability to develop, deliver and sustain the solution. | Official rubric and dated company-approved team, staffing and sustainment evidence. |
+| REQ-10 | Existing customer base and commercial traction must be described. | Official requested fields and permitted, dated aggregate customer/ARR/pilot evidence; no numeric values supplied here. |
 
 `system-plan.json` records planned lifecycle using exactly REUSE, EXTEND and
 BUILD. These are design dispositions, not evidence of operation. Every component
@@ -205,7 +221,14 @@ claim qualification below; it is not a completed or submitted presentation.
 | 12 | 48-hour demonstration | REQ-02–03 and rehearsal plan; timing subject to official terms. |
 | 13 | Performance, analyst value and economics | Metric contract, REQ-04; all results/targets pending. |
 | 14 | Public-data phase and later CUI boundary | DEC-08, REQ-06; no certification assertion. |
-| 15 | Commercial offer and next phase | DEC-09, REQ-07; licensing/data split, no invented dollar figures. |
+| 15 | Commercial offer, team and next phase | DEC-09, DEC-14, REQ-07/09/10; licensing/data split, owner-reported team, no invented customer or dollar figures. |
+
+The paper and deck are alternative expressions of this baseline. A deck built
+from this map must retain its scenario, capability qualifications, measurement
+method and integration/commercial boundaries without relying on a second paper.
+`system-plan.json` maps the seven paper sections to these slide numbers and
+tracks submission HOLD, pending company facts and unverified official sources.
+No deck or paginated PDF is generated or submitted by the current continuation.
 
 Brand hierarchy: **Sentinel** observes and models; **NNC** evaluates support and
 authority for a cue action; **Citadel** preserves evidence, state, provenance and

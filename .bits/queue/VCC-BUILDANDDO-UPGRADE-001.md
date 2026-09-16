@@ -20,6 +20,51 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Sentinel Maritime narrative and Astra contract authorized 2026-09-16
+
+The owner supplied the seven-part white-paper outline and 55-section master
+build contract. This A0 continuation records those decisions under the existing
+SRS. Extend the existing Sentinel product, with discovery before implementation.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| BY | Register scope and reconcile the merged planning baseline | `python scripts/ci/agent_context.py --check` | done — existing dispatch extended before the narrative and work orders |
+| BZ | Write the paper and align evidence/semantic contracts | Run the planning audit in docs/sentinel-maritime/integrity.md | done — seven paper sections, qualified company/requirement register and SM-BL-1.1 contracts |
+| CA | Prepare all 13 work orders and the private discovery handoff | Same audit, including 55-section traceability, negative tests and dependency gates | done — 23 fields per order, 24 negative requirements, 55 source sections and eight rejected corruptions |
+| CB | Validate public artifacts and preserve governance history | Context, boundary and dispatch-memory checks | done — all four document gates pass; all 56 prior memory events preserved |
+
+Memory brief: local origin/main contains the merged SM-BL-1.0 baseline and
+dossier source; the resumed checkout was fast-forwarded to it before edits.
+The existing inventory has 33 components, 12 planes, 12 pinned public sources
+and no verified Sentinel runtime. No private repository, receiving dispatch,
+official DIU document, authenticated seat or PDF renderer is available here.
+The owner's latest brief is the decision source, not a runtime test or official
+solicitation reference. No seat event or external message is fabricated.
+
+Smoke for this documentation continuation is the embedded planning audit,
+`python scripts/ci/agent_context.py --check`,
+`python scripts/ci/verify_public_boundary.py`, and
+`python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`.
+Application smoke stays at its previously observed 4/7; private discovery,
+product execution, rendered-paper acceptance and external submission stay open.
+
+Observed planning audit: 33 components, 12 planes, 42 proposed flow edges,
+12 unchanged pinned source fingerprints, 11 root definitions and 14 acyclic
+cue/proof/receipt artifact definitions. Public/commercial/future CUI proofs are
+distinct. The seven paper sections map to all 15 deck anchors; all ten official
+requirements await references and company traction numbers remain not supplied.
+The paper is source Markdown; no final PDF pagination or submission is claimed.
+
+CB evidence: 294 file vectors, 624 declared edges and 60 events pass the existing
+memory verifier with complete IOO and no orphans. Four new files and their JSON
+sidecar convention retain CGRF provenance. Public boundary checks 561 tracked
+files without failures; six older context findings and four unwired gates remain.
+Current continuation gates: 4/4. Cumulative accepted phase gates: 46/80; private
+implementation and earlier application runtime acceptance are still open.
+The final context precheck caught the newly staged document count; regenerating
+the lock after staging corrected it and the context check passed. The report
+retains that failed precheck and its applied fix.
+
 ## Sentinel Maritime planning continuation authorized 2026-09-16
 
 The owner supplied the product blueprint and infrastructure map. Freeze their

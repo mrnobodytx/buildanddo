@@ -1,9 +1,9 @@
 {
   "schema_version": "sentinel-maritime.system-plan/v1",
-  "baseline_id": "SM-BL-1.0",
+  "baseline_id": "SM-BL-1.1",
   "title": "Sentinel Maritime Intelligence Engine",
   "owner": "Citadel Nexus Inc.",
-  "decision_source": "Owner-supplied BRIEF-2026-09-16",
+  "decision_source": "Owner-supplied maritime blueprint, white-paper outline and master implementation contract, 2026-09-16",
   "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
   "srs_codes": [
     "SRS-BUILDANDDO-UPGRADE-001"
@@ -158,7 +158,9 @@
   "baseline_documents": [
     "docs/sentinel-maritime/blueprint.md",
     "docs/sentinel-maritime/contracts.md",
-    "docs/sentinel-maritime/integrity.md"
+    "docs/sentinel-maritime/integrity.md",
+    "docs/sentinel-maritime/white-paper.md",
+    "docs/sentinel-maritime/implementation-contract.md"
   ],
   "planes": [
     {
@@ -1124,6 +1126,26 @@
       "id": "OBJ-SBOM",
       "name": "Generated candidate package/system SBOM",
       "implemented": false
+    },
+    {
+      "id": "OBJ-CANDIDATE",
+      "name": "Non-operational CandidateCue revision",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-PROOF",
+      "name": "Authorized base CueProof and detached membership",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-DISPOSITION",
+      "name": "Attributed analyst disposition",
+      "implemented": false
+    },
+    {
+      "id": "OBJ-HANDOFF-RECEIPT",
+      "name": "Durable handoff attempt and result revisions",
+      "implemented": false
     }
   ],
   "flow": [
@@ -1242,13 +1264,13 @@
     {
       "source": "DBO-007",
       "relation": "PRODUCES",
-      "target": "OBJ-CUE",
+      "target": "OBJ-CANDIDATE",
       "state": "planned",
       "authority_grant": false
     },
     {
-      "source": "OBJ-CUE",
-      "relation": "ADMITTED_BY",
+      "source": "OBJ-CANDIDATE",
+      "relation": "EVALUATED_BY",
       "target": "DBO-008",
       "state": "planned",
       "authority_grant": false
@@ -1276,7 +1298,7 @@
     },
     {
       "source": "OBJ-VERDICT",
-      "relation": "EMITTED_TO",
+      "relation": "CHECKED_BY",
       "target": "DBO-009",
       "state": "planned",
       "authority_grant": false
@@ -1350,6 +1372,86 @@
       "target": "OBJ-SBOM",
       "state": "planned",
       "authority_grant": false
+    },
+    {
+      "source": "DBO-007",
+      "relation": "MATERIALIZES",
+      "target": "OBJ-CUE",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Only after a current NNC ADMIT binds this candidate revision, action and projection."
+    },
+    {
+      "source": "OBJ-CUE",
+      "relation": "REFERENCES",
+      "target": "OBJ-VERDICT",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Recorded ADMIT for this action; other decisions remain associated with the candidate."
+    },
+    {
+      "source": "OBJ-CUE",
+      "relation": "PACKAGED_AS",
+      "target": "OBJ-PROOF",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Base proof exists before surfacing and references the immutable cue core without backreferences."
+    },
+    {
+      "source": "OBJ-PROOF",
+      "relation": "VERIFIED_BY",
+      "target": "CN-SM-017",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Use the discovered existing integrity owner and canonical conformance."
+    },
+    {
+      "source": "OBJ-PROOF",
+      "relation": "CONSUMED_BY",
+      "target": "DBO-009",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Required accessible proof and current authority/rights must pass before handoff."
+    },
+    {
+      "source": "OBJ-CUE",
+      "relation": "PRESENTED_IN",
+      "target": "OBJ-UI",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Only the authorized projection, with proof and recorded action eligibility."
+    },
+    {
+      "source": "OBJ-UI",
+      "relation": "CAPTURES",
+      "target": "OBJ-DISPOSITION",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Attributed persisted review; no direct NNC verdict mutation."
+    },
+    {
+      "source": "DBO-009",
+      "relation": "RECORDS",
+      "target": "OBJ-HANDOFF-RECEIPT",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Durable attempt before network effect, appended result and unknown-delivery reconciliation."
+    },
+    {
+      "source": "OBJ-HANDOFF-RECEIPT",
+      "relation": "LINKS_TO",
+      "target": "OBJ-OUTCOME",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Transport acknowledgement and operational outcome remain distinct evidence."
+    },
+    {
+      "source": "OBJ-DISPOSITION",
+      "relation": "LINKS_TO",
+      "target": "OBJ-OUTCOME",
+      "state": "planned",
+      "authority_grant": false,
+      "condition": "Feedback becomes new evidence, not automatic policy changes."
     }
   ],
   "required_materialization_proofs": [
@@ -1519,16 +1621,26 @@
       {
         "id": "PUBLIC_EVIDENCE_EPOCH_ROOT",
         "template": "EVIDENCE_EPOCH_ROOT",
-        "boundary": "permitted_public_commercial",
+        "boundary": "permitted_public",
         "digest": null,
-        "export_requires_rights_review": true
+        "export_requires_rights_review": true,
+        "runtime_verified": false
+      },
+      {
+        "id": "COMMERCIAL_EVIDENCE_EPOCH_ROOT",
+        "template": "EVIDENCE_EPOCH_ROOT",
+        "boundary": "licensed_commercial",
+        "digest": null,
+        "export_requires_rights_review": true,
+        "runtime_verified": false
       },
       {
         "id": "CUI_EVIDENCE_EPOCH_ROOT",
         "template": "EVIDENCE_EPOCH_ROOT",
         "boundary": "later_isolated_CUI",
         "digest": null,
-        "export_requires_rights_review": true
+        "export_requires_rights_review": true,
+        "runtime_verified": false
       }
     ],
     "epoch_binding_refs": [
@@ -1549,50 +1661,282 @@
     "cross_boundary_release": {
       "default": "deny",
       "requires": "Authorized content, marking, recipient and proof-material release review; hashing alone cannot sanitize CUI."
-    }
+    },
+    "cue_artifact_dependencies": [
+      {
+        "id": "INPUT_EVIDENCE_SET",
+        "depends_on": [],
+        "meaning": "Permitted observations, world/feature snapshots, prior completed input epochs, release and rights references.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "CANDIDATE_INPUT",
+        "depends_on": [
+          "INPUT_EVIDENCE_SET"
+        ],
+        "meaning": "Immutable candidate projection, captured inference and requested action/recipient context.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "ADMISSION_DECISION",
+        "depends_on": [
+          "CANDIDATE_INPUT"
+        ],
+        "meaning": "NNC verdict binds candidate/action context; it does not hash a future ThreatCue.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "THREAT_CUE",
+        "depends_on": [
+          "CANDIDATE_INPUT",
+          "ADMISSION_DECISION"
+        ],
+        "meaning": "Immutable admitted cue core; excludes outward proof, final-epoch and future receipt links.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "BASE_CUE_PROOF",
+        "depends_on": [
+          "THREAT_CUE",
+          "ADMISSION_DECISION",
+          "INPUT_EVIDENCE_SET"
+        ],
+        "meaning": "Base proof exists before surfacing/handoff; no final digest of the epoch that will contain it.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "CUE_EPOCH",
+        "depends_on": [
+          "BASE_CUE_PROOF",
+          "THREAT_CUE",
+          "ADMISSION_DECISION"
+        ],
+        "meaning": "Existing owner closes the cue/evidence epoch using its actual canonical format.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "CUE_MEMBERSHIP_RECEIPT",
+        "depends_on": [
+          "CUE_EPOCH",
+          "BASE_CUE_PROOF"
+        ],
+        "meaning": "Detached final-root membership proof; it is not an input to CUE_EPOCH.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "ANALYST_DISPOSITION",
+        "depends_on": [
+          "THREAT_CUE",
+          "BASE_CUE_PROOF"
+        ],
+        "meaning": "Attributed review with its own time/scope and required authority.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "HANDOFF_PAYLOAD",
+        "depends_on": [
+          "THREAT_CUE",
+          "BASE_CUE_PROOF",
+          "CUE_MEMBERSHIP_RECEIPT",
+          "ANALYST_DISPOSITION"
+        ],
+        "meaning": "Currently admitted recipient projection; required prior proof and human review are resolved first.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "HANDOFF_ATTEMPT",
+        "depends_on": [
+          "HANDOFF_PAYLOAD"
+        ],
+        "meaning": "Durable attempt identity/receipt is stored before network send.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "HANDOFF_RESULT",
+        "depends_on": [
+          "HANDOFF_ATTEMPT"
+        ],
+        "meaning": "Append-only receipt revision records acknowledgement, failure or unresolved delivery.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "OUTCOME_EVIDENCE",
+        "depends_on": [
+          "HANDOFF_RESULT"
+        ],
+        "meaning": "Actual subsequent outcome with provenance/uncertainty; acknowledgement alone is not usefulness.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "FOLLOWUP_EPOCH",
+        "depends_on": [
+          "CUE_EPOCH",
+          "ANALYST_DISPOSITION",
+          "HANDOFF_ATTEMPT",
+          "HANDOFF_RESULT",
+          "OUTCOME_EVIDENCE"
+        ],
+        "meaning": "Later committed history references prior roots without reopening them.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      },
+      {
+        "id": "DETACHED_CUE_VIEW",
+        "depends_on": [
+          "THREAT_CUE",
+          "BASE_CUE_PROOF",
+          "CUE_MEMBERSHIP_RECEIPT",
+          "HANDOFF_RESULT",
+          "FOLLOWUP_EPOCH"
+        ],
+        "meaning": "Authorized query projection; never an input back into the immutable cue/proof it presents.",
+        "artifact_ref": null,
+        "runtime_verified": false
+      }
+    ]
   },
   "official_requirements": [
     {
       "id": "REQ-01",
       "source": "BRIEF-2026-09-16",
       "official_reference": null,
-      "verification": "pending"
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
     },
     {
       "id": "REQ-02",
       "source": "BRIEF-2026-09-16",
       "official_reference": null,
-      "verification": "pending"
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
     },
     {
       "id": "REQ-03",
       "source": "BRIEF-2026-09-16",
       "official_reference": null,
-      "verification": "pending"
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
     },
     {
       "id": "REQ-04",
       "source": "BRIEF-2026-09-16",
       "official_reference": null,
-      "verification": "pending"
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
     },
     {
       "id": "REQ-05",
       "source": "BRIEF-2026-09-16",
       "official_reference": null,
-      "verification": "pending"
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
     },
     {
       "id": "REQ-06",
       "source": "BRIEF-2026-09-16",
       "official_reference": null,
-      "verification": "pending"
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
     },
     {
       "id": "REQ-07",
       "source": "BRIEF-2026-09-16",
       "official_reference": null,
-      "verification": "pending"
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
+    },
+    {
+      "id": "REQ-08",
+      "source": "Owner-supplied narrative/implementation brief, 2026-09-16",
+      "official_reference": null,
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
+    },
+    {
+      "id": "REQ-09",
+      "source": "Owner-supplied narrative/implementation brief, 2026-09-16",
+      "official_reference": null,
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "source": "Owner-supplied narrative/implementation brief, 2026-09-16",
+      "official_reference": null,
+      "verification": "pending",
+      "required_reference_fields": [
+        "official_url_or_document_id",
+        "revision_or_date",
+        "section_or_page",
+        "verified_by",
+        "verified_at"
+      ]
     }
   ],
   "measurements": {
@@ -1615,7 +1959,242 @@
     ],
     "status": "not_measured",
     "numeric_results": null,
-    "numeric_targets": null
+    "numeric_targets": null,
+    "publication_labels": [
+      "CURRENT \u2014 measured",
+      "DEMO TARGET \u2014 to validate",
+      "UNMEASURED \u2014 not yet claimed"
+    ]
   },
-  "handoff": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md"
+  "handoff": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+  "revision": {
+    "supersedes": "SM-BL-1.0",
+    "previous_planning_commit": "b1e81ac2b54453aa60eb34f24cc09cd4394d0715",
+    "reason": "Record the owner's existing-Sentinel extension, seven-part narrative and discovery-first 13-wave contract.",
+    "reconciliations": [
+      "CandidateCue is distinct from admitted ThreatCue; HOLD/DENY are AdmissionDecision outcomes and SUPPRESS/ESCALATE are orthogonal dispositions.",
+      "Tenant and mission scope is mandatory across objects and indirect read/write paths.",
+      "Commercial evidence has a separate proof boundary; release, rights and epoch roots stay independent.",
+      "Cue proofs, completed epoch membership and later receipt links are acyclic detached artifacts.",
+      "Source-inspection evidence is preserved unchanged; no runtime or official claim is promoted."
+    ]
+  },
+  "program": {
+    "id": "SENTINEL-MARITIME-V1",
+    "target_surface": "https://sentinel.citadel-nexus.com",
+    "mode": "EXTEND_EXISTING",
+    "new_standalone_ui": false,
+    "new_merkle_implementation": false,
+    "model_authority": "NONE",
+    "cui_phase_1": "DISABLED",
+    "production_writes": "HOLD",
+    "discovery_required_before_code": true,
+    "runtime_discovery_complete": false,
+    "implementation_contract": "docs/sentinel-maritime/implementation-contract.md",
+    "work_orders": "docs/sentinel-maritime/work-orders.json"
+  },
+  "publication": {
+    "state": "HOLD",
+    "submission_documents": 1,
+    "format_requirement_source": "REQ-08",
+    "format_verification": "pending",
+    "alternatives": [
+      {
+        "format": "deck",
+        "aspect_ratio": "16:9",
+        "maximum_slides": 15
+      },
+      {
+        "format": "white_paper",
+        "maximum_pages": 10,
+        "target_pages": 7
+      }
+    ],
+    "separate_paper_plus_deck_authorized": false,
+    "deck_self_contained": true,
+    "white_paper": "docs/sentinel-maritime/white-paper.md",
+    "white_paper_version": "WP-1.0",
+    "rendered_artifact": null,
+    "rendered_page_count": null,
+    "external_submission": false,
+    "paper_sections": [
+      {
+        "id": "WP-01",
+        "section": 1,
+        "title": "Executive summary and mission problem",
+        "slides": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "WP-02",
+        "section": 2,
+        "title": "Operational scenario and analyst value",
+        "slides": [
+          6,
+          7,
+          9
+        ]
+      },
+      {
+        "id": "WP-03",
+        "section": 3,
+        "title": "Architecture, ThreatCue and deterministic admission",
+        "slides": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "id": "WP-04",
+        "section": 4,
+        "title": "Differentiation and operational assurance",
+        "slides": [
+          11
+        ]
+      },
+      {
+        "id": "WP-05",
+        "section": 5,
+        "title": "Demonstration and measurable evaluation",
+        "slides": [
+          12,
+          13
+        ]
+      },
+      {
+        "id": "WP-06",
+        "section": 6,
+        "title": "Integration, deployment and security transition",
+        "slides": [
+          10,
+          14
+        ]
+      },
+      {
+        "id": "WP-07",
+        "section": 7,
+        "title": "Commercial model, team and transition",
+        "slides": [
+          15
+        ]
+      }
+    ],
+    "required_before_external_submission": [
+      "Resolve official solicitation/FAQ/portal requirements, format, page/slide and appendix rules with dated references.",
+      "Approve dated team/customer/company facts or retain explicit not-supplied qualifications without invented numbers.",
+      "Substantiate each current operational claim or retain its owner-reported/planned qualification.",
+      "Verify source licensing, disclosure and recipient/publication rights for all evidence and images.",
+      "Render exactly one self-contained selected format and inspect page count, readable layout, citations and claim alignment."
+    ]
+  },
+  "company_facts": [
+    {
+      "id": "FACT-01",
+      "claim": "Dmitry Richard role",
+      "value": "Architecture, implementation and deterministic orchestration",
+      "evidence_state": "owner_reported",
+      "source": "Owner-supplied brief",
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Dated approved biography, role and availability."
+    },
+    {
+      "id": "FACT-02",
+      "claim": "Dinah Adams role",
+      "value": "Operations and commercialization",
+      "evidence_state": "owner_reported",
+      "source": "Owner-supplied brief",
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Dated role, biography and availability confirmation."
+    },
+    {
+      "id": "FACT-03",
+      "claim": "Employee count",
+      "value": 2,
+      "evidence_state": "owner_reported",
+      "source": "Owner-supplied brief",
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Company confirmation with effective date; not a measured staffing capacity claim."
+    },
+    {
+      "id": "FACT-04",
+      "claim": "Existing live Sentinel",
+      "value": "Owner reports the existing Sentinel at the named target surface.",
+      "evidence_state": "owner_reported",
+      "source": "Owner-supplied brief",
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Actual source, image, owner and dated served-release/health receipt."
+    },
+    {
+      "id": "FACT-05",
+      "claim": "Existing BuildAndDo",
+      "value": "Public mission/evidence source inspected; native/frontend/live acceptance remains pending.",
+      "evidence_state": "source_inspected",
+      "source": "SRC-MISSIONS / SRC-WORKFLOWS / SRC-TEST-REPORT",
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Use pinned source references for source claims; current deployment requires separate dated evidence."
+    },
+    {
+      "id": "FACT-06",
+      "claim": "Existing Citadel infrastructure",
+      "value": "Owner reports an existing private infrastructure estate.",
+      "evidence_state": "owner_reported",
+      "source": "Owner-supplied brief",
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Named owners, versions, dependencies and dated permitted runtime/health/capacity receipts."
+    },
+    {
+      "id": "FACT-07",
+      "claim": "Current customers",
+      "value": null,
+      "evidence_state": "not_supplied",
+      "source": null,
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Dated approved aggregate customer count and definition; users are not automatically customers."
+    },
+    {
+      "id": "FACT-08",
+      "claim": "Current ARR",
+      "value": null,
+      "evidence_state": "not_supplied",
+      "source": null,
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Dated approved ARR figure, currency, calculation basis and permitted evidence."
+    },
+    {
+      "id": "FACT-09",
+      "claim": "Current paid pilots",
+      "value": null,
+      "evidence_state": "not_supplied",
+      "source": null,
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Dated approved paid-pilot count and definition."
+    },
+    {
+      "id": "FACT-10",
+      "claim": "Current paid subscriptions",
+      "value": null,
+      "evidence_state": "not_supplied",
+      "source": null,
+      "dated_company_confirmation": null,
+      "runtime_proof": false,
+      "required_evidence": "Dated approved active paid-subscription count and definition."
+    }
+  ]
 }

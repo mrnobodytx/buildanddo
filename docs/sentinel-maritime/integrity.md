@@ -8,16 +8,16 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     docs/sentinel-maritime/system-plan.json, scripts/ci/evidence_epoch.py, scripts/ci/candidate_manifest.py, scripts/ci/supply_chain.py
+# Depends:     docs/sentinel-maritime/system-plan.json, docs/sentinel-maritime/work-orders.json, scripts/ci/evidence_epoch.py, scripts/ci/candidate_manifest.py, scripts/ci/supply_chain.py
 # EnumType:    Doc
-# EnumEdges:   CONSUMES docs/sentinel-maritime/system-plan.json; CONSUMES scripts/ci/evidence_epoch.py; CONSUMES scripts/ci/candidate_manifest.py; CONSUMES scripts/ci/supply_chain.py
+# EnumEdges:   CONSUMES docs/sentinel-maritime/system-plan.json; CONSUMES scripts/ci/evidence_epoch.py; CONSUMES scripts/ci/candidate_manifest.py; CONSUMES scripts/ci/supply_chain.py; VALIDATES docs/sentinel-maritime/work-orders.json; VALIDATES docs/sentinel-maritime/white-paper.md; VALIDATES docs/sentinel-maritime/implementation-contract.md
 # DAG Node:    none
 # Intent:      Assign the maritime release, rights and evidence commitments to the existing integrity owner without inventing Merkle authority or a live system SBOM.
 # ───────────────────────────────────────────────────────────────
 
-# Sentinel Maritime integrity and SBOM contract 1.0
+# Sentinel Maritime integrity and SBOM contract 1.1
 
-Part of `SM-BL-1.0`. This freezes the map and proof obligations. Actual release
+Part of `SM-BL-1.1`. This freezes the map and proof obligations. Actual release
 roots, image digests, generated system/package SBOMs, runtime receipts and
 operational evidence epochs have not been materialized for Sentinel Maritime.
 `system-plan.json` is a versioned planning inventory, not a live SBOM.
@@ -122,10 +122,13 @@ the old handoff.
 
 ## Public and controlled-data proofs
 
-Maintain independent PUBLIC_EVIDENCE_EPOCH_ROOT and CUI_EVIDENCE_EPOCH_ROOT
-domains, storage, permissions, audit and export paths. Commercial restrictions
-still apply within the public-data processing environment; that name does not
-make its records publicly downloadable.
+Maintain independent PUBLIC_EVIDENCE_EPOCH_ROOT, COMMERCIAL_EVIDENCE_EPOCH_ROOT
+and CUI_EVIDENCE_EPOCH_ROOT domains, storage/access policies, audit and export
+paths. These are the explicit epoch-qualified names for the owner's public,
+commercial and CUI evidence roots. A shared Phase 1 hosting environment does
+not merge the public and commercial proof/rights domains. Commercial data is
+not publicly downloadable merely because it is not CUI. CUI remains disabled
+until separately accepted by the responsible authority.
 
 A CUI-derived assertion can cross boundaries only after the authorized release
 procedure approves its content, markings, recipient and accompanying proof
@@ -136,6 +139,38 @@ automatically exported. A hash is neither sanitization nor declassification and
 can leak membership or allow guesses about low-entropy data. FIPS/compliance
 acceptance is assessed for the actual boundary/modules, not inferred from use of
 AES, SHA-256, TLS or PocketBase encryption.
+
+## Acyclic cue, proof and receipt history
+
+The query response called a cue can join several records, but the immutable cue
+payload must not hash that joined view. Otherwise CueProof -> ThreatCue ->
+CueProof, or an epoch containing a cue that embeds that epoch's final root,
+would be circular. The fourteen typed dependencies in system-plan.json specify
+the proposed ordering; the existing owner supplies the actual wire/proof format.
+
+| Stage | Inputs and permitted later references |
+|---|---|
+| Input evidence and candidate | Observations, world/feature state, earlier completed input epochs, release/rights and requested action; no future output root. |
+| NNC decision | Immutable candidate and action/recipient context. The decision does not hash the future ThreatCue that will reference it. |
+| ThreatCue core | Candidate and AdmissionDecision references. No self-referential proof link, final containing-epoch root or future handoff receipt. |
+| Base CueProof | Admitted cue core, decision and source/state/release/rights evidence. It must exist before the cue can surface or hand off. |
+| Cue epoch and membership | Existing owner closes the epoch over cue/proof/decision artifacts. A detached membership receipt references the completed root; it is not a leaf used to build that same root. |
+| Review and outbound payload | Attributed disposition and currently admitted recipient projection resolve required prior proof. The payload's own digest is detached from the bytes it fingerprints. |
+| Attempt and result | A durable attempt exists before network I/O; an appended receipt revision records acknowledgement, failure or UNKNOWN. Neither becomes part of the already sent payload. |
+| Outcome and follow-up epoch | Subsequent evidence and receipts join a later epoch linked to the prior one, without reopening it. |
+| Detached cue view | Authorized queries join proof, epoch membership, disposition and handoff links. This view is not an input back into the immutable cue/proof. |
+
+An admitted cue can therefore have a base proof before later outcomes exist.
+Completeness for initial surfacing and completeness for recipient handoff are
+different policy requirements. If a recipient requires completed epoch proof,
+handoff waits for closure; it cannot substitute the earlier source epoch as
+proof of the cue's own membership. Later complete-history envelopes are new
+immutable artifacts. Never edit an old hash input to insert a newer receipt.
+
+The same staging rule applies to release tests: pre-release tests bind actual
+candidate image/config identities using the discovered existing-owner contract;
+their evidence cannot depend on the future release root it helps construct.
+No alternate production admission path or synthetic root is authorized here.
 
 ## System SBOM and artifact contract
 
@@ -204,13 +239,15 @@ inspected BuildAndDo baseline, not a claim about private deployment.
 ## Validate this planning snapshot
 
 Run from the repository root. This checks the frozen inventory and pinned public
-source bytes, without contacting a service or computing a Merkle root. Historical
+source bytes, work-order dependencies, brief traceability and claim states,
+without contacting a service or computing a Merkle root. Historical
 source references are checked at their recorded commit, so later report edits do
 not change what the inspection proves. Product semantics still require review.
 
 ```bash
 python - <<'PY'
 import hashlib
+import copy
 import json
 import re
 import subprocess
@@ -226,7 +263,7 @@ def unique_fields(pairs):
 
 
 plan = json.loads(Path("docs/sentinel-maritime/system-plan.json").read_text(), object_pairs_hook=unique_fields)
-assert plan["baseline_id"] == "SM-BL-1.0"
+assert plan["baseline_id"] == "SM-BL-1.1"
 assert plan["artifact_kind"] == "planning_inventory" and plan["authority"] == "product_planning_only"
 assert plan["materialized_sbom"] is False and plan["release_verified"] is False
 components = plan["components"]
@@ -257,6 +294,11 @@ for edge in plan["flow"]:
     links.add(identity)
     assert edge["source"] in expected | objects and edge["target"] in expected | objects
     assert edge["state"] == "planned" and edge["authority_grant"] is False
+assert ("DBO-007", "PRODUCES", "OBJ-CANDIDATE") in links
+assert ("OBJ-CANDIDATE", "EVALUATED_BY", "DBO-008") in links
+assert ("DBO-007", "PRODUCES", "OBJ-CUE") not in links
+assert not any(edge["source"] == "OBJ-CANDIDATE" and edge["target"] in {"DBO-009", "OBJ-GOVERNMENT"} for edge in plan["flow"])
+assert ("DBO-009", "RECORDS", "OBJ-HANDOFF-RECEIPT") in links
 for source in sources.values():
     assert re.fullmatch(r"[0-9a-f]{40}", source["commit"])
     assert source["commit"] == plan["inspection"]["source_commit"]
@@ -292,22 +334,194 @@ assert integrity["activation_receipt"]["outside_release_root"] is True
 assert integrity["activation_receipt"]["receipt"] is None
 assert integrity["cross_boundary_release"]["default"] == "deny"
 domains = integrity["evidence_domains"]
-assert {row["id"] for row in domains} == {"PUBLIC_EVIDENCE_EPOCH_ROOT", "CUI_EVIDENCE_EPOCH_ROOT"}
-assert len(domains) == len({row["boundary"] for row in domains}) == 2
+assert {row["id"] for row in domains} == {"PUBLIC_EVIDENCE_EPOCH_ROOT", "COMMERCIAL_EVIDENCE_EPOCH_ROOT", "CUI_EVIDENCE_EPOCH_ROOT"}
+assert len(domains) == len({row["boundary"] for row in domains}) == 3
 assert all(row["digest"] is None and row["export_requires_rights_review"] is True for row in domains)
 assert integrity["epoch_binding_refs"] == ["RELEASE_ROOT", "DATA_RIGHTS_ROOT"]
-assert {row["id"] for row in plan["official_requirements"]} == {f"REQ-{n:02}" for n in range(1, 8)}
+assert {row["id"] for row in plan["official_requirements"]} == {f"REQ-{n:02}" for n in range(1, 11)}
 assert all(row["official_reference"] is None and row["verification"] == "pending" for row in plan["official_requirements"])
 assert plan["measurements"]["status"] == "not_measured"
 assert plan["measurements"]["numeric_results"] is None and plan["measurements"]["numeric_targets"] is None
 assert all(Path(path).is_file() for path in plan["baseline_documents"] + [plan["handoff"]])
 blueprint = Path(plan["baseline_documents"][0]).read_text()
 contracts = Path(plan["baseline_documents"][1]).read_text()
-assert set(re.findall(r"^\| (DEC-[0-9]+) \|", blueprint, re.M)) == {f"DEC-{n:02}" for n in range(1, 12)}
+assert set(re.findall(r"^\| (DEC-[0-9]+) \|", blueprint, re.M)) == {f"DEC-{n:02}" for n in range(1, 15)}
 assert set(re.findall(r"^\| (REQ-[0-9]+) \|", blueprint, re.M)) == {row["id"] for row in plan["official_requirements"]}
 assert re.findall(r"^\| (M-[0-9]+) \|", contracts, re.M) == plan["measurements"]["metric_ids"]
 assert re.findall(r"^\| ([0-9]+) \|", blueprint, re.M) == [str(n) for n in range(1, 16)]
+
+previous_commit = plan["revision"]["previous_planning_commit"]
+assert re.fullmatch(r"[0-9a-f]{40}", previous_commit)
+previous = json.loads(subprocess.check_output(["git", "show", f"{previous_commit}:docs/sentinel-maritime/system-plan.json"]))
+assert previous["baseline_id"] == plan["revision"]["supersedes"] == "SM-BL-1.0"
+assert previous["inspection"] == plan["inspection"], "historical source inspection changed"
+
+
+def verify_acyclic(rows, dependency_key):
+    by_id = {row["id"]: row for row in rows}
+    assert len(by_id) == len(rows), "duplicate artifact ID"
+    done = set()
+
+    def check(name, ancestors):
+        assert name in by_id and name not in ancestors, f"artifact cycle or unresolved reference: {name}"
+        if name in done:
+            return
+        for target in by_id[name][dependency_key]:
+            check(target, ancestors | {name})
+        done.add(name)
+
+    for name in by_id:
+        check(name, set())
+    return by_id
+
+
+proofs = integrity["cue_artifact_dependencies"]
+proof_map = verify_acyclic(proofs, "depends_on")
+assert len(proof_map) == 14
+assert all(row["artifact_ref"] is None and row["runtime_verified"] is False for row in proofs)
+assert proof_map["THREAT_CUE"]["depends_on"] == ["CANDIDATE_INPUT", "ADMISSION_DECISION"]
+assert "CUE_EPOCH" not in proof_map["BASE_CUE_PROOF"]["depends_on"]
+assert "CUE_MEMBERSHIP_RECEIPT" not in proof_map["CUE_EPOCH"]["depends_on"]
+assert proof_map["HANDOFF_ATTEMPT"]["depends_on"] == ["HANDOFF_PAYLOAD"]
+assert proof_map["HANDOFF_RESULT"]["depends_on"] == ["HANDOFF_ATTEMPT"]
+
+publication = plan["publication"]
+paper = Path(publication["white_paper"]).read_text()
+execution = Path(plan["program"]["implementation_contract"]).read_text()
+assert publication["state"] == "HOLD" and publication["external_submission"] is False
+assert publication["submission_documents"] == 1 and publication["deck_self_contained"] is True
+assert publication["separate_paper_plus_deck_authorized"] is False
+assert publication["format_requirement_source"] == "REQ-08" and publication["format_verification"] == "pending"
+assert publication["rendered_artifact"] is None and publication["rendered_page_count"] is None
+assert publication["alternatives"] == [
+    {"format": "deck", "aspect_ratio": "16:9", "maximum_slides": 15},
+    {"format": "white_paper", "maximum_pages": 10, "target_pages": 7},
+]
+sections = publication["paper_sections"]
+assert [row["section"] for row in sections] == list(range(1, 8))
+assert [(str(row["section"]), row["title"]) for row in sections] == re.findall(r"^## ([0-9]+)\. (.+)$", paper, re.M)
+assert {slide for row in sections for slide in row["slides"]} == set(range(1, 16))
+assert set(re.findall(r"^\| (M-[0-9]+) ", paper, re.M)) == set(plan["measurements"]["metric_ids"])
+assert "SM-BL-1.1" in paper and "SM-BL-1.1" in execution
+for document in (blueprint, paper):
+    windows = re.findall(r"^\| T?([0-9]+)–([0-9]+) (?:h|hours) \|", document, re.M)
+    assert windows == [("0", "2"), ("2", "12"), ("12", "24"), ("24", "36"), ("36", "48")]
+for name in ("system-plan.json.cgrf.yaml", "work-orders.json.cgrf.yaml"):
+    assert "baseline: SM-BL-1.1" in Path("docs/sentinel-maritime", name).read_text()
+facts = {row["id"]: row for row in plan["company_facts"]}
+assert len(facts) == len(plan["company_facts"]) == 10
+assert all(row["dated_company_confirmation"] is None and row["runtime_proof"] is False for row in facts.values())
+assert facts["FACT-03"]["value"] == 2 and facts["FACT-03"]["evidence_state"] == "owner_reported"
+for key in ("FACT-07", "FACT-08", "FACT-09", "FACT-10"):
+    assert facts[key]["value"] is None and facts[key]["evidence_state"] == "not_supplied"
+
+work = json.loads(Path(plan["program"]["work_orders"]).read_text(), object_pairs_hook=unique_fields)
+required_fields = "WORK_ORDER_ID OBJECTIVE WHY CURRENT_OWNER REUSE_DECISION FILES_EXPECTED SCHEMAS DEPENDENCIES EVENTS APIS GRAPH_NODES GRAPH_EDGES TELEMETRY SECURITY_IMPACT DATA_RIGHTS_IMPACT TESTS NEGATIVE_TESTS POSTCONDITIONS ROLLBACK EVIDENCE SBOM_IMPACT MERKLE_IMPACT REMOTE_WRITES".split()
+contract_sections = {int(value) for value in re.findall(r"^## ([0-9]+)\.", execution, re.M)}
+assert contract_sections == set(range(1, 17))
+
+
+def verify_work_orders(candidate):
+    assert candidate["baseline_id"] == plan["baseline_id"]
+    assert candidate["artifact_kind"] == "implementation_plan" and candidate["authority"] == "public_planning_only"
+    assert candidate["program_id"] == plan["program"]["id"] == "SENTINEL-MARITIME-V1"
+    assert candidate["target_surface"] == plan["program"]["target_surface"] == "https://sentinel.citadel-nexus.com"
+    assert candidate["program_mode"] == plan["program"]["mode"] == "EXTEND_EXISTING"
+    assert candidate["standalone_ui"] is False and candidate["new_merkle_implementation"] is False
+    assert candidate["model_authority"] == "NONE" and candidate["cui_phase_1"] == "DISABLED"
+    assert candidate["execution_state"] == "NOT_DISPATCHED" and candidate["receiving_dispatch"] is None
+    assert candidate["release_state"] == "HOLD" and candidate["shadow_external_handoff"] == "DISABLED"
+    assert candidate["field_contract"] == required_fields and len(required_fields) == 23
+    gate = candidate["discovery_gate"]
+    assert gate["work_order"] == "SM-WO-00" and gate["accepted"] is False
+    assert gate["accepting_owner"] is None and gate["receipt"] is None and gate["code_before_acceptance"] is False
+    assert candidate["shared_scope_fields"] == ["tenant_id", "mission_id"]
+    assert candidate["admission_verdicts"] == ["ADMIT", "HOLD", "DENY"]
+    assert candidate["triage_dispositions"] == ["SUPPRESS", "ESCALATE"]
+    assert candidate["threat_cue_requires"] == "ADMIT_FOR_SPECIFIED_ACTION"
+    assert candidate["handoff_receipt_states"] == ["PENDING", "UNKNOWN", "SUCCESS", "FAILED", "BLOCKED"]
+    assert candidate["rollout_states"] == ["OFF", "LOCAL", "TEST", "SHADOW", "DEMO", "PILOT", "PRODUCTION"]
+    chain = candidate["full_chain_acceptance"]
+    assert len(chain["required_stages"]) == len(set(chain["required_stages"])) == 17
+    assert chain["observed_stages"] == [] and chain["state"] == "UNVERIFIED" and chain["fixture_substitution_allowed"] is False
+    negative_ids = {row["id"] for row in candidate["negative_tests"]}
+    assert len(negative_ids) == len(candidate["negative_tests"]) == 24
+    assert negative_ids == {f"NEG-{n:02}" for n in range(1, 25)}
+    orders = candidate["work_orders"]
+    order_ids = [row["WORK_ORDER_ID"] for row in orders]
+    assert order_ids == [f"SM-WO-{n:02}" for n in range(13)]
+    component_map = {row["id"]: row for row in components}
+    covered_negatives = set()
+    for number, row in enumerate(orders):
+        assert list(row) == required_fields, f"work-order fields: {row['WORK_ORDER_ID']}"
+        assert all(row[name] for name in required_fields if name not in {"SCHEMAS", "DEPENDENCIES"})
+        assert row["DEPENDENCIES"] == ([] if number == 0 else [order_ids[number - 1]]), "missing prior-wave acceptance dependency"
+        owner = row["CURRENT_OWNER"]
+        assert owner["requested_seat"] and owner["accountable_owner"] is None and owner["verification"] == "UNVERIFIED"
+        assert owner["resolution_gate"] == "SM-WO-00"
+        for mapping in row["FILES_EXPECTED"]:
+            assert mapping["logical_role"] and mapping["repository_path"] is None
+            assert mapping["path_state"] == "UNMAPPED" and mapping["resolution_gate"] == "SM-WO-00"
+        for base in row["REUSE_DECISION"]:
+            assert base["component_id"] in component_map
+            assert base["planned_lifecycle"] == component_map[base["component_id"]]["planned_lifecycle"]
+            assert base["base_verification"] == "PENDING_DISCOVERY"
+        assert set(row["SCHEMAS"]) <= set(candidate["schema_catalogue"])
+        assert row["EVENTS"]["registration"] == "HOLD" and row["EVENTS"]["runtime_emissions_authorized"] is False
+        assert row["APIS"]["binding"] == "PENDING_DISCOVERY"
+        assert set(row["NEGATIVE_TESTS"]) <= negative_ids
+        covered_negatives.update(row["NEGATIVE_TESTS"])
+        for test in row["TESTS"]:
+            assert test["behavior"] and test["command"] is None and test["result"] == "NOT_RUN"
+            assert test["command_state"] == "RESOLVE_AGAINST_DISCOVERED_OWNER"
+        assert row["EVIDENCE"]["acceptance"] == "NOT_RUN" and row["EVIDENCE"]["receipt_refs"] == []
+        effects = row["REMOTE_WRITES"]
+        assert effects["state"] == "HOLD" and effects["authorized_count"] == 0 and effects["executed_count"] is None
+        assert effects["receiving_authorization_ref"] is None and effects["receipt_refs"] == []
+    assert covered_negatives == negative_ids
+    trace = candidate["owner_brief_traceability"]
+    assert [row["section"] for row in trace] == list(range(1, 56))
+    for row in trace:
+        assert row["subject"] and row["contract_sections"] and set(row["contract_sections"]) <= contract_sections
+        assert row["work_orders"] and set(row["work_orders"]) <= set(order_ids)
+    assert all(Path(path).is_file() for path in candidate["documents"] + [candidate["handoff"]])
+
+
+verify_work_orders(work)
+# Check that common corruptions are rejected without modifying any artifact.
+rejected = 0
+for mutation in ("missing_field", "skip_discovery", "remote_grant", "missing_negative", "fake_runtime", "duplicate_trace"):
+    bad = copy.deepcopy(work)
+    if mutation == "missing_field":
+        del bad["work_orders"][8]["ROLLBACK"]
+    elif mutation == "skip_discovery":
+        bad["work_orders"][1]["DEPENDENCIES"] = []
+    elif mutation == "remote_grant":
+        bad["work_orders"][8]["REMOTE_WRITES"]["authorized_count"] = 1
+    elif mutation == "missing_negative":
+        bad["negative_tests"].pop(0)
+    elif mutation == "fake_runtime":
+        bad["full_chain_acceptance"]["state"] = "VERIFIED"
+    else:
+        bad["owner_brief_traceability"][-1]["section"] = 54
+    try:
+        verify_work_orders(bad)
+    except AssertionError:
+        rejected += 1
+    else:
+        raise AssertionError(f"invalid plan accepted: {mutation}")
+for source, dependency in (("THREAT_CUE", "BASE_CUE_PROOF"), ("CUE_EPOCH", "CUE_MEMBERSHIP_RECEIPT")):
+    bad = copy.deepcopy(proofs)
+    next(row for row in bad if row["id"] == source)["depends_on"].append(dependency)
+    try:
+        verify_acyclic(bad, "depends_on")
+    except AssertionError:
+        rejected += 1
+    else:
+        raise AssertionError("cyclic cue commitment accepted")
+assert rejected == 8
 print(f"PASS: {len(components)} components; {len(planes)} planes; {len(links)} planned edges; {len(sources)} pinned source fingerprints; {len(roots)} acyclic commitment definitions; 15 slide anchors.")
-print("PASS: no admitted runtime, emitted SBOM, operational roots, measured maritime performance or verified DIU requirements are claimed by the inventory.")
+print(f"PASS: 7 paper sections map to 15 slides; 13 work orders x 23 fields; 55 brief sections; 24 negative requirements; {len(proofs)} acyclic cue-artifact definitions; {rejected} in-memory corruptions rejected.")
+print("PASS: historical inspection preserved; 3 proof domains; 10 pending official requirements; no admitted runtime, emitted SBOM, operational roots, measured maritime results, verified company traction or rendered submission claimed.")
 PY
 ```

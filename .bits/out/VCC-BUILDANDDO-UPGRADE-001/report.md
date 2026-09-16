@@ -65,36 +65,43 @@
 
 ## §1 SUMMARY
 
-Status: PARTIAL — Sentinel Maritime public planning complete; private implementation and earlier runtime acceptance remain open
+Status: PARTIAL — Sentinel Maritime narrative and work-order plan complete; private execution and earlier runtime acceptance remain open
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
 Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 42/76 cumulative phase gates complete; current BU–BX public planning continuation has 4/4 complete gates
-Smoke: 4/4 public planning checks; earlier application smoke remains 4/7 with native/frontend acceptance pending
+Tasks: 46/80 cumulative phase gates complete; current BY–CB public narrative/contract continuation has 4/4 complete gates
+Smoke: 4/4 public document checks; earlier application smoke remains 4/7 with native/frontend acceptance pending
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: planning inspection baseline aab43b3ed686b70df7c304d02566f0e93606dfd6; current planning evidence prepared before its focused bookkeeping
+Commits: 1 focused continuation; its final source identity is resolved by the verify command rather than embedded into its own input
 Verify source identity: `git log -1 --format='%H %s'`
 
-The owner's Sentinel Maritime design is recorded as SM-BL-1.0 in
-docs/sentinel-maritime/blueprint.md, contracts.md and integrity.md, with a
-machine-readable system-plan.json and private receiving handoff. The inventory
-has 33 components, 12 planes, 32 planned flow edges and 12 pinned public source
-fingerprints. It keeps proposed REUSE/EXTEND/BUILD separate from source evidence
-and runtime acceptance. Eleven commitment definitions form an acyclic graph;
-operational roots, image identities and live SBOM admission remain uncomputed.
+The owner's white-paper and master build brief now share SM-BL-1.1. WP-1.0 has
+seven planned page sections covering the mission scenario, capability evidence,
+ThreatCue/NNC, detection/noise examples, reproducibility, demo metrics,
+integration/security and company/data/pricing model. The source is not a rendered
+PDF. Ten official requirements remain pending; team/headcount and existing
+Sentinel operation are owner-reported, and customer/ARR/pilot figures are absent.
+The one-document submission choice remains subject to official/portal review.
 
-The baseline preserves the product scope, cue/admission/outcome semantics,
-15 metric definitions, rehearsal plan, commercial/security boundaries and a
-15-slide claim map. Official DIU requirements are explicitly awaiting references.
-The public epoch is evidence-only and the candidate manifest covers source;
-neither establishes the private release authority asserted in the supplied brief.
-No application/runtime code changed in this planning continuation. Reproduce the
-inventory audit with the runnable block in docs/sentinel-maritime/integrity.md;
-current governance checks appear in §3.
+SM-EXEC-1.0 binds 13 work orders with all 23 required fields to discovery of the
+existing Sentinel product. All 55 brief sections and 24 negative requirements
+are mapped. No receiving dispatch, verified owner/path, runtime or remote grant
+is fabricated. Security/rights apply from the first schema; candidate/model/UI
+output cannot acquire NNC authority. Real implementation requires one complete
+live observation-to-outcome/replay chain and same-candidate release evidence.
+
+The inventory retains 33 components, 12 planes and all 12 historical source
+fingerprints; its 42 flow edges distinguish candidates, admitted cues, proofs,
+review and receipts. Eleven root definitions and fourteen cue-artifact
+definitions are acyclic. Release/rights/epoch and public/commercial/future CUI
+domains remain separate. Later proof/epoch/receipt links are detached from their
+own inputs. Eight in-memory corruptions are rejected by the structural audit.
+These checks prove document consistency, not maritime performance or runtime.
+Current commands and prior application evidence are separated in §3.
 
 The prior website's My dossier and five private Discord commands share one
 personal encrypted entity store under canonical PocketBase user identity.
@@ -119,7 +126,16 @@ remain unverified. Earlier source waves are preserved below as historical work.
 
 ## §2 TASK RESULTS
 
-### Current continuation — Sentinel Maritime planning, 2026-09-16
+### Current continuation — Sentinel Maritime narrative and Astra contract, 2026-09-16
+
+| Phase | Status | Result | Verify | CKET | Files |
+|---|---|---|---|---|---|
+| BY — Register continuation | PASS | Existing owner-authorized dispatch and SRS extended before artifacts; merged planning baseline reconciled | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs_registry.yml, SRS spec, queue and context lock |
+| BZ — Narrative and semantic alignment | PASS | Seven paper sections map to 15 slides; company/official claims qualified; candidate, rights and proof semantics reconciled | Planning audit in §3 | 06_PLAN | docs/sentinel-maritime/white-paper.md, blueprint.md, contracts.md, integrity.md, system-plan.json and sidecar |
+| CA — Discovery-first work orders | PASS | 13 orders x 23 fields, 55 section mappings, 24 negative requirements and mandatory return/rollback/effect contracts | Same audit, including eight rejected corruptions | 06_PLAN / 11_COMMIT | docs/sentinel-maritime/implementation-contract.md, work-orders.json and sidecar; existing maritime handoff |
+| CB — Public evidence and history | PASS | Document audit, context, boundary and memory consistency; prior 56 Type C events retained | Commands in §3 and §4 | 11_COMMIT | .bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md and memory.json |
+
+### Prior continuation — Sentinel Maritime baseline 1.0, 2026-09-16
 
 | Phase | Status | Result | Verify | CKET | Files |
 |---|---|---|---|---|---|
@@ -215,14 +231,40 @@ and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
-Current planning validation:
+Current document validation:
 
 | Check | Runnable verification | Expected and observed |
 |---|---|---|
-| 1. Planning inventory | Run the bash audit block in docs/sentinel-maritime/integrity.md from the repository root | PASS: 33 component IDs, 12 planes, 32 planned edges, 12 pinned source fingerprints, 11 acyclic commitment definitions, 15 slide anchors; no runtime/SBOM/root/benchmark/official-requirement admission claim |
+| 1. Document and inventory audit | Run the bash audit block in docs/sentinel-maritime/integrity.md, or the extractor below | PASS: 33 components, 12 planes, 42 proposed edges, 12 unchanged fingerprints; 11 root and 14 cue-artifact definitions; seven paper sections/15 slides; 13 orders x 23 fields; 55 source sections; 24 negative requirements; eight corruptions rejected |
 | 2. Context | `python scripts/ci/agent_context.py --check` | PASS: inventory matches; six pre-existing findings and four unwired gates retained |
-| 3. Public boundary | `python scripts/ci/verify_public_boundary.py` | PASS: 557 tracked files; current planning files remain within public paths with no scanner failures |
+| 3. Public boundary | `python scripts/ci/verify_public_boundary.py` | PASS: 561 tracked files; current documents remain within public paths with no scanner failures |
 | 4. Memory | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | PASS: file vectors, source counts, declared edges, IOO and retained event history |
+
+One final context precheck failed because the lock's tracked-file count preceded
+staging the four new documents. Root cause: registration-time context generation
+measured 557 tracked files; the final inventory contained 561. Applied fix:
+`python scripts/ci/agent_context.py --write` after staging the documents.
+Retest: `python scripts/ci/agent_context.py --check` passes with the same six
+pre-existing findings and four unwired gates. No application gate was weakened.
+
+Reproduce the audit directly from its checked-in source block:
+
+```bash
+python - <<'PY'
+import re
+from pathlib import Path
+text = Path('docs/sentinel-maritime/integrity.md').read_text()
+blocks = re.findall(r"```bash\npython - <<'PY'\n(.*?)\nPY\n```", text, re.S)
+assert len(blocks) == 1
+exec(compile(blocks[0], 'sentinel-maritime-planning-audit', 'exec'), {})
+PY
+```
+
+The audit rejects a missing work-order field, skipped discovery, remote-write
+grant, missing negative requirement, fabricated runtime acceptance, duplicated
+brief mapping and two proof cycles. It also checks the five demo windows agree
+between blueprint and paper. These are eight local in-memory corruptions of the
+planning artifacts; they are not executed maritime security tests.
 
 These are documentation/inventory checks. No maritime detector, source adapter,
 new Merkle implementation or application runtime was executed. No additional
@@ -297,13 +339,13 @@ no hosted success, browser screenshots or shared activation is claimed here.
 
 ## §4 MEMORY INGEST
 
-Type A count: 290
-Type B count: 606
-Type C count: 56
+Type A count: 294
+Type B count: 624
+Type C count: 60
 IOO compliance: complete
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
-Prior history: all 53 dossier-baseline Type C events are preserved without rewriting; this includes the earlier 47-event research history.
+Prior history: all 56 planning-baseline Type C events are preserved without rewriting, including the earlier 53 dossier and 47 research events.
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
 Reproduce prior-event preservation:
@@ -314,23 +356,23 @@ import json
 import subprocess
 from pathlib import Path
 path = '.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json'
-baseline = json.loads(subprocess.check_output(['git', 'show', 'aab43b3ed686b70df7c304d02566f0e93606dfd6:' + path], text=True))
+baseline = json.loads(subprocess.check_output(['git', 'show', 'b1e81ac2b54453aa60eb34f24cc09cd4394d0715:' + path], text=True))
 old = [row for row in baseline['vectors'] if row['type'] == 'C']
 new = [row for row in json.loads(Path(path).read_text())['vectors'] if row['type'] == 'C']
-assert len(old) == 53 and new[:len(old)] == old
-print('PASS: all 53 baseline events preserved without rewriting.')
+assert len(old) == 56 and new[:len(old)] == old
+print('PASS: all 56 baseline events preserved without rewriting.')
 PY
 ```
 
 ## §5 CKET FILING
 
-06_PLAN: current docs/sentinel-maritime/blueprint.md, contracts.md, integrity.md, system-plan.json and sidecar; earlier private-dossier/activation and Discord/research documentation retained
+06_PLAN: current docs/sentinel-maritime/white-paper.md, implementation-contract.md, work-orders.json and sidecar; aligned blueprint.md, contracts.md, integrity.md, system-plan.json and sidecar
 04_HYPOTHESIZE: registered umbrella SRS and contribution governance
 07_BUILD: private dossier hooks/migration, web components/client/hook, bot bridge and doctor
 08_TEST: connected source fixtures, rendered flow/hook tests and native acceptance runner
 11_COMMIT: current public maritime handoff, dispatch, context and report/memory; earlier CI and community handoff retained
 13_SAVE: none
-CGRF headers: 6/6 new this planning continuation; 203/203 cumulative files created since the original base
+CGRF headers: 4/4 new this continuation; 207/207 cumulative files created since the original base
 REFLEX check: deferred to private post-merge validator; no signing values fabricated
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
@@ -353,14 +395,17 @@ not end-to-end encryption or physical erasure of existing backups.
 
 ## §7 NEXT ACTIONS
 
-Maritime receiving work: CMAX-B/IDE1 must verify the proposed private bases,
-canonical Merkle/SBOM owner and actual candidate/runtime proof; resolve official
-DIU requirements and source/recipient rights; register implementation separately.
+Next single implementation blocker: a receiving private dispatch with the actual
+Sentinel repository and accountable owners for SM-WO-00. CMAX-B/IDE1 must accept
+discovery and reuse/path/auth/integrity mappings before code, then follow the
+13 work orders and mandatory return in SM-EXEC-1.0. No Astra seat is activated.
+Official DIU references, dated company facts, source/recipient rights and one
+rendered self-contained submission remain publication acceptance work.
 Handoff: .bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md.
 No receiving dispatch, external submission, service launch, data acquisition,
 government integration, root admission or CUI processing was performed. The
-15-slide content map is ready for a qualified deck; unverified operating and
-solicitation claims cannot be promoted to established facts.
+seven-part paper and 15-slide map share one qualified narrative; unverified
+operating, commercial and solicitation claims cannot become established facts.
 
 Planning rollback: revert the public artifacts or record an owner-reviewed new
 baseline version with superseded decisions. No runtime, database, dependency,

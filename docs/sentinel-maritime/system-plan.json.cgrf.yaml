@@ -15,5 +15,5 @@
 # Intent:      Give the maritime planning inventory CGRF provenance without treating proposed components or source fingerprints as an admitted live SBOM.
 # ───────────────────────────────────────────────────────────────
 artifact: docs/sentinel-maritime/system-plan.json
-baseline: SM-BL-1.0
+baseline: SM-BL-1.1
 authority: product_planning_only

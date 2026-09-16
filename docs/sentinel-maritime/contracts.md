@@ -15,9 +15,9 @@
 # Intent:      Define reviewable maritime evidence, cue, admission and measurement semantics before private adapters and government interfaces are implemented.
 # ───────────────────────────────────────────────────────────────
 
-# Sentinel Maritime design contracts 1.0
+# Sentinel Maritime design contracts 1.1
 
-Part of `SM-BL-1.0`. These are product-level semantic contracts for receiving-seat
+Part of `SM-BL-1.1`. These are product-level semantic contracts for receiving-seat
 implementation and review. Wire schemas, transport bindings, migrations and
 government interface compatibility are not implemented by this document.
 
@@ -28,6 +28,15 @@ decision and receipt has a schema ID/version, stable record ID, immutable revisi
 ID, producer identity/version, recorded time, security boundary, rights reference
 and provenance references. Event time and ingest time remain distinct. Use UTC
 timestamps with explicit offsets and source precision/clock uncertainty.
+
+`tenant_id` and `mission_id` are mandatory on every mission-domain object,
+request context, event and scoped reference, including CandidateCue, VesselState,
+AdmissionDecision, CueProof, HandoffReceipt and ReplayRun. Source, rights, policy
+and release catalogue entries bind an authorized tenant/mission scope when used;
+catalogue reuse is not permission for a cross-scope read. Enforce scope through
+the existing identity/authorization owner on relational, graph, artifact, cache,
+query, subscription and replay paths. No traversal or background task may drop
+these constraints. Cross-mission use inside one tenant also requires permission.
 
 References name immutable record revisions and, once admitted by the integrity
 owner, artifact digests/epoch references. A mutable "latest" URL cannot be the
@@ -50,12 +59,29 @@ citations are evidence references, never authentication credentials.
 
 | Contract | Required semantic fields |
 |---|---|
-| Observation | `observation_id`, `schema_version`, `source_id`, `source_type`, `source_record_id`, `event_time`, `ingest_time`, `position` or explicit absence, `measurement`, `entity_candidates`, `confidence`, `provenance`, `rights_ref`, `security_boundary`, `quality_flags`. |
-| VesselState | `vessel_id`, `state_revision`, `as_of`, `identifiers`, `position`/uncertainty, `movement_vector`, `route_history_refs`, `voyage_refs`, `associated_port_refs`, `associated_entity_refs`, `observed_behavior_refs`, `inferred_behavior_refs`, `confidence`, `contradiction_refs`, `stale_evidence_refs`, `supporting_evidence_refs`, resolver version. |
+| Observation | Shared scoped envelope; `observation_id`, `source_id`, `source_type`, `source_record_id`, `event_time`, `ingest_time`, geometry or explicit absence, `measurements`, `entity_candidates`, confidence/calibration, quality, provenance, `data_rights_id` and revision, classification, `raw_hash`, `normalized_hash`. Hash only permitted source bytes through the existing canonical format. Missing source/time/rights/provenance/hash prevents accepted ingest. |
+| VesselState | Shared scoped envelope; `entity_id`, `state_revision`, `valid_at`, `computed_at`, identifiers and identity confidence, current position/track and route-history refs, port/zone/related-entity refs, distinct observed/inferred/predicted state, confidence, supporting/contradicting/stale evidence, resolver version and producing release reference. |
 | Voyage | Stable ID/revision, subject vessel, time bounds, departure/arrival hypotheses, route/track refs, completion state and supporting/contradicting evidence. |
 | Port / Zone | Stable ID/revision, named geometry/coordinate reference, effective dates, source/rights, zone meaning and any applicable policy reference. Geometry is not an authorization grant. |
 | MaritimeEvent | ID/revision, type, participant hypotheses, time interval/uncertainty, location/geometry, observed or inferred status, feature/evidence refs and producing detector version. |
 | Association | Candidate source/target entities, relation type, effective interval, resolver version, supporting/contradicting evidence and confidence. |
+
+Wave 1 also versions Entity, Vessel, Track, TrackPoint, Emitter, Sensor,
+Organization, Event, Claim, Relationship, EvidenceArtifact, DataSource,
+DataRightsContract, PolicyPack, ReleaseManifest, EvidenceEpoch and ReplayRun.
+Claim separates the asserted value from the cited observation and its producing
+method. Relationship records scoped endpoints, type, time, evidence and whether
+the link is observed or hypothesized. Do not create a new generic ontology if an
+existing Sentinel object already provides these semantics.
+
+DataRightsContract requires `data_rights_id`, revision, source and owner,
+license/contract reference, allowed purposes, retention rule, redistribution,
+derivative and export permissions, allowed recipients/jurisdictions,
+classification/CUI restrictions, expiry, revocation and contract hash. Retain
+the applicable versions on observations, claims, cues, proofs and handoffs.
+Rights checking is an executable ingest/query/derivation/export gate in the
+receiving system. Unknown rights produce HOLD of the dependent action; explicit
+prohibition produces DENY. An expired or revoked grant cannot authorize export.
 
 Identifiers include scheme, value, issuer/source, validity interval and evidence.
 An identifier is not an immutable vessel identity: identifiers can conflict or be
@@ -64,33 +90,49 @@ Neither equal names nor a shared operator automatically establishes identity or
 wrongdoing. Operator/person relationships require permitted data and explicit
 provenance; this design adds no collection of private user dossiers.
 
-Normalize reported coordinates to an agreed geospatial contract while preserving
-the original measurement/coordinate system. Track gaps remain gaps; an inferred
+Normalize coordinates to WGS84 / EPSG:4326 and GeoJSON longitude then latitude
+while preserving the original measurement/coordinate system. Track gaps remain gaps; an inferred
 position carries its method and uncertainty. Late/out-of-order observations may
 produce a new state revision without rewriting what an earlier cue saw.
 
-Relationship vocabulary includes `VISITED`, `ENTERED`, `RENDEZVOUS_WITH`,
-`ASSOCIATED_WITH`, `SUPPORTS`, `CONTRADICTS`, `PRECEDES` and `SUPPORTED_BY`.
+Relationship vocabulary includes `VISITED`, `ENTERED`, `EXITED`, `OBSERVES`,
+`RENDEZVOUS_WITH`, `ASSOCIATED_WITH`, `SUPPORTS`, `CONTRADICTS`, `DESCRIBES`,
+`DERIVED_FROM`, `PRECEDES`, `INVOLVES`, `SUPPORTED_BY`, `CONTRADICTED_BY`,
+`ADMITTED_BY` and `HANDED_OFF_AS`.
 Relationships carry time bounds, provenance and observed/inferred status. A
 causal-context edge must state whether it is a hypothesis; temporal order and
 correlation alone are not established causation.
 
-## ThreatCue — canonical product unit
+## CandidateCue, ThreatCue and admission states
+
+CandidateCue requires the shared scoped envelope, `candidate_id` and revision,
+subject entity/state refs, cue type, versioned feature values, supporting and
+contradicting evidence, temporal/graph context, captured model-output refs,
+confidence/calibration, uncertainty, generation time/version and release/rights
+context. It has no external handoff permission. An unresolved association is a
+claim, not a destructive entity merge. Duplicate sources and uncertain association
+cannot silently increase independent corroboration.
+
+SM-BL-1.1 narrows the 1.0 use of ThreatCue for candidate and held records:
+**ThreatCue is an immutable revision admitted by NNC for a specified action.**
+The underlying candidate and all HOLD/DENY decisions remain represented. An
+authorized review UI can show all three with their type and verdict; it cannot
+construct a ThreatCue or mutate an authoritative decision from a status control.
 
 The complete cue revision is the unit of review, admission and handoff. The
 recipient gets an authorized projection plus references it can actually access.
 
 | Group | Fields and meaning |
 |---|---|
-| Identity | `schema_version`, `cue_id`, `revision`, `subject_entity` (entity plus state revision), `cue_type`. |
+| Identity | `schema_version`, `cue_id`, `revision`, `tenant_id`, `mission_id`, source candidate revision, `subject_entity` (entity plus state revision), `cue_type`. |
 | Time | `first_seen` (qualifying event time), `first_detected_at` (engine decision time), `last_updated`, `observation_window`; uncertainty on source time. |
 | Ranking | `priority` with policy/scale, `confidence` with calibration/method, `uncertainty` with missing-source and cold-start flags. |
 | Evidence | `supporting_evidence`, `contradicting_evidence`, `related_entities`, `behavior_features`, `causal_context`; all reference immutable revisions. |
 | Explanation | Human-readable `explanation` traceable to features/evidence; `recommended_collection` with reason, scope and required authority, without automatic tasking. |
-| Lifecycle | `status`: candidate, under_review, dispositioned or retracted. Surfacing/handoff permission is recorded separately per action. |
-| Reproducibility | `release_ref`, detector/model/config versions, `world_snapshot_ref`, input ordering/window, feature snapshot refs, policy pack and rights snapshot refs. |
-| Authority | `policy_verdict` references an AdmissionDecision for this cue revision, action, audience and boundary; it may be HOLD. |
-| Feedback | Attributed `analyst_disposition` and `handoff_receipt` references when present; absence explicitly means not recorded. Outcomes append new evidence. |
+| Lifecycle | `status`: OPEN, UNDER_REVIEW, DISPOSITIONED or RETRACTED. Current eligibility is computed separately from the historic decision; retracting a cue does not rewrite its old ADMIT. |
+| Reproducibility | `release_root`, detector/model/config versions, `world_snapshot_ref`, input ordering/window, feature snapshots, `policy_version`, immutable rights snapshot and completed evidence-epoch references or explicit pending closure. Pending required proof prevents handoff. |
+| Authority | `admission_decision_ref`, `admission_verdict = ADMIT`, requested action, recipient, purpose and expiry for this revision. ADMIT to surface internally does not imply ADMIT to export. |
+| Feedback projection | The query/view envelope joins `cue_proof_ref`, attributed `analyst_disposition_ref` and `handoff_receipt_ref` when present. These outward links are not fields of the immutable cue payload that the proof hashes. Absence means not recorded; later records are detached extensions. |
 
 Correction/retraction of a surfaced cue creates a linked correction notification
 for recipients allowed to receive it. A cue that is retracted or changes evidence
@@ -100,7 +142,8 @@ explanation, including evidence that lowered confidence.
 
 ## NNC AdmissionDecision
 
-The decision binds `cue_id/revision`, `requested_action`, recipient/audience,
+The decision binds `candidate_id/revision` and the deterministic proposed cue
+projection, `requested_action`, recipient/audience,
 purpose, geographic/jurisdiction context, decision/evaluation time, policy pack
 version, evidence/rights snapshots, authority reference and expiry/revocation
 conditions. The decision contains each gate's result and cited reason.
@@ -111,17 +154,36 @@ conditions. The decision contains each gate's result and cited reason.
 | Freshness | Source-specific freshness policy, evidence event time and clock uncertainty. |
 | Corroboration | Required independent evidence and shared-upstream source relationships. |
 | Uncertainty | A permitted confidence/calibration state and explicit conflicting/missing evidence. |
-| Policy | Applicable mission/purpose and action-specific policy pack. |
-| Disclosure / jurisdiction | Rights, marking, recipient access, permitted geography/use and approved dissemination. |
+| Data rights | Current source contracts, retention/derivative/export permission and applicable rights snapshot. |
+| Disclosure | Classification, recipient access and approved dissemination projection. |
+| Mission policy | Applicable mission/purpose and action-specific policy pack. |
+| Jurisdiction | Permitted geography, recipient and use under the recorded authority. |
 | Human authority | Required named/role authority, current grant scope, approval and revocation state. |
 | Budget | Approved cost/collection budget for the requested action when applicable. |
 | Handoff / compensation | Valid recipient contract, deduplication, acknowledgement, correction and cancellation procedure. |
 
-Required gate results are `PASS`, `FAIL` or `UNKNOWN`. Any required FAIL/UNKNOWN
-produces `HOLD` for that action with reasons and permitted remediation. A
+Evaluate provenance, freshness, corroboration, uncertainty, data rights,
+disclosure, mission policy, jurisdiction, current authority and
+rollback/revocability in that order; budget remains required when applicable.
+Record unevaluated later predicates as not evaluated, not PASS. Required gate
+results are `PASS`, `FAIL` or `UNKNOWN`, with typed reasons. Missing support or
+unknown required context produces `HOLD`; a known policy/rights/authority
+prohibition produces `DENY`. This refines 1.0's generic fail-to-HOLD rule. A
 policy-declared inapplicable gate records why it does not apply. `ADMIT` means
 the specified action satisfies the referenced policy at the recorded time; it
 does not declare a subject guilty or approve force.
+
+`SUPPRESS` and `ESCALATE` are separate triage/review dispositions. SUPPRESS retains
+the candidate and reason while lowering noise. ESCALATE names the needed human
+authority and preserves HOLD until missing conditions are resolved through a
+fresh NNC decision. Neither can bypass the three admission verdicts. The UI may
+color these states, but it must also show text and predicate reasons.
+
+PolicyPack records policy ID/version, effective time, author, approver, rules,
+applicable missions/actions, content hash, superseded version and rollback
+version. Never rewrite historical policy or let analyst feedback change it
+without offline evaluation, approval and release governance. Missing policy or
+release identity blocks handoff, even for a high-priority cue.
 
 Recheck mutable rights, membership/authority, revocation and freshness at actual
 handoff. Deterministic replay reconstructs the historical verdict using frozen
@@ -145,12 +207,26 @@ observed/inferred status, rights and accessible provenance. GeoJSON, if selected
 must use its defined coordinate order and CRS semantics, with agreed geometry
 and size limits.
 
-An outbound envelope binds recipient, cue revision, action admission, approved
+An outbound envelope binds tenant/mission, recipient, cue revision, action admission, approved
 projection, idempotency key, release/policy/rights refs and dispatch time. Separate
 delivery-attempt records retain failure/retry state. A timeout is unknown delivery,
 not success; a retry keeps the same recipient and payload identity or becomes a
 new admitted action. The receiver's acknowledgement states accepted/rejected
 schema/version and reference. It does not prove a useful operational outcome.
+
+Persist the HandoffReceipt/attempt identity before issuing network I/O, using the
+existing transactional outbox or equivalent owner mechanism. Receipt states are
+PENDING, UNKNOWN, SUCCESS, FAILED and BLOCKED. The brief's three terminal states
+alone cannot represent a crash or lost acknowledgement. Fields include scoped
+receipt/cue IDs and revisions, destination/adapter contract, idempotency and
+attempt IDs, requested/completed times, payload hash, accessible evidence-root
+reference, classification, policy/release/rights references, transport status
+and sanitized recipient acknowledgement. SUCCESS requires the agreed receiver
+acceptance; a queued payload or HTTP transport success alone may be insufficient.
+Retries of an unchanged admitted payload reuse the handoff identity; each attempt
+is recorded. A receipt records BLOCKED before any disallowed network effect.
+Crash reconciliation may leave UNKNOWN; never claim impossible exactly-once
+external delivery. The invariant is no unreceipted attempt and no silent export.
 
 AnalystDisposition records the authenticated reviewer, time, cue revision,
 judgment, reasons and supporting evidence. HandoffReceipt records the actual
@@ -159,6 +235,15 @@ identity. OutcomeEvidence records subsequent observation or adjudication,
 attribution, time and uncertainty. These feed new world-state/cue revisions
 without retroactively converting an earlier inference into an observed fact.
 
+Disposition vocabulary: CONFIRMED_USEFUL, USEFUL_LOW_PRIORITY, FALSE_POSITIVE,
+INSUFFICIENT_EVIDENCE, DUPLICATE, EXPECTED_ACTIVITY, ESCALATED and CLOSED.
+Notes and downstream consequences retain classification and access controls.
+ReplayRun binds tenant/mission, immutable source set, time/sequence range,
+release, policy, frozen evaluation clock and captured inference. It returns
+reconstructed states/candidates/decisions plus expected/actual differences,
+coverage and determinism status. Divergence holds dependent action and records
+the mismatch; it never edits the expected historical decision into agreement.
+
 BuildAndDo integration must use its existing mission/evidence lifecycle through
 an approved adapter. Current personal dossiers stay private to their user;
 maritime entity history is a separate, rights-controlled domain. The source
@@ -166,7 +251,7 @@ PocketBase store and the proposed Sentinel state store are distinct authorities.
 
 ## TEVV measurement contract
 
-All metric values and numerical targets at `SM-BL-1.0` are **not measured / to be
+All metric values and numerical targets at `SM-BL-1.1` are **not measured / to be
 agreed**. Before a run, freeze geography, period, source availability, exclusion
 rules, label/adjudication procedure, matching windows, feature/detector/policy
 versions, sampling, target population and run/candidate image identity. Publish

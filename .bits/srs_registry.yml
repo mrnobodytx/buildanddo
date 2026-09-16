@@ -36,7 +36,7 @@ srs:
     status: in_progress
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
-    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella including workspace administration, motion, Discord, mission research, private identity-linked entity dossiers and the public Sentinel Maritime product/evidence planning baseline; private implementation, activation and deployment excluded
+    notes: Owner-authorized VCC-BUILDANDDO-UPGRADE-001 umbrella including workspace administration, motion, Discord, mission research, private identity-linked entity dossiers and Sentinel Maritime public baseline, white-paper narrative and discovery-gated Astra work orders; private implementation, activation and deployment excluded
 
   - code: SRS-BUILDANDDO-BOOTSTRAP-001
     title: Machine-facing governance bootstrap
