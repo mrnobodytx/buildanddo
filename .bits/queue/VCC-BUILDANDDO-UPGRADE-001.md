@@ -20,6 +20,90 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Callable mission suite authorized 2026-09-16
+
+The owner requested one API backed by a box-operated suite and a BuildAndDo
+mission with government-submission tutorials. Public source packaging replaces
+the unavailable Sentinel repository prerequisite for this bounded continuation.
+No service launch, external message, portal submission or private mutation is
+performed by the public coding session.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CC | Register revised scope and inspect reusable mission/worker contracts | `python scripts/ci/agent_context.py --check` | done — existing source dispatch extended before implementation |
+| CD | Add one authenticated suite API with durable scoped runs and reviews | Suite backend/migration Node tests | done for source — 18 system tests; native PocketBase acceptance remains open |
+| CE | Implement portable analysis, readiness and replay worker | `python tests/upgrade/check_mission_suite.py` | done for source — 23 tests; 87.96–99.55% statement coverage per module; unpacked analysis/replay passes |
+| CF | Add mission starter, government tutorials and suite desk | Catalogue/client Node and rendered mission tests | partial — 11 client/curriculum tests pass; 19 new rendered cases await Vitest |
+| CG | Verify package, negative cases and source regression | Node/Python, package and available frontend/native gates | done — 256 Node and 152 Python passes; nine native skips; unavailable browser/native gates recorded |
+| CH | Record measured completion, memory and host handoff | Context, boundary and dispatch-memory checks | done — source report and box handoff; all 60 prior memory events retained |
+
+Memory brief: the source baseline has mission plans, current-role authorization,
+native PocketBase users, research worker transport, immutable evidence epochs
+and a tutorial catalogue. Their source tests previously passed; native PocketBase
+and frontend packages remain absent. There is no authenticated live workspace,
+so no mission row or seat event can be created here. Implement a selectable
+starter and runnable protocol, with local evidence rather than fabricated records.
+
+Observed source acceptance: selected JavaScript has 100% lines, 86.64% branches
+and 98.92% functions. Strict typing passes all four Python source modules; Ruff
+passes, and the web diagnostic parses 239 modules with no static errors. The
+generated archive contains eight Python modules, the guide and its manifest.
+Both explicit synthetic scenarios execute from the unpacked archive and replay
+MATCH; the source identity is identical to the repository. No box was activated.
+
+The full Python discovery finds 161 tests: 152 pass and nine native cases skip.
+The existing Discord/research checker passes 111 cases with two native skips,
+including all 33 authored lessons/quizzes. Native PocketBase, Vitest, Vite and
+the repository ESLint import plugin are missing. Required native commands fail
+closed; the independent Python source and native CI jobs remain acceptance work
+until their hosted results exist. Phase counts do not measure Maritime product
+completion. Handoff: .bits/handoffs/2026-09-16-bits-codegen-cmax-b-mission-suite.md.
+
+## Sentinel Maritime narrative and Astra contract authorized 2026-09-16
+
+The owner supplied the seven-part white-paper outline and 55-section master
+build contract. This A0 continuation records those decisions under the existing
+SRS. Extend the existing Sentinel product, with discovery before implementation.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| BY | Register scope and reconcile the merged planning baseline | `python scripts/ci/agent_context.py --check` | done — existing dispatch extended before the narrative and work orders |
+| BZ | Write the paper and align evidence/semantic contracts | Run the planning audit in docs/sentinel-maritime/integrity.md | done — seven paper sections, qualified company/requirement register and SM-BL-1.1 contracts |
+| CA | Prepare all 13 work orders and the private discovery handoff | Same audit, including 55-section traceability, negative tests and dependency gates | done — 23 fields per order, 24 negative requirements, 55 source sections and eight rejected corruptions |
+| CB | Validate public artifacts and preserve governance history | Context, boundary and dispatch-memory checks | done — all four document gates pass; all 56 prior memory events preserved |
+
+Memory brief: local origin/main contains the merged SM-BL-1.0 baseline and
+dossier source; the resumed checkout was fast-forwarded to it before edits.
+The existing inventory has 33 components, 12 planes, 12 pinned public sources
+and no verified Sentinel runtime. No private repository, receiving dispatch,
+official DIU document, authenticated seat or PDF renderer is available here.
+The owner's latest brief is the decision source, not a runtime test or official
+solicitation reference. No seat event or external message is fabricated.
+
+Smoke for this documentation continuation is the embedded planning audit,
+`python scripts/ci/agent_context.py --check`,
+`python scripts/ci/verify_public_boundary.py`, and
+`python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`.
+Application smoke stays at its previously observed 4/7; private discovery,
+product execution, rendered-paper acceptance and external submission stay open.
+
+Observed planning audit: 33 components, 12 planes, 42 proposed flow edges,
+12 unchanged pinned source fingerprints, 11 root definitions and 14 acyclic
+cue/proof/receipt artifact definitions. Public/commercial/future CUI proofs are
+distinct. The seven paper sections map to all 15 deck anchors; all ten official
+requirements await references and company traction numbers remain not supplied.
+The paper is source Markdown; no final PDF pagination or submission is claimed.
+
+CB evidence: 294 file vectors, 624 declared edges and 60 events pass the existing
+memory verifier with complete IOO and no orphans. Four new files and their JSON
+sidecar convention retain CGRF provenance. Public boundary checks 561 tracked
+files without failures; six older context findings and four unwired gates remain.
+Current continuation gates: 4/4. Cumulative accepted phase gates: 46/80; private
+implementation and earlier application runtime acceptance are still open.
+The final context precheck caught the newly staged document count; regenerating
+the lock after staging corrected it and the context check passed. The report
+retains that failed precheck and its applied fix.
+
 ## Sentinel Maritime planning continuation authorized 2026-09-16
 
 The owner supplied the product blueprint and infrastructure map. Freeze their

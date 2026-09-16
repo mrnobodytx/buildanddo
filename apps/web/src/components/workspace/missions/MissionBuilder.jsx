@@ -8,9 +8,9 @@
 // Seat:         BITS-CODEGEN
 // Owner:        Citadel Nexus Inc.
 // Created:      2026-09-15
-// Depends:      apps/web/src/lib/missionLearning.js
+// Depends:      apps/web/src/lib/missionLearning.js, apps/pocketbase/pb_migrations/data/government-submissions.json
 // EnumType:     Widget
-// EnumEdges:    DEPENDS_ON apps/web/src/lib/missionLearning.js
+// EnumEdges:    DEPENDS_ON apps/web/src/lib/missionLearning.js; CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json
 // DAG Node:     none
 // Intent:       Help operators author purpose, permission boundaries and TEVV methods while preserving incomplete drafts and rejected saves.
 // ───────────────────────────────────────────────────────────────
@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { PLAN_FIELDS, planIssues, readPlan } from '@/lib/missionLearning';
+import government from '../../../../../pocketbase/pb_migrations/data/government-submissions.json';
 
 const STEPS = [
     {
@@ -103,6 +104,14 @@ export default function MissionBuilder({ mission, onSave, onCancel, disabled = f
     const locked = disabled || saving;
     return (
         <form onSubmit={submit} className="space-y-5" aria-label="Mission plan" aria-busy={saving}>
+            {!mission && !form.title && <div className="space-y-2 border border-border bg-secondary/30 p-4">
+                <h3 className="font-display text-lg">Government submission mission</h3>
+                <p className="text-sm text-muted-foreground">Start with a preparation plan, eight practical lessons and the mission suite. Review the plan before saving it as proposed.</p>
+                <Button type="button" variant="secondary" disabled={locked} onClick={() => {
+                    setForm({ ...government.mission, due_date: '' });
+                    setPlan(readPlan(government.mission.mission_plan)); changeStep(0);
+                }}>Use government submission starter</Button>
+            </div>}
             <nav
                 aria-label="Mission builder steps"
                 className="grid grid-cols-2 gap-2 sm:grid-cols-4"

@@ -10,7 +10,7 @@
 // Created:     2026-09-15
 // Depends:     apps/web/src/lib/publicPages.js, apps/web/src/lib/tutorialCurriculum.js, apps/pocketbase/pb_migrations/data/starter-tutorials.json
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js; DEPENDS_ON apps/web/src/lib/tutorialCurriculum.js; DEPENDS_ON apps/pocketbase/pb_migrations/data/starter-tutorials.json
+// EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js; DEPENDS_ON apps/web/src/lib/tutorialCurriculum.js; DEPENDS_ON apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json
 // DAG Node:    none
 // Intent:      Keep Discord documentation and teaching content on the same authored curriculum and release as the public site.
 // ───────────────────────────────────────────────────────────────
@@ -23,13 +23,15 @@ import { validLesson } from '../src/lib/tutorialCurriculum.js';
 const starter = JSON.parse(readFileSync(
     new URL('../../pocketbase/pb_migrations/data/starter-tutorials.json', import.meta.url), 'utf8',
 ));
+const government = JSON.parse(readFileSync(new URL('../../pocketbase/pb_migrations/data/government-submissions.json', import.meta.url), 'utf8'));
+const authored = { version: starter.version + '+' + government.version, lessons: [...starter.lessons, ...government.lessons] };
 
 function text(value, max) {
     return typeof value === 'string' && value.trim().length > 0 && value.length <= max;
 }
 
 /** Produce an explicit public projection of authored source, never workspace records. */
-export function buildCommunityCatalogue(release, { pages = PUBLIC_PAGES, curriculum = starter } = {}) {
+export function buildCommunityCatalogue(release, { pages = PUBLIC_PAGES, curriculum = authored } = {}) {
     if (!release || !/^[a-f0-9]{40}$/.test(release.commit_sha) ||
         !/^[0-9]+\+[a-f0-9]{7}$/.test(release.version) ||
         !release.version.endsWith('+' + release.commit_sha.slice(0, 7))) {

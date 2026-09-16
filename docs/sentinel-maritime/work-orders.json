@@ -1,0 +1,3280 @@
+{
+  "schema_version": "sentinel-maritime.work-orders/v1",
+  "baseline_id": "SM-BL-1.1",
+  "contract_id": "SM-EXEC-1.0",
+  "program_id": "SENTINEL-MARITIME-V1",
+  "artifact_kind": "implementation_plan",
+  "authority": "public_planning_only",
+  "owner": "Citadel Nexus Inc.",
+  "decision_source": "Owner-supplied maritime white-paper and 55-section implementation brief, 2026-09-16",
+  "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs_codes": [
+    "SRS-BUILDANDDO-UPGRADE-001"
+  ],
+  "target_surface": "https://sentinel.citadel-nexus.com",
+  "program_mode": "EXTEND_EXISTING",
+  "standalone_ui": false,
+  "new_merkle_implementation": false,
+  "model_authority": "NONE",
+  "cui_phase_1": "DISABLED",
+  "execution_state": "NOT_DISPATCHED",
+  "receiving_dispatch": null,
+  "release_state": "HOLD",
+  "field_contract": [
+    "WORK_ORDER_ID",
+    "OBJECTIVE",
+    "WHY",
+    "CURRENT_OWNER",
+    "REUSE_DECISION",
+    "FILES_EXPECTED",
+    "SCHEMAS",
+    "DEPENDENCIES",
+    "EVENTS",
+    "APIS",
+    "GRAPH_NODES",
+    "GRAPH_EDGES",
+    "TELEMETRY",
+    "SECURITY_IMPACT",
+    "DATA_RIGHTS_IMPACT",
+    "TESTS",
+    "NEGATIVE_TESTS",
+    "POSTCONDITIONS",
+    "ROLLBACK",
+    "EVIDENCE",
+    "SBOM_IMPACT",
+    "MERKLE_IMPACT",
+    "REMOTE_WRITES"
+  ],
+  "schema_catalogue": [
+    "Observation",
+    "Entity",
+    "Vessel",
+    "VesselState",
+    "Track",
+    "TrackPoint",
+    "Port",
+    "Zone",
+    "Emitter",
+    "Sensor",
+    "Organization",
+    "Event",
+    "Claim",
+    "Relationship",
+    "EvidenceArtifact",
+    "CandidateCue",
+    "ThreatCue",
+    "AdmissionDecision",
+    "AnalystDisposition",
+    "HandoffReceipt",
+    "OutcomeEvidence",
+    "DataSource",
+    "DataRightsContract",
+    "PolicyPack",
+    "ReleaseManifest",
+    "EvidenceEpoch",
+    "ReplayRun",
+    "CueProof"
+  ],
+  "discovery_gate": {
+    "work_order": "SM-WO-00",
+    "accepted": false,
+    "accepting_owner": null,
+    "receipt": null,
+    "code_before_acceptance": false,
+    "requires": [
+      "Actual Sentinel repository and governance",
+      "Ready/In progress private dispatch",
+      "Accountable source/service/API/auth/graph/evidence/NNC/SBOM/release owners",
+      "Verified required reuse bases and approved BUILD/EXTEND scope",
+      "Actual path and test-command mappings",
+      "Accepted first vertical slice and publication boundaries"
+    ]
+  },
+  "shared_scope_fields": [
+    "tenant_id",
+    "mission_id"
+  ],
+  "admission_verdicts": [
+    "ADMIT",
+    "HOLD",
+    "DENY"
+  ],
+  "triage_dispositions": [
+    "SUPPRESS",
+    "ESCALATE"
+  ],
+  "threat_cue_requires": "ADMIT_FOR_SPECIFIED_ACTION",
+  "handoff_receipt_states": [
+    "PENDING",
+    "UNKNOWN",
+    "SUCCESS",
+    "FAILED",
+    "BLOCKED"
+  ],
+  "rollout_states": [
+    "OFF",
+    "LOCAL",
+    "TEST",
+    "SHADOW",
+    "DEMO",
+    "PILOT",
+    "PRODUCTION"
+  ],
+  "shadow_external_handoff": "DISABLED",
+  "full_chain_acceptance": {
+    "required_stages": [
+      "permitted_live_observation",
+      "normalized_evidence",
+      "rights_check",
+      "persistent_world_state",
+      "entity_track_relationship",
+      "behavior_change",
+      "candidate_cue",
+      "deterministic_nnc_admission",
+      "threat_cue",
+      "base_proof",
+      "analyst_review",
+      "currently_authorized_handoff",
+      "durable_attempt_and_recipient_receipt",
+      "outcome_evidence",
+      "world_model_update",
+      "deterministic_decision_replay",
+      "verified_sbom_release_and_evidence_lineage"
+    ],
+    "observed_stages": [],
+    "state": "UNVERIFIED",
+    "fixture_substitution_allowed": false
+  },
+  "global_invariants": [
+    "Every downstream order requires Wave 0 acceptance, accepted dependencies and receiving authority.",
+    "Security, tenant/mission isolation, rights and telemetry constraints begin with schemas and apply through all later waves.",
+    "Mandatory security/negative/full-chain gates cannot be averaged away by an aggregate pass rate.",
+    "Source, fixture, native, live and recipient evidence are distinct acceptance levels.",
+    "Current rights and authority are rechecked before effect; replay does not authorize fresh action.",
+    "Every work order returns the mandatory evidence report even when no code or runtime was executed.",
+    "ELIGIBLE is not production authorization; public planning creates no remote-write grant."
+  ],
+  "negative_tests": [
+    {
+      "id": "NEG-01",
+      "requirement": "Stale evidence cannot silently overwrite fresh state",
+      "expected_evidence": "Compare state and retained late-observation revision after out-of-order ingest."
+    },
+    {
+      "id": "NEG-02",
+      "requirement": "Contradictory evidence remains represented",
+      "expected_evidence": "Verify both claims in state, UI projection and reconstructed history."
+    },
+    {
+      "id": "NEG-03",
+      "requirement": "Model output cannot bypass NNC",
+      "expected_evidence": "Attempt model-proposed admission; retain inference but reject operational authority."
+    },
+    {
+      "id": "NEG-04",
+      "requirement": "Candidate cannot hand off directly",
+      "expected_evidence": "Attempt candidate export; no network effect and durable BLOCKED receipt."
+    },
+    {
+      "id": "NEG-05",
+      "requirement": "Policy HOLD cannot become ADMIT through UI",
+      "expected_evidence": "Tamper with UI/API status and verify unchanged authoritative decision."
+    },
+    {
+      "id": "NEG-06",
+      "requirement": "Rights-denied evidence cannot be exported",
+      "expected_evidence": "Try forbidden recipient/derivative/expired license; no protected payload leaves."
+    },
+    {
+      "id": "NEG-07",
+      "requirement": "Cross-tenant evidence cannot leak",
+      "expected_evidence": "Probe relational, graph, artifact, cache, stream and replay paths with foreign scope."
+    },
+    {
+      "id": "NEG-08",
+      "requirement": "CUI-tagged evidence cannot enter public export",
+      "expected_evidence": "Reject input/export and verify logs, references and proofs do not leak protected content."
+    },
+    {
+      "id": "NEG-09",
+      "requirement": "Missing policy version blocks handoff",
+      "expected_evidence": "Reject otherwise valid high-priority cue without immutable applicable policy."
+    },
+    {
+      "id": "NEG-10",
+      "requirement": "Missing release root blocks operational handoff",
+      "expected_evidence": "Reject absent or unknown release identity without synthetic fallback."
+    },
+    {
+      "id": "NEG-11",
+      "requirement": "Failed Merkle verification blocks release eligibility",
+      "expected_evidence": "Use existing owner tamper vectors; no ELIGIBLE state or alternate verification path."
+    },
+    {
+      "id": "NEG-12",
+      "requirement": "Replay divergence creates HOLD",
+      "expected_evidence": "Change ordering/input artifact; preserve original expected result and hold dependent action."
+    },
+    {
+      "id": "NEG-13",
+      "requirement": "Handoff without receipt is impossible",
+      "expected_evidence": "Crash before/after dispatch; no send before durable attempt, no false SUCCESS on timeout."
+    },
+    {
+      "id": "NEG-14",
+      "requirement": "Duplicate and lost-response retries preserve payload identity",
+      "expected_evidence": "Recover with the same admitted payload and handoff ID; count every attempt and unknown result."
+    },
+    {
+      "id": "NEG-15",
+      "requirement": "Proof commitments reject self-reference",
+      "expected_evidence": "Reject cue/proof, image/digest, release/activation and epoch/membership cycles."
+    },
+    {
+      "id": "NEG-16",
+      "requirement": "Cross-mission access inside a tenant requires permission",
+      "expected_evidence": "Reject unauthorized graph/read/stream/replay links even with matching tenant."
+    },
+    {
+      "id": "NEG-17",
+      "requirement": "Telemetry does not expose restricted source content",
+      "expected_evidence": "Inspect authorized metric/log/trace output for seeded identifying or licensed fields."
+    },
+    {
+      "id": "NEG-18",
+      "requirement": "Authority and rights are current at transmission",
+      "expected_evidence": "Revoke between queued ADMIT and send; retain historic ADMIT and block current export."
+    },
+    {
+      "id": "NEG-19",
+      "requirement": "Shared upstream sources do not count as independent corroboration",
+      "expected_evidence": "Provide reseller duplicates; NNC still HOLDs when another independent source is required."
+    },
+    {
+      "id": "NEG-20",
+      "requirement": "Malformed geometry and spoofed metadata cannot enter state",
+      "expected_evidence": "Reject invalid coordinates, hostile metadata, bad hashes and oversized/partial batches with bounded effects."
+    },
+    {
+      "id": "NEG-21",
+      "requirement": "Read-only status cannot activate integrations",
+      "expected_evidence": "Read health/status/metrics and verify zero feed-start, purchase, test or handoff effects."
+    },
+    {
+      "id": "NEG-22",
+      "requirement": "Restricted proof material cannot leave through a hash-only shortcut",
+      "expected_evidence": "Deny unapproved leaf paths, roots, IDs and derivatives across public/commercial/CUI boundaries."
+    },
+    {
+      "id": "NEG-23",
+      "requirement": "Incomplete SBOM or runtime identity blocks eligibility",
+      "expected_evidence": "Omit a required runtime dependency or image identity and keep the candidate HOLD."
+    },
+    {
+      "id": "NEG-24",
+      "requirement": "Unsupported reuse cannot pass discovery",
+      "expected_evidence": "Missing owner/base/interface evidence blocks dependent implementation instead of creating a duplicate service."
+    }
+  ],
+  "work_orders": [
+    {
+      "WORK_ORDER_ID": "SM-WO-00",
+      "OBJECTIVE": "Discover and bind the existing Sentinel owners before maritime code.",
+      "WHY": "Prevent a parallel product, duplicate authority and unsupported reuse claims.",
+      "CURRENT_OWNER": {
+        "requested_seat": "CMAX-B with IDE1",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-001",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-002",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-003",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-004",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-005",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-006",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-007",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-008",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-009",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-010",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-011",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-012",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-013",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-014",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-015",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-016",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-017",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-001",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-002",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-003",
+          "planned_lifecycle": "EXTEND",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-004",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-005",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-006",
+          "planned_lifecycle": "EXTEND",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-007",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-008",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-009",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-010",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-011",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-012",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-013",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-014",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-015",
+          "planned_lifecycle": "EXTEND",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-016",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Receiving repository governance and approved discovery inventory",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Existing source/interface/runtime owner map and accepted path/test mappings",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [],
+      "DEPENDENCIES": [],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "Existing service, identity, graph, evidence and release owners"
+      ],
+      "GRAPH_EDGES": [
+        "OWNED_BY",
+        "IMPLEMENTED_BY",
+        "DEPENDS_ON"
+      ],
+      "TELEMETRY": [
+        "Record dated read-only health/source evidence only when the receiving dispatch permits the inspection; no dashboard provisioning."
+      ],
+      "SECURITY_IMPACT": [
+        "Identify existing auth, tenant/mission enforcement, deployment and security authority; no installers or shared mutation."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Identify licensed source owners, public-safe evidence publication rules and prohibited CUI inputs."
+      ],
+      "TESTS": [
+        {
+          "kind": "discovery",
+          "behavior": "Resolve actual repo/source/path/interface/owner and runtime evidence for each reuse base; distinguish unavailable evidence.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "contract",
+          "behavior": "Reconcile 33 components with the current Sentinel tree and explicitly scope optional dependencies out of the first slice.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-24"
+      ],
+      "POSTCONDITIONS": [
+        "Named receiving owner accepts the inventory and first vertical slice under a Ready/In progress private dispatch.",
+        "All required existing bases, actual file locations, auth boundaries and canonical epoch/SBOM ownership are verified or the dependent work stays HOLD.",
+        "Each downstream test has a real owner-resolved command before its work order is executed."
+      ],
+      "ROLLBACK": [
+        "Withdraw or revise the discovery report; no runtime rollback applies because this order permits only authorized reads."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Private dispatch and owner acceptance receipt",
+          "Exact source/interface references; dated native/runtime evidence where available",
+          "REUSE/EXTEND/BUILD map with reasons and all unresolved blockers"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Inspect the existing SBOM standard/tool and ownership; do not claim an emitted maritime SBOM."
+      ],
+      "MERKLE_IMPACT": [
+        "Identify the existing private epoch/admission tool and its relationship to the evidence-only public implementation; no new algorithm."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Any private source/service read must be covered by the receiving discovery dispatch; no public-session network operation is authorized."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-01",
+      "OBJECTIVE": "Version the maritime contracts inside the discovered Sentinel schema owners.",
+      "WHY": "Give every producer, consumer and authority gate the same scope and immutable reference semantics.",
+      "CURRENT_OWNER": {
+        "requested_seat": "IDE1 with NNC/security owners",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-001",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-002",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-003",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-002",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-007",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-008",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-013",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing schema/ontology packages and compatibility validators",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Contract fixtures and consumer compatibility tests",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "Observation",
+        "Entity",
+        "Vessel",
+        "VesselState",
+        "Track",
+        "TrackPoint",
+        "Port",
+        "Zone",
+        "Emitter",
+        "Sensor",
+        "Organization",
+        "Event",
+        "Claim",
+        "Relationship",
+        "EvidenceArtifact",
+        "CandidateCue",
+        "ThreatCue",
+        "AdmissionDecision",
+        "AnalystDisposition",
+        "HandoffReceipt",
+        "OutcomeEvidence",
+        "DataSource",
+        "DataRightsContract",
+        "PolicyPack",
+        "ReleaseManifest",
+        "EvidenceEpoch",
+        "ReplayRun",
+        "CueProof"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-00"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Versioned observation, state, cue, proof, rights and recipient wire contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "Typed domain objects with tenant_id, mission_id and immutable revisions"
+      ],
+      "GRAPH_EDGES": [
+        "OBSERVES",
+        "SUPPORTS",
+        "CONTRADICTS",
+        "DERIVED_FROM",
+        "ADMITTED_BY"
+      ],
+      "TELEMETRY": [
+        "Define correlation and bounded telemetry fields/units; no production emissions in schema work."
+      ],
+      "SECURITY_IMPACT": [
+        "Require scope on every reference; distinguish CandidateCue/AdmissionDecision/ThreatCue and prohibit UI/model authority."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Carry classification and immutable rights references on observations, claims, state, cue, proof and handoff contracts."
+      ],
+      "TESTS": [
+        {
+          "kind": "unit",
+          "behavior": "Reject missing scope/source/time/rights/provenance/hash and invalid versioned confidence or geometry.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "contract",
+          "behavior": "Validate old/new producer-consumer compatibility, candidate/admitted distinction, and detached proof/receipt projections.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "property",
+          "behavior": "Preserve scope/classification through every referenced object and correction.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-03",
+        "NEG-04",
+        "NEG-07",
+        "NEG-08",
+        "NEG-09",
+        "NEG-10",
+        "NEG-15",
+        "NEG-16",
+        "NEG-20"
+      ],
+      "POSTCONDITIONS": [
+        "Schema versions, compatibility/migration plan and consumers accepted by their owners.",
+        "No production route, storage schema or alternative identity service is created from illustrative paths."
+      ],
+      "ROLLBACK": [
+        "Revert schema changes together with dependent consumers before activation; retain version history and compatibility evidence."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Exact schema source/revision and owner review",
+          "Executed version/missing-field/negative contract results for the same schema package"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Link schema/policy artifacts and actual dependencies to existing component IDs in the candidate SBOM."
+      ],
+      "MERKLE_IMPACT": [
+        "Map schemas and policy contracts to CONTRACT_ROOT through the existing owner; no real root until its prerequisites exist."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Local source changes only after Wave 0/private dispatch; shared schema publication requires separate receiving approval."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-02",
+      "OBJECTIVE": "Implement one fixture adapter and one permitted live public source using existing transport.",
+      "WHY": "Establish real provenance-preserving ingest without claiming multi-sensor fusion from fixtures.",
+      "CURRENT_OWNER": {
+        "requested_seat": "IDE1 with source-rights owner",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-004",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-006",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-001",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-013",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Discovered source-adapter and normalization extension points",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Rights gate, bounded ingest contract and adapter fixtures",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "Observation",
+        "DataSource",
+        "DataRightsContract",
+        "EvidenceArtifact"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-01"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [
+          "observation.raw",
+          "observation.normalized",
+          "rights.denied",
+          "security.blocked"
+        ],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Private observation/batch ingest and source health contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "Observation",
+        "DataSource",
+        "DataRightsContract"
+      ],
+      "GRAPH_EDGES": [
+        "OBSERVES",
+        "DERIVED_FROM"
+      ],
+      "TELEMETRY": [
+        "ingest.events/errors/latency_ms",
+        "source.staleness_seconds",
+        "Trace normalization, rights and publish with the same authorized correlation context."
+      ],
+      "SECURITY_IMPACT": [
+        "Reject spoofed/untrusted metadata, oversized batches and CUI; reuse current service identity, mTLS and scope ACLs."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Source must be approved for purpose, retention, derivatives and later recipient use; do not purchase data or infer permission from public reachability."
+      ],
+      "TESTS": [
+        {
+          "kind": "unit",
+          "behavior": "Parse permitted source records preserving clock precision and separate raw/normalized evidence.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "contract",
+          "behavior": "Exercise duplicate/late/malformed input, deadlines, partial batches, backpressure and source outages.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "integration",
+          "behavior": "Receive one real permitted public observation and persist its rights/provenance using the discovered transport; fixtures remain separately labeled.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-01",
+        "NEG-06",
+        "NEG-07",
+        "NEG-08",
+        "NEG-16",
+        "NEG-17",
+        "NEG-19",
+        "NEG-20"
+      ],
+      "POSTCONDITIONS": [
+        "Fixture and live-public adapter identities, rights, real observation receipt and coverage report exist.",
+        "No claim of AIS/SAR/EO/RF fusion without corresponding real sources and evaluation."
+      ],
+      "ROLLBACK": [
+        "Disable the adapter through existing controls; retain permitted immutable receipts, replay cursor and quarantine state; resume without duplicate accepted observations."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Dated source/license/coverage references",
+          "Real observation-to-normalization/publish receipt and bounded failure tests"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Record actual SDK/runtime versions, source adapter owner and third-party licenses; source data contracts remain separate from software licenses."
+      ],
+      "MERKLE_IMPACT": [
+        "Use the established canonical observation format; operational observations join their own rights-bound evidence epoch, not RELEASE_ROOT."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Approved live provider read may incur billing/audit effects; queue/storage mutations require receiving scope and receipts."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-03",
+      "OBJECTIVE": "Extend existing world-state and graph owners with reversible maritime associations.",
+      "WHY": "Preserve uncertain identity, track history and contradictions across recovery and replay.",
+      "CURRENT_OWNER": {
+        "requested_seat": "IDE1 with graph owners",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-001",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-007",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-008",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-009",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-010",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-011",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-012",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-002",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-003",
+          "planned_lifecycle": "EXTEND",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-004",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing resolver/state/graph projection extension points",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Scoped queries, projection recovery and temporal tests",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "Entity",
+        "Vessel",
+        "VesselState",
+        "Track",
+        "TrackPoint",
+        "Claim",
+        "Relationship",
+        "Port",
+        "Zone",
+        "Event"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-02"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [
+          "entity.created",
+          "entity.updated",
+          "entity.resolved",
+          "track.updated",
+          "claim.created",
+          "claim.contradicted",
+          "event.created"
+        ],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Scoped entity detail/history/evidence/relationships, tracks and watch contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "Vessel",
+        "Track",
+        "Port",
+        "Zone",
+        "Claim",
+        "Relationship",
+        "Observation",
+        "Event"
+      ],
+      "GRAPH_EDGES": [
+        "VISITED",
+        "ENTERED",
+        "EXITED",
+        "RENDEZVOUS_WITH",
+        "ASSOCIATED_WITH",
+        "SUPPORTS",
+        "CONTRADICTS",
+        "PRECEDES",
+        "INVOLVES"
+      ],
+      "TELEMETRY": [
+        "worldmodel.update_ms/entities/conflicts",
+        "entity_resolution.attempts/confidence",
+        "Capture state commit time separately from observation event and ingest time."
+      ],
+      "SECURITY_IMPACT": [
+        "Enforce existing tenant/mission constraints on every traversal, projection, cache and artifact reference."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Store and project only permitted source content; association does not expand source licenses or permit personal dossier reuse."
+      ],
+      "TESTS": [
+        {
+          "kind": "unit",
+          "behavior": "Exercise identifiers, aliases, callsigns, spatial/time continuity and ambiguous alternative entities without destructive merge.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "integration",
+          "behavior": "Recover relational/graph state after duplicate/late events and partial projection failure; preserve old cue-visible snapshots.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "property",
+          "behavior": "Keep contradictions, scope and observed/inferred/predicted/stale distinctions through replay.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-01",
+        "NEG-02",
+        "NEG-07",
+        "NEG-16",
+        "NEG-19",
+        "NEG-20"
+      ],
+      "POSTCONDITIONS": [
+        "Actual graph/state reconciliation and recovery evidence passes on the same scoped event stream.",
+        "Optional vector retrieval remains a non-authoritative projection; no new service is installed without a discovered need and owner decision."
+      ],
+      "ROLLBACK": [
+        "Disable new projections/resolver version, preserve source/claim history and rebuild accepted indexes with the prior compatible version."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Resolver/version and immutable state/graph references",
+          "Association evaluation with false merge/split/unknown cases; recovery and isolation receipts"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Record existing state/graph interfaces and actual resolver dependencies; include managed-service identities honestly."
+      ],
+      "MERKLE_IMPACT": [
+        "World snapshots reference prior observations and producing candidate/release identity through the established contract; no mutable-state root rewrite."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Shared schema/index/graph mutations need receiving authority; local isolated replay is the default until approved."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-04",
+      "OBJECTIVE": "Build a narrow deterministic feature-to-CandidateCue path with inspectable evidence.",
+      "WHY": "Validate useful behavior and context before broadening detectors or adding model complexity.",
+      "CURRENT_OWNER": {
+        "requested_seat": "IDE1 with mission evaluator",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-005",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-009",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-005",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-006",
+          "planned_lifecycle": "EXTEND",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-007",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-012",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Discovered feature/correlation/candidate compiler extension points",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Frozen scenario and negative-control evaluation corpus",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "CandidateCue",
+        "VesselState",
+        "Claim",
+        "Relationship",
+        "EvidenceArtifact"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-03"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [
+          "candidate.created",
+          "candidate.updated"
+        ],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Candidate review/query contract; no operational handoff"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "CandidateCue",
+        "Claim",
+        "EvidenceArtifact"
+      ],
+      "GRAPH_EDGES": [
+        "SUPPORTED_BY",
+        "CONTRADICTED_BY",
+        "DERIVED_FROM"
+      ],
+      "TELEMETRY": [
+        "detector.events/candidates",
+        "cue.raw/candidate/suppressed",
+        "Bind feature versions, coverage and candidate latency stages without raw identifying tags."
+      ],
+      "SECURITY_IMPACT": [
+        "Model outputs and raw source metadata have no authority; candidate creation cannot emit an admitted cue or invoke a recipient."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Feature derivation obeys source derivative rights and retains contradiction/rights references."
+      ],
+      "TESTS": [
+        {
+          "kind": "unit",
+          "behavior": "Compute dark/loitering/rendezvous or selected narrow features with explicit time/coverage assumptions.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "contract",
+          "behavior": "Retain supporting/contradicting evidence, feature and inference versions, calibration and missing-source conditions.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "evaluation",
+          "behavior": "Compare routine anchorage suppression with suspicious-pattern candidates under frozen labels; report counts without claiming measured criminality.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-01",
+        "NEG-02",
+        "NEG-03",
+        "NEG-04",
+        "NEG-19"
+      ],
+      "POSTCONDITIONS": [
+        "One selected feature path produces traceable candidates with routine and adversarial controls.",
+        "Unimplemented feature families and optional model inference remain explicitly out of accepted scope."
+      ],
+      "ROLLBACK": [
+        "Disable the detector version, retain candidates and reasons, replay accepted source history using the prior feature version."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Frozen feature corpus and expected candidate/triage outcomes",
+          "Actual candidate evidence references, latency and denominator-based evaluation"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Add only actual feature/correlation dependencies and versioned model artifacts if used; no implied LangGraph requirement."
+      ],
+      "MERKLE_IMPACT": [
+        "Commit feature/inference artifacts through the existing owner; candidate evidence stays separate from software/policy contracts."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Live/shadow detection state writes require receiving scope; external handoff remains disabled."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-05",
+      "OBJECTIVE": "Extend the existing NNC owner with the maritime action-specific policy pack.",
+      "WHY": "Make evidence, rights and named authority the sole path from candidate to admitted action.",
+      "CURRENT_OWNER": {
+        "requested_seat": "CMAX-B with NNC/policy owner",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-002",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-007",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-008",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-013",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing NNC policy-pack and decision service extension points",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Immutable policy versions and bypass/revocation/replay tests",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "CandidateCue",
+        "AdmissionDecision",
+        "ThreatCue",
+        "PolicyPack",
+        "DataRightsContract"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-04"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [
+          "nnc.request",
+          "nnc.verdict",
+          "cue.admitted",
+          "cue.held",
+          "cue.denied"
+        ],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Existing NNC evaluation and cue query contracts; no alternative admission endpoint"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "CandidateCue",
+        "AdmissionDecision",
+        "ThreatCue",
+        "PolicyPack"
+      ],
+      "GRAPH_EDGES": [
+        "SUPPORTED_BY",
+        "CONTRADICTED_BY",
+        "ADMITTED_BY"
+      ],
+      "TELEMETRY": [
+        "nnc.evaluations/gate_failure",
+        "cue.admitted/held/denied",
+        "Typed predicate reasons, policy/release identity and decision time in authorized traces."
+      ],
+      "SECURITY_IMPACT": [
+        "Models, UI, priority and adapters cannot grant admission; ADMIT is bound to action/recipient/revision and expiry."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Evaluate rights/disclosure/jurisdiction with immutable history and current revocation at action time."
+      ],
+      "TESTS": [
+        {
+          "kind": "unit",
+          "behavior": "Evaluate ordered provenance/freshness/corroboration/uncertainty/rights/disclosure/mission/jurisdiction/authority/rollback predicates.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "negative",
+          "behavior": "Deny known prohibition, hold missing context and distinguish SUPPRESS/ESCALATE from authoritative verdicts.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "replay",
+          "behavior": "Reproduce verdict and reasons with frozen clock, policy, scope, rights and captured inference; changes remain explicit.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-03",
+        "NEG-04",
+        "NEG-05",
+        "NEG-06",
+        "NEG-09",
+        "NEG-10",
+        "NEG-12",
+        "NEG-18",
+        "NEG-19"
+      ],
+      "POSTCONDITIONS": [
+        "Owner-approved policy version and decisions with typed reasons exist; no candidate or UI bypass succeeds.",
+        "Operational ThreatCue uses real accepted release context; isolated policy tests do not grant live handoff authority."
+      ],
+      "ROLLBACK": [
+        "Disable action admission or restore the prior approved policy version under existing policy governance; preserve all historical decisions."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Policy authorship/approval/supersession/rollback evidence",
+          "Mandatory bypass, expiry, rights and deterministic replay results"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Link actual NNC base, policy-pack version and dependency closure; no competing verdict engine."
+      ],
+      "MERKLE_IMPACT": [
+        "Policy artifact contributes through CONTRACT_ROOT; decisions join evidence epochs without changing the release root for each cue."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Publishing policy or enabling admission is a receiving-authority mutation; local tests alone authorize no live action."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-06",
+      "OBJECTIVE": "Assemble cue proofs and replay references through the existing evidence/epoch owner.",
+      "WHY": "Make every admitted cue reviewable without cyclic hashes or a second Merkle subsystem.",
+      "CURRENT_OWNER": {
+        "requested_seat": "CMAX-B with evidence/integrity owner",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-003",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-012",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-017",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-007",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing evidence proof and replay adapters",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Conformance and detached epoch-membership/receipt tests",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "CueProof",
+        "ThreatCue",
+        "AdmissionDecision",
+        "EvidenceArtifact",
+        "EvidenceEpoch",
+        "ReleaseManifest",
+        "ReplayRun"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-05"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [
+          "evidence.committed",
+          "epoch.closed",
+          "replay.started",
+          "replay.completed"
+        ],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Cue proof/evidence and authorized replay contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "CueProof",
+        "ThreatCue",
+        "AdmissionDecision",
+        "EvidenceEpoch"
+      ],
+      "GRAPH_EDGES": [
+        "SUPPORTED_BY",
+        "CONTRADICTED_BY",
+        "ADMITTED_BY",
+        "EVIDENCED_BY"
+      ],
+      "TELEMETRY": [
+        "provenance.completeness",
+        "merkle.verify_pass/verify_fail",
+        "replay.runs/determinism",
+        "Observed missing or inaccessible proof coverage stays visible."
+      ],
+      "SECURITY_IMPACT": [
+        "Required incomplete/failed proof blocks surfacing/handoff; no protected leaf/root automatically leaves its boundary."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Keep PUBLIC, COMMERCIAL and future CUI proofs isolated and apply authorized projection to every outward reference."
+      ],
+      "TESTS": [
+        {
+          "kind": "contract",
+          "behavior": "Resolve cue, input state, source rights, policy, NNC and software/SBOM references for the same accepted projection.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "integration",
+          "behavior": "Publish no admitted/surfaced cue before base proof exists; append later receipt/view links without modifying committed inputs.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "replay",
+          "behavior": "Use existing canonical conformance/tamper/epoch recomputation and contradiction-preserving historical verdict reconstruction.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-02",
+        "NEG-06",
+        "NEG-08",
+        "NEG-11",
+        "NEG-12",
+        "NEG-15",
+        "NEG-22",
+        "NEG-23"
+      ],
+      "POSTCONDITIONS": [
+        "Every accepted admitted/surfaced cue has an accessible authorized base proof.",
+        "Existing owner validates separate commitments, acyclic dependencies and detached final-epoch/receipt projections."
+      ],
+      "ROLLBACK": [
+        "Hold surfacing/exports, retain immutable evidence and rebuild derived proof views from accepted artifacts; never rewrite closed epochs."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Existing tool/version and conformance receipts",
+          "Same-cue proof, missing/tampered input tests and replay expected/actual records"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Link actual proof/evidence modules and the existing integrity tool; include only verified identities."
+      ],
+      "MERKLE_IMPACT": [
+        "Recompute through existing owner; preserve distinct release/rights/epoch roots and external activation/epoch-membership receipts."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Shared epoch closure or evidence publication requires receiving authority; public-source audit does not admit runtime roots."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-07",
+      "OBJECTIVE": "Add Maritime workflows to the existing Sentinel shell, globe and identity.",
+      "WHY": "Let analysts understand and review cues without a parallel product or authority-changing UI.",
+      "CURRENT_OWNER": {
+        "requested_seat": "CMAX-B with Sentinel UI owner",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-001",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-010",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing Sentinel mission navigation, watch and entity/cue/evidence views",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Current UI hooks/state/API client and accessible interaction tests",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "VesselState",
+        "ThreatCue",
+        "CandidateCue",
+        "AdmissionDecision",
+        "AnalystDisposition",
+        "CueProof",
+        "HandoffReceipt"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-06"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [
+          "analyst.disposition"
+        ],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Existing watch/entity/cue/evidence/replay/source/integration/metrics/admin query and adjudication contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "AnalystDisposition",
+        "ThreatCue",
+        "EvidenceArtifact"
+      ],
+      "GRAPH_EDGES": [
+        "SUPPORTED_BY",
+        "CONTRADICTED_BY",
+        "EVIDENCED_BY"
+      ],
+      "TELEMETRY": [
+        "Scoped comprehension/disposition timings and outcome-aware UI actions",
+        "No raw evidence, coordinates, note contents or dossier data in browser telemetry."
+      ],
+      "SECURITY_IMPACT": [
+        "Current identity/mission changes discard private delayed results; UI cannot overwrite NNC decision or gain policy authority."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Evidence drawer and maps show only permitted projections; unavailable and rights-denied data remain explicit."
+      ],
+      "TESTS": [
+        {
+          "kind": "component",
+          "behavior": "Navigate watch/entity/cue/evidence/replay pages; show contradictions, uncertainty and missing predicates.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "negative",
+          "behavior": "Reject HOLD-to-ADMIT manipulation, foreign scope and optimistic success without persisted action.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "browser",
+          "behavior": "Exercise keyboard/map alternatives, modal focus return, narrow viewports, themes, reduced motion and revoked identity.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-02",
+        "NEG-05",
+        "NEG-07",
+        "NEG-08",
+        "NEG-16",
+        "NEG-17",
+        "NEG-21"
+      ],
+      "POSTCONDITIONS": [
+        "Maritime works in existing Sentinel navigation/auth/globe with actual API-backed state.",
+        "Rendered desktop/mobile/accessibility evidence and persistent disposition/recovery tests pass."
+      ],
+      "ROLLBACK": [
+        "Disable Maritime navigation via existing controls, restore compatible UI bundle and retain server evidence/dispositions; no database history rollback."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Same-candidate rendered interaction and authorized screenshot evidence",
+          "Actual UI-to-server disposition, denied action and session-change recovery results"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Record existing UI component/base versions and any approved dependency delta; no second app/auth stack."
+      ],
+      "MERKLE_IMPACT": [
+        "UI artifacts enter software candidate identity; displayed proof links remain detached authorized projections."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Shared UI deployment or analyst writes require receiving scope; local preview is not activation."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-08",
+      "OBJECTIVE": "Connect governed cue handoff to an agreed generic recipient contract.",
+      "WHY": "Prove receipted operational delivery while preserving the recipient system and current authority.",
+      "CURRENT_OWNER": {
+        "requested_seat": "IDE1 with recipient/integration owner",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-006",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-009",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-010",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-013",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing integration gateway and durable outbox/receipt extension points",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Generic recipient adapter and simulator/contract tests",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "ThreatCue",
+        "CueProof",
+        "AdmissionDecision",
+        "HandoffReceipt",
+        "OutcomeEvidence",
+        "DataRightsContract"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-07"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [
+          "handoff.requested",
+          "handoff.completed",
+          "handoff.failed",
+          "rights.denied",
+          "security.blocked"
+        ],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Governed handoff, historical query, subscriptions, REST/webhook, SSE/message bridge, GeoJSON/JSON Lines/batch contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "ThreatCue",
+        "HandoffReceipt",
+        "OutcomeEvidence"
+      ],
+      "GRAPH_EDGES": [
+        "HANDED_OFF_AS",
+        "DERIVED_FROM",
+        "EVIDENCED_BY"
+      ],
+      "TELEMETRY": [
+        "handoff.requests/success/failure/latency_ms",
+        "rights.block/security.export_block",
+        "Track queue, attempt, unknown delivery, acknowledgement and actual outcome separately."
+      ],
+      "SECURITY_IMPACT": [
+        "Current NNC action/recipient/revision/expiry and actor scope are rechecked immediately before network effect."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Validate licensed payload/proof projection for recipient, purpose and jurisdiction; no undocumented government API or public CUI export."
+      ],
+      "TESTS": [
+        {
+          "kind": "contract",
+          "behavior": "Negotiate schema, pagination/cursors, backpressure, corrections, idempotency and acknowledged acceptance with the recipient owner.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "integration",
+          "behavior": "Persist attempt before send and recover crashes, duplicates, response loss, rejection and retries with stable admitted payload identity.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "security",
+          "behavior": "Block foreign scope, changed rights/authority, absent policy/release and internal mutation exposure.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-04",
+        "NEG-05",
+        "NEG-06",
+        "NEG-07",
+        "NEG-08",
+        "NEG-09",
+        "NEG-10",
+        "NEG-13",
+        "NEG-14",
+        "NEG-16",
+        "NEG-18",
+        "NEG-21",
+        "NEG-22"
+      ],
+      "POSTCONDITIONS": [
+        "Simulator and real-recipient acceptance remain distinguished; a claimed real handoff has a dated permitted acknowledgement.",
+        "Every attempted or blocked export is receipted; transport ACK is not automatically recipient acceptance or operational usefulness."
+      ],
+      "ROLLBACK": [
+        "Disable outbound adapter, retain/reconcile PENDING/UNKNOWN attempts and issue permitted correction/retraction; never erase receipt history or replay a revoked ADMIT."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Approved destination/schema/rights/authority contract",
+          "Exact payload identity, attempt/acknowledgement/outcome receipts and failure/revocation tests"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Record actual adapter/transport dependencies, external managed recipient and interface versions; no fictional government SDK."
+      ],
+      "MERKLE_IMPACT": [
+        "Handoff payload references prior proof; later receipts/outcomes enter later epochs, never the original proof root they reference."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "External test/handoff is a receiving-approved mutation with bounded recipient, period, payload and receipts; public session authorizes none."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-09",
+      "OBJECTIVE": "Demonstrate the full pipeline in existing Datadog and operational telemetry.",
+      "WHY": "Make source failures, cue quality, action outcomes and costs observable instead of inferred from code.",
+      "CURRENT_OWNER": {
+        "requested_seat": "CMAX-B with telemetry owner",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-013",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-014",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-011",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-016",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing service instrumentation and approved dashboard/monitor definitions",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Telemetry field/cardinality/privacy and pipeline-correlation tests",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "Observation",
+        "CandidateCue",
+        "ThreatCue",
+        "AdmissionDecision",
+        "HandoffReceipt",
+        "ReplayRun"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-08"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Scoped demo metrics and actual service health contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "Observed pipeline-stage and release evidence references"
+      ],
+      "GRAPH_EDGES": [
+        "PRODUCES",
+        "CONSUMES",
+        "EVIDENCED_BY"
+      ],
+      "TELEMETRY": [
+        "Implement the full metric/trace catalogue in implementation-contract.md section 12.",
+        "Resolve all 12 dashboard contracts and correlate one observation through receipt/outcome.",
+        "Freeze latency stage definitions, funnel episode denominators, outages, unit costs and SLO baseline states."
+      ],
+      "SECURITY_IMPACT": [
+        "Raw source content and identifying evidence stay out of metrics; restricted identifiers use only approved scoped logs/traces."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Telemetry retention/export obeys source and boundary rights; reporting cannot become a side channel."
+      ],
+      "TESTS": [
+        {
+          "kind": "contract",
+          "behavior": "Validate metric types/units, bounded dimensions and sanitization; missing data is unknown, not zero.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "integration",
+          "behavior": "Observe actual accepted telemetry for the same candidate across pipeline stages and failure paths.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "evaluation",
+          "behavior": "Baseline latency/coverage and funnel denominators before selecting numeric SLOs; separate counts from precision.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-07",
+        "NEG-08",
+        "NEG-16",
+        "NEG-17",
+        "NEG-21",
+        "NEG-22"
+      ],
+      "POSTCONDITIONS": [
+        "All required pipeline telemetry is observed and attributable to the tested candidate; proposed dashboards alone do not pass.",
+        "SLO states progress only with actual baseline/target/result evidence and negative/privacy coverage."
+      ],
+      "ROLLBACK": [
+        "Revert instrumentation/dashboard changes through existing owners while preserving retained evidence; telemetry failure cannot change action authority."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Dated authorized metric/log/trace queries and dashboard references",
+          "Sample counts, units, missing-data/coverage evidence and privacy tests"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Record actual instrumentation/tool versions and optional PostHog use; no new unverified monitoring service."
+      ],
+      "MERKLE_IMPACT": [
+        "Telemetry evidence joins the relevant permitted epoch; operational metrics do not mutate release identity."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Dashboard/monitor provisioning, telemetry publication and shared queries require receiving-approved scope and data handling."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-10",
+      "OBJECTIVE": "Run the bounded demonstration and reconstruct its decisions on the same candidate.",
+      "WHY": "Evaluate a complete live cue chain, negative controls and analyst usefulness with honest denominators.",
+      "CURRENT_OWNER": {
+        "requested_seat": "CMAX-B with mission evaluator",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "DBO-011",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-012",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-016",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing Sentinel admin CLI/demo command-center extension points",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Frozen benchmark corpus, replay harness and evaluation report",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "Observation",
+        "VesselState",
+        "CandidateCue",
+        "ThreatCue",
+        "AdmissionDecision",
+        "CueProof",
+        "AnalystDisposition",
+        "HandoffReceipt",
+        "OutcomeEvidence",
+        "ReplayRun"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-09"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [
+          "replay.started",
+          "replay.completed",
+          "analyst.disposition"
+        ],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Demo create/status/metrics/evidence/replay/report and scoped replay contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "Mission evaluation, replay and outcome evidence"
+      ],
+      "GRAPH_EDGES": [
+        "DERIVED_FROM",
+        "EVIDENCED_BY",
+        "HANDED_OFF_AS"
+      ],
+      "TELEMETRY": [
+        "Five-window mission clock, actual counts/health and M-01\u201315 metrics.",
+        "Report CURRENT measured, DEMO TARGET or UNMEASURED with sample counts, coverage and uncertainty."
+      ],
+      "SECURITY_IMPACT": [
+        "Live source and handoff scope is bounded and approved; replay cannot create fresh action authority."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Freeze allowed sources/retention/recipients; label simulator, fixture and live evidence separately."
+      ],
+      "TESTS": [
+        {
+          "kind": "integration",
+          "behavior": "Trace one permitted live observation through state, candidate, NNC, proof, analyst disposition, real permitted receipt and outcome.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "replay",
+          "behavior": "Reconstruct deterministic verdict/reasons/contradictions with frozen clock, order, source set, release/policy and captured inference.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "tevv",
+          "behavior": "Use independently adjudicated relevant and negative populations, withheld controls, analyst baseline, unknown labels/outages and agreed targets.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-01",
+        "NEG-02",
+        "NEG-03",
+        "NEG-04",
+        "NEG-06",
+        "NEG-07",
+        "NEG-08",
+        "NEG-12",
+        "NEG-13",
+        "NEG-14",
+        "NEG-18",
+        "NEG-19",
+        "NEG-21"
+      ],
+      "POSTCONDITIONS": [
+        "Five demo windows produce declared exit evidence and all mandatory invariants pass.",
+        "Unavailable live qualifying event or recipient leaves full-chain acceptance open; fixtures never replace it.",
+        "Precision/recall/FPR are reported only where reference populations and denominators permit evaluation."
+      ],
+      "ROLLBACK": [
+        "Stop demo through existing controls, disable handoff, reconcile uncertain attempts and retain licensed run evidence; restore previous accepted candidate if required."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Authorized mission/source/recipient/target freeze and actual clock/coverage records",
+          "Same-image full-chain receipts, replay expected/actual results, metrics/uncertainty and reviewer dispositions"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Link actual harness/evaluation dependencies and corpus rights separately; evidence points to the tested runtime SBOM."
+      ],
+      "MERKLE_IMPACT": [
+        "Existing owner closes source/state/cue/disposition/outcome epochs and verifies membership/replay without circular final-root references."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Live demonstration, source reads, analyst actions and bounded handoffs require receiving mission and human authority before T0."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-11",
+      "OBJECTIVE": "Consolidate security assessment and define the separately gated future CUI transition.",
+      "WHY": "Verify controls applied since Wave 1 before any pilot, without claiming a compliant environment from documents.",
+      "CURRENT_OWNER": {
+        "requested_seat": "CMAX-B with security/data-rights authorities",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-001",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-015",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-017",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-013",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-014",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-015",
+          "planned_lifecycle": "EXTEND",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing security/scanning/authorization tests and threat model",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Future CUI profile design and receiving-authority acceptance checklist",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "DataRightsContract",
+        "Observation",
+        "ThreatCue",
+        "CueProof",
+        "HandoffReceipt",
+        "EvidenceEpoch"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-10"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [
+          "security.blocked",
+          "rights.denied"
+        ],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "All scoped API, background, graph, subscription and export contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "Boundary, role, rights, release and permitted evidence references"
+      ],
+      "GRAPH_EDGES": [
+        "OWNED_BY",
+        "REQUIRES",
+        "EVIDENCED_BY"
+      ],
+      "TELEMETRY": [
+        "rights.block/security.export_block",
+        "Security/rights dashboard evidence and restricted-log export tests."
+      ],
+      "SECURITY_IMPACT": [
+        "Run dependency/secret/container/license/SBOM/AST/API/isolation/export tests; test role changes and no application superuser shortcut.",
+        "CUI remains disabled; authorities must resolve applicable official clauses, validated modules/configurations, audit, training, media and sanitization."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Separate public/commercial/future CUI storage/graph/proof/export; no unapproved hash-based derivative disclosure."
+      ],
+      "TESTS": [
+        {
+          "kind": "security",
+          "behavior": "Exercise all roles/actions and indirect artifacts, graph caches, streams, replay, logs, retention and recipient boundaries.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "negative",
+          "behavior": "Reject CUI inputs and all unapproved cross-boundary content, metadata and proof projections.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "review",
+          "behavior": "Record actual applicable control evidence and unresolved CUI prerequisites; a profile file alone is not acceptance.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-03",
+        "NEG-04",
+        "NEG-05",
+        "NEG-06",
+        "NEG-07",
+        "NEG-08",
+        "NEG-09",
+        "NEG-10",
+        "NEG-11",
+        "NEG-13",
+        "NEG-16",
+        "NEG-17",
+        "NEG-18",
+        "NEG-21",
+        "NEG-22",
+        "NEG-23"
+      ],
+      "POSTCONDITIONS": [
+        "Mandatory public/commercial security gates pass on the actual candidate with evidence.",
+        "Future CUI work has named authority and remains out of Phase 1; no compliance or cleared-staffing claim is fabricated."
+      ],
+      "ROLLBACK": [
+        "Block affected action/source/export, preserve controlled audit and use existing revocation/rollback process; do not expose evidence during incident response."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Same-candidate required scan and isolation/rights/export results",
+          "Security owner review, official requirement applicability and explicit future-CUI blockers"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Verify actual runtime/base/transitive licenses/vulnerabilities and security tool versions; unknown required dependencies HOLD release."
+      ],
+      "MERKLE_IMPACT": [
+        "Validate domain isolation and existing conformance; future CUI epoch is an owner-controlled extension, not a second hash system."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Any shared security scan or control change requires receiving approval; no CUI provisioning/ingest is authorized by this work order."
+        ],
+        "receipt_refs": []
+      }
+    },
+    {
+      "WORK_ORDER_ID": "SM-WO-12",
+      "OBJECTIVE": "Verify candidate release eligibility and rehearse rollback in the existing release system.",
+      "WHY": "Tie the accepted end-to-end behavior to actual source, image, SBOM, policy, evidence and owner authority.",
+      "CURRENT_OWNER": {
+        "requested_seat": "CMAX-B with release owner",
+        "accountable_owner": null,
+        "verification": "UNVERIFIED",
+        "resolution_gate": "SM-WO-00"
+      },
+      "REUSE_DECISION": [
+        {
+          "component_id": "CN-SM-004",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-007",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-016",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "CN-SM-017",
+          "planned_lifecycle": "REUSE",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-011",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        },
+        {
+          "component_id": "DBO-012",
+          "planned_lifecycle": "BUILD",
+          "base_verification": "PENDING_DISCOVERY"
+        }
+      ],
+      "FILES_EXPECTED": [
+        {
+          "logical_role": "Existing candidate build/release/provenance and rollback pipeline bindings",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        },
+        {
+          "logical_role": "Acceptance bundle and permitted release/activation evidence index",
+          "repository_path": null,
+          "path_state": "UNMAPPED",
+          "resolution_gate": "SM-WO-00"
+        }
+      ],
+      "SCHEMAS": [
+        "ReleaseManifest",
+        "EvidenceEpoch",
+        "PolicyPack",
+        "CueProof",
+        "HandoffReceipt",
+        "ReplayRun"
+      ],
+      "DEPENDENCIES": [
+        "SM-WO-11"
+      ],
+      "EVENTS": {
+        "proposed_private_subject_suffixes": [],
+        "registration": "HOLD",
+        "runtime_emissions_authorized": false
+      },
+      "APIS": {
+        "logical_contracts": [
+          "Discovered release-health, route compatibility and rollback verification contracts"
+        ],
+        "binding": "PENDING_DISCOVERY"
+      },
+      "GRAPH_NODES": [
+        "Source, builder, image, package/system SBOM, policy, release and activation receipt"
+      ],
+      "GRAPH_EDGES": [
+        "IMPORTS",
+        "CALLS",
+        "PRODUCES",
+        "CONSUMES",
+        "REQUIRES",
+        "DEPENDS_ON",
+        "IMPLEMENTED_BY",
+        "DEPLOYED_AS",
+        "EVIDENCED_BY",
+        "OWNED_BY"
+      ],
+      "TELEMETRY": [
+        "Same-candidate release/SBOM/Merkle dashboard evidence, accepted health baseline and rollback result.",
+        "No numeric service claim without a dated measurement and denominator."
+      ],
+      "SECURITY_IMPACT": [
+        "Every prior required negative gate and security scan must pass; ELIGIBLE does not grant production-write authority."
+      ],
+      "DATA_RIGHTS_IMPACT": [
+        "Release evidence is published only through an authorized projection; software licenses and source-data agreements both remain enforceable."
+      ],
+      "TESTS": [
+        {
+          "kind": "integration",
+          "behavior": "Build actual image/installed closure and run full-chain TEVV against the same accepted candidate/config.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "conformance",
+          "behavior": "Generate image-derived SBOM, runtime provenance, route/dependency/evidence conformance and recompute roots with the canonical existing owner.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "recovery",
+          "behavior": "Rehearse rollback and reconcile pending handoff/state receipts without erasing evidence; observe post-rollback health.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        },
+        {
+          "kind": "release",
+          "behavior": "Exercise every system-level acceptance gate and verify no undeclared remote effect.",
+          "command": null,
+          "command_state": "RESOLVE_AGAINST_DISCOVERED_OWNER",
+          "result": "NOT_RUN"
+        }
+      ],
+      "NEGATIVE_TESTS": [
+        "NEG-01",
+        "NEG-02",
+        "NEG-03",
+        "NEG-04",
+        "NEG-05",
+        "NEG-06",
+        "NEG-07",
+        "NEG-08",
+        "NEG-09",
+        "NEG-10",
+        "NEG-11",
+        "NEG-12",
+        "NEG-13",
+        "NEG-14",
+        "NEG-15",
+        "NEG-16",
+        "NEG-17",
+        "NEG-18",
+        "NEG-19",
+        "NEG-20",
+        "NEG-21",
+        "NEG-22",
+        "NEG-23",
+        "NEG-24"
+      ],
+      "POSTCONDITIONS": [
+        "Every system gate and one real end-to-end cue chain have observed acceptance for the exact candidate.",
+        "Release state stays HOLD for any missing owner, native/runtime/evidence/security/rights/rollback gate.",
+        "Only the existing owner may mark ELIGIBLE; subsequent SHADOW/DEMO/PILOT/PRODUCTION transitions require separate authority and external activation receipts."
+      ],
+      "ROLLBACK": [
+        "Invoke the existing tested rollback to the prior accepted image/config/policy; hold exports, reconcile uncertain delivery and retain all source/receipt history."
+      ],
+      "EVIDENCE": {
+        "requirements": [
+          "Actual source/builder/base/image identities and generated SBOM/runtime provenance",
+          "Same-image TEVV, mandatory negatives, canonical conformance/recomputation and rollback receipts",
+          "Existing release-owner admission; detached observed activation if separately authorized"
+        ],
+        "receipt_refs": [],
+        "acceptance": "NOT_RUN"
+      },
+      "SBOM_IMPACT": [
+        "Emit actual supported package SBOM plus system/managed dependency graph with ownership, interfaces, licenses and runtime evidence."
+      ],
+      "MERKLE_IMPACT": [
+        "Use distinct SOFTWARE/CONTRACT/RUNTIME-to-RELEASE, DATA_RIGHTS and boundary-specific evidence roots; activation is outside its release input graph."
+      ],
+      "REMOTE_WRITES": {
+        "state": "HOLD",
+        "authorized_count": 0,
+        "executed_count": null,
+        "receiving_authorization_ref": null,
+        "requested_effects": [
+          "Candidate pipeline, shared rollout and rollback each require receiving scope; no production write until explicit human authority and all release gates."
+        ],
+        "receipt_refs": []
+      }
+    }
+  ],
+  "owner_brief_traceability": [
+    {
+      "section": 1,
+      "subject": "Product definition",
+      "contract_sections": [
+        1
+      ],
+      "work_orders": [
+        "SM-WO-00"
+      ]
+    },
+    {
+      "section": 2,
+      "subject": "System topology",
+      "contract_sections": [
+        3,
+        5,
+        6,
+        7
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-01",
+        "SM-WO-03",
+        "SM-WO-05",
+        "SM-WO-08"
+      ]
+    },
+    {
+      "section": 3,
+      "subject": "Reuse before new",
+      "contract_sections": [
+        2
+      ],
+      "work_orders": [
+        "SM-WO-00"
+      ]
+    },
+    {
+      "section": 4,
+      "subject": "Repository architecture",
+      "contract_sections": [
+        2
+      ],
+      "work_orders": [
+        "SM-WO-00"
+      ]
+    },
+    {
+      "section": 5,
+      "subject": "Domain ontology",
+      "contract_sections": [
+        3,
+        5
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-03"
+      ]
+    },
+    {
+      "section": 6,
+      "subject": "Observation contract",
+      "contract_sections": [
+        3,
+        4
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-02"
+      ]
+    },
+    {
+      "section": 7,
+      "subject": "Data-rights registry",
+      "contract_sections": [
+        4,
+        11
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-02",
+        "SM-WO-05",
+        "SM-WO-08",
+        "SM-WO-11"
+      ]
+    },
+    {
+      "section": 8,
+      "subject": "World model",
+      "contract_sections": [
+        5
+      ],
+      "work_orders": [
+        "SM-WO-03"
+      ]
+    },
+    {
+      "section": 9,
+      "subject": "Entity resolution",
+      "contract_sections": [
+        5
+      ],
+      "work_orders": [
+        "SM-WO-03"
+      ]
+    },
+    {
+      "section": 10,
+      "subject": "Detection architecture",
+      "contract_sections": [
+        6
+      ],
+      "work_orders": [
+        "SM-WO-04"
+      ]
+    },
+    {
+      "section": 11,
+      "subject": "CandidateCue",
+      "contract_sections": [
+        3,
+        6
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-04",
+        "SM-WO-05"
+      ]
+    },
+    {
+      "section": 12,
+      "subject": "ThreatCue",
+      "contract_sections": [
+        3,
+        6
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-05",
+        "SM-WO-06"
+      ]
+    },
+    {
+      "section": 13,
+      "subject": "NNC policy pack",
+      "contract_sections": [
+        6
+      ],
+      "work_orders": [
+        "SM-WO-05"
+      ]
+    },
+    {
+      "section": 14,
+      "subject": "Policy versioning",
+      "contract_sections": [
+        6
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-05"
+      ]
+    },
+    {
+      "section": 15,
+      "subject": "Proof envelope",
+      "contract_sections": [
+        10
+      ],
+      "work_orders": [
+        "SM-WO-06"
+      ]
+    },
+    {
+      "section": 16,
+      "subject": "Merkle model",
+      "contract_sections": [
+        10
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-06",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 17,
+      "subject": "Public/commercial/CUI roots",
+      "contract_sections": [
+        10,
+        11
+      ],
+      "work_orders": [
+        "SM-WO-06",
+        "SM-WO-11"
+      ]
+    },
+    {
+      "section": 18,
+      "subject": "Event fabric",
+      "contract_sections": [
+        8
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-02",
+        "SM-WO-03",
+        "SM-WO-05",
+        "SM-WO-08"
+      ]
+    },
+    {
+      "section": 19,
+      "subject": "Storage architecture",
+      "contract_sections": [
+        5
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-03"
+      ]
+    },
+    {
+      "section": 20,
+      "subject": "API surface",
+      "contract_sections": [
+        7
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-01",
+        "SM-WO-08"
+      ]
+    },
+    {
+      "section": 21,
+      "subject": "Streaming",
+      "contract_sections": [
+        7
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-07",
+        "SM-WO-08"
+      ]
+    },
+    {
+      "section": 22,
+      "subject": "Geospatial contract",
+      "contract_sections": [
+        3,
+        7
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-03",
+        "SM-WO-07",
+        "SM-WO-08"
+      ]
+    },
+    {
+      "section": 23,
+      "subject": "Sentinel web application",
+      "contract_sections": [
+        9
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-07"
+      ]
+    },
+    {
+      "section": 24,
+      "subject": "Watch interface",
+      "contract_sections": [
+        9
+      ],
+      "work_orders": [
+        "SM-WO-07"
+      ]
+    },
+    {
+      "section": 25,
+      "subject": "Entity investigation",
+      "contract_sections": [
+        9
+      ],
+      "work_orders": [
+        "SM-WO-07"
+      ]
+    },
+    {
+      "section": 26,
+      "subject": "ThreatCue interface",
+      "contract_sections": [
+        9
+      ],
+      "work_orders": [
+        "SM-WO-07"
+      ]
+    },
+    {
+      "section": 27,
+      "subject": "Evidence viewer",
+      "contract_sections": [
+        9
+      ],
+      "work_orders": [
+        "SM-WO-06",
+        "SM-WO-07"
+      ]
+    },
+    {
+      "section": 28,
+      "subject": "NNC verdict UI",
+      "contract_sections": [
+        9
+      ],
+      "work_orders": [
+        "SM-WO-05",
+        "SM-WO-07"
+      ]
+    },
+    {
+      "section": 29,
+      "subject": "Replay system",
+      "contract_sections": [
+        13
+      ],
+      "work_orders": [
+        "SM-WO-06",
+        "SM-WO-10"
+      ]
+    },
+    {
+      "section": 30,
+      "subject": "Government gateway",
+      "contract_sections": [
+        7
+      ],
+      "work_orders": [
+        "SM-WO-08"
+      ]
+    },
+    {
+      "section": 31,
+      "subject": "HandoffReceipt",
+      "contract_sections": [
+        7
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-08"
+      ]
+    },
+    {
+      "section": 32,
+      "subject": "Analyst disposition",
+      "contract_sections": [
+        6,
+        9
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-07",
+        "SM-WO-10"
+      ]
+    },
+    {
+      "section": 33,
+      "subject": "Learning loop",
+      "contract_sections": [
+        6
+      ],
+      "work_orders": [
+        "SM-WO-04",
+        "SM-WO-05",
+        "SM-WO-10"
+      ]
+    },
+    {
+      "section": 34,
+      "subject": "Demo harness",
+      "contract_sections": [
+        13
+      ],
+      "work_orders": [
+        "SM-WO-10"
+      ]
+    },
+    {
+      "section": 35,
+      "subject": "Demo dashboard",
+      "contract_sections": [
+        13
+      ],
+      "work_orders": [
+        "SM-WO-09",
+        "SM-WO-10"
+      ]
+    },
+    {
+      "section": 36,
+      "subject": "Datadog instrumentation",
+      "contract_sections": [
+        12
+      ],
+      "work_orders": [
+        "SM-WO-09"
+      ]
+    },
+    {
+      "section": 37,
+      "subject": "Distributed tracing",
+      "contract_sections": [
+        8,
+        12
+      ],
+      "work_orders": [
+        "SM-WO-02",
+        "SM-WO-03",
+        "SM-WO-04",
+        "SM-WO-05",
+        "SM-WO-06",
+        "SM-WO-08",
+        "SM-WO-09"
+      ]
+    },
+    {
+      "section": 38,
+      "subject": "Datadog dashboards",
+      "contract_sections": [
+        12
+      ],
+      "work_orders": [
+        "SM-WO-09"
+      ]
+    },
+    {
+      "section": 39,
+      "subject": "Cue funnel",
+      "contract_sections": [
+        12
+      ],
+      "work_orders": [
+        "SM-WO-04",
+        "SM-WO-09",
+        "SM-WO-10"
+      ]
+    },
+    {
+      "section": 40,
+      "subject": "SLO strategy",
+      "contract_sections": [
+        12
+      ],
+      "work_orders": [
+        "SM-WO-09",
+        "SM-WO-10"
+      ]
+    },
+    {
+      "section": 41,
+      "subject": "Security roles",
+      "contract_sections": [
+        11
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-05",
+        "SM-WO-07",
+        "SM-WO-08",
+        "SM-WO-11"
+      ]
+    },
+    {
+      "section": 42,
+      "subject": "Tenant/mission isolation",
+      "contract_sections": [
+        11
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-02",
+        "SM-WO-03",
+        "SM-WO-06",
+        "SM-WO-07",
+        "SM-WO-08",
+        "SM-WO-11"
+      ]
+    },
+    {
+      "section": 43,
+      "subject": "CUI boundary",
+      "contract_sections": [
+        11
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-11"
+      ]
+    },
+    {
+      "section": 44,
+      "subject": "Software supply chain",
+      "contract_sections": [
+        10
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 45,
+      "subject": "SBOM requirements",
+      "contract_sections": [
+        10
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 46,
+      "subject": "Security scans",
+      "contract_sections": [
+        11
+      ],
+      "work_orders": [
+        "SM-WO-11",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 47,
+      "subject": "Testing pyramid",
+      "contract_sections": [
+        14
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-02",
+        "SM-WO-03",
+        "SM-WO-04",
+        "SM-WO-05",
+        "SM-WO-06",
+        "SM-WO-07",
+        "SM-WO-08",
+        "SM-WO-09",
+        "SM-WO-10",
+        "SM-WO-11",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 48,
+      "subject": "Negative tests",
+      "contract_sections": [
+        14
+      ],
+      "work_orders": [
+        "SM-WO-01",
+        "SM-WO-02",
+        "SM-WO-03",
+        "SM-WO-04",
+        "SM-WO-05",
+        "SM-WO-06",
+        "SM-WO-07",
+        "SM-WO-08",
+        "SM-WO-09",
+        "SM-WO-10",
+        "SM-WO-11",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 49,
+      "subject": "System acceptance",
+      "contract_sections": [
+        14
+      ],
+      "work_orders": [
+        "SM-WO-10",
+        "SM-WO-11",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 50,
+      "subject": "Rollout states",
+      "contract_sections": [
+        15
+      ],
+      "work_orders": [
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 51,
+      "subject": "Shadow mode",
+      "contract_sections": [
+        15
+      ],
+      "work_orders": [
+        "SM-WO-04",
+        "SM-WO-05",
+        "SM-WO-09",
+        "SM-WO-10",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 52,
+      "subject": "Implementation waves",
+      "contract_sections": [
+        16
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-01",
+        "SM-WO-02",
+        "SM-WO-03",
+        "SM-WO-04",
+        "SM-WO-05",
+        "SM-WO-06",
+        "SM-WO-07",
+        "SM-WO-08",
+        "SM-WO-09",
+        "SM-WO-10",
+        "SM-WO-11",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 53,
+      "subject": "Work-order contract",
+      "contract_sections": [
+        16
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-01",
+        "SM-WO-02",
+        "SM-WO-03",
+        "SM-WO-04",
+        "SM-WO-05",
+        "SM-WO-06",
+        "SM-WO-07",
+        "SM-WO-08",
+        "SM-WO-09",
+        "SM-WO-10",
+        "SM-WO-11",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 54,
+      "subject": "Mandatory return",
+      "contract_sections": [
+        16
+      ],
+      "work_orders": [
+        "SM-WO-00",
+        "SM-WO-01",
+        "SM-WO-02",
+        "SM-WO-03",
+        "SM-WO-04",
+        "SM-WO-05",
+        "SM-WO-06",
+        "SM-WO-07",
+        "SM-WO-08",
+        "SM-WO-09",
+        "SM-WO-10",
+        "SM-WO-11",
+        "SM-WO-12"
+      ]
+    },
+    {
+      "section": 55,
+      "subject": "Definition of done",
+      "contract_sections": [
+        14
+      ],
+      "work_orders": [
+        "SM-WO-10",
+        "SM-WO-11",
+        "SM-WO-12"
+      ]
+    }
+  ],
+  "documents": [
+    "docs/sentinel-maritime/blueprint.md",
+    "docs/sentinel-maritime/contracts.md",
+    "docs/sentinel-maritime/integrity.md",
+    "docs/sentinel-maritime/white-paper.md",
+    "docs/sentinel-maritime/implementation-contract.md",
+    "docs/sentinel-maritime/system-plan.json"
+  ],
+  "handoff": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+  "next_single_blocker": "Receiving private dispatch with the actual Sentinel repository and accountable owners for Wave 0."
+}

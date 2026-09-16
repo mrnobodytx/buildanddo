@@ -1,0 +1,22 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        docs/sentinel-maritime/work-orders.json.cgrf.yaml
+# Stage:       06_PLAN
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-16
+# Depends:     docs/sentinel-maritime/work-orders.json, docs/sentinel-maritime/system-plan.json, docs/sentinel-maritime/implementation-contract.md
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES docs/sentinel-maritime/work-orders.json; CONSUMES docs/sentinel-maritime/system-plan.json; EXTENDS docs/sentinel-maritime/implementation-contract.md
+# DAG Node:    none
+# Intent:      Preserve provenance for discovery-gated work orders whose owner and runtime acceptance cannot be inferred from a planning inventory.
+# ───────────────────────────────────────────────────────────────
+artifact: docs/sentinel-maritime/work-orders.json
+stage: 06_PLAN
+schema: sentinel-maritime.work-orders/v1
+baseline: SM-BL-1.1
+authority: public_planning_only
+execution_state: NOT_DISPATCHED

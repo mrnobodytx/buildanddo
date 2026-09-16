@@ -41,7 +41,7 @@ COMMANDS = {
     "release": "Read the version and source revision served by the public site.",
     "roadmap": "Read dated roadmap progress without inventing missing results.",
     "docs": "Search the site's public documentation and product pages.",
-    "learn": "Search the 25 authored starter lessons by topic or category.",
+    "learn": "Search authored lessons, including government submissions, by topic or category.",
     "lesson": "Read a complete starter lesson in private pages.",
     "quiz": "Practice a lesson's knowledge check with an explanation.",
     "workspace": "Open a workspace desk using your existing website permissions.",

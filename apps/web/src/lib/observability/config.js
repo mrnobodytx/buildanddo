@@ -36,6 +36,7 @@ export const WORKSPACE_ENTITIES = Object.freeze({
     roadmap_items: 'roadmap_item',
     evidence: 'evidence',
     research_submissions: 'research_submission',
+    suite_runs: 'mission_suite_run',
     research_uploads: 'research_upload',
     daily_editions: 'edition',
     editions: 'edition',

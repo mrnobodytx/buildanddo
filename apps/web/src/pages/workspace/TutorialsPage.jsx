@@ -16,6 +16,7 @@
 // ───────────────────────────────────────────────────────────────
 
 import React, { Suspense, lazy } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import MissionGuide from '@/components/workspace/missions/MissionGuide';
@@ -28,12 +29,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const ComponentCatalog = lazy(() => import('@/components/workspace/ComponentCatalog'));
 
 export default function TutorialsPage() {
+    const [search] = useSearchParams();
     return (
         <div className="space-y-8">
             <PageHeader
                 title="Field Manual"
-                description="Work through 25 starter lessons on business planning, missions, content production and evidence. Read a worked example, practice and check your understanding."
+                description="Work through business planning, mission evidence and government-submission lessons. Read a worked example, practice and check your understanding."
             />
+            <div className="flex flex-wrap gap-4 text-sm"><Link className="underline underline-offset-4" to="/app/missions">Create a government submission mission</Link><Link className="underline underline-offset-4" to="/app/suite">Open mission suite</Link></div>
 
             <Tabs defaultValue="lessons">
                 <TabsList className="h-auto flex-wrap justify-start">
@@ -56,7 +59,7 @@ export default function TutorialsPage() {
                     </Suspense>
                 </TabsContent>
                 <TabsContent value="lessons" className="mt-6">
-                    <TutorialCatalog />
+                    <TutorialCatalog initialCategory={search.get('path') === 'government' ? 'Government submissions' : 'all'} />
                 </TabsContent>
             </Tabs>
         </div>

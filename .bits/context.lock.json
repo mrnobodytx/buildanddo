@@ -69,6 +69,8 @@
     {
       "path": "scripts/ci/evidence_epoch.py",
       "referenced_by": [
+        "apps/mission_suite/bundle.py",
+        "apps/mission_suite/engine.py",
         "scripts/deploy/ship.py"
       ],
       "wired_into_ci": true
@@ -122,7 +124,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-16T00:45:49.783550+00:00",
+  "generated_at": "2026-09-16T04:12:44.438883+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -364,6 +366,7 @@
   ],
   "repo": {
     "apps": [
+      "mission_suite",
       "pocketbase",
       "research",
       "web"
@@ -379,13 +382,13 @@
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py"
     ],
-    "migrations": 26,
-    "python_files": 67,
+    "migrations": 30,
+    "python_files": 74,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 557,
-    "web_source_files": 234
+    "tracked_files": 590,
+    "web_source_files": 242
   },
   "schema_version": 1,
   "summary": {
@@ -400,7 +403,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 35,
+    "js_test_files": 38,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

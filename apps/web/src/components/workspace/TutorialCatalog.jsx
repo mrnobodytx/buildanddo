@@ -12,7 +12,7 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/observability/mutations.js;
 //              CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/web/src/components/workspace/TutorialReader.jsx;
-//              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json
+//              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json
 // DAG Node:    none
 // Intent:      Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.
 // ───────────────────────────────────────────────────────────────
@@ -21,6 +21,7 @@ import { MotionList } from '@/components/motion/MotionPrimitives';
 import React, { useEffect, useRef, useState } from 'react';
 import { BookOpen, Clock } from 'lucide-react';
 import curriculum from '../../../../pocketbase/pb_migrations/data/starter-tutorials.json';
+import government from '../../../../pocketbase/pb_migrations/data/government-submissions.json';
 import { Button, Card, StatePill } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -33,9 +34,10 @@ import { workspaceCollection } from '@/lib/observability/mutations';
 import { lessonProgress, mergeTutorials, selectTutorials } from '@/lib/tutorialCurriculum';
 import pb from '@/lib/pocketbaseClient';
 
-function CatalogView({ lessons, progress = [], progressKnown = false, canPersist = false, onSave, busy = '', error = '', saved = '', limit = 0 }) {
+const authoredLessons = [...curriculum.lessons, ...government.lessons];
+function CatalogView({ lessons, progress = [], progressKnown = false, canPersist = false, onSave, busy = '', error = '', saved = '', limit = 0, initialCategory = 'all' }) {
     const [query, setQuery] = useState('');
-    const [category, setCategory] = useState('all');
+    const [category, setCategory] = useState(initialCategory);
     const [selected, setSelected] = useState(null);
     const opener = useRef(null);
     const origin = useRef(null);
@@ -74,7 +76,7 @@ function CatalogView({ lessons, progress = [], progressKnown = false, canPersist
     </div>;
 }
 
-function SignedInCatalog({ userId, limit }) {
+function SignedInCatalog({ userId, limit, initialCategory }) {
     const tutorials = useRecords('tutorials', { sort: 'order' });
     const progress = useRecords('tutorial_progress', { sort: '-created' });
     const [busy, setBusy] = useState('');
@@ -83,7 +85,7 @@ function SignedInCatalog({ userId, limit }) {
     const saving = useRef(false);
     const mounted = useRef(true);
     useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
-    const lessons = mergeTutorials(tutorials.records, curriculum.lessons);
+    const lessons = mergeTutorials(tutorials.records, authoredLessons);
     const progressKnown = !progress.loading && !progress.degraded && !tutorials.loading && !tutorials.degraded;
     const saveProgress = async (tutorial, status) => {
         if (saving.current || !progressKnown || !tutorial.persistedId || pb.authStore.record?.id !== userId) return;
@@ -109,23 +111,23 @@ function SignedInCatalog({ userId, limit }) {
         }
     };
     return <div className="ph-no-capture space-y-5" data-dd-privacy="mask">
-        <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">25 starter lessons plus your shared catalogue.</p><Button size="sm" variant="secondary" disabled={tutorials.loading || progress.loading || Boolean(busy)} onClick={() => { tutorials.refresh(); progress.refresh(); }}>Refresh lessons</Button></div>
+        <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{authoredLessons.length} authored lessons plus your shared catalogue.</p><Button size="sm" variant="secondary" disabled={tutorials.loading || progress.loading || Boolean(busy)} onClick={() => { tutorials.refresh(); progress.refresh(); }}>Refresh lessons</Button></div>
         {tutorials.degraded && <DegradedNotice message="The lesson catalogue is unavailable. Showing the bundled starter curriculum; progress cannot be saved." onRetry={tutorials.refresh} />}
         {progress.degraded && <DegradedNotice message="Your saved progress is unavailable. You can read lessons; retry before saving progress." onRetry={progress.refresh} />}
         {!tutorials.loading && !tutorials.degraded && lessons.some((lesson) => !lesson.persistedId) && <p className="text-sm leading-6 text-muted-foreground">Starter previews are ready to read. Apply the tutorial catalogue migration to save progress for lessons not yet installed.</p>}
         {tutorials.loading ? <ListSkeleton label="Loading lessons…" /> : <CatalogView lessons={lessons} progress={progress.records} progressKnown={progressKnown}
-            canPersist onSave={saveProgress} busy={busy} error={writeError} saved={saved} limit={limit} />}
+            canPersist onSave={saveProgress} busy={busy} error={writeError} saved={saved} limit={limit} initialCategory={initialCategory} />}
     </div>;
 }
 
-/** @param {{limit?: number}} props Optional preview length. @returns {React.ReactElement} Authored lessons and account-scoped progress. */
-export default function TutorialCatalog({ limit = 0 }) {
+/** @param {{limit?: number, initialCategory?: string}} props Preview length and starting learning path. @returns {React.ReactElement} Authored lessons and account-scoped progress. */
+export default function TutorialCatalog({ limit = 0, initialCategory = 'all' }) {
     const { isAuthed, user } = useAuth();
     const { demo } = useDemoMode();
     if (!isAuthed || !user?.id || demo) return <div className="space-y-5">
         <p className="text-sm leading-6 text-muted-foreground">{demo ? 'Demo mode: read the starter lessons without writing progress.' : 'Explore the starter lessons. Sign in to keep progress on installed lessons.'}</p>
         {!demo && <Button href="/login" size="sm">Sign in for lessons</Button>}
-        <CatalogView key={demo ? 'demo' : 'public'} lessons={mergeTutorials([], curriculum.lessons)} limit={limit} />
+        <CatalogView key={`${demo ? 'demo' : 'public'}:${initialCategory}`} lessons={mergeTutorials([], authoredLessons)} limit={limit} initialCategory={initialCategory} />
     </div>;
-    return <SignedInCatalog key={user.id} userId={user.id} limit={limit} />;
+    return <SignedInCatalog key={`${user.id}:${initialCategory}`} userId={user.id} limit={limit} initialCategory={initialCategory} />;
 }

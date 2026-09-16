@@ -24,16 +24,18 @@ import { buildCommunityCatalogue, generateCommunityCatalogue } from '../../apps/
 import { PUBLIC_PAGES, SITE_ORIGIN } from '../../apps/web/src/lib/publicPages.js';
 
 const release = { version: '38+abc1234', commit_sha: 'abc1234' + '0'.repeat(33) };
-const curriculum = JSON.parse(readFileSync(
+const starter = JSON.parse(readFileSync(
     new URL('../../apps/pocketbase/pb_migrations/data/starter-tutorials.json', import.meta.url), 'utf8',
 ));
+const government = JSON.parse(readFileSync(new URL('../../apps/pocketbase/pb_migrations/data/government-submissions.json', import.meta.url), 'utf8'));
+const curriculum = { version: starter.version + '+' + government.version, lessons: [...starter.lessons, ...government.lessons] };
 
-test('community projection shares all 25 lessons and the exact public page/release identity', () => {
+test('community projection shares all 33 lessons and the exact public page/release identity', () => {
     const result = buildCommunityCatalogue(release);
     assert.equal(result.site_origin, SITE_ORIGIN);
     assert.deepEqual(result.release, release);
     assert.equal(result.curriculum_version, curriculum.version);
-    assert.equal(result.lessons.length, 25);
+    assert.equal(result.lessons.length, 33);
     assert.deepEqual(result.pages.map((page) => page.path), PUBLIC_PAGES.map((page) => page.path));
     for (const [index, lesson] of result.lessons.entries()) {
         assert.deepEqual(lesson.lesson, curriculum.lessons[index].lesson);

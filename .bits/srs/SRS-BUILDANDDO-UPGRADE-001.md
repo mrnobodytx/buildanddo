@@ -20,6 +20,112 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Authorized continuation — callable mission suite and government-submission learning
+
+On 2026-09-16 the owner revised the unavailable-Sentinel dependency: package a
+suite callable through one API and operated on an existing box, then make it a
+BuildAndDo mission with government-submission tutorials. This authorizes A2
+public application source, migrations, portable packaging and local tests under
+the existing dispatch. It supersedes the requirement to locate Sentinel before
+building this bounded worker package; it does not establish any private owner,
+NNC interface, live maritime feed, deployment or government-submission authority.
+
+Acceptance:
+
+1. Reuse PocketBase authentication, current workspace/mission authorization and
+   the existing Evidence Ledger. One versioned command endpoint queues bounded
+   jobs for an operator-bound worker on a box; no new login or public mutation
+   route bypasses the native account or mission approval lifecycle.
+2. Persist mission-scoped source rights, observation history, immutable run
+   inputs/results and review receipts. Fence revisions, leases, cancellation,
+   account revocation, duplicate saves and lost responses inside transactions.
+   Fail closed for CUI, unknown rights, disabled bindings and stale workers.
+3. Ship a portable worker for strict observation normalization, exact-identifier
+   world-state/track assembly, deterministic anomaly candidates, supporting and
+   conflicting evidence, GeoJSON, proof fingerprints and deterministic replay.
+   Reuse the existing evidence-epoch implementation. Candidates remain HOLD
+   without actual NNC admission; no new Merkle authority or external handoff.
+4. Add a government-submission mission starter, an executable submission-readiness
+   review and substantive tutorials with exercises, checks and official reference
+   links. Track requirements, claimed capability evidence, data/pricing rights,
+   review and human portal receipt. Tutorial completion is not approval, filing,
+   compliance certification or mission verification.
+5. Connect the mission to authenticated suite controls, enqueue/status/recovery,
+   inspection and reviewed evidence attachment. Reuse catalogue/progress, themed
+   controls and account/workspace cleanup. Keep pending, failed and reviewed
+   states explicit; do not automatically create work in a shared workspace.
+6. Build an offline allowlisted source bundle and document its one-API caller and
+   worker configuration. Verify engine behavior, replay/tamper, protocol/security,
+   packaging and actual connected adapters. Record native/browser/live tests
+   separately and measure source milestones separately from deployed acceptance.
+
+Private host selection, runtime account provisioning, infrastructure changes,
+feed acquisition, NNC/release binding and external submission are receiving-seat
+work. The SM-BL-1.1 plans remain historical design requirements; this package
+does not relabel their 13 unexecuted work orders as runtime-complete.
+
+Source outcome: one authenticated suite API, persistent mission runs, portable
+Python worker, submission-readiness checker, mission starter and eight government
+lessons are implemented. Local evidence is 256 Node and 152 Python passes (nine
+native skips); the 23-test suite checker measures at least 87.96% statement lines
+in each new Python module. Selected JavaScript has 100% lines and 86.64% branches.
+Both scenarios run and replay from the unpacked source archive. Nineteen rendered
+cases and three native suite cases are authored; browser, native PocketBase,
+actual box activation and any live government/maritime integration remain open.
+The source guide and receiving box handoff provide the actual API and acceptance
+commands. A suite result remains observed evidence until the existing human
+review process verifies it; no shared mission row or portal receipt is fabricated.
+
+## Authorized continuation — Sentinel Maritime narrative and implementation contract
+
+On 2026-09-16 the owner supplied the white-paper outline and 55-section master
+implementation contract for SENTINEL-MARITIME-V1. Record and reconcile those
+owner-authored decisions as SM-BL-1.1 under this existing dispatch and its SRS
+self-bootstrap authority. This continuation is A0 public planning and local
+document validation. It does not dispatch Astra or implement private services.
+
+Acceptance:
+
+1. Write a coherent seven-part white-paper source from the same baseline as the
+   15-slide claim map. Include the representative scenario, current-versus-build
+   evidence table, ThreatCue, detection/noise examples, data rights/costs, demo
+   evaluation, government integration, CUI transition, team and commercial model.
+   Keep examples illustrative and numbers unmeasured unless evidence is supplied.
+2. Record the owner's one-document, 15-slide-or-10-page submission constraints
+   as pending official confirmation. Track absent team/customer/runtime proofs;
+   neither an owner report nor source bytes establish an operating capability.
+   Markdown is a pagination target, not a measured PDF page count or submission.
+3. Require extension of existing Sentinel at the owner-named target surface.
+   Produce all 13 discovery-first work orders with the complete 23-field contract,
+   named receiving-seat responsibilities, typed evidence/rollback obligations,
+   dependencies and fail-closed remote-write status. No code before accepted
+   Wave 0 ownership/reuse discovery and a separate private dispatch.
+4. Reconcile candidate/admission/ThreatCue semantics, tenant/mission scope,
+   receipts and replay with the existing contracts. Preserve separate release,
+   rights and evidence commitments; separate public, commercial and future CUI
+   proofs. Keep activation and later handoff receipts outside their own inputs.
+5. Map all 55 owner-brief sections to reviewable artifacts/work orders; cover
+   mandatory negative tests, source/API/event/graph contracts, observability,
+   security from Wave 1, staged rollout, full-chain acceptance and return format.
+   Do not create duplicate auth, graphs, Merkle logic, release authority or UI.
+6. Validate identifiers, references, work-order dependency order, evidence states,
+   baseline alignment, source fingerprints and public boundaries. Preserve all
+   56 prior Type C memory events. Earlier application acceptance is historical
+   and is neither rerun nor promoted by documentation validation.
+
+Receiving work remains with CMAX-B/IDE1 under the existing maritime handoff.
+Official requirements, actual Sentinel ownership/runtime and company facts need
+authorized references before publication. Product implementation stops at this
+public/private boundary; the planning deliverables remain executable work scope
+for a separately authorized receiving seat, not activation instructions here.
+
+Planning outcome: WP-1.0 and SM-EXEC-1.0 derive from SM-BL-1.1. The source paper,
+13 complete work orders and 55-section traceability are recorded. Local auditing
+checks discovery/remote-effect gates, all 24 negative requirements, 42 proposed
+flow edges, unchanged historical source fingerprints and the acyclic proof
+chain, including eight rejected in-memory corruptions. Runtime, private-owner,
+official-source, company-fact and rendered-submission acceptance remain open.
+
 ## Authorized continuation — Sentinel Maritime public planning baseline
 
 On 2026-09-16 the owner supplied the Sentinel Maritime Intelligence Engine

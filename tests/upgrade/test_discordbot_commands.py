@@ -123,9 +123,14 @@ class CommandTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_all_authored_lessons_and_quizzes_are_available_without_private_reads(self) -> None:
         catalogue = Catalogue.parse(self.source)
-        self.assertEqual(len(catalogue.lessons), 25)
+        self.assertEqual(len(catalogue.lessons), 33)
         self.assertEqual(self.source["site_origin"], SITE_ORIGIN)
+        # Exercise the full catalogue over simulated time without bypassing the
+        # real per-channel limit or expiring the catalogue cache.
+        clock = [0.0]
+        self.service.clock = lambda: clock[0]
         for index, lesson in enumerate(catalogue.lessons):
+            clock[0] = index * 3.0
             caller = Caller(index + 100, 20, 30)
             with self.subTest(slug=lesson.slug):
                 reader = await self.service.execute("lesson", lesson.slug, caller)
