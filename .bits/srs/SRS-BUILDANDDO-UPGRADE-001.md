@@ -20,6 +20,54 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Authorized continuation — Sentinel Maritime public planning baseline
+
+On 2026-09-16 the owner supplied the Sentinel Maritime Intelligence Engine
+blueprint and its release/evidence/SBOM map, requesting that this baseline be
+frozen before the DIU deck. Record that owner-authored design under the existing
+self-bootstrap authorization. This continuation is A0 public documentation and
+local validation within the A2 dispatch. It grants no Sentinel/NNC runtime,
+maritime collection, government interface, CUI or private release authority.
+
+Acceptance:
+
+1. Preserve the supplied product boundary, observation/world-state/cue lifecycle,
+   NNC admission role, government integration approach, commercial model and
+   explicit exclusions in a versioned public design baseline. Identify DIU
+   statements lacking an attached official solicitation/FAQ reference.
+2. Define reviewable observation, entity, cue, admission, handoff and outcome
+   contracts, the 48-hour demonstration plan and measurable TEVV denominators.
+   Do not claim deployed detectors, numerical performance or compliance.
+3. Record the 12 planes and all 33 supplied component IDs in a machine-readable
+   planning inventory. Use only REUSE, EXTEND and BUILD for planned lifecycle;
+   keep observed source evidence, owner-reported capabilities and runtime
+   acceptance separate. A planning inventory is not an emitted live SBOM.
+4. Define separate release, evidence-epoch and data-rights commitments, isolated
+   public/CUI proofs and an acyclic receipt chain. Reuse the existing Merkle
+   owner; add no hashing algorithm, signature, authority gate or fake digest.
+   Explain the limits of the public epoch and source-candidate implementations.
+5. Supply a private-seat handoff for actual source/image/SBOM materialization,
+   release-owner verification and controlled-data/integration acceptance. Keep
+   the supplied blueprint traceable to a 15-slide claim map without creating a
+   deck that promotes proposed work into operating capability.
+6. Validate inventory identifiers, graph references, lifecycle/evidence states,
+   cited source fingerprints and planning boundaries; preserve prior governance
+   events and update the report and context. Runtime application gates retain
+   their previously recorded acceptance state.
+
+The owner's design is the product decision source. Local code inspection is the
+source-evidence authority for this checkout only. The cited private
+`tools/citadel_evidence_epoch.py`, Sentinel/NNC runtime and DIU source documents
+are not present here; their behavior and deployment remain unverified. Stop at
+the handoff boundary for their implementation or activation.
+
+Public planning outcome: SM-BL-1.0 is recorded in docs/sentinel-maritime/ with
+semantic contracts, a 33-component/12-plane inventory, separate commitment
+domains and a 15-slide claim map. The local structural audit verifies source
+fingerprints and reference consistency; it establishes no operating maritime
+capability. Private reuse/admission, official solicitation references and actual
+SBOM/runtime evidence remain receiving-seat work under the explicit handoff.
+
 ## Authorized continuation — private entity dossiers and activation evidence
 
 The owner requested the remaining Discord gaps, correction of the assumed local

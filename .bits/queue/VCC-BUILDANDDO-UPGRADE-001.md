@@ -20,6 +20,38 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Sentinel Maritime planning continuation authorized 2026-09-16
+
+The owner supplied the product blueprint and infrastructure map. Freeze their
+public design and evidence requirements before deck production. This is an A0
+documentation continuation of the existing dispatch; private product code,
+infrastructure, data acquisition and deployment remain receiving-seat work.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| BU | Register owner-authored scope and inspect existing evidence tooling | `python scripts/ci/agent_context.py --check` | done — existing epoch and candidate-source boundaries inspected |
+| BV | Freeze product/contracts, inventory and deck claim map | Run the audit bash block in docs/sentinel-maritime/integrity.md | done — 33 components, 12 planes, 15 metric definitions and 15 slide anchors |
+| BW | Define integrity ownership and private implementation handoff | Same inventory audit, including source fingerprints and commitment dependencies | done — 12 source fingerprints, 32 planned flow edges and 11 acyclic commitment definitions |
+| BX | Preserve memory and verify public planning artifacts | Context, public-boundary and dispatch-memory checks | done — current §15 report records evidence and preserves prior events |
+
+Outcome: SM-BL-1.0 freezes the owner-authored public product decisions and proof
+obligations. The inventory is explicitly a plan: proposed reuse, source evidence
+and operating acceptance are distinct, and official DIU references are pending.
+Private source/image/SBOM materialization and runtime/integration/security work
+are assigned in .bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md.
+No maritime implementation, new Merkle logic, active SBOM, operational root,
+numeric benchmark, deployment or deck submission is claimed. Earlier application
+acceptance remains unchanged; those tests were not rerun for public documents.
+
+Memory brief: dossiers and research source are the committed baseline; their
+native/frontend/live acceptance is still pending. This public checkout contains
+BuildAndDo mission/evidence modules and `scripts/ci/evidence_epoch.py`, whose
+epochs are explicitly non-authoritative. `scripts/ci/candidate_manifest.py`
+fingerprints tracked source and declares candidate-only authority. No inspected
+Sentinel/NNC runtime, generated maritime SBOM, government API specification,
+official DIU reference or cited private epoch tool is available. No service,
+authenticated seat or private runtime is attached; no seat event is fabricated.
+
 ## Entity dossier continuation authorized 2026-09-15
 
 The owner's current request extends this registered SRS at A2 for private

@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 17319,
+      "lines": 17734,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 313,
+      "lines": 387,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 569,
+      "lines": 601,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 677,
+      "lines": 725,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -17302,12 +17302,427 @@
       "timestamp": "2026-09-16T00:09:10.241328+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/blueprint.md",
+        "docs/sentinel-maritime/contracts.md",
+        "docs/sentinel-maritime/integrity.md",
+        "docs/sentinel-maritime/system-plan.json"
+      ],
+      "lines": 104,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Request private ownership and evidence for the frozen maritime design while keeping runtime, release, government and controlled-data authority outside the public repository.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/blueprint.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        "docs/sentinel-maritime/contracts.md",
+        "docs/sentinel-maritime/system-plan.json",
+        "docs/sentinel-maritime/integrity.md"
+      ],
+      "lines": 217,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Freeze the owner's maritime product decisions and separate them from capability and solicitation evidence still needed for the DIU deck.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/contracts.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/blueprint.md",
+        "docs/sentinel-maritime/integrity.md"
+      ],
+      "lines": 208,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define reviewable maritime evidence, cue, admission and measurement semantics before private adapters and government interfaces are implemented.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/integrity.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/system-plan.json",
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/supply_chain.py"
+      ],
+      "lines": 313,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Assign the maritime release, rights and evidence commitments to the existing integrity owner without inventing Merkle authority or a live system SBOM.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/system-plan.json",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/blueprint.md",
+        "docs/sentinel-maritime/system-plan.json",
+        "scripts/ci/evidence_epoch.py"
+      ],
+      "lines": 1621,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the maritime planning inventory CGRF provenance without treating proposed components or source fingerprints as an admitted live SBOM.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/sentinel-maritime/system-plan.json.cgrf.yaml",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "docs/sentinel-maritime/blueprint.md",
+        "docs/sentinel-maritime/system-plan.json",
+        "scripts/ci/evidence_epoch.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the maritime planning inventory CGRF provenance without treating proposed components or source fingerprints as an admitted live SBOM.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sentinel-maritime",
+        "product-planning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "target": "docs/sentinel-maritime/blueprint.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md consumes docs/sentinel-maritime/blueprint.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "target": "docs/sentinel-maritime/contracts.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md consumes docs/sentinel-maritime/contracts.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "target": "docs/sentinel-maritime/integrity.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md consumes docs/sentinel-maritime/integrity.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "target": "docs/sentinel-maritime/system-plan.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md consumes docs/sentinel-maritime/system-plan.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/blueprint.md",
+      "target": "docs/sentinel-maritime/contracts.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/blueprint.md consumes docs/sentinel-maritime/contracts.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/blueprint.md",
+      "target": "docs/sentinel-maritime/integrity.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/blueprint.md consumes docs/sentinel-maritime/integrity.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/blueprint.md",
+      "target": "docs/sentinel-maritime/system-plan.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/blueprint.md consumes docs/sentinel-maritime/system-plan.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/blueprint.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/blueprint.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/contracts.md",
+      "target": "docs/sentinel-maritime/integrity.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/contracts.md depends on docs/sentinel-maritime/integrity.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/contracts.md",
+      "target": "docs/sentinel-maritime/blueprint.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/contracts.md extends docs/sentinel-maritime/blueprint.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/integrity.md",
+      "target": "docs/sentinel-maritime/system-plan.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/integrity.md consumes docs/sentinel-maritime/system-plan.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/integrity.md",
+      "target": "scripts/ci/candidate_manifest.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/integrity.md consumes scripts/ci/candidate_manifest.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/integrity.md",
+      "target": "scripts/ci/evidence_epoch.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/integrity.md consumes scripts/ci/evidence_epoch.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/integrity.md",
+      "target": "scripts/ci/supply_chain.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/integrity.md consumes scripts/ci/supply_chain.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/system-plan.json.cgrf.yaml",
+      "target": "scripts/ci/evidence_epoch.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/system-plan.json.cgrf.yaml consumes scripts/ci/evidence_epoch.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/system-plan.json.cgrf.yaml",
+      "target": "docs/sentinel-maritime/blueprint.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/system-plan.json.cgrf.yaml depends on docs/sentinel-maritime/blueprint.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/sentinel-maritime/system-plan.json.cgrf.yaml",
+      "target": "docs/sentinel-maritime/system-plan.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "docs/sentinel-maritime/system-plan.json.cgrf.yaml validates docs/sentinel-maritime/system-plan.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "docs/sentinel-maritime/blueprint.md",
+      "description": "Sentinel Maritime public planning: Recorded the owner-authored SM-BL-1.0 product decisions, semantic cue/admission/outcome contracts, 15 metric definitions and 15-slide claim map. Official DIU references and private operating capability claims remain pending; no deck submission or maritime implementation occurred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:47:09.145033+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "docs/sentinel-maritime/system-plan.json",
+      "description": "Sentinel Maritime public planning: The published inventory audit passes for 33 components, 12 planes, 32 planned flow edges, 12 source fingerprints checked at the recorded dossier baseline, and 11 acyclic commitment definitions. Planned REUSE/EXTEND/BUILD remains separate from runtime acceptance. No new Merkle implementation, emitted live SBOM, operational roots or numerical benchmarks are claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:47:09.145033+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "description": "Sentinel Maritime public planning: Public planning, context, boundary and memory checks pass. The private CMAX-B/IDE1 handoff names source/image/SBOM materialization, canonical integrity ownership and government/security acceptance requirements. Existing application results remain historical; no native/frontend rerun, receiving-seat activation, source acquisition or external operation occurred. All 53 baseline events are preserved.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T00:47:09.145033+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/4"
     }
   ],
   "summary": {
-    "type_a_count": 284,
-    "type_b_count": 589,
-    "type_c_count": 53,
+    "type_a_count": 290,
+    "type_b_count": 606,
+    "type_c_count": 56,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

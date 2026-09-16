@@ -65,21 +65,38 @@
 
 ## §1 SUMMARY
 
-Status: PARTIAL — private dossier source complete; native, rendered and live acceptance remain open
+Status: PARTIAL — Sentinel Maritime public planning complete; private implementation and earlier runtime acceptance remain open
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
 Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-site-upgrades-20260914232924
-Tasks: 38/72 cumulative phase gates complete; current BN–BT continuation has 4/7 complete gates
-Smoke: 4/7 application gates; native dependency and backend gates fail closed on unavailable runtimes
+Tasks: 42/76 cumulative phase gates complete; current BU–BX public planning continuation has 4/4 complete gates
+Smoke: 4/4 public planning checks; earlier application smoke remains 4/7 with native/frontend acceptance pending
 CKS Gate: B+ (global minimum)
 CKS: pending
 CAPS: pending
 CK: pending
-Commits: PR 27 baseline bc7ede30124d27d39090577cab536eb20ee4ca83; this continuation's evidence is prepared before its final source bookkeeping
+Commits: planning inspection baseline aab43b3ed686b70df7c304d02566f0e93606dfd6; current planning evidence prepared before its focused bookkeeping
 Verify source identity: `git log -1 --format='%H %s'`
 
-The website's My dossier and five private Discord commands now share one
+The owner's Sentinel Maritime design is recorded as SM-BL-1.0 in
+docs/sentinel-maritime/blueprint.md, contracts.md and integrity.md, with a
+machine-readable system-plan.json and private receiving handoff. The inventory
+has 33 components, 12 planes, 32 planned flow edges and 12 pinned public source
+fingerprints. It keeps proposed REUSE/EXTEND/BUILD separate from source evidence
+and runtime acceptance. Eleven commitment definitions form an acyclic graph;
+operational roots, image identities and live SBOM admission remain uncomputed.
+
+The baseline preserves the product scope, cue/admission/outcome semantics,
+15 metric definitions, rehearsal plan, commercial/security boundaries and a
+15-slide claim map. Official DIU requirements are explicitly awaiting references.
+The public epoch is evidence-only and the candidate manifest covers source;
+neither establishes the private release authority asserted in the supplied brief.
+No application/runtime code changed in this planning continuation. Reproduce the
+inventory audit with the runnable block in docs/sentinel-maritime/integrity.md;
+current governance checks appear in §3.
+
+The prior website's My dossier and five private Discord commands share one
 personal encrypted entity store under canonical PocketBase user identity.
 Explicit notes retain dates and source references; owners can recall, correct
 and remove content. Workspace administrators cannot access another user's
@@ -93,7 +110,7 @@ services. Compose starts web/PocketBase only; the actual bot/worker launcher is
 not in the checkout. Both declared PocketBase versions now have independent
 required native CI coverage; their hosted results were not observed here.
 
-Current observed source evidence: 227 Node tests pass; 129 Python tests pass
+Historical dossier-wave source evidence: 227 Node tests passed; 129 Python tests passed
 with six native skips. The targeted Python checker passes 111 cases with two
 native skips and at least 83.72% trace statement coverage per module. Selected
 JavaScript coverage is 99.85% lines, 92.87% branches and 99.04% functions.
@@ -102,7 +119,16 @@ remain unverified. Earlier source waves are preserved below as historical work.
 
 ## §2 TASK RESULTS
 
-### Current continuation — 2026-09-16
+### Current continuation — Sentinel Maritime planning, 2026-09-16
+
+| Phase | Status | Result | Verify | CKET | Files |
+|---|---|---|---|---|---|
+| BU — Register owner-authored scope | PASS | Existing dispatch extended before planning artifacts; public epoch and candidate limits inspected | `python scripts/ci/agent_context.py --check` | 04_HYPOTHESIZE / 11_COMMIT | .bits/srs_registry.yml, .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md |
+| BV — Freeze product and inventory | PASS | Owner-authored baseline, semantic contracts, 33 components, 12 planes, 15 metrics and 15-slide claim map | Run the inventory audit bash block in docs/sentinel-maritime/integrity.md | 06_PLAN | docs/sentinel-maritime/blueprint.md, contracts.md, system-plan.json and sidecar |
+| BW — Integrity and private handoff | PASS | Separate release/rights/epoch domains; source fingerprints checked; no new Merkle or live SBOM; explicit receiving proof obligations | Same inventory audit, including source hashes and commitment DAG | 06_PLAN / 11_COMMIT | docs/sentinel-maritime/integrity.md, .bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md |
+| BX — Preserve governance evidence | PASS | Prior Type C events preserved; context, boundary and memory checks pass | `python scripts/ci/agent_context.py --check`; `python scripts/ci/verify_public_boundary.py`; `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | 11_COMMIT | .bits/context.lock.json, .bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md and memory.json |
+
+### Prior dossier continuation — 2026-09-16
 
 | Phase | Status | Result | Verify | CKET | Files |
 |---|---|---|---|---|---|
@@ -189,6 +215,22 @@ and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
+Current planning validation:
+
+| Check | Runnable verification | Expected and observed |
+|---|---|---|
+| 1. Planning inventory | Run the bash audit block in docs/sentinel-maritime/integrity.md from the repository root | PASS: 33 component IDs, 12 planes, 32 planned edges, 12 pinned source fingerprints, 11 acyclic commitment definitions, 15 slide anchors; no runtime/SBOM/root/benchmark/official-requirement admission claim |
+| 2. Context | `python scripts/ci/agent_context.py --check` | PASS: inventory matches; six pre-existing findings and four unwired gates retained |
+| 3. Public boundary | `python scripts/ci/verify_public_boundary.py` | PASS: 557 tracked files; current planning files remain within public paths with no scanner failures |
+| 4. Memory | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | PASS: file vectors, source counts, declared edges, IOO and retained event history |
+
+These are documentation/inventory checks. No maritime detector, source adapter,
+new Merkle implementation or application runtime was executed. No additional
+application coverage is claimed. Native and frontend gates below are historical
+dossier-wave results; they were not rerun for this documentation-only change.
+
+Historical application smoke:
+
 | Gate | Runnable command | Expected | Actual |
 |---|---|---|---|
 | 1. Web interaction tests | `npm --prefix apps/web test` | Rendered user flows pass | FAIL: Vitest absent; targeted dossier/route run fails before execution |
@@ -255,24 +297,40 @@ no hosted success, browser screenshots or shared activation is claimed here.
 
 ## §4 MEMORY INGEST
 
-Type A count: 284
-Type B count: 589
-Type C count: 53
+Type A count: 290
+Type B count: 606
+Type C count: 56
 IOO compliance: complete
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
-Prior history: all 47 baseline Type C events are preserved without rewriting.
+Prior history: all 53 dossier-baseline Type C events are preserved without rewriting; this includes the earlier 47-event research history.
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+Reproduce prior-event preservation:
+
+```bash
+python - <<'PY'
+import json
+import subprocess
+from pathlib import Path
+path = '.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json'
+baseline = json.loads(subprocess.check_output(['git', 'show', 'aab43b3ed686b70df7c304d02566f0e93606dfd6:' + path], text=True))
+old = [row for row in baseline['vectors'] if row['type'] == 'C']
+new = [row for row in json.loads(Path(path).read_text())['vectors'] if row['type'] == 'C']
+assert len(old) == 53 and new[:len(old)] == old
+print('PASS: all 53 baseline events preserved without rewriting.')
+PY
+```
 
 ## §5 CKET FILING
 
-06_PLAN: docs/private-dossiers.md, docs/discord-activation.md, updated Discord/research documentation
+06_PLAN: current docs/sentinel-maritime/blueprint.md, contracts.md, integrity.md, system-plan.json and sidecar; earlier private-dossier/activation and Discord/research documentation retained
 04_HYPOTHESIZE: registered umbrella SRS and contribution governance
 07_BUILD: private dossier hooks/migration, web components/client/hook, bot bridge and doctor
 08_TEST: connected source fixtures, rendered flow/hook tests and native acceptance runner
-11_COMMIT: CI, dispatch, context, report/memory and receiving handoff
+11_COMMIT: current public maritime handoff, dispatch, context and report/memory; earlier CI and community handoff retained
 13_SAVE: none
-CGRF headers: 21/21 new this continuation; 197/197 cumulative files created since the original base
+CGRF headers: 6/6 new this planning continuation; 203/203 cumulative files created since the original base
 REFLEX check: deferred to private post-merge validator; no signing values fabricated
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
 
@@ -284,7 +342,7 @@ Hard-NO scan: zero public-boundary violations
 Secret scan: clean under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: A2 public source, additive schema and isolated validation
+Risk / authority: current A0 public planning within the A2 source dispatch; no private implementation or operating authority
 Verify: `python scripts/ci/verify_public_boundary.py`
 
 No key generation/provisioning, bot login, Discord synchronization/message,
@@ -294,6 +352,22 @@ backup retention remain operator responsibilities. Server-side encryption is
 not end-to-end encryption or physical erasure of existing backups.
 
 ## §7 NEXT ACTIONS
+
+Maritime receiving work: CMAX-B/IDE1 must verify the proposed private bases,
+canonical Merkle/SBOM owner and actual candidate/runtime proof; resolve official
+DIU requirements and source/recipient rights; register implementation separately.
+Handoff: .bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md.
+No receiving dispatch, external submission, service launch, data acquisition,
+government integration, root admission or CUI processing was performed. The
+15-slide content map is ready for a qualified deck; unverified operating and
+solicitation claims cannot be promoted to established facts.
+
+Planning rollback: revert the public artifacts or record an owner-reviewed new
+baseline version with superseded decisions. No runtime, database, dependency,
+release or policy mutation needs compensation. Preserve historical source
+fingerprints and governance events.
+
+Earlier application acceptance remains open:
 
 Blockers: native Discord/PDF/PocketBase, frontend dependencies and browser
 acceptance; actual service launcher, runtime key binding, OAuth and providers.
