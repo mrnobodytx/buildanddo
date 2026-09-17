@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     apps/research/transport.py, apps/research/documents.py, apps/research/blueprints.py, apps/decision/workloads/blueprint_evaluation.py
+# Depends:     apps/research/transport.py, apps/research/documents.py, apps/research/blueprint_documents.py, apps/decision/workloads/blueprint_document_evaluation.py
 # EnumType:    Adapter
-# EnumEdges:   CONSUMES apps/research/transport.py; CONSUMES apps/research/documents.py; CONSUMES apps/research/blueprints.py; CONSUMES apps/decision/workloads/blueprint_evaluation.py
+# EnumEdges:   CONSUMES apps/research/transport.py; CONSUMES apps/research/documents.py; CONSUMES apps/research/blueprint_documents.py; CONSUMES apps/decision/workloads/blueprint_document_evaluation.py
 # DAG Node:    none
 # Intent:      Produce actual source excerpts through self-hosted Firecrawl, local document parsing and configured audio transcription.
 # ───────────────────────────────────────────────────────────────
@@ -28,8 +28,8 @@ import tempfile
 
 from apps.research.contracts import Citation, Parsed, ProcessorSettings, ResearchError, clip_text, file_kind, object_value, public_url, text
 from apps.research.transport import BoundedIO, HttpClient, decode_json, multipart
-from apps.research.blueprints import Blueprint
-from apps.decision.workloads.blueprint_evaluation import DecideFn, evaluate_blueprint
+from apps.research.blueprint_documents import Blueprint
+from apps.decision.workloads.blueprint_document_evaluation import DecideFn, evaluate_blueprint
 from apps.decision.contract import decide
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -41,7 +41,7 @@ def parse_document(data: bytes, name: str, *, blueprint: bool = False) -> dict[s
         path = Path(folder) / "input"
         path.write_bytes(data)
         try:
-            module = 'apps.research.blueprints' if blueprint else 'apps.research.documents'
+            module = 'apps.research.blueprint_documents' if blueprint else 'apps.research.documents'
             result = subprocess.run([sys.executable, "-m", module, str(path), "--name", name],
                                     cwd=ROOT, capture_output=True, timeout=30, check=False)
         except subprocess.TimeoutExpired:

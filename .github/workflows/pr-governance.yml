@@ -157,6 +157,9 @@ jobs:
       - name: Require native commands, document parsing and research source coverage
         run: python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf
 
+      - name: Require native CPU blueprint-to-session pipeline and source coverage
+        run: python tests/upgrade/check_blueprint_pipeline.py --require-pdf
+
   dossier-native:
     name: ci:test / PocketBase dossier and suite (${{ matrix.runtime }})
     runs-on: ubuntu-latest
