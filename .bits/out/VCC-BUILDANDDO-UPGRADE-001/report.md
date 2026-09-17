@@ -110,11 +110,210 @@
 #              VALIDATES tests/upgrade/classroom-fixture.mjs;
 #              VALIDATES tests/upgrade/classroom-system.test.mjs;
 #              VALIDATES tests/upgrade/test_classroom_native.py;
+#              CONSUMES docs/blueprints.md;
+#              VALIDATES tests/upgrade/check_blueprints.py;
+#              VALIDATES tests/upgrade/check_decision_runtime.py;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
 
 # Dispatch implementation report
+
+## Blueprint Phase A source continuation — 2026-09-17
+
+### §1 SUMMARY
+
+Status: PARTIAL — Phase A source implemented; native PDF/PocketBase and rendered UI acceptance remain open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-phase-a-20260917
+Tasks: 5/5 source phases addressed; native and rendered acceptance pending
+Smoke: 4/7 dispatch gates pass; three frontend commands cannot start
+CKS Gate: B+ (global minimum)
+CKS: pending
+CAPS: pending
+CK: pending
+Commits: source c1d8d9d621caf776c92edef100f5c3f6afde9159; follow-up report/memory bookkeeping is recorded separately
+Verify source identity: `git log --all --format='%H %s' -- apps/research/blueprints.py`
+
+Specification PDFs previously produced only a flat research excerpt. Workspace
+editors can now upload a PDF, follow its existing research job, inspect extracted
+requirements and dependencies, review advisory BDR assessments, and download a
+proposed mission or challenge definition. The structured result retains source
+SHA-256, section/context provenance, parser version, page count, timestamp,
+confidence, unresolved questions and truncation. The text-first extractor adds
+no model or Python dependency and leaves documents.py unchanged.
+
+The POST endpoint returns a queued receipt and GET returns completed observations.
+This preserves the protected upload store, leased Python worker and PocketBase
+authorization already used by mission research. A0 results cannot mint VERIFIED;
+the current default decision rules abstain on this workload, so unknown scores
+remain null and the page displays “Needs review.” Proposal export creates a local
+JSON file; it does not create, approve or execute a mission.
+
+All production changes passed the available source and regression checks. The
+native PDF/backend and seven rendered UI cases are authored but cannot execute
+with the packages available in this sandbox. Source completion is not hosted or
+native acceptance. No live workspace, model endpoint or deployment was changed.
+
+### §2 TASK RESULTS
+
+| Task | Status | Output | Verify | Files / logical CKET stage |
+|---|---|---|---|---|
+| DI — reuse and authority | PASS | Existing in-progress A2 research/workspace scope recorded before implementation | `python scripts/ci/agent_context.py --check` | SRS, dispatch and context; 04_HYPOTHESIZE / 11_COMMIT |
+| DJ — parser and A0 assessment | PASS for source | Stable/existing requirement IDs, MoSCoW/type inference, section provenance, bounded topology, flat fallback and five typed decisions per requirement | `python tests/upgrade/check_blueprints.py` | research extension and decision workload; 07_BUILD / 08_TEST |
+| DK — persistent workspace flow | PASS for source | Scoped multipart intake, protected download, shared queue, atomic completion, retry/cancel and saved retrieval | `node --test tests/upgrade/blueprint-system.test.mjs` | PocketBase hooks/migration and connected worker tests; 07_BUILD / 08_TEST |
+| DL — review and proposal export | PASS for source; rendered acceptance pending | Route/navigation, upload/status, context, dependencies, advisory scores and account/workspace isolation | `node --test tests/upgrade/blueprint-client.test.mjs` | workspace client/page and tests; 07_BUILD / 08_TEST |
+| DM — evidence and regression | PASS for available evidence | Source checks, preserved history, context and boundary reports; missing native/UI gates explicitly retained | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | report/memory/guide; 06_PLAN / 11_COMMIT |
+
+### §3 SMOKE TEST RESULTS
+
+The following is the existing dispatch smoke block, with no failed check counted
+as a pass. A storage/transport double is not a running PocketBase instance.
+
+| # | Command | Expected | Actual | Result |
+|---|---|---|---|---|
+| 1 | `npm --prefix apps/web test` | Rendered web suite passes | Cannot start: `vitest: not found` | FAIL — environment |
+| 2 | `npm --prefix apps/web run lint` | Repository lint passes | Cannot load `eslint-plugin-import` | FAIL — environment |
+| 3 | `npm --prefix apps/web run build` | Vite writes the web bundle | `Unable to start Vite: spawnSync vite ENOENT` | FAIL — environment |
+| 4 | `node --test tests/upgrade/*.test.mjs` | All source regressions pass | 304 passing, no failures or skips | PASS |
+| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Available Python regressions pass | 266 discovered, 250 passing, 16 native dependency skips | PASS with skips |
+| 6 | `python scripts/ci/agent_context.py --check` | Measured context matches | Match; six existing findings and four unwired gates remain | PASS |
+| 7 | `python scripts/ci/verify_public_boundary.py` | No public-boundary violations | 812 tracked files, no failures | PASS |
+
+For failures 1–3, the root cause is unavailable frontend dependencies. No package
+version or dependency manifest was changed to work around them. There is no
+applied runtime fix in this source session. The new verify commands are the same
+commands above in the existing provisioned dependency environment; use
+`npm --prefix apps/web test -- --run src/pages/workspace/__tests__/BlueprintPage.test.jsx`
+for the seven focused rendered cases. The source diagnostic below does not stand
+in for these commands.
+
+Additional observed checks:
+
+- `python tests/upgrade/check_blueprints.py`: 50 passing, five dependency skips.
+  The real Processor/Worker path is exercised through the existing Node handler
+  and transactional storage fixture, including a lost completion response and a
+  source-hash mismatch. The sample PDF has valid cross-reference offsets; native
+  text extraction is explicitly deferred because pypdf is absent.
+- `node --test tests/upgrade/blueprint-*.test.mjs`: 12 backend and eight connected
+  client cases are included in the passing 304-case regression. These cover role
+  revocation, cross-workspace and guest denial, upload/lease/retry identity,
+  locked native APIs, result validation, rollback, proposal export and inert
+  source markup. They do not claim a real JSVM or rendered browser session.
+- `python tests/upgrade/check_decision_runtime.py`: 49 passing, two native PDF
+  skips. All six decision modules clear the existing statement-coverage gate.
+- `python tests/upgrade/check_discordbot.py --include-research`: 137 passing,
+  four skips; every measured module clears 80% statement coverage, ranging from
+  88.27% to 100%. The blueprint tests are included in the existing research gate.
+- `mypy --strict --explicit-package-bases apps/research/blueprints.py apps/research/processing.py apps/research/contracts.py apps/research/worker.py apps/decision/workloads/blueprint_evaluation.py`:
+  passes for all five changed production modules.
+- `ruff check apps/research apps/decision/workloads/blueprint_evaluation.py tests/upgrade/blueprint_fixture.py tests/upgrade/test_blueprints.py tests/upgrade/test_blueprints_native.py tests/upgrade/check_blueprints.py`:
+  passes.
+- `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`: 249 JS/JSX modules
+  parse without static errors. This checks syntax and bindings, not rendering,
+  package resolution or repository lint.
+- `python -m unittest discover -s tests/upgrade -p test_blueprints.py`: after
+  finalizing the binary fixture, 26 passing and two native PDF skips. The binary
+  comment prevents text-line conversion from invalidating PDF byte offsets.
+
+| Changed Python module | Covered / executable statement lines | Coverage |
+|---|---:|---:|
+| apps/research/blueprints.py | 311 / 339 | 91.74% |
+| apps/research/processing.py | 138 / 156 | 88.46% |
+| apps/research/contracts.py | 116 / 118 | 98.31% |
+| apps/research/worker.py | 143 / 162 | 88.27% |
+| apps/decision/workloads/blueprint_evaluation.py | 86 / 88 | 97.73% |
+
+These are standard-library trace statement counts using the repository's
+existing pattern. pytest and pytest-cov are unavailable; branch coverage is not
+claimed. The runnable coverage summary is `reports/coverage/blueprints.json`.
+
+A targeted red/green regression caught a lowercase dependency sentence being
+joined to the preceding sentence. Allowing lowercase sentence starts restores
+the correct outgoing dependency. The final parser suite covers numbered,
+uppercase and bold headings; explicit and content-hash IDs; MoSCoW/prohibitions;
+components and directed relations; unresolved questions; section/raw context;
+confidence; flat fallback; source limits; and inert command-like text. A0 tests
+reject elevated authority and forged verification and preserve null abstentions.
+
+Native acceptance command:
+`BUILDANDDO_TEST_POCKETBASE=/absolute/path/to/the/existing/pocketbase python tests/upgrade/check_blueprints.py --require-native`.
+It requires the already-declared pypdf dependency and the existing PocketBase
+binary. Those dependencies are absent here; the authored tests cover real PDF
+extraction/encryption, HTTP multipart upload, worker storage/readback, protected
+source retrieval, native API denial and migration down/up. No native result is
+claimed. The original document parser, decision router, authority hook and
+research dependency manifest have no diff against this session's base.
+
+### §4 MEMORY INGEST
+
+Type A count: 528
+Type B count: 1133
+Type C count: 98
+IOO compliance: complete
+DKG orphans: 0
+Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+All 92 pre-session events are preserved. New events record the source work,
+observed tests and unavailable acceptance without replacing historical evidence.
+File vectors match current line counts, and relationship vectors match their
+CGRF declarations. Binary PDF provenance uses its accompanying CGRF YAML file.
+
+### §5 CKET FILING
+
+- 04_HYPOTHESIZE: current SRS acceptance and observed source outcome.
+- 06_PLAN: `docs/blueprints.md`, including API, limits, native verification and
+  retention-preserving rollback instructions.
+- 07_BUILD: research extension, decision workload, PocketBase hooks/migration,
+  workspace client/page and route/navigation changes in the repository's existing
+  source locations.
+- 08_TEST: parser/decision/worker and native tests, Node backend/client fixtures,
+  rendered page tests, sample PDF with companion header and coverage integration.
+- 11_COMMIT: dispatch, context lock, cumulative report/memory and PDF-aware
+  provenance verifier.
+- 13_SAVE: no new file.
+
+CGRF headers: complete on all 19 new files, including binary companion provenance.
+REFLEX check: deferred to the existing post-merge process; no CK signature minted.
+The logical stage labels follow the current BuildAndDo source conventions.
+
+### §6 GOVERNANCE
+
+Entity: Citadel Nexus Inc.
+Authority: existing A2 source dispatch; per-requirement evaluation fixed at A0
+Actor: actor:agent required on PR creation; no label application claimed here
+License posture: unchanged; no new third-party dependency or license change
+Hard-NO scan: public boundary passes; original parser and decision policy unchanged
+Secret scan: no secret-prefix findings in added source; no vault/history audit claim
+Stripe mode: not applicable; no checkout code touched
+CKS / CAPS / CK: pending
+
+Source text remains untrusted data. It is never interpolated into runtime policy,
+passed as top-level decision answers, evaluated as code, or promoted to approval.
+Both the worker adapter and saved-result boundary require A0 and verified=false.
+Workspace membership, source-owner revocation, worker leases and protected-file
+authorization retain the existing policies.
+
+### §7 NEXT ACTIONS
+
+Blockers: pypdf/PocketBase native checks and frontend test/lint/build dependencies
+Handoffs requested: none; existing worker and private activation boundaries apply
+Suggested next dispatch: run native and rendered Phase A acceptance in the
+provisioned environment, then review default-rule coverage before numerical BDR
+assessments are relied upon
+Bugs filed: none; no external issue or seat message was sent
+
+Rollback/compensation: stop the shared worker before rolling source back. The
+migration's down path removes its feature marker and retains all uploads,
+observations, retry keys and the blueprint discriminator; disabled jobs are
+excluded from the shared queue. Reapplying the migration restores the marker.
+No migration deletes user material. Follow the exact retained-data procedure in
+`docs/blueprints.md`; hosted rollback was not performed.
+
+## Earlier continuation report — preserved
 
 ## §1 SUMMARY
 

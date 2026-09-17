@@ -63,6 +63,16 @@ The upload endpoint returns an asynchronous receipt; GET exposes the completed
 Blueprint. This preserves the existing worker rather than creating a second
 parser host inside PocketBase. A0 abstentions remain unknown assessments.
 
+Observed source outcome: the shared-worker upload/storage/retrieval path,
+structured parser, A0 workload and workspace review/export page are implemented.
+Full regression passes 304 Node and 250 Python tests, with 16 native skips.
+The targeted coverage gate passes 50 cases with five skips and measures
+88.27–98.31% statement coverage across the five changed Python modules. Source
+typing, Ruff, JSX diagnostics, context and public-boundary checks pass. Native
+PDF/PocketBase and rendered UI/build acceptance remain open because pypdf,
+PocketBase, Vitest, Vite and the repository ESLint import plugin are unavailable.
+The sample PDF is generated from public test text; no user document is retained.
+
 ## Classroom source continuation — 2026-09-16
 
 The owner reports that live classrooms and educational rooms still do not work
