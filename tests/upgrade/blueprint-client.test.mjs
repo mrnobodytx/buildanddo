@@ -29,7 +29,7 @@ function setup() {
     const client = { authStore: { record: { id: 'member' } }, calls: [],
         async send(path, options) {
             this.calls.push({ path, options });
-            return backend.request(options.body, { operation: 'blueprints' }).result;
+            return backend.request(options.body, { operation: 'blueprints/analyze' }).result;
         } };
     const api = createBlueprintClient({ client, accountId: 'member', workspaceId: 'ws1', isCurrent: () => active });
     return { backend, client, api, leave: () => { active = false; } };
@@ -39,6 +39,7 @@ test('PDF client reaches authenticated pipeline and retains review plan and deci
     const f = setup(); const result = await f.api.analyze(file(), true);
     assert.equal(result.ok, true); assert.equal(f.backend.rows.length, 3);
     assert.equal(result.data.session_prompts.length, 3);
+    assert.equal(f.client.calls[0].path, '/api/buildanddo/workspaces/ws1/blueprints/analyze');
     assert.equal(f.client.calls[0].options.body.authority, 'A0');
     assert.equal(f.client.calls[0].options.body.include_prompts, true);
     assert.equal(atob(f.client.calls[0].options.body.pdf_base64), '%PDF-1.4 fixture');

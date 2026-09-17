@@ -39,7 +39,7 @@ routerAdd('GET', '/api/buildanddo/workspaces/{workspace}/research-worker/queue',
 routerAdd('POST', '/api/buildanddo/workspaces/{workspace}/research-worker', (e) => {
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(200, require(`${__hooks}/mission-research.js`).work(e));
-}, $apis.requireAuth('users'), $apis.bodyLimit(65536));
+}, $apis.requireAuth('users'), $apis.bodyLimit(524288));
 routerAdd('POST', '/api/buildanddo/workspaces/{workspace}/discord-research', (e) => {
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(200, require(`${__hooks}/mission-research.js`).discordCommand(e));

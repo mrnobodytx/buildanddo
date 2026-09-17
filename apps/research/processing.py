@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     apps/research/transport.py, apps/research/documents.py
+# Depends:     apps/research/transport.py, apps/research/documents.py, apps/research/blueprint_documents.py, apps/decision/workloads/blueprint_document_evaluation.py
 # EnumType:    Adapter
-# EnumEdges:   CONSUMES apps/research/transport.py; CONSUMES apps/research/documents.py
+# EnumEdges:   CONSUMES apps/research/transport.py; CONSUMES apps/research/documents.py; CONSUMES apps/research/blueprint_documents.py; CONSUMES apps/decision/workloads/blueprint_document_evaluation.py
 # DAG Node:    none
 # Intent:      Produce actual source excerpts through self-hosted Firecrawl, local document parsing and configured audio transcription.
 # ───────────────────────────────────────────────────────────────
@@ -28,21 +28,25 @@ import tempfile
 
 from apps.research.contracts import Citation, Parsed, ProcessorSettings, ResearchError, clip_text, file_kind, object_value, public_url, text
 from apps.research.transport import BoundedIO, HttpClient, decode_json, multipart
+from apps.research.blueprint_documents import Blueprint
+from apps.decision.workloads.blueprint_document_evaluation import DecideFn, evaluate_blueprint
+from apps.decision.contract import decide
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def parse_document(data: bytes, name: str) -> dict[str, object]:
+def parse_document(data: bytes, name: str, *, blueprint: bool = False) -> dict[str, object]:
     """Run the document parser with a deadline and automatic temporary-file cleanup."""
     with tempfile.TemporaryDirectory(prefix="buildanddo-research-") as folder:
         path = Path(folder) / "input"
         path.write_bytes(data)
         try:
-            result = subprocess.run([sys.executable, "-m", "apps.research.documents", str(path), "--name", name],
+            module = 'apps.research.blueprint_documents' if blueprint else 'apps.research.documents'
+            result = subprocess.run([sys.executable, "-m", module, str(path), "--name", name],
                                     cwd=ROOT, capture_output=True, timeout=30, check=False)
         except subprocess.TimeoutExpired:
             raise ResearchError("timeout") from None
-    if len(result.stdout) > 150000:
+    if len(result.stdout) > (300000 if blueprint else 150000):
         raise ResearchError("too_large")
     parsed = decode_json(result.stdout)
     if result.returncode or "failure" in parsed:
@@ -51,20 +55,32 @@ def parse_document(data: bytes, name: str) -> dict[str, object]:
     return parsed
 
 
+def parse_blueprint_document(data: bytes, name: str) -> dict[str, object]:
+    """Use the same child-process deadline and temporary-file lifecycle for blueprints."""
+    return parse_document(data, name, blueprint=True)
+
+
 class Processor:
     """Separate public web extraction from private file transcription."""
 
     def __init__(self, settings: ProcessorSettings, *, firecrawl: HttpClient | None = None,
                  transcription: HttpClient | None = None, guard: Callable[[object], str] = lambda value: public_url(value, resolve=True),
-                 documents: Callable[[bytes, str], dict[str, object]] = parse_document) -> None:
+                 documents: Callable[[bytes, str], dict[str, object]] = parse_document,
+                 blueprints: Callable[[bytes, str], dict[str, object]] = parse_blueprint_document,
+                 decide_fn: DecideFn = decide) -> None:
         self.settings = settings
         self.firecrawl = firecrawl
         self.transcription = transcription
         self.guard, self.documents, self.io = guard, documents, BoundedIO(slots=1, deadline=40)
+        self.blueprints, self.decide_fn = blueprints, decide_fn
 
     async def process(self, job: dict[str, object], data: bytes | None = None, name: str = "") -> Parsed:
         """Extract source text without approving, verifying or executing its instructions."""
         kind = job.get("kind")
+        if job.get('mode') == 'blueprint':
+            if kind != 'document' or data is None:
+                raise ResearchError('invalid_data')
+            return await self.process_blueprint(data, name)
         source = text(job.get("input"), 2048, empty=True)
         digest = hashlib.sha256(data if data is not None else source.encode()).hexdigest()
         citations: list[Citation] = []
@@ -131,6 +147,48 @@ class Processor:
         while len(json.dumps(result, ensure_ascii=False).encode()) > 55000:
             result["text"] = result["text"][:max(1, len(result["text"]) - 1000)]
             result["truncated"] = True
+        return result
+
+    async def process_blueprint(self, data: bytes, name: str) -> Parsed:
+        """Keep admitted text if structuring or A0 evaluation is unavailable."""
+        if file_kind(name, len(data)) != 'document':
+            raise ResearchError('unsupported')
+        try:
+            document = await self.io.run(lambda: self.blueprints(data, name))
+        except Exception:
+            # The fallback still performs every original document admission check.
+            document = await self.io.run(lambda: self.documents(data, name))
+            document['blueprint_failure'] = 'structure_failed'
+        result: Parsed = {'text': text(document.get('text'), 16000), 'citations': [], 'processor': 'local-document',
+                          'version': text(document.get('version'), 80), 'input_sha256': hashlib.sha256(data).hexdigest(),
+                          'truncated': False, 'blueprint': None, 'blueprint_failure': 'structure_failed',
+                          'evaluation': None, 'evaluation_failure': ''}
+        if type(document.get('truncated')) is not bool:
+            raise ResearchError('invalid_data')
+        result['truncated'] = bool(document['truncated'])
+        if document.get('blueprint') is not None:
+            try:
+                blueprint = Blueprint.from_dict(document['blueprint'])
+                if blueprint.source_hash != result['input_sha256'] or blueprint.source_file != name:
+                    raise ResearchError('invalid_data')
+                result.update({'blueprint': blueprint.to_dict(), 'blueprint_failure': '', 'processor': 'local-blueprint',
+                               'truncated': result['truncated'] or blueprint.truncated})
+            except Exception:
+                blueprint = None
+            if blueprint is not None:
+                try:
+                    result['evaluation'] = (await evaluate_blueprint(blueprint, self.decide_fn)).to_dict()
+                except Exception:
+                    result['evaluation_failure'] = 'decision_failed'
+        elif document.get('blueprint_failure') == 'no_requirements':
+            result['blueprint_failure'] = 'no_requirements'
+        # Structured data gets its own bounded worker envelope. The original flat
+        # excerpt still fits the unchanged research result collection contract.
+        while len(json.dumps({'text': result['text']}, ensure_ascii=False).encode()) > 54000:
+            result['text'] = result['text'][:-1000]
+            result['truncated'] = True
+        if len(json.dumps(result, ensure_ascii=False).encode()) > 450000:
+            result['evaluation'], result['evaluation_failure'] = None, 'decision_failed'
         return result
 
     async def close(self) -> None:

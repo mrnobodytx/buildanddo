@@ -37,7 +37,12 @@ beforeEach(() => {
         return { statusCode: 200, json: value };
     });
     pb.send.mockReset();
-    pb.send.mockImplementation(async (_path, options) => backend.request(options.body, { operation: 'blueprints' }).result);
+    pb.send.mockImplementation(async (path, options) => {
+        if (path === '/api/buildanddo/workspaces/ws1/blueprints' && options.method === 'GET')
+            return { workspace: 'ws1', role: 'editor', page: 1, has_more: false, items: [] };
+        expect(path).toBe('/api/buildanddo/workspaces/ws1/blueprints/analyze');
+        return backend.request(options.body, { operation: 'blueprints/analyze' }).result;
+    });
     URL.createObjectURL = vi.fn(() => 'blob:mission-plan');
     URL.revokeObjectURL = vi.fn();
 });
@@ -60,6 +65,19 @@ async function selectPdf(user) {
 }
 
 describe('BlueprintPage review flow', () => {
+    it('keeps saved uploads reachable and clears analysis when changing views', async () => {
+        const user = setupUser(); renderPage(); await selectPdf(user);
+        await user.click(screen.getByRole('button', { name: 'Analyze blueprint' }));
+        expect(await screen.findByRole('heading', { name: 'Pass 1 — Scan' })).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Saved PDFs' }));
+        expect(await screen.findByText('No blueprints have been uploaded to this workspace.')).toBeVisible();
+        expect(screen.getByLabelText('Blueprint PDF')).toBeVisible();
+        expect(screen.queryByRole('heading', { name: 'Pass 1 — Scan' })).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Analyze PDF' }));
+        expect(screen.getByLabelText('Blueprint PDF (up to 20 MiB)')).toBeVisible();
+        expect(screen.queryByRole('heading', { name: 'Pass 1 — Scan' })).not.toBeInTheDocument();
+    });
+
     it('displays the three passes, confidence, dependencies and ordered challenges from the adapter', async () => {
         const user = setupUser(); renderPage(); await selectPdf(user);
         await user.click(screen.getByRole('button', { name: 'Analyze blueprint' }));

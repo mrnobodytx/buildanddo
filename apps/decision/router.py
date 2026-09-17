@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        apps/decision/router.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-DECISION-001
+# SRS:         SRS-BUILDANDDO-DECISION-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-DECISION-001
+# Dispatch:    VCC-BUILDANDDO-DECISION-001, VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-17

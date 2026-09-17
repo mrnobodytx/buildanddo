@@ -47,6 +47,7 @@ def main() -> int:
         )
         if args.include_research:
             suite.addTests(unittest.defaultTestLoader.discover(str(ROOT / "tests/upgrade"), pattern="test_research_runtime.py"))
+            suite.addTests(unittest.defaultTestLoader.discover(str(ROOT / "tests/upgrade"), pattern="test_blueprints.py"))
         return unittest.TextTestRunner(verbosity=1).run(suite)
 
     threading.settrace(tracer.globaltrace)

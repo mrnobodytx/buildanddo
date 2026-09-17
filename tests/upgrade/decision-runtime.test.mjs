@@ -1,16 +1,16 @@
 // ─── CGRF Header ──────────────────────────────
 // File:        tests/upgrade/decision-runtime.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-DECISION-001
+// SRS:         SRS-BUILDANDDO-DECISION-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-DECISION-001
+// Dispatch:    VCC-BUILDANDDO-DECISION-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-17
-// Depends:     apps/pocketbase/pb_hooks/decision.pb.js, apps/pocketbase/pb_hooks/workflow-policy.js
+// Depends:     apps/pocketbase/pb_hooks/decision.pb.js, apps/pocketbase/pb_hooks/blueprint.pb.js, apps/pocketbase/pb_hooks/workflow-policy.js
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/decision.pb.js; DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js
+// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/decision.pb.js; VALIDATES apps/pocketbase/pb_hooks/blueprint.pb.js; DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js
 // DAG Node:    none
 // Intent:      Execute the actual PocketBase route source with JSVM doubles to prove auth, typing, authority and log boundaries.
 // ───────────────────────────────────────────────────────────
@@ -23,6 +23,27 @@ import { decisionFixture, layoutBlueprintResult, python } from './decision-fixtu
 
 const body = () => ({ state: { evidence_count: 3, contradicted: false, description: 'private-state-marker' },
     questions: { should_act: { type: 'noul' } }, trace_id: 'trace-1' });
+
+test('saved uploads and immediate analysis register distinct authenticated routes together', () => {
+    const routes = new Map();
+    const context = {
+        $apis: { requireAuth: (collection) => ({ collection }), bodyLimit: (limit) => ({ limit }) },
+        routerAdd(method, path, handler, ...middleware) {
+            const key = method + ' ' + path;
+            assert.equal(routes.has(key), false, 'Duplicate route: ' + key);
+            assert.equal(middleware[0].collection, 'users');
+            routes.set(key, { handler, middleware });
+        },
+    };
+    for (const file of ['blueprint.pb.js', 'decision.pb.js'])
+        vm.runInNewContext(readFileSync(new URL('../../apps/pocketbase/pb_hooks/' + file, import.meta.url), 'utf8'), context);
+    const prefix = 'POST /api/buildanddo/workspaces/{workspace}/blueprints';
+    assert.ok(routes.has(prefix));
+    assert.ok(routes.has(prefix + '/analyze'));
+    assert.equal(routes.size, 7);
+    assert.equal(routes.get(prefix).middleware[1].limit, 22020096);
+    assert.equal(routes.get(prefix + '/analyze').middleware[1].limit, 29360128);
+});
 
 test('native account and current workspace membership precede local processing', () => {
     const f = decisionFixture();
@@ -130,9 +151,9 @@ test('layout-double blueprint results persist real BDR evaluations and preserve 
     const f = decisionFixture(); const response = layoutBlueprintResult();
     f.transport(() => ({ statusCode: 200, json: structuredClone(response) }));
     const payload = { name: 'sample.pdf', pdf_base64: 'JVBERi0xLjQ=', include_prompts: true };
-    const first = f.request(payload, { operation: 'blueprints' }).result;
+    const first = f.request(payload, { operation: 'blueprints/analyze' }).result;
     assert.equal(first.workspace, 'ws1'); assert.equal(first.session_prompts.length, 3); assert.equal(f.rows.length, 3);
-    f.request(payload, { operation: 'blueprints' }); assert.equal(f.rows.length, 3);
+    f.request(payload, { operation: 'blueprints/analyze' }); assert.equal(f.rows.length, 3);
     for (const prompt of first.session_prompts) for (const provenance of prompt.provenance) {
         assert.ok(f.rows.some((row) => row.decision_id === provenance.evaluation_id));
         const detail = f.request(null, { operation: 'decisions', decision: provenance.evaluation_id }).result;
@@ -144,7 +165,7 @@ test('blueprint input, result authority and per-requirement confidence are fence
     const f = decisionFixture();
     for (const payload of [{ name: 'x.txt', pdf_base64: 'data' }, { name: 'x.pdf', pdf_base64: 'data', authority: 'A3' },
         { name: 'x.pdf', pdf_base64: 'data', include_prompts: 'yes' }])
-        assert.throws(() => f.request(payload, { operation: 'blueprints' }), { status: 400 });
+        assert.throws(() => f.request(payload, { operation: 'blueprints/analyze' }), { status: 400 });
     for (const change of [
         (r) => { r.verified = true; }, (r) => { r.session_prompts[0].authority = 'A3'; },
         (r) => { r.evaluations[0].source.input_sha256 = 'foreign'; },
@@ -152,7 +173,7 @@ test('blueprint input, result authority and per-requirement confidence are fence
     ]) {
         const response = layoutBlueprintResult(); change(response);
         f.transport(() => ({ statusCode: 200, json: response }));
-        assert.throws(() => f.request({ name: 'x.pdf', pdf_base64: 'data' }, { operation: 'blueprints' }), { status: 502 });
+        assert.throws(() => f.request({ name: 'x.pdf', pdf_base64: 'data' }, { operation: 'blueprints/analyze' }), { status: 502 });
     }
     assert.equal(f.rows.length, 0);
 });

@@ -15,143 +15,174 @@
 # Intent:      Record measured blueprint pipeline evidence and remaining native/runtime acceptance limits without promoting observations to verification.
 # ───────────────────────────────────────────────────────────────
 
-# Blueprint pipeline continuation report
 
-This report describes the 2026-09-17 source continuation. Earlier dispatch reports
-and all 92 preceding event vectors remain historical and are retained.
+# Blueprint pipeline integration report
+
+This report records the integrated source at PR 38 after recovery from the
+interrupted session. Earlier dispatch reports and all 102 distinct events from
+both parents remain retained history. The checked source keeps the saved-upload
+workflow and the immediate three-pass analysis workflow available together.
 
 ## §1 SUMMARY
 
-Status: PARTIAL — all five source areas supplied; native/UI acceptance unavailable
+Status: PARTIAL — source integration complete; hosted, native and rendered acceptance open
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
 Seat: BITS-CODEGEN
 SRS: SRS-BUILDANDDO-UPGRADE-001
-Branch: bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-pipeline
-Tasks: 5/5 source areas; hosted acceptance not claimed
-Smoke: 4/7 existing dispatch commands pass; 3 cannot start without frontend dependencies
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-pipeline
+Tasks: 5/5 source areas; all four integration phases have local evidence
+Smoke: 4/7 existing dispatch commands pass; 3 require missing frontend dependencies
 CKS Gate: B+/75 target; unmeasured
 CKS: pending
 CAPS: pending
 CK: pending
-Source history: inspect the focused change with git log --format=fuller -1
+Source history: git log --format=fuller origin/main..HEAD
 
 ## §2 TASK RESULTS
 
-| Task | Source result | Verify | Evidence boundary |
+| Task | Result | Verify | Evidence boundary |
 |---|---|---|---|
-| CPU extraction | Three deterministic passes retain layout, structure, quality and PDF provenance | python -m unittest tests.upgrade.test_blueprint_extraction | Native pypdf test skipped here |
-| Components, missions, prompts | Real BDR receipts, inferred dependencies, ordered challenges and A0 review prompts | python -m unittest tests.upgrade.test_blueprint_pipeline | Native PDF chain skipped; layout-double chain passes |
-| Workspace decide | Python process bridge, immutable private receipts, stable IDs and rechecked membership | node --test tests/upgrade/decision-runtime.test.mjs | 13 tests pass with actual policy/Python and simulated PocketBase storage |
-| Workspace page | Three passes, confidence, dependency list, challenges, prompt review and JSON export | npm --prefix apps/web test -- BlueprintPage | Six rendered tests authored; Vitest unavailable |
-| Integration | Genuine three-page sample PDF and network-forbidden native PDF-to-prompt test, required in CI | python tests/upgrade/check_blueprint_pipeline.py --require-pdf | Gate correctly fails without pypdf |
+| CPU extraction | Deterministic scan, parse and assessment preserve layout, requirements, confidence and PDF provenance | python tests/upgrade/check_blueprint_pipeline.py | PASS: 69 passed, 4 native PDF skips |
+| Components, missions, prompts | BDR receipts, dependencies, ordered challenges and A0 review prompts retain source identity | python -m unittest tests.upgrade.test_blueprint_pipeline | Native PDF chain remains unavailable; layout-double chain passes |
+| Workspace decide | Canonical Python evaluation with immutable private receipts, stable IDs and current membership checks | node --test tests/upgrade/decision-runtime.test.mjs | Actual Python and policy; simulated PocketBase storage |
+| Workspace views | Analyze PDF and Saved PDFs preserve immediate analysis and protected upload/worker/review flows | npm --prefix apps/web test -- BlueprintPage BlueprintSavedPage | Fourteen rendered cases require missing Vitest |
+| Integrated saved contract | Shared PDF scan preserves v1 fields and flat excerpts if structuring fails | python tests/upgrade/check_blueprints.py | PASS: 51 passed, 5 native dependency skips |
 
-The blueprint modules and page described in the source conversation were absent
-from the starting revision. This continuation supplies them using existing
-research contracts, Python BDR and PocketBase account policy. No external PR or
-unavailable private implementation was represented as local source.
+Saved intake keeps POST /api/buildanddo/workspaces/{workspace}/blueprints.
+Immediate analysis uses POST /api/buildanddo/workspaces/{workspace}/blueprints/analyze.
+Both routes require native users authentication and retain their own body limits.
+The saved adapter uses the shared scan without depending on later analysis passes.
+Its observation timestamp is part of the existing stored schema; deterministic
+three-pass analysis does not include that timestamp.
 
-Core implementation: apps/research/blueprint*.py, apps/decision/adapters/,
-apps/decision/workloads/blueprint_evaluation.py, the PocketBase decision hook and
-migration, and apps/web/src/pages/workspace/BlueprintPage.jsx.
-Local operating and rollback contract: docs/blueprint-pipeline.md.
+The source never creates coding sessions, activates missions or promotes
+extraction confidence into verification or implementation authority. Operating
+contracts and retained-data rollback are documented in docs/blueprint-pipeline.md
+and docs/blueprints.md.
 
 ## §3 SMOKE TEST RESULTS
 
 | Command | Expected | Observed |
 |---|---|---|
-| npm --prefix apps/web test -- BlueprintPage | Rendered UI tests pass | FAIL to start: vitest not found |
-| npm --prefix apps/web run lint | Repository lint passes | FAIL to start: eslint-plugin-import unavailable |
-| npm --prefix apps/web run build | Vite builds the app | FAIL to start: vite ENOENT |
-| node --test tests/upgrade/*.test.mjs | Source adapter regression passes | PASS: 299 tests |
-| python -m unittest discover -s tests/upgrade -p 'test_*.py' | Available Python regression passes | PASS: 266 passes, 14 native dependency skips |
-| python scripts/ci/agent_context.py --check | Measured lock matches source | PASS; six pre-existing findings retained |
-| python scripts/ci/verify_public_boundary.py | Public boundaries pass | PASS; no new boundary exception |
+| npm --prefix apps/web test | Rendered tests pass | FAIL to start: vitest is absent |
+| npm --prefix apps/web run lint | Repository lint passes | FAIL to start: eslint-plugin-import is absent |
+| npm --prefix apps/web run build | Web bundle produced | FAIL to start: vite is absent |
+| node --test tests/upgrade/*.test.mjs | Adapter regression passes | PASS: 320 tests |
+| python -m unittest discover -s tests/upgrade -p 'test_*.py' | Available Python regression passes | PASS: 293 passed, 18 native dependency skips |
+| python scripts/ci/agent_context.py --check | Measured lock matches source | PASS: six existing findings and four unwired gates remain visible |
+| python scripts/ci/verify_public_boundary.py | Public boundaries pass | PASS: 842 tracked files; this invocation does not verify hosted labels |
 
-Focused blueprint coverage gate:
-python tests/upgrade/check_blueprint_pipeline.py
+Additional source evidence:
 
-Observed: PASS, 44 cases, 42 passes and two native PDF skips.
-Per-module stdlib trace statement coverage is 94.17–100%; no branch-coverage
-claim. Coverage report: reports/coverage/blueprint-pipeline.json.
+- python tests/upgrade/check_blueprint_pipeline.py: 69 passed, 4 skipped;
+  91.57–100% statement coverage across fourteen executable extraction/adaptor
+  modules, including both saved and detailed contracts.
+- python tests/upgrade/check_blueprints.py: 51 passed, 5 skipped;
+  88.27–98.31% statement coverage across the saved parser and research worker.
+- python tests/upgrade/check_decision_runtime.py: 64 passed, 3 skipped;
+  94.41–100% statement coverage across the BDR runtime.
+- node --test tests/upgrade/decision-runtime.test.mjs tests/upgrade/blueprint-client.test.mjs tests/upgrade/blueprint-saved-client.test.mjs tests/upgrade/blueprint-system.test.mjs:
+  41 passed on the final source, including both URL contracts and saved intake.
+- python scripts/ci/supply_chain.py --skip-audit --check-lock: PASS for lock and
+  manifests. The command deliberately skips online vulnerability auditing.
+- node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs: 252 modules parsed,
+  zero static errors. This limited diagnostic is not rendered UI or full lint.
+- ruff check apps/research/blueprint*.py apps/decision/adapters apps/decision/workloads/blueprint_evaluation.py apps/decision/workloads/blueprint_document_evaluation.py tests/upgrade/test_blueprints.py tests/upgrade/check_blueprint_pipeline.py tests/upgrade/check_blueprints.py tests/upgrade/check_decision_runtime.py: PASS.
+- python -m mypy --strict --explicit-package-bases --follow-imports=silent apps/research/blueprint_models.py apps/research/blueprint_scan.py apps/research/blueprint_parse.py apps/research/blueprint_assess.py apps/research/blueprints.py apps/research/blueprint_documents.py apps/research/processing.py apps/decision/workloads/blueprint_evaluation.py apps/decision/workloads/blueprint_document_evaluation.py apps/decision/adapters:
+  PASS for sixteen source files.
 
-The same gate with --require-pdf returns FAIL solely because pypdf is absent.
-The existing native research CI job installs the already declared parser and
-now runs this required gate; dependency absence cannot silently pass native
-acceptance there. Report: reports/coverage/blueprint-pipeline-native.json.
+Coverage uses the repository's standard-library trace checker. It measures
+statement lines, not branch coverage; pytest and coverage.py are unavailable.
+Reports are generated under reports/coverage by the commands above.
 
-Existing BDR coverage:
-python tests/upgrade/check_decision_runtime.py
-Observed: 37 passes, one native PDF skip; 94.41–100% statement coverage.
+Observed red/green regressions:
 
-Source typing:
-python -m mypy --strict --explicit-package-bases --follow-imports=silent apps/research/blueprint_models.py apps/research/blueprint_scan.py apps/research/blueprint_parse.py apps/research/blueprint_assess.py apps/research/blueprints.py apps/decision/workloads/blueprint_evaluation.py apps/decision/adapters
-Observed: PASS for 13 source files.
+1. Combining the original PR-head decision hook and main's saved-upload hook
+   registers the same POST URL twice. The merged route-registration test checks
+   both files together and passes with distinct URLs, authentication and limits.
+   Verify: node --test --test-name-pattern='distinct authenticated routes' tests/upgrade/decision-runtime.test.mjs
+2. Injected parse/assessment failures originally prevented the saved PDF adapter
+   from returning its flat excerpt. Using only the shared scan restores the
+   fallback; the test also rejects leaked private diagnostics. One initial test
+   expectation included a trailing newline that the existing PDF scanner strips;
+   that assertion was corrected without changing normalization.
+   Verify: python -m unittest tests.upgrade.test_blueprints.ParserTests.test_saved_pdf_keeps_flat_text_when_structuring_is_unavailable
+3. The original shared-data dependency regression remains covered, including
+   producer/consumer wording and normalized data-entity names.
+   Verify: python -m unittest tests.upgrade.test_blueprint_pipeline.PipelineTests.test_shared_data_and_resolved_requirement_references_produce_dependencies
 
-Source lint:
-ruff check apps/research/blueprint*.py apps/decision/adapters apps/decision/workloads/blueprint_evaluation.py tests/upgrade/test_blueprint*.py tests/upgrade/blueprint_support.py tests/upgrade/check_blueprint_pipeline.py
-Observed: PASS. Changed JS/JSX sources also parse with the installed Espree
-parser; that does not substitute for the missing repository lint or rendered UI.
+The interrupted pre-recovery Node log contained three suite result-identity
+errors. The recovered tree passed an uninterrupted 320-test run and the final
+blueprint-specific run. No unrelated suite policy was changed and the earlier
+errors' cause is not asserted from that log alone.
 
-Red/green regression: shared data dependencies initially failed because data
-phrases consumed the words “publish” and “consume”, and “event records” could
-stop at “event”. The noun boundary and verb normalization were corrected.
-Verify: python -m unittest tests.upgrade.test_blueprint_pipeline.PipelineTests.test_shared_data_and_resolved_requirement_references_produce_dependencies
+Unresolved acceptance and causes:
 
-The three frontend failures have the same environmental cause: declared
-dependencies are not installed and network package installation is unavailable
-in this sandbox. No new dependency was added and no installed-runtime claim is
-made. Native PocketBase migration behavior, browser rendering, deployed worker
-availability and live tenant acceptance remain unverified. The Node storage
-double and Python layout double are named explicitly in their tests.
+- python tests/upgrade/check_blueprint_pipeline.py --require-pdf returns FAIL
+  with 69 source passes, 4 skips and no test errors because pypdf is absent.
+  CI requires this gate after installing the already-declared parser. No parser
+  dependency or native acceptance gate was removed.
+- The three frontend smoke commands and the targeted fourteen rendered tests
+  cannot start without the declared frontend packages. Root npm run build also
+  stops because concurrently is absent. No installed bundle/browser claim is made.
+- Native PocketBase is absent; actual migration/JSVM and served local bridge
+  acceptance remain unverified. Storage/transport doubles are identified in tests.
+- PR 38 has only the Bits AI label. Running the unchanged boundary gate with
+  that observed label snapshot reproduces exactly the missing actor-label error.
+  Add exactly actor:agent through the source-control UI. No hosted label changed.
+- Workers Builds: buildanddo check 105249499047 reports failure but exposes no
+  error text or annotations. Its Cloudflare build ID is
+  8af20caa-33cc-4ace-bf8c-46d90d972428. Private build diagnostics remain needed;
+  missing local packages do not establish the hosted failure's root cause.
+- python scripts/ci/changelog_gen.py --check --no-summary --ref origin/main
+  reports the existing CHANGELOG.md stale. That file is unchanged on the PR and
+  the workflow explicitly marks this check continue-on-error. No unrelated
+  changelog/source history is regenerated as part of the blueprint repair.
 
 ## §4 MEMORY INGEST
 
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
-
-Type A count: 551. Type B count: 1148. Type C count: 96.
+Type A count: 561. Type B count: 1183. Type C count: 105.
 IOO compliance: PASS. DKG orphans: 0.
 
-Type A records identify every touched file and its intent; Type B records retain
-source relationships; Type C records capture measured testing and validation
-limits. The top-level summary supplies measured vector counts and orphan/IOO
-results. All 92 preceding Type C events are preserved. No memory service is
-called directly; the repository's post-merge flow owns ingestion.
+Each path has one current Type A record. Type B edges are rebuilt from the
+actual CGRF headers. All 102 distinct Type C events from the PR head and main
+are retained unchanged; three integration evidence events are added. No memory
+service is called directly and no score or verification stamp is fabricated.
 
-Verify counts:
-python -c "import json; from collections import Counter; v=json.load(open('.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json')); print(Counter(x['type'] for x in v['vectors'])); print(v['summary'])"
+Verify: python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py
+The payload's top-level summary reports counts and orphan/IOO results.
 
 ## §5 CKET FILING
 
-- 07_BUILD: extraction models/passes, BDR adapters, decision hooks/migration and workspace UI.
-- 08_TEST: Python/Node/UI behavior suites, coverage gate and synthetic PDF with provenance sidecar.
-- 06_PLAN: docs/blueprint-pipeline.md.
-- 04_HYPOTHESIZE: existing SRS and repository governance continuation.
-- 11_COMMIT: existing dispatch/CI continuation, report and memory payload.
+- 07_BUILD: extraction, saved-schema adapter, BDR adapters, decision hook and workspace views.
+- 08_TEST: both Python/Node/rendered suites, coverage gates and synthetic PDF fixtures.
+- 06_PLAN: docs/blueprint-pipeline.md and docs/blueprints.md.
+- 04_HYPOTHESIZE: existing SRS continuation.
+- 11_COMMIT: existing dispatch/CI continuation, measured context, report and memory.
 
-New code, markdown and YAML files carry CGRF headers. The PDF has a sibling
-CGRF YAML record so its PDF signature remains valid. Legacy headers and all
-previous event vectors retain their provenance. REFLEX validation remains
-deferred to the private post-merge pipeline.
+New text files retain CGRF headers; PDFs retain their provenance sidecars and
+binary attributes. The source verifier checks paths, current metadata, edges
+and retention. REFLEX remains deferred to the private post-merge pipeline.
 
 ## §6 GOVERNANCE
 
 Entity: Citadel Nexus Inc.
-Authority: A2 repository source continuation under the existing in-progress dispatch.
+Authority: existing in-progress A2 public-source upgrade dispatch.
 License posture: unchanged; commercial contact licensing@citadel-nexus.com.
-Boundary: public source and synthetic fixtures; no deployment, secret or private-plane write.
-Secrets: changed-file scan performed; no secret-prefix material introduced.
-Stripe mode: not applicable; no checkout or payment code touched.
-Verification: extraction, decisions, components, challenges and prompts remain unverified.
-Actor label: actor:agent required when the PR is created; no provider label write attempted.
+Boundary: public source and authored fixtures; no deployment, secrets or private write.
+Secret scan: repository boundary scanner passes; no broader secret-audit claim.
+Stripe mode: not applicable; no payment or checkout logic changed.
+Verification: extraction, decisions, components, challenges and prompts stay unverified.
+Actor label: actor:agent required; provider writes are unavailable in this session.
 
 ## §7 NEXT ACTIONS
 
-Complete the required native PDF gate and six rendered UI tests on a runner with
-the repository's existing dependencies. Verify the PocketBase migration and
-loopback bridge together in an authorized local runtime before deployment.
-The loopback host must be shared by PocketBase and the Python process.
+Synchronize the prepared source through Update PR and apply actor:agent. Run
+required native PDF, PocketBase and rendered acceptance with declared runtimes,
+and inspect the existing Workers build's diagnostics before claiming hosted
+acceptance. Six prior findings and four unwired gates are unchanged, explicit
+baseline findings rather than failures of the measured-context freshness check.
 
-No mission is activated, coding session created or outcome verified by this
-change. Human review and a separate implementation dispatch remain required.
-No unrelated baseline finding was fixed. No issue comment, external message,
-live seat event, production migration or private deployment was sent.
+The dispatch remains in progress for runtime acceptance. No coding session,
+mission activation, live seat event, external comment or deployment was created.

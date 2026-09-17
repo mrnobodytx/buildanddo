@@ -20,6 +20,31 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Blueprint PR 38 integration authorized 2026-09-17
+
+The owner's conflict and governance report continues this in-progress A2 source
+dispatch. Update from the named origin/main base and retain both implementations.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| A | Reconcile saved intake and immediate analysis with distinct routes and shared PDF scan | node --test tests/upgrade/decision-runtime.test.mjs tests/upgrade/blueprint-client.test.mjs tests/upgrade/blueprint-saved-client.test.mjs tests/upgrade/blueprint-system.test.mjs | PASS: 41 source tests; duplicate-route regression reproduced and resolved |
+| B | Retain both Python contracts and their coverage | python tests/upgrade/check_blueprint_pipeline.py; python tests/upgrade/check_blueprints.py; python tests/upgrade/check_decision_runtime.py | PASS for source: 69, 51 and 64 passes; native skips remain explicit; saved PDF fallback has red/green evidence |
+| C | Reconcile source records and both parents' event histories | python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py | PASS: one current vector per path, header-derived edges, all 102 distinct parent events retained |
+| D | Validate the integrated tree and report provider limits | python scripts/ci/agent_context.py --check; python scripts/ci/verify_public_boundary.py; python scripts/ci/supply_chain.py --skip-audit --check-lock | Local source checks PASS; hosted label, native/rendered acceptance and Workers diagnostics remain open |
+
+The actor:agent label must be applied through the source-control UI; repository
+CLI writes are unavailable in this session. No workflow check is bypassed.
+
+Recovered integration evidence: 320 Node and 293 Python tests pass, with 18
+native dependency skips. The targeted pipeline measures 91.57–100% statement
+coverage across both blueprint contracts; the saved worker gate measures
+88.27–98.31%. Strict typing passes sixteen files and the limited frontend
+diagnostic parses 252 modules. Existing smoke remains 4/7 because Vitest,
+eslint-plugin-import and Vite are absent. Native pypdf/PocketBase acceptance
+and fourteen rendered tests remain unverified. The unchanged advisory changelog
+check is stale; Workers check 105249499047 supplies no diagnostic text.
+The current blueprint-report.md records exact commands, causes and limits.
+
 ## Blueprint pipeline continuation authorized 2026-09-17
 
 The current owner request continues this A2 source dispatch with five tasks.
@@ -46,6 +71,35 @@ Strict typing and source lint pass. Vite build, Vitest and official frontend
 lint cannot start because their dependencies are missing. No deployment or
 native PocketBase migration is claimed. Evidence and runnable commands are in
 .bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md.
+## Blueprint Phase A continuation authorized 2026-09-17
+
+The current owner request continues the registered A2 research/workspace source
+scope. No live workspace, credentials, hosted model or deployment is requested.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DI | Inspect reuse and record blueprint acceptance | Context and source inspection | done |
+| DJ | Structure documents and evaluate requirements at A0 | `python tests/upgrade/check_blueprints.py` | done for source — 50 passing, five dependency skips; 88.27–98.31% statement coverage; native PDF acceptance open |
+| DK | Persist workspace blueprints through the shared research worker | `node --test tests/upgrade/blueprint-system.test.mjs` | done for source — 12 backend cases and the real Python worker with transport/storage doubles pass; native PocketBase acceptance open |
+| DL | Add workspace upload/review/export and isolate private UI state | Blueprint client and rendered suites | done for source — eight connected client cases pass; seven rendered cases await Vitest |
+| DM | Verify regression, refresh context and retain report/memory | Existing smoke block and boundary/memory checks | done for public evidence — 304 Node and 250 Python passes, 16 native skips; 4/7 smoke; native/rendered acceptance remains open |
+
+Memory brief: documents.py already runs pypdf in a 30-second resource-limited
+child process and clips text to 16,000 UTF-16 units. The research store already
+protects uploaded files, fences worker leases and binds capabilities to current
+workspace configuration. BDR Phase 1 supports A0 typed decisions; unmatched
+questions abstain. This continuation must not fabricate scores or authorize
+generation/deployment. The sandbox initially lacks pypdf, PocketBase and the
+frontend test dependencies; native acceptance must be reported separately.
+
+Observed source outcome: workspace intake queues the existing research worker
+and GET returns its saved structured observations. Flat excerpts survive failed
+structuring and protected source files remain available after processing errors.
+The default BDR runtime abstains on this new workload at A0; unknown scores are
+shown as requiring review. Exports contain proposed mission/challenge data and
+do not approve work or mint VERIFIED. All 92 earlier memory events are retained.
+The report records measured coverage, source checks, precise dependency gaps and
+runnable native/UI acceptance commands. No live workspace or deployment changed.
 
 ## Classroom continuation authorized 2026-09-16
 

@@ -67,6 +67,17 @@ function mission(app, auth, info, workspace, id, writing = false) {
         access.conflict('Start a new mission for additional research on a finished outcome.');
     return record;
 }
+function submissionScope(app, auth, info, workspace, record, writing = false) {
+    if (record.getString('mode') !== 'blueprint') return mission(app, auth, info, workspace, record.getString('mission'), writing);
+    access.requireRole(app, auth, workspace, writing ? WRITERS : ['owner', 'admin', 'editor', 'viewer']);
+    access.schema(app, 'workspace_blueprints', ['protocol_version', 'workspace', 'owner', 'submission']);
+    if (record.getString('workspace') !== workspace || record.getString('mission'))
+        throw new ForbiddenError('Choose a workspace blueprint submission.');
+    const links = app.findRecordsByFilter('workspace_blueprints', 'submission = {:submission}', '', 2, 0, { submission: record.id });
+    if (links.length !== 1 || links[0].getString('workspace') !== workspace || links[0].getString('owner') !== record.getString('owner'))
+        access.conflict('Review this blueprint research link.');
+    return record;
+}
 function publicUrl(value) {
     const url = access.bounded(value, 2048);
     // The processor and crawler egress policy also check DNS, redirects and IPs.
@@ -135,14 +146,14 @@ function download(e) {
         if (!rows.some((row) => {
             if (row.getString('processor') !== e.auth.id || !(Date.parse(row.getString('lease_until')) > Date.now())) return false;
             const owner = currentJob(e.app, row); const info = e.requestInfo(); info.auth = owner;
-            mission(e.app, owner, info, workspace, row.getString('mission'), true); return true;
+            submissionScope(e.app, owner, info, workspace, row, true); return true;
         })) throw new ForbiddenError('A current processing lease is required for this file.');
     } else {
         access.requireRole(e.app, e.auth, workspace);
         const rows = e.app.findRecordsByFilter('research_submissions', 'workspace = {:workspace} && upload = {:upload}', '', 2, 0,
             { workspace, upload: e.record.id });
         if (rows.length > 1) access.conflict('Review this file’s research links before downloading.');
-        if (rows.length) mission(e.app, e.auth, e.requestInfo(), workspace, rows[0].getString('mission'));
+        if (rows.length) submissionScope(e.app, e.auth, e.requestInfo(), workspace, rows[0]);
         else if (e.record.getString('owner') !== e.auth.id) throw new ForbiddenError('An unused upload is private to its owner.');
     }
     return e.next();
@@ -179,4 +190,4 @@ function discord(e, body) {
 }
 
 module.exports = { ...access, KINDS, WRITERS, MAX_FILE, FILES, schema, bindings, binding, integration, capabilities, mission,
-    publicUrl, fileInfo, prepareUpload, upload, removeUpload, worker, currentJob, download, discord };
+    publicUrl, fileInfo, prepareUpload, upload, removeUpload, worker, currentJob, download, discord, submissionScope };

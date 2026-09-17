@@ -1,16 +1,16 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        tests/upgrade/check_decision_runtime.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-DECISION-001
+# SRS:         SRS-BUILDANDDO-DECISION-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-DECISION-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-17
-# Depends:     tests/upgrade/test_decision_runtime.py, apps/decision
+# Depends:     tests/upgrade/test_blueprint_pipeline.py, tests/upgrade/test_decision_runtime.py, tests/upgrade/test_blueprints.py, apps/decision
 # EnumType:    Test
-# EnumEdges:   DEPENDS_ON tests/upgrade/test_decision_runtime.py; VALIDATES apps/decision
+# EnumEdges:   DEPENDS_ON tests/upgrade/test_blueprint_pipeline.py; DEPENDS_ON tests/upgrade/test_decision_runtime.py; DEPENDS_ON tests/upgrade/test_blueprints.py; VALIDATES apps/decision
 # DAG Node:    none
 # Intent:      Require the decision behavior suite and at least 80 percent measured statement coverage per runtime module.
 # ───────────────────────────────────────────────────────────
@@ -38,6 +38,7 @@ def main() -> int:
             str(ROOT / "tests/upgrade"), pattern="test_decision_runtime.py"
         )
         suite.addTests(unittest.defaultTestLoader.loadTestsFromName("tests.upgrade.test_blueprint_pipeline"))
+        suite.addTests(unittest.defaultTestLoader.discover(str(ROOT / "tests/upgrade"), pattern="test_blueprints.py"))
         return unittest.TextTestRunner(verbosity=1).run(suite)
 
     result = tracer.runfunc(run)

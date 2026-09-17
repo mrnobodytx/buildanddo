@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-17
-# Depends:     tests/upgrade/test_blueprint_pipeline.py
+# Depends:     tests/upgrade/test_blueprint_pipeline.py, tests/upgrade/test_blueprints.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES tests/upgrade/test_blueprint_pipeline.py
+# EnumEdges:   VALIDATES tests/upgrade/test_blueprint_pipeline.py; VALIDATES tests/upgrade/test_blueprints.py
 # DAG Node:    none
 # Intent:      Require measured blueprint pipeline coverage and distinguish missing native PDF acceptance from source test passes.
 # ───────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ def main() -> int:
 
     def run() -> unittest.TestResult:
         suite = unittest.TestSuite()
-        for name in ("test_blueprint_extraction", "test_blueprint_pipeline", "test_blueprint_service"):
+        for name in ("test_blueprint_extraction", "test_blueprint_pipeline", "test_blueprint_service", "test_blueprints"):
             suite.addTests(unittest.defaultTestLoader.loadTestsFromName("tests.upgrade." + name))
         return unittest.TextTestRunner(verbosity=1).run(suite)
 
@@ -48,7 +48,7 @@ def main() -> int:
     counts = tracer.results().counts
     paths = sorted((ROOT / "apps/research").glob("blueprint*.py"))
     paths += sorted(path for path in (ROOT / "apps/decision/adapters").glob("*.py") if path.name != "__init__.py")
-    paths += [ROOT / "apps/decision/workloads/blueprint_evaluation.py"]
+    paths += sorted((ROOT / "apps/decision/workloads").glob("blueprint*.py"))
     coverage = {}
     for path in paths:
         statements = {line for line in trace._find_executable_linenos(str(path)) if line > 0}

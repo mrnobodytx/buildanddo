@@ -1,10 +1,10 @@
 // ─── CGRF Header ──────────────────────────────
 // File:        apps/pocketbase/pb_hooks/decision.pb.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-DECISION-001
+// SRS:         SRS-BUILDANDDO-DECISION-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-DECISION-001
+// Dispatch:    VCC-BUILDANDDO-DECISION-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-17
@@ -25,7 +25,7 @@ routerAdd('GET', '/api/buildanddo/workspaces/{workspace}/decisions/{decision}', 
     return e.json(200, require(`${__hooks}/decision-runtime.js`).detail(e));
 }, $apis.requireAuth('users'));
 
-routerAdd('POST', '/api/buildanddo/workspaces/{workspace}/blueprints', (e) => {
+routerAdd('POST', '/api/buildanddo/workspaces/{workspace}/blueprints/analyze', (e) => {
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(200, require(`${__hooks}/decision-runtime.js`).blueprint(e));
 }, $apis.requireAuth('users'), $apis.bodyLimit(29360128));

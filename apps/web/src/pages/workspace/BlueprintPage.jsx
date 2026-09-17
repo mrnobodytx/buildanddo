@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-17
-// Depends:     apps/web/src/lib/blueprints.js
+// Depends:     apps/web/src/pages/workspace/BlueprintSavedPage.jsx, apps/web/src/lib/blueprints.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/lib/blueprints.js
+// EnumEdges:   CONSUMES apps/web/src/pages/workspace/BlueprintSavedPage.jsx; CONSUMES apps/web/src/lib/blueprints.js
 // DAG Node:    none
 // Intent:      Present all extraction passes, dependency planning and source-linked prompts for human review.
 // ───────────────────────────────────────────────────────────────
@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { controlInput } from '@/components/workspace/ControlPrimitives';
+import BlueprintSavedPage from './BlueprintSavedPage';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
@@ -162,8 +163,15 @@ function BlueprintDesk({ accountId, workspaceId, demo }) {
 }
 
 export default function BlueprintPage() {
+    const [view, setView] = useState('analysis');
     const { user, isAuthed } = useAuth(); const { active } = useWorkspace(); const { demo } = useDemoMode();
     const accountId = isAuthed ? user?.id || '' : '';
-    return <BlueprintDesk key={accountId + ':' + (active?.id || '') + ':' + demo}
-        accountId={accountId} workspaceId={active?.id || ''} demo={demo} />;
+    return <div className="space-y-5">
+        <nav aria-label="Blueprint views" className="flex flex-wrap gap-2">
+            <Button variant={view === 'analysis' ? 'default' : 'secondary'} aria-pressed={view === 'analysis'} onClick={() => setView('analysis')}>Analyze PDF</Button>
+            <Button variant={view === 'saved' ? 'default' : 'secondary'} aria-pressed={view === 'saved'} onClick={() => setView('saved')}>Saved PDFs</Button>
+        </nav>
+        {view === 'saved' ? <BlueprintSavedPage /> : <BlueprintDesk key={accountId + ':' + (active?.id || '') + ':' + demo}
+            accountId={accountId} workspaceId={active?.id || ''} demo={demo} />}
+    </div>;
 }

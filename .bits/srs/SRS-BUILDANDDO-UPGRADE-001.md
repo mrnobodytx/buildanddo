@@ -20,6 +20,38 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Blueprint PR 38 integration continuation — 2026-09-17
+
+The owner reports merge conflicts and failing governance checks. Continue the
+existing A2 dispatch for integration with the PR's actual main base and local
+verification; no deployment, hosted write or new authority is authorized.
+
+Acceptance:
+
+1. Preserve main's protected blueprint upload, worker, saved review and proposal
+   contracts alongside the three-pass extractor and mission planning chain.
+   Register multipart intake and immediate analysis at distinct authenticated
+   routes, retain both test suites, and share the PDF scanner in the worker.
+2. Reconcile specifications and measured context semantically. Keep one current
+   file vector per path, derive relationship vectors from the actual headers,
+   and retain all distinct events from both parents without fabricating evidence.
+3. Run both blueprint coverage gates, decision and source regressions, typing,
+   public boundary, dependency lock and provenance checks. Keep native and
+   rendered acceptance separate when their installed dependencies are absent.
+4. Inspect actual provider check and actor-label state. Do not relax the actor
+   gate, infer hosted Workers diagnostics, or claim publication from local work.
+
+Observed integration outcome: both saved upload/review and immediate analysis
+are preserved under distinct authenticated routes. The saved schema uses the
+shared PDF scan, and flat excerpts survive structuring failures with an observed
+red/green regression. Both parent histories are retained without duplicate file
+vectors. Final regression passes 320 Node and 293 Python tests, with 18 explicit
+native skips. Source typing, statement coverage, context, boundary and manifest
+lock checks pass. The actor label, native PDF/PocketBase, fourteen rendered
+tests and unavailable Workers diagnostics remain acceptance gaps. See
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md for current evidence;
+the earlier continuation results below remain historical observations.
+
 ## Blueprint pipeline continuation — 2026-09-17
 
 The owner requests deterministic CPU scan/parse/assess extraction, requirement
@@ -61,6 +93,58 @@ red/green regression. The native-required PDF gate is wired to the existing
 dependency-enabled CI job and correctly fails in this sandbox. Six rendered
 UI tests, native PocketBase and actual hosted acceptance remain unverified;
 missing pypdf and frontend dependencies are recorded in the blueprint report.
+## Blueprint extractor Phase A continuation — 2026-09-17
+
+The owner requests structured blueprint extraction, research processing, native
+workspace intake and retrieval, an A0 BDR workload and a workspace review/export
+page. This continues the existing A2 research/workspace source dispatch. Reuse
+the protected research uploads, leased worker, bounded document subprocess,
+PocketBase authentication and decision primitives. Do not change documents.py,
+decision authority, dependencies, deploy controls or connect a vision model.
+
+Acceptance:
+
+1. Extract sections, stable requirement IDs, priorities, types, provenance,
+   components, directed dependencies, constraints, assumptions and unresolved
+   questions from text-first PDFs. Preserve source SHA-256, page count, parser
+   version, timestamp, confidence and explicit truncation.
+2. Route blueprint jobs through Processor and the existing research worker.
+   Retain flat excerpts and protected source bytes when structuring fails;
+   reject encrypted, empty, oversized and unsupported inputs through the
+   existing document/security contracts.
+3. Accept multipart PDFs at the workspace blueprints API, persist a blueprint
+   linked to the shared research submission, and retrieve processing state and
+   structured results. Preserve current workspace roles, worker configuration,
+   owner revocation, leases, retry identity and file access. Native APIs stay
+   locked. Migration replay is idempotent and rollback retains user material.
+4. Evaluate every extracted requirement with the existing typed decide API at
+   A0. Keep untrusted source text nested in data, never in runtime controls or
+   supplied answers. Preserve abstention, reject elevated/verified results, and
+   summarize only observed decisions. No model or evaluation mints VERIFIED.
+5. Add the Blueprints workspace route, upload/status/review, per-requirement
+   assessment, a directed dependency list, and a downloadable proposed mission
+   or challenge definition. Clear private state on account/workspace changes;
+   never automatically publish or execute the exported proposal.
+6. Verify parser/security, shared-worker storage/retrieval, BDR and UI behavior
+   using existing test patterns and a generated sample PDF. Distinguish native
+   dependency checks from storage/transport doubles and report unavailable gates.
+
+Verify: `python tests/upgrade/check_blueprints.py`,
+`node --test tests/upgrade/blueprint-*.test.mjs`, the BlueprintPage Vitest suite,
+strict Python typing, the dispatch smoke block, context and boundary gates.
+The upload endpoint returns an asynchronous receipt; GET exposes the completed
+Blueprint. This preserves the existing worker rather than creating a second
+parser host inside PocketBase. A0 abstentions remain unknown assessments.
+
+Observed source outcome: the shared-worker upload/storage/retrieval path,
+structured parser, A0 workload and workspace review/export page are implemented.
+Full regression passes 304 Node and 250 Python tests, with 16 native skips.
+The targeted coverage gate passes 50 cases with five skips and measures
+88.27–98.31% statement coverage across the five changed Python modules. Source
+typing, Ruff, JSX diagnostics, context and public-boundary checks pass. Native
+PDF/PocketBase and rendered UI/build acceptance remain open because pypdf,
+PocketBase, Vitest, Vite and the repository ESLint import plugin are unavailable.
+The sample PDF is generated from public test text; no user document is retained.
 
 ## Classroom source continuation — 2026-09-16
 

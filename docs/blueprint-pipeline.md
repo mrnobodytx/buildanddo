@@ -23,9 +23,14 @@ presents component dependencies and an ordered mission draft. Session prompts
 are generated only for human review. Analysis does not create missions, start
 sessions, execute document instructions, or mark anything verified.
 
-The original blueprint files described in the source conversation were absent
-from this checkout. This implementation uses the existing research contracts,
-pypdf declaration, BDR entry point, PocketBase account policy and workspace shell.
+The **Analyze PDF** view provides immediate three-pass analysis and mission
+planning. **Saved PDFs** retains the existing protected upload, queued research
+worker, retry and review flow described in `docs/blueprints.md`. Both PDF paths
+share the scanner. The saved document adapter preserves its existing wire
+schema and records an observation timestamp; the detailed extraction remains
+deterministic and retains page positions and per-requirement confidence.
+The saved adapter retains its flat excerpt if structuring fails, so source text
+remains reviewable without requiring later analysis passes to succeed.
 
 ## Local application contract
 
@@ -50,11 +55,16 @@ Requests to the application use existing PocketBase users authentication:
 - GET /api/buildanddo/workspaces/{workspace}/decisions/{decision} retrieves the
   current member's own receipt, source state, question contract and reserved
   outcome field. The result's decision_id is the stable lookup key.
-- POST /api/buildanddo/workspaces/{workspace}/blueprints accepts name,
+- POST /api/buildanddo/workspaces/{workspace}/blueprints/analyze accepts name,
   pdf_base64, authority="A0", and include_prompts=false. Setting include_prompts
   to true returns review prompts from the same pipeline. The page reanalyzes
   the selected PDF when this button is pressed; deterministic evaluation IDs
   reuse stored receipts.
+
+The original `/blueprints` POST continues to accept multipart saved uploads.
+It does not accept the JSON analysis request above. The analysis view can be
+used by current workspace members; uploading and changing saved records still
+requires the existing editor or administrator role.
 
 Every completed BDR evaluation is saved in workspace_decisions, with state,
 questions, answers, confidence, route, latency, cost, trace and identity.

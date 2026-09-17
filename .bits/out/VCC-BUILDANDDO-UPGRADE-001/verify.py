@@ -89,11 +89,11 @@ def main() -> int:
         assert entry["objective_id"] == DISPATCH and entry["dispatch_id"] == DISPATCH
         assert entry["caps_grade"] == "pending" and entry["ck_stamp"] == "pending"
         data = path.read_bytes()
-        assert entry["lines"] == (0 if path.suffix == ".png" else len(data.splitlines())), f"stale line count: {name}"
-        if path.suffix != ".png":
+        assert entry["lines"] == (0 if path.suffix in (".png", ".pdf") else len(data.splitlines())), f"stale line count: {name}"
+        if path.suffix not in (".png", ".pdf"):
             declared.update((name, verb, target) for verb, target in header_edges(path))
         if name not in base_paths:
-            header_path = path.with_name(path.name + ".cgrf.yaml") if path.suffix in (".json", ".png") else path
+            header_path = path.with_name(path.name + ".cgrf.yaml") if path.suffix in (".json", ".png", ".pdf") else path
             header = header_path.read_text()
             assert header_fields(header_path).get("File") == str(header_path.relative_to(ROOT)), f"missing header: {name}"
             assert "Citadel Nexus Inc." in header and DISPATCH in header and SRS in header

@@ -22,6 +22,7 @@ import argparse
 import asyncio
 from collections.abc import Mapping
 from datetime import datetime, timezone
+import hashlib
 import json
 import logging
 import os
@@ -76,6 +77,8 @@ class Worker:
                                      maximum=MAX_FILE, json_response=False)
         if len(data) != file["size"]:
             raise ResearchError("invalid_data")
+        if job.get('mode') == 'blueprint' and hashlib.sha256(data).hexdigest() != job.get('expected_sha256'):
+            raise ResearchError('invalid_data')
         return data, name
 
     async def process_job(self, claim: dict[str, object]) -> None:
