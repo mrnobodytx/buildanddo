@@ -431,6 +431,7 @@
   ],
   "repo": {
     "apps": [
+      "decision",
       "federal_foundry",
       "mission_suite",
       "pocketbase",
@@ -450,7 +451,7 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 31,
-    "python_files": 107,
+    "python_files": 116,
     "services": [
       "praxis_evidence"
     ],
