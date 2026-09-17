@@ -66,6 +66,13 @@ export const PUBLIC_PAGES = [
         type: 'AboutPage',
     },
     {
+        path: '/classrooms',
+        label: 'Classrooms',
+        title: 'Classrooms & shared lessons | BuildAndDo',
+        description: 'Learn together in workspace classrooms with host-led Field Manual lessons, attendance and saved discussion.',
+        type: 'CollectionPage',
+    },
+    {
         path: '/docs',
         label: 'Docs',
         title: 'Documentation | BuildAndDo',

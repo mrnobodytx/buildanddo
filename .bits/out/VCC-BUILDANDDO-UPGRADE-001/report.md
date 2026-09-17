@@ -71,6 +71,45 @@
 #              VALIDATES scripts/ci/emit_datadog_metrics.py;
 #              VALIDATES tests/upgrade/test_datadog_metrics.py;
 #              VALIDATES CONTRIBUTING.md;
+#              VALIDATES .bits/handoffs/2026-09-16-bits-codegen-cmax-b-classrooms.md;
+#              VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json;
+#              VALIDATES .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md;
+#              VALIDATES .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md;
+#              VALIDATES AGENTS.md;
+#              VALIDATES apps/pocketbase/pb_hooks/classrooms.js;
+#              VALIDATES apps/pocketbase/pb_hooks/classrooms.pb.js;
+#              VALIDATES apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js;
+#              VALIDATES apps/web/public/llms.txt;
+#              VALIDATES apps/web/src/App.jsx;
+#              VALIDATES apps/web/src/__tests__/AppRoutes.test.jsx;
+#              VALIDATES apps/web/src/components/ProtectedRoute.jsx;
+#              VALIDATES apps/web/src/components/auth/__tests__/LoginPage.test.jsx;
+#              VALIDATES apps/web/src/components/auth/__tests__/ProtectedRoute.test.jsx;
+#              VALIDATES apps/web/src/components/workspace/ProgressionPipeline.jsx;
+#              VALIDATES apps/web/src/components/workspace/TutorialCatalog.jsx;
+#              VALIDATES apps/web/src/components/workspace/WorkspaceLayout.jsx;
+#              VALIDATES apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx;
+#              VALIDATES apps/web/src/hooks/__tests__/useClassrooms.test.jsx;
+#              VALIDATES apps/web/src/hooks/useClassrooms.js;
+#              VALIDATES apps/web/src/lib/classrooms.js;
+#              VALIDATES apps/web/src/lib/datadogRum.js;
+#              VALIDATES apps/web/src/lib/navigationIntent.js;
+#              VALIDATES apps/web/src/lib/observability/config.js;
+#              VALIDATES apps/web/src/lib/observability/runtime.js;
+#              VALIDATES apps/web/src/lib/publicPages.js;
+#              VALIDATES apps/web/src/lib/telemetry.js;
+#              VALIDATES apps/web/src/pages/ClassroomLandingPage.jsx;
+#              VALIDATES apps/web/src/pages/DocsPage.jsx;
+#              VALIDATES apps/web/src/pages/LoginPage.jsx;
+#              VALIDATES apps/web/src/pages/SignupPage.jsx;
+#              VALIDATES apps/web/src/pages/__tests__/PublicPages.test.jsx;
+#              VALIDATES apps/web/src/pages/workspace/ClassroomsPage.jsx;
+#              VALIDATES apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx;
+#              VALIDATES docs/classrooms.md;
+#              VALIDATES tests/upgrade/classroom-client.test.mjs;
+#              VALIDATES tests/upgrade/classroom-fixture.mjs;
+#              VALIDATES tests/upgrade/classroom-system.test.mjs;
+#              VALIDATES tests/upgrade/test_classroom_native.py;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
@@ -78,6 +117,55 @@
 # Dispatch implementation report
 
 ## §1 SUMMARY
+
+Status: PARTIAL — classroom source implemented; rendered, native, deployed and media acceptance remain open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-governance-telemetry
+Tasks: 4/4 source phases addressed; DG rendered acceptance and DF native acceptance pending
+Smoke: 4/7 dispatch gates pass; 8/12 current check groups pass and four cannot run without missing dependencies
+CKS Gate: B+ (global minimum)
+CKS: pending
+CAPS: pending
+CK: pending
+Commits: one focused classroom continuation; verify source identity below
+Verify source identity: `git log -1 --format='%H %s'`
+
+The owner reported that classrooms did not work or appear on the website.
+Inspection found authored lessons but no classroom route, room schema or join
+API in this public checkout. The new public and workspace pages expose native
+PocketBase classrooms with scheduled/live/ended host controls, shared lesson
+sections, expiring attendance and saved discussion. Room links survive sign-in,
+signup and onboarding without granting another workspace's access. Public
+navigation, Home, Docs, the Field Manual and crawler output expose the entry.
+
+Twenty connected source tests pass; selected backend, migration, client and
+navigation/privacy modules have 100% V8 lines and 95.35–98% branches. Full
+regression passes 276 Node and 201 Python cases, with 12 native skips. The
+246-module source diagnostic, strict typing and Ruff pass. These results do
+not establish browser rendering, a deployed backend or an operating media stream.
+
+The required web test, lint and build commands cannot run because Vitest,
+eslint-plugin-import and Vite are absent; native classroom acceptance fails to
+start without PocketBase. Nine rendered and three hook cases, three native
+cases and the existing auth/route/tutorial suites carry the receiving checks.
+No screenshot or two-account live acceptance is claimed. Voice/video remains
+explicitly disconnected pending the existing media service's join contract.
+The guide and CMAX-B/IDE1 handoff record installation and acceptance obligations.
+
+## §2 TASK RESULTS
+
+### Current continuation — classroom source, 2026-09-16
+
+| Phase | Status | Result | Verify | CKET | Files |
+|---|---|---|---|---|---|
+| DE — Inspect and register | PASS | In-progress A2 authority verified; no prior room implementation; existing lesson/auth/workspace patterns reused | Context gate and source guide | 04_HYPOTHESIZE / 11_COMMIT | SRS, queue |
+| DF — Shared room policy | PASS for source; native acceptance pending | Host lifecycle, revisions, scoped reads, generation-fenced attendance, discussion and atomic recovery; raw APIs locked | `node --test tests/upgrade/classroom-system.test.mjs` | 07_BUILD / 08_TEST | Hooks, additive migration, Node/native tests |
+| DG — Website and entry flow | PARTIAL | Public/workspace routes, navigation, shared reading and room controls implemented; safe sign-in destinations; JSX/hook execution unavailable | `node --test tests/upgrade/classroom-client.test.mjs`; rendered commands in docs/classrooms.md | 07_BUILD / 08_TEST | UI, client, auth, telemetry and related suites |
+| DH — Evidence and handoff | PASS for public artifacts | Available regressions, context, boundary and memory recorded; prior events retained; actual media and installed acceptance assigned to receiving owners | Current commands in §3 and provenance in §4 | 06_PLAN / 11_COMMIT | Guide, handoff, report, memory, context, CI |
+
+### Prior continuation — telemetry summary, 2026-09-16
 
 Status: PARTIAL — governance and telemetry source complete; live private-state ingestion unverified
 Dispatch: VCC-BUILDANDDO-UPGRADE-001
@@ -107,9 +195,7 @@ missing `DD_API_KEY` and intake failures are SKIP outcomes with exit code zero.
 No private state is committed. This sandbox exercised dry-run and transport
 doubles only; it did not perform or verify a Datadog submission.
 
-## §2 TASK RESULTS
-
-### Current continuation — governance fast-path and Citadel telemetry, 2026-09-16
+### Prior continuation — governance fast-path and Citadel telemetry, 2026-09-16
 
 | Phase | Status | Result | Verify | CKET | Files |
 |---|---|---|---|---|---|
@@ -470,7 +556,44 @@ and native/provider contracts are documented in docs/mission-research.md.
 
 ## §3 SMOKE TEST RESULTS
 
-Current governance and Citadel telemetry checks:
+Current classroom checks:
+
+| Check | Runnable verification | Expected / observed |
+|---|---|---|
+| 1. Classroom source behavior | `node --test tests/upgrade/classroom-system.test.mjs tests/upgrade/classroom-client.test.mjs` | PASS: 20/20, actual browser adapter and backend source with the existing storage double |
+| 2. New source coverage | Coverage command below | PASS: four selected modules 100% V8 lines, 95.35–98% branches; JSX, hook and native route runtime excluded |
+| 3. Complete Node regression | `node --test tests/upgrade/*.test.mjs` | PASS: 276/276 |
+| 4. Complete Python regression | `python -m unittest discover -s tests/upgrade -p 'test_*.py' -q` | PASS for available source: 213 discovered, 201 pass, 12 native skips |
+| 5. Source diagnostics and typing | `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`; `python -m mypy --strict --follow-imports=silent tests/upgrade/test_classroom_native.py`; `python -m ruff check tests/upgrade/test_classroom_native.py` | PASS: 246 modules, no static errors; strict typing and Ruff pass |
+| 6. Rendered classroom/auth/route tests | Targeted `npm --prefix apps/web test -- ...` command in docs/classrooms.md | FAIL to start: Vitest absent; nine flow and three hook cases plus updated auth/route/tutorial checks unexecuted |
+| 7. Repository web lint | `npm --prefix apps/web run lint` | FAIL to start: eslint-plugin-import absent; source diagnostic is not a substitute |
+| 8. Production web build | `npm --prefix apps/web run build` | FAIL to start Vite: ENOENT; public sitemap/LLM index generation completed with the new route; no built UI acceptance |
+| 9. Native classroom acceptance | `python tests/upgrade/test_classroom_native.py --require-binary` | FAIL to start: BUILDANDDO_TEST_POCKETBASE unavailable; three native cases remain unexecuted |
+| 10. Context | `python scripts/ci/agent_context.py --check` | PASS: seven pipelines, 40 web test files, six retained findings and four unwired gates |
+| 11. Public boundary | `python scripts/ci/verify_public_boundary.py` | PASS: 764 tracked public files, zero failures; actor label not applied here |
+| 12. Memory | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | PASS: current metadata, declared edges, line counts and all 89 preceding events retained |
+
+The first classroom source run passed 9/10 cases: the lesson picker also returned
+six legacy summary-only records without supported bodies. Filtering the picker
+and validating selected lesson bodies fixed that failure; the same scenario
+then passed and all 20 final source cases pass. Initial strict typing reported
+three unparameterized native-response dictionaries; explicit response types
+fixed those diagnostics and the strict check passes. Both findings remain in
+the evidence record. No failing assertion is described as an environment skip.
+
+The four remaining failures share unavailable runtime dependencies. The receiving
+runner must install the repository's declared frontend dependencies and supply
+the existing native test binary, then execute the exact commands above. This
+session made no network install attempt or dependency-lock substitution. CI now
+requires the native classroom test in the existing two-runtime matrix; neither
+authored tests nor a prepared job establish a hosted pass. No media endpoint,
+authentication token, stream, provider SDK or activation evidence was invented.
+
+```bash
+node --test --experimental-test-coverage --test-coverage-include='**/pb_hooks/classrooms*.js' --test-coverage-include='**/1790400000_classroom_rooms.js' --test-coverage-include='**/web/src/lib/classrooms.js' --test-coverage-include='**/web/src/lib/navigationIntent.js' tests/upgrade/classroom-system.test.mjs tests/upgrade/classroom-client.test.mjs
+```
+
+Historical governance and Citadel telemetry checks:
 
 | Check | Runnable verification | Expected / observed |
 |---|---|---|
@@ -1034,13 +1157,14 @@ no hosted success, browser screenshots or shared activation is claimed here.
 
 ## §4 MEMORY INGEST
 
-All 87 preceding events remain verbatim and in order. Two new events describe
-the focused collector tests and the source/governance smoke run; neither claims
-a live Datadog request or private-state observation.
+All 89 preceding events remain verbatim and in order, including both telemetry
+events. Three current events record the corrected lesson-picker failure, final
+source tests and the runtime dependencies that prevented acceptance. They claim
+no deployed classroom or live media result.
 
-Type A count: 486
-Type B count: 1016
-Type C count: 89
+Type A count: 508
+Type B count: 1093
+Type C count: 92
 IOO compliance: complete
 DKG orphans: 0
 Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
@@ -1048,6 +1172,24 @@ Parent history: 77 PR-head events and 72 main events, with 66 identical shared e
 Measured execution retained: .bits/out/VCC-BUILDANDDO-UPGRADE-001/foundry-validation.json
 Historical parent counts: PR head 461 A / 938 B / 77 C; incoming main 339 A / 740 B / 72 C.
 Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+
+Verify preservation of this continuation's baseline:
+
+```bash
+python - <<'PYCLASSROOMHISTORY'
+import json
+from pathlib import Path
+import subprocess
+path = '.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json'
+old = json.loads(subprocess.check_output(['git', 'show', 'e705e85e9d7250d4af292074b81e7baaf2d7e2ce:' + path]))
+now = json.loads(Path(path).read_text())
+old_events = [row for row in old['vectors'] if row['type'] == 'C']
+now_events = [row for row in now['vectors'] if row['type'] == 'C']
+assert len(old_events) == 89 and now_events[:89] == old_events
+print('PASS: all 89 baseline events preserved verbatim and in order.')
+PYCLASSROOMHISTORY
+```
 
 Reproduce preservation of both parents' event streams:
 
@@ -1070,7 +1212,18 @@ PYMEM
 
 ## §5 CKET FILING
 
-Current governance and telemetry continuation:
+Current classroom continuation:
+06_PLAN: docs/classrooms.md, contributor guide and generated public route references
+04_HYPOTHESIZE: umbrella SRS and AGENTS.md gate description
+07_BUILD: classroom hooks/migration, client/hook/pages, navigation/auth, tutorial links and bounded telemetry
+08_TEST: Node source, native Python, rendered flow/hook and related existing regression suites
+11_COMMIT: CI native gate, queue, receiving handoff, context, report and memory
+13_SAVE: none
+New files: 16/16 carry CGRF provenance; source/memory audit verifies their headers
+REFLEX: deferred to private post-merge validation; CK/CAPS remain pending
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+Historical governance and telemetry continuation:
 06_PLAN: none
 04_HYPOTHESIZE: AGENTS.md, CLAUDE.md, context, registry and umbrella SRS continuation
 08_TEST: tests/upgrade/test_datadog_metrics.py
@@ -1100,13 +1253,15 @@ Hard-NO scan: zero public-boundary violations
 Secret scan: clean under the repository boundary scanner
 Stripe mode: not applicable; no checkout/payment code
 Actor label: actor:agent required; not applied by this session
-Risk / authority: A2 governance and CI source change under the pre-existing owner dispatch; the future scheduled metrics write is explicitly owner-requested and uses the existing secret
+Risk / authority: A2 public classroom source, additive migration, auth/navigation and CI changes under the existing owner dispatch; private installation, media integration and deployment require the receiving authority
 Verify: `python scripts/ci/verify_public_boundary.py`
 
-No key generation, secret read, live provider call, Datadog request,
-controlled-data ingest, deployment, shared database mutation or seat message
-occurred. Only aggregate numeric fixtures were used in tests. The public mirror
-continues to ignore and reject private `state/` artifacts.
+No secret access, live provider call, media session, Datadog submission,
+deployment, shared database mutation or seat message occurred. Node tests use
+synthetic classroom data in the existing storage double. Native accounts exist
+only in the authored disposable-test seed; that binary did not run here. Room
+content and identities remain outside new metric payloads and public catalogues.
+The public mirror continues to ignore and reject private `state/` artifacts.
 
 Historical portfolio scope: The federal compiler made no model calls, scheduled no hosted work and sent no
 external messages or submissions. It changed no shared database, private runtime
@@ -1117,7 +1272,24 @@ nor changes prior dossier encryption, service activation or deployment claims.
 
 ## §7 NEXT ACTIONS
 
-Current telemetry activation: configure `CITADEL_TELEMETRY_RUNNER` and the
+Current classroom acceptance: CMAX-B with IDE1 must run the declared frontend
+and native tests, apply the registered migration/hooks through the actual
+release process and perform the two-account website check in docs/classrooms.md.
+The owner must identify the existing voice/video service and join contract
+before media implementation; shared lesson state cannot stand in for a stream.
+No private receiving dispatch or deployment approval is fabricated.
+
+Handoff: .bits/handoffs/2026-09-16-bits-codegen-cmax-b-classrooms.md.
+Blockers: Vitest/Vite/lint dependencies, native PocketBase binary, installed
+revision/account evidence and the canonical media interface.
+Suggested next dispatch: receiving-owner classroom installation and media
+discovery, followed by the verified existing-service integration.
+Out-of-scope bugs filed: none; six prior context findings retained.
+Rollback: restore the prior UI through the release owner; the classroom down
+migration disables its protocol while preserving room and discussion history.
+This source run created no external state requiring compensation.
+
+Historical telemetry activation: configure `CITADEL_TELEMETRY_RUNNER` and the
 `CITADEL_*` aggregate projection paths for a runner that actually carries the
 current system assessment state. Keep `DD_API_KEY` in the existing CI secret.
 The hosted clean-runner default correctly emits SKIP until those bindings exist.

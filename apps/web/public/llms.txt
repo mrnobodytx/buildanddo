@@ -28,6 +28,7 @@ A business newspaper built around sources, scoped missions and evidence.
 - [BuildAndDo — Public roadmap](https://buildanddo.tech/roadmap): Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.
 - [Pricing & early access | BuildAndDo](https://buildanddo.tech/pricing): Explore BuildAndDo early access and discuss a team rollout. Public subscription pricing has not been announced.
 - [About & team | BuildAndDo](https://buildanddo.tech/about): Meet the people and principles behind BuildAndDo, a Citadel Nexus Inc. product built around accountable work.
+- [Classrooms & shared lessons | BuildAndDo](https://buildanddo.tech/classrooms): Learn together in workspace classrooms with host-led Field Manual lessons, attendance and saved discussion.
 - [Documentation | BuildAndDo](https://buildanddo.tech/docs): Get started with workspaces, signals, missions, workflows and the evidence ledger. Learn what each state means.
 - [The BuildAndDo journal](https://buildanddo.tech/blog): Field notes on evidence, bounded work and running a business with a traceable record of decisions.
 - [Contact | BuildAndDo](https://buildanddo.tech/contact): Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.

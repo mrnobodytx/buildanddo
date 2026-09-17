@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import AuthLayout from '@/components/auth/AuthLayout';
 import { Button } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
-import pb from '@/lib/pocketbaseClient';
+import { workspaceDestination } from '@/lib/navigationIntent';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function LoginPage() {
     const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnTo = workspaceDestination(location.state?.returnTo);
     const [form, setForm] = useState({ email: '', password: '' });
     const [errors, setErrors] = useState({});
     const [status, setStatus] = useState('idle');
@@ -42,17 +44,8 @@ export default function LoginPage() {
         setStatus('submitting');
         try {
             await login(form.email.trim(), form.password);
-            // Route based on whether the user already has a workspace.
-            let hasWorkspace = false;
-            try {
-                const list = await pb
-                    .collection('workspaces')
-                    .getFullList({ sort: '-created' });
-                hasWorkspace = list.length > 0;
-            } catch (_) {
-                /* ignore — default to app */
-            }
-            navigate(hasWorkspace ? '/app' : '/onboarding');
+            // WorkspaceGate distinguishes missing workspaces from failed reads.
+            navigate(returnTo, { replace: true });
         } catch (err) {
             const msg =
                 err?.response?.message ||
@@ -71,6 +64,7 @@ export default function LoginPage() {
                     New to BuildAndDo?{' '}
                     <Link
                         to="/signup"
+                        state={{ returnTo }}
                         className="font-semibold text-primary hover:brightness-125"
                     >
                         Create an account

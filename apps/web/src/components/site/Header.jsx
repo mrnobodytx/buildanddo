@@ -28,7 +28,7 @@ export default function Header({
                         BuildAndDo
                     </span>
                 </Link>
-                <nav className="hidden items-center gap-4 xl:flex" aria-label="Primary">
+                <nav className="hidden items-center gap-3 xl:flex" aria-label="Primary">
                     {PUBLIC_NAV.map((page) => (
                         <NavLink
                             key={page.path}

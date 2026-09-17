@@ -110,7 +110,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 28873,
+      "lines": 30441,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -172,7 +172,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1259,
+      "lines": 1431,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -239,7 +239,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 877,
+      "lines": 907,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -399,7 +399,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1092,
+      "lines": 1142,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -555,7 +555,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 276,
+      "lines": 281,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate contribution review on manifest integrity, component coverage and public adapter tests.",
@@ -828,7 +828,7 @@
       "dependencies": [
         "apps/web/src/lib/publicPages.js"
       ],
-      "lines": 33,
+      "lines": 34,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Publish the same public route catalogue for text-based discovery.",
@@ -886,7 +886,7 @@
       "enum_type": "Widget",
       "functions": [],
       "dependencies": [],
-      "lines": 13,
+      "lines": 14,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "List only canonical public routes from the shared navigation catalogue.",
@@ -1028,7 +1028,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 220,
+      "lines": 228,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve route loading and offer retry when the workspace list cannot be read instead of treating an outage as a new account.",
@@ -1059,7 +1059,7 @@
       "dependencies": [
         "apps/web/src/App.jsx"
       ],
-      "lines": 109,
+      "lines": 111,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Load every real workspace route and the five public entries while preserving authentication gates.",
@@ -1757,7 +1757,7 @@
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/observability/mutations.js"
       ],
-      "lines": 133,
+      "lines": 141,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.",
@@ -1807,7 +1807,7 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 272,
+      "lines": 273,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
@@ -1884,7 +1884,7 @@
       "dependencies": [
         "apps/web/src/components/workspace/TutorialCatalog.jsx"
       ],
-      "lines": 207,
+      "lines": 220,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise shared lesson progress across pages without anonymous reads, demo writes or duplicate retries.",
@@ -2425,7 +2425,7 @@
         "apps/web/src/lib/observability/network.js",
         "apps/web/src/lib/observability/report.js"
       ],
-      "lines": 188,
+      "lines": 191,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Own the Datadog browser SDK configuration for buildanddo.tech - sampling, trace propagation into the PocketBase backend, and the scrubbing rules applied before any event leaves the browser.",
@@ -2532,7 +2532,7 @@
       "dependencies": [
         "apps/web/src/lib/observability/context.js"
       ],
-      "lines": 72,
+      "lines": 74,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Centralize browser sampling and the bounded workspace mutation action vocabulary.",
@@ -2621,7 +2621,7 @@
         "apps/web/src/lib/observability/report.js",
         "apps/web/src/lib/observability/vitals.js"
       ],
-      "lines": 204,
+      "lines": 208,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Single public entry point for browser observability: one init call from main.jsx, and the small set of trackers the React tree uses.",
@@ -2652,7 +2652,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 94,
+      "lines": 101,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep public navigation, canonical metadata and crawler output on the same route catalogue.",
@@ -2913,7 +2913,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 179,
+      "lines": 186,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain critical workspace flows with searchable public documentation and real destinations.",
@@ -2987,7 +2987,7 @@
         "react",
         "react-helmet"
       ],
-      "lines": 942,
+      "lines": 943,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Project authenticated workspace records onto the front page with provenance, recoverable intake and no anonymous private reads.",
@@ -3233,7 +3233,7 @@
         "apps/web/src/components/site/PublicPage.jsx",
         "vitest"
       ],
-      "lines": 145,
+      "lines": 147,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise public navigation, metadata, documentation search, articles and email-draft behavior.",
@@ -12386,7 +12386,7 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 423,
+      "lines": 425,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Apply consistent setup transitions while preserving keyboard landing, current input and existing account setup behavior.",
@@ -28461,7 +28461,7 @@
       "dependencies": [
         "AGENTS.md"
       ],
-      "lines": 183,
+      "lines": 190,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain to human contributors which work agent seats may self-authorize and which effects remain gated.",
@@ -28856,12 +28856,1580 @@
       "file_path": ".github/workflows/citadel-stack-telemetry.yml",
       "description": "The focused suite, Python and Node regressions, strict typing, lint, formatting, local no-state dry run, measured context and 748-file public-boundary scan pass. All 87 prior events remain. No private assessment state or Datadog API key was available, so live ingestion is not claimed and the hosted default remains an intentional SKIP until runner-local paths are configured.",
       "smoke_result": "9/9 available source and governance checks"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-classrooms.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [
+        "links"
+      ],
+      "dependencies": [
+        "docs/classrooms.md",
+        "apps/pocketbase/pb_hooks/classrooms.js"
+      ],
+      "lines": 92,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Assign installed classroom acceptance and discovery of the existing media join contract without inventing a provider or deployment receipt.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/classrooms.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "schema",
+        "scopeFor",
+        "nameOf",
+        "canManage",
+        "roomFor",
+        "output",
+        "lessonBody",
+        "lessonFor",
+        "lessons",
+        "memberFor",
+        "fresh",
+        "members",
+        "assign",
+        "present",
+        "draft",
+        "receipt",
+        "command",
+        "list",
+        "detail",
+        "heartbeat"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js"
+      ],
+      "lines": 257,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make shared lessons, host lifecycle and expiring classroom presence authoritative to the current workspace account.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/classrooms.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/classrooms.js"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind classroom reads and commands to native users authentication with private noncached responses.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js"
+      ],
+      "lines": 85,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain scoped classroom sessions and recovery receipts behind authenticated commands without exposing native writes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/ProtectedRoute.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Carry a safe requested classroom destination into native sign-in instead of dropping the room link.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/LoginPage.jsx",
+        "apps/web/src/components/auth/AuthLayout.jsx",
+        "apps/web/src/test/utils.jsx"
+      ],
+      "lines": 215,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Cover the sign-in form's client validation and both post-login destinations, so a routing regression cannot strand a new user.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/auth/__tests__/ProtectedRoute.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/ProtectedRoute.jsx",
+        "apps/web/src/test/utils.jsx"
+      ],
+      "lines": 73,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "The redirect is the only thing standing between an anonymous visitor and the workspace shell; assert it, do not assume it.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/__tests__/useClassrooms.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Wrapper",
+        "sourceSend"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useClassrooms.js",
+        "tests/upgrade/classroom-fixture.mjs"
+      ],
+      "lines": 89,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify classroom polling, attendance timers, cleanup and late-response isolation under the real React hook lifecycle.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/useClassrooms.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "useClassrooms"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/classrooms.js",
+        "apps/web/src/contexts/WorkspaceContext.jsx"
+      ],
+      "lines": 98,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep shared lessons current and attendance expiring while discarding responses and drafts from an earlier account or room.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/classrooms.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "roomShape",
+        "readShape",
+        "classroomHref",
+        "createClassroomClient"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/classrooms.pb.js",
+        "apps/web/src/lib/tutorialCurriculum.js"
+      ],
+      "lines": 142,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind classroom interactions to one account and workspace while recovering uncertain saves and rejecting foreign responses.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/navigationIntent.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "workspaceDestination",
+        "classroomTelemetryLocation",
+        "scrubClassroomProperties"
+      ],
+      "dependencies": [
+        "apps/web/src/components/ProtectedRoute.jsx"
+      ],
+      "lines": 55,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve local classroom links through sign-in and keep their identifiers out of browser telemetry.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/telemetry.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "initTelemetry",
+        "trackEvent"
+      ],
+      "dependencies": [],
+      "lines": 28,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Remove private classroom location identifiers before analytics events leave the browser.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/ClassroomLandingPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "ClassroomLandingPage"
+      ],
+      "dependencies": [
+        "apps/web/src/components/site/PublicPage.jsx",
+        "apps/web/src/components/workspace/TutorialCatalog.jsx"
+      ],
+      "lines": 44,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give visitors a visible route into shared workspace classes and the existing educational lessons.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/LoginPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "LoginPage"
+      ],
+      "dependencies": [],
+      "lines": 152,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Return an authenticated reader to the requested class and let the workspace gate distinguish unavailable and absent workspaces.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/SignupPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "passwordStrength",
+        "SignupPage"
+      ],
+      "dependencies": [],
+      "lines": 219,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep the intended classroom through account creation and onboarding without granting room access.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "Feedback",
+        "RoomEditor",
+        "ClassroomList",
+        "SharedLesson",
+        "RoomDiscussion",
+        "Room",
+        "ClassroomDesk",
+        "ClassroomsPage"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useClassrooms.js",
+        "apps/web/src/lib/classrooms.js"
+      ],
+      "lines": 203,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let workspace members schedule, join and follow real shared lesson sessions with recoverable discussion and explicit media availability.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "send",
+        "renderRoom"
+      ],
+      "dependencies": [
+        "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+        "tests/upgrade/classroom-fixture.mjs"
+      ],
+      "lines": 176,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify the rendered classroom controls and navigation against the real browser adapter and backend policies.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/classrooms.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+        "apps/pocketbase/pb_hooks/classrooms.js",
+        "tests/upgrade/test_classroom_native.py"
+      ],
+      "lines": 171,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe the classroom user flow, installed-backend requirements and acceptance limits without representing a shared lesson as a video stream.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/classroom-client.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "connected"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/classrooms.js",
+        "apps/web/src/lib/navigationIntent.js",
+        "tests/upgrade/classroom-fixture.mjs"
+      ],
+      "lines": 215,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise the actual browser and classroom policy contract across complete sessions, uncertain writes and identity changes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/classroom-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "classroomFixture"
+      ],
+      "dependencies": [
+        "tests/upgrade/admin-fixture.mjs",
+        "apps/pocketbase/pb_hooks/classrooms.js"
+      ],
+      "lines": 41,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect actual classroom command and migration sources to the existing transactional storage test fixture.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/classroom-system.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/classroom-fixture.mjs",
+        "apps/pocketbase/pb_hooks/classrooms.pb.js"
+      ],
+      "lines": 257,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise classroom lifecycle and isolation through production commands including retries, stale presence and schema rollback.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_classroom_native.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ClassroomServer",
+        "NativeClassroomTests"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_dossier_native.py",
+        "apps/pocketbase/pb_hooks/classrooms.js",
+        "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js"
+      ],
+      "lines": 355,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require native classroom authentication, date serialization, concurrent receipt recovery and reversible schema before accepting an installed backend.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "classrooms"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-classrooms.md",
+      "target": "apps/pocketbase/pb_hooks/classrooms.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-classrooms.md consumes apps/pocketbase/pb_hooks/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-classrooms.md",
+      "target": "docs/classrooms.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-classrooms.md consumes docs/classrooms.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-classrooms.md",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates .bits/handoffs/2026-09-16-bits-codegen-cmax-b-classrooms.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "AGENTS.md",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates AGENTS.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/pocketbase/pb_hooks/classrooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/pocketbase/pb_hooks/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/pocketbase/pb_hooks/classrooms.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/pocketbase/pb_hooks/classrooms.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/public/llms.txt",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/public/llms.txt.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/App.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/App.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/__tests__/AppRoutes.test.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/__tests__/AppRoutes.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/ProtectedRoute.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/ProtectedRoute.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/auth/__tests__/LoginPage.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/auth/__tests__/ProtectedRoute.test.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/auth/__tests__/ProtectedRoute.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/workspace/ProgressionPipeline.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/workspace/ProgressionPipeline.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/workspace/TutorialCatalog.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/workspace/WorkspaceLayout.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/hooks/__tests__/useClassrooms.test.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/hooks/__tests__/useClassrooms.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/hooks/useClassrooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/hooks/useClassrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/lib/classrooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/lib/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/lib/datadogRum.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/lib/datadogRum.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/lib/navigationIntent.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/lib/navigationIntent.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/lib/observability/config.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/lib/observability/config.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/lib/observability/runtime.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/lib/observability/runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/lib/publicPages.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/lib/publicPages.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/lib/telemetry.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/lib/telemetry.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/pages/ClassroomLandingPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/pages/ClassroomLandingPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/pages/DocsPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/pages/DocsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/pages/LoginPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/pages/LoginPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/pages/SignupPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/pages/SignupPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/pages/__tests__/PublicPages.test.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/pages/__tests__/PublicPages.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/pages/workspace/ClassroomsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "docs/classrooms.md",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates docs/classrooms.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/classroom-client.test.mjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates tests/upgrade/classroom-client.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/classroom-fixture.mjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates tests/upgrade/classroom-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/classroom-system.test.mjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates tests/upgrade/classroom-system.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/test_classroom_native.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md validates tests/upgrade/test_classroom_native.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/classrooms.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/classrooms.js depends on apps/pocketbase/pb_hooks/workspace-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/classrooms.js",
+      "target": "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/classrooms.js depends on apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/classrooms.pb.js",
+      "target": "apps/pocketbase/pb_hooks/classrooms.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/classrooms.pb.js depends on apps/pocketbase/pb_hooks/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js",
+      "target": "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js depends on apps/pocketbase/pb_migrations/1790000000_workspace_administration.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx",
+      "target": "apps/web/src/test/utils.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx consumes apps/web/src/test/utils.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx",
+      "target": "apps/web/src/pages/LoginPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx validates apps/web/src/pages/LoginPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/auth/__tests__/ProtectedRoute.test.jsx",
+      "target": "apps/web/src/test/utils.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/auth/__tests__/ProtectedRoute.test.jsx consumes apps/web/src/test/utils.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/auth/__tests__/ProtectedRoute.test.jsx",
+      "target": "apps/web/src/components/ProtectedRoute.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/auth/__tests__/ProtectedRoute.test.jsx validates apps/web/src/components/ProtectedRoute.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/__tests__/useClassrooms.test.jsx",
+      "target": "tests/upgrade/classroom-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/__tests__/useClassrooms.test.jsx consumes tests/upgrade/classroom-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/__tests__/useClassrooms.test.jsx",
+      "target": "apps/web/src/hooks/useClassrooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/__tests__/useClassrooms.test.jsx validates apps/web/src/hooks/useClassrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useClassrooms.js",
+      "target": "apps/web/src/contexts/WorkspaceContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/useClassrooms.js consumes apps/web/src/contexts/WorkspaceContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useClassrooms.js",
+      "target": "apps/web/src/lib/classrooms.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/useClassrooms.js consumes apps/web/src/lib/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/classrooms.js",
+      "target": "apps/pocketbase/pb_hooks/classrooms.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/classrooms.js consumes apps/pocketbase/pb_hooks/classrooms.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/classrooms.js",
+      "target": "apps/web/src/lib/tutorialCurriculum.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/classrooms.js consumes apps/web/src/lib/tutorialCurriculum.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/navigationIntent.js",
+      "target": "apps/web/src/components/ProtectedRoute.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/navigationIntent.js consumes apps/web/src/components/ProtectedRoute.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/ClassroomLandingPage.jsx",
+      "target": "apps/web/src/components/site/PublicPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/ClassroomLandingPage.jsx consumes apps/web/src/components/site/PublicPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/ClassroomLandingPage.jsx",
+      "target": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/ClassroomLandingPage.jsx consumes apps/web/src/components/workspace/TutorialCatalog.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+      "target": "apps/web/src/hooks/useClassrooms.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/ClassroomsPage.jsx consumes apps/web/src/hooks/useClassrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+      "target": "apps/web/src/lib/classrooms.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/ClassroomsPage.jsx consumes apps/web/src/lib/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx",
+      "target": "tests/upgrade/classroom-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx consumes tests/upgrade/classroom-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx",
+      "target": "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx validates apps/web/src/pages/workspace/ClassroomsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/classrooms.md",
+      "target": "apps/pocketbase/pb_hooks/classrooms.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/classrooms.md consumes apps/pocketbase/pb_hooks/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/classrooms.md",
+      "target": "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/classrooms.md consumes apps/web/src/pages/workspace/ClassroomsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/classrooms.md",
+      "target": "tests/upgrade/test_classroom_native.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/classrooms.md verified by tests/upgrade/test_classroom_native.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-client.test.mjs",
+      "target": "tests/upgrade/classroom-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-client.test.mjs consumes tests/upgrade/classroom-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-client.test.mjs",
+      "target": "apps/web/src/lib/classrooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-client.test.mjs validates apps/web/src/lib/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-client.test.mjs",
+      "target": "apps/web/src/lib/navigationIntent.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-client.test.mjs validates apps/web/src/lib/navigationIntent.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-fixture.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-fixture.mjs consumes tests/upgrade/admin-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-fixture.mjs",
+      "target": "apps/pocketbase/pb_hooks/classrooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-fixture.mjs validates apps/pocketbase/pb_hooks/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-system.test.mjs",
+      "target": "tests/upgrade/classroom-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-system.test.mjs consumes tests/upgrade/classroom-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/classrooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-system.test.mjs validates apps/pocketbase/pb_hooks/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/classrooms.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-system.test.mjs validates apps/pocketbase/pb_hooks/classrooms.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-system.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-system.test.mjs validates apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_classroom_native.py",
+      "target": "tests/upgrade/test_dossier_native.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_classroom_native.py consumes tests/upgrade/test_dossier_native.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_classroom_native.py",
+      "target": "apps/pocketbase/pb_hooks/classrooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_classroom_native.py validates apps/pocketbase/pb_hooks/classrooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_classroom_native.py",
+      "target": "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_classroom_native.py validates apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T22:22:51.284639+00:00",
+      "commit_sha": null,
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/classroom-system.test.mjs",
+      "description": "Initial classroom validation passed 9/10 cases: six legacy summary-only tutorial records were incorrectly offered as complete lesson choices. Filtering the picker to supported installed lesson bodies corrected the source behavior; the same case then passed. This event records the observed failure and applied fix, not a current failing acceptance gate.",
+      "smoke_result": "9/10 initial classroom source checks; corrected before final verification"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T22:22:51.284639+00:00",
+      "commit_sha": null,
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/classroom-client.test.mjs",
+      "description": "Twenty classroom backend/client/navigation cases pass for scheduling, host and member roles, shared sections, attendance expiry, stale generations, discussion, terminal rooms, exact retry recovery, atomic rollback, account changes, malformed responses and telemetry URL redaction. Four selected modules have 100 percent V8 line coverage and 95.35 to 98 percent branches. Full source regressions pass 276 Node and 201 Python cases, with 12 native skips; the 246-module source diagnostic, strict native-test typing and Ruff pass.",
+      "smoke_result": "20/20 focused; 276/276 Node; 201 Python passes and 12 native skips"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-16T22:22:51.284639+00:00",
+      "commit_sha": null,
+      "event_type": "smoke_run",
+      "file_path": "docs/classrooms.md",
+      "description": "Public and workspace classrooms, shared lesson controls and safe sign-in destinations are implemented. Dispatch smoke is 4/7: required React tests, repository lint and the Vite build cannot start without missing frontend dependencies. The separate native classroom gate also cannot start without PocketBase. Nine rendered and three hook cases plus three native cases are authored and CI requires native acceptance for both existing declared runtimes. Context, the 764-file public boundary and memory checks pass; all 89 preceding events remain. No screenshot, deployed room, live media, provider mutation or receiving dispatch is claimed.",
+      "smoke_result": "4/7 dispatch gates; 8/12 current check groups; native/rendered/live acceptance open"
     }
   ],
   "summary": {
-    "type_a_count": 486,
-    "type_b_count": 1016,
-    "type_c_count": 89,
+    "type_a_count": 508,
+    "type_b_count": 1093,
+    "type_c_count": 92,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

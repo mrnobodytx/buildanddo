@@ -21,6 +21,7 @@
 import { datadogRum } from '@datadog/browser-rum';
 import { datadogLogs } from '@datadog/browser-logs';
 import { BROWSER_TELEMETRY } from '@/lib/observability/config';
+import { classroomTelemetryLocation } from '@/lib/navigationIntent';
 
 import { resolveEnvironment, resolveRelease, resolveSampleRate } from '@/lib/observability/context';
 import { networkSummary } from '@/lib/observability/network';
@@ -55,6 +56,7 @@ let initialized = false;
 
 function scrubUrl(url) {
 	if (typeof url !== 'string' || !url) return url;
+	url = classroomTelemetryLocation(url);
 	try {
 		const parsed = new URL(url, window.location.origin);
 		let touched = false;
@@ -75,6 +77,7 @@ function isBenign(message) {
 }
 
 function beforeSendRumEvent(event) {
+	if (event.view && event.view.name) event.view.name = classroomTelemetryLocation(event.view.name);
 	if (event.view && event.view.url) event.view.url = scrubUrl(event.view.url);
 	if (event.view && event.view.referrer) event.view.referrer = scrubUrl(event.view.referrer);
 	if (event.resource && event.resource.url) event.resource.url = scrubUrl(event.resource.url);

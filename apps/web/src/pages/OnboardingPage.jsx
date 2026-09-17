@@ -1,6 +1,6 @@
 import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import {
     Activity,
@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import pb from '@/lib/pocketbaseClient';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { workspaceDestination } from '@/lib/navigationIntent';
 
 const DOMAIN_RE = /^(?!-)[a-z0-9-]{1,63}(?<!-)(\.[a-z0-9-]{2,63})+$/i;
 
@@ -90,6 +91,7 @@ const PLANNED_SERVICES = [
 
 export default function OnboardingPage() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { refresh } = useWorkspace();
     const [query, setQuery] = useState('');
     const [phase, setPhase] = useState('search'); // search | results | noresults | invalid | selected
@@ -187,7 +189,7 @@ export default function OnboardingPage() {
                 ),
             );
             await refresh();
-            navigate('/app');
+            navigate(workspaceDestination(location.state?.returnTo), { replace: true });
         } catch (err) {
             console.error('onboarding create failed', err);
             setCreateError(

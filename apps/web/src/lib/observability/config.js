@@ -42,6 +42,8 @@ export const WORKSPACE_ENTITIES = Object.freeze({
     editions: 'edition',
     domains: 'domain',
     tutorial_progress: 'tutorial_progress',
+    classroom_rooms: 'classroom_room',
+    classroom_messages: 'classroom_message',
     support_sources: 'support_source',
     corrections: 'correction',
     erp_objectives: 'objective',

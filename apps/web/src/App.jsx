@@ -4,7 +4,7 @@ import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import { ThemeProvider } from 'next-themes';
 import RouteLoading from '@/components/RouteLoading';
 import SkipNavigation from '@/components/SkipNavigation';
-import { Route, Routes, BrowserRouter as Router, Navigate } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RouteTelemetry from './components/observability/RouteTelemetry';
 import TelemetryBoundary from './components/observability/TelemetryBoundary';
@@ -12,6 +12,7 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { WorkspaceProvider, useWorkspace } from '@/contexts/WorkspaceContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageBoundary from '@/components/workspace/PageBoundary';
+import { workspaceDestination } from '@/lib/navigationIntent';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
@@ -27,6 +28,8 @@ const SignalsPage = lazy(() => import('./pages/workspace/SignalsPage'));
 const MissionsPage = lazy(() => import('./pages/workspace/MissionsPage'));
 const WorkflowsPage = lazy(() => import('./pages/workspace/WorkflowsPage'));
 const TutorialsPage = lazy(() => import('./pages/workspace/TutorialsPage'));
+const ClassroomsPage = lazy(() => import('./pages/workspace/ClassroomsPage'));
+const ClassroomLandingPage = lazy(() => import('./pages/ClassroomLandingPage'));
 const ErpPage = lazy(() => import('./pages/workspace/ErpPage'));
 const OperationsPage = lazy(() => import('./pages/workspace/OperationsPage'));
 const FleetPage = lazy(() => import('./pages/workspace/FleetPage'));
@@ -64,6 +67,8 @@ const WORKSPACE_ROUTES = [
     { path: 'missions', label: 'Challenge Desk', element: MissionsPage },
     { path: 'workflows', label: 'Workflows', element: WorkflowsPage },
     { path: 'tutorials', label: 'Field Manual', element: TutorialsPage },
+    { path: 'classrooms', label: 'Classrooms', element: ClassroomsPage },
+    { path: 'classrooms/:roomId', label: 'Classroom', element: ClassroomsPage },
     { path: 'erp', label: 'ERP', element: ErpPage },
     { path: 'operations', label: 'Operations', element: OperationsPage },
     { path: 'fleet', label: 'Fleet', element: FleetPage },
@@ -89,13 +94,15 @@ const WORKSPACE_ROUTES = [
 // Redirect already-authenticated users away from the auth screens.
 function RedirectIfAuthed({ children }) {
     const { isAuthed } = useAuth();
-    if (isAuthed) return <Navigate to="/app" replace />;
+    const location = useLocation();
+    if (isAuthed) return <Navigate to={workspaceDestination(location.state?.returnTo)} replace />;
     return children;
 }
 
 // Send signed-in users with no workspace into onboarding before the app shell.
 function WorkspaceGate({ children }) {
     const { loading, hasWorkspaces, error, refresh } = useWorkspace();
+    const location = useLocation();
     if (loading) {
         return <RouteLoading fullPage />;
     }
@@ -110,7 +117,7 @@ function WorkspaceGate({ children }) {
             </main>
         );
     }
-    if (!hasWorkspaces) return <Navigate to="/onboarding" replace />;
+    if (!hasWorkspaces) return <Navigate to="/onboarding" state={{ returnTo: workspaceDestination(`${location.pathname}${location.search}${location.hash}`) }} replace />;
     return children;
 }
 
@@ -126,6 +133,7 @@ export function AppRoutes() {
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/docs" element={<DocsPage />} />
+                <Route path="/classrooms" element={<ClassroomLandingPage />} />
                 <Route path="/blog" element={<BlogPage />} />
                 <Route path="/contact" element={<ContactPage />} />
 

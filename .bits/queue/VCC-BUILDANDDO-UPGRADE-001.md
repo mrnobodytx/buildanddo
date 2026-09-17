@@ -20,6 +20,36 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Classroom continuation authorized 2026-09-16
+
+The owner's classroom report continues this A2 source dispatch. The public
+checkout has lessons but no classroom implementation. The actual media service
+has been requested; private activation remains receiving-seat work.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DE | Inspect the classroom path and register source acceptance | `python scripts/ci/agent_context.py --check` | done — existing A2 dispatch verified; source gap registered |
+| DF | Persist scoped rooms, host lifecycle, presence and discussion | `node --test tests/upgrade/classroom-system.test.mjs` | done for source — 10 backend cases; native acceptance requires missing binary |
+| DG | Surface classrooms and preserve navigation through sign-in | Classroom client, route and rendered interaction tests | partial — 10 client/navigation cases pass; nine rendered and three hook cases await frontend dependencies |
+| DH | Verify source, preserve history and record runtime gaps | Dispatch smoke, context, boundary and memory gates | done for public evidence — 4/7 smoke; all 89 earlier events retained; actual installed/media acceptance remains open |
+
+Memory brief: current sources expose Field Manual lessons on Home and Docs;
+there is no classroom route, join API or room schema. ProtectedRoute drops the
+requested path and Login/Signup/Onboarding return to fixed pages. Reuse native
+PocketBase authentication, workspace-access policy, transactional command and
+retry patterns, the authored curriculum and personal tutorial progress. No
+authenticated shared workspace or private media-service contract is attached.
+The local browser tool exists; frontend packages and PocketBase are unavailable
+at inspection. No live seat event or provider connection is fabricated.
+
+Observed classroom source evidence: 20 focused cases and 276 full Node cases
+pass; 213 Python cases are discovered, with 201 passing and 12 native skips.
+Selected source coverage is 100% lines and 95.35–98% branches. The source
+diagnostic parses 246 modules without static errors; strict typing and Ruff
+pass. Vitest, eslint-plugin-import, Vite and native PocketBase are missing,
+so rendered, installed-backend, two-account and media acceptance are unverified.
+Guide: docs/classrooms.md. Receiving work is recorded in the classroom handoff.
+
 ## Governance fast-path and Citadel telemetry authorized 2026-09-16
 
 The owner authorized A2 governance and CI source changes under this existing

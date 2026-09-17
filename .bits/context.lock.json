@@ -133,7 +133,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-16T19:31:08.994145+00:00",
+  "generated_at": "2026-09-16T22:26:40.096138+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -442,13 +442,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 30,
-    "python_files": 106,
+    "migrations": 31,
+    "python_files": 107,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 748,
-    "web_source_files": 242
+    "tracked_files": 764,
+    "web_source_files": 249
   },
   "schema_version": 1,
   "summary": {
@@ -463,7 +463,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 38,
+    "js_test_files": 40,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

@@ -210,6 +210,11 @@ jobs:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
         run: python tests/upgrade/test_suite_native.py --require-binary
 
+      - name: Require native classroom auth, attendance, retries and rollback
+        env:
+          BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
+        run: python tests/upgrade/test_classroom_native.py --require-binary
+
   federal-foundry:
     name: ci:test / Federal portfolio (Python ${{ matrix.python }})
     runs-on: ubuntu-latest

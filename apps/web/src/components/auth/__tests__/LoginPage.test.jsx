@@ -47,6 +47,7 @@ const renderLogin = (options = {}) =>
         <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/app" element={<p>App shell</p>} />
+            <Route path="/app/classrooms/:roomId" element={<p>Requested classroom</p>} />
             <Route path="/onboarding" element={<p>Onboarding wizard</p>} />
         </Routes>,
         { route: '/login', auth: { isAuthed: false, user: null }, ...options },
@@ -129,7 +130,7 @@ describe('LoginPage', () => {
         expect(await screen.findByText('App shell')).toBeInTheDocument();
     });
 
-    it('sends a brand-new account to onboarding instead of an empty app', async () => {
+    it('lets the workspace gate handle a brand-new account after authentication', async () => {
         const user = setupUser();
         pb.__setRecords('workspaces', []);
         renderLogin();
@@ -138,23 +139,19 @@ describe('LoginPage', () => {
         await user.type(screen.getByLabelText('Password'), 'correct-horse');
         await user.click(screen.getByRole('button', { name: /Sign in/ }));
 
-        expect(await screen.findByText('Onboarding wizard')).toBeInTheDocument();
+        expect(await screen.findByText('App shell')).toBeInTheDocument();
     });
 
-    it('falls back to onboarding when the workspace lookup itself fails', async () => {
-        // Documents current behaviour: the swallowed lookup error leaves
-        // `hasWorkspace` false, so the user is routed to onboarding. The inline
-        // comment in LoginPage.jsx claims the opposite ("default to app") —
-        // reported alongside this change rather than altered here.
+    it('preserves a classroom destination instead of treating a workspace lookup failure as an empty account', async () => {
         const user = setupUser();
         pb.__setError('workspaces');
-        renderLogin();
+        renderLogin({ route: { pathname: '/login', state: { returnTo: '/app/classrooms/roomalpha?workspace=ws_test' } } });
 
         await user.type(screen.getByLabelText('Email address'), 'owner@example.com');
         await user.type(screen.getByLabelText('Password'), 'correct-horse');
         await user.click(screen.getByRole('button', { name: /Sign in/ }));
 
-        expect(await screen.findByText('Onboarding wizard')).toBeInTheDocument();
+        expect(await screen.findByText('Requested classroom')).toBeInTheDocument();
     });
 
     it('surfaces the server message when the credentials are rejected', async () => {

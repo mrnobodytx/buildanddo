@@ -18,7 +18,7 @@
 
 import React from 'react';
 import { describe, expect, it } from 'vitest';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { renderWithProviders, screen } from '@/test/utils';
 
@@ -42,6 +42,14 @@ const renderGuarded = ({ isAuthed, redirectTo }) =>
     );
 
 describe('ProtectedRoute', () => {
+    it('retains the local classroom and workspace through the sign-in redirect', () => {
+        function Destination() { return <p>{useLocation().state?.returnTo}</p>; }
+        renderWithProviders(<Routes><Route path="/login" element={<Destination />} />
+            <Route path="/app/classrooms/:roomId" element={<ProtectedRoute><p>Private class</p></ProtectedRoute>} /></Routes>,
+        { route: '/app/classrooms/roomalpha?workspace=ws_test', auth: { isAuthed: false } });
+        expect(screen.getByText('/app/classrooms/roomalpha?workspace=ws_test')).toBeInTheDocument();
+        expect(screen.queryByText('Private class')).not.toBeInTheDocument();
+    });
     it('sends an anonymous visitor to the sign-in screen', () => {
         renderGuarded({ isAuthed: false });
 

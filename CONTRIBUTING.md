@@ -101,6 +101,13 @@ coordinate A2/A3 authority before starting.
    still be denied for a `viewer`. `./scripts/dev-setup.sh --seed` creates a
    demo user and workspace to click through.
 
+   Classroom changes additionally require the two-account learning flow in
+   `docs/classrooms.md`. Run the classroom source tests, rendered flow/hook
+   tests and `python tests/upgrade/test_classroom_native.py --require-binary`
+   using a disposable native test binary. CI checks both declared PocketBase
+   versions. Shared lessons and discussion do not establish a media connection;
+   audio/video acceptance belongs to the existing service's receiving owner.
+
 ## Opening a pull request
 
 Use the PR template (auto-filled). It requires:
