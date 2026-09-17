@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        tests/upgrade/fixtures/sample-blueprint.pdf.cgrf.yaml
+# Stage:       08_TEST
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-17
+# Depends:     tests/upgrade/blueprint_fixture.py
+# EnumType:    Schema
+# EnumEdges:   CONSUMES tests/upgrade/blueprint_fixture.py; PRODUCES tests/upgrade/fixtures/sample-blueprint.pdf
+# DAG Node:    none
+# Intent:      Identify the reproducible synthetic specification PDF used for native blueprint extraction tests.
+# ───────────────────────────────────────────────────────────────
+
+artifact: sample-blueprint.pdf
+generator: python tests/upgrade/blueprint_fixture.py
+content: synthetic specification with no customer data

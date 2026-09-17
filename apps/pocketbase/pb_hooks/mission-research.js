@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_hooks/mission-policy.js
+// Depends:     apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workspace-blueprints.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_hooks/mission-policy.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_hooks/mission-policy.js; CONSUMES apps/pocketbase/pb_hooks/workspace-blueprints.js
 // DAG Node:    none
 // Intent:      Connect both intake channels to durable research, fenced processing attempts and explicitly reviewed mission evidence.
 // ───────────────────────────────────────────────────────────────
@@ -35,7 +35,7 @@ function source(app, workspace, id) {
 }
 function output(record, detailed = false) {
     const result = { id: record.id };
-    for (const field of ['workspace', 'owner', 'mission', 'title', 'kind', 'input', 'context', 'origin', 'status', 'binding', 'failure',
+    for (const field of ['workspace', 'owner', 'mission', 'mode', 'title', 'kind', 'input', 'context', 'origin', 'status', 'binding', 'failure',
         'processed_at', 'evidence', 'review_note', 'reviewed_by', 'reviewed_at', 'created', 'updated']) result[field] = record.getString(field);
     for (const field of ['revision', 'attempt', 'integration_revision']) result[field] = Number(record.get(field));
     if (detailed) { result.result = p.json(record, 'result'); result.upload = record.getString('upload'); }
@@ -105,7 +105,8 @@ function perform(app, scope, body, origin, sourceRef) {
     } else {
         p.exact(body.payload, body.action === 'attach' ? ['id', 'note'] : ['id']);
         record = source(app, workspace, body.payload.id);
-        p.mission(app, scope.auth, scope.info, workspace, record.getString('mission'), body.action === 'retry');
+        p.submissionScope(app, scope.auth, scope.info, workspace, record, body.action === 'retry');
+        if (record.getString('mode') === 'blueprint' && body.action === 'attach') p.invalid('Export a blueprint proposal for separate mission review.');
         if (Number(record.get('revision')) !== body.revision) p.conflict('Reload the changed submission before continuing.');
         const status = record.getString('status');
         if (body.action === 'retry') {
@@ -143,7 +144,7 @@ function execute(e, scope, raw, origin = 'website', sourceRef = '') {
         if (body.action === 'submit') p.mission(app, scope.auth, scope.info, scope.workspace, body.payload.mission);
         else if (body.action !== 'mission.propose') {
             const record = source(app, scope.workspace, body.payload.id);
-            p.mission(app, scope.auth, scope.info, scope.workspace, record.getString('mission'));
+            p.submissionScope(app, scope.auth, scope.info, scope.workspace, record);
         }
         response = audit(app, scope.auth, scope.workspace, body, () => perform(app, scope, body, origin, sourceRef));
     });
@@ -152,7 +153,8 @@ function execute(e, scope, raw, origin = 'website', sourceRef = '') {
 function command(e) { return execute(e, context(e), e.requestInfo().body); }
 function snapshot(e, suppliedScope) {
     const scope = suppliedScope || context(e); const query = e.requestInfo().query || {};
-    const page = p.page(e); const filter = query.mission ? 'workspace = {:workspace} && mission = {:mission}' : 'workspace = {:workspace}';
+    const page = p.page(e); let filter = query.mission ? 'workspace = {:workspace} && mission = {:mission}' : 'workspace = {:workspace}';
+    if (p.schema(e.app).fields.getByName('mode')) filter += ' && mode != "blueprint"';
     if (query.mission) p.mission(e.app, scope.auth, scope.info, scope.workspace, query.mission);
     const list = p.list(e.app, 'research_submissions', filter, { workspace: scope.workspace, mission: query.mission }, page);
     return { workspace: scope.workspace, role: p.requireRole(e.app, scope.auth, scope.workspace).role,
@@ -179,18 +181,28 @@ function resultInput(value) {
 function queue(e) {
     p.authenticated(e); const workspace = p.workspaceId(e); p.worker(e.app, e.auth, workspace);
     const page = p.page(e);
-    const rows = p.list(e.app, 'research_submissions', 'workspace = {:workspace} && (status = "queued" || status = "processing")', { workspace }, page);
+    let filter = 'workspace = {:workspace} && (status = "queued" || status = "processing")';
+    if (p.schema(e.app).fields.getByName('mode')) {
+        let enabled = false;
+        try { enabled = Boolean(e.app.findCollectionByNameOrId('workspace_blueprints').fields.getByName('protocol_version')); }
+        catch (error) { if (!String(error.message).includes('no rows in result set')) throw error; }
+        if (!enabled) filter += ' && mode != "blueprint"';
+    }
+    const rows = p.list(e.app, 'research_submissions', filter, { workspace }, page);
     return { workspace, page, has_more: rows.has_more, items: rows.rows.map((row) => ({ id: row.id, revision: Number(row.get('revision')),
         status: row.getString('status'), lease_until: row.getString('lease_until') })) };
 }
 function work(e) {
     p.authenticated(e); const workspace = p.workspaceId(e);
-    const body = commandInput(e.requestInfo().body, ['claim', 'complete']); let response;
+    const raw = e.requestInfo().body;
+    const structured = raw?.action === 'complete' && raw.payload?.result && Object.prototype.hasOwnProperty.call(raw.payload.result, 'blueprint');
+    const blueprint = structured ? require(`${__hooks}/workspace-blueprints.js`) : null;
+    const body = commandInput(structured ? blueprint.replayCommand(raw) : raw, ['claim', 'complete']); let response;
     p.exact(body.payload, body.action === 'claim' ? ['id'] : ['id', 'attempt', 'result', 'failure']);
     e.app.runInTransaction((app) => {
         p.worker(app, e.auth, workspace); const record = source(app, workspace, body.payload.id); const owner = p.currentJob(app, record);
         const info = e.requestInfo(); info.auth = owner;
-        p.mission(app, owner, info, workspace, record.getString('mission'), true);
+        p.submissionScope(app, owner, info, workspace, record, true);
         response = audit(app, e.auth, workspace, body, () => {
             if (Number(record.get('revision')) !== body.revision) p.conflict('The research revision changed.');
             if (body.action === 'claim') {
@@ -208,7 +220,8 @@ function work(e) {
                 const failed = body.payload.failure;
                 if (failed ? !FAILURES.includes(failed) || body.payload.result !== null : failed !== '')
                     p.invalid('Use a listed failure code and no fabricated result.');
-                const result = failed ? null : resultInput(body.payload.result);
+                if (!failed && Boolean(structured) !== (record.getString('mode') === 'blueprint')) p.invalid('Return the result format for this research mode.');
+                const result = failed ? null : structured ? blueprint.storeResult(app, record, raw.payload.result) : resultInput(body.payload.result);
                 assign(record, { status: failed ? 'failed' : 'ready', failure: failed, result, processed_at: now(), lease_until: '' });
             }
             record.set('revision', body.revision + 1); app.save(record);
@@ -220,6 +233,8 @@ function work(e) {
                 !(Date.parse(current.getString('lease_until')) > Date.now()) || response.revision !== Number(current.get('revision')))
                 p.conflict('The earlier claim is no longer current.');
             response.job = { ...output(current, true), lease_until: current.getString('lease_until') };
+            if (current.getString('mode') === 'blueprint')
+                response.job.expected_sha256 = require(`${__hooks}/workspace-blueprints.js`).linked(app, current).getString('input_sha256');
             if (current.getString('upload')) {
                 const file = p.find(app, 'research_uploads', current.getString('upload'));
                 response.job.file = { id: file.id, name: file.getString('original_name'), asset: file.getString('asset'), size: Number(file.get('size')) };

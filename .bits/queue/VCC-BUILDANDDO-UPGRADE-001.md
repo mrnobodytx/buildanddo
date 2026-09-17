@@ -20,6 +20,27 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Blueprint Phase A continuation authorized 2026-09-17
+
+The current owner request continues the registered A2 research/workspace source
+scope. No live workspace, credentials, hosted model or deployment is requested.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DI | Inspect reuse and record blueprint acceptance | Context and source inspection | done |
+| DJ | Structure documents and evaluate requirements at A0 | `python tests/upgrade/check_blueprints.py` | in progress |
+| DK | Persist workspace blueprints through the shared research worker | `node --test tests/upgrade/blueprint-system.test.mjs` | pending |
+| DL | Add workspace upload/review/export and isolate private UI state | Blueprint client and rendered suites | pending |
+| DM | Verify regression, refresh context and retain report/memory | Existing smoke block and boundary/memory checks | pending |
+
+Memory brief: documents.py already runs pypdf in a 30-second resource-limited
+child process and clips text to 16,000 UTF-16 units. The research store already
+protects uploaded files, fences worker leases and binds capabilities to current
+workspace configuration. BDR Phase 1 supports A0 typed decisions; unmatched
+questions abstain. This continuation must not fabricate scores or authorize
+generation/deployment. The sandbox initially lacks pypdf, PocketBase and the
+frontend test dependencies; native acceptance must be reported separately.
+
 ## Classroom continuation authorized 2026-09-16
 
 The owner's classroom report continues this A2 source dispatch. The public
