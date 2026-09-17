@@ -162,7 +162,7 @@ component says so rather than implying a check exists.
 
 | Tag                          | Step             | What it actually checks                                     |
 |------------------------------|------------------|-------------------------------------------------------------|
-| `ci:test`                    | Test             | Lint, web coverage, public adapters, native Discord/research parser, PocketBase dossier/suite/classroom checks, portable suite and federal portfolio coverage, foundry execution/replay/export coverage, and manifest/lock integrity |
+| `ci:test`                    | Test             | Lint, web coverage, public adapters, native Discord/research parser and CPU blueprint pipeline, PocketBase dossier/suite/classroom checks, portable suite and federal portfolio coverage, foundry execution/replay/export coverage, and manifest/lock integrity |
 | `ci:build`                   | Pull request     | `npm run build` produces `dist/apps/web/index.html`         |
 | `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, one actor label, `agent_context.py --check` |
 | `deploy:staging-probe`       | Staging deploy   | Candidate mirror to the private plane succeeds on `main`    |

@@ -20,6 +20,33 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Blueprint pipeline continuation authorized 2026-09-17
+
+The current owner request continues this A2 source dispatch with five tasks.
+The blueprint files described in the source conversation are absent at the
+starting revision. Reuse the existing research contracts, native PocketBase
+authorization, BDR runtime and workspace shell to supply the missing pipeline.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| BP1 | CPU scan, parse and assessment with page provenance | `python -m unittest tests.upgrade.test_blueprint_extraction` | source PASS; native PDF unavailable |
+| BP2 | BDR, components, missions and review-only prompts | `python -m unittest tests.upgrade.test_blueprint_pipeline` | source PASS; native PDF chain unavailable |
+| BP3 | Python process bridge and retained decision receipts | `node --test tests/upgrade/decision-runtime.test.mjs` | PASS: real Python and policy with a storage double; native PocketBase unverified |
+| BP4 | Workspace analysis and prompt/export review | `npm --prefix apps/web test -- BlueprintPage` | source supplied; six rendered tests require missing frontend dependencies |
+| BP5 | Offline integration and regression evidence | `python tests/upgrade/check_blueprint_pipeline.py` | PASS: 42 tests, 2 native skips, 94.17–100% statement coverage |
+
+Run the existing smoke gates as well. No live authenticated workspace is
+provided, so no seat event is fabricated. Python pypdf and frontend packages
+are initially unavailable; distinguish native acceptance from test doubles.
+
+Current local regression: 299 Node passes; 266 Python passes with 14 native
+dependency skips. The mandatory `--require-pdf` gate fails here because pypdf
+is unavailable and is wired into the CI job that installs the declared parser.
+Strict typing and source lint pass. Vite build, Vitest and official frontend
+lint cannot start because their dependencies are missing. No deployment or
+native PocketBase migration is claimed. Evidence and runnable commands are in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md.
+
 ## Classroom continuation authorized 2026-09-16
 
 The owner's classroom report continues this A2 source dispatch. The public

@@ -20,6 +20,48 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Blueprint pipeline continuation — 2026-09-17
+
+The owner requests deterministic CPU scan/parse/assess extraction, requirement
+evaluation through the existing Python BDR, component/dependency planning,
+ordered mission challenges and human-reviewed session prompts. This is an A2
+public-source continuation of the existing in-progress dispatch. The starting
+checkout contains the research worker and BDR Phase 1, but none of the reported
+blueprint files or sample PDF; this continuation supplies those missing pieces.
+
+Acceptance:
+
+1. Use the already declared pypdf dependency and standard library only. Preserve
+   PDF digest, page/block locations, heading hierarchy, lists, tables, entities,
+   requirements and resolved references across three deterministic CPU passes.
+   Report sparse pages, ambiguity, duplicates, completeness and confidence.
+2. Evaluate requirements through BDR; preserve answers and abstentions. Generate
+   an explicit component graph, dependency-ordered challenges and review-only
+   prompts with source/evaluation provenance and no authority escalation.
+3. Replace PocketBase's JavaScript decision approximation with a bounded local
+   Python adapter. Reuse native account/workspace authorization, persist private
+   decision receipts with stable IDs, and retain receipts on migration rollback.
+4. Expose authenticated PDF analysis and a workspace blueprint page with all
+   three passes, component dependencies, ordered challenges, prompt review and
+   JSON export. Submitted content is data, never executable instructions.
+5. Exercise the complete PDF-to-prompt chain offline, including provenance,
+   confidence, authority, malformed input, cycles and workspace isolation.
+   Report unavailable native dependencies separately from source-double tests.
+
+No session creation, mission activation, verification settlement, deployment,
+secret access, external model call or private-plane write is authorized.
+Extraction and planning remain unverified; their confidence is heuristic.
+
+Source outcome: all five requested source areas are supplied, including the
+previously absent blueprint modules and page. The focused suite passes 42
+tests, skips two native PDF cases and measures 94.17–100% statement coverage
+per new Python module. Regression passes 299 Node and 266 Python tests, with
+14 native dependency skips. Shared data-name normalization has an observed
+red/green regression. The native-required PDF gate is wired to the existing
+dependency-enabled CI job and correctly fails in this sandbox. Six rendered
+UI tests, native PocketBase and actual hosted acceptance remain unverified;
+missing pypdf and frontend dependencies are recorded in the blueprint report.
+
 ## Classroom source continuation — 2026-09-16
 
 The owner reports that live classrooms and educational rooms still do not work

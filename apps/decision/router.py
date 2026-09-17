@@ -223,6 +223,10 @@ class RulesBackend:
         if match is None and name in self.rules:
             match = self.rules[name](state, question)
         if match is None:
+            from apps.decision.workloads.blueprint_evaluation import blueprint_rule
+
+            match = blueprint_rule(name, state, question)
+        if match is None:
             return None
         return BackendResult(
             answer=_answer(question, match, 1.0),

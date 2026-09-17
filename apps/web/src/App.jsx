@@ -36,6 +36,7 @@ const FleetPage = lazy(() => import('./pages/workspace/FleetPage'));
 const PlatformHealthPage = lazy(() => import('./pages/workspace/PlatformHealthPage'));
 const EvidencePage = lazy(() => import('./pages/workspace/EvidencePage'));
 const ResearchPage = lazy(() => import('./pages/workspace/ResearchPage'));
+const BlueprintPage = lazy(() => import('./pages/workspace/BlueprintPage'));
 const SuitePage = lazy(() => import('./pages/workspace/SuitePage'));
 const DossierPage = lazy(() => import('./pages/workspace/DossierPage'));
 const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
@@ -75,6 +76,7 @@ const WORKSPACE_ROUTES = [
     { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'research', label: 'Mission research', element: ResearchPage },
+    { path: 'blueprints', label: 'Blueprints', element: BlueprintPage },
     { path: 'suite', label: 'Mission suite', element: SuitePage },
     { path: 'dossier', label: 'My dossier', element: DossierPage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },

@@ -37,6 +37,7 @@ def main() -> int:
         suite = unittest.defaultTestLoader.discover(
             str(ROOT / "tests/upgrade"), pattern="test_decision_runtime.py"
         )
+        suite.addTests(unittest.defaultTestLoader.loadTestsFromName("tests.upgrade.test_blueprint_pipeline"))
         return unittest.TextTestRunner(verbosity=1).run(suite)
 
     result = tracer.runfunc(run)

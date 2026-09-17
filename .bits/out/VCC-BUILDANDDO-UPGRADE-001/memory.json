@@ -3386,7 +3386,7 @@
       "lines": 441,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Show the day the edition is about \u2014 today's priorities, what was completed, what is blocked \u2014 beside the editions themselves.",
+      "intent_statement": "Show the day the edition is about — today's priorities, what was completed, what is blocked — beside the editions themselves.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3510,7 +3510,7 @@
       "lines": 708,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make a list of missions triageable \u2014 priority, progress, due dates, editing and deletion \u2014 instead of an append-only stack.",
+      "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3565,7 +3565,7 @@
       "lines": 617,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give the operations surface the two things it was missing \u2014 the runbook text and the record of each time a human ran it.",
+      "intent_statement": "Give the operations surface the two things it was missing — the runbook text and the record of each time a human ran it.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3612,7 +3612,7 @@
       "lines": 504,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Answer \"what is happening in this workspace\" in one screen \u2014 one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
+      "intent_statement": "Answer \"what is happening in this workspace\" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3666,7 +3666,7 @@
       "lines": 625,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" \u2014 a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
+      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" — a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -3894,7 +3894,7 @@
       "lines": 721,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give a workflow the sequence that makes it one \u2014 ordered, editable steps \u2014 so activating it says what would run.",
+      "intent_statement": "Give a workflow the sequence that makes it one — ordered, editable steps — so activating it says what would run.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -28117,7 +28117,7 @@
       "type": "C",
       "event_type": "smoke_run",
       "file_path": "apps/mission_suite/bundle.py",
-      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96\u201399.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
+      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96–99.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -30424,12 +30424,2085 @@
       "file_path": "docs/classrooms.md",
       "description": "Public and workspace classrooms, shared lesson controls and safe sign-in destinations are implemented. Dispatch smoke is 4/7: required React tests, repository lint and the Vite build cannot start without missing frontend dependencies. The separate native classroom gate also cannot start without PocketBase. Nine rendered and three hook cases plus three native cases are authored and CI requires native acceptance for both existing declared runtimes. Context, the 764-file public boundary and memory checks pass; all 89 preceding events remain. No screenshot, deployed room, live media, provider mutation or receiving dispatch is claimed.",
       "smoke_result": "4/7 dispatch gates; 8/12 current check groups; native/rendered/live acceptance open"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/context.lock.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [],
+      "lines": 489,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the actual blueprint test and CI surface so the repository briefing stays consistent with source.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/blueprint-pipeline.md",
+        "tests/upgrade/check_blueprint_pipeline.py"
+      ],
+      "lines": 157,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record measured blueprint pipeline evidence and remaining native/runtime acceptance limits without promoting observations to verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
+      ],
+      "lines": 32514,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
+      ],
+      "lines": 934,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 1184,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".github/workflows/pr-governance.yml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Workflow",
+      "functions": [],
+      "dependencies": [],
+      "lines": 284,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require genuine PDF-to-prompt integration and per-module coverage in the CI job that installs the declared PDF parser.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "AGENTS.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "CONTRIBUTING.md",
+        ".buildanddo/public/path-policy.json"
+      ],
+      "lines": 199,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define machine-facing governance for agents working in buildanddo.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/adapters/__init__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "apps/research/blueprint_models.py"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect source requirements to authority-bounded review plans while retaining evaluation and PDF provenance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/adapters/blueprint_to_components.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_data_entities",
+        "blueprint_to_components"
+      ],
+      "dependencies": [
+        "apps/research/blueprint_models.py"
+      ],
+      "lines": 125,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect source requirements to authority-bounded review plans while retaining evaluation and PDF provenance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/adapters/components_to_missions.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "components_to_missions"
+      ],
+      "dependencies": [
+        "apps/research/blueprint_models.py"
+      ],
+      "lines": 60,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect source requirements to authority-bounded review plans while retaining evaluation and PDF provenance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/adapters/contracts.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "BlueprintPlanError",
+        "Provenance",
+        "Dependency",
+        "Component",
+        "ComponentGraph",
+        "Challenge",
+        "MissionPlan",
+        "SessionPrompt"
+      ],
+      "dependencies": [
+        "apps/research/blueprint_models.py"
+      ],
+      "lines": 135,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect source requirements to authority-bounded review plans while retaining evaluation and PDF provenance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/adapters/missions_to_sessions.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "missions_to_sessions"
+      ],
+      "dependencies": [
+        "apps/research/blueprint_models.py"
+      ],
+      "lines": 82,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect source requirements to authority-bounded review plans while retaining evaluation and PDF provenance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/adapters/server.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "execute",
+        "DecisionHandler",
+        "main"
+      ],
+      "dependencies": [
+        "apps/decision/contract.py",
+        "apps/research/blueprints.py"
+      ],
+      "lines": 111,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Run authenticated application decisions and blueprint analysis through a bounded local CPU process.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/adapters/service.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "json_object",
+        "dispatch",
+        "process_request",
+        "main"
+      ],
+      "dependencies": [
+        "apps/decision/contract.py",
+        "apps/research/blueprints.py"
+      ],
+      "lines": 140,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Run authenticated application decisions and blueprint analysis through a bounded local CPU process.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/router.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "RuleMatch",
+        "BackendResult",
+        "RoutedDecision",
+        "Backend",
+        "_probability",
+        "_distribution",
+        "_answer",
+        "_text",
+        "RulesBackend",
+        "ClassifierBackend",
+        "FrontierBackend",
+        "DecisionRouter"
+      ],
+      "dependencies": [
+        "apps/decision/primitives.py",
+        "apps/decision/workloads/definitions.py"
+      ],
+      "lines": 442,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Route typed questions through deterministic and bounded fallback backends without crossing caller authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/workloads/blueprint_evaluation.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "RequirementEvaluation",
+        "blueprint_rule",
+        "evaluate_blueprint"
+      ],
+      "dependencies": [
+        "apps/decision/contract.py"
+      ],
+      "lines": 113,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect source requirements to authority-bounded review plans while retaining evaluation and PDF provenance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/decision-runtime.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "own",
+        "object",
+        "canonical",
+        "scope",
+        "local",
+        "validateResult",
+        "existing",
+        "save",
+        "decide",
+        "blueprint",
+        "detail"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workflow-policy.js",
+        "apps/decision/adapters/server.py"
+      ],
+      "lines": 197,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Persist Python decision receipts behind native workspace authorization without exposing source content to telemetry.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/decision.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workflow-policy.js",
+        "apps/decision/contract.py"
+      ],
+      "lines": 31,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose the typed decision contract to authenticated workspace members without granting action or verification authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1790500000_workspace_decisions.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/decision-runtime.js"
+      ],
+      "lines": 69,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain private workspace decision state and receipts behind native authenticated routes and rollback fencing.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/blueprint_assess.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_ratio",
+        "_phrases",
+        "assess"
+      ],
+      "dependencies": [
+        "apps/research/blueprint_models.py"
+      ],
+      "lines": 143,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Extract source-linked blueprint structure and deterministic quality observations without verification authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/blueprint_models.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "SourceRef",
+        "TextBlock",
+        "Heading",
+        "TableRegion",
+        "ListItem",
+        "ScanPage",
+        "Scan",
+        "Section",
+        "Requirement",
+        "Table",
+        "CrossReference",
+        "ComponentEntity",
+        "Acronym",
+        "OpenItem",
+        "ParsedBlueprint",
+        "Assessment",
+        "Blueprint"
+      ],
+      "dependencies": [],
+      "lines": 237,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve deterministic CPU blueprint observations and source locations for human review.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/blueprint_parse.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "entity_mentions",
+        "entity_key",
+        "_source",
+        "_cells",
+        "parse_scan"
+      ],
+      "dependencies": [
+        "apps/research/blueprint_models.py"
+      ],
+      "lines": 218,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Extract source-linked blueprint structure and deterministic quality observations without verification authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/blueprint_scan.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_clean",
+        "_heading",
+        "_delimiter",
+        "scan_layout",
+        "_lines",
+        "scan_pdf"
+      ],
+      "dependencies": [
+        "apps/research/blueprint_models.py",
+        "apps/research/contracts.py"
+      ],
+      "lines": 238,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve deterministic CPU blueprint observations and source locations for human review.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/blueprints.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "blueprint_from_scan",
+        "extract_blueprint"
+      ],
+      "dependencies": [
+        "apps/research/blueprint_models.py"
+      ],
+      "lines": 38,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Extract source-linked blueprint structure and deterministic quality observations without verification authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/App.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "RedirectIfAuthed",
+        "WorkspaceGate",
+        "AppRoutes",
+        "App"
+      ],
+      "dependencies": [],
+      "lines": 230,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the blueprint review page reachable through the existing authenticated workspace route tree.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/ProgressionPipeline.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "ProgressionPipeline"
+      ],
+      "dependencies": [
+        "apps/web/src/components/site/ui.jsx",
+        ".github/workflows/pr-governance.yml"
+      ],
+      "lines": 294,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "NavList",
+        "BrandMark",
+        "WorkspaceSwitcher",
+        "WorkspaceLayout"
+      ],
+      "dependencies": [],
+      "lines": 274,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose PDF blueprint review beside existing mission and research workspace entry points.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/blueprints.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "createBlueprintClient",
+        "exportMissionPlan"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/decision.pb.js"
+      ],
+      "lines": 85,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Submit untrusted PDF data for scoped analysis and export human-review mission drafts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/BlueprintPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "BlueprintResults",
+        "BlueprintDesk",
+        "BlueprintPage"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/blueprints.js"
+      ],
+      "lines": 169,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Present all extraction passes, dependency planning and source-linked prompts for human review.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/BlueprintPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "renderPage",
+        "selectPdf"
+      ],
+      "dependencies": [
+        "apps/web/src/pages/workspace/BlueprintPage.jsx"
+      ],
+      "lines": 134,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify the rendered PDF review flow, prompt generation, export and account/workspace isolation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/blueprint-pipeline.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/decision/adapters/server.py",
+        "apps/research/blueprints.py"
+      ],
+      "lines": 146,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain local blueprint analysis, source provenance, review boundaries and reproducible verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/fixtures/sample-blueprint.pdf",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/blueprint_support.py"
+      ],
+      "lines": 106,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Identify the synthetic PDF fixture and its source generator without implying verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/fixtures/sample-blueprint.pdf.cgrf.yaml",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/blueprint_support.py"
+      ],
+      "lines": 24,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Identify the synthetic PDF fixture and its source generator without implying verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/blueprint-client.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "setup"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/blueprints.js"
+      ],
+      "lines": 121,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify scoped PDF analysis, account isolation, review prompts and JSON exports through the actual application adapters.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/blueprint_support.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "sample_blueprint",
+        "pdf_bytes"
+      ],
+      "dependencies": [
+        "apps/research/blueprints.py"
+      ],
+      "lines": 83,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Distinguish deterministic layout test doubles from genuine PDF pipeline acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/check_blueprint_pipeline.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_blueprint_pipeline.py"
+      ],
+      "lines": 77,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require measured blueprint pipeline coverage and distinguish missing native PDF acceptance from source test passes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/check_decision_runtime.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_decision_runtime.py",
+        "apps/decision"
+      ],
+      "lines": 98,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require the decision behavior suite and at least 80 percent measured statement coverage per runtime module.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/decision-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "python",
+        "layoutBlueprintResult",
+        "decisionFixture"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/decision-runtime.js"
+      ],
+      "lines": 133,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Execute native application policy and real Python decisions with an explicit PocketBase storage double.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/decision-runtime.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "migrationFixture"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/decision.pb.js",
+        "apps/pocketbase/pb_hooks/workflow-policy.js"
+      ],
+      "lines": 198,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Execute the actual PocketBase route source with JSVM doubles to prove auth, typing, authority and log boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_blueprint_extraction.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ExtractionTests"
+      ],
+      "dependencies": [
+        "apps/research/blueprints.py"
+      ],
+      "lines": 244,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify deterministic structural extraction and reject unsafe or misleading source interpretation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_blueprint_pipeline.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "chain",
+        "PipelineTests"
+      ],
+      "dependencies": [
+        "apps/decision/adapters/blueprint_to_components.py"
+      ],
+      "lines": 234,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the offline blueprint planning chain, native process adapter and authority/provenance boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_blueprint_service.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ServiceTests"
+      ],
+      "dependencies": [
+        "apps/decision/adapters/service.py"
+      ],
+      "lines": 177,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the offline blueprint planning chain, native process adapter and authority/provenance boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md",
+      "target": "docs/blueprint-pipeline.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md depends_on docs/blueprint-pipeline.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md",
+      "target": "tests/upgrade/check_blueprint_pipeline.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md depends_on tests/upgrade/check_blueprint_pipeline.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md",
+      "target": ".bits/context.lock.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md depends_on .bits/context.lock.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md",
+      "target": ".github/workflows/pr-governance.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md depends_on .github/workflows/pr-governance.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md",
+      "target": "apps/web/src/App.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md depends_on apps/web/src/App.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md",
+      "target": "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md depends_on apps/web/src/components/workspace/WorkspaceLayout.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.cgrf.yaml depends_on .bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.cgrf.yaml produces .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/queue/VCC-BUILDANDDO-UPGRADE-001.md depends_on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md depends_on .bits/srs_registry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "AGENTS.md",
+      "target": "bits/SRS-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: AGENTS.md gates bits/SRS-* branches.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "AGENTS.md",
+      "target": ".github/PULL_REQUEST_TEMPLATE.md",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: AGENTS.md validates .github/PULL_REQUEST_TEMPLATE.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "AGENTS.md",
+      "target": "docs/federal-foundry.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: AGENTS.md consumes docs/federal-foundry.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/adapters/__init__.py",
+      "target": "apps/research/blueprint_models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/adapters/__init__.py depends_on apps/research/blueprint_models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/adapters/blueprint_to_components.py",
+      "target": "apps/research/blueprint_models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/adapters/blueprint_to_components.py depends_on apps/research/blueprint_models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/adapters/components_to_missions.py",
+      "target": "apps/research/blueprint_models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/adapters/components_to_missions.py depends_on apps/research/blueprint_models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/adapters/contracts.py",
+      "target": "apps/research/blueprint_models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/adapters/contracts.py depends_on apps/research/blueprint_models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/adapters/missions_to_sessions.py",
+      "target": "apps/research/blueprint_models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/adapters/missions_to_sessions.py depends_on apps/research/blueprint_models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/adapters/server.py",
+      "target": "apps/decision/contract.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/adapters/server.py depends_on apps/decision/contract.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/adapters/server.py",
+      "target": "apps/research/blueprints.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/adapters/server.py depends_on apps/research/blueprints.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/adapters/service.py",
+      "target": "apps/decision/contract.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/adapters/service.py depends_on apps/decision/contract.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/adapters/service.py",
+      "target": "apps/research/blueprints.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/adapters/service.py depends_on apps/research/blueprints.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/router.py",
+      "target": "apps/decision/primitives.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/router.py depends_on apps/decision/primitives.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/router.py",
+      "target": "apps/decision/workloads/definitions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/router.py consumes apps/decision/workloads/definitions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/workloads/blueprint_evaluation.py",
+      "target": "apps/decision/contract.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/decision/workloads/blueprint_evaluation.py depends_on apps/decision/contract.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/decision-runtime.js",
+      "target": "apps/pocketbase/pb_hooks/workflow-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/pocketbase/pb_hooks/decision-runtime.js depends_on apps/pocketbase/pb_hooks/workflow-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/decision-runtime.js",
+      "target": "apps/decision/adapters/server.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/pocketbase/pb_hooks/decision-runtime.js consumes apps/decision/adapters/server.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/decision.pb.js",
+      "target": "apps/pocketbase/pb_hooks/workflow-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/pocketbase/pb_hooks/decision.pb.js depends_on apps/pocketbase/pb_hooks/workflow-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/decision.pb.js",
+      "target": "apps/decision/contract.py",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/pocketbase/pb_hooks/decision.pb.js uses_template apps/decision/contract.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1790500000_workspace_decisions.js",
+      "target": "apps/pocketbase/pb_hooks/decision-runtime.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/pocketbase/pb_migrations/1790500000_workspace_decisions.js depends_on apps/pocketbase/pb_hooks/decision-runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/blueprint_assess.py",
+      "target": "apps/research/blueprint_models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/research/blueprint_assess.py depends_on apps/research/blueprint_models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/blueprint_models.py",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/research/blueprint_models.py extends .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/blueprint_parse.py",
+      "target": "apps/research/blueprint_models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/research/blueprint_parse.py depends_on apps/research/blueprint_models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/blueprint_scan.py",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/research/blueprint_scan.py extends .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/blueprints.py",
+      "target": "apps/research/blueprint_models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/research/blueprints.py depends_on apps/research/blueprint_models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ProgressionPipeline.jsx",
+      "target": ".github/workflows/pr-governance.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/web/src/components/workspace/ProgressionPipeline.jsx validates .github/workflows/pr-governance.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ProgressionPipeline.jsx",
+      "target": "apps/web/src/components/site/ui.jsx",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/web/src/components/workspace/ProgressionPipeline.jsx uses_template apps/web/src/components/site/ui.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/blueprints.js",
+      "target": "apps/pocketbase/pb_hooks/decision.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/web/src/lib/blueprints.js consumes apps/pocketbase/pb_hooks/decision.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/BlueprintPage.jsx",
+      "target": "apps/web/src/lib/blueprints.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/web/src/pages/workspace/BlueprintPage.jsx consumes apps/web/src/lib/blueprints.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/BlueprintPage.test.jsx",
+      "target": "apps/web/src/pages/workspace/BlueprintPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: apps/web/src/pages/workspace/__tests__/BlueprintPage.test.jsx validates apps/web/src/pages/workspace/BlueprintPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/blueprint-pipeline.md",
+      "target": "apps/decision/adapters/server.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: docs/blueprint-pipeline.md depends_on apps/decision/adapters/server.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/blueprint-pipeline.md",
+      "target": "apps/research/blueprints.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: docs/blueprint-pipeline.md depends_on apps/research/blueprints.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/fixtures/sample-blueprint.pdf.cgrf.yaml",
+      "target": "tests/fixtures/sample-blueprint.pdf",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/fixtures/sample-blueprint.pdf.cgrf.yaml produces tests/fixtures/sample-blueprint.pdf.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/blueprint-client.test.mjs",
+      "target": "apps/web/src/lib/blueprints.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/blueprint-client.test.mjs validates apps/web/src/lib/blueprints.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/blueprint_support.py",
+      "target": "apps/research/blueprints.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/blueprint_support.py validates apps/research/blueprints.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_blueprint_pipeline.py",
+      "target": "tests/upgrade/test_blueprint_pipeline.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/check_blueprint_pipeline.py validates tests/upgrade/test_blueprint_pipeline.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_decision_runtime.py",
+      "target": "tests/upgrade/test_decision_runtime.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/check_decision_runtime.py depends_on tests/upgrade/test_decision_runtime.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_decision_runtime.py",
+      "target": "apps/decision",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/check_decision_runtime.py validates apps/decision.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/decision-fixture.mjs",
+      "target": "apps/pocketbase/pb_hooks/decision-runtime.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/decision-fixture.mjs validates apps/pocketbase/pb_hooks/decision-runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/decision-runtime.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/decision.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/decision-runtime.test.mjs validates apps/pocketbase/pb_hooks/decision.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/decision-runtime.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workflow-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/decision-runtime.test.mjs depends_on apps/pocketbase/pb_hooks/workflow-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_blueprint_extraction.py",
+      "target": "apps/research/blueprints.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/test_blueprint_extraction.py validates apps/research/blueprints.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_blueprint_pipeline.py",
+      "target": "apps/decision/adapters/blueprint_to_components.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/test_blueprint_pipeline.py validates apps/decision/adapters/blueprint_to_components.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_blueprint_service.py",
+      "target": "apps/decision/adapters/service.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: tests/upgrade/test_blueprint_service.py validates apps/decision/adapters/service.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_blueprint_pipeline.py",
+      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17–100% statement coverage per new Python module. Strict source typing and Ruff pass.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-17T11:50:24.717556+00:00",
+      "commit_sha": null,
+      "smoke_result": "42/44"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/decision-runtime.test.mjs",
+      "description": "Blueprint pipeline continuation: Full available regression passes 299 Node and 266 Python tests, with 14 native dependency skips; actual Python BDR and application policy are exercised with explicit storage/layout doubles.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-17T11:50:24.717556+00:00",
+      "commit_sha": null,
+      "smoke_result": "565/579"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/test_blueprint_pipeline.py",
+      "description": "Blueprint pipeline continuation: Required native PDF gate fails because declared pypdf is unavailable. Vite, Vitest and frontend lint cannot start without their declared dependencies. Native PocketBase and rendered UI acceptance remain unverified.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-17T11:50:24.717556+00:00",
+      "commit_sha": null,
+      "smoke_result": "42/44"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "apps/decision/adapters/blueprint_to_components.py",
+      "description": "Blueprint pipeline continuation: Observed shared-data dependency regression red, corrected noun boundaries and producer/consumer normalization, then verified green with the focused regression.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-17T11:50:24.717556+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1"
+    },
+    {
+      "type": "A",
+      "file_path": ".gitattributes",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "tests/fixtures/sample-blueprint.pdf"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the PDF fixture bytes and format-required xref padding across Git checkouts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-upgrade-001",
+        "blueprint-pipeline-2026-09-17"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".gitattributes",
+      "target": "tests/fixtures/sample-blueprint.pdf",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": "Blueprint pipeline continuation: .gitattributes preserves exact PDF fixture bytes.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
     }
   ],
   "summary": {
-    "type_a_count": 508,
-    "type_b_count": 1093,
-    "type_c_count": 92,
+    "type_a_count": 551,
+    "type_b_count": 1148,
+    "type_c_count": 96,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
