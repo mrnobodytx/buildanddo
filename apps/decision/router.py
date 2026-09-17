@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        apps/decision/router.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-DECISION-001
+# SRS:         SRS-BUILDANDDO-DECISION-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-DECISION-001
+# Dispatch:    VCC-BUILDANDDO-DECISION-001, VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-17
@@ -222,6 +222,10 @@ class RulesBackend:
                 match = RuleMatch(answers[name])
         if match is None and name in self.rules:
             match = self.rules[name](state, question)
+        if match is None:
+            from apps.decision.workloads.blueprint_evaluation import blueprint_rule
+
+            match = blueprint_rule(name, state, question)
         if match is None:
             return None
         return BackendResult(

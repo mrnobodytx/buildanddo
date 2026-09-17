@@ -1,0 +1,18 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .gitattributes
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-17
+# Depends:     tests/fixtures/sample-blueprint.pdf
+# EnumType:    ConfigDoc
+# EnumEdges:   GATES tests/fixtures/sample-blueprint.pdf
+# DAG Node:    none
+# Intent:      Preserve the PDF fixture bytes and format-required xref padding across Git checkouts.
+# ───────────────────────────────────────────────────────────────
+
+tests/fixtures/sample-blueprint.pdf binary

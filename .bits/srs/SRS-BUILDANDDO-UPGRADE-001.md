@@ -20,6 +20,79 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Blueprint PR 38 integration continuation — 2026-09-17
+
+The owner reports merge conflicts and failing governance checks. Continue the
+existing A2 dispatch for integration with the PR's actual main base and local
+verification; no deployment, hosted write or new authority is authorized.
+
+Acceptance:
+
+1. Preserve main's protected blueprint upload, worker, saved review and proposal
+   contracts alongside the three-pass extractor and mission planning chain.
+   Register multipart intake and immediate analysis at distinct authenticated
+   routes, retain both test suites, and share the PDF scanner in the worker.
+2. Reconcile specifications and measured context semantically. Keep one current
+   file vector per path, derive relationship vectors from the actual headers,
+   and retain all distinct events from both parents without fabricating evidence.
+3. Run both blueprint coverage gates, decision and source regressions, typing,
+   public boundary, dependency lock and provenance checks. Keep native and
+   rendered acceptance separate when their installed dependencies are absent.
+4. Inspect actual provider check and actor-label state. Do not relax the actor
+   gate, infer hosted Workers diagnostics, or claim publication from local work.
+
+Observed integration outcome: both saved upload/review and immediate analysis
+are preserved under distinct authenticated routes. The saved schema uses the
+shared PDF scan, and flat excerpts survive structuring failures with an observed
+red/green regression. Both parent histories are retained without duplicate file
+vectors. Final regression passes 320 Node and 293 Python tests, with 18 explicit
+native skips. Source typing, statement coverage, context, boundary and manifest
+lock checks pass. The actor label, native PDF/PocketBase, fourteen rendered
+tests and unavailable Workers diagnostics remain acceptance gaps. See
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md for current evidence;
+the earlier continuation results below remain historical observations.
+
+## Blueprint pipeline continuation — 2026-09-17
+
+The owner requests deterministic CPU scan/parse/assess extraction, requirement
+evaluation through the existing Python BDR, component/dependency planning,
+ordered mission challenges and human-reviewed session prompts. This is an A2
+public-source continuation of the existing in-progress dispatch. The starting
+checkout contains the research worker and BDR Phase 1, but none of the reported
+blueprint files or sample PDF; this continuation supplies those missing pieces.
+
+Acceptance:
+
+1. Use the already declared pypdf dependency and standard library only. Preserve
+   PDF digest, page/block locations, heading hierarchy, lists, tables, entities,
+   requirements and resolved references across three deterministic CPU passes.
+   Report sparse pages, ambiguity, duplicates, completeness and confidence.
+2. Evaluate requirements through BDR; preserve answers and abstentions. Generate
+   an explicit component graph, dependency-ordered challenges and review-only
+   prompts with source/evaluation provenance and no authority escalation.
+3. Replace PocketBase's JavaScript decision approximation with a bounded local
+   Python adapter. Reuse native account/workspace authorization, persist private
+   decision receipts with stable IDs, and retain receipts on migration rollback.
+4. Expose authenticated PDF analysis and a workspace blueprint page with all
+   three passes, component dependencies, ordered challenges, prompt review and
+   JSON export. Submitted content is data, never executable instructions.
+5. Exercise the complete PDF-to-prompt chain offline, including provenance,
+   confidence, authority, malformed input, cycles and workspace isolation.
+   Report unavailable native dependencies separately from source-double tests.
+
+No session creation, mission activation, verification settlement, deployment,
+secret access, external model call or private-plane write is authorized.
+Extraction and planning remain unverified; their confidence is heuristic.
+
+Source outcome: all five requested source areas are supplied, including the
+previously absent blueprint modules and page. The focused suite passes 42
+tests, skips two native PDF cases and measures 94.17–100% statement coverage
+per new Python module. Regression passes 299 Node and 266 Python tests, with
+14 native dependency skips. Shared data-name normalization has an observed
+red/green regression. The native-required PDF gate is wired to the existing
+dependency-enabled CI job and correctly fails in this sandbox. Six rendered
+UI tests, native PocketBase and actual hosted acceptance remain unverified;
+missing pypdf and frontend dependencies are recorded in the blueprint report.
 ## Blueprint extractor Phase A continuation — 2026-09-17
 
 The owner requests structured blueprint extraction, research processing, native

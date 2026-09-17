@@ -1,0 +1,106 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 658 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+48 744 Td
+(1. Architecture) Tj
+T*
+(REQ-001 The Event database shall store event records.) Tj
+T*
+(1.1 Event worker) Tj
+T*
+(REQ-002 The Event worker shall read event records from the Event database.) Tj
+T*
+(1.2 Notification service) Tj
+T*
+(REQ-003 The Notification service depends on the Event worker and shall publish alert events.) Tj
+T*
+(See Section 1.1 for the worker contract.) Tj
+T*
+(2. Interfaces) Tj
+T*
+(| Interface | Direction |) Tj
+T*
+(|-----------|-----------|) Tj
+T*
+(| event records | read |) Tj
+T*
+(API \(Application Programming Interface\)) Tj
+T*
+(3. Open questions) Tj
+T*
+(TBD: choose an appropriate retry schedule.) Tj
+T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 251 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+48 744 Td
+(4. Reliability) Tj
+T*
+(REQ-004 The Notification service should retry as needed.) Tj
+T*
+(Application Programming Interface \(API\)) Tj
+T*
+(Ref: interface-v1) Tj
+T*
+(See Section 99.9.) Tj
+T*
+(TODO: latency budget.) Tj
+T*
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 31 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+48 744 Td
+ET
+endstream
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000127 00000 n 
+0000000197 00000 n 
+0000000323 00000 n 
+0000001032 00000 n 
+0000001158 00000 n 
+0000001460 00000 n 
+0000001586 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+1667
+%%EOF

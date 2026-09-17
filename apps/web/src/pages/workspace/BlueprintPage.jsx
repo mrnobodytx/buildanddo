@@ -8,188 +8,170 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-17
-// Depends:     apps/web/src/lib/blueprints.js, apps/web/src/contexts/WorkspaceContext.jsx, apps/web/src/components/workspace/ControlPrimitives.jsx
+// Depends:     apps/web/src/pages/workspace/BlueprintSavedPage.jsx, apps/web/src/lib/blueprints.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/lib/blueprints.js; CONSUMES apps/web/src/contexts/WorkspaceContext.jsx; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx
+// EnumEdges:   CONSUMES apps/web/src/pages/workspace/BlueprintSavedPage.jsx; CONSUMES apps/web/src/lib/blueprints.js
 // DAG Node:    none
-// Intent:      Let workspace members review PDF requirements and unknown design decisions before exporting a proposed mission or challenge.
+// Intent:      Present all extraction passes, dependency planning and source-linked prompts for human review.
 // ───────────────────────────────────────────────────────────────
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
-import { PageControls, PlainArticle, controlInput, dateLabel } from '@/components/workspace/ControlPrimitives';
+import { controlInput } from '@/components/workspace/ControlPrimitives';
+import BlueprintSavedPage from './BlueprintSavedPage';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
-import { createBlueprintClient, blueprintDefinition } from '@/lib/blueprints';
-import { RESEARCH_STATES } from '@/lib/missionResearch';
 import pb from '@/lib/pocketbaseClient';
-import { observeMutation } from '@/lib/observability/mutations';
+import { createBlueprintClient, exportMissionPlan } from '@/lib/blueprints';
 
-const linkClass = 'text-sm underline underline-offset-4';
-const displayScore = (value) => value === null || value === undefined ? 'Needs review' : `${value}/10`;
+const percent = (value) => Number.isFinite(value) ? Math.round(value * 100) + '%' : 'Unavailable';
+const warningLabel = (value) => value.replaceAll('_', ' ').replaceAll(':', ' — ');
 
-function Assessment({ evaluation }) {
-    if (!evaluation) return <p className="text-sm text-muted-foreground">Assessment unavailable. Review this requirement manually.</p>;
-    return <div className="space-y-2">
-        <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3 lg:grid-cols-5">
-            <div><dt className="text-muted-foreground">Feasibility</dt><dd>{displayScore(evaluation.feasibility)}</dd></div>
-            <div><dt className="text-muted-foreground">Complexity</dt><dd>{displayScore(evaluation.complexity)}</dd></div>
-            <div><dt className="text-muted-foreground">Risk</dt><dd>{displayScore(evaluation.risk)}</dd></div>
-            <div><dt className="text-muted-foreground">Component type</dt><dd>{evaluation.component_type || 'Needs review'}</dd></div>
-            <div><dt className="text-muted-foreground">Automatable</dt><dd>{evaluation.automatable === null ? 'Needs review' : evaluation.automatable ? 'Yes' : 'No'}</dd></div>
-        </dl>
-        <p className="text-xs text-muted-foreground">BDR confidence: {Object.entries(evaluation.confidence).map(([key, value]) => `${key.replace('_', ' ')} ${Math.round(value * 100)}%`).join(' · ')}</p>
-    </div>;
-}
-
-function BlueprintResult({ record, onExport }) {
-    const blueprint = record.blueprint;
-    if (!blueprint) return <div className="space-y-3"><p className="text-sm">Structured extraction was unavailable. The extracted text and original PDF are retained for review.</p><PlainArticle text={record.text} /></div>;
-    const sections = Object.fromEntries(blueprint.sections.map((section) => [section.id, section.title]));
-    const evaluations = Object.fromEntries((record.evaluation?.requirements || []).map((row) => [row.requirement_id, row]));
-    return <div className="space-y-6">
-        <div className="space-y-2"><h2 className="font-headline text-2xl break-words">{blueprint.title}</h2>
-            <p className="text-sm text-muted-foreground">{blueprint.page_count} pages · Extraction confidence {Math.round(blueprint.extraction_confidence * 100)}% · {dateLabel(blueprint.extracted_at)}</p>
-            <p className="break-all text-xs text-muted-foreground">Source SHA-256: {blueprint.source_hash}</p>
-            <p className="text-sm">Assessments are advisory. “Needs review” means BDR abstained or no assessment is available.</p>
-            {record.evaluation_failure && <p role="status" className="text-sm">The decision assessment is unavailable; the extracted blueprint is saved.</p>}
-            <div className="flex flex-wrap gap-3"><Button variant="secondary" onClick={() => onExport('mission')}>Export mission definition</Button>
-                <Button variant="secondary" onClick={() => onExport('challenge')}>Export challenge definition</Button></div>
-            <p className="text-xs text-muted-foreground">Exports are proposals for review. Complete the plan and obtain approval before implementation.</p>
-        </div>
-        <section aria-label="Extracted requirements" className="space-y-4"><h3 className="font-headline text-xl">Requirements ({blueprint.requirements.length})</h3>
-            {blueprint.requirements.map((requirement) => <article key={requirement.id} className="space-y-3 rounded-md border border-border p-4">
-                <h4 className="break-words font-semibold">{requirement.id} · {requirement.priority} · {requirement.type}</h4>
-                <PlainArticle text={requirement.text} />
-                <p className="text-xs text-muted-foreground">Section: {sections[requirement.section] || requirement.section}</p>
-                <Assessment evaluation={evaluations[requirement.id]} />
-                <details className="text-sm"><summary className="cursor-pointer">Source context</summary><PlainArticle text={requirement.raw_context} /></details>
-            </article>)}
-        </section>
-        <section aria-label="Component dependencies" className="space-y-3"><h3 className="font-headline text-xl">Components and dependencies</h3>
-            {!blueprint.components.length && <p className="text-sm">No named components were identified.</p>}
-            <ul className="space-y-3">{blueprint.components.map((component) => <li key={component.name} className="rounded-md border border-border p-3 text-sm">
-                <p className="break-words font-semibold">{component.name} ({component.type})</p><PlainArticle text={component.description} />
-                <p className="break-words">{component.dependencies.length ? `${component.name} → ${component.dependencies.join(', ')}` : 'No dependencies specified.'}</p>
-                <p className="break-words text-xs text-muted-foreground">Requirements: {component.requirements.join(', ') || 'No explicit mapping found'}</p>
+function BlueprintResults({ data, busy, generate }) {
+    const { blueprint, component_graph: graph, mission_plan: mission, session_prompts: prompts } = data;
+    const { scan, parsed, assessment } = blueprint;
+    const components = new Map(graph.components.map((item) => [item.id, item]));
+    const sections = new Map(parsed.sections.map((item) => [item.id, item]));
+    const metrics = [
+        ['Requirement coverage', assessment.requirement_coverage, assessment.counts.sections > 0],
+        ['Heading regularity', assessment.structural_regularity, assessment.counts.headings > 0],
+        ['Table parse quality', assessment.table_parse_quality, assessment.counts.detected_tables > 0],
+        ['Section references resolved', assessment.cross_reference_resolution_rate, assessment.counts.section_references > 0],
+        ['Entity consistency', assessment.entity_consistency, assessment.counts.entities > 0],
+    ];
+    return <div className="min-w-0 space-y-5">
+        <p className="break-all text-xs font-evidence">PDF SHA-256: {blueprint.input_sha256}</p>
+        <Card className="min-w-0 space-y-3 p-5">
+            <h2 className="font-display text-xl">Pass 1 — Scan</h2>
+            <p className="text-sm">{scan.pages.length} pages · {scan.headings.length} headings · {scan.table_regions.length} table regions · {scan.list_items.length} list items</p>
+            <div className="overflow-x-auto"><table className="w-full text-left text-sm">
+                <thead><tr><th scope="col">Page</th><th scope="col">Text characters</th><th scope="col">Columns</th><th scope="col">Layout</th></tr></thead>
+                <tbody>{scan.pages.map((page) => <tr key={page.page} className="border-t border-border">
+                    <td className="py-2">{page.page}</td><td>{page.text_characters}</td><td>{page.columns}</td>
+                    <td>{page.diagram_only ? 'Sparse text; possible diagram or scan' : page.positions_available ? 'Positioned text' : 'Text order fallback'}</td>
+                </tr>)}</tbody></table></div>
+        </Card>
+        <Card className="min-w-0 space-y-4 p-5">
+            <h2 className="font-display text-xl">Pass 2 — Parsed structure</h2>
+            {parsed.sections.length ? <ul className="space-y-2">{parsed.sections.map((section) => <li key={section.id} className="break-words">
+                <span className="text-xs text-muted-foreground">Level {section.level} · Page {section.source.page} · </span>
+                {section.number} {section.title}
+                {section.parent_id && <span className="text-xs text-muted-foreground"> (under {sections.get(section.parent_id)?.title})</span>}
+                <span className="text-xs"> · {section.requirement_ids.length} requirements</span>
+            </li>)}</ul> : <p>No text sections were detected.</p>}
+            <h3 className="font-medium">Requirements and extraction confidence</h3>
+            {!parsed.requirements.length && <p className="text-sm">No requirements were extracted. Review the original PDF.</p>}
+            <ol className="space-y-3">{parsed.requirements.map((requirement) => <li key={requirement.id} className="space-y-1 rounded border border-border p-3">
+                <p className="text-xs font-evidence">{requirement.source_id || requirement.id} · Page {requirement.source.page} · Confidence {percent(requirement.confidence)}</p>
+                <p className="whitespace-pre-wrap break-words text-sm">{requirement.text}</p>
+                <p className="text-xs text-muted-foreground">{requirement.confidence_reasons.map(warningLabel).join('; ')}</p>
+            </li>)}</ol>
+            {parsed.tables.map((table) => <details key={table.id}><summary className="cursor-pointer text-sm">Table {table.id} · Page {table.source.page}</summary>
+                <div className="mt-2 overflow-x-auto"><table className="w-full text-left text-sm"><tbody>{table.rows.map((row, i) => <tr key={i} className="border-t border-border">{row.map((cell, j) => <td key={j} className="whitespace-pre-wrap p-2">{cell}</td>)}</tr>)}</tbody></table></div>
+            </details>)}
+            <details><summary className="cursor-pointer text-sm">Cross-references, acronyms and open items</summary>
+                <ul className="mt-2 space-y-2 text-sm">
+                    {parsed.cross_references.map((ref) => <li key={ref.id}>{ref.text} · {ref.resolved_id ? 'Resolved to ' + (sections.get(ref.resolved_id)?.title || ref.resolved_id) : 'Unresolved or external'} · Page {ref.source.page}</li>)}
+                    {parsed.acronyms.map((item, i) => <li key={'acronym-' + i}>{item.acronym}: {item.full_name} · Page {item.source.page}</li>)}
+                    {parsed.open_items.map((item, i) => <li key={'open-' + i}>{item.marker}: {item.text} · Page {item.source.page}</li>)}
+                </ul>
+            </details>
+        </Card>
+        <Card className="space-y-4 p-5">
+            <h2 className="font-display text-xl">Pass 3 — Assessment</h2>
+            <dl className="grid gap-3 sm:grid-cols-2">{metrics.map(([label, value, applicable]) => <div key={label}>
+                <dt className="text-sm text-muted-foreground">{label}</dt><dd className="font-evidence">{applicable ? percent(value) : 'Not applicable'}</dd>
+            </div>)}<div><dt className="text-sm text-muted-foreground">Vague phrases</dt><dd>{assessment.ambiguity_score}</dd></div></dl>
+            <p className="text-sm">Descriptive sections without requirements: {assessment.sections_without_requirements.map((id) => sections.get(id)?.title || id).join(', ') || 'None'}</p>
+            {assessment.duplicate_requirements.map((item, i) => <p key={i} className="text-sm">Possible duplicate: {item.requirement_ids.join(' / ')} · {percent(item.similarity)} text overlap</p>)}
+            <ul className="space-y-1 text-xs text-muted-foreground">{assessment.warnings.map((warning, i) => <li key={i}>{warningLabel(warning)}</li>)}</ul>
+        </Card>
+        <Card className="space-y-4 p-5">
+            <h2 className="font-display text-xl">Component dependencies</h2>
+            <ul className="space-y-3">{graph.components.map((component) => <li key={component.id} className="space-y-1">
+                <p className="font-medium">{component.name} <span className="font-evidence text-xs">({component.type})</span></p>
+                <p className="text-sm">{component.requirements.length} requirements · Depends on: {[...new Set(component.dependencies.map((dep) => components.get(dep.component_id)?.name || dep.component_id))].join(', ') || 'None'}</p>
+                {component.dependencies.map((dep, i) => <p key={i} className="text-xs text-muted-foreground">{warningLabel(dep.reason)} · {dep.requirement_ids.join(', ')}</p>)}
             </li>)}</ul>
-        </section>
-        {[['Constraints', blueprint.constraints], ['Assumptions', blueprint.assumptions], ['Open questions', blueprint.open_questions]].map(([label, items]) =>
-            <section key={label} className="space-y-2"><h3 className="font-headline text-xl">{label}</h3>
-                {items.length ? <ul className="list-disc space-y-1 pl-5 text-sm">{items.map((item, index) => <li className="break-words" key={index}>{item}</li>)}</ul> : <p className="text-sm text-muted-foreground">None explicitly identified.</p>}
-            </section>)}
+            {graph.warnings.map((warning, i) => <p key={i} className="break-words text-xs">{warningLabel(warning)}</p>)}
+        </Card>
+        <Card className="space-y-4 p-5">
+            <h2 className="font-display text-xl">Mission plan</h2>
+            {data.planning_error && <p role="alert">Planning needs review: {warningLabel(data.planning_error)}. Resolve the dependencies before generating prompts.</p>}
+            {mission && <><p className="text-sm">Draft · A0 review · Unverified</p>
+                <ol className="space-y-3">{mission.challenges.map((challenge) => <li key={challenge.id}>
+                    <h3 className="font-medium">{challenge.order}. {challenge.component.name}</h3>
+                    <p className="text-sm">Requirements: {challenge.requirement_ids.join(', ')} · Complexity: {challenge.estimated_complexity === null ? 'Unknown' : challenge.estimated_complexity + '/5'}</p>
+                    <details><summary className="cursor-pointer text-xs">BDR evaluation scores and provenance</summary>
+                        {challenge.component.evaluations.map((evaluation) => <div key={evaluation.id} className="my-2 space-y-1 text-xs">
+                            <p className="break-all font-evidence">{evaluation.requirement_id} · {evaluation.id} · Page {evaluation.source.page}</p>
+                            {Object.entries(evaluation.decision.answers).map(([key, answer]) => <p key={key}>{warningLabel(key)}: {answer.abstained ? 'Abstained' : String(answer.value)} · Confidence {percent(answer.confidence)}</p>)}
+                        </div>)}
+                    </details>
+                </li>)}</ol>
+                {!mission.challenges.length && <p className="text-sm">No component challenges can be proposed without requirements.</p>}
+                <div className="flex flex-wrap gap-3"><Button onClick={generate} disabled={busy || !mission.challenges.length}>Generate session prompts</Button>
+                    <Button variant="secondary" onClick={() => exportMissionPlan(mission)}>Export mission plan as JSON</Button></div>
+            </>}
+            {prompts.length > 0 && <section className="space-y-3" aria-label="Session prompts for review">
+                <h3 className="font-medium">Session prompts for review</h3>
+                <p className="text-sm">Review the source and approve a separate implementation dispatch before creating a session.</p>
+                {prompts.map((prompt, i) => <details key={prompt.id}><summary className="cursor-pointer text-sm">Prompt {i + 1} · {components.get(prompt.component_id)?.name}</summary>
+                    <label className="mt-2 block text-xs">Review prompt {i + 1}<textarea className={controlInput + ' mt-1 font-mono text-xs'} value={prompt.prompt} readOnly rows={16} /></label>
+                </details>)}
+            </section>}
+        </Card>
     </div>;
 }
 
-function BlueprintDesk({ accountId, workspaceId }) {
-    const live = useRef(true); const listing = useRef(0); const reading = useRef(0); const input = useRef(null);
-    const api = useMemo(() => createBlueprintClient({ client: pb, accountId, workspaceId, isCurrent: () => live.current,
-        observe: observeMutation }), [accountId, workspaceId]);
-    const [page, setPage] = useState(1); const [selected, setSelected] = useState(''); const [file, setFile] = useState(null);
-    const [snapshot, setSnapshot] = useState({ page: 1, loading: true, data: null, error: '' });
-    const [detail, setDetail] = useState({ id: '', record: null, error: '', loading: false });
-    const [write, setWrite] = useState({ saving: false, uncertain: false, error: '' });
-    const [original, setOriginal] = useState({ id: '', url: '', error: '' });
-    const load = useCallback(async () => {
-        const attempt = ++listing.current;
-        const result = await api.read(page);
-        if (!live.current || listing.current !== attempt) return;
-        setSnapshot({ page, loading: false, data: result.ok ? result.data : null, error: result.error || '' });
-        if (!result.ok) { reading.current++; setDetail({ id: '', record: null, error: '', loading: false }); setOriginal({ id: '', url: '', error: '' }); }
-    }, [api, page]);
-    const inspect = useCallback(async () => {
-        const attempt = ++reading.current;
-        if (!selected) return;
-        const result = await api.detail(selected);
-        if (!live.current || reading.current !== attempt) return;
-        setDetail({ id: selected, record: result.ok ? result.data.record : null, error: result.error || '', loading: false });
-        if (result.ok) setSnapshot((old) => old.data ? { ...old, data: { ...old.data, items: old.data.items.map((item) =>
-            item.id === selected ? { ...item, status: result.data.record.status, revision: result.data.record.revision, attempt: result.data.record.attempt } : item) } } : old);
-        if (!result.ok) setOriginal({ id: '', url: '', error: '' });
-    }, [api, selected]);
-    useEffect(() => { live.current = true; return () => { live.current = false; listing.current++; reading.current++; }; }, []);
-    useEffect(() => { setSnapshot({ page, loading: true, data: null, error: '' }); void load(); }, [load, page]);
-    useEffect(() => {
-        reading.current++; setDetail({ id: selected, record: null, error: '', loading: Boolean(selected) }); setOriginal({ id: '', url: '', error: '' });
-        void inspect();
-    }, [inspect, selected]);
-    const record = detail.id === selected ? detail.record : null;
-    useEffect(() => {
-        if (!record || !['queued', 'processing'].includes(record.status)) return undefined;
-        const timer = window.setInterval(() => { if (document.visibilityState !== 'hidden') void inspect(); }, 3000);
-        return () => window.clearInterval(timer);
-    }, [inspect, record]);
-    const save = async (operation) => {
-        setWrite({ saving: true, uncertain: false, error: '' });
-        const result = await operation();
+function BlueprintDesk({ accountId, workspaceId, demo }) {
+    const live = useRef(true);
+    const pending = useRef(false);
+    const [file, setFile] = useState(null);
+    const [state, setState] = useState({ busy: false, data: null, error: '' });
+    useEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
+    const client = useMemo(() => createBlueprintClient({ client: pb, accountId, workspaceId, demo, isCurrent: () => live.current }),
+        [accountId, workspaceId, demo]);
+    const analyze = async (includePrompts = false) => {
+        if (pending.current) return;
+        pending.current = true;
+        setState((old) => ({ busy: true, data: includePrompts ? old.data : null, error: '' }));
+        const result = await client.analyze(file, includePrompts);
+        pending.current = false;
         if (!live.current) return;
-        setWrite({ saving: false, uncertain: result.reason === 'uncertain', error: result.error || '' });
-        if (result.ok) {
-            const saved = result.data.record;
-            setSelected(saved.id); setDetail({ id: saved.id, record: saved, error: '', loading: false });
-            if (result.kind === 'upload') { setFile(null); if (input.current) input.current.value = ''; }
-            void load();
-        }
+        setState((old) => ({ busy: false, data: result.ok ? result.data : old.data, error: result.error || '' }));
     };
-    const download = (kind) => {
-        try {
-            const payload = blueprintDefinition(record, kind);
-            const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2) + '\n'], { type: 'application/json' }));
-            const link = document.createElement('a'); link.href = url; link.download = `blueprint-${record.id}-${kind}.json`;
-            link.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-        } catch { setWrite((old) => ({ ...old, error: 'This blueprint could not be exported. Refresh it and try again.' })); }
-    };
-    const originalFile = async () => {
-        const selectedId = record.id;
-        const result = await api.original(record.upload);
-        if (live.current) setOriginal({ id: selectedId, url: result.ok ? result.url : '', error: result.error || '' });
-    };
-    const data = snapshot.page === page ? snapshot.data : null;
-    const writable = data && data.role !== 'viewer';
-    const disabled = !writable || write.saving || write.uncertain;
-    return <div className="space-y-6 ph-no-capture" data-dd-privacy="mask">
-        <PageHeader title="Blueprints" description="Upload a specification PDF, review its requirements and dependencies, and prepare a mission or challenge proposal." />
-        <div className="flex flex-wrap gap-4"><Link className={linkClass} to="/app/research">Mission research</Link><Link className={linkClass} to="/app/missions">Challenge Desk</Link><Link className={linkClass} to="/app/integrations">Processing settings</Link></div>
-        {snapshot.loading && <p role="status">Loading blueprints…</p>}
-        {snapshot.error && <p role="alert">{snapshot.error}</p>}
-        <Button variant="secondary" onClick={() => { void load(); void inspect(); }}>Refresh status</Button>
-        {data && <Card className="space-y-4 p-5"><form aria-label="Upload blueprint" className="space-y-3" onSubmit={(event) => { event.preventDefault(); void save(() => api.upload(file)); }}>
-            <label className="block space-y-2 text-sm">Blueprint PDF<input ref={input} type="file" accept=".pdf,application/pdf" className={controlInput} disabled={disabled} onChange={(event) => setFile(event.target.files?.[0] || null)} /></label>
-            <p className="text-xs text-muted-foreground">Up to 20 MiB. Text-based PDFs only; scanned images and diagrams need separate review.</p>
-            <Button type="submit" disabled={disabled || !file}>{write.saving ? 'Saving…' : 'Upload blueprint'}</Button>
-            {!writable && <p className="text-sm">A workspace editor can upload blueprints.</p>}
-        </form></Card>}
-        <div aria-live="polite">{write.error && <p role="alert" className="text-sm">{write.error}</p>}
-            {write.uncertain && <Button variant="secondary" disabled={write.saving} onClick={() => save(api.retry)}>Retry previous request</Button>}</div>
-        {data && <Card className="space-y-4 p-5"><h2 className="font-headline text-xl">Saved blueprints</h2>
-            {!data.items.length && <p className="text-sm text-muted-foreground">No blueprints have been uploaded to this workspace.</p>}
-            <ul className="space-y-2">{data.items.map((item) => <li key={item.id}><button type="button" aria-pressed={selected === item.id} className="w-full rounded-md border border-border p-3 text-left text-sm hover:bg-accent" onClick={() => setSelected(item.id)}>
-                <span className="break-words font-semibold">{item.source_file}</span><span className="ml-3 text-muted-foreground">{RESEARCH_STATES[item.status]}</span></button></li>)}</ul>
-            <PageControls page={page} hasMore={data.has_more} onPage={setPage} label="Blueprint" />
-        </Card>}
-        {detail.loading && <p role="status">Loading selected blueprint…</p>}
-        {detail.error && <p role="alert">{detail.error}</p>}
-        {data && record && <Card className="space-y-5 p-5" aria-label="Blueprint details"><p role="status">{RESEARCH_STATES[record.status]}</p>
-            {record.status === 'blocked' && <p className="text-sm">Document processing is unavailable. Check the workspace processing settings, then retry.</p>}
-            {record.status === 'failed' && <p className="text-sm">Extraction failed ({record.failure}). The original PDF is retained.</p>}
-            {['queued', 'processing'].includes(record.status) && <p className="text-sm">The research worker is extracting this PDF. Status refreshes while this page is visible.</p>}
-            {(record.truncated || record.blueprint?.truncated) && <p role="status" className="text-sm">Extraction is truncated. Review the original PDF for omitted material.</p>}
-            {record.status === 'ready' && <BlueprintResult record={record} onExport={download} />}
-            <div className="flex flex-wrap gap-3"><Button variant="secondary" onClick={originalFile}>Prepare original PDF download</Button>
-                {writable && ['blocked', 'failed'].includes(record.status) && record.attempt < 5 && <Button disabled={disabled} onClick={() => save(() => api.command(record.id, 'retry', record.revision))}>Retry extraction</Button>}
-                {writable && ['queued', 'processing', 'blocked', 'failed'].includes(record.status) && <Button disabled={disabled} variant="secondary" onClick={() => save(() => api.command(record.id, 'cancel', record.revision))}>Cancel extraction</Button>}</div>
-            {original.id === record.id && original.url && <a className={linkClass} href={original.url} download rel="noreferrer">Download original PDF</a>}
-            {original.id === record.id && original.error && <p role="alert" className="text-sm">{original.error}</p>}
-        </Card>}
+    const enabled = Boolean(accountId && workspaceId && !demo);
+    return <div className="min-w-0 space-y-6 ph-no-capture" data-dd-privacy="mask">
+        <PageHeader title="Blueprints" description="Review a PDF’s requirements, component dependencies and proposed mission challenges." />
+        <p className="text-sm text-muted-foreground">CPU extraction produces heuristic, unverified observations. Session prompts require human review.</p>
+        <Link to="/app/missions" className="text-sm underline underline-offset-4">Open Challenge Desk</Link>
+        {!enabled && <p role="status">Sign in, select a workspace and turn off demonstration mode to analyze a PDF.</p>}
+        <Card className="space-y-3 p-5"><form aria-label="Analyze blueprint" className="space-y-3" onSubmit={(e) => { e.preventDefault(); void analyze(); }}>
+            <label className="block text-sm">Blueprint PDF (up to 20 MiB)
+                <input type="file" accept=".pdf,application/pdf" disabled={!enabled || state.busy} className={controlInput + ' mt-1'} onChange={(e) => {
+                    setFile(e.target.files?.[0] || null); setState({ busy: false, data: null, error: '' });
+                }} /></label>
+            <Button type="submit" disabled={!enabled || !file || state.busy}>{state.busy ? 'Analyzing…' : 'Analyze blueprint'}</Button>
+        </form>{state.busy && <p role="status">Processing the PDF and its review plan…</p>}{state.error && <p role="alert">{state.error}</p>}</Card>
+        {state.data && <BlueprintResults data={state.data} busy={state.busy} generate={() => analyze(true)} />}
+        <footer className="text-xs text-muted-foreground">Powered by Citadel Nexus Inc. · <a href="https://citadel-nexus.com/status" className="underline">Service status</a></footer>
     </div>;
 }
 
 export default function BlueprintPage() {
+    const [view, setView] = useState('analysis');
     const { user, isAuthed } = useAuth(); const { active } = useWorkspace(); const { demo } = useDemoMode();
-    if (!isAuthed || !user?.id || !active?.id || demo) return <div className="space-y-4"><PageHeader title="Blueprints" description="Review specification PDFs in your workspace." />
-        <Card className="p-5"><p>Sign in, select a workspace and turn off demonstration mode to manage blueprints.</p></Card></div>;
-    return <BlueprintDesk key={`${user.id}:${active.id}`} accountId={user.id} workspaceId={active.id} />;
+    const accountId = isAuthed ? user?.id || '' : '';
+    return <div className="space-y-5">
+        <nav aria-label="Blueprint views" className="flex flex-wrap gap-2">
+            <Button variant={view === 'analysis' ? 'default' : 'secondary'} aria-pressed={view === 'analysis'} onClick={() => setView('analysis')}>Analyze PDF</Button>
+            <Button variant={view === 'saved' ? 'default' : 'secondary'} aria-pressed={view === 'saved'} onClick={() => setView('saved')}>Saved PDFs</Button>
+        </nav>
+        {view === 'saved' ? <BlueprintSavedPage /> : <BlueprintDesk key={accountId + ':' + (active?.id || '') + ':' + demo}
+            accountId={accountId} workspaceId={active?.id || ''} demo={demo} />}
+    </div>;
 }

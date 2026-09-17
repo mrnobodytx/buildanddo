@@ -20,6 +20,57 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Blueprint PR 38 integration authorized 2026-09-17
+
+The owner's conflict and governance report continues this in-progress A2 source
+dispatch. Update from the named origin/main base and retain both implementations.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| A | Reconcile saved intake and immediate analysis with distinct routes and shared PDF scan | node --test tests/upgrade/decision-runtime.test.mjs tests/upgrade/blueprint-client.test.mjs tests/upgrade/blueprint-saved-client.test.mjs tests/upgrade/blueprint-system.test.mjs | PASS: 41 source tests; duplicate-route regression reproduced and resolved |
+| B | Retain both Python contracts and their coverage | python tests/upgrade/check_blueprint_pipeline.py; python tests/upgrade/check_blueprints.py; python tests/upgrade/check_decision_runtime.py | PASS for source: 69, 51 and 64 passes; native skips remain explicit; saved PDF fallback has red/green evidence |
+| C | Reconcile source records and both parents' event histories | python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py | PASS: one current vector per path, header-derived edges, all 102 distinct parent events retained |
+| D | Validate the integrated tree and report provider limits | python scripts/ci/agent_context.py --check; python scripts/ci/verify_public_boundary.py; python scripts/ci/supply_chain.py --skip-audit --check-lock | Local source checks PASS; hosted label, native/rendered acceptance and Workers diagnostics remain open |
+
+The actor:agent label must be applied through the source-control UI; repository
+CLI writes are unavailable in this session. No workflow check is bypassed.
+
+Recovered integration evidence: 320 Node and 293 Python tests pass, with 18
+native dependency skips. The targeted pipeline measures 91.57–100% statement
+coverage across both blueprint contracts; the saved worker gate measures
+88.27–98.31%. Strict typing passes sixteen files and the limited frontend
+diagnostic parses 252 modules. Existing smoke remains 4/7 because Vitest,
+eslint-plugin-import and Vite are absent. Native pypdf/PocketBase acceptance
+and fourteen rendered tests remain unverified. The unchanged advisory changelog
+check is stale; Workers check 105249499047 supplies no diagnostic text.
+The current blueprint-report.md records exact commands, causes and limits.
+
+## Blueprint pipeline continuation authorized 2026-09-17
+
+The current owner request continues this A2 source dispatch with five tasks.
+The blueprint files described in the source conversation are absent at the
+starting revision. Reuse the existing research contracts, native PocketBase
+authorization, BDR runtime and workspace shell to supply the missing pipeline.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| BP1 | CPU scan, parse and assessment with page provenance | `python -m unittest tests.upgrade.test_blueprint_extraction` | source PASS; native PDF unavailable |
+| BP2 | BDR, components, missions and review-only prompts | `python -m unittest tests.upgrade.test_blueprint_pipeline` | source PASS; native PDF chain unavailable |
+| BP3 | Python process bridge and retained decision receipts | `node --test tests/upgrade/decision-runtime.test.mjs` | PASS: real Python and policy with a storage double; native PocketBase unverified |
+| BP4 | Workspace analysis and prompt/export review | `npm --prefix apps/web test -- BlueprintPage` | source supplied; six rendered tests require missing frontend dependencies |
+| BP5 | Offline integration and regression evidence | `python tests/upgrade/check_blueprint_pipeline.py` | PASS: 42 tests, 2 native skips, 94.17–100% statement coverage |
+
+Run the existing smoke gates as well. No live authenticated workspace is
+provided, so no seat event is fabricated. Python pypdf and frontend packages
+are initially unavailable; distinguish native acceptance from test doubles.
+
+Current local regression: 299 Node passes; 266 Python passes with 14 native
+dependency skips. The mandatory `--require-pdf` gate fails here because pypdf
+is unavailable and is wired into the CI job that installs the declared parser.
+Strict typing and source lint pass. Vite build, Vitest and official frontend
+lint cannot start because their dependencies are missing. No deployment or
+native PocketBase migration is claimed. Evidence and runnable commands are in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md.
 ## Blueprint Phase A continuation authorized 2026-09-17
 
 The current owner request continues the registered A2 research/workspace source

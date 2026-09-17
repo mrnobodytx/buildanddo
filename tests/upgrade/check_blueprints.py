@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-17
-# Depends:     apps/research/blueprints.py
+# Depends:     apps/research/blueprint_documents.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES apps/research/blueprints.py
+# EnumEdges:   VALIDATES apps/research/blueprint_documents.py
 # DAG Node:    none
 # Intent:      Require blueprint behavior and measured statement coverage while reporting unavailable native dependencies.
 # ───────────────────────────────────────────────────────────────
@@ -51,8 +51,8 @@ def main() -> int:
     finally:
         threading.settrace(None)
     counts = tracer.results().counts
-    paths = ['apps/research/blueprints.py', 'apps/research/processing.py', 'apps/research/contracts.py',
-             'apps/research/worker.py', 'apps/decision/workloads/blueprint_evaluation.py']
+    paths = ['apps/research/blueprint_documents.py', 'apps/research/processing.py', 'apps/research/contracts.py',
+             'apps/research/worker.py', 'apps/decision/workloads/blueprint_document_evaluation.py']
     measured = {}
     for name in paths:
         path = ROOT / name
