@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-ESTATE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-ESTATE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-17
+# Depends:     .bits/out/VCC-BUILDANDDO-ESTATE-001/report.md, .bits/srs/SRS-BUILDANDDO-ESTATE-001.md
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON .bits/out/VCC-BUILDANDDO-ESTATE-001/report.md; DEPENDS_ON .bits/srs/SRS-BUILDANDDO-ESTATE-001.md
+# DAG Node:    none
+# Intent:      Preserve the estate dispatch's substantive file metadata, graph relationships and observed verification events for post-merge ingestion.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: 1
+governs: .bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json
+
