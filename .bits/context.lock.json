@@ -133,7 +133,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-17T04:07:42.353393+00:00",
+  "generated_at": "2026-09-17T01:09:47.181198+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -176,11 +176,11 @@
         "title": "CI Visibility, DORA, build telemetry and baseline deltas"
       },
       {
-        "code": "SRS-BUILDANDDO-DECISION-001",
+        "code": "SRS-BUILDANDDO-CRAWL-001",
         "risk": "A1",
-        "spec": ".bits/srs/SRS-BUILDANDDO-DECISION-001.md",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CRAWL-001.md",
         "status": "in_progress",
-        "title": "BuildAndDo Decision Runtime Phase 1 typed decision primitive"
+        "title": "Firecrawl verification for every canonical public page"
       },
       {
         "code": "SRS-BUILDANDDO-DEVENV-001",
@@ -455,7 +455,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 785,
+    "tracked_files": 769,
     "web_source_files": 249
   },
   "schema_version": 1,

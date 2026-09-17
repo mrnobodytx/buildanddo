@@ -1,0 +1,21 @@
+# ─── CGRF Header ──────────────────────────────
+# File:        .bits/out/USO-BUILDANDDO-CRAWL-001/memory.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-CRAWL-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    USO-BUILDANDDO-CRAWL-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-17
+# Depends:     .bits/out/USO-BUILDANDDO-CRAWL-001/report.md
+# EnumType:    Schema
+# EnumEdges:   DEPENDS_ON .bits/out/USO-BUILDANDDO-CRAWL-001/report.md;
+#              PRODUCES .bits/out/USO-BUILDANDDO-CRAWL-001/memory.json
+# DAG Node:    public.crawl.check.memory
+# Intent:      Describe the post-merge memory payload for the governed public crawl verification change.
+# ───────────────────────────────
+
+artifact: memory.json
+encoding: utf-8
+vector_types: [A, B, C]
