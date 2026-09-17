@@ -1,0 +1,1987 @@
+{
+  "vectors": [
+    {
+      "type": "A",
+      "file_path": ".bits/context.lock.json",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 497,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep the measured repository inventory aligned with the registered estate compiler and its additive files.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md",
+        ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md"
+      ],
+      "lines": 1987,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the estate dispatch's substantive file metadata, graph relationships and observed verification events for post-merge ingestion.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md",
+        ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the estate dispatch's substantive file metadata, graph relationships and observed verification events for post-merge ingestion.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json",
+        ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py",
+        ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+        "tests/estate/check_estate.py"
+      ],
+      "lines": 144,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain reviewer-runnable proof for the additive estate compiler and distinguish structural findings from verification authority.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        ".bits/context.lock.json",
+        ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json",
+        "apps/estate/metadata.py",
+        "apps/estate/seal.py"
+      ],
+      "lines": 111,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify estate governance receipts, exact header edges and the unchanged existing-code boundary with optional repeatable-seal evidence.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-ESTATE-001.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 76,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Authorize and gate the additive estate compiler while keeping runtime systems and existing code outside this dispatch.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs_registry.yml",
+        "AGENTS.md"
+      ],
+      "lines": 86,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Specify a deterministic repository compiler that supplies estate evidence to Graph Operator without acquiring verification authority.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs_registry.yml",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/context.md",
+        "scripts/ci/agent_context.py"
+      ],
+      "lines": 200,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+        "apps/estate/seal.py",
+        "scripts/estate_census.py"
+      ],
+      "lines": 134,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Document the estate compiler's reproducibility contract, evidence limits and graph-owner integration boundary.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/__init__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide an additive local compiler namespace for repository estate evidence.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/census.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "CensusRecord",
+        "_directory_candidate",
+        "_hash_file",
+        "classify",
+        "is_manifest",
+        "is_sensitive",
+        "read_source",
+        "scan_repository"
+      ],
+      "dependencies": [
+        "apps/estate/common.py",
+        "apps/estate/metadata.py"
+      ],
+      "lines": 241,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Inventory stable filesystem evidence with bounded analysis and without following runtime or secret-bearing paths.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/common.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Diagnostic",
+        "EstateError",
+        "_decode",
+        "_hints",
+        "canonical_json",
+        "content_hash",
+        "decode_record"
+      ],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md"
+      ],
+      "lines": 97,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep estate serialization, diagnostics and typed errors consistent across compiler phases.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/dependencies.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Collection",
+        "DependencyAnalysis",
+        "DependencyEdge",
+        "Reference",
+        "Resolver",
+        "backend_root",
+        "extract_dependencies",
+        "safe_relative"
+      ],
+      "dependencies": [
+        "apps/estate/evidence.py",
+        "apps/estate/modules.py",
+        "apps/estate/syntax.py"
+      ],
+      "lines": 385,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Resolve declared and observed dependencies to estate modules with inspectable source evidence.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/evidence.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "RepositoryEvidence",
+        "_json_manifest",
+        "collect_evidence"
+      ],
+      "dependencies": [
+        "apps/estate/census.py",
+        "apps/estate/metadata.py",
+        "apps/estate/syntax.py"
+      ],
+      "lines": 112,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Join bounded syntax evidence with existing manifests, specifications and dispatch records.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/metadata.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "RegistryEntry",
+        "enum_edges",
+        "parse_cgrf",
+        "parse_registry",
+        "scope_paths",
+        "split_references",
+        "srs_codes"
+      ],
+      "dependencies": [
+        ".bits/srs_registry.yml",
+        "apps/estate/common.py"
+      ],
+      "lines": 164,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compile the repository's CGRF and flat SRS declarations without interpreting source code.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/modules.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "EstateModule",
+        "_defaults",
+        "contains",
+        "default_module_id",
+        "identify_modules",
+        "owner_of"
+      ],
+      "dependencies": [
+        "apps/estate/census.py",
+        "apps/estate/evidence.py",
+        "apps/estate/metadata.py"
+      ],
+      "lines": 214,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Promote evidenced semantic boundaries into estate modules while retaining files as owned evidence leaves.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/reconcile.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Reconciliation",
+        "ReconciliationResult",
+        "_expected_root",
+        "declaration_only",
+        "declared_routes",
+        "reconcile"
+      ],
+      "dependencies": [
+        "apps/estate/dependencies.py",
+        "apps/estate/evidence.py",
+        "apps/estate/modules.py"
+      ],
+      "lines": 183,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose gaps between declared modules, imports, schemas and routes without changing their implementations.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/report.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "render_delta",
+        "render_module",
+        "render_orphans",
+        "render_report",
+        "render_violations",
+        "select_module"
+      ],
+      "dependencies": [
+        "apps/estate/seal.py",
+        "apps/estate/validate.py"
+      ],
+      "lines": 143,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Project sealed estate evidence into readable summaries and precise module, defect and delta views.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/seal.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "EstateDelta",
+        "EstateSeal",
+        "EstateSnapshot",
+        "SealDocument",
+        "_atomic_write",
+        "_document_hash",
+        "_load_document",
+        "_module_hashes",
+        "_snapshot_identity",
+        "_state_directory",
+        "compare_snapshots",
+        "compile_estate",
+        "create_seal",
+        "load_archive",
+        "load_latest",
+        "make_document",
+        "merkle_root",
+        "repository_provenance",
+        "save_snapshot"
+      ],
+      "dependencies": [
+        "apps/estate/census.py",
+        "apps/estate/dependencies.py",
+        "apps/estate/reconcile.py",
+        "apps/estate/validate.py"
+      ],
+      "lines": 334,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Seal canonical estate evidence reproducibly and retain local history for exact module, file and edge comparisons.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/syntax.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "ImportReference",
+        "Route",
+        "SourceFacts",
+        "Token",
+        "_api_path",
+        "_collection_definitions",
+        "_has_implementation",
+        "arguments",
+        "literal",
+        "matching",
+        "normalize_route",
+        "parse_javascript",
+        "parse_python",
+        "route_matches",
+        "tokenize_js"
+      ],
+      "dependencies": [
+        "apps/estate/common.py"
+      ],
+      "lines": 424,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Extract static imports, exports, routes and schema evidence without running repository code.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/estate/validate.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Violation",
+        "dependency_cycles",
+        "validate"
+      ],
+      "dependencies": [
+        "apps/estate/dependencies.py",
+        "apps/estate/modules.py",
+        "apps/estate/reconcile.py"
+      ],
+      "lines": 177,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report module, route, governance and dependency shape defects as evidence rather than execution failures.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/estate_census.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "apps/estate/report.py",
+        "apps/estate/seal.py"
+      ],
+      "lines": 81,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose local estate compilation and cached views without mutating existing application code or contacting a service.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/__init__.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/estate"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep offline estate behavior fixtures isolated from live backend suites.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/check_estate.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "apps/estate",
+        "tests/estate"
+      ],
+      "lines": 77,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Gate each estate compiler phase and measure offline behavior coverage without adding test dependencies.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/support.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "RepositoryTest",
+        "cgrf"
+      ],
+      "dependencies": [
+        "apps/estate"
+      ],
+      "lines": 95,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide representative repository evidence for deterministic compiler tests.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/test_census.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "CensusTests"
+      ],
+      "dependencies": [
+        "apps/estate/census.py",
+        "apps/estate/metadata.py",
+        "tests/estate/support.py"
+      ],
+      "lines": 193,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove deterministic census metadata, complete headers, exclusions and bounded asset handling.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/test_cli.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "CliTests"
+      ],
+      "dependencies": [
+        "apps/estate/seal.py",
+        "scripts/estate_census.py",
+        "tests/estate/support.py"
+      ],
+      "lines": 131,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify every CLI mode, cached-only reads, operational errors and offline execution from other working directories.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/test_dependencies.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "DependencyTests"
+      ],
+      "dependencies": [
+        "apps/estate/dependencies.py",
+        "apps/estate/syntax.py",
+        "tests/estate/support.py"
+      ],
+      "lines": 209,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove actual import resolution, declaration edges, JS aliases, JSX bindings and native PocketBase route evidence.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/test_modules.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ModuleTests"
+      ],
+      "dependencies": [
+        "apps/estate/evidence.py",
+        "apps/estate/modules.py",
+        "tests/estate/support.py"
+      ],
+      "lines": 138,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify semantic ownership, metadata authority and discovery of the existing application boundaries.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/test_reconcile.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ReconciliationTests"
+      ],
+      "dependencies": [
+        "apps/estate/reconcile.py",
+        "tests/estate/support.py"
+      ],
+      "lines": 106,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose orphan modules, stale declarations, duplicate capabilities and schema or endpoint gaps with exact evidence.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/test_report.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ReportTests"
+      ],
+      "dependencies": [
+        "apps/estate/report.py",
+        "tests/estate/support.py"
+      ],
+      "lines": 89,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep human estate projections consistent with sealed counters, module evidence and exact deltas.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/test_seal.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "SealTests"
+      ],
+      "dependencies": [
+        "apps/estate/common.py",
+        "apps/estate/seal.py",
+        "tests/estate/support.py"
+      ],
+      "lines": 228,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove stable Merkle identities, archive integrity, exact deltas and safe local seal persistence.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/estate/test_validate.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ValidationTests",
+        "module"
+      ],
+      "dependencies": [
+        "apps/estate/validate.py",
+        "tests/estate/support.py"
+      ],
+      "lines": 126,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify shape defects and cycle detection independently of runtime success or test pass claims.",
+      "objective_id": "VCC-BUILDANDDO-ESTATE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-ESTATE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-ESTATE-001",
+        "estate-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json.cgrf.yaml declares DEPENDS_ON .bits/out/VCC-BUILDANDDO-ESTATE-001/report.md in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json.cgrf.yaml",
+      "target": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json.cgrf.yaml declares DEPENDS_ON .bits/srs/SRS-BUILDANDDO-ESTATE-001.md in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md declares DEPENDS_ON .bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md declares DEPENDS_ON .bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md declares DEPENDS_ON .bits/srs/SRS-BUILDANDDO-ESTATE-001.md in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md",
+      "target": "tests/estate/check_estate.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md declares DEPENDS_ON tests/estate/check_estate.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py",
+      "target": ".bits/context.lock.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py declares DEPENDS_ON .bits/context.lock.json in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py",
+      "target": ".bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py declares DEPENDS_ON .bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py",
+      "target": "apps/estate/metadata.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py declares DEPENDS_ON apps/estate/metadata.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py",
+      "target": "apps/estate/seal.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-ESTATE-001/verify.py declares DEPENDS_ON apps/estate/seal.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-ESTATE-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/queue/VCC-BUILDANDDO-ESTATE-001.md declares DEPENDS_ON .bits/srs/SRS-BUILDANDDO-ESTATE-001.md in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-ESTATE-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/queue/VCC-BUILDANDDO-ESTATE-001.md declares DEPENDS_ON .bits/srs_registry.yml in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md declares DEPENDS_ON .bits/srs_registry.yml in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+      "target": "AGENTS.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md declares DEPENDS_ON AGENTS.md in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": ".bits/srs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/srs_registry.yml declares VALIDATES .bits/srs in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": "bits/SRS-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": ".bits/srs_registry.yml declares GATES bits/SRS-* branches in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/README.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/README.md declares DEPENDS_ON .bits/srs/SRS-BUILDANDDO-ESTATE-001.md in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/README.md",
+      "target": "apps/estate/seal.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/README.md declares DEPENDS_ON apps/estate/seal.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/README.md",
+      "target": "scripts/estate_census.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/README.md declares DEPENDS_ON scripts/estate_census.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/__init__.py",
+      "target": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/__init__.py declares DEPENDS_ON .bits/srs/SRS-BUILDANDDO-ESTATE-001.md in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/census.py",
+      "target": "apps/estate/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/census.py declares DEPENDS_ON apps/estate/common.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/census.py",
+      "target": "apps/estate/metadata.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/census.py declares DEPENDS_ON apps/estate/metadata.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/common.py",
+      "target": ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/common.py declares DEPENDS_ON .bits/srs/SRS-BUILDANDDO-ESTATE-001.md in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/dependencies.py",
+      "target": "apps/estate/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/dependencies.py declares DEPENDS_ON apps/estate/evidence.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/dependencies.py",
+      "target": "apps/estate/modules.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/dependencies.py declares DEPENDS_ON apps/estate/modules.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/dependencies.py",
+      "target": "apps/estate/syntax.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/dependencies.py declares DEPENDS_ON apps/estate/syntax.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/evidence.py",
+      "target": "apps/estate/census.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/evidence.py declares DEPENDS_ON apps/estate/census.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/evidence.py",
+      "target": "apps/estate/metadata.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/evidence.py declares DEPENDS_ON apps/estate/metadata.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/evidence.py",
+      "target": "apps/estate/syntax.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/evidence.py declares DEPENDS_ON apps/estate/syntax.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/metadata.py",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/metadata.py declares DEPENDS_ON .bits/srs_registry.yml in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/metadata.py",
+      "target": "apps/estate/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/metadata.py declares DEPENDS_ON apps/estate/common.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/modules.py",
+      "target": "apps/estate/census.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/modules.py declares DEPENDS_ON apps/estate/census.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/modules.py",
+      "target": "apps/estate/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/modules.py declares DEPENDS_ON apps/estate/evidence.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/modules.py",
+      "target": "apps/estate/metadata.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/modules.py declares DEPENDS_ON apps/estate/metadata.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/reconcile.py",
+      "target": "apps/estate/dependencies.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/reconcile.py declares DEPENDS_ON apps/estate/dependencies.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/reconcile.py",
+      "target": "apps/estate/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/reconcile.py declares DEPENDS_ON apps/estate/evidence.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/reconcile.py",
+      "target": "apps/estate/modules.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/reconcile.py declares DEPENDS_ON apps/estate/modules.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/report.py",
+      "target": "apps/estate/seal.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/report.py declares DEPENDS_ON apps/estate/seal.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/report.py",
+      "target": "apps/estate/validate.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/report.py declares DEPENDS_ON apps/estate/validate.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/seal.py",
+      "target": "apps/estate/census.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/seal.py declares DEPENDS_ON apps/estate/census.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/seal.py",
+      "target": "apps/estate/dependencies.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/seal.py declares DEPENDS_ON apps/estate/dependencies.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/seal.py",
+      "target": "apps/estate/reconcile.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/seal.py declares DEPENDS_ON apps/estate/reconcile.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/seal.py",
+      "target": "apps/estate/validate.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/seal.py declares DEPENDS_ON apps/estate/validate.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/syntax.py",
+      "target": "apps/estate/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/syntax.py declares DEPENDS_ON apps/estate/common.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/validate.py",
+      "target": "apps/estate/dependencies.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/validate.py declares DEPENDS_ON apps/estate/dependencies.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/validate.py",
+      "target": "apps/estate/modules.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/validate.py declares DEPENDS_ON apps/estate/modules.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/estate/validate.py",
+      "target": "apps/estate/reconcile.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/estate/validate.py declares DEPENDS_ON apps/estate/reconcile.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/estate_census.py",
+      "target": "apps/estate/report.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/estate_census.py declares DEPENDS_ON apps/estate/report.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/estate_census.py",
+      "target": "apps/estate/seal.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/estate_census.py declares DEPENDS_ON apps/estate/seal.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/__init__.py",
+      "target": "apps/estate",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/__init__.py declares DEPENDS_ON apps/estate in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/check_estate.py",
+      "target": "apps/estate",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/check_estate.py declares DEPENDS_ON apps/estate in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/check_estate.py",
+      "target": "tests/estate",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/check_estate.py declares DEPENDS_ON tests/estate in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/support.py",
+      "target": "apps/estate",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/support.py declares DEPENDS_ON apps/estate in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_census.py",
+      "target": "apps/estate/census.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_census.py declares DEPENDS_ON apps/estate/census.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_census.py",
+      "target": "apps/estate/metadata.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_census.py declares DEPENDS_ON apps/estate/metadata.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_census.py",
+      "target": "tests/estate/support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_census.py declares DEPENDS_ON tests/estate/support.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_cli.py",
+      "target": "apps/estate/seal.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_cli.py declares DEPENDS_ON apps/estate/seal.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_cli.py",
+      "target": "scripts/estate_census.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_cli.py declares DEPENDS_ON scripts/estate_census.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_cli.py",
+      "target": "tests/estate/support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_cli.py declares DEPENDS_ON tests/estate/support.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_dependencies.py",
+      "target": "apps/estate/dependencies.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_dependencies.py declares DEPENDS_ON apps/estate/dependencies.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_dependencies.py",
+      "target": "apps/estate/syntax.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_dependencies.py declares DEPENDS_ON apps/estate/syntax.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_dependencies.py",
+      "target": "tests/estate/support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_dependencies.py declares DEPENDS_ON tests/estate/support.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_modules.py",
+      "target": "apps/estate/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_modules.py declares DEPENDS_ON apps/estate/evidence.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_modules.py",
+      "target": "apps/estate/modules.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_modules.py declares DEPENDS_ON apps/estate/modules.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_modules.py",
+      "target": "tests/estate/support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_modules.py declares DEPENDS_ON tests/estate/support.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_reconcile.py",
+      "target": "apps/estate/reconcile.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_reconcile.py declares DEPENDS_ON apps/estate/reconcile.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_reconcile.py",
+      "target": "tests/estate/support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_reconcile.py declares DEPENDS_ON tests/estate/support.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_report.py",
+      "target": "apps/estate/report.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_report.py declares DEPENDS_ON apps/estate/report.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_report.py",
+      "target": "tests/estate/support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_report.py declares DEPENDS_ON tests/estate/support.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_seal.py",
+      "target": "apps/estate/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_seal.py declares DEPENDS_ON apps/estate/common.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_seal.py",
+      "target": "apps/estate/seal.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_seal.py declares DEPENDS_ON apps/estate/seal.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_seal.py",
+      "target": "tests/estate/support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_seal.py declares DEPENDS_ON tests/estate/support.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_validate.py",
+      "target": "apps/estate/validate.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_validate.py declares DEPENDS_ON apps/estate/validate.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/estate/test_validate.py",
+      "target": "tests/estate/support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/estate/test_validate.py declares DEPENDS_ON tests/estate/support.py in CGRF metadata.",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/estate/check_estate.py",
+      "description": "Observed 77 offline behavior tests passing with 92.72-100 percent statement coverage per compiler module and CLI; strict typing and lint passed. Regressions for relative imports and exact SRS evidence were observed red and then green.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Estate compiler phases 1-8 verified locally",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "timestamp": "2026-09-17T15:43:24.164417+00:00",
+      "commit_sha": null,
+      "smoke_result": "77/77"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "scripts/estate_census.py",
+      "description": "Compiled the actual repository locally and observed 29 semantic modules and 30 native PocketBase routes; structural findings remain report data and no service was contacted.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Canonical estate evidence available to downstream graph owners",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "timestamp": "2026-09-17T15:43:24.164417+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1"
+    },
+    {
+      "type": "C",
+      "event_type": "dispatch_completed",
+      "file_path": null,
+      "description": "Completed the additive estate compiler, observed repeatable full-repository seals, and passed the public boundary, context, header and memory gates.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Estate evidence compiler ready for review",
+      "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+      "timestamp": "2026-09-17T15:47:03.196105+00:00",
+      "commit_sha": null,
+      "smoke_result": "7/7"
+    }
+  ],
+  "summary": {
+    "type_a_count": 33,
+    "type_b_count": 74,
+    "type_c_count": 3,
+    "ioo_compliance": true,
+    "dkg_orphans": 0,
+    "dispatch_id": "VCC-BUILDANDDO-ESTATE-001",
+    "srs_codes": [
+      "SRS-BUILDANDDO-ESTATE-001"
+    ],
+    "seat": "BITS-CODEGEN"
+  }
+}
