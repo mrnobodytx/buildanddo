@@ -141,4 +141,3 @@ def render_violations(snapshot: EstateSnapshot) -> str:
         for item in snapshot.violations
     ]
     return "\n".join(lines) or "No structural defects."
-

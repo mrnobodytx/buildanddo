@@ -30,7 +30,7 @@ CKS Gate:    pending (no per-SRS target registered)
 CKS:         pending
 CAPS:        pending
 CK:          pending
-Commits:     1 (resolve with git rev-parse HEAD after workspace bookkeeping)
+Commits:     2 (resolve with git log 4864e8e1a60347cc70fbd9133551255f055cffff..HEAD)
 
 ## §2 TASK RESULTS
 

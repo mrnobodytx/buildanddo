@@ -132,4 +132,3 @@ byte-identical reruns, history restoration, declared/public authentication and
 the CLI. The gate measures statement coverage with the repository's stdlib trace
 pattern and requires at least 80 percent for each compiler module. It adds no CI
 workflow or dependency and does not run live backend suites.
-

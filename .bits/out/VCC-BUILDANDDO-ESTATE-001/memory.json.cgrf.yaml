@@ -17,4 +17,3 @@
 
 schema_version: 1
 governs: .bits/out/VCC-BUILDANDDO-ESTATE-001/memory.json
-

@@ -162,4 +162,3 @@ def scope_paths(text: str) -> list[str]:
                 if re.fullmatch(r"(?:apps|scripts|tests|services|docs|foundry|\.bits)/[\w./*?-]+", literal):
                     result.add(literal.rstrip("/"))
     return sorted(result)
-

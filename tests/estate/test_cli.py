@@ -129,4 +129,3 @@ class CliTests(RepositoryTest):
         with redirect_stdout(io.StringIO()), self.assertRaises(SystemExit) as help_result:
             main(["--help"])
         self.assertEqual(help_result.exception.code, 0)
-

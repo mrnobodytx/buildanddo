@@ -93,4 +93,3 @@ class RepositoryTest(unittest.TestCase):
                    "migrate((app) => { app.save(new Collection({name: 'observations', type: 'base', fields: []})); }, (app) => {});\n")
         self.write("tests/api/research.test.js", "const path = '/api/research/{id}';\n")
         self.write("scripts/ci/check.py", "print('PASS')\n")
-

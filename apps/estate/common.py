@@ -95,4 +95,3 @@ def _decode(expected: object, value: object) -> object:
 def decode_record(cls: type[T], value: object) -> T:
     """Validate a cached dataclass recursively before exposing it to callers."""
     return cast(T, _decode(cls, value))
-

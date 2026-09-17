@@ -87,4 +87,3 @@ class ReportTests(RepositoryTest):
         text = render_report(make_document(empty))
         self.assertIn("Files inventoried:    0", text)
         self.assertIn("ModuleShape violations: 0", text)
-

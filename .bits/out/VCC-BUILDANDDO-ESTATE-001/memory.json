@@ -76,7 +76,7 @@
         ".bits/out/VCC-BUILDANDDO-ESTATE-001/report.md",
         ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md"
       ],
-      "lines": 20,
+      "lines": 19,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve the estate dispatch's substantive file metadata, graph relationships and observed verification events for post-merge ingestion.",
@@ -146,7 +146,7 @@
         "apps/estate/metadata.py",
         "apps/estate/seal.py"
       ],
-      "lines": 112,
+      "lines": 111,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify estate governance receipts, exact header edges and the unchanged existing-code boundary with optional repeatable-seal evidence.",
@@ -275,7 +275,7 @@
         "apps/estate/seal.py",
         "scripts/estate_census.py"
       ],
-      "lines": 135,
+      "lines": 134,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Document the estate compiler's reproducibility contract, evidence limits and graph-owner integration boundary.",
@@ -306,7 +306,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md"
       ],
-      "lines": 19,
+      "lines": 18,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide an additive local compiler namespace for repository estate evidence.",
@@ -386,7 +386,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-ESTATE-001.md"
       ],
-      "lines": 98,
+      "lines": 97,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep estate serialization, diagnostics and typed errors consistent across compiler phases.",
@@ -505,7 +505,7 @@
         ".bits/srs_registry.yml",
         "apps/estate/common.py"
       ],
-      "lines": 165,
+      "lines": 164,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Compile the repository's CGRF and flat SRS declarations without interpreting source code.",
@@ -624,7 +624,7 @@
         "apps/estate/seal.py",
         "apps/estate/validate.py"
       ],
-      "lines": 144,
+      "lines": 143,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Project sealed estate evidence into readable summaries and precise module, defect and delta views.",
@@ -796,7 +796,7 @@
         "apps/estate/report.py",
         "apps/estate/seal.py"
       ],
-      "lines": 82,
+      "lines": 81,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose local estate compilation and cached views without mutating existing application code or contacting a service.",
@@ -827,7 +827,7 @@
       "dependencies": [
         "apps/estate"
       ],
-      "lines": 19,
+      "lines": 18,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep offline estate behavior fixtures isolated from live backend suites.",
@@ -861,7 +861,7 @@
         "apps/estate",
         "tests/estate"
       ],
-      "lines": 78,
+      "lines": 77,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate each estate compiler phase and measure offline behavior coverage without adding test dependencies.",
@@ -895,7 +895,7 @@
       "dependencies": [
         "apps/estate"
       ],
-      "lines": 96,
+      "lines": 95,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide representative repository evidence for deterministic compiler tests.",
@@ -965,7 +965,7 @@
         "scripts/estate_census.py",
         "tests/estate/support.py"
       ],
-      "lines": 132,
+      "lines": 131,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify every CLI mode, cached-only reads, operational errors and offline execution from other working directories.",
@@ -1103,7 +1103,7 @@
         "apps/estate/report.py",
         "tests/estate/support.py"
       ],
-      "lines": 90,
+      "lines": 89,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep human estate projections consistent with sealed counters, module evidence and exact deltas.",
