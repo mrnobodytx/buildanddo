@@ -1,0 +1,20 @@
+# ─── CGRF Header ──────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-DECISION-001/memory.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-DECISION-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-DECISION-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-17
+# Depends:     .bits/out/VCC-BUILDANDDO-DECISION-001/report.md
+# EnumType:    Schema
+# EnumEdges:   DEPENDS_ON .bits/out/VCC-BUILDANDDO-DECISION-001/report.md; PRODUCES .bits/out/VCC-BUILDANDDO-DECISION-001/memory.json
+# DAG Node:    none
+# Intent:      Describe the governed memory payload that preserves decision runtime implementation and validation evidence.
+# ───────────────────────────────────────────────────────────
+
+artifact: memory.json
+encoding: utf-8
+vector_types: [A, B, C]

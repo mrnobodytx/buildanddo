@@ -133,7 +133,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-16T22:26:40.096138+00:00",
+  "generated_at": "2026-09-17T04:07:42.353393+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -174,6 +174,13 @@
         "spec": "",
         "status": "delivered",
         "title": "CI Visibility, DORA, build telemetry and baseline deltas"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DECISION-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DECISION-001.md",
+        "status": "in_progress",
+        "title": "BuildAndDo Decision Runtime Phase 1 typed decision primitive"
       },
       {
         "code": "SRS-BUILDANDDO-DEVENV-001",
@@ -424,6 +431,7 @@
   ],
   "repo": {
     "apps": [
+      "decision",
       "federal_foundry",
       "mission_suite",
       "pocketbase",
@@ -443,11 +451,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 31,
-    "python_files": 107,
+    "python_files": 116,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 764,
+    "tracked_files": 785,
     "web_source_files": 249
   },
   "schema_version": 1,
@@ -455,8 +463,8 @@
     "findings": 6,
     "findings_high": 6,
     "pipelines": 7,
-    "srs_open": 19,
-    "srs_total": 22,
+    "srs_open": 20,
+    "srs_total": 23,
     "unwired_gates": 4
   },
   "tests": {
