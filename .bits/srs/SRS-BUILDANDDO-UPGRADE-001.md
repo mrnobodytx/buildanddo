@@ -20,6 +20,59 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Blueprint extractor Phase A continuation — 2026-09-17
+
+The owner requests structured blueprint extraction, research processing, native
+workspace intake and retrieval, an A0 BDR workload and a workspace review/export
+page. This continues the existing A2 research/workspace source dispatch. Reuse
+the protected research uploads, leased worker, bounded document subprocess,
+PocketBase authentication and decision primitives. Do not change documents.py,
+decision authority, dependencies, deploy controls or connect a vision model.
+
+Acceptance:
+
+1. Extract sections, stable requirement IDs, priorities, types, provenance,
+   components, directed dependencies, constraints, assumptions and unresolved
+   questions from text-first PDFs. Preserve source SHA-256, page count, parser
+   version, timestamp, confidence and explicit truncation.
+2. Route blueprint jobs through Processor and the existing research worker.
+   Retain flat excerpts and protected source bytes when structuring fails;
+   reject encrypted, empty, oversized and unsupported inputs through the
+   existing document/security contracts.
+3. Accept multipart PDFs at the workspace blueprints API, persist a blueprint
+   linked to the shared research submission, and retrieve processing state and
+   structured results. Preserve current workspace roles, worker configuration,
+   owner revocation, leases, retry identity and file access. Native APIs stay
+   locked. Migration replay is idempotent and rollback retains user material.
+4. Evaluate every extracted requirement with the existing typed decide API at
+   A0. Keep untrusted source text nested in data, never in runtime controls or
+   supplied answers. Preserve abstention, reject elevated/verified results, and
+   summarize only observed decisions. No model or evaluation mints VERIFIED.
+5. Add the Blueprints workspace route, upload/status/review, per-requirement
+   assessment, a directed dependency list, and a downloadable proposed mission
+   or challenge definition. Clear private state on account/workspace changes;
+   never automatically publish or execute the exported proposal.
+6. Verify parser/security, shared-worker storage/retrieval, BDR and UI behavior
+   using existing test patterns and a generated sample PDF. Distinguish native
+   dependency checks from storage/transport doubles and report unavailable gates.
+
+Verify: `python tests/upgrade/check_blueprints.py`,
+`node --test tests/upgrade/blueprint-*.test.mjs`, the BlueprintPage Vitest suite,
+strict Python typing, the dispatch smoke block, context and boundary gates.
+The upload endpoint returns an asynchronous receipt; GET exposes the completed
+Blueprint. This preserves the existing worker rather than creating a second
+parser host inside PocketBase. A0 abstentions remain unknown assessments.
+
+Observed source outcome: the shared-worker upload/storage/retrieval path,
+structured parser, A0 workload and workspace review/export page are implemented.
+Full regression passes 304 Node and 250 Python tests, with 16 native skips.
+The targeted coverage gate passes 50 cases with five skips and measures
+88.27–98.31% statement coverage across the five changed Python modules. Source
+typing, Ruff, JSX diagnostics, context and public-boundary checks pass. Native
+PDF/PocketBase and rendered UI/build acceptance remain open because pypdf,
+PocketBase, Vitest, Vite and the repository ESLint import plugin are unavailable.
+The sample PDF is generated from public test text; no user document is retained.
+
 ## Classroom source continuation — 2026-09-16
 
 The owner reports that live classrooms and educational rooms still do not work

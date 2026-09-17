@@ -20,6 +20,36 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Blueprint Phase A continuation authorized 2026-09-17
+
+The current owner request continues the registered A2 research/workspace source
+scope. No live workspace, credentials, hosted model or deployment is requested.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DI | Inspect reuse and record blueprint acceptance | Context and source inspection | done |
+| DJ | Structure documents and evaluate requirements at A0 | `python tests/upgrade/check_blueprints.py` | done for source — 50 passing, five dependency skips; 88.27–98.31% statement coverage; native PDF acceptance open |
+| DK | Persist workspace blueprints through the shared research worker | `node --test tests/upgrade/blueprint-system.test.mjs` | done for source — 12 backend cases and the real Python worker with transport/storage doubles pass; native PocketBase acceptance open |
+| DL | Add workspace upload/review/export and isolate private UI state | Blueprint client and rendered suites | done for source — eight connected client cases pass; seven rendered cases await Vitest |
+| DM | Verify regression, refresh context and retain report/memory | Existing smoke block and boundary/memory checks | done for public evidence — 304 Node and 250 Python passes, 16 native skips; 4/7 smoke; native/rendered acceptance remains open |
+
+Memory brief: documents.py already runs pypdf in a 30-second resource-limited
+child process and clips text to 16,000 UTF-16 units. The research store already
+protects uploaded files, fences worker leases and binds capabilities to current
+workspace configuration. BDR Phase 1 supports A0 typed decisions; unmatched
+questions abstain. This continuation must not fabricate scores or authorize
+generation/deployment. The sandbox initially lacks pypdf, PocketBase and the
+frontend test dependencies; native acceptance must be reported separately.
+
+Observed source outcome: workspace intake queues the existing research worker
+and GET returns its saved structured observations. Flat excerpts survive failed
+structuring and protected source files remain available after processing errors.
+The default BDR runtime abstains on this new workload at A0; unknown scores are
+shown as requiring review. Exports contain proposed mission/challenge data and
+do not approve work or mint VERIFIED. All 92 earlier memory events are retained.
+The report records measured coverage, source checks, precise dependency gaps and
+runnable native/UI acceptance commands. No live workspace or deployment changed.
+
 ## Classroom continuation authorized 2026-09-16
 
 The owner's classroom report continues this A2 source dispatch. The public

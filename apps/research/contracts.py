@@ -23,7 +23,7 @@ from dataclasses import dataclass
 import ipaddress
 import re
 import socket
-from typing import TypedDict, cast
+from typing import NotRequired, TypedDict, cast
 from urllib.parse import urlsplit
 
 from scripts.discordbot.contracts import CitadelError
@@ -65,6 +65,10 @@ class Parsed(TypedDict):
     version: str
     input_sha256: str
     truncated: bool
+    blueprint: NotRequired[dict[str, object] | None]
+    blueprint_failure: NotRequired[str]
+    evaluation: NotRequired[dict[str, object] | None]
+    evaluation_failure: NotRequired[str]
 
 
 def object_value(value: object) -> dict[str, object]:
