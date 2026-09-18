@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-17
-# Depends:     apps/research/blueprints.py, apps/pocketbase/pb_hooks/blueprint.pb.js, apps/decision/workloads/blueprint_evaluation.py, apps/web/src/pages/workspace/BlueprintPage.jsx
+# Depends:     apps/research/blueprints.py, apps/pocketbase/pb_hooks/blueprint.pb.js, apps/decision/workloads/blueprint_evaluation.py, apps/web/src/pages/workspace/BlueprintPage.jsx, docs/operator-plane.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/research/blueprints.py; CONSUMES apps/pocketbase/pb_hooks/blueprint.pb.js; CONSUMES apps/decision/workloads/blueprint_evaluation.py; CONSUMES apps/web/src/pages/workspace/BlueprintPage.jsx
+# EnumEdges:   CONSUMES apps/research/blueprints.py; CONSUMES apps/pocketbase/pb_hooks/blueprint.pb.js; CONSUMES apps/decision/workloads/blueprint_evaluation.py; CONSUMES apps/web/src/pages/workspace/BlueprintPage.jsx; CONSUMES docs/operator-plane.md
 # DAG Node:    none
 # Intent:      Explain the asynchronous blueprint review contract, extraction limits and evidence required before claiming native acceptance.
 # ───────────────────────────────────────────────────────────────
@@ -22,6 +22,11 @@ administrators and owners can upload a PDF, review extracted requirements and
 component dependencies, and export a proposed mission or challenge definition.
 Viewers can inspect existing blueprints. Account and workspace changes clear
 private page state, in-flight responses and prepared download links.
+
+**Export extracted blueprint** downloads the unchanged structured extraction
+for the existing federal compiler's `operator --blueprint` input. The Operator
+page then reviews capability reuse and proposed work. See
+`docs/operator-plane.md` for this next step; exporting does not dispatch work.
 
 The existing research worker performs extraction. A configured, enabled document
 capability is required, using the same research bindings and integration revision

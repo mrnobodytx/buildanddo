@@ -62,6 +62,22 @@ afterEach(() => {
 });
 
 describe('MissionsPage', () => {
+    it('opens an operator-linked mission from the scoped list without approving or mutating it', async () => {
+        pb.__setRecords('missions', [createMockMission({ id: 'linked_mission', title: 'Linked review', mission_plan: fullPlan() })]);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>, { route: '/app/missions?mission=linked_mission' });
+        const dialog = await screen.findByRole('dialog', { name: 'Linked review' });
+        expect(within(dialog).getByText(/Learn, inspect the saved plan/)).toBeVisible();
+        expect(pb.__collection('missions').create).not.toHaveBeenCalled();
+        expect(pb.__collection('missions').update).not.toHaveBeenCalled();
+        expect(screen.queryByRole('dialog', { name: 'Approve the saved mission' })).not.toBeInTheDocument();
+    });
+    it('does not open a mission that is missing from the readable workspace list', async () => {
+        pb.__setRecords('missions', [createMockMission({ id: 'visible_mission', title: 'Visible work' })]);
+        renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>, { route: '/app/missions?mission=unreadable_mission' });
+        await screen.findByRole('list', { name: 'Missions' });
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(pb.__collection('missions').getOne).not.toHaveBeenCalled();
+    });
     it('teaches the mission stages and differentiates an empty workspace from loading', async () => {
         pb.__setRecords('missions', []);
         renderWithProviders(<MotionProvider><MissionsPage /></MotionProvider>);

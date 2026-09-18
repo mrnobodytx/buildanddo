@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     apps/federal_foundry/__main__.py, apps/federal_foundry/protocol.py, apps/federal_foundry/evidence.py, .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
+# Depends:     apps/federal_foundry/__main__.py, apps/federal_foundry/protocol.py, apps/federal_foundry/evidence.py, .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, docs/operator-plane.md
 # EnumType:    Doc
-# EnumEdges:   DEPENDS_ON apps/federal_foundry/__main__.py; DEPENDS_ON apps/federal_foundry/protocol.py; DEPENDS_ON apps/federal_foundry/evidence.py; DEPENDS_ON .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
+# EnumEdges:   DEPENDS_ON apps/federal_foundry/__main__.py; DEPENDS_ON apps/federal_foundry/protocol.py; DEPENDS_ON apps/federal_foundry/evidence.py; DEPENDS_ON .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md; CONSUMES docs/operator-plane.md
 # DAG Node:    none
 # Intent:      Make the five model-independent Bits research lanes callable while preserving actual-evidence and human-submission boundaries.
 # ───────────────────────────────────────────────────────────────
@@ -36,6 +36,10 @@ eligibility, funding and page/slide limits remain unverified. xTech Search 10 is
 inactive: its submission is reported by the owner and was not independently
 observed here. Existing mission-suite tests remain evidence about their tested
 source behavior; they are not automatically assigned to any lane claim.
+
+The read-first operator loop reuses this catalog and task protocol. See
+`docs/operator-plane.md` for compiling a source-backed build proposal and
+reviewing it at `/app/operator` without launching hosted work.
 
 ## Prepare the work packages
 

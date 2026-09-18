@@ -40,6 +40,7 @@ import { DemoModeBanner } from './WorkspaceNotices';
 
 const NAV = [
     { to: '/app', label: 'Front Page', icon: LayoutDashboard, end: true },
+    { to: '/app/operator', label: 'Operator cockpit', icon: Activity },
     { to: '/app/signals', label: 'Signals', icon: Radar },
     { to: '/app/missions', label: 'Challenge Desk', icon: Target },
     { to: '/app/workflows', label: 'Workflows', icon: Workflow },

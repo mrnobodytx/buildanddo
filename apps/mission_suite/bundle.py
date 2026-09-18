@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     scripts/ci/evidence_epoch.py, apps/research/contracts.py, apps/federal_foundry/__main__.py
+# Depends:     scripts/ci/evidence_epoch.py, apps/research/contracts.py, apps/federal_foundry/__main__.py, apps/federal_foundry/operator.py, apps/research/blueprints.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES scripts/ci/evidence_epoch.py; DEPENDS_ON apps/research/contracts.py; CONSUMES apps/federal_foundry/__main__.py
+# EnumEdges:   CONSUMES scripts/ci/evidence_epoch.py; DEPENDS_ON apps/research/contracts.py; CONSUMES apps/federal_foundry/__main__.py; CONSUMES apps/federal_foundry/operator.py; CONSUMES apps/research/blueprints.py
 # DAG Node:    none
 # Intent:      Package an explicit source closure for a box worker without copying credentials, runtime data or deployment authority.
 # ───────────────────────────────────────────────────────────────
@@ -36,6 +36,8 @@ SOURCE_FILES = (
     "apps/mission_suite/worker.py",
     "apps/research/contracts.py",
     "apps/research/transport.py",
+    "apps/research/blueprints.py",
+    "apps/research/documents.py",
     "scripts/discordbot/contracts.py",
     "scripts/ci/evidence_epoch.py",
     "apps/federal_foundry/__main__.py",
@@ -43,6 +45,7 @@ SOURCE_FILES = (
     "apps/federal_foundry/compiler.py",
     "apps/federal_foundry/evidence.py",
     "apps/federal_foundry/protocol.py",
+    "apps/federal_foundry/operator.py",
     "apps/federal_foundry/opportunities.json",
 )
 

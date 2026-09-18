@@ -38,6 +38,7 @@ const EvidencePage = lazy(() => import('./pages/workspace/EvidencePage'));
 const ResearchPage = lazy(() => import('./pages/workspace/ResearchPage'));
 const BlueprintPage = lazy(() => import('./pages/workspace/BlueprintPage'));
 const PolicyPage = lazy(() => import('./pages/workspace/PolicyPage'));
+const OperatorPage = lazy(() => import('./pages/workspace/OperatorPage'));
 const SuitePage = lazy(() => import('./pages/workspace/SuitePage'));
 const DossierPage = lazy(() => import('./pages/workspace/DossierPage'));
 const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
@@ -65,6 +66,7 @@ const ContactPage = lazy(() => import('./pages/ContactPage'));
 // the operator with nothing but a reload.
 const WORKSPACE_ROUTES = [
     { index: true, label: 'Front Page', element: OverviewPage },
+    { path: 'operator', label: 'Operator cockpit', element: OperatorPage },
     { path: 'signals', label: 'Signals', element: SignalsPage },
     { path: 'missions', label: 'Challenge Desk', element: MissionsPage },
     { path: 'workflows', label: 'Workflows', element: WorkflowsPage },

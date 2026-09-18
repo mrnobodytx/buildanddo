@@ -20,6 +20,49 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Read-first operator loop continuation authorized 2026-09-18
+
+The owner requests the operator-plane loop alongside Cultural Property and the
+BuildAndDo demo. Public source work continues under this existing A2 dispatch;
+actual private runtime bindings and A3 actions retain their receiving authority.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DS | Inspect source capability, mission and connector owners | Read-only inventory and registered scope | done — existing parser, suite, foundry and membership/receipt owners inspected |
+| DT | Extend the federal compiler with source discovery and operator blueprints | Operator Python suite and foundry regressions | done for source — 26 operator cases; 66 combined foundry coverage cases pass; compiler 99.43% statements |
+| DU | Project bounded workspace state through existing read authority | Operator backend/client Node suite | done for source — final 27 connected cases pass, including standalone approvals and mid-read role downgrade; native acceptance open |
+| DV | Surface the operator cockpit and explicit mission proposal flow | Operator client and rendered tests | done for source — compiler/browser parity, inert imports and durable proposals pass; 14 operator and two mission-link rendered cases await Vitest |
+| DW | Verify source, retain evidence and record private receiving work | Regression, context, boundary and memory gates | done for available evidence — 347 full Node cases, 302 Python passes and 16 native skips; all 27 operator cases pass; 4/7 smoke; private/runtime and rendered acceptance open |
+
+Memory brief: Phase A extraction and policy review are the committed baseline.
+There are five prepared federal lanes with explicitly unknown deadlines; no
+Cultural Property specification is in this checkout. The existing suite worker
+supports maritime and submission analyses, not arbitrary GPU jobs. Datadog read
+tools are attached; the other named private providers and fleet are not. Missing
+runtime proof is not a healthy connection or idle capacity. Reuse the prepared
+builder/verifier contracts, current PocketBase access, bounded worker leases and
+research proposal receipts. No authenticated workspace is supplied, so no seat
+event is fabricated. Retain earlier acceptance gaps and memory history.
+
+Observed operator source outcome: the public cockpit reads independently paged
+workspace summaries and separates saved approvals from routine work. The existing
+foundry compiler discovers eight source capability groups, retains document
+provenance and prepares ten existing builder/verifier packets for five lanes.
+All opportunity deadlines remain unknown. Real compiler output passes the browser
+import and manifest checks; compilation creates zero hosted dispatches. Native
+mission proposal receipts recover uncertain responses and unchanged recompilation.
+Output-directory replacement and stale-role regressions passed after fixes.
+Atomic publication now binds a complete private candidate before exposing it;
+Linux no-replace support is required, with no unsafe fallback on other platforms.
+
+Selected backend/client coverage is 100% lines and 92.50–96.60% branches. Strict
+typing of seven source files, Ruff and the 255-module source diagnostic pass.
+Vitest, eslint-plugin-import and Vite are absent; native PocketBase/pypdf are
+unavailable. Missing private repository/dispatch, authenticated workspace and
+official Cultural Property/opportunity evidence remain receiving prerequisites
+in `.bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md`. All 104 prior
+memory events remain historical. No live workspace or private system was changed.
+
 ## Policy intelligence continuation authorized 2026-09-18
 
 The owner requests the generic Sentinel policy rail and BuildAndDo signal-to-

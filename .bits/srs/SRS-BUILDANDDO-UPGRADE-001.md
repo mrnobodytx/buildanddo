@@ -20,6 +20,57 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Read-first operator loop continuation — 2026-09-18
+
+The owner requests a 48-hour operator-plane MVP: reuse existing capabilities,
+compress mission coordination, prepare bounded work, and surface human decisions.
+This continues the existing A2 public application source dispatch. The current
+checkout contains the research blueprint extractor, mission suite and federal
+compiler. NXC/Sentinel/fleet source, authenticated workspace access, the Cultural
+Property notice and six official deadlines are not attached. Their receiving
+repository/dispatch and evidence locations have been requested.
+
+Acceptance:
+
+1. Extend the existing federal compiler with a management blueprint envelope.
+   Discover reviewed source capabilities before proposing extensions; consume
+   the strict Phase A Blueprint without changing its contract. Preserve source
+   identities, unknown runtime readiness, dependencies, tests, telemetry,
+   rollback, owners, acceptance conditions and evidence references. Do not
+   invent cultural requirements, deadlines, capacity or percentage readiness.
+2. Add a read-only workspace operator snapshot using current PocketBase
+   membership, native record visibility, existing integrations and mission/run
+   stores. Bound pagination and expose partial/missing/stale observations.
+   Reading the cockpit creates no commands, approvals, retries or seat events.
+3. Add a workspace cockpit with active missions, work/review queues, integration
+   freshness, evidence and existing desk links. Consume prepared operator
+   blueprints and reuse existing explicit, replayable mission proposals.
+   Separate routine work from human authority decisions; keep account/workspace
+   changes, imported text, and missing adapters from creating false authority.
+4. Exercise tenant denial, revoked access, missing schemas, bounded pages,
+   unknown/stale/future observations, deterministic compilation, source identity,
+   capability gaps, untrusted text and uncertain proposal responses. Run source
+   regressions and report native/rendered acceptance separately.
+5. Record concrete receiving work for NXC canonical context, live read adapters,
+   existing model/fleet dispatch, telemetry comparison and Cultural Property
+   source evidence. No production effects, external messages, procurement
+   submissions, credential changes or private control plane are implemented
+   or represented as active by this public continuation.
+
+Verify with operator Python/Node suites, existing foundry and research/mission
+regressions, rendered operator page tests where dependencies permit, typing,
+context, public-boundary and dispatch-memory gates.
+
+Observed public source acceptance: the extended compiler retains strict Phase A
+input and prepares an A0 review envelope with eight inspected capability groups,
+five unverified opportunity deadlines and ten prepared task packets. The workspace
+GET, browser import and native proposal command are exercised together with
+explicit storage/transport doubles. Twenty-six compiler tests and 27 final Node
+operator cases pass. Full regression passes 347 Node cases and 302 Python cases
+with 16 dependency skips. Compiler statement coverage is 99.43%; the selected JS backend
+and client have 100% line coverage. Native/rendered acceptance and actual private
+connections remain open. See `docs/operator-plane.md` and the receiving handoff.
+
 ## Policy intelligence public integration continuation — 2026-09-18
 
 The owner adopts the supplied reusable Policy / Legislative Intelligence rail
