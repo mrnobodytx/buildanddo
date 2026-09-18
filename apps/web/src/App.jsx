@@ -13,7 +13,6 @@ import { WorkspaceProvider, useWorkspace } from '@/contexts/WorkspaceContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageBoundary from '@/components/workspace/PageBoundary';
 import { workspaceDestination } from '@/lib/navigationIntent';
-import { useAuth } from '@/contexts/AuthContext';
 import { isMasterSeat } from '@/lib/estateAccess';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
