@@ -1,6 +1,7 @@
 import MotionToggle from '@/components/motion/MotionToggle';
 import React, { useId, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { visibleSurfaces } from '@/lib/estateSurfaces';
 import {
     Activity,
     LayoutDashboard,
@@ -62,7 +63,7 @@ const NAV = [
     { to: '/app/forums', label: 'Workspace forum', icon: Users },
     { to: '/app/roadmap', label: 'Roadmap', icon: Gauge },
     { to: '/app/operations', label: 'Operations Desk', icon: Server },
-    { to: '/app/fleet', label: 'Fleet', icon: Network },
+    { to: '/app/fleet', label: 'Fleet', icon: Network, estate: true },
     { to: '/app/platforms', label: 'Platform Health', icon: Plug },
     { to: '/app/integrations', label: 'Sinks & extensions', icon: Plug },
     { to: '/app/admin', label: 'Administration', icon: ShieldCheck, admin: true },
@@ -73,7 +74,7 @@ function NavList({ onNavigate }) {
     const access = useWorkspaceAccess();
     return (
         <nav className="flex flex-col gap-1" aria-label="Workspace">
-            {NAV.filter((item) => !item.admin || access.data?.can_admin).map((item) => (
+            {visibleSurfaces(NAV).filter((item) => !item.admin || access.data?.can_admin).map((item) => (
                 <NavLink
                     key={item.to}
                     to={item.to}

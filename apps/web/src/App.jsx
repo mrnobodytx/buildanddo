@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import RouteLoading from '@/components/RouteLoading';
 import SkipNavigation from '@/components/SkipNavigation';
 import { Route, Routes, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom';
+import { visibleSurfaces } from '@/lib/estateSurfaces';
 import ScrollToTop from './components/ScrollToTop';
 import RouteTelemetry from './components/observability/RouteTelemetry';
 import TelemetryBoundary from './components/observability/TelemetryBoundary';
@@ -76,7 +77,7 @@ const WORKSPACE_ROUTES = [
     { path: 'classrooms/:roomId', label: 'Classroom', element: ClassroomsPage },
     { path: 'erp', label: 'ERP', element: ErpPage },
     { path: 'operations', label: 'Operations', element: OperationsPage },
-    { path: 'fleet', label: 'Fleet', element: FleetPage },
+    { path: 'fleet', label: 'Fleet', element: FleetPage, estate: true },
     { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'research', label: 'Mission research', element: ResearchPage },
@@ -187,7 +188,7 @@ export function AppRoutes() {
                         </ProtectedRoute>
                     }
                 >
-                    {WORKSPACE_ROUTES.map(({ path, index, label, element: Element }) => (
+                    {visibleSurfaces(WORKSPACE_ROUTES).map(({ path, index, label, element: Element }) => (
                         <Route
                             key={path || 'index'}
                             index={index}
