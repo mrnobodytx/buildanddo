@@ -667,6 +667,93 @@ def copy_tree_clean(src: Path, dst: Path) -> None:
     shutil.copytree(src, dst)
 
 
+def clean_artifact_candidates(repo: Path, candidates: list[str]) -> list[str]:
+    """Remove existing build output directories before the build runs.
+
+    Vite only empties an outDir that lives inside its root; dist/apps/web sits outside apps/web, so every
+    build appended its hashed chunks to the previous ones and the artifact carried stale code (682 files
+    for a 164-file site, measured 2026-09-18). Only directories inside the repo are ever removed."""
+    cleaned: list[str] = []
+    repo_resolved = repo.resolve()
+    for raw in candidates:
+        p = Path(raw)
+        try:
+            resolved = p.resolve()
+            inside = resolved != repo_resolved and resolved.is_relative_to(repo_resolved)
+        except OSError:
+            continue
+        if inside and resolved.is_dir():
+            shutil.rmtree(resolved)
+            cleaned.append(str(resolved))
+    return cleaned
+
+
+MANIFEST_SCHEMA = "citadel.release-manifest/v2"
+MANIFEST_LANES = {"staging": "github-staging", "production": "gitlab-golden"}
+
+
+def release_manifest(repo: Path, sha: str, release_doc: Mapping[str, Any], env_name: str) -> dict[str, Any]:
+    """The served /.well-known/citadel-release.json (schema v2): the exact commit, the artifact tree identity
+    and the lane the environment belongs to. Fields the deploy cannot prove stay null - never guessed."""
+    manifest = release_doc.get("manifest") or {}
+    branch = None
+    message = None
+    try:
+        branch = git_branch(repo)
+        log = subprocess.run(["git", "-C", str(repo), "log", "-1", "--format=%s", sha], capture_output=True, text=True, timeout=30)
+        message = log.stdout.strip() or None
+    except (OSError, subprocess.SubprocessError):
+        pass
+    package_version = None
+    pkg = read_json(repo / "apps" / "web" / "package.json")
+    if isinstance(pkg, dict) and pkg.get("version"):
+        package_version = str(pkg["version"])
+    return {
+        "schema": MANIFEST_SCHEMA,
+        "tenant_id": "buildanddo",
+        "commit": sha[:7],
+        "commit_full": sha,
+        "commit_message": message,
+        "branch": branch,
+        "package_version": package_version,
+        "built_at": release_doc.get("generated_at"),
+        "deployed_at": utcnow(),
+        "target": env_name,
+        "environment": env_name,
+        "lane": MANIFEST_LANES.get(env_name, "unbound"),
+        "lane_version": "2.0.0",
+        "executor": "tools/buildanddo_release.py",
+        "shipped_by": "tools/buildanddo_release.py",
+        "artifact_tree_sha256": manifest.get("tree_sha256"),
+        "artifact_file_count": manifest.get("file_count"),
+        "campaign_id": CAMPAIGN,
+        "gitlab_pipeline_id": os.environ.get("CI_PIPELINE_ID") or None,
+        "github_sha": None,
+        "github_ref": None,
+        "gitlab_project_id": None,
+        "gitlab_intake_sha": None,
+        "gitlab_package_name": None,
+        "gitlab_package_version": None,
+    }
+
+
+def write_served_manifest(base: list[str], remote_root: str, manifest: Mapping[str, Any]) -> dict[str, Any]:
+    """Write the manifest on the host AFTER the sync, atomically (temp file + rename), as the last step of a
+    deploy: a served v2 manifest naming this commit_full therefore implies the sync before it completed."""
+    wk = f"{remote_root}/.well-known"
+    tmp = shlex.quote(f"{wk}/.citadel-release.json.tmp")
+    final = shlex.quote(f"{wk}/citadel-release.json")
+    payload = json.dumps(manifest, indent=2, sort_keys=True) + "\n"
+    proc = subprocess.run(
+        [*base, f"mkdir -p {shlex.quote(wk)} && cat > {tmp} && mv -f {tmp} {final} && chmod 644 {final}"],
+        input=payload, capture_output=True, text=True, timeout=120,
+    )
+    if proc.returncode != 0:
+        raise ReleaseError("served manifest write failed after sync")
+    return {"path": "/.well-known/citadel-release.json", "schema": MANIFEST_SCHEMA, "commit_full": manifest["commit_full"],
+            "lane": manifest["lane"], "artifact_tree_sha256": manifest.get("artifact_tree_sha256"), "written_at": manifest["deployed_at"]}
+
+
 def artifact_manifest(root: Path) -> dict[str, Any]:
     files: list[dict[str, Any]] = []
     # Explicit case-sensitive ordering: sorting Path objects is case-insensitive on Windows,
@@ -700,6 +787,7 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
         (logs / "install.stderr.txt").write_text(install.stderr, encoding="utf-8")
         if install.returncode != 0:
             raise ReleaseError(f"dependency install failed rc={install.returncode}")
+    cleaned_before_build = clean_artifact_candidates(repo, plan["artifact_candidates"])
     build = run(plan["build_command"], cwd=workdir, timeout=1800)
     (logs / "build.stdout.txt").write_text(build.stdout, encoding="utf-8")
     (logs / "build.stderr.txt").write_text(build.stderr, encoding="utf-8")
@@ -732,6 +820,7 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
         "commit_sha": sha,
         "artifact_dir": str(artifact),
         "source_artifact_dir": str(source_artifact),
+        "cleaned_before_build": cleaned_before_build,
         "manifest": manifest,
         "plan": plan,
         "generated_at": utcnow(),
@@ -802,8 +891,27 @@ def verify_environment(root: Path, env_name: str, sha: str) -> dict[str, Any]:
         lesson_status = 0
         lesson_pass = False
 
+    # Independent readback of the served release manifest (M02): PASS needs a v2 manifest whose 40-hex
+    # commit_full is the expected sha. A v1 or stale manifest is not evidence of this deploy.
+    manifest_status = 0
+    manifest: dict[str, Any] = {}
+    try:
+        manifest_status, manifest_body, _ = http_get(base + f"/.well-known/citadel-release.json?citadel_cb={cache_bust}")
+        parsed_manifest = json.loads(manifest_body.decode("utf-8", errors="replace"))
+        if isinstance(parsed_manifest, dict):
+            manifest = parsed_manifest
+    except (ReleaseError, json.JSONDecodeError):
+        manifest = {}
+    manifest_commit_full = str(manifest.get("commit_full") or "")
+    manifest_pass = (
+        manifest_status == 200
+        and manifest.get("schema") == MANIFEST_SCHEMA
+        and bool(re.fullmatch(r"[0-9a-f]{40}", manifest_commit_full))
+        and sha_matches(sha, manifest_commit_full)
+    )
+
     result = {
-        "schema": "buildanddo.external-readback/v1",
+        "schema": "buildanddo.external-readback/v2",
         "environment": env_name,
         "url": base,
         "expected_sha": sha,
@@ -811,12 +919,19 @@ def verify_environment(root: Path, env_name: str, sha: str) -> dict[str, Any]:
         "health_status": health_status,
         "version_status": version_status,
         "flagship_lesson_status": lesson_status,
+        "manifest_status": manifest_status,
+        "manifest_schema": manifest.get("schema"),
+        "manifest_commit_full": manifest_commit_full or None,
+        "manifest_lane": manifest.get("lane"),
+        "manifest_artifact_tree_sha256": manifest.get("artifact_tree_sha256"),
+        "manifest_deployed_at": manifest.get("deployed_at"),
         "health_pass": health_pass,
         "sha_match": version_pass,
         "flagship_lesson_readback": lesson_pass,
-        "state": "PASS" if health_pass and version_pass and lesson_pass else "HOLD",
+        "manifest_pass": manifest_pass,
+        "state": "PASS" if health_pass and version_pass and lesson_pass and manifest_pass else "HOLD",
         "verified_at": utcnow(),
-        "truth_rule": "external readback + exact SHA required",
+        "truth_rule": "external readback + exact SHA in /_version AND in the served v2 release manifest",
     }
     write_receipt(root, f"{env_name}_verification", result)
     return result
@@ -955,8 +1070,11 @@ def deploy_ssh_webroot(artifact: Path, sha: str, env_name: str) -> dict[str, Any
     result = run([*base, pre], timeout=300)
     if result.returncode != 0:
         raise ReleaseError("remote backup/precheck failed")
+    manifest = release_manifest(artifact.parents[1], sha, read_json(artifact.parent / "artifact.json"), env_name)
     if os.name == "nt":
-        return _deploy_ssh_webroot_nt(artifact, base, remote_root, backup_tgz, target, env_name)
+        op = _deploy_ssh_webroot_nt(artifact, base, remote_root, backup_tgz, target, env_name)
+        op["manifest"] = write_served_manifest(base, remote_root, manifest)
+        return op
     rsync = run(
         [
             "rsync",
@@ -973,7 +1091,9 @@ def deploy_ssh_webroot(artifact: Path, sha: str, env_name: str) -> dict[str, Any
     )
     if rsync.returncode != 0:
         raise ReleaseError("rsync deployment failed after remote backup")
-    return {"mode": "ssh_webroot", "target": target, "remote_root": remote_root, "backup": backup_tgz, "remote_writes": 1, "environment": env_name}
+    op = {"mode": "ssh_webroot", "target": target, "remote_root": remote_root, "backup": backup_tgz, "remote_writes": 1, "environment": env_name}
+    op["manifest"] = write_served_manifest(base, remote_root, manifest)
+    return op
 
 
 def deploy_environment(root: Path, repo: Path, env_name: str, *, ack: str) -> dict[str, Any]:
