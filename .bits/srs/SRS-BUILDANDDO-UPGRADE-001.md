@@ -20,6 +20,64 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Policy intelligence public integration continuation — 2026-09-18
+
+The owner adopts the supplied reusable Policy / Legislative Intelligence rail
+for Sentinel and BuildAndDo. This continues the existing A2 public application
+source dispatch. Sentinel's actual source, NXC, graph/search owners and receiving
+private dispatch are not attached; their location has been requested. Implement
+the portable public domain contract and BuildAndDo consumer without inventing
+those services or claiming a deployed `sentinel.citadel-nexus.com/policy` route.
+
+Acceptance:
+
+1. Extend the research module with a bounded policy domain pack using its
+   existing Processor, public-source admission, transport and typed errors.
+   Retain the exact extracted-text fingerprint, input identity, timestamps,
+   truncation and source excerpts. Keep OBSERVED, ATTRIBUTED, ANALYZED and
+   UNRESOLVED distinct; no document may supply commands or verification.
+2. Project source-supported policy entities and typed relationships, preserve
+   document revisions and contradictory observations, and provide deterministic
+   literal watch matching, affected-object mappings and daily brief candidates.
+   Tenant, mission-area, source and time boundaries apply throughout. These are
+   portable projections, not a second graph database, scheduler or search host.
+3. Add a scoped BuildAndDo policy review page for imported packs, search,
+   category views, graph/source review, bookmarks, alerts and daily briefs.
+   Reuse native workspace access and the existing replayable research command
+   to create review-only mission proposals after an explicit user action.
+   Clear private state on account/workspace changes. Demo data cannot write.
+4. Exercise a reproducible, explicitly synthetic small-business scenario and
+   negative cases for malformed/prohibited claims, source substitution, changed
+   bytes, foreign tenants, corrections, rule replay and untrusted text. Retain
+   native/rendered dependency gaps separately from local source evidence.
+5. Provide a concrete CMAX-B/IDE1 handoff for mounting the domain in the actual
+   Sentinel service, binding existing NATS/NXC/DKG/FTS/FAISS/telemetry and approved
+   delivery, and closing source-verification and mission-outcome acceptance.
+   No live crawl, email, deployment, private mutation or procurement submission
+   is authorized or represented by this local continuation.
+
+The CENTCOM opportunity text is owner-supplied product context. Its notice,
+SOW, deadline and award status have not been independently retrieved here. It
+does not establish a present procurement response or equivalence claim.
+
+Verify with the policy Python/Node suites, rendered policy page tests where
+dependencies permit, a fresh demo bundle, existing research/mission regressions,
+strict typing, and the context, public-boundary and dispatch-memory gates.
+
+Observed public-source outcome: the research policy domain pack and `/app/policy`
+consumer implement admitted source observations, quoted typed relationships,
+capture revisions/conflicts, tenant watches, review candidates and daily briefs.
+Explicit source-review proposals reuse native research commands and retain retry
+identity across unchanged recaptures; no proposal approves or verifies work.
+The synthetic small-business pack is reproducible and cannot create missions.
+Twenty-six Python and fifteen connected Node policy cases pass; four new Python
+modules have 98.73–100% statement coverage. Full regression passes 319 Node and
+276 Python cases with 16 native skips. Six rendered cases, repository lint and
+build remain unverified because frontend dependencies are absent. Private
+Sentinel source, feed activation, NATS/NXC/DKG/FTS/FAISS bindings, delivery and
+actual mission-outcome evidence remain PI-00–PI-10 receiving work in
+`.bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md`.
+
 ## Blueprint extractor Phase A continuation — 2026-09-17
 
 The owner requests structured blueprint extraction, research processing, native

@@ -46,6 +46,7 @@ const NAV = [
     { to: '/app/evidence', label: 'Evidence Ledger', icon: FileSearch },
     { to: '/app/research', label: 'Mission research', icon: FileSearch },
     { to: '/app/blueprints', label: 'Blueprints', icon: FileSearch },
+    { to: '/app/policy', label: 'Policy intelligence', icon: Scale },
     { to: '/app/suite', label: 'Mission suite', icon: Boxes },
     { to: '/app/dossier', label: 'My dossier', icon: BookOpen },
     { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },

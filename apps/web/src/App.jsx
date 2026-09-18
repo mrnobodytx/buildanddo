@@ -37,6 +37,7 @@ const PlatformHealthPage = lazy(() => import('./pages/workspace/PlatformHealthPa
 const EvidencePage = lazy(() => import('./pages/workspace/EvidencePage'));
 const ResearchPage = lazy(() => import('./pages/workspace/ResearchPage'));
 const BlueprintPage = lazy(() => import('./pages/workspace/BlueprintPage'));
+const PolicyPage = lazy(() => import('./pages/workspace/PolicyPage'));
 const SuitePage = lazy(() => import('./pages/workspace/SuitePage'));
 const DossierPage = lazy(() => import('./pages/workspace/DossierPage'));
 const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
@@ -77,6 +78,7 @@ const WORKSPACE_ROUTES = [
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'research', label: 'Mission research', element: ResearchPage },
     { path: 'blueprints', label: 'Blueprints', element: BlueprintPage },
+    { path: 'policy', label: 'Policy intelligence', element: PolicyPage },
     { path: 'suite', label: 'Mission suite', element: SuitePage },
     { path: 'dossier', label: 'My dossier', element: DossierPage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },

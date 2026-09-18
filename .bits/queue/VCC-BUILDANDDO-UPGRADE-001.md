@@ -20,6 +20,44 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Policy intelligence continuation authorized 2026-09-18
+
+The owner requests the generic Sentinel policy rail and BuildAndDo signal-to-
+mission flow. Public source work continues under this existing A2 dispatch;
+private service wiring requires the actual Sentinel repository and receiving
+authority. The repository location has been requested while public work proceeds.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DN | Inspect existing owners and record the public/private contract | Context and source inspection | done — research, native missions and prior Sentinel handoff inspected |
+| DO | Normalize policy observations and project watches, sources and relationships | `python tests/upgrade/check_policy_intelligence.py` | done for source — 26 cases, 98.73–100% statement coverage, deterministic synthetic demo; live feeds remain receiving work |
+| DP | Consume policy packs and propose bounded review missions in BuildAndDo | `node --test tests/upgrade/policy-intelligence.test.mjs` and rendered page tests | done for source — 15 connected cases and Python/browser parity pass; six rendered cases await Vitest |
+| DQ | Record the private Sentinel bindings and receiving acceptance | `docs/policy-intelligence.md` and policy handoff | done for public contract — PI-00–PI-10 define source, bus, graph/search, verification, UI, delivery and outcome acceptance; private repository/dispatch are missing |
+| DR | Verify public source and retain measured evidence | Regression, typing, context, boundary and memory gates | done for available public evidence — 319 Node and 276 Python passes, 16 native skips; 4/7 smoke; native/rendered and Sentinel acceptance remain open |
+
+Memory brief: the public checkout has a bounded Firecrawl/document research
+Processor and native PocketBase research commands, including idempotent mission
+proposals. The existing Sentinel Maritime handoff records that actual Sentinel,
+NXC/NNC, private graph and release owners are outside this checkout. No secondary
+repository, authenticated workspace or feed is attached. Reuse these boundaries;
+do not send seat events, treat source URLs or hashes as verification, fabricate
+live legislative activity, or create alternative private infrastructure. The
+current module will produce portable local observations and a review consumer;
+private scheduling, source verification and alert delivery remain receiving work.
+
+Observed policy source outcome: the portable domain pack extends the existing
+research Processor and strict JSON contracts. The BuildAndDo consumer imports
+bounded tenant packs, preserves source/correction history and proposes explicit
+source-review missions through the existing native command. A red/green test
+fixed unchanged recaptures conflicting with an earlier proposal; content-derived
+candidate keys now recover the same mission after uncertain responses and reloads.
+The selected browser client has 100% lines and 95.28% branches under Node; strict
+typing of the four new Python modules, Ruff and the 252-module source diagnostic
+pass. Missing Vitest, eslint-plugin-import and Vite prevent rendered, official
+lint and build acceptance. All 98 preceding memory events remain historical.
+No actual government source, private Sentinel service, bus, email or deployment
+was invoked; the dispatch remains in progress for those receiving dependencies.
+
 ## Blueprint Phase A continuation authorized 2026-09-17
 
 The current owner request continues the registered A2 research/workspace source
