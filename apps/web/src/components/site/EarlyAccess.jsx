@@ -93,9 +93,8 @@ export default function EarlyAccess() {
                     <div className="mt-6 rounded-[var(--radius)] border border-border bg-card p-5">
                         <p className="font-display text-sm font-semibold">The ideal early user</p>
                         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                            An owner or operator with one repetitive business problem they want to
-                            make clearer, faster, or easier to manage — like no-shows, follow-ups,
-                            schedule gaps, or end-of-week summaries. One problem is enough.
+                            A learner, a team or an owner with one real problem they want to work through
+                            together, with people and AI, and keep the evidence of what they did. One problem is enough.
                         </p>
                     </div>
 
