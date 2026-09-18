@@ -57,6 +57,9 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const DocsPage = lazy(() => import('./pages/DocsPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const RoomsPage = lazy(() => import('./pages/workspace/RoomsPage'));
+const SystemsRoomPage = lazy(() => import('./pages/workspace/SystemsRoomPage'));
+const LiveExperimentRoomPage = lazy(() => import('./pages/workspace/LiveExperimentRoomPage'));
 
 // Each workspace page is mounted inside its own error boundary. The root
 // TelemetryBoundary still catches everything, but a root catch replaces the
@@ -91,6 +94,9 @@ const WORKSPACE_ROUTES = [
     { path: 'integrations', label: 'Sinks & extensions', element: IntegrationsPage },
     { path: 'wiki', label: 'Workspace wiki', element: WikiPage },
     { path: 'forums', label: 'Workspace forum', element: ForumsPage },
+    { path: 'rooms/systems', label: 'Systems Room', element: SystemsRoomPage },
+    { path: 'rooms/live', label: 'Live Experiment', element: LiveExperimentRoomPage },
+    { path: 'rooms/:room?', label: 'Living Rooms', element: RoomsPage },
 ];
 
 // Redirect already-authenticated users away from the auth screens.

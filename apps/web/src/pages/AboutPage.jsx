@@ -33,9 +33,9 @@ export default function AboutPage() {
                     <p className="font-evidence text-xs uppercase tracking-widest text-primary">
                         Owner & operator
                     </p>
-                    <h3 className="mt-3 font-display text-3xl font-semibold">Dmitry Richard</h3>
+                    <h3 className="mt-3 font-display text-3xl font-semibold">Mr. Nobody</h3>
                     <p className="mt-3 leading-relaxed text-muted-foreground">
-                        Dmitry operates BuildAndDo within Citadel Nexus Inc. Human contributors and
+                        Mr. Nobody operates BuildAndDo within Citadel Nexus Inc. Human contributors and
                         agent seats collaborate through the public repository, with review and
                         evidence attached to their work.
                     </p>

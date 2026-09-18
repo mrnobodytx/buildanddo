@@ -49,6 +49,7 @@ const NAV = [
     { to: '/app/suite', label: 'Mission suite', icon: Boxes },
     { to: '/app/dossier', label: 'My dossier', icon: BookOpen },
     { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },
+    { to: '/app/rooms/organization', label: 'Living Rooms', icon: Network },
     { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },
     { to: '/app/corrections', label: 'Corrections', icon: Scale },
     { to: '/app/tutorials', label: 'Field Manual', icon: GraduationCap },

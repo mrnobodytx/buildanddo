@@ -6,7 +6,18 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/s
 import { Button } from '@/components/site/ui';
 import { ThemeToggle } from '@/components/ThemeControls';
 import { useAuth } from '@/contexts/AuthContext';
-import { PUBLIC_NAV } from '@/lib/publicPages';
+import { useRoomsLive } from '@/hooks/useRoomsLive';
+import { PUBLIC_NAV, PUBLIC_NAV_PRIMARY, PUBLIC_NAV_SECONDARY } from '@/lib/publicPages';
+
+const primaryLinkClass = ({ isActive }) =>
+    `motion-link inline-flex h-9 items-center rounded-sm px-3 text-sm transition-colors hover:bg-secondary/60 hover:text-foreground ${
+        isActive ? 'bg-secondary font-semibold text-foreground' : 'text-muted-foreground'
+    }`;
+
+const secondaryLinkClass = ({ isActive }) =>
+    `inline-flex h-9 items-center px-2 font-evidence text-[11px] uppercase tracking-widest transition-colors hover:text-foreground ${
+        isActive ? 'text-foreground' : 'text-muted-foreground/80'
+    }`;
 
 export default function Header({
     navLinks = [],
@@ -15,9 +26,10 @@ export default function Header({
 }) {
     const [open, setOpen] = useState(false);
     const { isAuthed } = useAuth();
+    const roomsLive = useRoomsLive();
     return (
         <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/95 backdrop-blur-md">
-            <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+            <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6">
                 <Link
                     to="/"
                     className="flex shrink-0 items-center gap-2"
@@ -28,20 +40,41 @@ export default function Header({
                         BuildAndDo
                     </span>
                 </Link>
-                <nav className="hidden items-center gap-3 xl:flex" aria-label="Primary">
-                    {PUBLIC_NAV.map((page) => (
-                        <NavLink
-                            key={page.path}
-                            to={page.path}
-                            className={({ isActive }) =>
-                                `motion-link py-3 text-sm transition-colors hover:text-foreground ${isActive ? 'font-semibold text-foreground underline underline-offset-4' : 'text-muted-foreground'}`
-                            }
-                        >
-                            {page.label}
-                        </NavLink>
-                    ))}
+                <nav className="hidden min-w-0 flex-1 items-center justify-center xl:flex" aria-label="Primary">
+                    <ul className="flex items-center gap-0.5">
+                        {PUBLIC_NAV_PRIMARY.map((page) => (
+                            <li key={page.path}>
+                                <NavLink to={page.path} className={primaryLinkClass}>
+                                    {page.label}
+                                </NavLink>
+                            </li>
+                        ))}
+                    </ul>
+                    <span aria-hidden="true" className="mx-3 h-5 w-px bg-border" />
+                    <ul className="flex items-center gap-0.5" aria-label="Company">
+                        {PUBLIC_NAV_SECONDARY.map((page) => (
+                            <li key={page.path}>
+                                <NavLink to={page.path} className={secondaryLinkClass}>
+                                    {page.label}
+                                </NavLink>
+                            </li>
+                        ))}
+                    </ul>
                 </nav>
                 <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                    {roomsLive && (
+                        <Link
+                            to="/app/rooms"
+                            className="hidden items-center gap-1.5 border border-primary/40 px-2.5 py-1 font-evidence text-[10px] uppercase tracking-widest text-primary transition-colors hover:bg-primary/10 lg:inline-flex"
+                            aria-label="Living Rooms are live"
+                        >
+                            <span
+                                aria-hidden="true"
+                                className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse"
+                            />
+                            Rooms live
+                        </Link>
+                    )}
                     <ThemeToggle />
                     <MotionToggle />
                     {isAuthed ? (
