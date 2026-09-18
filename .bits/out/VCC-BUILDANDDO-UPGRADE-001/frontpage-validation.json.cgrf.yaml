@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-18
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md
+# EnumType:    Schema
+# EnumEdges:   CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md; PRODUCES .bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json
+# DAG Node:    none
+# Intent:      Preserve measured source and static-layout evidence with explicit limits on application and live-provider acceptance.
+# ───────────────────────────────────────────────────────────────
+
+artifact: frontpage-validation.json
+encoding: utf-8
+method: source-connected static browser layout and offline source regressions

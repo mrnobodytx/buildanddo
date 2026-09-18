@@ -1,0 +1,1440 @@
+{
+  "schema": "buildanddo.editorial-source-validation/v1",
+  "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs": "SRS-BUILDANDDO-UPGRADE-001",
+  "source_complete": true,
+  "rendered_application_verified": false,
+  "method": "Chrome inspects actual JSX rendered with static hook/router/icon adapters and the actual scoped CSS, existing theme variables and fallback fonts. Temporary navigation chrome supplies page context. This does not execute React or the app.",
+  "limitations": [
+    "React/Vitest and Vite are absent; official lint cannot resolve eslint-plugin-import.",
+    "Static previews do not exercise React events, actual routing, motion preferences or live PocketBase.",
+    "Research reading is a dated editorial archive; no live public feed or usage ranking is configured."
+  ],
+  "source_sha256": {
+    "apps/web/src/pages/HomePage.jsx": "d06313bf5a4e3730445ebc75d0171856a9beee60f64fabebbba2b6bab6091bea",
+    "apps/web/src/lib/editorialContent.js": "20d95e6bc5e5002bbb77b4a80d9dd2f5c19af9e1d910eff1d7e6c296998eccd8",
+    "apps/web/src/lib/editorialReel.js": "400d4b4468398674e402e5ab0bc03ee6c966bef1757161ff79b3f7aa80fdf34a",
+    "apps/web/src/components/editorial/AndroidPhoneFrame.jsx": "18605c48ca1f17f8151819f2b7e5083e823c097996ed046fc459947ca137de31",
+    "apps/web/src/components/editorial/EditorialFrontPage.jsx": "10bb1a32ea163e00a4ba0c51ec2ac824aee3c09fb55714cd85c302596eaee56b",
+    "apps/web/src/components/editorial/Engraving.jsx": "0a6e720335d8e60dff197badb1f1ecda02b33c167eec66f9088fd7ca188e1544",
+    "apps/web/src/components/editorial/LivingStill.jsx": "62b4961fcf55641b3a7789f838f03fa0e94650337523b0de86c7f6975399aef2",
+    "apps/web/src/components/editorial/VerticalNewsReel.jsx": "f241fbb1648ba64847a654429d07645a4fb386b752866866697d6f40b19c5f86",
+    "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx": "58a9c5670d17e866b4e93b1629159165bfdfe7903a85a41eb5cb06b02174437f",
+    "apps/web/src/components/editorial/editorial.css": "800d2c7a516abc76513ecf30fd7e91996c73f77897c4d979c13a4383593b755a"
+  },
+  "checks": {
+    "focused-coverage": {
+      "command": [
+        "node",
+        "--experimental-test-coverage",
+        "--test",
+        "--test-coverage-include=apps/web/src/lib/editorial*.js",
+        "--test-coverage-lines=80",
+        "--test-coverage-functions=80",
+        "--test-coverage-branches=80",
+        "tests/upgrade/editorial-frontpage.test.mjs"
+      ],
+      "started_at": "2026-09-18T15:40:45.527895+00:00",
+      "finished_at": "2026-09-18T15:40:46.549673+00:00",
+      "returncode": 0
+    },
+    "node-regression": {
+      "command": [
+        "node",
+        "--test",
+        "tests/upgrade/blueprint-client.test.mjs",
+        "tests/upgrade/blueprint-saved-client.test.mjs",
+        "tests/upgrade/blueprint-system.test.mjs",
+        "tests/upgrade/build.test.mjs",
+        "tests/upgrade/business-learning.test.mjs",
+        "tests/upgrade/classroom-client.test.mjs",
+        "tests/upgrade/classroom-system.test.mjs",
+        "tests/upgrade/decision-runtime.test.mjs",
+        "tests/upgrade/discord-catalogue.test.mjs",
+        "tests/upgrade/dossier-client.test.mjs",
+        "tests/upgrade/dossier-system.test.mjs",
+        "tests/upgrade/editorial-frontpage.test.mjs",
+        "tests/upgrade/government-learning.test.mjs",
+        "tests/upgrade/knowledge-client.test.mjs",
+        "tests/upgrade/knowledge-system.test.mjs",
+        "tests/upgrade/mission-research.test.mjs",
+        "tests/upgrade/mission-system.test.mjs",
+        "tests/upgrade/motion-system.test.mjs",
+        "tests/upgrade/pocketbase-metrics.test.mjs",
+        "tests/upgrade/research-client.test.mjs",
+        "tests/upgrade/source-checker.test.mjs",
+        "tests/upgrade/staging-contract.test.mjs",
+        "tests/upgrade/suite-client.test.mjs",
+        "tests/upgrade/suite-system.test.mjs",
+        "tests/upgrade/work-history.test.mjs",
+        "tests/upgrade/workflow-client.test.mjs",
+        "tests/upgrade/workflow-runs.test.mjs",
+        "tests/upgrade/workspace-administration.test.mjs",
+        "tests/upgrade/workspace-community.test.mjs",
+        "tests/upgrade/workspace-control-client.test.mjs",
+        "tests/upgrade/workspace-integration.test.mjs",
+        "tests/upgrade/workspace-summary.test.mjs"
+      ],
+      "started_at": "2026-09-18T15:25:50.078824+00:00",
+      "finished_at": "2026-09-18T15:26:12.803531+00:00",
+      "returncode": 0
+    },
+    "python-regression": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/upgrade",
+        "-p",
+        "test_*.py"
+      ],
+      "started_at": "2026-09-18T15:25:49.649010+00:00",
+      "finished_at": "2026-09-18T15:26:26.397593+00:00",
+      "returncode": 0
+    },
+    "react-tests": {
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "test",
+        "--",
+        "EditorialReels",
+        "HomePage"
+      ],
+      "started_at": "2026-09-18T15:24:41.459819+00:00",
+      "finished_at": "2026-09-18T15:24:42.555176+00:00",
+      "returncode": 127
+    },
+    "lint": {
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "lint"
+      ],
+      "started_at": "2026-09-18T15:24:41.196426+00:00",
+      "finished_at": "2026-09-18T15:24:45.739287+00:00",
+      "returncode": 2
+    },
+    "build": {
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "build"
+      ],
+      "started_at": "2026-09-18T15:24:41.416564+00:00",
+      "finished_at": "2026-09-18T15:24:42.811977+00:00",
+      "returncode": 1
+    },
+    "source": {
+      "command": [
+        "node",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs"
+      ],
+      "started_at": "2026-09-18T15:40:45.698262+00:00",
+      "finished_at": "2026-09-18T15:40:49.714118+00:00",
+      "returncode": 0
+    },
+    "layout-check": {
+      "started_at": "2026-09-18T15:31:51.277152+00:00",
+      "finished_at": "2026-09-18T15:31:57.633513+00:00",
+      "returncode": 0
+    },
+    "context-check": {
+      "command": [
+        "python",
+        "scripts/ci/agent_context.py",
+        "--check"
+      ],
+      "started_at": "2026-09-18T15:40:45.282561+00:00",
+      "finished_at": "2026-09-18T15:40:45.978172+00:00",
+      "returncode": 0
+    },
+    "boundary": {
+      "command": [
+        "python",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "started_at": "2026-09-18T15:40:44.791698+00:00",
+      "finished_at": "2026-09-18T15:40:46.301959+00:00",
+      "returncode": 0
+    }
+  },
+  "observations": {
+    "node_pass": 361,
+    "python_pass": 293,
+    "python_skipped": 18,
+    "new_node_cases": 16,
+    "authored_react_cases": 13,
+    "source_modules": 266,
+    "helper_line_coverage": 100,
+    "helper_branch_coverage": 98.73,
+    "helper_function_coverage": 100
+  },
+  "layout": {
+    "results": [
+      {
+        "theme": "light",
+        "width": 320,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 320,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 390,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 390,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 600,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 600,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 768,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 768,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1024,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 1024,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1101,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 1101,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1280,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 1280,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1440,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 1440,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 320,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 320,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 390,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 390,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 600,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 600,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 768,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 768,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1024,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 1024,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1101,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 1101,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1280,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 1280,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1440,
+        "scenario": "public",
+        "font": 16,
+        "pageWidth": 1440,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 320,
+        "scenario": "public",
+        "font": 32,
+        "pageWidth": 320,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 768,
+        "scenario": "public",
+        "font": 32,
+        "pageWidth": 768,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1101,
+        "scenario": "public",
+        "font": 32,
+        "pageWidth": 1101,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1440,
+        "scenario": "public",
+        "font": 32,
+        "pageWidth": 1440,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 320,
+        "scenario": "public",
+        "font": 32,
+        "pageWidth": 320,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 768,
+        "scenario": "public",
+        "font": 32,
+        "pageWidth": 768,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1101,
+        "scenario": "public",
+        "font": 32,
+        "pageWidth": 1101,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1440,
+        "scenario": "public",
+        "font": 32,
+        "pageWidth": 1440,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 320,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 320,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 390,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 390,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 600,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 600,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 768,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 768,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1024,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 1024,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1101,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 1101,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1280,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 1280,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1440,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 1440,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 320,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 320,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 390,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 390,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 600,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 600,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 768,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 768,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1024,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 1024,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1101,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 1101,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1280,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 1280,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1440,
+        "scenario": "stress",
+        "font": 16,
+        "pageWidth": 1440,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 343
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 767
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 767
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 320,
+        "scenario": "stress",
+        "font": 32,
+        "pageWidth": 320,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 768,
+        "scenario": "stress",
+        "font": 32,
+        "pageWidth": 768,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1101,
+        "scenario": "stress",
+        "font": 32,
+        "pageWidth": 1101,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "light",
+        "width": 1440,
+        "scenario": "stress",
+        "font": 32,
+        "pageWidth": 1440,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 320,
+        "scenario": "stress",
+        "font": 32,
+        "pageWidth": 320,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 768,
+        "scenario": "stress",
+        "font": 32,
+        "pageWidth": 768,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1101,
+        "scenario": "stress",
+        "font": 32,
+        "pageWidth": 1101,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      },
+      {
+        "theme": "dark",
+        "width": 1440,
+        "scenario": "stress",
+        "font": 32,
+        "pageWidth": 1440,
+        "outside": [],
+        "clipped": [],
+        "reels": [
+          {
+            "label": "Pocket edition",
+            "visible": 1,
+            "height": 687
+          },
+          {
+            "label": "Research news",
+            "visible": 3,
+            "height": 1535
+          },
+          {
+            "label": "Platform areas",
+            "visible": 3,
+            "height": 1535
+          }
+        ]
+      }
+    ],
+    "reduced": true
+  },
+  "layout_red_green": {
+    "before_cases": 48,
+    "before_failures": 16,
+    "after_cases": 48,
+    "after_failures": 0,
+    "fix": "Scale reel height with text, wrap bounded controls and masthead content, and let narrow columns use their full width for enlarged copy."
+  }
+}

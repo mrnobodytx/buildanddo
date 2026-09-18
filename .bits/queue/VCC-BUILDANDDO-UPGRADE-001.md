@@ -20,6 +20,52 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Newspaper front page authorized 2026-09-18
+
+The owner requests the supplied newspaper layout in the current site colors,
+independent news/platform reels, slow living engravings and a CSS phone with
+interactive content. This continues the existing A2 application-source dispatch.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| NP1 | Map reference, existing data and motion policy | Source and source-scope inspection | PASS — reuse scoped research, record selectors and current motion preferences |
+| NP2 | Build newspaper, independent reels and phone preview | Focused selection and interaction checks | source complete; 16 Node cases pass; 13 React cases await Vitest |
+| NP3 | Validate themes, responsive layout and retained home behavior | Available rendered/source, regression and layout checks | 48 static layout cases, 361 Node and 293 Python pass; 18 native skips; frontend gates unavailable |
+| NP4 | Record evidence and preserve memory | Context, boundary and dispatch-memory gates | PASS — 591 file vectors, 1253 edges, 114 events; all 111 prior events retained |
+
+Memory brief: HomePage already isolates records by account/workspace/demo tree.
+Research has an authenticated read adapter; public news and popularity analytics
+are not configured. Public reading must carry its original source/date and stay
+separate from workspace results. Browser tools are installed; React, Vitest and
+Vite are absent. A source-generated preview cannot establish application behavior.
+
+## Editorial sign-in authorized 2026-09-18
+
+The owner's screenshot and request continue the existing A2 public-source scope.
+Implement the login/shared-auth experience first, using the supplied learning
+brand direction. The former DORA and workspace knowledge changes are retained.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| AU1 | Inspect screenshot, auth contracts and existing visual tokens | Current source and auth-test review | PASS — existing native auth and safe return routes identified |
+| AU2 | Redesign the shared auth shell and improve sign-in usability | Source review and focused auth interaction tests | source complete; 16 React cases await missing Vitest |
+| AU3 | Verify desktop/mobile layout, themes, validation and return paths | Available rendered/source checks and classroom regression | 36 static preview cases and 20 classroom cases pass; actual React/native acceptance pending |
+| AU4 | Record evidence and preserve prior memory | Context, boundary and dispatch memory gates | PASS — context and 896-file boundary; 578 file vectors, 1224 edges, 111 events; all 108 prior events retained |
+
+Memory brief: sign-in, signup and reset share AuthLayout; login calls the existing
+PocketBase auth context and preserves workspaceDestination. The supplied image
+shows a display name in the email field. Reuse current validation and explain the
+account-email requirement. React, Vitest and Vite are absent at inspection; a
+browser executable is available. Do not call a layout preview a rendered React
+test or invent independent verification. No authenticated workspace is supplied.
+Other seats' domain/fabric/CI findings are reported context, not inspected runtime
+facts in this source pass. No external seat event, deploy or provider call occurs.
+
+Evidence: .bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md. Source diagnostics
+and 345 Node/293 Python cases pass, with 18 explicit skips. Smoke is 4/7 because
+Vitest, the repository lint plugin and Vite are absent. Static design previews do
+not establish React, native auth, staging or independent verification.
+
 ## Automatic workspace knowledge authorized 2026-09-18
 
 The owner requests context assembly and categorized knowledge graphs, following

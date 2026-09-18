@@ -20,6 +20,85 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Newspaper front page continuation — 2026-09-18
+
+The owner supplied a three-column newspaper reference: researched news at left,
+daily highlights at center, and a separate reel of platform areas at right.
+The follow-up requests reusable LivingStill, VerticalNewsReel and AndroidPhoneFrame
+components, slow engraving motion, and an interactive phone preview below the
+center story. Continue the existing A2 public-source dispatch and current palette.
+
+Acceptance:
+
+1. Build the three-column editorial front page with the current paper, ink, red
+   and dark-theme tokens. Preserve the existing detailed desks, challenge form,
+   learning links and account/workspace isolation. Stack content accessibly on
+   narrow screens without clipping text, controls or the phone content.
+2. Give the research and platform reels independent controls and timing. Reuse
+   the installed motion policy; pause automatic movement for hover, keyboard
+   focus, hidden/offscreen views and reduced motion. Keep inactive links out of
+   the focus order and handle empty, single and changed item sets safely.
+3. Use original-source, dated public research selections until an operator feed
+   is supplied, clearly distinguish them from completed workspace research, and
+   reuse authenticated research reads. Platform selections link to real areas;
+   do not invent popularity counts, customers, live news or verified outcomes.
+4. Derive daily highlights from current readable records with original dates
+   and status. Show loading, unavailable and empty states. Illustrations remain
+   decorative, and the phone is an interactive web preview rather than a claim
+   of a released native application.
+5. Verify selection, reel lifecycle, scope changes, accessibility and responsive
+   layout with available local tooling. Record missing React/Vite dependencies
+   separately from source-adapter and static browser evidence. Preserve earlier
+   memory events; no provider call, deployment or backend mutation is authorized.
+
+Observed source outcome: the three-column front page, two independent sidebar
+reels, living vector engravings and interactive web phone composition are in
+place. Sixteen new Node cases pass; the two helper modules have 100 percent
+line/function and 98.73 percent aggregate branch coverage. Regression passes
+361 Node and 293 Python cases with 18 explicit skips. Forty-eight static browser
+layout cases pass after correcting enlarged-text clipping. Thirteen React cases
+are authored; missing Vitest, the lint plugin and Vite prevent rendered/lint/build
+acceptance. frontpage-report.md records source, layout and live-workspace limits.
+
+## Editorial sign-in continuation — 2026-09-18
+
+The owner supplied a login screenshot and requested a substantial improvement,
+with the broader learning/classroom brand proposal as design context. Continue
+this existing A2 source dispatch for login and the shared authentication layout.
+The initial bounded pass keeps the existing editorial palette and fonts, updates
+the auth wordmark, and makes the form easier to use. The wider classroom, domain
+canonical and private Platform Edit Fabric adoption work remain separate scopes.
+
+Acceptance:
+
+1. Give sign-in, account creation and password recovery a consistent editorial
+   shell: B&D wordmark, learn/build/verify story, readable form hierarchy, theme
+   control and useful public learning links. Use the existing design tokens.
+2. Improve sign-in with password visibility, account-email guidance, field-linked
+   errors and focus on invalid input. Preserve PocketBase login, validation,
+   busy/error recovery, safe return destinations and signup continuation.
+3. Support narrow screens, keyboard navigation, light/dark themes and reduced
+   motion. Illustrations describe the workflow; they never assert live activity,
+   user progress, verification or media availability.
+4. Extend meaningful auth interaction tests, check the classroom return path and
+   run available source/regression/governance gates. Report missing React/Vite
+   dependencies separately from any source-generated browser layout preview.
+5. Preserve previous source and memory events, record the actual evidence and
+   prepare review metadata. No provider, credential, backend, release-control,
+   production deployment or canonical-domain change is authorized by this pass.
+
+The existing private fabric is not materialized in this session. The local
+file contract is recorded in the auth report; it is not a fabric-generated
+EditContract or an independent verification receipt.
+
+Observed source outcome: the editorial auth shell and improved sign-in controls
+are implemented. Source diagnostics pass across 258 modules; regression passes
+345 Node and 293 Python cases with 18 explicit skips. Thirty-six static layout
+previews have no horizontal overflow or off-screen controls. Sixteen authored
+auth component cases, official lint and the build remain unexecuted because the
+frontend dependencies are absent. Native auth and independent rendered acceptance
+remain open; auth-report.md separates source/design evidence from those gates.
+
 ## Automatic workspace knowledge continuation — 2026-09-18
 
 The owner requests automatic context assembly, organization and categorization
