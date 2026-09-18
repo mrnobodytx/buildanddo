@@ -16,7 +16,7 @@ integrity_gate:
     - python3 scripts/ci/integrity_regression_check.py
     - python3 scripts/ci/verify_public_boundary.py --root .
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
 
 praxis_evidence_tests:
   stage: test
@@ -29,7 +29,7 @@ praxis_evidence_tests:
   script:
     - python3 services/praxis_evidence/run_all_tests.py
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
 
 # BEGIN CITADEL BUILDANDDO VERIFIED RELEASE v1
 # GitLab runner builds and packages the exact candidate after all existing
