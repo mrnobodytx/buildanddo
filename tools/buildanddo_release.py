@@ -1065,6 +1065,16 @@ def find_data_dog_private(root: Path) -> Path | None:
     return None
 
 
+def _dd_unix_ns(value: Any) -> int:
+    """Datadog DORA v2 wants Unix timestamps (int64 nanoseconds), not ISO-8601 strings."""
+    if isinstance(value, (int, float)):
+        return int(value)
+    ts = dt.datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    if ts.tzinfo is None:
+        ts = ts.replace(tzinfo=dt.timezone.utc)
+    return int(ts.timestamp()) * 1_000_000_000 + ts.microsecond * 1_000
+
+
 def datadog_dora(root: Path, repo: Path, sha: str) -> dict[str, Any]:
     verification = read_json(receipt_path(root, "production_verification"))
     if verification.get("state") != "PASS" or not sha_matches(sha, str(verification.get("deployed_sha") or "")):
@@ -1077,8 +1087,8 @@ def datadog_dora(root: Path, repo: Path, sha: str) -> dict[str, Any]:
         "data": {
             "attributes": {
                 "service": "buildanddo-public",
-                "started_at": str(read_json(receipt_path(root, "production_deployment")).get("deployed_at") or utcnow()),
-                "finished_at": str(verification.get("verified_at") or utcnow()),
+                "started_at": _dd_unix_ns(read_json(receipt_path(root, "production_deployment")).get("deployed_at") or utcnow()),
+                "finished_at": _dd_unix_ns(verification.get("verified_at") or utcnow()),
                 "git": {
                     "commit_sha": sha,
                     "repository_url": _repository_url(repo),
@@ -1121,7 +1131,11 @@ def datadog_dora(root: Path, repo: Path, sha: str) -> dict[str, Any]:
                 response = json.loads(raw) if raw else {}
         except urllib.error.HTTPError as exc:
             status = int(exc.code)
-            response = {"error": "HTTPError"}
+            raw = exc.read(1_000_000).decode("utf-8", errors="replace")
+            try:
+                response = json.loads(raw) if raw else {"error": "HTTPError"}
+            except json.JSONDecodeError:
+                response = {"error": "HTTPError", "body": raw[:300]}
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
             return {"state": "HOLD", "reason": f"Datadog transport failed: {type(exc).__name__}", "remote_writes": 0}
     result = {
@@ -1132,6 +1146,8 @@ def datadog_dora(root: Path, repo: Path, sha: str) -> dict[str, Any]:
         "candidate_sha": sha,
         "remote_writes": 1,
         "response_type": type(response).__name__,
+        # Datadog's error body names the rejected attribute; keep it so a HOLD is diagnosable from the receipt.
+        "response_errors": None if 200 <= status < 300 else (response.get("errors") if isinstance(response, dict) else str(response)[:300]),
         "emitted_at": utcnow(),
     }
     write_receipt(root, "production_dora", result)
