@@ -1065,14 +1065,17 @@ def find_data_dog_private(root: Path) -> Path | None:
     return None
 
 
-def _dd_unix_ns(value: Any) -> int:
-    """Datadog DORA v2 wants Unix timestamps (int64 nanoseconds), not ISO-8601 strings."""
+def _dd_unix_seconds(value: Any) -> int:
+    """Convert an ISO-8601 timestamp to Unix seconds for Datadog DORA v2."""
     if isinstance(value, (int, float)):
         return int(value)
-    ts = dt.datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    timestamp = str(value)
+    if timestamp.endswith("Z"):
+        timestamp = f"{timestamp[:-1]}+00:00"
+    ts = dt.datetime.fromisoformat(timestamp)
     if ts.tzinfo is None:
         ts = ts.replace(tzinfo=dt.timezone.utc)
-    return int(ts.timestamp()) * 1_000_000_000 + ts.microsecond * 1_000
+    return int(ts.timestamp())
 
 
 def datadog_dora(root: Path, repo: Path, sha: str) -> dict[str, Any]:
@@ -1087,8 +1090,8 @@ def datadog_dora(root: Path, repo: Path, sha: str) -> dict[str, Any]:
         "data": {
             "attributes": {
                 "service": "buildanddo-public",
-                "started_at": _dd_unix_ns(read_json(receipt_path(root, "production_deployment")).get("deployed_at") or utcnow()),
-                "finished_at": _dd_unix_ns(verification.get("verified_at") or utcnow()),
+                "started_at": _dd_unix_seconds(read_json(receipt_path(root, "production_deployment")).get("deployed_at") or utcnow()),
+                "finished_at": _dd_unix_seconds(verification.get("verified_at") or utcnow()),
                 "git": {
                     "commit_sha": sha,
                     "repository_url": _repository_url(repo),

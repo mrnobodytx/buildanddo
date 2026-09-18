@@ -1,4 +1,4 @@
-"""Datadog DORA v2 takes started_at/finished_at as int64 Unix nanoseconds. The release controller
+"""Datadog DORA v2 takes started_at/finished_at as integer Unix timestamps. The release controller
 used to send ISO-8601 strings and every production promotion ended in `dora: HOLD 400`; these tests
 pin the boundary conversion and the wire body so that regression is caught without a live emit."""
 from __future__ import annotations
@@ -22,25 +22,25 @@ sys.modules[spec.name] = mod
 spec.loader.exec_module(mod)
 
 DEPLOYED_AT = "2026-09-18T12:34:30.415550Z"
-DEPLOYED_NS = 1789734870415550000
+DEPLOYED_SECONDS = 1789734870
 SHA = "4b376f048f8b0c8dc214dff4ec316aa6bea70608"
 
 
 class DoraTimestampTests(unittest.TestCase):
-    def test_iso_z_to_nanoseconds(self):
-        self.assertEqual(mod._dd_unix_ns(DEPLOYED_AT), DEPLOYED_NS)
+    def test_iso_z_to_seconds(self):
+        self.assertEqual(mod._dd_unix_seconds(DEPLOYED_AT), DEPLOYED_SECONDS)
 
     def test_offset_and_naive_forms_are_utc(self):
-        self.assertEqual(mod._dd_unix_ns("2026-09-18T12:34:30+00:00"), mod._dd_unix_ns("2026-09-18T12:34:30"))
-        self.assertEqual(mod._dd_unix_ns("2026-09-18T12:34:30Z"), 1789734870 * 10**9)
+        self.assertEqual(mod._dd_unix_seconds("2026-09-18T12:34:30+00:00"), mod._dd_unix_seconds("2026-09-18T12:34:30"))
+        self.assertEqual(mod._dd_unix_seconds("2026-09-18T12:34:30Z"), DEPLOYED_SECONDS)
 
     def test_integers_pass_through(self):
-        self.assertEqual(mod._dd_unix_ns(DEPLOYED_NS), DEPLOYED_NS)
+        self.assertEqual(mod._dd_unix_seconds(DEPLOYED_SECONDS), DEPLOYED_SECONDS)
 
     def test_utcnow_round_trips_to_int(self):
-        ns = mod._dd_unix_ns(mod.utcnow())
-        self.assertIsInstance(ns, int)
-        self.assertGreater(ns, 1_700_000_000 * 10**9)
+        seconds = mod._dd_unix_seconds(mod.utcnow())
+        self.assertIsInstance(seconds, int)
+        self.assertGreater(seconds, 1_700_000_000)
 
 
 class _FakeResponse(io.BytesIO):
@@ -83,7 +83,7 @@ class DoraBodyTests(unittest.TestCase):
         attrs = captured["body"]["data"]["attributes"]
         self.assertIsInstance(attrs["started_at"], int)
         self.assertIsInstance(attrs["finished_at"], int)
-        self.assertEqual(attrs["started_at"], DEPLOYED_NS)
+        self.assertEqual(attrs["started_at"], DEPLOYED_SECONDS)
         self.assertGreater(attrs["finished_at"], attrs["started_at"])
         self.assertEqual(attrs["git"]["commit_sha"], SHA)
         self.assertIn("dd-api-key", captured["headers"])
