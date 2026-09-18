@@ -74,4 +74,4 @@ routerAdd('GET', '/api/buildanddo/estate/fleet-status', (e) => {
     } catch (_err) {
         return e.json(200, { state: 'UNMEASURED', reason: 'fleet snapshot is not valid JSON', expected_path: path });
     }
-}, $apis.requireAuth('users'));
+});  // no requireAuth middleware on purpose: an anonymous caller must get the same 404 as a non-master user
