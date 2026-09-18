@@ -13,7 +13,8 @@
 //              apps/web/src/components/workspace/missions/MissionBuilder.jsx,
 //              apps/web/src/components/workspace/missions/MissionReview.jsx,
 //              apps/web/src/components/workspace/missions/MissionLearning.jsx,
-//              apps/web/src/components/workspace/missions/MissionGuide.jsx
+//              apps/web/src/components/workspace/missions/MissionGuide.jsx,
+//              apps/web/src/components/workspace/KnowledgeContext.jsx
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
 //              PRODUCES workspace.mission.create;
@@ -21,7 +22,8 @@
 //              CONSUMES apps/web/src/components/workspace/missions/MissionBuilder.jsx;
 //              CONSUMES apps/web/src/components/workspace/missions/MissionReview.jsx;
 //              CONSUMES apps/web/src/components/workspace/missions/MissionLearning.jsx;
-//              CONSUMES apps/web/src/components/workspace/missions/MissionGuide.jsx
+//              CONSUMES apps/web/src/components/workspace/missions/MissionGuide.jsx;
+//              CONSUMES apps/web/src/components/workspace/KnowledgeContext.jsx
 // Intent:      Make a list of missions triageable — priority, progress, due
 //              dates, editing and deletion — instead of an append-only stack.
 // ───────────────────────────────────────────────────────────────
@@ -48,6 +50,7 @@ import MissionBuilder from '@/components/workspace/missions/MissionBuilder';
 import MissionGuide from '@/components/workspace/missions/MissionGuide';
 import MissionLearning from '@/components/workspace/missions/MissionLearning';
 import MissionReview from '@/components/workspace/missions/MissionReview';
+import MissionKnowledgeContext from '@/components/workspace/KnowledgeContext';
 import {
     MISSION_PRIORITY,
     MISSION_STATUS,
@@ -626,6 +629,7 @@ function MissionDesk() {
                     {detail && (
                         <div key={detail.id} className="space-y-7">
                             <SavedPlan mission={detail} />
+                            <MissionKnowledgeContext missionId={detail.id} />
                             <Link to={`/app/research?mission=${encodeURIComponent(detail.id)}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">Open this mission’s research and source review</Link>
                             <Link to={`/app/suite?mission=${encodeURIComponent(detail.id)}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">Open this mission’s suite and submission review</Link>
                             <MissionLearning

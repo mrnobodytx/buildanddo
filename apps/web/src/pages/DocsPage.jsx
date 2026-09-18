@@ -25,6 +25,13 @@ import MissionGuide from '@/components/workspace/missions/MissionGuide';
 
 const GUIDES = [
     {
+        id: 'knowledge',
+        title: 'Assemble workspace context',
+        text: 'Knowledge & context groups your missions, completed research, evidence, signals and published wiki pages by topic. Ask a question or select a mission to assemble cited excerpts. Inspect relationships and source coverage before using or exporting the context.',
+        link: '/app/knowledge',
+        action: 'Open Knowledge & context',
+    },
+    {
         id: 'classrooms',
         title: 'Host or join a classroom',
         text: 'Open Classrooms in your workspace. An editor or administrator can schedule a lesson and start the session. Members join the shared reading, post questions with editor access, and revisit the discussion after it ends. Voice and video are not connected.',
