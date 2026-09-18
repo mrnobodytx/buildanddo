@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 489,
+      "lines": 490,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -27,7 +27,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "blueprint",
-        "policy-intelligence"
+        "policy-intelligence",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -112,7 +113,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 32706,
+      "lines": 33748,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -129,7 +130,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "blueprint",
-        "policy-intelligence"
+        "policy-intelligence",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -176,12 +178,12 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1832,
+      "lines": 2042,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -194,7 +196,8 @@
         "buildanddo-upgrade",
         "workflow-runs",
         "blueprint",
-        "policy-intelligence"
+        "policy-intelligence",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -246,12 +249,12 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 975,
+      "lines": 1018,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -264,7 +267,8 @@
         "buildanddo-upgrade",
         "workflow-runs",
         "blueprint",
-        "policy-intelligence"
+        "policy-intelligence",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -408,12 +412,12 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1253,
+      "lines": 1304,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -426,7 +430,8 @@
         "buildanddo-upgrade",
         "workflow-runs",
         "blueprint",
-        "policy-intelligence"
+        "policy-intelligence",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -1039,12 +1044,12 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 232,
+      "lines": 234,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve route loading and offer retry when the workspace list cannot be read instead of treating an outage as a new account.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1056,7 +1061,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "blueprint",
-        "policy-intelligence"
+        "policy-intelligence",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -1800,8 +1806,7 @@
       "functions": [
         "NavList",
         "BrandMark",
-        "WorkspaceSwitcher",
-        "WorkspaceLayout"
+        "WorkspaceSwitcher"
       ],
       "dependencies": [
         "./WorkspaceNotices",
@@ -1820,12 +1825,12 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 275,
+      "lines": 276,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1837,7 +1842,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "blueprint",
-        "policy-intelligence"
+        "policy-intelligence",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -3510,8 +3516,7 @@
       "enum_type": "Widget",
       "functions": [
         "SavedPlan",
-        "MissionDesk",
-        "MissionsPage"
+        "MissionDesk"
       ],
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceRecords.js",
@@ -3522,7 +3527,7 @@
         "apps/web/src/components/workspace/missions/MissionLearning.jsx",
         "apps/web/src/components/workspace/missions/MissionGuide.jsx"
       ],
-      "lines": 708,
+      "lines": 714,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
@@ -3537,7 +3542,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -3936,20 +3942,10 @@
       "enum_type": "Test",
       "functions": [],
       "dependencies": [
-        "@/contexts/AuthContext",
-        "@/contexts/MotionContext",
-        "@/contexts/WorkspaceContext",
-        "@/lib/demoWorkspace",
-        "@/lib/missionLearning",
-        "@/lib/pocketbaseClient",
-        "@/pages/workspace/MissionsPage",
-        "@/test/utils",
         "apps/web/src/pages/workspace/MissionsPage.jsx",
-        "apps/web/src/test/utils.jsx",
-        "react",
-        "vitest"
+        "apps/web/src/test/utils.jsx"
       ],
-      "lines": 292,
+      "lines": 308,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Hold the mission lifecycle UI to its promise: nothing runs until a mission is proposed, advanced and shown as such.",
@@ -3964,7 +3960,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "mission-learning"
+        "mission-learning",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -18186,14 +18183,16 @@
       "dependencies": [
         "scripts/ci/evidence_epoch.py",
         "apps/research/contracts.py",
-        "apps/federal_foundry/__main__.py"
+        "apps/federal_foundry/__main__.py",
+        "apps/federal_foundry/operator.py",
+        "apps/research/blueprints.py"
       ],
-      "lines": 147,
+      "lines": 150,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Package an explicit source closure for a box worker without copying credentials, runtime data or deployment authority.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -18204,7 +18203,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "mission-suite",
-        "government-learning"
+        "government-learning",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -27265,9 +27265,10 @@
       "dependencies": [
         "apps/federal_foundry/compiler.py",
         "apps/federal_foundry/evidence.py",
-        "apps/federal_foundry/protocol.py"
+        "apps/federal_foundry/protocol.py",
+        "apps/federal_foundry/operator.py"
       ],
-      "lines": 120,
+      "lines": 139,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose offline portfolio compilation and evidence verification to any authorized Bits or model runtime.",
@@ -27282,7 +27283,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "federal-foundry"
+        "federal-foundry",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -27535,14 +27537,15 @@
         "apps/federal_foundry/__main__.py",
         "apps/federal_foundry/protocol.py",
         "apps/federal_foundry/evidence.py",
-        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        "docs/operator-plane.md"
       ],
-      "lines": 239,
+      "lines": 243,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the five model-independent Bits research lanes callable while preserving actual-evidence and human-submission boundaries.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -27552,7 +27555,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "federal-foundry"
+        "federal-foundry",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -27570,11 +27574,12 @@
       ],
       "dependencies": [
         "tests/upgrade/test_federal_foundry.py",
+        "tests/upgrade/test_operator_compiler.py",
         "apps/federal_foundry/catalog.py",
         "apps/federal_foundry/evidence.py",
         "apps/federal_foundry/compiler.py"
       ],
-      "lines": 134,
+      "lines": 137,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require measured portable portfolio behavior and coverage independently of unavailable browser or hosted-model dependencies.",
@@ -27589,7 +27594,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "federal-foundry"
+        "federal-foundry",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -30644,13 +30650,18 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Adapter",
-      "functions": [],
+      "functions": [
+        "recordShape",
+        "createBlueprintClient",
+        "blueprintDefinition",
+        "blueprintExtraction"
+      ],
       "dependencies": [
         "apps/web/src/lib/missionResearch.js",
         "apps/web/src/lib/missionLearning.js",
         "apps/pocketbase/pb_hooks/blueprint.pb.js"
       ],
-      "lines": 158,
+      "lines": 165,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep blueprint uploads and proposal exports scoped to one account while retaining uncertain request identity and unknown assessments.",
@@ -30665,7 +30676,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "blueprint"
+        "blueprint",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -30677,13 +30689,17 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Widget",
-      "functions": [],
+      "functions": [
+        "Assessment",
+        "BlueprintResult",
+        "BlueprintDesk"
+      ],
       "dependencies": [
         "apps/web/src/lib/blueprints.js",
         "apps/web/src/contexts/WorkspaceContext.jsx",
         "apps/web/src/components/workspace/ControlPrimitives.jsx"
       ],
-      "lines": 195,
+      "lines": 196,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let workspace members review PDF requirements and unknown design decisions before exporting a proposed mission or challenge.",
@@ -30698,7 +30714,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "blueprint"
+        "blueprint",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -30714,7 +30731,7 @@
       "dependencies": [
         "apps/web/src/pages/workspace/BlueprintPage.jsx"
       ],
-      "lines": 152,
+      "lines": 156,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise rendered upload, review, proposal export and private-state cleanup against the existing research storage fixture.",
@@ -30729,7 +30746,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "blueprint"
+        "blueprint",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -30746,9 +30764,10 @@
         "apps/research/blueprints.py",
         "apps/pocketbase/pb_hooks/blueprint.pb.js",
         "apps/decision/workloads/blueprint_evaluation.py",
-        "apps/web/src/pages/workspace/BlueprintPage.jsx"
+        "apps/web/src/pages/workspace/BlueprintPage.jsx",
+        "docs/operator-plane.md"
       ],
-      "lines": 161,
+      "lines": 166,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the asynchronous blueprint review contract, extraction limits and evidence required before claiming native acceptance.",
@@ -30763,7 +30782,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "blueprint"
+        "blueprint",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -30806,11 +30826,15 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [],
+      "functions": [
+        "connected",
+        "file",
+        "ready"
+      ],
       "dependencies": [
         "apps/web/src/lib/blueprints.js"
       ],
-      "lines": 171,
+      "lines": 181,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify scoped blueprint uploads, recovery and proposed exports against actual backend handlers.",
@@ -30825,7 +30849,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "blueprint"
+        "blueprint",
+        "operator-plane"
       ],
       "tenant_id": null
     },
@@ -32689,12 +32714,1029 @@
       "timestamp": "2026-09-18T01:42:11.263001+00:00",
       "commit_sha": "9a683567aac0414bc245760f868abe096355557c",
       "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/operator-plane.md",
+        "apps/federal_foundry/protocol.py",
+        "apps/mission_suite/worker.py",
+        ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md"
+      ],
+      "lines": 90,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound private operator-plane receiving work to identified existing adapters, current evidence and explicit execution authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/operator.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_hash_value",
+        "content_fingerprint",
+        "_source_reference",
+        "_capability_definitions",
+        "_dependencies",
+        "_work_queue",
+        "operator_blueprint",
+        "_directory_identity",
+        "_directory_matches",
+        "_publish_directory",
+        "compile_operator"
+      ],
+      "dependencies": [
+        "apps/federal_foundry/catalog.py",
+        "apps/federal_foundry/protocol.py",
+        "apps/research/blueprints.py",
+        "apps/mission_suite/bundle.py"
+      ],
+      "lines": 519,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Discover public source capabilities and compile bounded operator proposals without inventing runtime readiness or authorizing work.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/operator.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-operator.js"
+      ],
+      "lines": 21,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose current workspace observations through a read-only native-auth operator route.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "text",
+        "summary",
+        "observed",
+        "snapshot"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_hooks/workspace-administration.js",
+        "apps/pocketbase/pb_hooks/research-policy.js",
+        "apps/pocketbase/pb_hooks/mission-policy.js"
+      ],
+      "lines": 116,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Project bounded existing workspace observations without creating work, exposing source bodies or replacing current record authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/operatorPlane.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "snapshotShape",
+        "projectOperator",
+        "typed",
+        "digest",
+        "blueprintShape",
+        "planShape",
+        "importOperatorBlueprint",
+        "createOperatorClient"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-operator.js",
+        "apps/federal_foundry/operator.py",
+        "apps/web/src/lib/missionResearch.js",
+        "apps/web/src/lib/policyIntelligence.js"
+      ],
+      "lines": 316,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Separate live workspace decisions from untrusted prepared plans while preserving freshness, unknown capacity and replayable review proposals.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/OperatorPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "DeskLink",
+        "WorkList",
+        "WorkspaceSnapshot",
+        "ImportedPlan",
+        "OperatorDesk"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/operatorPlane.js",
+        "apps/web/src/contexts/WorkspaceAccessContext.jsx",
+        "apps/web/src/components/workspace/ControlPrimitives.jsx"
+      ],
+      "lines": 317,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Surface observed workspace decisions and source coverage while keeping imported build plans separate from explicit review mission proposals.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/workspace/OperatorPage.jsx",
+        "tests/upgrade/operator-fixture.mjs"
+      ],
+      "lines": 294,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise scoped operator reads, inert plan review, explicit proposal recovery and immediate removal of inaccessible workspace state.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/operator-plane.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/federal_foundry/operator.py",
+        "apps/pocketbase/pb_hooks/workspace-operator.js",
+        "apps/web/src/lib/operatorPlane.js",
+        "apps/web/src/pages/workspace/OperatorPage.jsx",
+        "docs/blueprints.md"
+      ],
+      "lines": 178,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the public operator review loop usable with explicit evidence, freshness, authority and private receiving boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/operator-client.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "accepted",
+        "connected"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/operatorPlane.js",
+        "tests/upgrade/operator-fixture.mjs"
+      ],
+      "lines": 260,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify compiler/browser interoperability, inert imported content, truthful freshness and scoped durable review requests through real handlers.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/operator-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "operatorFixture",
+        "operatorPlan",
+        "sealOperator"
+      ],
+      "dependencies": [
+        "tests/upgrade/research-fixture.mjs",
+        "apps/pocketbase/pb_hooks/workspace-operator.js",
+        "apps/federal_foundry/operator.py"
+      ],
+      "lines": 65,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise the operator route and native proposal handlers with the existing explicit storage and transport doubles.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/operator-system.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/operator-fixture.mjs",
+        "apps/pocketbase/pb_hooks/operator.pb.js",
+        "apps/pocketbase/pb_hooks/workspace-operator.js"
+      ],
+      "lines": 150,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify current authority, bounded visibility and missing-source behavior of the read-only operator snapshot.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_operator_compiler.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "OperatorCompilerTests"
+      ],
+      "dependencies": [
+        "apps/federal_foundry/operator.py",
+        "apps/federal_foundry/__main__.py",
+        "apps/research/blueprints.py"
+      ],
+      "lines": 518,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify discovered capability evidence, bounded proposal authority, deterministic interoperability and non-destructive operator compilation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "operator-plane"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md",
+      "target": "apps/federal_foundry/protocol.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md declares CONSUMES apps/federal_foundry/protocol.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md",
+      "target": "apps/mission_suite/worker.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md declares CONSUMES apps/mission_suite/worker.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md",
+      "target": "docs/operator-plane.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md declares CONSUMES docs/operator-plane.md in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md",
+      "target": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md declares DEPENDS_ON .bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "docs/operator-plane.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares CONSUMES docs/operator-plane.md in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares VALIDATES apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/operator-client.test.mjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares VALIDATES tests/upgrade/operator-client.test.mjs in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/operator-system.test.mjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares VALIDATES tests/upgrade/operator-system.test.mjs in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/test_operator_compiler.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares VALIDATES tests/upgrade/test_operator_compiler.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/__main__.py",
+      "target": "apps/federal_foundry/operator.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/__main__.py declares DEPENDS_ON apps/federal_foundry/operator.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/operator.py",
+      "target": "apps/research/blueprints.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/operator.py declares CONSUMES apps/research/blueprints.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/operator.py",
+      "target": "apps/federal_foundry/catalog.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/operator.py declares DEPENDS_ON apps/federal_foundry/catalog.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/operator.py",
+      "target": "apps/federal_foundry/protocol.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/operator.py declares DEPENDS_ON apps/federal_foundry/protocol.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/operator.py",
+      "target": "apps/mission_suite/bundle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/operator.py declares DEPENDS_ON apps/mission_suite/bundle.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/mission_suite/bundle.py",
+      "target": "apps/federal_foundry/operator.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/mission_suite/bundle.py declares CONSUMES apps/federal_foundry/operator.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/mission_suite/bundle.py",
+      "target": "apps/research/blueprints.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/mission_suite/bundle.py declares CONSUMES apps/research/blueprints.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/operator.pb.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/operator.pb.js declares CONSUMES apps/pocketbase/pb_hooks/workspace-operator.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "target": "apps/pocketbase/pb_hooks/mission-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-operator.js declares CONSUMES apps/pocketbase/pb_hooks/mission-policy.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "target": "apps/pocketbase/pb_hooks/research-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-operator.js declares CONSUMES apps/pocketbase/pb_hooks/research-policy.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-operator.js declares CONSUMES apps/pocketbase/pb_hooks/workspace-access.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-administration.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-operator.js declares CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/operatorPlane.js",
+      "target": "apps/federal_foundry/operator.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/operatorPlane.js declares CONSUMES apps/federal_foundry/operator.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/operatorPlane.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/operatorPlane.js declares CONSUMES apps/pocketbase/pb_hooks/workspace-operator.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/operatorPlane.js",
+      "target": "apps/web/src/lib/missionResearch.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/operatorPlane.js declares CONSUMES apps/web/src/lib/missionResearch.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/operatorPlane.js",
+      "target": "apps/web/src/lib/policyIntelligence.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/operatorPlane.js declares CONSUMES apps/web/src/lib/policyIntelligence.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/OperatorPage.jsx",
+      "target": "apps/web/src/components/workspace/ControlPrimitives.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/OperatorPage.jsx declares CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/OperatorPage.jsx",
+      "target": "apps/web/src/contexts/WorkspaceAccessContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/OperatorPage.jsx declares CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/OperatorPage.jsx",
+      "target": "apps/web/src/lib/operatorPlane.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/OperatorPage.jsx declares CONSUMES apps/web/src/lib/operatorPlane.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx",
+      "target": "tests/upgrade/operator-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx declares CONSUMES tests/upgrade/operator-fixture.mjs in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx",
+      "target": "apps/web/src/pages/workspace/OperatorPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx declares VALIDATES apps/web/src/pages/workspace/OperatorPage.jsx in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/blueprints.md",
+      "target": "docs/operator-plane.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/blueprints.md declares CONSUMES docs/operator-plane.md in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/federal-foundry.md",
+      "target": "docs/operator-plane.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/federal-foundry.md declares CONSUMES docs/operator-plane.md in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/operator-plane.md",
+      "target": "apps/federal_foundry/operator.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/operator-plane.md declares CONSUMES apps/federal_foundry/operator.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/operator-plane.md",
+      "target": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/operator-plane.md declares CONSUMES apps/pocketbase/pb_hooks/workspace-operator.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/operator-plane.md",
+      "target": "apps/web/src/lib/operatorPlane.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/operator-plane.md declares CONSUMES apps/web/src/lib/operatorPlane.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/operator-plane.md",
+      "target": "apps/web/src/pages/workspace/OperatorPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/operator-plane.md declares CONSUMES apps/web/src/pages/workspace/OperatorPage.jsx in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/operator-plane.md",
+      "target": "docs/blueprints.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/operator-plane.md declares CONSUMES docs/blueprints.md in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_federal_foundry.py",
+      "target": "tests/upgrade/test_operator_compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_federal_foundry.py declares DEPENDS_ON tests/upgrade/test_operator_compiler.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/operator-client.test.mjs",
+      "target": "tests/upgrade/operator-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/operator-client.test.mjs declares CONSUMES tests/upgrade/operator-fixture.mjs in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/operator-client.test.mjs",
+      "target": "apps/web/src/lib/operatorPlane.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/operator-client.test.mjs declares VALIDATES apps/web/src/lib/operatorPlane.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/operator-fixture.mjs",
+      "target": "apps/federal_foundry/operator.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/operator-fixture.mjs declares CONSUMES apps/federal_foundry/operator.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/operator-fixture.mjs",
+      "target": "tests/upgrade/research-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/operator-fixture.mjs declares CONSUMES tests/upgrade/research-fixture.mjs in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/operator-fixture.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/operator-fixture.mjs declares VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/operator-system.test.mjs",
+      "target": "tests/upgrade/operator-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/operator-system.test.mjs declares CONSUMES tests/upgrade/operator-fixture.mjs in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/operator-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/operator.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/operator-system.test.mjs declares VALIDATES apps/pocketbase/pb_hooks/operator.pb.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/operator-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/operator-system.test.mjs declares VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_operator_compiler.py",
+      "target": "apps/research/blueprints.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_operator_compiler.py declares CONSUMES apps/research/blueprints.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_operator_compiler.py",
+      "target": "apps/federal_foundry/__main__.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_operator_compiler.py declares VALIDATES apps/federal_foundry/__main__.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_operator_compiler.py",
+      "target": "apps/federal_foundry/operator.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_operator_compiler.py declares VALIDATES apps/federal_foundry/operator.py in its CGRF contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "commit",
+      "file_path": "apps/federal_foundry/operator.py",
+      "description": "Implement the read-first public operator review loop under the existing upgrade dispatch, reusing Phase A extraction, the federal catalog/protocol, scoped workspace reads and durable native mission proposals. Private NXC/fleet execution remains receiving work.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T02:36:46.459635+00:00",
+      "commit_sha": "26f73df57db15927a101fb8e86ad5d28317ab156",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_operator_compiler.py",
+      "description": "The combined foundry coverage gate passes 66 cases, including 26 operator cases; operator statement coverage is 349/351 (99.43%) and CLI coverage 95/97 (97.94%). Atomic no-replace publication closes symlink and real-directory replacement regressions, preserves foreign output and fails closed without support. Archive compilation and exact Phase A provenance pass.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T02:36:46.459635+00:00",
+      "commit_sha": "26f73df57db15927a101fb8e86ad5d28317ab156",
+      "smoke_result": "66/66"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/operator-system.test.mjs",
+      "description": "Final full Node regression passes all 347 cases, including 27 operator cases. Current-role downgrade, standalone workflow visibility, untrusted compiler imports and uncertain/elevated receipt recovery are covered. Selected operator backend and client have 100% lines and 92.50%/96.60% branches. Native PocketBase and rendered UI acceptance are not inferred from storage/transport doubles.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T02:36:46.459635+00:00",
+      "commit_sha": "26f73df57db15927a101fb8e86ad5d28317ab156",
+      "smoke_result": "347/347"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_operator_compiler.py",
+      "description": "Final Python discovery runs 318 cases: 302 pass and 16 native dependency cases skip, with zero failures. Strict mypy passes seven source files; changed Python source/tests pass Ruff. Actual CLI output imports into the browser client and its manifest hashes match; ten packets are prepared and zero hosted dispatches are created.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T02:36:46.459635+00:00",
+      "commit_sha": "26f73df57db15927a101fb8e86ad5d28317ab156",
+      "smoke_result": "302/318"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx",
+      "description": "Repository web test, lint and build commands cannot start because Vitest, eslint-plugin-import and Vite are absent; root npm wrappers additionally lack concurrently. Fourteen operator rendered cases, two new mission-link cases and the extended blueprint export case remain unexecuted. No dependency download or source bypass was applied.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T02:36:46.459635+00:00",
+      "commit_sha": "26f73df57db15927a101fb8e86ad5d28317ab156",
+      "smoke_result": "0/3"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+      "description": "Four of seven dispatch smoke groups pass: final Node/Python source regression, measured context and public boundary. The other three frontend groups have explicit missing-tool failures. Twelve new files have complete provenance, all 104 prior events are preserved, and the private repository/dispatch plus official Cultural Property/opportunity evidence remain missing.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T02:36:46.459635+00:00",
+      "commit_sha": "26f73df57db15927a101fb8e86ad5d28317ab156",
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 543,
-    "type_b_count": 1179,
-    "type_c_count": 104,
+    "type_a_count": 555,
+    "type_b_count": 1229,
+    "type_c_count": 110,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

@@ -117,11 +117,221 @@
 #              VALIDATES tests/upgrade/check_policy_intelligence.py;
 #              VALIDATES tests/upgrade/policy-intelligence.test.mjs;
 #              CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md;
+#              CONSUMES docs/operator-plane.md;
+#              CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md;
+#              VALIDATES tests/upgrade/test_operator_compiler.py;
+#              VALIDATES tests/upgrade/operator-system.test.mjs;
+#              VALIDATES tests/upgrade/operator-client.test.mjs;
+#              VALIDATES apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
 
 # Dispatch implementation report
+
+## Read-first operator continuation — 2026-09-18
+
+### §1 SUMMARY
+
+Status: PARTIAL — public operator review loop implemented; private connections and native/rendered acceptance remain open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-phase-a-20260917-R9HXJV
+Tasks: 5/5 public source phases addressed; OP-00–OP-09 receiving acceptance remains pending
+Smoke: 4/7 dispatch gates pass; three frontend gates cannot start
+CKS Gate: B+ (global minimum)
+CKS: pending
+CAPS: pending
+CK: pending
+Commits: source 26f73df57db15927a101fb8e86ad5d28317ab156; report/memory bookkeeping recorded separately
+Verify source identity: `git log --format='%H %s' -- apps/federal_foundry/operator.py`
+
+The Operator page reads scoped workspace decisions, ordinary work and dated
+integration observations, with explicit source coverage. The existing foundry
+compiler discovers reusable public source before proposing work, preserves the
+Phase A extraction contract and prepares existing builder/verifier packets.
+An explicit review proposal uses the native mission command and durable receipt.
+Neither compilation nor import starts a worker, approves a plan or mints VERIFIED.
+
+The first slice adds no dependency, document parser, queue, authority policy,
+database collection or private control plane. The ten requested system categories
+remain unknown where no current workspace observation supports their state.
+Five catalog lanes have unverified deadlines; Cultural Property's official notice
+and the intended six-opportunity inventory have not been supplied. Prepared tasks
+and example capacity figures do not establish actual dispatch or readiness.
+
+### §2 TASK RESULTS
+
+Task DS — Inspect existing owners
+Status: PASS for repository scope
+Output: Reused research extraction, the federal catalog/protocol, suite archive,
+current workspace membership and native mission receipts.
+Verify: `python scripts/ci/agent_context.py --check`
+Files: existing SRS/queue, docs/operator-plane.md, receiving handoff
+CKET: 04_HYPOTHESIZE, 06_PLAN, 11_COMMIT
+
+Task DT — Compile source-backed operator blueprints
+Status: PASS for source
+Output: Eight capability groups, five unverified deadlines and ten prepared task
+packets, with zero hosted dispatches. Optional extraction remains unchanged.
+Verify: `python tests/upgrade/check_federal_foundry.py`
+Verify: `python -m apps.federal_foundry operator --output /tmp/operator-review-new`
+Files: apps/federal_foundry/operator.py, existing CLI/archive, compiler tests
+CKET: 07_BUILD, 08_TEST
+
+Task DU — Read bounded workspace state
+Status: PASS for source; native acceptance open
+Output: Independently paged, currently authorized summaries; standalone workflow
+approvals remain visible; missing/stale/future observations cannot become health.
+Verify: `node --test tests/upgrade/operator-system.test.mjs`
+Files: operator.pb.js, workspace-operator.js, backend tests/fixture
+CKET: 07_BUILD, 08_TEST
+
+Task DV — Review, export and propose
+Status: PARTIAL — client behavior verified; rendered acceptance unavailable
+Output: Human decisions precede ordinary work; the existing blueprint page exports
+raw extraction for compilation. Imported proposals retain integrity and provenance.
+Proposal retries and unchanged recompilation recover one native mission.
+Verify: `node --test tests/upgrade/operator-client.test.mjs tests/upgrade/blueprint-client.test.mjs`
+Verify: `npm --prefix apps/web test -- src/pages/workspace/__tests__/OperatorPage.test.jsx src/pages/workspace/__tests__/MissionsPage.test.jsx src/pages/workspace/__tests__/BlueprintPage.test.jsx`
+Files: operator page/client, blueprint export, mission selection, routes and tests
+CKET: 07_BUILD, 08_TEST
+
+Task DW — Preserve evidence and receiving scope
+Status: PASS for available public evidence; private work pending
+Output: Current regression, coverage, typing, provenance and boundary checks;
+all 104 earlier memory events retained exactly. OP-00–OP-09 identify receiving work.
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+Files: report, memory, measured context, queue, SRS, docs and receiving handoff
+CKET: 04_HYPOTHESIZE, 06_PLAN, 11_COMMIT
+
+### §3 SMOKE TEST RESULTS
+
+| Gate | Command | Expected | Observed | Result |
+| --- | --- | --- | --- | --- |
+| 1 | `npm --prefix apps/web test` | Rendered tests execute | Exit 127: Vitest absent | FAIL — environment |
+| 2 | `npm --prefix apps/web run lint` | Repository ESLint executes | Exit 2: eslint-plugin-import absent | FAIL — environment |
+| 3 | `npm --prefix apps/web run build` | Vite produces the web bundle | Exit 1: spawnSync vite ENOENT | FAIL — environment |
+| 4 | `node --test tests/upgrade/*.test.mjs` | All source cases pass | 347 pass, zero skips/failures | PASS |
+| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Source regression has no failures | 318 discovered: 302 pass, 16 native dependency skips | PASS for available source |
+| 6 | `python scripts/ci/agent_context.py --check` | Lock matches repository | Pass; six existing findings/four unwired gates retained | PASS |
+| 7 | `python scripts/ci/verify_public_boundary.py` | No boundary or secret findings | Pass across 839 tracked files; actor label not queried | PASS |
+
+The final Node run also enabled the built-in coverage flag for the operator
+backend/client and blueprint client. All three have 100% line coverage; branch
+coverage is 92.50%, 96.60% and 91.28%, respectively. The 27 operator cases execute
+actual hooks against explicit storage/transport doubles and real Python compiler
+output; they do not establish native PocketBase acceptance.
+
+`python tests/upgrade/check_federal_foundry.py` passes all 66 cases, including 26
+operator cases, without skips. Compiler statement coverage is 349/351 (99.43%);
+the CLI is 95/97 (97.94%). Existing foundry modules range from 99.5–100%.
+The trace report makes no Python branch-coverage claim. The suite archive test
+compiles after extraction without the checkout on its import path.
+
+The final CLI publication and JS import smoke inspected eight capabilities,
+five unknown deadlines and ten prepared packets; both output manifest hashes
+matched retained bytes and the browser accepted the plan. Zero hosted dispatches,
+live model calls, campaign runs or actual workspace commands were performed.
+The compiler's native Linux no-replace publication ran successfully here.
+
+Strict mypy passes seven source files:
+`python -m mypy --strict --follow-imports=silent --explicit-package-bases apps/federal_foundry apps/mission_suite/bundle.py`.
+Ruff passes the changed Python source/tests:
+`python -m ruff check apps/federal_foundry/operator.py apps/federal_foundry/__main__.py apps/mission_suite/bundle.py tests/upgrade/test_operator_compiler.py tests/upgrade/check_federal_foundry.py`.
+The existing source diagnostic,
+`node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`, parses 255 modules
+with zero static errors. These checks do not replace repository ESLint, browser
+rendering or a production build.
+
+Fourteen new operator rendered cases and two mission-link cases remain unrun;
+the existing blueprint rendered case now also checks raw extraction export.
+The native skips retain the previously absent pypdf/PocketBase requirements.
+No dependency was downloaded or replaced to turn an unavailable check green.
+For each of smoke failures 1–3, the remedy is to provision the repository's
+existing locked dependencies in the authorized validation environment and rerun
+the same command above. No source workaround was applied. Root npm wrappers also
+cannot start because concurrently is absent; the direct web commands expose the
+underlying dependency failures.
+
+Targeted red/green evidence:
+
+- Standalone workflows were incorrectly made dependent on a mission; mixed
+  standalone/linked approval cases now retain both native scopes.
+- Future-created seat events no longer enter current change/activity projections.
+- Operator mission links now resolve only against the existing readable list;
+  they cannot approve, fetch a foreign mission or trigger a transition.
+- A shaped but elevated success response formerly exhausted the inner receipt
+  while blocking the outer retry state. Refresh and reproposal now recover the
+  same native mission instead of leaving a stuck wrapper or creating a duplicate.
+- A role downgraded during a snapshot formerly returned the original editor
+  role. A failing-then-passing test now observes the final viewer role.
+- Public-path reservation could adopt a concurrent symlink or real directory.
+  Publication now atomically moves a complete, bound private candidate with
+  Linux renameat2(RENAME_NOREPLACE). Tests retain foreign files/directories,
+  verify the published inode and fail closed when atomic support is unavailable.
+
+Recheck those regressions with the operator Node suites and
+`python -m unittest discover -s tests/upgrade -p test_operator_compiler.py`.
+Independent review confirmed the publication, receipt-recovery and final-role
+findings were addressed; it did not perform native or rendered acceptance.
+
+### §4 MEMORY INGEST
+
+Type A count: 555
+Type B count: 1229
+Type C count: 110
+IOO compliance: complete
+DKG orphans: 0
+Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+History: all 104 preceding Type C vectors retained exactly
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+### §5 CKET FILING
+
+06_PLAN: operator documentation and existing blueprint/foundry instructions
+04_HYPOTHESIZE: existing upgrade SRS acceptance
+07_BUILD: existing foundry/archive extensions, workspace hook, browser client/page and route integration
+08_TEST: compiler, hook/client, export and rendered interaction cases
+11_COMMIT: queue, measured context, receiving handoff, report and memory
+13_SAVE: none
+CGRF headers: 12/12 new repository files have matching owner, SRS, dispatch, intent, relationships and pending stamps
+REFLEX check: deferred to the existing post-merge owner
+
+Stage values follow this repository's public application conventions. The local
+dispatch verifier checks file counts, provenance, IOO and declared relationships.
+
+### §6 GOVERNANCE
+
+Entity: Citadel Nexus Inc.
+License posture: unchanged; no legal or licensing file modified
+Hard-NO scan: no forbidden/private/deployment-control paths added
+Secret scan: public-boundary scan passes; no credential access performed
+Stripe mode: not applicable; no checkout code changed
+Actor: actor:agent required on publication; no label application claimed
+Authority: source A2; compiled plan A0; native proposed mission retains its normal incomplete A1 default until the existing plan/approval workflow
+Verify boundary: `python scripts/ci/verify_public_boundary.py`
+
+### §7 NEXT ACTIONS
+
+Blockers: actual private repository/ref/paths and receiving dispatch for NXC,
+Sentinel, telemetry/cloud readers and fleet/model dispatch; official Cultural
+Property notice, amendments, permitted datasets and opportunity deadlines;
+provisioned native/backend/frontend acceptance environment.
+Handoff requested: CMAX-B with IDE1 coordination in
+.bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md.
+Suggested next dispatch: receiving owner assigns an ID for OP-00–OP-09; no
+private dispatch is created or represented as approved here.
+Bugs filed: none externally; existing context findings are retained without
+unrelated repairs or messages.
+
+Rollback removes the public source feature through normal review while retaining
+created mission proposals and command receipts. No database rollback is needed.
+The portable source fingerprint changes; private bindings remain fenced until
+their normal authorized update. Production deployment, external email, proposal
+submission, financial commitments, credentials, destructive actions and contract
+attestations still require explicit human approval in the receiving process.
 
 ## Policy intelligence public continuation — 2026-09-18
 
