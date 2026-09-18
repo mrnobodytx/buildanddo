@@ -26,7 +26,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "blueprint"
+        "blueprint",
+        "policy-intelligence"
       ],
       "tenant_id": null
     },
@@ -111,7 +112,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 31613,
+      "lines": 32706,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -127,7 +128,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "blueprint"
+        "blueprint",
+        "policy-intelligence"
       ],
       "tenant_id": null
     },
@@ -174,7 +176,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1630,
+      "lines": 1832,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -191,7 +193,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "workflow-runs",
-        "blueprint"
+        "blueprint",
+        "policy-intelligence"
       ],
       "tenant_id": null
     },
@@ -243,7 +246,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 937,
+      "lines": 975,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -260,7 +263,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "workflow-runs",
-        "blueprint"
+        "blueprint",
+        "policy-intelligence"
       ],
       "tenant_id": null
     },
@@ -404,7 +408,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1195,
+      "lines": 1253,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -421,7 +425,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "workflow-runs",
-        "blueprint"
+        "blueprint",
+        "policy-intelligence"
       ],
       "tenant_id": null
     },
@@ -1034,12 +1039,12 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 230,
+      "lines": 232,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve route loading and offer retry when the workspace list cannot be read instead of treating an outage as a new account.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1050,7 +1055,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "blueprint"
+        "blueprint",
+        "policy-intelligence"
       ],
       "tenant_id": null
     },
@@ -1814,12 +1820,12 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 274,
+      "lines": 275,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1830,7 +1836,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "blueprint"
+        "blueprint",
+        "policy-intelligence"
       ],
       "tenant_id": null
     },
@@ -31596,12 +31603,1098 @@
       "timestamp": "2026-09-17T05:48:57.647079+00:00",
       "commit_sha": "c1d8d9d621caf776c92edef100f5c3f6afde9159",
       "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [],
+      "dependencies": [
+        "docs/policy-intelligence.md",
+        "apps/research/policy/pipeline.py",
+        "apps/web/src/lib/policyIntelligence.js",
+        ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md"
+      ],
+      "lines": 109,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Hand the owner-adopted policy rail and tested public domain contract to actual Sentinel owners without inventing private runtime bindings or activation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/policy/__main__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "compile_input",
+        "write_bundle",
+        "main"
+      ],
+      "dependencies": [
+        "apps/research/policy/pipeline.py",
+        "apps/research/policy/demo.py",
+        "apps/mission_suite/engine.py"
+      ],
+      "lines": 136,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compile portable policy review artifacts from retained research excerpts without starting services, contacting sources or sending alerts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/policy/contracts.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "reject",
+        "record",
+        "rows",
+        "bounded",
+        "identity",
+        "tenant",
+        "choice",
+        "selections",
+        "instant",
+        "canonical",
+        "fingerprint",
+        "source_url",
+        "observation",
+        "watch"
+      ],
+      "dependencies": [
+        "apps/research/contracts.py",
+        "apps/research/transport.py",
+        "apps/mission_suite/engine.py"
+      ],
+      "lines": 409,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound portable policy observations to tenant, source and quoted evidence without granting authority or inventing verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/policy/demo.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Scaffold",
+      "functions": [
+        "demo_packet"
+      ],
+      "dependencies": [
+        "apps/research/policy/pipeline.py"
+      ],
+      "lines": 165,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise a reproducible small-business policy scenario without presenting fixture text as live government activity.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/research/policy/pipeline.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "normalize",
+        "collect",
+        "make_packet",
+        "read_packet",
+        "folded",
+        "watch_matches",
+        "project",
+        "brief_text"
+      ],
+      "dependencies": [
+        "apps/research/policy/contracts.py",
+        "apps/research/processing.py",
+        "apps/mission_suite/engine.py"
+      ],
+      "lines": 413,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Project research observations into neutral policy graphs and review candidates while retaining source revisions and tenant boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/data/policy-demo.json",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "apps/research/policy/demo.py"
+      ],
+      "lines": 1,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Label the generated small-business policy walkthrough as synthetic and keep its bytes reproducible.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/data/policy-demo.json.cgrf.yaml",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "apps/research/policy/demo.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Label the generated small-business policy walkthrough as synthetic and keep its bytes reproducible.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/policyIntelligence.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "canonicalPolicy",
+        "hash",
+        "sourceUrl",
+        "shape",
+        "watchShape",
+        "importPolicy",
+        "derive",
+        "projectPolicy",
+        "configurePolicyWatch",
+        "searchPolicy",
+        "policyProposal",
+        "createPolicyClient"
+      ],
+      "dependencies": [
+        "apps/research/policy/contracts.py",
+        "apps/research/policy/pipeline.py",
+        "apps/web/src/lib/missionResearch.js",
+        "apps/web/src/lib/missionLearning.js"
+      ],
+      "lines": 282,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Admit bounded policy packs and create replayable review proposals through existing workspace authority without trusting imported claims.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/PolicyPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "PolicyDesk"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/policyIntelligence.js",
+        "apps/web/src/data/policy-demo.json",
+        "apps/web/src/contexts/WorkspaceAccessContext.jsx",
+        "apps/web/src/components/workspace/ControlPrimitives.jsx"
+      ],
+      "lines": 207,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let workspace members inspect neutral policy sources and watch candidates before explicitly proposing source review through the existing mission lifecycle.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/PolicyPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/workspace/PolicyPage.jsx",
+        "tests/upgrade/policy-fixture.mjs"
+      ],
+      "lines": 143,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Check policy review, inert source rendering, scoped imports and explicit mission recovery in the actual workspace page.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/policy-intelligence.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/research/policy/contracts.py",
+        "apps/research/policy/pipeline.py",
+        "apps/research/policy/__main__.py",
+        "apps/web/src/lib/policyIntelligence.js",
+        "apps/web/src/pages/workspace/PolicyPage.jsx",
+        "docs/mission-research.md"
+      ],
+      "lines": 217,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe the working public policy pack and review flow while separating source integrity, source verification and private Sentinel activation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/check_policy_intelligence.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_policy_intelligence.py"
+      ],
+      "lines": 84,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Measure local policy behavior and per-module statement coverage without conflating fixtures with live Sentinel acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/policy-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "seal",
+        "researchPacket",
+        "imported",
+        "connected"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/policyIntelligence.js",
+        "apps/web/src/data/policy-demo.json",
+        "tests/upgrade/research-fixture.mjs"
+      ],
+      "lines": 60,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise policy proposals against actual research and mission handlers with explicitly synthetic transport and transactional storage.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/policy-intelligence.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/lib/policyIntelligence.js",
+        "tests/upgrade/policy-fixture.mjs"
+      ],
+      "lines": 249,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove portable Python/browser parity and source-review proposal recovery without granting imported data mission authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_policy_intelligence.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "sample",
+        "packet",
+        "capture"
+      ],
+      "dependencies": [
+        "apps/research/policy/contracts.py",
+        "apps/research/policy/pipeline.py",
+        "apps/research/policy/demo.py",
+        "apps/research/policy/__main__.py"
+      ],
+      "lines": 699,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise source admission, quoted graph semantics, correction replay and neutral watch projections with explicit research transport fixtures.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "policy-intelligence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md",
+      "target": "apps/research/policy/pipeline.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md declares CONSUMES apps/research/policy/pipeline.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md",
+      "target": "apps/web/src/lib/policyIntelligence.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md declares CONSUMES apps/web/src/lib/policyIntelligence.js for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md",
+      "target": "docs/policy-intelligence.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md declares CONSUMES docs/policy-intelligence.md for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md",
+      "target": ".bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md declares EXTENDS .bits/handoffs/2026-09-16-bits-codegen-cmax-b-sentinel-maritime.md for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "docs/policy-intelligence.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares CONSUMES docs/policy-intelligence.md for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/check_policy_intelligence.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares VALIDATES tests/upgrade/check_policy_intelligence.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md",
+      "target": "tests/upgrade/policy-intelligence.test.mjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md declares VALIDATES tests/upgrade/policy-intelligence.test.mjs for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/__main__.py",
+      "target": "apps/mission_suite/engine.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/policy/__main__.py declares CONSUMES apps/mission_suite/engine.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/__main__.py",
+      "target": "apps/research/policy/demo.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/policy/__main__.py declares CONSUMES apps/research/policy/demo.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/__main__.py",
+      "target": "apps/research/policy/pipeline.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/policy/__main__.py declares CONSUMES apps/research/policy/pipeline.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/contracts.py",
+      "target": "apps/mission_suite/engine.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/policy/contracts.py declares CONSUMES apps/mission_suite/engine.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/contracts.py",
+      "target": "apps/research/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/policy/contracts.py declares CONSUMES apps/research/contracts.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/contracts.py",
+      "target": "apps/research/transport.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/policy/contracts.py declares CONSUMES apps/research/transport.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/demo.py",
+      "target": "apps/research/policy/pipeline.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/policy/demo.py declares CONSUMES apps/research/policy/pipeline.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/pipeline.py",
+      "target": "apps/mission_suite/engine.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/policy/pipeline.py declares CONSUMES apps/mission_suite/engine.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/pipeline.py",
+      "target": "apps/research/policy/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/research/policy/pipeline.py declares CONSUMES apps/research/policy/contracts.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/research/policy/pipeline.py",
+      "target": "apps/research/processing.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "apps/research/policy/pipeline.py declares EXTENDS apps/research/processing.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/data/policy-demo.json.cgrf.yaml",
+      "target": "apps/research/policy/demo.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/data/policy-demo.json.cgrf.yaml declares CONSUMES apps/research/policy/demo.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/data/policy-demo.json.cgrf.yaml",
+      "target": "apps/web/src/data/policy-demo.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "apps/web/src/data/policy-demo.json.cgrf.yaml declares PRODUCES apps/web/src/data/policy-demo.json for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/policyIntelligence.js",
+      "target": "apps/research/policy/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/policyIntelligence.js declares CONSUMES apps/research/policy/contracts.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/policyIntelligence.js",
+      "target": "apps/research/policy/pipeline.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/policyIntelligence.js declares CONSUMES apps/research/policy/pipeline.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/policyIntelligence.js",
+      "target": "apps/web/src/lib/missionLearning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/policyIntelligence.js declares CONSUMES apps/web/src/lib/missionLearning.js for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/policyIntelligence.js",
+      "target": "apps/web/src/lib/missionResearch.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/policyIntelligence.js declares CONSUMES apps/web/src/lib/missionResearch.js for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/PolicyPage.jsx",
+      "target": "apps/web/src/components/workspace/ControlPrimitives.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/PolicyPage.jsx declares CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/PolicyPage.jsx",
+      "target": "apps/web/src/contexts/WorkspaceAccessContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/PolicyPage.jsx declares CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/PolicyPage.jsx",
+      "target": "apps/web/src/data/policy-demo.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/PolicyPage.jsx declares CONSUMES apps/web/src/data/policy-demo.json for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/PolicyPage.jsx",
+      "target": "apps/web/src/lib/policyIntelligence.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/PolicyPage.jsx declares CONSUMES apps/web/src/lib/policyIntelligence.js for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/PolicyPage.test.jsx",
+      "target": "tests/upgrade/policy-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/PolicyPage.test.jsx declares CONSUMES tests/upgrade/policy-fixture.mjs for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/PolicyPage.test.jsx",
+      "target": "apps/web/src/pages/workspace/PolicyPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/PolicyPage.test.jsx declares VALIDATES apps/web/src/pages/workspace/PolicyPage.jsx for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/policy-intelligence.md",
+      "target": "apps/research/policy/__main__.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/policy-intelligence.md declares CONSUMES apps/research/policy/__main__.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/policy-intelligence.md",
+      "target": "apps/research/policy/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/policy-intelligence.md declares CONSUMES apps/research/policy/contracts.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/policy-intelligence.md",
+      "target": "apps/research/policy/pipeline.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/policy-intelligence.md declares CONSUMES apps/research/policy/pipeline.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/policy-intelligence.md",
+      "target": "apps/web/src/lib/policyIntelligence.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/policy-intelligence.md declares CONSUMES apps/web/src/lib/policyIntelligence.js for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/policy-intelligence.md",
+      "target": "apps/web/src/pages/workspace/PolicyPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/policy-intelligence.md declares CONSUMES apps/web/src/pages/workspace/PolicyPage.jsx for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/policy-intelligence.md",
+      "target": "docs/mission-research.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/policy-intelligence.md declares CONSUMES docs/mission-research.md for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_policy_intelligence.py",
+      "target": "tests/upgrade/test_policy_intelligence.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_policy_intelligence.py declares CONSUMES tests/upgrade/test_policy_intelligence.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/policy-fixture.mjs",
+      "target": "apps/web/src/data/policy-demo.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/policy-fixture.mjs declares CONSUMES apps/web/src/data/policy-demo.json for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/policy-fixture.mjs",
+      "target": "tests/upgrade/research-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/policy-fixture.mjs declares CONSUMES tests/upgrade/research-fixture.mjs for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/policy-fixture.mjs",
+      "target": "apps/web/src/lib/policyIntelligence.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/policy-fixture.mjs declares VALIDATES apps/web/src/lib/policyIntelligence.js for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/policy-intelligence.test.mjs",
+      "target": "tests/upgrade/policy-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/policy-intelligence.test.mjs declares CONSUMES tests/upgrade/policy-fixture.mjs for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/policy-intelligence.test.mjs",
+      "target": "apps/web/src/lib/policyIntelligence.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/policy-intelligence.test.mjs declares VALIDATES apps/web/src/lib/policyIntelligence.js for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_policy_intelligence.py",
+      "target": "apps/research/policy/__main__.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_policy_intelligence.py declares VALIDATES apps/research/policy/__main__.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_policy_intelligence.py",
+      "target": "apps/research/policy/contracts.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_policy_intelligence.py declares VALIDATES apps/research/policy/contracts.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_policy_intelligence.py",
+      "target": "apps/research/policy/demo.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_policy_intelligence.py declares VALIDATES apps/research/policy/demo.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_policy_intelligence.py",
+      "target": "apps/research/policy/pipeline.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_policy_intelligence.py declares VALIDATES apps/research/policy/pipeline.py for the public policy review contract and its source evidence.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "commit",
+      "file_path": "apps/research/policy/pipeline.py",
+      "description": "Implemented the public research policy domain pack, BuildAndDo review consumer and explicit native mission proposals. Private Sentinel mounting, source activation and delivery remain receiving work.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T01:39:38Z",
+      "commit_sha": "9a683567aac0414bc245760f868abe096355557c",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_policy_intelligence.py",
+      "description": "All 26 policy Python cases and 15 connected Node cases pass. Four new Python modules measure 98.73 to 100 percent trace statement coverage; the browser client measures 100 percent lines and 95.28 percent branches. Tests use explicit source, transport and transactional storage fixtures. The proposal-recapture regression was observed failing and then passing.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T01:42:11.263001+00:00",
+      "commit_sha": "9a683567aac0414bc245760f868abe096355557c",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/policy-intelligence.test.mjs",
+      "description": "Full regression passes 319 Node and 276 Python cases with 16 native dependency skips. Scoped strict typing, Ruff and 252-module syntax/binding diagnostics pass. The standalone five-observation synthetic CLI pack matches the checked-in browser fixture; no live source or native backend is inferred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T01:42:11.263001+00:00",
+      "commit_sha": "9a683567aac0414bc245760f868abe096355557c",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "apps/web/src/pages/workspace/__tests__/PolicyPage.test.jsx",
+      "description": "The six authored rendered policy cases cannot run because Vitest is unavailable. Repository lint and build also cannot start without eslint-plugin-import and Vite. No dependency, test gate or manifest was changed to hide these acceptance gaps.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T01:42:11.263001+00:00",
+      "commit_sha": "9a683567aac0414bc245760f868abe096355557c",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md",
+      "description": "The actual Sentinel repository, adapter paths and receiving dispatch are not attached. The requested private integration is unexecuted; PI-00 through PI-10 define discovery, official sources, NATS/NXC/DKG/search, review, delivery, telemetry and mission-outcome acceptance without inventing runtime bindings.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T01:42:11.263001+00:00",
+      "commit_sha": "9a683567aac0414bc245760f868abe096355557c",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+      "description": "Four of seven dispatch smoke groups pass: Node and Python source regression, context and public boundary. Three frontend groups have explicit missing-dependency failures. New-file provenance passes 15 of 15 and all 98 prior memory events are retained; no private deployment or external message occurred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T01:42:11.263001+00:00",
+      "commit_sha": "9a683567aac0414bc245760f868abe096355557c",
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 528,
-    "type_b_count": 1133,
-    "type_c_count": 98,
+    "type_a_count": 543,
+    "type_b_count": 1179,
+    "type_c_count": 104,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

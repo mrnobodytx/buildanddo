@@ -113,11 +113,213 @@
 #              CONSUMES docs/blueprints.md;
 #              VALIDATES tests/upgrade/check_blueprints.py;
 #              VALIDATES tests/upgrade/check_decision_runtime.py;
+#              CONSUMES docs/policy-intelligence.md;
+#              VALIDATES tests/upgrade/check_policy_intelligence.py;
+#              VALIDATES tests/upgrade/policy-intelligence.test.mjs;
+#              CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
 
 # Dispatch implementation report
+
+## Policy intelligence public continuation — 2026-09-18
+
+### §1 SUMMARY
+
+Status: PARTIAL — public domain pack and review consumer implemented; private Sentinel and rendered acceptance remain open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-phase-a-20260917
+Tasks: 5/5 public source phases addressed; PI-00–PI-10 receiving acceptance remains pending
+Smoke: 4/7 dispatch gates pass; three frontend commands cannot start
+CKS Gate: B+ (global minimum)
+CKS: pending
+CAPS: pending
+CK: pending
+Commits: source 9a683567aac0414bc245760f868abe096355557c; report/memory bookkeeping recorded separately
+Verify source identity: `git log --format='%H %s' -- apps/research/policy`
+
+BuildAndDo can now import bounded policy observations, review exact sources and
+corrections, match tenant watches, assemble a daily brief and explicitly propose
+a source-review mission. The compiler extends the existing research Processor
+and strict JSON contracts. The consumer reuses native workspace authorization
+and the existing replayable research command. It adds no dependency, migration,
+authority rule, provider client, broker, graph database or delivery transport.
+
+OBSERVED, ATTRIBUTED, ANALYZED and UNRESOLVED remain separate source annotations.
+Hashes establish retained bytes, not authenticity, correctness or verification.
+All candidate delivery is `not_connected`; proposals cannot approve or execute
+work. The reproducible small-business scenario is synthetic and cannot write
+missions. A local import is not a live feed or an authenticated Sentinel export.
+
+The owner's intended `sentinel.citadel-nexus.com/policy` route and private
+`services/policy_intelligence/` integration are not present in this checkout.
+The actual repository/path and receiving dispatch were requested. The handoff
+defines dependent work against the existing private owners rather than inventing
+runtime interfaces. No government fetch, email, NATS event, private service,
+deployment, shared seat event or procurement response was performed.
+
+### §2 TASK RESULTS
+
+| Task | Status | Output | Verify | Files / logical CKET stage |
+|---|---|---|---|---|
+| DN — reuse and scope | PASS | Existing A2 dispatch extended before code; research, mission and Sentinel handoff boundaries inspected | `python scripts/ci/agent_context.py --check` | SRS, queue and context; 04_HYPOTHESIZE / 11_COMMIT |
+| DO — reusable domain pack | PASS for source | Strict neutral observations, quoted graph edges, correction/conflict history, literal watches, candidates and bounded daily briefs | `python tests/upgrade/check_policy_intelligence.py` | apps/research/policy and Python tests; 07_BUILD / 08_TEST |
+| DP — BuildAndDo consumer | PASS for source; rendered acceptance pending | Account/workspace-scoped imports, source/category/search views, temporary bookmarks, watch edits, export and explicit replayable review proposals | `node --test tests/upgrade/policy-intelligence.test.mjs` | PolicyPage, policy client, route/navigation, demo and tests; 07_BUILD / 08_TEST |
+| DQ — receiving integration contract | PASS for public artifact; private execution blocked | PI-00–PI-10 cover discovery, sources, canonical bus, graph/search, verification, Sentinel views, delivery, mission outcome and telemetry | `rg -n 'PI-0[0-9]|PI-10|Blocking input' .bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md` | docs and CMAX-B/IDE1 handoff; 06_PLAN / 11_COMMIT |
+| DR — measured acceptance and retained history | PASS for available evidence | Source regression, coverage, typing, provenance and boundary evidence; all preceding events retained | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | report, memory and lock; 11_COMMIT |
+
+### §3 SMOKE TEST RESULTS
+
+| # | Command | Expected | Actual | Result |
+|---|---|---|---|---|
+| 1 | `npm --prefix apps/web test -- --run src/pages/workspace/__tests__/PolicyPage.test.jsx` | Six rendered policy cases pass through the dispatch's web test entry point | Cannot start: `vitest: not found` | FAIL — environment |
+| 2 | `npm --prefix apps/web run lint` | Repository lint passes | Cannot load `eslint-plugin-import` | FAIL — environment |
+| 3 | `npm --prefix apps/web run build` | Vite produces the web bundle | `Unable to start Vite: spawnSync vite ENOENT` | FAIL — environment |
+| 4 | `node --experimental-test-coverage --test-coverage-include=apps/web/src/lib/policyIntelligence.js --test tests/upgrade/*.test.mjs` | All source regressions pass | 319 passing; no failures or skips | PASS |
+| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Available Python regressions pass | 292 discovered; 276 passing, 16 native dependency skips | PASS with skips |
+| 6 | `python scripts/ci/agent_context.py --check` | Measured context matches | Match; six existing findings and four unwired gates remain | PASS |
+| 7 | `python scripts/ci/verify_public_boundary.py` | No public-boundary failures | 827 tracked files; zero failures | PASS |
+
+For failures 1–3, the root cause is unavailable existing frontend packages. No
+manifest, dependency version or gate was changed to bypass them; no runtime fix
+was applied. Repeat the same commands in the provisioned dependency environment,
+including the full `npm --prefix apps/web test` dispatch gate. Static source
+parsing and Node fixtures do not establish rendering, browser interaction,
+package resolution or a successful bundle. No screenshot or hosted observation
+is represented as validation.
+
+Additional observed checks:
+
+- `python tests/upgrade/check_policy_intelligence.py`: 26/26 passing with no
+  skips. The Processor test uses an explicit Firecrawl response fixture. The
+  gate records per-module trace statement coverage in
+  `reports/coverage/policy-intelligence.json`; Python branch coverage is not
+  measured. pytest and coverage.py are not installed.
+- `node --test tests/upgrade/policy-intelligence.test.mjs`: 15 passing tests
+  compare Python/browser projections and exercise actual existing PocketBase
+  handlers through the repository's transactional storage fixture. Covered
+  cases include malformed/foreign packs, byte tampering, inert hostile text,
+  source correction/conflict lineage, watch windows, daily cadence, current-role
+  revocation, uncertain responses and proposal recovery. No native PocketBase
+  or live account is inferred from the fixture.
+- Selected browser client coverage under the full Node command: 100.00% lines,
+  95.28% branches and 100.00% functions. This does not measure PolicyPage rendering.
+- `python -m mypy --strict --follow-imports=silent --explicit-package-bases apps/research/policy`:
+  all four new Python modules pass. Checking imported modules without the scoped
+  option exposed 12 pre-existing diagnostics in scripts/ci/evidence_epoch.py;
+  they were not changed and full imported-tree typing is not claimed.
+- `python -m ruff check apps/research/policy tests/upgrade/test_policy_intelligence.py tests/upgrade/check_policy_intelligence.py`:
+  passes after removing two unused test imports. The same six files were
+  formatted with Ruff. Formatting is not behavioral acceptance.
+- `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`: 252 modules
+  parsed with zero static errors. The existing CI discovery commands include
+  the new Node and Python suites without a workflow or gate change.
+- `python -m apps.research.policy demo --output /tmp/buildanddo-policy-review-final-20260918`:
+  observed successful four-file standalone bundle, five synthetic observations,
+  four current observations and eight review candidates. policy.json exactly
+  matches apps/web/src/data/policy-demo.json. Choose a new output directory on
+  rerun; overwriting is intentionally rejected. Tests also compare two fresh
+  bundles byte-for-byte and verify every manifest file hash.
+
+| New Python module | Covered / executable statement lines | Coverage |
+|---|---:|---:|
+| apps/research/policy/__main__.py | 78 / 79 | 98.73% |
+| apps/research/policy/contracts.py | 261 / 263 | 99.24% |
+| apps/research/policy/demo.py | 64 / 64 | 100.00% |
+| apps/research/policy/pipeline.py | 286 / 288 | 99.31% |
+
+The proposal-recapture regression was observed red and then green. Unchanged
+source content kept its candidate key, but its changed capture timestamp in the
+saved mission description caused the native command to reject a retry. The
+description now uses stable content identity and leaves capture timestamps and
+derived conflict state in the reviewed packet. Reimport, reload and unchanged
+recapture recover the original mission; changing content or watch scope creates
+a distinct candidate. The runnable regression is the Node case named
+`unchanged recrawls` in policy-intelligence.test.mjs.
+
+An earlier negative watch test assumed that empty keywords alone made a watch
+invalid even when entity filters were present. The test was corrected to clear
+both match groups; the permitted entity-only behavior was preserved. The final
+brief test distinguishes source truncation from shortening an excerpt for display.
+
+### §4 MEMORY INGEST
+
+Type A count: 543
+Type B count: 1179
+Type C count: 104
+IOO compliance: complete
+DKG orphans: 0
+Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+Prior history: all 98 preceding Type C events preserved without modification
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+The new events distinguish implemented public source, observed fixture checks,
+missing frontend dependencies and unexecuted private integration. No CK, CAPS,
+live-source, reviewer, delivery or procurement result is manufactured.
+
+Reproduce the history-preservation check against the iteration baseline:
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+import subprocess
+path = '.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json'
+before = json.loads(subprocess.check_output(['git', 'show', 'ae581666589e047021fc09fb63676ec93e02fc8a:' + path], text=True))
+after = json.loads(Path(path).read_text())
+prior = [entry for entry in before['vectors'] if entry['type'] == 'C']
+current = [entry for entry in after['vectors'] if entry['type'] == 'C']
+assert len(prior) == 98 and current[:98] == prior
+print('PASS: all 98 prior events retained.')
+PY
+```
+
+### §5 CKET FILING
+
+06_PLAN: docs/policy-intelligence.md
+04_HYPOTHESIZE: existing SRS and measured context updated
+07_BUILD: public research policy modules, workspace consumer and synthetic demo
+08_TEST: Python/Node/rendered test sources and statement-coverage checker
+11_COMMIT: queue, receiving handoff, report and memory
+13_SAVE: none
+CGRF headers: 15/15 new files; JSON uses its sibling .cgrf.yaml
+REFLEX check: deferred to the existing post-merge owner
+
+Stage values follow this repository's public application conventions. Every new
+file declares its SRS, dispatch, pending stamps, owner, intent and relationships.
+The dispatch verifier checks the retained vector/edge declarations and line counts.
+
+### §6 GOVERNANCE
+
+Entity: Citadel Nexus Inc.
+License posture: unchanged; no legal or licensing file modified
+Hard-NO scan: no forbidden paths or private/deployment-control files added
+Secret scan: repository public-boundary scan passes; no secret access performed
+Stripe mode: not applicable; no checkout code changed
+Actor: actor:agent required on PR publication; no label application claimed
+Authority: source A2; imported observations and mission proposals remain unverified
+Verify boundary: `python scripts/ci/verify_public_boundary.py`
+
+### §7 NEXT ACTIONS
+
+Blockers: actual Sentinel repository/ref/paths, existing adapter owners and
+receiving dispatch; provisioned frontend and native runtime acceptance.
+Handoff requested: CMAX-B with IDE1 coordination in
+.bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md.
+Suggested next dispatch: receiving owner assigns an ID for PI-00–PI-10; none
+was created or represented as approved by this public session.
+Bugs filed: none; pre-existing imported typing/context findings were retained
+without an external message or unrelated repair.
+
+Private acceptance must mount Sentinel, ingest actual approved official sources,
+bind the existing bus/NXC/DKG/FTS/FAISS owners, verify source and interpretation,
+persist watches/bookmarks/shares, produce consented delivery receipts and follow
+a real signal through review, evidence and independently verified outcome.
+No local demonstration resolves those requirements. Rollback removes the public
+route/consumer; it must retain any user-created missions and native audit records.
 
 ## Blueprint Phase A source continuation — 2026-09-17
 
