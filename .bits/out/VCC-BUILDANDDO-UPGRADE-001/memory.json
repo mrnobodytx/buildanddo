@@ -28,7 +28,8 @@
         "buildanddo-upgrade",
         "blueprint",
         "workspace-knowledge",
-        "editorial-auth"
+        "editorial-auth",
+        "editorial-frontpage"
       ],
       "tenant_id": null
     },
@@ -518,7 +519,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 33937,
+      "lines": 34746,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -536,7 +537,8 @@
         "buildanddo-upgrade",
         "blueprint",
         "workspace-knowledge",
-        "editorial-auth"
+        "editorial-auth",
+        "editorial-frontpage"
       ],
       "tenant_id": null
     },
@@ -652,7 +654,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1062,
+      "lines": 1081,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -671,7 +673,8 @@
         "workflow-runs",
         "blueprint",
         "workspace-knowledge",
-        "editorial-auth"
+        "editorial-auth",
+        "editorial-frontpage"
       ],
       "tenant_id": null
     },
@@ -975,7 +978,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1356,
+      "lines": 1396,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -994,7 +997,8 @@
         "workflow-runs",
         "blueprint",
         "workspace-knowledge",
-        "editorial-auth"
+        "editorial-auth",
+        "editorial-frontpage"
       ],
       "tenant_id": null
     },
@@ -9136,13 +9140,9 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "todayLabel",
-        "editionLabel",
-        "Masthead",
         "recordState",
         "countValue",
         "SourceState",
-        "FrontPageHero",
         "GlanceMetric",
         "BusinessAtAGlance",
         "ChallengeForm",
@@ -9159,11 +9159,32 @@
         "HomePage"
       ],
       "dependencies": [
-        "apps/web/src/hooks/useWorkspaceRecords.js",
+        "@/components/Seo",
+        "@/components/editorial/EditorialFrontPage",
+        "@/components/motion/EditorialStory",
+        "@/components/motion/ReadingProgress",
+        "@/components/site/EarlyAccess",
+        "@/components/site/Faq",
+        "@/components/site/Footer",
+        "@/components/site/Header",
+        "@/components/site/ui",
+        "@/components/workspace/TutorialCatalog",
+        "@/components/workspace/WorkspaceNotices",
+        "@/contexts/AuthContext",
+        "@/contexts/WorkspaceContext",
+        "@/hooks/useDemoMode",
+        "@/hooks/useMissionResearch",
+        "@/hooks/useWorkspaceRecords",
+        "@/lib/format",
+        "@/lib/workspaceSummary",
         "apps/web/src/components/workspace/TutorialCatalog.jsx",
-        "apps/web/src/lib/workspaceSummary.js"
+        "apps/web/src/hooks/useWorkspaceRecords.js",
+        "apps/web/src/lib/workspaceSummary.js",
+        "lucide-react",
+        "react",
+        "react-helmet"
       ],
-      "lines": 943,
+      "lines": 764,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Project authenticated workspace records onto the front page with provenance, recoverable intake and no anonymous private reads.",
@@ -9178,7 +9199,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "editorial-frontpage"
       ],
       "tenant_id": null
     },
@@ -20235,6 +20257,464 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "editorial-auth"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json",
+        "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+        "apps/web/src/pages/HomePage.jsx"
+      ],
+      "lines": 160,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the newspaper front-page implementation and distinguish observed source and layout checks from unavailable rendered acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md"
+      ],
+      "lines": 1440,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve measured source and static-layout evidence with explicit limits on application and live-provider acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve measured source and static-layout evidence with explicit limits on application and live-provider acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/editorial/AndroidPhoneFrame.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "AndroidPhoneFrame"
+      ],
+      "dependencies": [
+        "./editorial.css",
+        "@/contexts/MotionContext",
+        "react"
+      ],
+      "lines": 47,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep the phone preview live and keyboard-accessible without claiming a native app or using a screenshot of its content.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "ResearchDesk",
+        "PlatformDesk",
+        "DayHighlights",
+        "PocketEdition",
+        "accountCount",
+        "EditorialFrontPage"
+      ],
+      "dependencies": [
+        "./AndroidPhoneFrame",
+        "./VerticalNewsReel",
+        "./editorial.css",
+        "@/contexts/AuthContext",
+        "@/lib/editorialContent",
+        "@/lib/workspaceSummary",
+        "lucide-react",
+        "react",
+        "react-router-dom"
+      ],
+      "lines": 241,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bring independent research and platform reels around a dated workspace edition without mixing public reading with private evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/editorial/Engraving.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "Gear",
+        "Engraving"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "lines": 132,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Illustrate research and platform areas with original ink drawings that adapt to the existing paper and dark themes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/editorial/LivingStill.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "LivingStill"
+      ],
+      "dependencies": [
+        "./editorial.css",
+        "@/contexts/MotionContext",
+        "react"
+      ],
+      "lines": 44,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Move a still illustration gently inside a fixed crop only while its reader and motion policy permit it.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/editorial/VerticalNewsReel.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "VerticalNewsReel"
+      ],
+      "dependencies": [
+        "./Engraving",
+        "./LivingStill",
+        "./editorial.css",
+        "@/contexts/MotionContext",
+        "@/lib/editorialContent",
+        "@/lib/editorialReel",
+        "@/lib/motion/runtime",
+        "lucide-react",
+        "react",
+        "react-router-dom"
+      ],
+      "lines": 145,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let each news column advance like a printed reel while preserving reading time, focus and access to every source.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "../AndroidPhoneFrame",
+        "../EditorialFrontPage",
+        "../LivingStill",
+        "../VerticalNewsReel",
+        "@testing-library/react",
+        "@testing-library/user-event",
+        "react",
+        "react-router-dom",
+        "vitest"
+      ],
+      "lines": 203,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise independent story navigation, accessible pauses, changing sources and interactive phone content using the actual components.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/editorial/editorial.css",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+        "apps/web/src/index.css"
+      ],
+      "lines": 259,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Translate the newspaper reference into readable columns and slow motion using only the existing theme palette.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/editorialContent.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "researchReelItems",
+        "dailyHighlights",
+        "editorialDate"
+      ],
+      "dependencies": [
+        "./workspaceSummary.js"
+      ],
+      "lines": 166,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep public research reading distinct from current private records and preserve dates and evidence states.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/editorialReel.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "reelWindow",
+        "advanceReel",
+        "scheduleReel"
+      ],
+      "dependencies": [],
+      "lines": 59,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep rotating story windows bounded and cancel their independent clocks when reading or motion policy pauses them.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/editorial-frontpage.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/lib/editorialContent.js",
+        "apps/web/src/lib/editorialReel.js"
+      ],
+      "lines": 239,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Check dated and scoped front-page selection plus independent reel timing without a live provider or workspace.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-frontpage"
       ],
       "tenant_id": null
     },
@@ -32479,6 +32959,296 @@
       "created_by": "BITS-CODEGEN"
     },
     {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md",
+      "target": "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md consumes apps/web/src/components/editorial/EditorialFrontPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md",
+      "target": "apps/web/src/pages/HomePage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md consumes apps/web/src/pages/HomePage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json.cgrf.yaml produces .bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/AndroidPhoneFrame.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/AndroidPhoneFrame.jsx consumes apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+      "target": "apps/web/src/components/editorial/AndroidPhoneFrame.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/EditorialFrontPage.jsx consumes apps/web/src/components/editorial/AndroidPhoneFrame.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+      "target": "apps/web/src/components/editorial/VerticalNewsReel.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/EditorialFrontPage.jsx consumes apps/web/src/components/editorial/VerticalNewsReel.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+      "target": "apps/web/src/lib/editorialContent.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/EditorialFrontPage.jsx consumes apps/web/src/lib/editorialContent.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+      "target": "apps/web/src/lib/workspaceSummary.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/EditorialFrontPage.jsx consumes apps/web/src/lib/workspaceSummary.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/Engraving.jsx",
+      "target": "apps/web/src/index.css",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/Engraving.jsx consumes apps/web/src/index.css.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/LivingStill.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/LivingStill.jsx consumes apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/VerticalNewsReel.jsx",
+      "target": "apps/web/src/components/editorial/Engraving.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/VerticalNewsReel.jsx consumes apps/web/src/components/editorial/Engraving.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/VerticalNewsReel.jsx",
+      "target": "apps/web/src/components/editorial/LivingStill.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/VerticalNewsReel.jsx consumes apps/web/src/components/editorial/LivingStill.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/VerticalNewsReel.jsx",
+      "target": "apps/web/src/contexts/MotionContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/VerticalNewsReel.jsx consumes apps/web/src/contexts/MotionContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/VerticalNewsReel.jsx",
+      "target": "apps/web/src/lib/editorialContent.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/VerticalNewsReel.jsx consumes apps/web/src/lib/editorialContent.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/VerticalNewsReel.jsx",
+      "target": "apps/web/src/lib/editorialReel.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/VerticalNewsReel.jsx consumes apps/web/src/lib/editorialReel.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx",
+      "target": "apps/web/src/components/editorial/AndroidPhoneFrame.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx validates apps/web/src/components/editorial/AndroidPhoneFrame.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx",
+      "target": "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx validates apps/web/src/components/editorial/EditorialFrontPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx",
+      "target": "apps/web/src/components/editorial/LivingStill.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx validates apps/web/src/components/editorial/LivingStill.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx",
+      "target": "apps/web/src/components/editorial/VerticalNewsReel.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx validates apps/web/src/components/editorial/VerticalNewsReel.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/editorial.css",
+      "target": "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/editorial.css consumes apps/web/src/components/editorial/EditorialFrontPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/editorial.css",
+      "target": "apps/web/src/index.css",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/editorial.css consumes apps/web/src/index.css.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/editorialContent.js",
+      "target": "apps/web/src/lib/workspaceSummary.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/editorialContent.js consumes apps/web/src/lib/workspaceSummary.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/editorialReel.js",
+      "target": "apps/web/src/lib/motion/runtime.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/editorialReel.js consumes apps/web/src/lib/motion/runtime.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/HomePage.jsx",
+      "target": "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/HomePage.jsx consumes apps/web/src/components/editorial/EditorialFrontPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/HomePage.jsx",
+      "target": "apps/web/src/hooks/useMissionResearch.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/HomePage.jsx consumes apps/web/src/hooks/useMissionResearch.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/editorial-frontpage.test.mjs",
+      "target": "apps/web/src/lib/editorialContent.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/editorial-frontpage.test.mjs validates apps/web/src/lib/editorialContent.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/editorial-frontpage.test.mjs",
+      "target": "apps/web/src/lib/editorialReel.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/editorial-frontpage.test.mjs validates apps/web/src/lib/editorialReel.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/build.test.mjs",
@@ -33920,12 +34690,51 @@
       "timestamp": "2026-09-18T14:56:07.286138+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md",
+      "description": "The newspaper continuation passes 16 new source cases, with both helpers at 100 percent lines/functions and 98.73 percent aggregate branches. Available regression passes 361 Node and 293 Python cases with 18 explicit native skips. Source diagnostics parse 266 modules. These are source checks and do not execute React or native PocketBase.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T15:26:12.803531+00:00",
+      "commit_sha": null,
+      "smoke_result": "361/361 Node; 293 pass + 18 skip Python"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md",
+      "description": "Thirteen new authored reel/front-page component cases and the existing HomePage suite cannot execute because Vitest is missing. Official lint cannot load eslint-plugin-import and the app build cannot spawn Vite. Component coverage and real-app keyboard, timer, routing, preference and workspace acceptance remain open.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T15:24:45.739287+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/frontpage-report.md",
+      "description": "The owner-requested three-column newspaper, living engravings and interactive CSS phone are implemented in source. Chrome static previews pass 48 size/theme/content/text-scale cases after fixing enlarged-text clipping (16 failing cases in the initial stress run). CSS reduced-motion suppression passes. Static hook/router/icon adapters and fallback fonts do not establish React or live-provider behavior. Context and public-boundary gates pass; all 111 earlier events remain unchanged.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T15:40:46.301959+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7 smoke; 48/48 static layout"
     }
   ],
   "summary": {
-    "type_a_count": 578,
-    "type_b_count": 1224,
-    "type_c_count": 111,
+    "type_a_count": 591,
+    "type_b_count": 1253,
+    "type_c_count": 114,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

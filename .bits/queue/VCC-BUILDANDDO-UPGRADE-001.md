@@ -20,6 +20,25 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Newspaper front page authorized 2026-09-18
+
+The owner requests the supplied newspaper layout in the current site colors,
+independent news/platform reels, slow living engravings and a CSS phone with
+interactive content. This continues the existing A2 application-source dispatch.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| NP1 | Map reference, existing data and motion policy | Source and source-scope inspection | PASS — reuse scoped research, record selectors and current motion preferences |
+| NP2 | Build newspaper, independent reels and phone preview | Focused selection and interaction checks | source complete; 16 Node cases pass; 13 React cases await Vitest |
+| NP3 | Validate themes, responsive layout and retained home behavior | Available rendered/source, regression and layout checks | 48 static layout cases, 361 Node and 293 Python pass; 18 native skips; frontend gates unavailable |
+| NP4 | Record evidence and preserve memory | Context, boundary and dispatch-memory gates | PASS — 591 file vectors, 1253 edges, 114 events; all 111 prior events retained |
+
+Memory brief: HomePage already isolates records by account/workspace/demo tree.
+Research has an authenticated read adapter; public news and popularity analytics
+are not configured. Public reading must carry its original source/date and stay
+separate from workspace results. Browser tools are installed; React, Vitest and
+Vite are absent. A source-generated preview cannot establish application behavior.
+
 ## Editorial sign-in authorized 2026-09-18
 
 The owner's screenshot and request continue the existing A2 public-source scope.
