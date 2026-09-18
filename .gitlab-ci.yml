@@ -30,3 +30,25 @@ praxis_evidence_tests:
     - python3 services/praxis_evidence/run_all_tests.py
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
+
+# BEGIN CITADEL BUILDANDDO VERIFIED RELEASE v1
+# GitLab runner builds and packages the exact candidate after all existing
+# pipeline gates pass. Remote staging/production mutation is deliberately NOT
+# performed by the runner: the local/Rig1 release controller downloads this
+# immutable artifact, deploys it, performs external /_version readback, and only
+# then emits DORA. # verify-production
+buildanddo_release_candidate:
+  stage: .post
+  rules:
+    - if: '$BUILDANDDO_RELEASE_ENABLE == "1"'
+      when: on_success
+    - when: never
+  script:
+    - python tools/buildanddo_release.py plan --root . --repo .
+    - python tools/buildanddo_release.py build --root . --repo .
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      - .citadel-release/
+# END CITADEL BUILDANDDO VERIFIED RELEASE v1

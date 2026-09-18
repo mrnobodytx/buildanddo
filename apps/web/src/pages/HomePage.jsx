@@ -71,7 +71,7 @@ import {
 } from '@/components/site/ui';
 
 const DESCRIPTION =
-    'BuildAndDo is a business newspaper for your own operations. It tells you what changed, what to do next, and proves whether it worked — using only data from sources you connect. No mock metrics, no fabricated results.';
+    'BuildAndDo is a Learn with people and AI. Build something real. Preserve the evidence. Prove what you can do.. It tells you what changed, what to do next, and proves whether it worked — using only data from sources you connect. No mock metrics, no fabricated results.';
 
 const structuredData = [
     {
@@ -134,7 +134,7 @@ function Masthead() {
                         BUILDANDDO
                     </h1>
                     <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                        Your business changed today. BuildAndDo tells you what changed, what to do
+                        Learn by doing real work. BuildAndDo tells you what changed, what to do
                         next, and proves whether it worked.
                     </p>
                 </div>

@@ -1,0 +1,31 @@
+{
+  "schema": "buildanddo.lesson/v1",
+  "id": "deploy-my-first-website",
+  "title": "Deploy my first website",
+  "kind": "flagship-sprint-seed",
+  "objective": "Deploy a real website and prove that the deployed version is the intended commit.",
+  "promise": "Learn by doing real work.",
+  "path": [
+    "choose an objective",
+    "learn the deployment prerequisites",
+    "create a bounded deployment mission",
+    "build the site",
+    "deploy to staging",
+    "verify staging by external readback",
+    "promote the same artifact to production",
+    "verify production SHA and health",
+    "attach the deployment evidence to the mission",
+    "record demonstrated capability"
+  ],
+  "verification": {
+    "required": true,
+    "checks": [
+      "external URL health",
+      "commit identity readback",
+      "artifact hash",
+      "rollback target"
+    ],
+    "truth_rule": "candidate success is not production verification"
+  },
+  "campaign": "citadel-21-day-2026-09"
+}
