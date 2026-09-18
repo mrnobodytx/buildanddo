@@ -16,7 +16,7 @@
  Intent:      Supply a local broadsheet social preview without third-party image dependencies.
  ───────────────────────────────────────────────────────────────
 -->
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="BuildAndDo — your business, in evidence">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="BuildAndDo — learn by doing, together">
   <rect width="1200" height="630" fill="hsl(42,30%,94%)"/>
   <g fill="hsl(220,16%,12%)">
     <text x="64" y="76" font-family="monospace" font-size="18" letter-spacing="3">THE BUSINESS NEWSPAPER FOR YOUR OWN OPERATIONS</text>
