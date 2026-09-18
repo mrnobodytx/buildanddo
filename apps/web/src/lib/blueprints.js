@@ -161,3 +161,10 @@ export function blueprintDefinition(record, kind = 'mission') {
         constraints: blueprint.constraints, assumptions: blueprint.assumptions, open_questions: blueprint.open_questions,
         evaluation: record.evaluation }));
 }
+
+/** Preserve the extractor contract for the existing federal operator compiler. */
+export function blueprintExtraction(record) {
+    if (record?.status !== 'ready' || !record.blueprint || !recordShape(record, record.workspace, true))
+        throw new Error('Choose a ready blueprint to export.');
+    return JSON.parse(JSON.stringify(record.blueprint));
+}

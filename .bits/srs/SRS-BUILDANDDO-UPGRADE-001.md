@@ -20,6 +20,170 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## PR 40 main integration continuation — 2026-09-18
+
+The owner requests updating the existing policy/operator PR branch from main.
+Resolve the shared governance and blueprint conflicts without discarding either
+parent's functionality or historical evidence. Keep both Analyze PDF and Saved
+PDFs; retain the operator extraction export in the saved-document flow. Rebind
+the operator compiler and portable archive to the document contract moved by
+main, and preserve both native CI requirements.
+
+Acceptance: exercise the existing blueprint/operator and portable compiler
+regressions, audit the automatic route/navigation merges, regenerate measured
+context, preserve all 138 distinct parent events, and run the boundary and
+memory validators. Report unavailable installed/native/rendered checks
+separately. Source integration does not lift the owner's PR merge hold or
+authorize private runtime, staging or production work.
+
+Observed source integration: 404 Node cases pass; Python runs 367 cases with
+345 passing and 22 native skips. All 66 compiler cases pass, including the
+archive regression, with 99.43% operator statement coverage. Both blueprint
+views and their tests are retained; the extraction export uses the moved saved
+contract. Context, public-boundary and memory checks pass with all 138 distinct
+parent events preserved. Native/rendered, lint/build and private runtime gates
+retain their explicit dependency or receiving blockers.
+
+## Operator acceptance continuation — 2026-09-18
+
+The owner directs continued work in the attached BuildAndDo checkout while the
+private runtime remains a separate receiving plane. Extend the existing native
+suite fixture and CI gate to exercise the operator endpoint with real PocketBase
+authentication, record rules, pagination, sanitized summaries and read-only
+database observations. Keep missing dependencies and skipped native cases from
+being reported as acceptance. Reuse existing rendered tests and build commands;
+do not replace them with source diagnostics or weaken their requirements.
+
+The competition priority is one BuildAndDo staging loop. Cultural Property is
+not a prerequisite for that demonstration. Record the owner-supplied CNWB
+receiving identifiers and the managed provider's observed remote in the existing
+handoff. Those observations do not establish a private ref, registered dispatch,
+tenant scope or runtime access. Retain the owner's hold on merge until native
+and rendered acceptance, lint, build, OP-00, an NXC read, the staging loop,
+producer/verifier separation and the public/private boundary have real evidence.
+
+Verify: `python tests/upgrade/test_suite_native.py --require-binary`, existing
+operator Node cases, web test/lint/build, and context/boundary/memory gates.
+Native acceptance uses only the disposable fixture, never a shared database.
+
+Observed continuation: four native operator cases are included in the existing
+suite CI matrix and explicitly require a binary. Their execution remains open;
+local discovery skips them. Source regression passes 347 Node and 302 Python
+cases, with 20 native skips. Required native, rendered, lint and build commands
+fail on missing runtimes/packages, and offline installation has no cached
+dependency archive. The handoff now records the observed GitLab remote, supplied
+receiving identifiers, BuildAndDo-only first-loop priority and all owner merge
+gates without asserting a private ref, registered dispatch or live readback.
+
+## Read-first operator loop continuation — 2026-09-18
+
+The owner requests a 48-hour operator-plane MVP: reuse existing capabilities,
+compress mission coordination, prepare bounded work, and surface human decisions.
+This continues the existing A2 public application source dispatch. The current
+checkout contains the research blueprint extractor, mission suite and federal
+compiler. NXC/Sentinel/fleet source, authenticated workspace access, the Cultural
+Property notice and six official deadlines are not attached. Their receiving
+repository/dispatch and evidence locations have been requested.
+
+Acceptance:
+
+1. Extend the existing federal compiler with a management blueprint envelope.
+   Discover reviewed source capabilities before proposing extensions; consume
+   the strict Phase A Blueprint without changing its contract. Preserve source
+   identities, unknown runtime readiness, dependencies, tests, telemetry,
+   rollback, owners, acceptance conditions and evidence references. Do not
+   invent cultural requirements, deadlines, capacity or percentage readiness.
+2. Add a read-only workspace operator snapshot using current PocketBase
+   membership, native record visibility, existing integrations and mission/run
+   stores. Bound pagination and expose partial/missing/stale observations.
+   Reading the cockpit creates no commands, approvals, retries or seat events.
+3. Add a workspace cockpit with active missions, work/review queues, integration
+   freshness, evidence and existing desk links. Consume prepared operator
+   blueprints and reuse existing explicit, replayable mission proposals.
+   Separate routine work from human authority decisions; keep account/workspace
+   changes, imported text, and missing adapters from creating false authority.
+4. Exercise tenant denial, revoked access, missing schemas, bounded pages,
+   unknown/stale/future observations, deterministic compilation, source identity,
+   capability gaps, untrusted text and uncertain proposal responses. Run source
+   regressions and report native/rendered acceptance separately.
+5. Record concrete receiving work for NXC canonical context, live read adapters,
+   existing model/fleet dispatch, telemetry comparison and Cultural Property
+   source evidence. No production effects, external messages, procurement
+   submissions, credential changes or private control plane are implemented
+   or represented as active by this public continuation.
+
+Verify with operator Python/Node suites, existing foundry and research/mission
+regressions, rendered operator page tests where dependencies permit, typing,
+context, public-boundary and dispatch-memory gates.
+
+Observed public source acceptance: the extended compiler retains strict Phase A
+input and prepares an A0 review envelope with eight inspected capability groups,
+five unverified opportunity deadlines and ten prepared task packets. The workspace
+GET, browser import and native proposal command are exercised together with
+explicit storage/transport doubles. Twenty-six compiler tests and 27 final Node
+operator cases pass. Full regression passes 347 Node cases and 302 Python cases
+with 16 dependency skips. Compiler statement coverage is 99.43%; the selected JS backend
+and client have 100% line coverage. Native/rendered acceptance and actual private
+connections remain open. See `docs/operator-plane.md` and the receiving handoff.
+
+## Policy intelligence public integration continuation — 2026-09-18
+
+The owner adopts the supplied reusable Policy / Legislative Intelligence rail
+for Sentinel and BuildAndDo. This continues the existing A2 public application
+source dispatch. Sentinel's actual source, NXC, graph/search owners and receiving
+private dispatch are not attached; their location has been requested. Implement
+the portable public domain contract and BuildAndDo consumer without inventing
+those services or claiming a deployed `sentinel.citadel-nexus.com/policy` route.
+
+Acceptance:
+
+1. Extend the research module with a bounded policy domain pack using its
+   existing Processor, public-source admission, transport and typed errors.
+   Retain the exact extracted-text fingerprint, input identity, timestamps,
+   truncation and source excerpts. Keep OBSERVED, ATTRIBUTED, ANALYZED and
+   UNRESOLVED distinct; no document may supply commands or verification.
+2. Project source-supported policy entities and typed relationships, preserve
+   document revisions and contradictory observations, and provide deterministic
+   literal watch matching, affected-object mappings and daily brief candidates.
+   Tenant, mission-area, source and time boundaries apply throughout. These are
+   portable projections, not a second graph database, scheduler or search host.
+3. Add a scoped BuildAndDo policy review page for imported packs, search,
+   category views, graph/source review, bookmarks, alerts and daily briefs.
+   Reuse native workspace access and the existing replayable research command
+   to create review-only mission proposals after an explicit user action.
+   Clear private state on account/workspace changes. Demo data cannot write.
+4. Exercise a reproducible, explicitly synthetic small-business scenario and
+   negative cases for malformed/prohibited claims, source substitution, changed
+   bytes, foreign tenants, corrections, rule replay and untrusted text. Retain
+   native/rendered dependency gaps separately from local source evidence.
+5. Provide a concrete CMAX-B/IDE1 handoff for mounting the domain in the actual
+   Sentinel service, binding existing NATS/NXC/DKG/FTS/FAISS/telemetry and approved
+   delivery, and closing source-verification and mission-outcome acceptance.
+   No live crawl, email, deployment, private mutation or procurement submission
+   is authorized or represented by this local continuation.
+
+The CENTCOM opportunity text is owner-supplied product context. Its notice,
+SOW, deadline and award status have not been independently retrieved here. It
+does not establish a present procurement response or equivalence claim.
+
+Verify with the policy Python/Node suites, rendered policy page tests where
+dependencies permit, a fresh demo bundle, existing research/mission regressions,
+strict typing, and the context, public-boundary and dispatch-memory gates.
+
+Observed public-source outcome: the research policy domain pack and `/app/policy`
+consumer implement admitted source observations, quoted typed relationships,
+capture revisions/conflicts, tenant watches, review candidates and daily briefs.
+Explicit source-review proposals reuse native research commands and retain retry
+identity across unchanged recaptures; no proposal approves or verifies work.
+The synthetic small-business pack is reproducible and cannot create missions.
+Twenty-six Python and fifteen connected Node policy cases pass; four new Python
+modules have 98.73–100% statement coverage. Full regression passes 319 Node and
+276 Python cases with 16 native skips. Six rendered cases, repository lint and
+build remain unverified because frontend dependencies are absent. Private
+Sentinel source, feed activation, NATS/NXC/DKG/FTS/FAISS bindings, delivery and
+actual mission-outcome evidence remain PI-00–PI-10 receiving work in
+`.bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md`.
+
 ## Capability roadmap repair handoff — 2026-09-18
 
 The owner asks how this seat can assist with a private compiler verification

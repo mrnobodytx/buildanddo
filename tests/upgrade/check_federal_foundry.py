@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_federal_foundry.py, apps/federal_foundry/catalog.py, apps/federal_foundry/evidence.py, apps/federal_foundry/compiler.py
+# Depends:     tests/upgrade/test_federal_foundry.py, tests/upgrade/test_operator_compiler.py, apps/federal_foundry/catalog.py, apps/federal_foundry/evidence.py, apps/federal_foundry/compiler.py
 # EnumType:    Test
-# EnumEdges:   DEPENDS_ON tests/upgrade/test_federal_foundry.py; DEPENDS_ON apps/federal_foundry/catalog.py; DEPENDS_ON apps/federal_foundry/evidence.py; DEPENDS_ON apps/federal_foundry/compiler.py
+# EnumEdges:   DEPENDS_ON tests/upgrade/test_federal_foundry.py; DEPENDS_ON tests/upgrade/test_operator_compiler.py; DEPENDS_ON apps/federal_foundry/catalog.py; DEPENDS_ON apps/federal_foundry/evidence.py; DEPENDS_ON apps/federal_foundry/compiler.py
 # DAG Node:    none
 # Intent:      Require measured portable portfolio behavior and coverage independently of unavailable browser or hosted-model dependencies.
 # ───────────────────────────────────────────────────────────────
@@ -49,6 +49,9 @@ def main() -> int:
         suite = unittest.defaultTestLoader.discover(
             str(ROOT / "tests/upgrade"), pattern="test_federal_foundry.py"
         )
+        suite.addTests(unittest.defaultTestLoader.discover(
+            str(ROOT / "tests/upgrade"), pattern="test_operator_compiler.py"
+        ))
         return unittest.TextTestRunner(verbosity=1, resultclass=ReportResult).run(suite)
 
     threading.settrace(tracer.globaltrace)

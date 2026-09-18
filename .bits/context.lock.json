@@ -69,6 +69,7 @@
     {
       "path": "scripts/ci/emit_datadog_metrics.py",
       "referenced_by": [
+        "apps/federal_foundry/operator.py",
         "tests/upgrade/test_datadog_metrics.py"
       ],
       "wired_into_ci": true
@@ -133,7 +134,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-18T16:45:14.494769+00:00",
+  "generated_at": "2026-09-18T18:05:50.524491+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -466,12 +467,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 33,
-    "python_files": 170,
+    "python_files": 178,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 930,
-    "web_source_files": 281
+    "tracked_files": 957,
+    "web_source_files": 289
   },
   "schema_version": 1,
   "summary": {
@@ -486,7 +487,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 45,
+    "js_test_files": 47,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

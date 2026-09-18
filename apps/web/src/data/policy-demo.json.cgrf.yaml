@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/web/src/data/policy-demo.json.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-18
+# Depends:     apps/research/policy/demo.py
+# EnumType:    Schema
+# EnumEdges:   CONSUMES apps/research/policy/demo.py; PRODUCES apps/web/src/data/policy-demo.json
+# DAG Node:    none
+# Intent:      Label the generated small-business policy walkthrough as synthetic and keep its bytes reproducible.
+# ───────────────────────────────────────────────────────────────
+schema_version: 1
+asset: apps/web/src/data/policy-demo.json
+classification: synthetic_public_fixture
+live_source_receipt: false

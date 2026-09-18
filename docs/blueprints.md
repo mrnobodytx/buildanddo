@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-17
-# Depends:     apps/research/blueprint_documents.py, apps/pocketbase/pb_hooks/blueprint.pb.js, apps/decision/workloads/blueprint_document_evaluation.py, apps/web/src/pages/workspace/BlueprintPage.jsx
+# Depends:     apps/research/blueprint_documents.py, apps/pocketbase/pb_hooks/blueprint.pb.js, apps/decision/workloads/blueprint_document_evaluation.py, apps/web/src/pages/workspace/BlueprintPage.jsx, docs/operator-plane.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/research/blueprint_documents.py; CONSUMES apps/pocketbase/pb_hooks/blueprint.pb.js; CONSUMES apps/decision/workloads/blueprint_document_evaluation.py; CONSUMES apps/web/src/pages/workspace/BlueprintPage.jsx
+# EnumEdges:   CONSUMES apps/research/blueprint_documents.py; CONSUMES apps/pocketbase/pb_hooks/blueprint.pb.js; CONSUMES apps/decision/workloads/blueprint_document_evaluation.py; CONSUMES apps/web/src/pages/workspace/BlueprintPage.jsx; CONSUMES docs/operator-plane.md
 # DAG Node:    none
 # Intent:      Explain the asynchronous blueprint review contract, extraction limits and evidence required before claiming native acceptance.
 # ───────────────────────────────────────────────────────────────
@@ -25,6 +25,11 @@ private page state, in-flight responses and prepared download links. The
 **Analyze PDF** view exposes scan, parse and assessment results, component
 dependencies, ordered challenges and session prompts for human review; see
 `docs/blueprint-pipeline.md` for its local Python bridge.
+
+**Export extracted blueprint** downloads the unchanged structured extraction
+for the existing federal compiler's `operator --blueprint` input. The Operator
+page then reviews capability reuse and proposed work. See
+`docs/operator-plane.md` for this next step; exporting does not dispatch work.
 
 The existing research worker performs extraction. A configured, enabled document
 capability is required, using the same research bindings and integration revision

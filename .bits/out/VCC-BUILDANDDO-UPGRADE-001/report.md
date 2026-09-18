@@ -113,11 +113,697 @@
 #              CONSUMES docs/blueprints.md;
 #              VALIDATES tests/upgrade/check_blueprints.py;
 #              VALIDATES tests/upgrade/check_decision_runtime.py;
+#              CONSUMES docs/policy-intelligence.md;
+#              VALIDATES tests/upgrade/check_policy_intelligence.py;
+#              VALIDATES tests/upgrade/policy-intelligence.test.mjs;
+#              CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md;
+#              CONSUMES docs/operator-plane.md;
+#              CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md;
+#              VALIDATES tests/upgrade/test_operator_compiler.py;
+#              VALIDATES tests/upgrade/operator-system.test.mjs;
+#              VALIDATES tests/upgrade/operator-client.test.mjs;
+#              VALIDATES apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx;
 # DAG Node:    none
 # Intent:      Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.
 # ───────────────────────────────────────────────────────────────
 
 # Dispatch implementation report
+
+## PR 40 main integration — 2026-09-18
+
+### §1 SUMMARY
+
+Status: PARTIAL — source integration complete; publication and existing runtime acceptance remain open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-phase-a-20260917-R9HXJV
+Tasks: 3/3 local integration tasks complete
+Smoke: 5/9 source/native/frontend groups
+CKS Gate: not specified in the repository registry; CKS: pending
+CAPS: pending; CK: pending
+Source commits: 1 (657a9a8c1e8bbefea7034b00ef21b7b478fa10b0)
+
+The requested main-to-feature merge preserves both blueprint views, the policy
+and operator work, native CI gates and both governance histories. Main's moved
+saved-document contract required corresponding operator imports and portable
+archive dependencies. No private runtime acceptance is inferred from this merge.
+
+### §2 TASK RESULTS
+
+Task MERGE-1 — Reconcile both implementations
+Status: PASS
+Output: Ten conflicts resolved. Analyze PDF and its tests stay intact; saved
+extraction export, Operator navigation and export tests move to Saved PDFs.
+The combined guidance retains CPU blueprint and native operator acceptance.
+Verify: `node --test tests/upgrade/blueprint-client.test.mjs tests/upgrade/blueprint-saved-client.test.mjs tests/upgrade/operator-client.test.mjs tests/upgrade/operator-system.test.mjs` — 43 pass.
+Files: blueprint pages/tests, contribution guidance, docs/blueprints.md, SRS/queue
+CKET: 07_BUILD, 08_TEST, 04_HYPOTHESIZE, 06_PLAN, 11_COMMIT
+
+Task MERGE-2 — Preserve compiler and archive behavior
+Status: PASS
+Output: The operator uses blueprint_documents.py; its worker archive includes
+the saved contract, scan and model dependencies. Both checkout and fresh archive
+execution pass. The existing capability bounds and source-tamper tests remain.
+Verify: `python tests/upgrade/check_federal_foundry.py` — 66 pass; 97.94–100%
+statement coverage across the measured modules, including 99.43% for operator.py.
+Files: operator.py, bundle.py, operator fixture and compiler tests
+CKET: 07_BUILD, 08_TEST
+
+Task MERGE-3 — Retain provenance and measured acceptance
+Status: PASS for local integration
+Output: All 138 distinct parent events remain verbatim; current metadata and
+relationships match the resolved source. Public boundary checks 957 files.
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`;
+`python scripts/ci/agent_context.py --check`;
+`python scripts/ci/verify_public_boundary.py`;
+`git merge-base --is-ancestor 448356f448cb9cc191aadf9c96af12ad8a4a48f9 HEAD`
+Files: context lock, report, memory, SRS/queue
+CKET: 04_HYPOTHESIZE, 11_COMMIT
+
+### §3 SMOKE TEST RESULTS
+
+| Group | Command | Expected and observed result |
+|---|---|---|
+| 1. Node regression | `node --test tests/upgrade/*.test.mjs` | PASS — 404 tests, no failures or skips |
+| 2. Python regression | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | PASS for available source — 367 discovered, 345 passed, 22 native-dependency skips |
+| 3. Compiler coverage | `python tests/upgrade/check_federal_foundry.py` | PASS — 66 cases, no skips; every measured module above 80% |
+| 4. Static source | `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`; `python -m mypy --strict --follow-imports=silent --explicit-package-bases apps/federal_foundry apps/mission_suite/bundle.py`; `python -m ruff check apps/federal_foundry/operator.py apps/mission_suite/bundle.py tests/upgrade/test_operator_compiler.py` | PASS — 282 modules parsed, seven typed source files, Ruff clean; does not replace rendered tests or repository lint |
+| 5. Governance | The three Python validators in MERGE-3 | PASS — measured context matches, boundary passes, memory has no orphan or missing historical event |
+| 6. Native operator | `python tests/upgrade/test_suite_native.py --require-binary` | FAIL/blocked — required PocketBase binary unavailable; seven suite/operator cases skipped in discovery |
+| 7. Rendered blueprint/operator | `npm run test --prefix apps/web -- src/pages/workspace/__tests__/BlueprintPage.test.jsx src/pages/workspace/__tests__/BlueprintSavedPage.test.jsx src/pages/workspace/__tests__/OperatorPage.test.jsx` | FAIL/blocked — Vitest unavailable |
+| 8. Repository lint | `npm run lint` | FAIL/blocked — concurrently unavailable; declared ESLint toolchain also absent |
+| 9. Production build | `npm run build` | FAIL/blocked — concurrently unavailable; declared Vite toolchain also absent |
+
+Red/green evidence: the initial operator import failed because main moved
+MAX_BLUEPRINT_BYTES and the saved Blueprint schema. After rebinding, the coverage
+run exposed a missing blueprint_documents module in the fresh worker archive.
+The revised source allowlist includes its scan/model dependencies; all 26
+operator cases and the subsequent 66-case coverage gate pass. No alternate
+parser, dispatcher, authority policy or dependency was introduced.
+
+The first typing invocation omitted the repository's namespace-package option;
+rerunning with --explicit-package-bases passes. The first context check counted
+unresolved index entries; regenerating after resolution passes. The four blocked
+runtime/frontend groups require their declared dependencies and the same verify
+commands above. No package substitution or weakened gate was used. Native PDF
+acceptance remains open because pypdf is absent; its cases are among the skips.
+
+Logs from this run are /tmp/buildanddo-merge-node.log,
+/tmp/buildanddo-merge-python.log, /tmp/buildanddo-merge-foundry.log and the
+corresponding focused-node, operator, source, mypy, native, web, lint and build
+logs. The failing archive run is retained at
+/tmp/buildanddo-merge-foundry-before.log. These local logs are not hosted CI proof.
+
+### §4 MEMORY INGEST
+
+Type A count: 627; Type B count: 1373; Type C count: 141
+IOO compliance: complete; DKG orphans: 0
+Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+The 114 head events and 122 main events share 98 identical records. All 138
+unique originals are retained unchanged, with three integration observations
+linked to the actual source merge commit.
+
+### §5 CKET FILING
+
+No new source file is authored by this resolution. Existing 07_BUILD and 08_TEST
+sources retain their CGRF headers; merged public upstream files retain their
+original provenance. Documentation uses 06_PLAN, specifications/context use
+04_HYPOTHESIZE, and report/memory/dispatch/CI use 11_COMMIT. The memory validator
+checks file metadata and every declared relationship. REFLEX remains a private
+post-merge check and is not claimed here.
+
+### §6 GOVERNANCE
+
+Entity: Citadel Nexus Inc.
+Authority: A2 public source integration; prepared operator plans remain A0.
+Public boundary: PASS, 957 tracked files. No private runtime was accessed.
+Secret assurance: boundary/source review only; no separate credential scan run.
+License posture: unchanged. Stripe mode: not applicable to this resolution.
+CKS, CAPS and CK: pending. Required actor label: actor:agent; the inspected
+PR has only its existing Bits AI label, so actor-label acceptance remains open.
+
+### §7 NEXT ACTIONS
+
+Use the coding agent UI's Update Pull Request button to synchronize this branch;
+direct git push is unavailable in this session. The PR itself remains on hold
+until native/rendered acceptance, lint, build, measured private OP-00, an NXC
+read, one BuildAndDo staging loop, distinct producer/verifier identities and the
+public/private boundary have their required evidence. Existing CNWB and policy
+handoffs remain current; no new receiving dispatch or external message was sent.
+Out-of-scope fixes: none. Suggested next dispatch: the already supplied private
+VCC-BUILDANDDO-OPERATOR-RUNTIME-001, starting with OP-00 in its receiving session.
+
+## Operator native acceptance and receiving handoff — 2026-09-18
+
+### §1 SUMMARY
+
+Status: PARTIAL — native acceptance is required and authored; installed and private runtime evidence remains open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-phase-a-20260917-R9HXJV
+Tasks: 2/3 accepted; native runtime execution remains partial
+Smoke: 4/8 source/native/frontend groups
+CKS Gate: not specified in the repository registry; CKS: pending
+CAPS: pending; CK: pending
+Source commits: 1 (e7969373867f07fd507386732ce579a09ffc4044)
+
+The owner directed continued work in the attached repository. Four operator
+cases now run inside the existing native suite CI matrix. They reuse the native
+server lifecycle, auth and suite job protocol and inspect only disposable test
+databases. Existing required check names remain stable. No private adapter,
+dispatcher, runtime binding, provider credential or deployment was created.
+
+### §2 TASK RESULTS
+
+Task DX — Native operator acceptance
+Status: PARTIAL
+Output: Four new cases cover no-store/redacted read-only job snapshots, native
+record visibility, current role/revocation, bounded pagination and missing stores.
+A real fixture queue/claim transition is read through the operator endpoint;
+read-only database fingerprints detect unintended work or receipt writes.
+Verify: `python tests/upgrade/test_suite_native.py --require-binary`
+Files: tests/upgrade/test_suite_native.py, .github/workflows/pr-governance.yml,
+AGENTS.md, apps/web/src/components/workspace/ProgressionPipeline.jsx
+CKET: 08_TEST, 11_COMMIT, 04_HYPOTHESIZE, 07_BUILD
+The required command fails without PocketBase. All seven native suite/operator
+cases skip under ordinary discovery; authored assertions are not native proof.
+
+Task DY — Receiving scope and competition proof
+Status: PASS for the public handoff
+Output: The handoff records the managed provider's observed CNWB remote,
+owner-supplied private dispatch/SRS, OP-00 inventory fields, one BuildAndDo
+staging loop, distinct producer/verifier identities and the owner's merge hold.
+Cultural Property and broader federal pursuits are deferred from that proof.
+Verify: `rg -n 'gitlab.citadel-nexus.com/guilds/cnwb|VCC-BUILDANDDO-OPERATOR-RUNTIME-001|SRS-CN-BUILDANDDO-OPERATOR-RUNTIME-001|Merge hold|producer must differ' .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md`
+Files: docs/operator-plane.md, operator receiving handoff, current SRS/queue
+CKET: 06_PLAN, 11_COMMIT, 04_HYPOTHESIZE
+Private ref, registration/status, tenant/workspace, adapter inventory and live
+readback remain unmeasured. The earlier attachment rejection was not retried.
+
+Task DZ — Preserve measured acceptance
+Status: PASS for available source evidence
+Output: 347 Node cases pass; Python discovers 322 cases with 302 passing and
+20 native skips. The focused operator subset passes 27 cases. Ruff, Python and
+embedded-JavaScript syntax, 255-module source diagnostics and public governance
+checks pass. All 110 earlier memory events are retained unchanged.
+Verify: the commands and explicit limitations below
+Files: measured context, dispatch report and memory
+CKET: 04_HYPOTHESIZE, 11_COMMIT
+
+### §3 SMOKE TEST RESULTS
+
+| Check | Command | Expected | Actual |
+| --- | --- | --- | --- |
+| 1 | `node --test tests/upgrade/*.test.mjs` | Source cases pass | PASS: 347/347 |
+| 2 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Source cases pass and native gaps are explicit | PASS for source: 302 pass, 20 skip, 0 failures/errors |
+| 3 | `python scripts/ci/agent_context.py --check` | Measured lock matches | PASS; six pre-existing findings and four unwired gates remain |
+| 4 | `python scripts/ci/verify_public_boundary.py` | Public path/secret boundary passes | PASS: 839 files; actor label not measured |
+| 5 | `python tests/upgrade/test_suite_native.py --require-binary` | Native execution passes without skips | FAIL: PocketBase binary absent; exit 1 |
+| 6 | `npm --prefix apps/web test -- src/pages/workspace/__tests__/OperatorPage.test.jsx src/pages/workspace/__tests__/MissionsPage.test.jsx src/pages/workspace/__tests__/BlueprintPage.test.jsx` | Rendered acceptance passes | FAIL: Vitest absent; exit 127 |
+| 7 | `npm --prefix apps/web run lint` | Repository lint passes | FAIL: eslint-plugin-import absent; exit 2 |
+| 8 | `npm --prefix apps/web run build` | Normal Vite artifact exists | FAIL: Vite ENOENT; exit 1 |
+
+For check 5, no native binary or cached container image is available. The applied
+source change places operator tests in the existing required native matrix for
+both declared versions; it does not resolve local binary availability. Re-run
+the same required command with its installed `BUILDANDDO_TEST_POCKETBASE` binding.
+
+For checks 6–8, `npm ci --offline --ignore-scripts --no-audit --fund=false`
+fails with ENOTCACHED because the lock's dependency archives are absent. The
+manifest, lock and required gates remain intact. Provision the declared packages
+in an allowed environment, then re-run the exact commands above. No network
+installation, dependency substitute or source-only replacement is claimed.
+
+Additional measured checks:
+
+- `node --test tests/upgrade/operator-client.test.mjs tests/upgrade/operator-system.test.mjs`: 27/27 pass.
+- `python -m ruff check tests/upgrade/test_suite_native.py` and `python -m ruff format --check tests/upgrade/test_suite_native.py`: PASS.
+- `python -m py_compile tests/upgrade/test_suite_native.py`: PASS; the embedded fixture migration also passes Node syntax checking.
+- `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`: PASS, 255 modules; this is not repository lint or rendered acceptance.
+- The existing `dossier-native` CI matrix still invokes `test_suite_native.py --require-binary` for `compose` and `package`; four new operator methods are discovered. This source inspection is not a hosted matrix result.
+
+The inspected PR head reports `Workers Builds: buildanddo` as failed, with zero
+annotations and no diagnostic text. Datadog PR insights returns no analysis for
+that head. No root cause or hosting fix is inferred from that missing evidence.
+Build-generated fleet summaries remain the repository's historical projection;
+running the asset generator does not measure current private fleet capacity.
+
+### §4 MEMORY INGEST
+
+Type A count: 555
+Type B count: 1231
+Type C count: 114
+IOO compliance: complete
+DKG orphans: 0
+Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+All 110 preceding events remain intact. Existing file vectors retain their
+position; changed line counts, intent and declared dependencies are refreshed.
+The native test adds two declared VALIDATES edges to the operator route and
+projection. New events distinguish source passes from unavailable acceptance.
+
+### §5 CKET FILING
+
+06_PLAN: docs/operator-plane.md
+04_HYPOTHESIZE: AGENTS.md, current SRS and measured context
+07_BUILD: existing contribution-pipeline check description
+08_TEST: existing native suite fixture and operator cases
+11_COMMIT: existing CI step description, queue, receiving handoff, report, memory
+13_SAVE: none
+CGRF headers: no new repository files; existing native test dependencies/edges updated
+REFLEX check: deferred to the existing post-merge owner
+
+### §6 GOVERNANCE
+
+Entity: Citadel Nexus Inc.
+License posture: unchanged; no legal or licensing file modified
+Hard-NO scan: no private implementation, infrastructure or deployment-control files added
+Secret scan: public boundary passes; no private credential access
+Stripe mode: not applicable; no checkout code changed
+Actor: actor:agent required on publication; label application unverified
+Authority: A2 public test/CI/docs source; disposable native fixture scope only
+Verify boundary: `python scripts/ci/verify_public_boundary.py`
+
+### §7 NEXT ACTIONS
+
+Keep the branch on the owner's merge hold. Native/rendered acceptance, lint,
+build, measured OP-00, one NXC read, the staging loop, distinct producer/verifier
+receipts and public/private boundary evidence are all required. Source test
+success does not clear the missing gates.
+
+Use the supplied receiving SRS/dispatch in a GitLab-capable CNWB session with
+observed ref, registered authority and permitted tenant/workspace. First return
+OP-00, then prove one BuildAndDo evidence blocker through staging and UI readback.
+No source body, credentials or procurement-sensitive material should enter the
+public cockpit. No additional federal lane or private integration is implemented.
+
+Handoff: .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md
+Bugs filed: none; no external messages were sent.
+
+## Read-first operator continuation — 2026-09-18
+
+### §1 SUMMARY
+
+Status: PARTIAL — public operator review loop implemented; private connections and native/rendered acceptance remain open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-phase-a-20260917-R9HXJV
+Tasks: 5/5 public source phases addressed; OP-00–OP-09 receiving acceptance remains pending
+Smoke: 4/7 dispatch gates pass; three frontend gates cannot start
+CKS Gate: B+ (global minimum)
+CKS: pending
+CAPS: pending
+CK: pending
+Commits: source 26f73df57db15927a101fb8e86ad5d28317ab156; report/memory bookkeeping recorded separately
+Verify source identity: `git log --format='%H %s' -- apps/federal_foundry/operator.py`
+
+The Operator page reads scoped workspace decisions, ordinary work and dated
+integration observations, with explicit source coverage. The existing foundry
+compiler discovers reusable public source before proposing work, preserves the
+Phase A extraction contract and prepares existing builder/verifier packets.
+An explicit review proposal uses the native mission command and durable receipt.
+Neither compilation nor import starts a worker, approves a plan or mints VERIFIED.
+
+The first slice adds no dependency, document parser, queue, authority policy,
+database collection or private control plane. The ten requested system categories
+remain unknown where no current workspace observation supports their state.
+Five catalog lanes have unverified deadlines; Cultural Property's official notice
+and the intended six-opportunity inventory have not been supplied. Prepared tasks
+and example capacity figures do not establish actual dispatch or readiness.
+
+### §2 TASK RESULTS
+
+Task DS — Inspect existing owners
+Status: PASS for repository scope
+Output: Reused research extraction, the federal catalog/protocol, suite archive,
+current workspace membership and native mission receipts.
+Verify: `python scripts/ci/agent_context.py --check`
+Files: existing SRS/queue, docs/operator-plane.md, receiving handoff
+CKET: 04_HYPOTHESIZE, 06_PLAN, 11_COMMIT
+
+Task DT — Compile source-backed operator blueprints
+Status: PASS for source
+Output: Eight capability groups, five unverified deadlines and ten prepared task
+packets, with zero hosted dispatches. Optional extraction remains unchanged.
+Verify: `python tests/upgrade/check_federal_foundry.py`
+Verify: `python -m apps.federal_foundry operator --output /tmp/operator-review-new`
+Files: apps/federal_foundry/operator.py, existing CLI/archive, compiler tests
+CKET: 07_BUILD, 08_TEST
+
+Task DU — Read bounded workspace state
+Status: PASS for source; native acceptance open
+Output: Independently paged, currently authorized summaries; standalone workflow
+approvals remain visible; missing/stale/future observations cannot become health.
+Verify: `node --test tests/upgrade/operator-system.test.mjs`
+Files: operator.pb.js, workspace-operator.js, backend tests/fixture
+CKET: 07_BUILD, 08_TEST
+
+Task DV — Review, export and propose
+Status: PARTIAL — client behavior verified; rendered acceptance unavailable
+Output: Human decisions precede ordinary work; the existing blueprint page exports
+raw extraction for compilation. Imported proposals retain integrity and provenance.
+Proposal retries and unchanged recompilation recover one native mission.
+Verify: `node --test tests/upgrade/operator-client.test.mjs tests/upgrade/blueprint-client.test.mjs`
+Verify: `npm --prefix apps/web test -- src/pages/workspace/__tests__/OperatorPage.test.jsx src/pages/workspace/__tests__/MissionsPage.test.jsx src/pages/workspace/__tests__/BlueprintPage.test.jsx`
+Files: operator page/client, blueprint export, mission selection, routes and tests
+CKET: 07_BUILD, 08_TEST
+
+Task DW — Preserve evidence and receiving scope
+Status: PASS for available public evidence; private work pending
+Output: Current regression, coverage, typing, provenance and boundary checks;
+all 104 earlier memory events retained exactly. OP-00–OP-09 identify receiving work.
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+Files: report, memory, measured context, queue, SRS, docs and receiving handoff
+CKET: 04_HYPOTHESIZE, 06_PLAN, 11_COMMIT
+
+### §3 SMOKE TEST RESULTS
+
+| Gate | Command | Expected | Observed | Result |
+| --- | --- | --- | --- | --- |
+| 1 | `npm --prefix apps/web test` | Rendered tests execute | Exit 127: Vitest absent | FAIL — environment |
+| 2 | `npm --prefix apps/web run lint` | Repository ESLint executes | Exit 2: eslint-plugin-import absent | FAIL — environment |
+| 3 | `npm --prefix apps/web run build` | Vite produces the web bundle | Exit 1: spawnSync vite ENOENT | FAIL — environment |
+| 4 | `node --test tests/upgrade/*.test.mjs` | All source cases pass | 347 pass, zero skips/failures | PASS |
+| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Source regression has no failures | 318 discovered: 302 pass, 16 native dependency skips | PASS for available source |
+| 6 | `python scripts/ci/agent_context.py --check` | Lock matches repository | Pass; six existing findings/four unwired gates retained | PASS |
+| 7 | `python scripts/ci/verify_public_boundary.py` | No boundary or secret findings | Pass across 839 tracked files; actor label not queried | PASS |
+
+The final Node run also enabled the built-in coverage flag for the operator
+backend/client and blueprint client. All three have 100% line coverage; branch
+coverage is 92.50%, 96.60% and 91.28%, respectively. The 27 operator cases execute
+actual hooks against explicit storage/transport doubles and real Python compiler
+output; they do not establish native PocketBase acceptance.
+
+`python tests/upgrade/check_federal_foundry.py` passes all 66 cases, including 26
+operator cases, without skips. Compiler statement coverage is 349/351 (99.43%);
+the CLI is 95/97 (97.94%). Existing foundry modules range from 99.5–100%.
+The trace report makes no Python branch-coverage claim. The suite archive test
+compiles after extraction without the checkout on its import path.
+
+The final CLI publication and JS import smoke inspected eight capabilities,
+five unknown deadlines and ten prepared packets; both output manifest hashes
+matched retained bytes and the browser accepted the plan. Zero hosted dispatches,
+live model calls, campaign runs or actual workspace commands were performed.
+The compiler's native Linux no-replace publication ran successfully here.
+
+Strict mypy passes seven source files:
+`python -m mypy --strict --follow-imports=silent --explicit-package-bases apps/federal_foundry apps/mission_suite/bundle.py`.
+Ruff passes the changed Python source/tests:
+`python -m ruff check apps/federal_foundry/operator.py apps/federal_foundry/__main__.py apps/mission_suite/bundle.py tests/upgrade/test_operator_compiler.py tests/upgrade/check_federal_foundry.py`.
+The existing source diagnostic,
+`node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`, parses 255 modules
+with zero static errors. These checks do not replace repository ESLint, browser
+rendering or a production build.
+
+Fourteen new operator rendered cases and two mission-link cases remain unrun;
+the existing blueprint rendered case now also checks raw extraction export.
+The native skips retain the previously absent pypdf/PocketBase requirements.
+No dependency was downloaded or replaced to turn an unavailable check green.
+For each of smoke failures 1–3, the remedy is to provision the repository's
+existing locked dependencies in the authorized validation environment and rerun
+the same command above. No source workaround was applied. Root npm wrappers also
+cannot start because concurrently is absent; the direct web commands expose the
+underlying dependency failures.
+
+Targeted red/green evidence:
+
+- Standalone workflows were incorrectly made dependent on a mission; mixed
+  standalone/linked approval cases now retain both native scopes.
+- Future-created seat events no longer enter current change/activity projections.
+- Operator mission links now resolve only against the existing readable list;
+  they cannot approve, fetch a foreign mission or trigger a transition.
+- A shaped but elevated success response formerly exhausted the inner receipt
+  while blocking the outer retry state. Refresh and reproposal now recover the
+  same native mission instead of leaving a stuck wrapper or creating a duplicate.
+- A role downgraded during a snapshot formerly returned the original editor
+  role. A failing-then-passing test now observes the final viewer role.
+- Public-path reservation could adopt a concurrent symlink or real directory.
+  Publication now atomically moves a complete, bound private candidate with
+  Linux renameat2(RENAME_NOREPLACE). Tests retain foreign files/directories,
+  verify the published inode and fail closed when atomic support is unavailable.
+
+Recheck those regressions with the operator Node suites and
+`python -m unittest discover -s tests/upgrade -p test_operator_compiler.py`.
+Independent review confirmed the publication, receipt-recovery and final-role
+findings were addressed; it did not perform native or rendered acceptance.
+
+### §4 MEMORY INGEST
+
+Type A count: 555
+Type B count: 1229
+Type C count: 110
+IOO compliance: complete
+DKG orphans: 0
+Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+History: all 104 preceding Type C vectors retained exactly
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+### §5 CKET FILING
+
+06_PLAN: operator documentation and existing blueprint/foundry instructions
+04_HYPOTHESIZE: existing upgrade SRS acceptance
+07_BUILD: existing foundry/archive extensions, workspace hook, browser client/page and route integration
+08_TEST: compiler, hook/client, export and rendered interaction cases
+11_COMMIT: queue, measured context, receiving handoff, report and memory
+13_SAVE: none
+CGRF headers: 12/12 new repository files have matching owner, SRS, dispatch, intent, relationships and pending stamps
+REFLEX check: deferred to the existing post-merge owner
+
+Stage values follow this repository's public application conventions. The local
+dispatch verifier checks file counts, provenance, IOO and declared relationships.
+
+### §6 GOVERNANCE
+
+Entity: Citadel Nexus Inc.
+License posture: unchanged; no legal or licensing file modified
+Hard-NO scan: no forbidden/private/deployment-control paths added
+Secret scan: public-boundary scan passes; no credential access performed
+Stripe mode: not applicable; no checkout code changed
+Actor: actor:agent required on publication; no label application claimed
+Authority: source A2; compiled plan A0; native proposed mission retains its normal incomplete A1 default until the existing plan/approval workflow
+Verify boundary: `python scripts/ci/verify_public_boundary.py`
+
+### §7 NEXT ACTIONS
+
+Blockers: actual private repository/ref/paths and receiving dispatch for NXC,
+Sentinel, telemetry/cloud readers and fleet/model dispatch; official Cultural
+Property notice, amendments, permitted datasets and opportunity deadlines;
+provisioned native/backend/frontend acceptance environment.
+Handoff requested: CMAX-B with IDE1 coordination in
+.bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md.
+Suggested next dispatch: receiving owner assigns an ID for OP-00–OP-09; no
+private dispatch is created or represented as approved here.
+Bugs filed: none externally; existing context findings are retained without
+unrelated repairs or messages.
+
+Rollback removes the public source feature through normal review while retaining
+created mission proposals and command receipts. No database rollback is needed.
+The portable source fingerprint changes; private bindings remain fenced until
+their normal authorized update. Production deployment, external email, proposal
+submission, financial commitments, credentials, destructive actions and contract
+attestations still require explicit human approval in the receiving process.
+
+## Policy intelligence public continuation — 2026-09-18
+
+### §1 SUMMARY
+
+Status: PARTIAL — public domain pack and review consumer implemented; private Sentinel and rendered acceptance remain open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-phase-a-20260917
+Tasks: 5/5 public source phases addressed; PI-00–PI-10 receiving acceptance remains pending
+Smoke: 4/7 dispatch gates pass; three frontend commands cannot start
+CKS Gate: B+ (global minimum)
+CKS: pending
+CAPS: pending
+CK: pending
+Commits: source 9a683567aac0414bc245760f868abe096355557c; report/memory bookkeeping recorded separately
+Verify source identity: `git log --format='%H %s' -- apps/research/policy`
+
+BuildAndDo can now import bounded policy observations, review exact sources and
+corrections, match tenant watches, assemble a daily brief and explicitly propose
+a source-review mission. The compiler extends the existing research Processor
+and strict JSON contracts. The consumer reuses native workspace authorization
+and the existing replayable research command. It adds no dependency, migration,
+authority rule, provider client, broker, graph database or delivery transport.
+
+OBSERVED, ATTRIBUTED, ANALYZED and UNRESOLVED remain separate source annotations.
+Hashes establish retained bytes, not authenticity, correctness or verification.
+All candidate delivery is `not_connected`; proposals cannot approve or execute
+work. The reproducible small-business scenario is synthetic and cannot write
+missions. A local import is not a live feed or an authenticated Sentinel export.
+
+The owner's intended `sentinel.citadel-nexus.com/policy` route and private
+`services/policy_intelligence/` integration are not present in this checkout.
+The actual repository/path and receiving dispatch were requested. The handoff
+defines dependent work against the existing private owners rather than inventing
+runtime interfaces. No government fetch, email, NATS event, private service,
+deployment, shared seat event or procurement response was performed.
+
+### §2 TASK RESULTS
+
+| Task | Status | Output | Verify | Files / logical CKET stage |
+|---|---|---|---|---|
+| DN — reuse and scope | PASS | Existing A2 dispatch extended before code; research, mission and Sentinel handoff boundaries inspected | `python scripts/ci/agent_context.py --check` | SRS, queue and context; 04_HYPOTHESIZE / 11_COMMIT |
+| DO — reusable domain pack | PASS for source | Strict neutral observations, quoted graph edges, correction/conflict history, literal watches, candidates and bounded daily briefs | `python tests/upgrade/check_policy_intelligence.py` | apps/research/policy and Python tests; 07_BUILD / 08_TEST |
+| DP — BuildAndDo consumer | PASS for source; rendered acceptance pending | Account/workspace-scoped imports, source/category/search views, temporary bookmarks, watch edits, export and explicit replayable review proposals | `node --test tests/upgrade/policy-intelligence.test.mjs` | PolicyPage, policy client, route/navigation, demo and tests; 07_BUILD / 08_TEST |
+| DQ — receiving integration contract | PASS for public artifact; private execution blocked | PI-00–PI-10 cover discovery, sources, canonical bus, graph/search, verification, Sentinel views, delivery, mission outcome and telemetry | `rg -n 'PI-0[0-9]|PI-10|Blocking input' .bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md` | docs and CMAX-B/IDE1 handoff; 06_PLAN / 11_COMMIT |
+| DR — measured acceptance and retained history | PASS for available evidence | Source regression, coverage, typing, provenance and boundary evidence; all preceding events retained | `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py` | report, memory and lock; 11_COMMIT |
+
+### §3 SMOKE TEST RESULTS
+
+| # | Command | Expected | Actual | Result |
+|---|---|---|---|---|
+| 1 | `npm --prefix apps/web test -- --run src/pages/workspace/__tests__/PolicyPage.test.jsx` | Six rendered policy cases pass through the dispatch's web test entry point | Cannot start: `vitest: not found` | FAIL — environment |
+| 2 | `npm --prefix apps/web run lint` | Repository lint passes | Cannot load `eslint-plugin-import` | FAIL — environment |
+| 3 | `npm --prefix apps/web run build` | Vite produces the web bundle | `Unable to start Vite: spawnSync vite ENOENT` | FAIL — environment |
+| 4 | `node --experimental-test-coverage --test-coverage-include=apps/web/src/lib/policyIntelligence.js --test tests/upgrade/*.test.mjs` | All source regressions pass | 319 passing; no failures or skips | PASS |
+| 5 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Available Python regressions pass | 292 discovered; 276 passing, 16 native dependency skips | PASS with skips |
+| 6 | `python scripts/ci/agent_context.py --check` | Measured context matches | Match; six existing findings and four unwired gates remain | PASS |
+| 7 | `python scripts/ci/verify_public_boundary.py` | No public-boundary failures | 827 tracked files; zero failures | PASS |
+
+For failures 1–3, the root cause is unavailable existing frontend packages. No
+manifest, dependency version or gate was changed to bypass them; no runtime fix
+was applied. Repeat the same commands in the provisioned dependency environment,
+including the full `npm --prefix apps/web test` dispatch gate. Static source
+parsing and Node fixtures do not establish rendering, browser interaction,
+package resolution or a successful bundle. No screenshot or hosted observation
+is represented as validation.
+
+Additional observed checks:
+
+- `python tests/upgrade/check_policy_intelligence.py`: 26/26 passing with no
+  skips. The Processor test uses an explicit Firecrawl response fixture. The
+  gate records per-module trace statement coverage in
+  `reports/coverage/policy-intelligence.json`; Python branch coverage is not
+  measured. pytest and coverage.py are not installed.
+- `node --test tests/upgrade/policy-intelligence.test.mjs`: 15 passing tests
+  compare Python/browser projections and exercise actual existing PocketBase
+  handlers through the repository's transactional storage fixture. Covered
+  cases include malformed/foreign packs, byte tampering, inert hostile text,
+  source correction/conflict lineage, watch windows, daily cadence, current-role
+  revocation, uncertain responses and proposal recovery. No native PocketBase
+  or live account is inferred from the fixture.
+- Selected browser client coverage under the full Node command: 100.00% lines,
+  95.28% branches and 100.00% functions. This does not measure PolicyPage rendering.
+- `python -m mypy --strict --follow-imports=silent --explicit-package-bases apps/research/policy`:
+  all four new Python modules pass. Checking imported modules without the scoped
+  option exposed 12 pre-existing diagnostics in scripts/ci/evidence_epoch.py;
+  they were not changed and full imported-tree typing is not claimed.
+- `python -m ruff check apps/research/policy tests/upgrade/test_policy_intelligence.py tests/upgrade/check_policy_intelligence.py`:
+  passes after removing two unused test imports. The same six files were
+  formatted with Ruff. Formatting is not behavioral acceptance.
+- `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`: 252 modules
+  parsed with zero static errors. The existing CI discovery commands include
+  the new Node and Python suites without a workflow or gate change.
+- `python -m apps.research.policy demo --output /tmp/buildanddo-policy-review-final-20260918`:
+  observed successful four-file standalone bundle, five synthetic observations,
+  four current observations and eight review candidates. policy.json exactly
+  matches apps/web/src/data/policy-demo.json. Choose a new output directory on
+  rerun; overwriting is intentionally rejected. Tests also compare two fresh
+  bundles byte-for-byte and verify every manifest file hash.
+
+| New Python module | Covered / executable statement lines | Coverage |
+|---|---:|---:|
+| apps/research/policy/__main__.py | 78 / 79 | 98.73% |
+| apps/research/policy/contracts.py | 261 / 263 | 99.24% |
+| apps/research/policy/demo.py | 64 / 64 | 100.00% |
+| apps/research/policy/pipeline.py | 286 / 288 | 99.31% |
+
+The proposal-recapture regression was observed red and then green. Unchanged
+source content kept its candidate key, but its changed capture timestamp in the
+saved mission description caused the native command to reject a retry. The
+description now uses stable content identity and leaves capture timestamps and
+derived conflict state in the reviewed packet. Reimport, reload and unchanged
+recapture recover the original mission; changing content or watch scope creates
+a distinct candidate. The runnable regression is the Node case named
+`unchanged recrawls` in policy-intelligence.test.mjs.
+
+An earlier negative watch test assumed that empty keywords alone made a watch
+invalid even when entity filters were present. The test was corrected to clear
+both match groups; the permitted entity-only behavior was preserved. The final
+brief test distinguishes source truncation from shortening an excerpt for display.
+
+### §4 MEMORY INGEST
+
+Type A count: 543
+Type B count: 1179
+Type C count: 104
+IOO compliance: complete
+DKG orphans: 0
+Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+Prior history: all 98 preceding Type C events preserved without modification
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+The new events distinguish implemented public source, observed fixture checks,
+missing frontend dependencies and unexecuted private integration. No CK, CAPS,
+live-source, reviewer, delivery or procurement result is manufactured.
+
+Reproduce the history-preservation check against the iteration baseline:
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+import subprocess
+path = '.bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json'
+before = json.loads(subprocess.check_output(['git', 'show', 'ae581666589e047021fc09fb63676ec93e02fc8a:' + path], text=True))
+after = json.loads(Path(path).read_text())
+prior = [entry for entry in before['vectors'] if entry['type'] == 'C']
+current = [entry for entry in after['vectors'] if entry['type'] == 'C']
+assert len(prior) == 98 and current[:98] == prior
+print('PASS: all 98 prior events retained.')
+PY
+```
+
+### §5 CKET FILING
+
+06_PLAN: docs/policy-intelligence.md
+04_HYPOTHESIZE: existing SRS and measured context updated
+07_BUILD: public research policy modules, workspace consumer and synthetic demo
+08_TEST: Python/Node/rendered test sources and statement-coverage checker
+11_COMMIT: queue, receiving handoff, report and memory
+13_SAVE: none
+CGRF headers: 15/15 new files; JSON uses its sibling .cgrf.yaml
+REFLEX check: deferred to the existing post-merge owner
+
+Stage values follow this repository's public application conventions. Every new
+file declares its SRS, dispatch, pending stamps, owner, intent and relationships.
+The dispatch verifier checks the retained vector/edge declarations and line counts.
+
+### §6 GOVERNANCE
+
+Entity: Citadel Nexus Inc.
+License posture: unchanged; no legal or licensing file modified
+Hard-NO scan: no forbidden paths or private/deployment-control files added
+Secret scan: repository public-boundary scan passes; no secret access performed
+Stripe mode: not applicable; no checkout code changed
+Actor: actor:agent required on PR publication; no label application claimed
+Authority: source A2; imported observations and mission proposals remain unverified
+Verify boundary: `python scripts/ci/verify_public_boundary.py`
+
+### §7 NEXT ACTIONS
+
+Blockers: actual Sentinel repository/ref/paths, existing adapter owners and
+receiving dispatch; provisioned frontend and native runtime acceptance.
+Handoff requested: CMAX-B with IDE1 coordination in
+.bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md.
+Suggested next dispatch: receiving owner assigns an ID for PI-00–PI-10; none
+was created or represented as approved by this public session.
+Bugs filed: none; pre-existing imported typing/context findings were retained
+without an external message or unrelated repair.
+
+Private acceptance must mount Sentinel, ingest actual approved official sources,
+bind the existing bus/NXC/DKG/FTS/FAISS owners, verify source and interpretation,
+persist watches/bookmarks/shares, produce consented delivery receipts and follow
+a real signal through review, evidence and independently verified outcome.
+No local demonstration resolves those requirements. Rollback removes the public
+route/consumer; it must retain any user-created missions and native audit records.
 
 ## Blueprint Phase A source continuation — 2026-09-17
 

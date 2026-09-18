@@ -100,12 +100,16 @@ describe('BlueprintPage', () => {
         expect(await screen.findByText('<script>source instructions</script>')).toBeVisible();
         expect(document.querySelector('script')).toBeNull();
         await user.click(screen.getByRole('button', { name: 'Export mission definition' }));
+        await user.click(screen.getByRole('button', { name: 'Export extracted blueprint' }));
         const blob = URL.createObjectURL.mock.calls[0][0];
         const content = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsText(blob); });
         const definition = JSON.parse(content);
         expect(definition.definition.status).toBe('proposed');
         expect(definition.definition.mission_plan.authorization).toBe('');
         expect(definition.evaluation.verified).toBe(false);
+        const extractedBlob = URL.createObjectURL.mock.calls[1][0];
+        const extractedContent = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsText(extractedBlob); });
+        expect(JSON.parse(extractedContent)).toEqual(result.blueprint);
         expect(backend.data.missions).toHaveLength(2);
     });
 
