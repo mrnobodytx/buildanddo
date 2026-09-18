@@ -20,6 +20,40 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Operator acceptance continuation authorized 2026-09-18
+
+The owner directs continued public-repository work after the managed provider
+rejected attaching the GitLab receiving project to this GitHub-only session.
+This continuation uses the existing public A2 dispatch. It neither registers
+the private receiving dispatch nor creates a private implementation here.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DX | Exercise the operator through the existing native suite fixture and CI job | `python tests/upgrade/test_suite_native.py --require-binary` | source complete, runtime unverified — four new native cases in the existing required matrix; missing binary fails the required command |
+| DY | Reconcile the receiving handoff and competition acceptance | Handoff and source review | done — observed remote and supplied IDs recorded; OP-00 first, then one BuildAndDo staging loop with a distinct verifier; owner merge hold retained |
+| DZ | Verify available evidence and retain outstanding merge gates | Operator tests, web checks, context/boundary/memory | done for available evidence — 347 Node passes, 302 Python passes, 20 native skips; current source/native/frontend smoke 4/8; required runtime checks remain open |
+
+Memory brief: the branch already contains the public operator feature. The
+managed repository provider resolved `guilds/CNWB` to
+`https://gitlab.citadel-nexus.com/guilds/cnwb`, then rejected attachment because
+this session supports GitHub repositories only. Do not retry via another
+transport. The owner supplied `VCC-BUILDANDDO-OPERATOR-RUNTIME-001` and
+`SRS-CN-BUILDANDDO-OPERATOR-RUNTIME-001`; private registration/ref/scope remain
+unmeasured. Keep all 110 preceding events. Existing web test packages and the
+PocketBase binary are absent; no private tenant or service credentials are read.
+
+Observed continuation: 27 focused operator cases and all 347 Node cases pass.
+Python discovers 322 cases: 302 pass and 20 skip, including the seven native
+suite/operator cases. The source wiring audit confirms the existing required
+suite command runs the four new cases on both declared PocketBase versions.
+Ruff, Python/embedded-JavaScript syntax and the 255-module source diagnostic
+pass. Required native execution fails without PocketBase; rendered tests, lint
+and build fail for missing Vitest, eslint-plugin-import and Vite. Offline
+installation fails with ENOTCACHED; no dependency versions or gates were weakened.
+The known Workers Builds failure exposes no diagnostic annotation, and Datadog
+PR insights has no analysis for the inspected head; no hosting fix is inferred.
+The retained report distinguishes these results from private runtime proof.
+
 ## Read-first operator loop continuation authorized 2026-09-18
 
 The owner requests the operator-plane loop alongside Cultural Property and the

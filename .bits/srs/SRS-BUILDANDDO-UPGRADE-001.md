@@ -20,6 +20,37 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Operator acceptance continuation — 2026-09-18
+
+The owner directs continued work in the attached BuildAndDo checkout while the
+private runtime remains a separate receiving plane. Extend the existing native
+suite fixture and CI gate to exercise the operator endpoint with real PocketBase
+authentication, record rules, pagination, sanitized summaries and read-only
+database observations. Keep missing dependencies and skipped native cases from
+being reported as acceptance. Reuse existing rendered tests and build commands;
+do not replace them with source diagnostics or weaken their requirements.
+
+The competition priority is one BuildAndDo staging loop. Cultural Property is
+not a prerequisite for that demonstration. Record the owner-supplied CNWB
+receiving identifiers and the managed provider's observed remote in the existing
+handoff. Those observations do not establish a private ref, registered dispatch,
+tenant scope or runtime access. Retain the owner's hold on merge until native
+and rendered acceptance, lint, build, OP-00, an NXC read, the staging loop,
+producer/verifier separation and the public/private boundary have real evidence.
+
+Verify: `python tests/upgrade/test_suite_native.py --require-binary`, existing
+operator Node cases, web test/lint/build, and context/boundary/memory gates.
+Native acceptance uses only the disposable fixture, never a shared database.
+
+Observed continuation: four native operator cases are included in the existing
+suite CI matrix and explicitly require a binary. Their execution remains open;
+local discovery skips them. Source regression passes 347 Node and 302 Python
+cases, with 20 native skips. Required native, rendered, lint and build commands
+fail on missing runtimes/packages, and offline installation has no cached
+dependency archive. The handoff now records the observed GitLab remote, supplied
+receiving identifiers, BuildAndDo-only first-loop priority and all owner merge
+gates without asserting a private ref, registered dispatch or live readback.
+
 ## Read-first operator loop continuation — 2026-09-18
 
 The owner requests a 48-hour operator-plane MVP: reuse existing capabilities,

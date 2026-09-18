@@ -149,16 +149,25 @@ adapters must be identified before connection work. No private system is made
 writable by this change. See
 `.bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md`.
 
-The catalog contains five proposed federal lanes. The official Cultural
-Property notice, authorized dataset, receiving repository and six acquisition
-deadlines are not supplied here. They remain discovery tasks; example readiness
-percentages and example fleet assignments are not evidence.
+The owner selected private `guilds/CNWB` for the runtime and supplied receiving
+dispatch `VCC-BUILDANDDO-OPERATOR-RUNTIME-001` and SRS
+`SRS-CN-BUILDANDDO-OPERATOR-RUNTIME-001`. The managed provider resolved its remote
+but could not attach a GitLab project to this GitHub-only session. The handoff
+retains that observation; private ref, registration, scope and adapters remain
+unmeasured. The public repository is not the private runtime plane.
+
+The first competition proof is one BuildAndDo evidence blocker through current
+NXC context, a reusable capability, a bounded staging job, independent
+verification and operator readback. Cultural Property and broader federal work
+are deferred. The compiler's five proposed federal lanes do not authorize that
+job; their deadlines remain unverified.
 
 ## Verification and rollback
 
 ```bash
 python tests/upgrade/check_federal_foundry.py
 node --test tests/upgrade/operator-*.test.mjs tests/upgrade/blueprint-client.test.mjs
+python tests/upgrade/test_suite_native.py --require-binary
 python -m mypy --strict --explicit-package-bases apps/federal_foundry
 node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs
 python scripts/ci/agent_context.py --check
@@ -166,10 +175,25 @@ python scripts/ci/verify_public_boundary.py
 ```
 
 The Node tests execute the actual hooks against the repository's explicit
-storage/transport doubles and import real Python compiler output. They do not
-replace native PocketBase or rendered browser acceptance. Rendered cases live
-beside Operator, Missions and Blueprints and require the existing web test
-dependencies. The dispatch report records which checks were actually available.
+storage/transport doubles and import real Python compiler output. The existing
+native suite fixture now exercises operator authentication, native record rules,
+role downgrade/revocation, bounded pages, missing sources, redacted job summaries,
+no-store responses and readback after a real fixture job is claimed. It compares
+read-only SQLite fingerprints before and after reads to detect unintended work
+or receipt mutations. All accounts, data and jobs are disposable test fixtures.
+
+Set `BUILDANDDO_TEST_POCKETBASE` to the installed test binary for the native
+command. The existing CI matrix requires it for both declared PocketBase
+runtimes. Missing binaries fail the required command; ordinary unittest
+discovery records skips. Neither result is a private NXC or fleet proof.
+
+Rendered cases live beside Operator, Missions and Blueprints. Run the existing
+`npm --prefix apps/web test`, `npm --prefix apps/web run lint` and
+`npm --prefix apps/web run build` with the locked dependencies installed. Source
+diagnostics do not replace these checks. The owner's merge hold also requires
+measured OP-00, a real NXC read, one staging loop with distinct producer/verifier
+identities and the public/private boundary. The dispatch report distinguishes
+authored tests from checks that actually ran.
 
 Rollback removes the operator source feature through normal review; retain any
 mission proposals and command receipts already recorded. No database rollback
