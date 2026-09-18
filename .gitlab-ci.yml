@@ -1,0 +1,32 @@
+# Private CI for the buildanddo GitLab intake mirror (gitlab.citadel-nexus.com/root/buildanddo).
+# GitHub (mrnobodytx/buildanddo) is the public collaboration/submission plane; this project
+# runs the private release pipeline on a dedicated shell runner (tag: buildanddo).
+stages:
+  - verify
+  - test
+
+integrity_gate:
+  stage: verify
+  tags:
+    - buildanddo
+  script:
+    # npm workspaces: the lockfile is at the repo root (apps/*), not inside apps/web -
+    # `npm ci --prefix apps/web` fails EUSAGE looking for a lockfile that isn't there.
+    - npm ci
+    - python3 scripts/ci/integrity_regression_check.py
+    - python3 scripts/ci/verify_public_boundary.py --root .
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+praxis_evidence_tests:
+  stage: test
+  tags:
+    - buildanddo
+  # PB_SUPERUSER_EMAIL / PB_SUPERUSER_PASSWORD / PB_API_URL are GitLab CI/CD
+  # variables (masked), not the gitignored secrets/deploy.local.env - a fresh
+  # CI checkout never has that file. client.py's _load_secrets() already
+  # merges os.environ, so no code change was needed to pick these up.
+  script:
+    - python3 services/praxis_evidence/run_all_tests.py
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
