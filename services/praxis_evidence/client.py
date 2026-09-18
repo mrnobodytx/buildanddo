@@ -56,7 +56,7 @@ class PocketBaseClient:
         body = json.dumps({"identity": email, "password": password}).encode("utf-8")
         req = urllib.request.Request(
             f"{self.base_url}/api/collections/_superusers/auth-with-password",
-            data=body, method="POST", headers={"Content-Type": "application/json"})
+            data=body, method="POST", headers={"Content-Type": "application/json", "User-Agent": "BuildAndDo-Praxis/1 (+https://buildanddo.com)"})
         with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310 - fixed self-hosted URL
             data = json.loads(resp.read())
         self._token = data["token"]
@@ -70,7 +70,7 @@ class PocketBaseClient:
     def _request(self, method: str, path: str, payload: dict | None = None, retried: bool = False) -> dict:
         url = f"{self.base_url}{path}"
         data = json.dumps(payload).encode("utf-8") if payload is not None else None
-        headers = {"Content-Type": "application/json", **self._token_header()}
+        headers = {"Content-Type": "application/json", "User-Agent": "BuildAndDo-Praxis/1 (+https://buildanddo.com)", **self._token_header()}
         req = urllib.request.Request(url, data=data, method=method, headers=headers)
         try:
             with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310 - fixed self-hosted URL
