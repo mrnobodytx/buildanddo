@@ -92,7 +92,7 @@ const structuredData = [
         '@context': 'https://schema.org',
         '@type': 'SoftwareApplication',
         name: 'BuildAndDo',
-        applicationCategory: 'BusinessApplication',
+        applicationCategory: 'EducationalApplication',
         operatingSystem: 'Web',
         description: DESCRIPTION,
     },
@@ -181,7 +181,7 @@ function GlanceMetric({ icon: Icon, label, source, count, href }) {
 function BusinessAtAGlance({ sources }) {
     return (
         <Section id="glance" className="border-t border-foreground/80 py-12 sm:py-16">
-            <SectionLabel icon={Gauge}>Your Business at a Glance</SectionLabel>
+            <SectionLabel icon={Gauge}>Your Workspace at a Glance</SectionLabel>
             <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
                 From your workspace records.
             </h2>
@@ -261,7 +261,7 @@ function ChallengeForm({ challenges }) {
     return (
         <form onSubmit={submit} className="space-y-4">
             <label htmlFor="challenge" className="block text-sm font-semibold">
-                Your business challenge
+                Your challenge
             </label>
             <textarea
                 id="challenge"
@@ -325,7 +325,7 @@ function ChallengeDesk({ challenges }) {
                 <div className="lg:col-span-4">
                     <SectionLabel icon={Send}>Challenge Desk</SectionLabel>
                     <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-                        Describe a real business problem.
+                        Bring a real problem to learn on.
                     </h2>
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                         Save an input to your active workspace and follow its recorded status here.
@@ -716,7 +716,7 @@ function HomeEdition() {
             loading ? <ListSkeleton label="Loading your workspaces…" />
                 : error ? <DegradedNotice message={error} onRetry={refresh} />
                     : <div>
-                        <p className="frontpage-note">Create a workspace to start your business edition.</p>
+                        <p className="frontpage-note">Create a workspace to start your learning edition.</p>
                         <Button href="/onboarding" size="sm">Set up workspace</Button>
                     </div>
         ) : undefined} />
@@ -727,7 +727,7 @@ export default function HomePage() {
     return (
         <div className="min-h-screen bg-background text-foreground">
             <Helmet>
-                <title>BuildAndDo — your business, as a daily verified edition</title>
+                <title>BuildAndDo — learn by doing, together</title>
                 <meta name="description" content={DESCRIPTION} />
                 {structuredData.map((data, i) => (
                     <script key={i} type="application/ld+json">
@@ -736,7 +736,7 @@ export default function HomePage() {
                 ))}
             </Helmet>
             <Seo
-                title="BuildAndDo — your business, as a daily verified edition"
+                title="BuildAndDo — learn by doing, together"
                 description={DESCRIPTION}
                 siteName="BuildAndDo"
                 type="website"
