@@ -133,8 +133,10 @@ export const PLANNED_MILESTONES = [
         description: 'Where people and Citadel Nexus guilds actually work together: Living Rooms that project '
             + 'live guild activity into a workspace, and bridges that carry the verified record out to the public '
             + 'surfaces (wiki, forum, Discord, Reddit) — each with a stated data boundary, not blanket credential access. '
-            + 'The rooms sidecar and RoomsPage exist in the repository, but the projection route is not mounted on '
-            + 'staging, so nothing here is verified yet.',
+            + 'What landed (2026-09-18): the rooms overlay — RoomCanvas, UtilizationPanel and useRoomProjection on '
+            + 'app/rooms, app/rooms/systems and app/rooms/live — reading projections published to the staging webroot '
+            + '(systems.json measured live), with a Rooms-live pill in the header. The outward bridges (wiki, forum, '
+            + 'Discord, Reddit) are still open.',
         deliverables: ['Living Rooms reading live projections on staging (route mounted and probed, not just present in the repo)',
             'Public-record bridges: wiki, forum, Discord, Reddit — one canonical event, projected outward',
             'Bounded authority per bridge, not a generic admin key'],
@@ -158,7 +160,10 @@ export const PLANNED_MILESTONES = [
     {
         day: 19, title: 'Daily edition & specialist desks', status: 'planned', value: 88,
         description: 'Surfacing what actually happened — real commits, real deploys, real verified claims — '
-            + 'as a readable daily record, not a marketing summary.',
+            + 'as a readable daily record, not a marketing summary. What landed (PR #40, 2c49f00, on staging '
+            + '2026-09-18): the daily edition front page with its specialist desks (research, classroom, mission, '
+            + 'knowledge, evidence, practice) and a read-first operator cockpit. Production promotion and the '
+            + 'wiki/Discord projection of the release event are still open.',
         deliverables: ['A canonical release event compiled once, projected consistently to wiki/Discord/community channels',
             'Self-hosted wiki as the durable public record', 'Specialist desk views scoped by role, not one firehose'],
     },
@@ -166,8 +171,9 @@ export const PLANNED_MILESTONES = [
         day: 21, title: 'Sprint review — verified replay', status: 'planned', value: 100,
         description: 'Every milestone above gets replayed against its own stated evidence bar, in public — '
             + 'not summarized as "done," but shown with what was actually verified and what wasn’t. '
-            + 'The first replay happened on sprint day 3 (2026-09-11): days 1, 3 and 5 recorded with evidence, '
-            + 'everything else left as the plan it still is.',
+            + 'The first replay happened on sprint day 3 (2026-09-11): days 1, 3 and 5 recorded with evidence. '
+            + 'The second on 2026-09-18: days 13 and 19 recorded against staging readbacks; everything else left '
+            + 'as the plan it still is.',
         deliverables: ['Public test suite results, not just a green checkmark', 'An honest list of what remains open',
             'This roadmap updated to reflect what actually happened, not the original plan'],
     },
