@@ -29,7 +29,8 @@
         "blueprint",
         "workspace-knowledge",
         "editorial-auth",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork"
       ],
       "tenant_id": null
     },
@@ -519,7 +520,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 34746,
+      "lines": 34952,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -538,7 +539,8 @@
         "blueprint",
         "workspace-knowledge",
         "editorial-auth",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork"
       ],
       "tenant_id": null
     },
@@ -654,7 +656,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1081,
+      "lines": 1084,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -674,7 +676,8 @@
         "blueprint",
         "workspace-knowledge",
         "editorial-auth",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork"
       ],
       "tenant_id": null
     },
@@ -978,7 +981,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1396,
+      "lines": 1410,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -998,7 +1001,8 @@
         "blueprint",
         "workspace-knowledge",
         "editorial-auth",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork"
       ],
       "tenant_id": null
     },
@@ -4623,7 +4627,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 232,
+      "lines": 238,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep protected workspace routes recoverable and expose automatic knowledge assembly through the existing lazy route boundary.",
@@ -5643,7 +5647,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 142,
+      "lines": 175,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose public sections, mobile navigation and a persistent theme control.",
@@ -6717,7 +6721,7 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 275,
+      "lines": 276,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the knowledge workspace discoverable in the existing persistent and mobile workspace navigation.",
@@ -8620,7 +8624,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 101,
+      "lines": 107,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep public navigation, canonical metadata and crawler output on the same route catalogue.",
@@ -20445,16 +20449,17 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "Gear",
         "Engraving"
       ],
       "dependencies": [
+        "apps/web/public/images/editorial/reference-engravings.png",
+        "apps/web/src/index.css",
         "react"
       ],
-      "lines": 132,
+      "lines": 52,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Illustrate research and platform areas with original ink drawings that adapt to the existing paper and dark themes.",
+      "intent_statement": "Preserve the supplied newspaper illustration subjects and texture while adapting their ink to the current theme.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -20466,7 +20471,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork"
       ],
       "tenant_id": null
     },
@@ -20563,6 +20569,10 @@
         "../VerticalNewsReel",
         "@testing-library/react",
         "@testing-library/user-event",
+        "apps/web/src/components/editorial/AndroidPhoneFrame.jsx",
+        "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+        "apps/web/src/components/editorial/LivingStill.jsx",
+        "apps/web/src/components/editorial/VerticalNewsReel.jsx",
         "react",
         "react-router-dom",
         "vitest"
@@ -20582,7 +20592,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork"
       ],
       "tenant_id": null
     },
@@ -20632,9 +20643,10 @@
         "editorialDate"
       ],
       "dependencies": [
-        "./workspaceSummary.js"
+        "./workspaceSummary.js",
+        "apps/web/src/lib/workspaceSummary.js"
       ],
-      "lines": 166,
+      "lines": 169,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep public research reading distinct from current private records and preserve dates and evidence states.",
@@ -20649,7 +20661,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork"
       ],
       "tenant_id": null
     },
@@ -20715,6 +20728,100 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py",
+        "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml",
+        "apps/web/src/components/editorial/Engraving.jsx",
+        "apps/web/src/lib/editorialContent.js"
+      ],
+      "lines": 138,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record reference fidelity and crop evidence for the artwork correction with explicit frontend execution limits.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-artwork"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/public/images/editorial/reference-engravings.png",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [],
+      "lines": 0,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the source crop coordinates and ink conversion for the eight owner-supplied newspaper illustrations.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-artwork"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/public/images/editorial/reference-engravings.png"
+      ],
+      "lines": 76,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the source crop coordinates and ink conversion for the eight owner-supplied newspaper illustrations.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-artwork"
       ],
       "tenant_id": null
     },
@@ -33249,6 +33356,66 @@
       "created_by": "BITS-CODEGEN"
     },
     {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "target": "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md consumes apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "target": "apps/web/src/components/editorial/Engraving.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md consumes apps/web/src/components/editorial/Engraving.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "target": "apps/web/src/lib/editorialContent.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md consumes apps/web/src/lib/editorialContent.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml",
+      "target": "apps/web/public/images/editorial/reference-engravings.png",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml validates apps/web/public/images/editorial/reference-engravings.png.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/Engraving.jsx",
+      "target": "apps/web/public/images/editorial/reference-engravings.png",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/Engraving.jsx consumes apps/web/public/images/editorial/reference-engravings.png.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/build.test.mjs",
@@ -34729,12 +34896,51 @@
       "timestamp": "2026-09-18T15:40:46.301959+00:00",
       "commit_sha": null,
       "smoke_result": "4/7 smoke; 48/48 static layout"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "description": "The eight owner-supplied newspaper subjects replace unrelated vector art. Native browser PNG decoding verifies all 135168 source pixels against the documented ink conversion. All 720 sampled CSS motion/crop checks retain complete artwork in both themes; pause and reduced motion pass. Static layout passes 48 cases. Existing regression passes 361 Node and 293 Python cases with 18 explicit skips.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T15:59:22.278108+00:00",
+      "commit_sha": null,
+      "smoke_result": "8/8 crops; 720/720 motion/crop; 48/48 layout"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "description": "Actual React tests, official lint and Vite build cannot start because Vitest, eslint-plugin-import and Vite are unavailable. The updated fixture is retained for the declared runner. Static JSX/browser previews and source diagnostics do not establish real React interactions or application-build acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T15:56:56.242443+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "description": "Artwork correction source/static checks pass with 4/7 application smoke. The tracked-file inventory mismatch after staging the asset/report was corrected by refreshing the lock; context and the 924-file public boundary pass. Provenance records the source digest, native crop boxes and themed atlas. All 114 earlier dispatch events remain unchanged; no backend, provider or deployed-site acceptance is claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T16:03:43.025250+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 591,
-    "type_b_count": 1253,
-    "type_c_count": 114,
+    "type_a_count": 594,
+    "type_b_count": 1259,
+    "type_c_count": 117,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

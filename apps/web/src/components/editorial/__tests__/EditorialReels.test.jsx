@@ -34,7 +34,7 @@ vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ isAuthed: true, use
 const items = ['First', 'Second', 'Third', 'Fourth', 'Fifth'].map((title, index) => ({
     id: String(index), title, description: 'Read this story in its original context.',
     kicker: 'Research', source: 'Original source', date: '2026-01-01',
-    href: '/practice', linkLabel: 'Read ' + title, illustration: 'library',
+    href: '/practice', linkLabel: 'Read ' + title, illustration: 'wireless',
 }));
 const mount = (child) => render(<MemoryRouter>{child}</MemoryRouter>);
 const reel = (name) => within(screen.getByRole('region', { name }));

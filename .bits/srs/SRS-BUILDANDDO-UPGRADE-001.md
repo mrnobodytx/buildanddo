@@ -60,6 +60,20 @@ layout cases pass after correcting enlarged-text clipping. Thirteen React cases
 are authored; missing Vitest, the lint plugin and Vite prevent rendered/lint/build
 acceptance. frontpage-report.md records source, layout and live-workspace limits.
 
+Artwork correction requested 2026-09-18: the animated subjects must match the
+owner's supplied reference. Replace the unrelated vector substitutes with its
+wireless, flight, medicine, automobile, storefront, gears, ship and typewriter
+illustrations. Keep the existing palette, layout, story destinations, source
+claims and motion/accessibility controls. Retain source crop provenance and
+check the actual artwork in both themes, narrow frames and reduced motion.
+This is a local A2 source correction under the same dispatch.
+
+Correction evidence: all eight crops match the supplied source pixels after the
+documented ink conversion. Browser sampling passes 720 motion/crop checks and
+48 layout cases; 361 Node and 293 Python tests pass, with 18 dependency skips.
+React tests, lint and build remain unavailable. See artwork-report.md for the
+source recipe, observed checks and their runtime limits.
+
 ## Editorial sign-in continuation — 2026-09-18
 
 The owner supplied a login screenshot and requested a substantial improvement,
