@@ -669,7 +669,9 @@ def copy_tree_clean(src: Path, dst: Path) -> None:
 
 def artifact_manifest(root: Path) -> dict[str, Any]:
     files: list[dict[str, Any]] = []
-    for path in sorted(root.rglob("*")):
+    # Explicit case-sensitive ordering: sorting Path objects is case-insensitive on Windows,
+    # which changed the canonical order (and the tree hash) between the Linux runner and rig1.
+    for path in sorted(root.rglob("*"), key=lambda p: p.relative_to(root).parts):
         if path.is_file():
             files.append(
                 {
