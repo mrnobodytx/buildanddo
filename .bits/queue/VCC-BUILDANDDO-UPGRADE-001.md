@@ -35,6 +35,9 @@ interactive content. This continues the existing A2 application-source dispatch.
 | NP5 | Compare animated subjects with the supplied reference | Reference and component inspection | PASS — the five vector substitutes do not match the eight reference subjects |
 | NP6 | Restore reference artwork and explicit reel mappings | Local asset/source review | PASS — eight exact source crops; theme ink and full silhouettes retained in 720 sampled animation frames |
 | NP7 | Check artwork, themes, crops and retained behavior | Browser/source checks and dispatch smoke | Source/static PASS — 720 motion/crop and 48 layout checks; 361 Node and 293 Python pass, 18 skips; React/lint/build remain unavailable |
+| NP8 | Define subject motion within the retained reference artwork | Reference layers and policy review | PASS — local A2 continuation; existing eight subjects and media activity policy retained |
+| NP9 | Animate picture interiors with independent loops and complete pause behavior | Time-sampled browser rendering and component cases | Source/CSS PASS — 48 scene comparisons and 12 pause/static observations; four React cases await Vitest |
+| NP10 | Verify responsive/reduced motion behavior and preserve evidence | Dispatch smoke, context, boundary and memory checks | Source/browser checks PASS — 48 layout cases, 361 Node and 293 Python pass, 18 skips; 4/7 smoke; full React acceptance open |
 
 Memory brief: HomePage already isolates records by account/workspace/demo tree.
 Research has an authenticated read adapter; public news and popularity analytics

@@ -105,10 +105,11 @@
 .frontpage-colophon { margin-top: 1rem; border-block: 3px double hsl(var(--foreground) / .65); padding: .6rem 0; display: flex; justify-content: center; align-items: center; gap: 1rem; text-align: center; font: .63rem/1.5 var(--editorial-mono); text-transform: uppercase; letter-spacing: .08em; }
 .frontpage-colophon > span { color: hsl(var(--primary)); font-size: .5rem; }
 
-.living-still { --engraving-paper: hsl(var(--secondary)); position: relative; overflow: hidden; isolation: isolate; margin: 0; background: var(--engraving-paper); color: hsl(var(--foreground) / .82); }
+.living-still { --engraving-play-state: paused; --engraving-paper: hsl(var(--secondary)); position: relative; overflow: hidden; isolation: isolate; margin: 0; background: var(--engraving-paper); color: hsl(var(--foreground) / .82); }
 .living-still__image { width: 100%; height: 100%; transform-origin: center; animation-duration: var(--living-duration, 16s); animation-timing-function: ease-in-out; animation-iteration-count: infinite; animation-direction: alternate; animation-play-state: paused; }
 .living-still__image > :where(svg, img) { display: block; width: 100%; height: 100%; object-fit: cover; }
 .living-still__image > svg { padding: .25rem; }
+.living-still[data-moving="on"] { --engraving-play-state: running; }
 .living-still[data-moving="on"] .living-still__image { animation-play-state: running; }
 .living-still[data-motion-enabled="off"] .living-still__image { animation: none; transform: none; }
 .living-still__grain { position: absolute; inset: 0; pointer-events: none; opacity: .3; background: repeating-linear-gradient(0deg, transparent 0 3px, hsl(var(--foreground) / .06) 3px 4px); }
@@ -122,6 +123,69 @@
 @keyframes editorial-left { from { transform: scale(1.06) translateX(1.5%); } to { transform: scale(1.06) translateX(-1.5%); } }
 @keyframes editorial-right { from { transform: scale(1.06) translateX(-1.5%); } to { transform: scale(1.06) translateX(1.5%); } }
 @keyframes editorial-rise { from { transform: scale(1.06) translateY(1.5%); } to { transform: scale(1.06) translateY(-1.5%); } }
+
+/* The frame stays still; each scene has its own small mechanical or natural loop. */
+.living-still--scene { animation: none; transform: none; }
+.engraving { overflow: hidden; }
+.engraving__animated { display: none; }
+.living-still[data-motion-enabled="on"] .engraving__still { display: none; }
+.living-still[data-motion-enabled="on"] .engraving__animated { display: inline; }
+.engraving__motion {
+    transform-box: view-box;
+    transform-origin: 0 0;
+    animation-duration: var(--part-duration, 6s);
+    animation-delay: calc(var(--engraving-phase, 0s) + var(--part-delay, 0s));
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-play-state: var(--engraving-play-state, paused);
+}
+.living-still[data-motion-enabled="off"] .engraving__motion { animation: none; }
+.engraving__signal { animation-name: engraving-signal; --part-duration: 3.6s; transform-origin: 73px 45px; stroke-width: 1.1; }
+.engraving__needle { animation-name: engraving-needle; --part-duration: 2.8s; transform-origin: 38px 94px; }
+.engraving__airframe { animation-name: engraving-airframe; --part-duration: 7s; }
+.engraving__propeller { animation-name: engraving-propeller; --part-duration: .85s; animation-timing-function: linear; opacity: .5; }
+.engraving__bubble { animation-name: engraving-bubble; --part-duration: 4.5s; }
+.engraving__liquid { animation-name: engraving-liquid; --part-duration: 5s; opacity: .55; }
+.engraving__glass { animation-name: engraving-glass; --part-duration: 8s; stroke: var(--engraving-paper); stroke-width: 1.5; }
+.engraving__wheel { animation-name: engraving-turn; --part-duration: 2.8s; animation-timing-function: linear; stroke: var(--engraving-paper); opacity: .65; }
+.engraving__exhaust { animation-name: engraving-exhaust; --part-duration: 5.1s; stroke-width: 1.2; }
+.engraving__door { animation-name: engraving-door; --part-duration: 12s; }
+.engraving__windows { animation-name: engraving-windows; --part-duration: 9s; fill: var(--engraving-paper); stroke: none; }
+.engraving__reflection { animation-name: engraving-reflection; --part-duration: 9s; stroke: var(--engraving-paper); stroke-width: 1.5; }
+.engraving__gear { animation-name: engraving-turn; animation-timing-function: linear; }
+.engraving__gear-reverse { animation-name: engraving-turn; animation-direction: reverse; animation-timing-function: linear; }
+.engraving__hull { animation-name: engraving-hull; --part-duration: 6.5s; }
+.engraving__water { animation-name: engraving-water; --part-duration: 5s; }
+.engraving__steam { animation-name: engraving-steam; --part-duration: 6s; stroke-width: 1.4; }
+.engraving__wake { animation-name: engraving-wake; --part-duration: 4.4s; stroke: var(--engraving-paper); }
+.engraving__carriage { animation-name: engraving-carriage; --part-duration: 8s; }
+.engraving__type { animation-name: engraving-type; --part-duration: 6.3s; stroke-dasharray: 1.3 1.5; transform-origin: 48px 0; }
+.engraving__typebar { animation-name: engraving-typebar; --part-duration: 1.3s; transform-origin: 73px 72px; stroke-width: 1.4; }
+.engraving__key { animation-name: engraving-key; --part-duration: 1.7s; fill: var(--engraving-paper); stroke: none; }
+@keyframes engraving-signal {
+    0% { transform: scale(.45); opacity: 0; }
+    20% { opacity: .65; }
+    90%, 100% { transform: scale(3.5); opacity: 0; }
+}
+@keyframes engraving-needle { 0%, 100% { transform: rotate(-16deg); } 30% { transform: rotate(22deg); } 65% { transform: rotate(4deg); } }
+@keyframes engraving-airframe { 0%, 100% { transform: translate(-.6px, .8px) rotate(-.6deg); } 50% { transform: translate(.8px, -1px) rotate(.7deg); } }
+@keyframes engraving-propeller { 0% { transform: scaleY(1); } 25% { transform: scaleY(.18); } 50% { transform: scaleY(-1); } 75% { transform: scaleY(-.18); } 100% { transform: scaleY(1); } }
+@keyframes engraving-bubble { 0% { transform: translateY(0); opacity: 0; } 25% { opacity: .8; } 85%, 100% { transform: translateY(-12px); opacity: 0; } }
+@keyframes engraving-liquid { 0%, 100% { transform: translateY(.5px); } 50% { transform: translateY(-.7px); } }
+@keyframes engraving-glass { 0%, 100% { opacity: .05; } 50% { opacity: .5; } }
+@keyframes engraving-turn { to { transform: rotate(360deg); } }
+@keyframes engraving-exhaust { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: .35; } 100% { transform: translate(-10px, -3px); opacity: 0; } }
+@keyframes engraving-door { 0%, 35%, 100% { transform: skewY(0deg) scaleX(1); } 55%, 75% { transform: skewY(-4deg) scaleX(.8); } }
+@keyframes engraving-windows { 0%, 100% { opacity: .02; } 45%, 65% { opacity: .22; } }
+@keyframes engraving-reflection { 0% { transform: translateY(0); opacity: 0; } 35% { opacity: .5; } 80%, 100% { transform: translateY(22px); opacity: 0; } }
+@keyframes engraving-hull { 0%, 100% { transform: translateY(.6px) rotate(-.5deg); } 50% { transform: translateY(-.8px) rotate(.65deg); } }
+@keyframes engraving-water { 0%, 100% { transform: translate(-1px, .2px); } 50% { transform: translate(1px, -.4px); } }
+@keyframes engraving-steam { 0% { transform: translate(0, 0); opacity: 0; } 25% { opacity: .25; } 100% { transform: translate(-7px, -14px); opacity: 0; } }
+@keyframes engraving-wake { 0%, 100% { transform: translateX(-2px); opacity: .25; } 50% { transform: translateX(2px); opacity: .7; } }
+@keyframes engraving-carriage { 0%, 10% { transform: translateX(0); } 75%, 82% { transform: translateX(-4px); } 90%, 100% { transform: translateX(0); } }
+@keyframes engraving-type { 0%, 10% { transform: scaleX(0); opacity: .55; } 70%, 82% { transform: scaleX(1); opacity: .55; } 96%, 100% { transform: scaleX(1); opacity: 0; } }
+@keyframes engraving-typebar { 0%, 40%, 65%, 100% { transform: rotate(0deg); } 50% { transform: rotate(20deg); } }
+@keyframes engraving-key { 0%, 40%, 70%, 100% { transform: translateY(0); opacity: .45; } 50%, 60% { transform: translateY(.9px); opacity: .12; } }
 
 .news-reel { --reel-card-height: 16rem; min-width: 0; container: editorial-reel / inline-size; }
 .news-reel__viewport { height: calc(var(--reel-card-height) * var(--reel-count, 1)); overflow: hidden; overflow: clip; position: relative; border-top: 1px solid hsl(var(--border)); }
@@ -246,11 +310,17 @@
     .news-reel__image { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
+    .living-still .engraving__animated { display: none !important; }
+    .living-still .engraving__still { display: inline !important; }
+    .engraving__motion { animation: none !important; }
     .living-still .living-still__image { animation: none !important; transform: none !important; }
     .news-reel__track { transition: none !important; }
     .android-device .android-device__shell { transform: none !important; transition: none !important; }
 }
 @media print {
+    .living-still .engraving__animated { display: none !important; }
+    .living-still .engraving__still { display: inline !important; }
+    .engraving__motion { animation: none !important; }
     .frontpage-rail__sticky { position: static; }
     .news-reel__viewport { height: auto; overflow: visible; }
     .news-reel__track { transform: none !important; }

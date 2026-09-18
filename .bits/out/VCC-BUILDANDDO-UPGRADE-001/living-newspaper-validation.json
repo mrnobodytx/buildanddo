@@ -1,0 +1,794 @@
+{
+  "schema": "buildanddo.living-newspaper-validation/v1",
+  "observed_at": "2026-09-18T16:32:07.377873+00:00",
+  "source_complete": true,
+  "rendered_application_verified": false,
+  "method": "Actual browser pixels and CSS animation clocks, source-generated JSX with static hook/router adapters; React not mounted.",
+  "baseline": {
+    "source_ref": "097dba40dd48a235e7fd1ccbd629481b80123300",
+    "interior_animations": 0,
+    "outer_animation": "editorial-push",
+    "observation": "The initial source-rendered gallery had no animation inside the SVG; only its wrapper panned."
+  },
+  "source_sha256": {
+    "apps/web/src/components/editorial/Engraving.jsx": "d29f40987c29c23c171b1e8d71c45733055bb42fa1e1f521f50c8ef838cb843a",
+    "apps/web/src/components/editorial/LivingStill.jsx": "19cd75e1aff0002574af3a234f6bc50226dd0c62245809b7eba055186972ab81",
+    "apps/web/src/components/editorial/VerticalNewsReel.jsx": "599b2f4bcb25b7e539569b47d47eca3c458a2781383709e0b505e0c4adcd0b3d",
+    "apps/web/src/components/editorial/editorial.css": "d6d56f4d244220901799df1fc2a01ced4c1f7dd7c9b50a7c4b7c99c7f895bb47",
+    "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx": "8b9a48db47c8148933bcd226f96c85f67560d8878782b6721e7390511373c3e0",
+    "apps/web/public/images/editorial/reference-engravings.png": "1f5d9de6c7b79deaa41e6ed0b81a46ba2db868b2389e82fe5a768bf404f4e496",
+    "apps/web/public/images/editorial/reference-backgrounds.png": "5136b35976fb0ecd8734e787df4cbac166a2854262bd217feb6f59073e9353d4",
+    "apps/web/public/images/editorial/reference-backgrounds.png.cgrf.yaml": "417e4be2bd9fba15682135a655d2f24c8017ba9eebc5e1b9fc9d3f0d57fdf3fc"
+  },
+  "checks": {
+    "motion": {
+      "command": [
+        "playwright-cli",
+        "-s=living-newspaper",
+        "run-code",
+        "/tmp/buildanddo-living-browser.js"
+      ],
+      "started_at": "2026-09-18T16:28:00.887598+00:00",
+      "finished_at": "2026-09-18T16:28:08.480646+00:00",
+      "returncode": 0
+    },
+    "layout": {
+      "command": [
+        "playwright-cli",
+        "-s=living-newspaper",
+        "run-code",
+        "/tmp/buildanddo-living-layout.js"
+      ],
+      "started_at": "2026-09-18T16:29:17.240317+00:00",
+      "finished_at": "2026-09-18T16:29:23.500386+00:00",
+      "returncode": 0
+    },
+    "source": {
+      "command": [
+        "node",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs"
+      ],
+      "started_at": "2026-09-18T16:28:27.700681+00:00",
+      "finished_at": "2026-09-18T16:28:41.645594+00:00",
+      "returncode": 0
+    },
+    "react": {
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "test",
+        "--",
+        "EditorialReels",
+        "HomePage"
+      ],
+      "started_at": "2026-09-18T16:28:27.443135+00:00",
+      "finished_at": "2026-09-18T16:28:29.892128+00:00",
+      "returncode": 127
+    },
+    "lint": {
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "lint"
+      ],
+      "started_at": "2026-09-18T16:28:27.377657+00:00",
+      "finished_at": "2026-09-18T16:28:41.649905+00:00",
+      "returncode": 2
+    },
+    "build": {
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "build"
+      ],
+      "started_at": "2026-09-18T16:29:13.095709+00:00",
+      "finished_at": "2026-09-18T16:29:14.938166+00:00",
+      "returncode": 1
+    },
+    "node": {
+      "command": [
+        "node",
+        "--test",
+        "tests/upgrade/blueprint-client.test.mjs",
+        "tests/upgrade/blueprint-saved-client.test.mjs",
+        "tests/upgrade/blueprint-system.test.mjs",
+        "tests/upgrade/build.test.mjs",
+        "tests/upgrade/business-learning.test.mjs",
+        "tests/upgrade/classroom-client.test.mjs",
+        "tests/upgrade/classroom-system.test.mjs",
+        "tests/upgrade/decision-runtime.test.mjs",
+        "tests/upgrade/discord-catalogue.test.mjs",
+        "tests/upgrade/dossier-client.test.mjs",
+        "tests/upgrade/dossier-system.test.mjs",
+        "tests/upgrade/editorial-frontpage.test.mjs",
+        "tests/upgrade/government-learning.test.mjs",
+        "tests/upgrade/knowledge-client.test.mjs",
+        "tests/upgrade/knowledge-system.test.mjs",
+        "tests/upgrade/mission-research.test.mjs",
+        "tests/upgrade/mission-system.test.mjs",
+        "tests/upgrade/motion-system.test.mjs",
+        "tests/upgrade/pocketbase-metrics.test.mjs",
+        "tests/upgrade/research-client.test.mjs",
+        "tests/upgrade/source-checker.test.mjs",
+        "tests/upgrade/staging-contract.test.mjs",
+        "tests/upgrade/suite-client.test.mjs",
+        "tests/upgrade/suite-system.test.mjs",
+        "tests/upgrade/work-history.test.mjs",
+        "tests/upgrade/workflow-client.test.mjs",
+        "tests/upgrade/workflow-runs.test.mjs",
+        "tests/upgrade/workspace-administration.test.mjs",
+        "tests/upgrade/workspace-community.test.mjs",
+        "tests/upgrade/workspace-control-client.test.mjs",
+        "tests/upgrade/workspace-integration.test.mjs",
+        "tests/upgrade/workspace-summary.test.mjs"
+      ],
+      "started_at": "2026-09-18T16:28:27.585560+00:00",
+      "finished_at": "2026-09-18T16:28:56.743486+00:00",
+      "returncode": 0
+    },
+    "python": {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/upgrade",
+        "-p",
+        "test_*.py"
+      ],
+      "started_at": "2026-09-18T16:28:27.442382+00:00",
+      "finished_at": "2026-09-18T16:29:10.895111+00:00",
+      "returncode": 0
+    },
+    "context": {
+      "command": [
+        "python",
+        "scripts/ci/agent_context.py",
+        "--check"
+      ],
+      "started_at": "2026-09-18T16:35:36.225971+00:00",
+      "finished_at": "2026-09-18T16:35:36.733327+00:00",
+      "returncode": 0
+    },
+    "boundary": {
+      "command": [
+        "python",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "started_at": "2026-09-18T16:35:36.190283+00:00",
+      "finished_at": "2026-09-18T16:35:37.787304+00:00",
+      "returncode": 0
+    }
+  },
+  "scene_comparisons": [
+    {
+      "theme": "light",
+      "width": 90,
+      "height": 124,
+      "assets": [
+        {
+          "src": "/images/editorial/reference-engravings.png",
+          "width": 576,
+          "height": 296
+        },
+        {
+          "src": "/images/editorial/reference-backgrounds.png",
+          "width": 576,
+          "height": 296
+        }
+      ],
+      "fixed": true,
+      "regions": [
+        {
+          "subject": "wireless",
+          "x": 17,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 913,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "flight",
+          "x": 232.1875,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 1104,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "medicine",
+          "x": 447.390625,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 86,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "automobile",
+          "x": 662.59375,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 65,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "storefront",
+          "x": 877.796875,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 578,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "gears",
+          "x": 17,
+          "y": 265,
+          "width": 90,
+          "height": 124,
+          "changed": 2483,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "ship",
+          "x": 232.1875,
+          "y": 265,
+          "width": 90,
+          "height": 124,
+          "changed": 3537,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "typewriter",
+          "x": 447.390625,
+          "y": 265,
+          "width": 90,
+          "height": 124,
+          "changed": 1421,
+          "edgeChanges": 0
+        }
+      ],
+      "outside": 0,
+      "total": 10187
+    },
+    {
+      "theme": "light",
+      "width": 128,
+      "height": 152,
+      "assets": [
+        {
+          "src": "/images/editorial/reference-engravings.png",
+          "width": 576,
+          "height": 296
+        },
+        {
+          "src": "/images/editorial/reference-backgrounds.png",
+          "width": 576,
+          "height": 296
+        }
+      ],
+      "fixed": true,
+      "regions": [
+        {
+          "subject": "wireless",
+          "x": 17,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 1765,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "flight",
+          "x": 232.1875,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 2291,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "medicine",
+          "x": 447.390625,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 182,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "automobile",
+          "x": 662.59375,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 137,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "storefront",
+          "x": 877.796875,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 1205,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "gears",
+          "x": 17,
+          "y": 293,
+          "width": 128,
+          "height": 152,
+          "changed": 5160,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "ship",
+          "x": 232.1875,
+          "y": 293,
+          "width": 128,
+          "height": 152,
+          "changed": 7911,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "typewriter",
+          "x": 447.390625,
+          "y": 293,
+          "width": 128,
+          "height": 152,
+          "changed": 3014,
+          "edgeChanges": 0
+        }
+      ],
+      "outside": 0,
+      "total": 21665
+    },
+    {
+      "theme": "light",
+      "width": 198,
+      "height": 116,
+      "assets": [
+        {
+          "src": "/images/editorial/reference-engravings.png",
+          "width": 576,
+          "height": 296
+        },
+        {
+          "src": "/images/editorial/reference-backgrounds.png",
+          "width": 576,
+          "height": 296
+        }
+      ],
+      "fixed": true,
+      "regions": [
+        {
+          "subject": "wireless",
+          "x": 17,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 1359,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "flight",
+          "x": 232.1875,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 1757,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "medicine",
+          "x": 447.390625,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 128,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "automobile",
+          "x": 662.59375,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 107,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "storefront",
+          "x": 877.796875,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 900,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "gears",
+          "x": 17,
+          "y": 257,
+          "width": 198,
+          "height": 116,
+          "changed": 4009,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "ship",
+          "x": 232.1875,
+          "y": 257,
+          "width": 198,
+          "height": 116,
+          "changed": 6077,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "typewriter",
+          "x": 447.390625,
+          "y": 257,
+          "width": 198,
+          "height": 116,
+          "changed": 2307,
+          "edgeChanges": 0
+        }
+      ],
+      "outside": 0,
+      "total": 16644
+    },
+    {
+      "theme": "dark",
+      "width": 90,
+      "height": 124,
+      "assets": [
+        {
+          "src": "/images/editorial/reference-engravings.png",
+          "width": 576,
+          "height": 296
+        },
+        {
+          "src": "/images/editorial/reference-backgrounds.png",
+          "width": 576,
+          "height": 296
+        }
+      ],
+      "fixed": true,
+      "regions": [
+        {
+          "subject": "wireless",
+          "x": 17,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 810,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "flight",
+          "x": 232.1875,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 1087,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "medicine",
+          "x": 447.390625,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 85,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "automobile",
+          "x": 662.59375,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 64,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "storefront",
+          "x": 877.796875,
+          "y": 50,
+          "width": 90,
+          "height": 124,
+          "changed": 587,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "gears",
+          "x": 17,
+          "y": 265,
+          "width": 90,
+          "height": 124,
+          "changed": 2467,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "ship",
+          "x": 232.1875,
+          "y": 265,
+          "width": 90,
+          "height": 124,
+          "changed": 3455,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "typewriter",
+          "x": 447.390625,
+          "y": 265,
+          "width": 90,
+          "height": 124,
+          "changed": 1398,
+          "edgeChanges": 0
+        }
+      ],
+      "outside": 0,
+      "total": 9953
+    },
+    {
+      "theme": "dark",
+      "width": 128,
+      "height": 152,
+      "assets": [
+        {
+          "src": "/images/editorial/reference-engravings.png",
+          "width": 576,
+          "height": 296
+        },
+        {
+          "src": "/images/editorial/reference-backgrounds.png",
+          "width": 576,
+          "height": 296
+        }
+      ],
+      "fixed": true,
+      "regions": [
+        {
+          "subject": "wireless",
+          "x": 17,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 1564,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "flight",
+          "x": 232.1875,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 2263,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "medicine",
+          "x": 447.390625,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 176,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "automobile",
+          "x": 662.59375,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 130,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "storefront",
+          "x": 877.796875,
+          "y": 50,
+          "width": 128,
+          "height": 152,
+          "changed": 1216,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "gears",
+          "x": 17,
+          "y": 293,
+          "width": 128,
+          "height": 152,
+          "changed": 5117,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "ship",
+          "x": 232.1875,
+          "y": 293,
+          "width": 128,
+          "height": 152,
+          "changed": 7771,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "typewriter",
+          "x": 447.390625,
+          "y": 293,
+          "width": 128,
+          "height": 152,
+          "changed": 2940,
+          "edgeChanges": 0
+        }
+      ],
+      "outside": 0,
+      "total": 21177
+    },
+    {
+      "theme": "dark",
+      "width": 198,
+      "height": 116,
+      "assets": [
+        {
+          "src": "/images/editorial/reference-engravings.png",
+          "width": 576,
+          "height": 296
+        },
+        {
+          "src": "/images/editorial/reference-backgrounds.png",
+          "width": 576,
+          "height": 296
+        }
+      ],
+      "fixed": true,
+      "regions": [
+        {
+          "subject": "wireless",
+          "x": 17,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 1229,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "flight",
+          "x": 232.1875,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 1742,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "medicine",
+          "x": 447.390625,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 121,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "automobile",
+          "x": 662.59375,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 108,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "storefront",
+          "x": 877.796875,
+          "y": 50,
+          "width": 198,
+          "height": 116,
+          "changed": 915,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "gears",
+          "x": 17,
+          "y": 257,
+          "width": 198,
+          "height": 116,
+          "changed": 3975,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "ship",
+          "x": 232.1875,
+          "y": 257,
+          "width": 198,
+          "height": 116,
+          "changed": 5994,
+          "edgeChanges": 0
+        },
+        {
+          "subject": "typewriter",
+          "x": 447.390625,
+          "y": 257,
+          "width": 198,
+          "height": 116,
+          "changed": 2243,
+          "edgeChanges": 0
+        }
+      ],
+      "outside": 0,
+      "total": 16327
+    }
+  ],
+  "controls": [
+    {
+      "theme": "light",
+      "stablePause": true,
+      "resumed": true,
+      "disabledStatic": true,
+      "sameStill": true,
+      "reducedStatic": true,
+      "printStatic": true
+    },
+    {
+      "theme": "dark",
+      "stablePause": true,
+      "resumed": true,
+      "disabledStatic": true,
+      "sameStill": true,
+      "reducedStatic": true,
+      "printStatic": true
+    }
+  ],
+  "layout": {
+    "cases": 48,
+    "pass": true,
+    "reduced_motion": true,
+    "widths_px": [
+      320,
+      390,
+      600,
+      768,
+      1024,
+      1101,
+      1280,
+      1440
+    ],
+    "root_font_sizes_px": [
+      16,
+      32
+    ],
+    "fixtures": [
+      "public",
+      "stress"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "regression": {
+    "node_pass": 361,
+    "python_pass": 293,
+    "python_skip": 18,
+    "react_cases_added": 4,
+    "react_cases_executed": 0
+  },
+  "limits": [
+    "Static hook/router adapters do not execute React events or actual activity observers.",
+    "Vitest, eslint-plugin-import and Vite are unavailable.",
+    "Local rendering does not establish a deployed-site result."
+  ]
+}

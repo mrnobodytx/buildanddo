@@ -90,7 +90,7 @@ export default function VerticalNewsReel({
                                 <article key={`${row}:${item.id}`} className="news-reel__slide"
                                     role="group" aria-roledescription="slide" aria-label={`${ordinal + 1} of ${items.length}`}
                                     aria-hidden={hidden ? true : undefined} inert={hidden ? '' : undefined}>
-                                    <LivingStill src={item.image} alt={item.imageAlt || ''} motion={item.motion}
+                                    <LivingStill src={item.image} alt={item.imageAlt || ''} motion={item.image ? item.motion : 'scene'}
                                         duration={item.duration} paused={hidden || stillsPaused} className="news-reel__image">
                                         <Engraving kind={item.illustration} />
                                     </LivingStill>

@@ -12,16 +12,16 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/contexts/MotionContext.jsx
 // DAG Node:    none
-// Intent:      Move a still illustration gently inside a fixed crop only while its reader and motion policy permit it.
+// Intent:      Keep picture motion inside a fixed frame and suspend every layer when the reader or motion policy requires it.
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
 import { useMotionActivity } from '@/contexts/MotionContext';
 import './editorial.css';
 
-const MOTIONS = new Set(['push', 'pull', 'left', 'right', 'rise']);
+const MOTIONS = new Set(['scene', 'push', 'pull', 'left', 'right', 'rise']);
 
-/** Pan a still within its stationary frame, pausing hidden and reduced-motion views.
+/** Frame an animated scene or pan a photograph under the shared media policy.
  * @param {object} props Image or artwork, accessible description and motion choices.
  * @returns {React.ReactElement} A stationary figure around slowly moving content.
  */
