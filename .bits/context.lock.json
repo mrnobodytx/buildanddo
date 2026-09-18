@@ -134,7 +134,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-18T18:05:50.524491+00:00",
+  "generated_at": "2026-09-18T19:39:19.738750+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -471,8 +471,8 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 957,
-    "web_source_files": 289
+    "tracked_files": 958,
+    "web_source_files": 290
   },
   "schema_version": 1,
   "summary": {
@@ -487,7 +487,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 47,
+    "js_test_files": 48,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

@@ -1,0 +1,38 @@
+{
+  "campaign_id": "citadel-21-day-2026-09",
+  "sprint_start": "2026-09-09",
+  "sprint_days": 21,
+  "updated_at": "2026-09-18T19:35:36+00:00",
+  "milestones": [
+    {
+      "day": 1,
+      "status": "verified",
+      "evidence": "commit d2d5f83 (ship.py build->gate->staging sync->staging probe->promote, release manifest apps/web/public/.well-known/citadel-release.json); estate receipt state/tenant_rail/stage.latest.json (controller estate, outside this repo) state PASS observed 2026-09-11T20:18Z: gate PASS, staging probe 200, live PASS",
+      "verified_at": "2026-09-11T20:18:14Z"
+    },
+    {
+      "day": 3,
+      "status": "verified",
+      "evidence": "commits d964260, 86e84e5, 9e1f136; apps/pocketbase/pb_hooks/ocn-login.pb.js; apps/pocketbase/pb_migrations/1789100000_ocn_seat_users.js; apps/web/src/lib/ocnLogin.js; docs/architecture/BUILDANDDO_OCN_LOGIN.md; estate receipt state/ocn_login/audit.latest.json state PASS 2026-09-11T21:24Z: seat c-one signed in on staging via /api/ocn/login (200), collections readable 23/24, public routes 7/7",
+      "verified_at": "2026-09-11T21:24:00Z"
+    },
+    {
+      "day": 5,
+      "status": "verified",
+      "evidence": "commit 2510ac6; docs/architecture/POCKETBASE_MIGRATION_DRIFT_2026-09-11.md (35 migrations reconciled, 0 problems); apps/pocketbase/tools/check_migration_order.mjs re-run 2026-09-11: 36 migrations, 0 problems; scripts/ci/verify_public_boundary.py wired in .github/workflows/pr-governance.yml; estate receipts state/staging_backend/kvm1_install.latest.json PASS and sync_backend.latest.json PASS 2026-09-11; staging backend health 200 via /hcgi/platform",
+      "verified_at": "2026-09-11T21:24:00Z"
+    },
+    {
+      "day": 13,
+      "status": "verified",
+      "evidence": "commit abc10c9 (Living Rooms overlay: RoomCanvas, UtilizationPanel, useRoomProjection, routes app/rooms, app/rooms/systems, app/rooms/live; header Rooms-live pill via useRoomsLive); staging readback 2026-09-18: /room-projections/index.json 200 and /room-projections/systems.json 200 state MEASURED generated 2026-09-18T14:26Z; public-record bridge = the projections published to the webroot from the estate",
+      "verified_at": "2026-09-18T14:30:00Z"
+    },
+    {
+      "day": 19,
+      "status": "verified",
+      "evidence": "PR #40 merge 2c49f00 (newspaper front page d74dcf4, daily edition + specialist desks, read-first operator cockpit 26f73df); staging readback 2026-09-18: front page renders the daily edition (research desk, classroom, mission desk, knowledge room, evidence ledger, practice library desks), /_version sha match; production not yet promoted",
+      "verified_at": "2026-09-18T19:19:35Z"
+    }
+  ]
+}

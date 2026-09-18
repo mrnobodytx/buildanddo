@@ -37,8 +37,8 @@ Recording verification goes through this module too::
 
 which writes state/roadmap/sprint.json in the one shape `_merge_state` reads.
 The file is git-ignored (state/ is local operational state), so the projection
-only shows a milestone as verified on the clone that recorded it - the ship
-rail's clone. The evidence string is public: it is rendered on /roadmap.
+records it in the tracked ledger scripts/ci/sprint_ledger.json, so every
+checkout and the public roadmap read the same verification. The evidence string is public: it is rendered on /roadmap.
 
 Standard library only, matching the rest of scripts/ci/.
 """
@@ -55,7 +55,11 @@ CAMPAIGN_ID = "citadel-21-day-2026-09"
 SPRINT_START = dt.date(2026, 9, 9)
 SPRINT_DAYS = 21
 
-STATE_PATH = ROOT / "state" / "roadmap" / "sprint.json"
+# The ledger is TRACKED (scripts/ci/sprint_ledger.json), not per-clone state: a verification is a commit that carries
+# its public evidence, reviewable like any other change, and the public roadmap reads the same ledger from any
+# checkout. Measured 2026-09-18: the gitignored state/roadmap/sprint.json existed only in the ship rail's clone, so
+# main could never show more than the three milestones recorded there.
+STATE_PATH = ROOT / "scripts" / "ci" / "sprint_ledger.json"
 
 VERIFIED = "verified"
 PLANNED = "planned"

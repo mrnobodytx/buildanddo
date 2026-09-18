@@ -20,7 +20,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { Gauge, ArrowRight, Info, TrendingUp, GitCommit } from 'lucide-react';
+import { Gauge, ArrowRight, Info, TrendingUp, GitCommit, Activity } from 'lucide-react';
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import Seo from '@/components/Seo';
@@ -52,6 +52,18 @@ const FIELDS = [
 const SPRINT_DAYS = 21;
 
 const STALE_AFTER_MS = 48 * 60 * 60 * 1000;
+
+// Activity rows are live reads made at build time; past their own stale_after_seconds they are labelled STALE, never hidden.
+function relativeTime(iso) {
+    const t = iso ? new Date(iso).getTime() : NaN;
+    if (!Number.isFinite(t)) return 'Unknown';
+    const mins = Math.round((Date.now() - t) / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins} min ago`;
+    const hours = Math.round(mins / 60);
+    if (hours < 48) return `${hours} h ago`;
+    return `${Math.round(hours / 24)} d ago`;
+}
 
 const HIGHLIGHT_MS = 2500;
 
@@ -338,6 +350,8 @@ export default function RoadmapPage() {
     const [activeDay, setActiveDay] = useState(null);
     const [live, setLive] = useState(null);
     const [liveError, setLiveError] = useState(false);
+    const [activity, setActivity] = useState(null);
+    const [activityError, setActivityError] = useState(false);
 
     const milestones = useMemo(() => mergeLiveStatus(live?.milestones), [live]);
     const verifiedCount = useMemo(
@@ -380,6 +394,22 @@ export default function RoadmapPage() {
             .catch(() => { if (!cancelled) setLiveError(true); });
         return () => { cancelled = true; };
     }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+        fetch('/activity-status.json', { cache: 'no-store' })
+            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
+            .then((data) => { if (!cancelled) setActivity(data); })
+            .catch(() => { if (!cancelled) setActivityError(true); });
+        return () => { cancelled = true; };
+    }, []);
+
+    const activityStale = useMemo(() => {
+        const t = activity?.generated_at ? new Date(activity.generated_at).getTime() : NaN;
+        if (!Number.isFinite(t)) return false;
+        return Date.now() - t > (Number(activity?.stale_after_seconds) || 6 * 3600) * 1000;
+    }, [activity]);
+    const progression = live?.progression?.state === 'MEASURED' ? live.progression : null;
 
     const handleHover = (day) => {
         setActiveDay(day);
@@ -600,6 +630,87 @@ export default function RoadmapPage() {
                     ) : (
                         <div className="p-4 text-sm text-muted-foreground">
                             {liveError ? 'Unknown — live commit feed unavailable.' : 'Loading…'}
+                        </div>
+                    )}
+                </Card>
+            </Section>
+
+            {/* Activity in the sinks and connected resources - live reads at build time, never inferred */}
+            <Section className="border-t border-foreground/80 py-12 sm:py-16">
+                <SectionLabel icon={Activity}>Activity · sinks and connected resources</SectionLabel>
+                <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                    What is moving, and what could not be read.
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                    One row per sink the work flows into and per resource it depends on. Each row is a live
+                    read taken when this page was built: MEASURED with its last activity and counts over 24 h
+                    and 7 d, or UNMEASURED with the reason. Absence is never shown as zero.
+                </p>
+                <div className="font-evidence mt-4 space-y-1 text-[11px] text-muted-foreground">
+                    <p>
+                        Ledger: {verifiedCount} of {milestones.length} milestones verified
+                        {measured && Number.isFinite(live?.actual_pct) ? ` · actual ${live.actual_pct}% (verified milestones only)` : ''}.
+                    </p>
+                    {progression ? (
+                        <p>
+                            Estate progression ({progression.owner || 'owner unknown'}):{' '}
+                            {progression.verified_to_date_percent ?? 'Unknown'}% of criteria verified to date · plan{' '}
+                            {progression.schedule_elapsed_percent ?? 'Unknown'}% elapsed · pace {progression.pace_state || 'Unknown'}
+                            {progression.generated_at ? ` · generated ${progression.generated_at}` : ''}. Two progressions, never averaged.
+                        </p>
+                    ) : (
+                        <p>Estate progression: Unknown — {live?.progression?.reason || 'not carried by this projection'}.</p>
+                    )}
+                    {activity?.generated_at && (
+                        <p>
+                            Activity measured {relativeTime(activity.generated_at)} ({activity.generated_at})
+                            {activityStale ? ' · STALE past its own window' : ''}
+                            {activity.summary ? ` · ${activity.summary.measured} measured, ${activity.summary.unmeasured} unmeasured, ${activity.summary.active_24h} active in 24 h` : ''}.
+                        </p>
+                    )}
+                </div>
+                <Card className="mt-6 divide-y divide-border">
+                    {activity?.entries?.length ? (
+                        activity.entries.map((e) => (
+                            <div key={e.id} className="grid grid-cols-12 items-center gap-3 p-4 text-sm">
+                                <div className="col-span-12 sm:col-span-4">
+                                    <span className="font-medium">{e.id}</span>
+                                    <span className="font-evidence ml-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                                        {e.kind} · {e.provider}
+                                    </span>
+                                </div>
+                                <div className="font-evidence col-span-4 text-[11px] text-muted-foreground sm:col-span-2">
+                                    {e.state === 'MEASURED' ? relativeTime(e.last_activity_at) : 'Unknown'}
+                                </div>
+                                <div className="font-evidence col-span-4 text-[11px] text-muted-foreground sm:col-span-3">
+                                    {e.count_24h ?? '—'} / 24 h · {e.count_7d ?? '—'} / 7 d
+                                </div>
+                                <div className="col-span-4 flex items-center justify-end gap-3 sm:col-span-3">
+                                    {e.evidence && (
+                                        <a
+                                            href={e.evidence}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            onClick={() => trackEvent('roadmap_activity_evidence_click', { id: e.id })}
+                                            className="font-evidence text-[11px] text-primary"
+                                        >
+                                            evidence
+                                        </a>
+                                    )}
+                                    <span className={`font-evidence text-[10px] uppercase tracking-[0.14em] ${e.state === 'MEASURED' ? 'text-success' : 'text-muted-foreground'}`}>
+                                        {e.state}
+                                    </span>
+                                </div>
+                                {(e.reason || e.note) && (
+                                    <p className="font-evidence col-span-12 text-[11px] text-muted-foreground">
+                                        {e.reason ? `Unmeasured — ${e.reason}` : e.note}
+                                    </p>
+                                )}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="p-4 text-sm text-muted-foreground">
+                            {activityError ? 'Unknown — activity projection unavailable.' : 'Loading…'}
                         </div>
                     )}
                 </Card>

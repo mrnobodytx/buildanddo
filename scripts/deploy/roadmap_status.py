@@ -32,6 +32,7 @@ safe to expose since it's the same commit log already visible on GitHub.
 from __future__ import annotations
 import datetime as dt
 import json
+import os
 import sys
 import urllib.request
 from pathlib import Path
@@ -76,6 +77,35 @@ def _last_gate_and_deploy() -> dict:
     }
 
 
+def _estate_progression() -> dict:
+    """The estate's canonical progression, when the ship rail exposes it (BUILDANDDO_PROGRESSION_FILE). It is a
+    DIFFERENT truth from the milestone ledger (owner: development-continuity fabric; criteria verified to date), so it
+    is carried under its own key with its own generated_at and never averaged into actual_pct."""
+    path = os.environ.get("BUILDANDDO_PROGRESSION_FILE", "").strip()
+    if not path:
+        return {"state": "UNMEASURED", "reason": "BUILDANDDO_PROGRESSION_FILE not set at ship time"}
+    try:
+        doc = json.loads(Path(path).read_text(encoding="utf-8-sig"))
+    except Exception as exc:  # noqa: BLE001
+        return {"state": "UNMEASURED", "reason": f"{type(exc).__name__}: {exc}"[:160]}
+    summary = doc.get("summary") or {}
+    return {
+        "state": "MEASURED",
+        "owner": "citadel-development-continuity-fabric",
+        "generated_at": doc.get("generated_at"),
+        "campaign_id": doc.get("campaign_id"),
+        "schedule_elapsed_percent": summary.get("schedule_elapsed_percent"),
+        "verified_to_date_percent": summary.get("verified_to_date_percent"),
+        "full_campaign_percent": summary.get("full_campaign_percent"),
+        "pace_state": summary.get("pace_state"),
+        "verified_to_date": summary.get("verified_to_date"),
+        "verified_total": summary.get("verified_total"),
+        "criteria_to_date": summary.get("criteria_to_date"),
+        "criteria_total": summary.get("criteria_total"),
+        "next_hard_milestone": doc.get("next_hard_milestone"),
+    }
+
+
 def main() -> int:
     sprint_day = sprint_cycle.sprint_day()  # clamped to [1, SPRINT_DAYS]
     state = sprint_cycle._load_state()  # noqa: SLF001 - intentional reuse, this IS the interface
@@ -92,6 +122,7 @@ def main() -> int:
         "milestones": state["milestones"],
         "recent_commits": _recent_commits(),
         **_last_gate_and_deploy(),
+        "progression": _estate_progression(),
     }
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(report, indent=2, default=str), encoding="utf-8")
