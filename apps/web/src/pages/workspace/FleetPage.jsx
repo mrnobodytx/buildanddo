@@ -43,8 +43,10 @@ import {
 import { DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNotices';
 import { formatDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import pocketbaseClient from '@/lib/pocketbaseClient';
 
-const REPORT_URL = '/fleet-status.json';
+// The fleet snapshot is no longer a public file: the backend answers this route only to master seats (estate.pb.js).
+const REPORT_ROUTE = '/api/buildanddo/estate/fleet-status';
 
 // Regenerate with: python scripts/ci/fleet_report.py
 const MISSING_REPORT =
@@ -230,10 +232,8 @@ export default function FleetPage() {
         let cancelled = false;
         setLoading(true);
         setFailed(false);
-        fetch(REPORT_URL, { cache: 'no-store' })
-            .then((response) =>
-                response.ok ? response.json() : Promise.reject(new Error(`status ${response.status}`)),
-            )
+        pocketbaseClient
+            .send(REPORT_ROUTE, { method: 'GET', requestKey: null })
             .then((data) => {
                 if (cancelled) return;
                 setReport(data);

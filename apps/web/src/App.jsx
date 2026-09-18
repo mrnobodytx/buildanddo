@@ -13,6 +13,8 @@ import { WorkspaceProvider, useWorkspace } from '@/contexts/WorkspaceContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageBoundary from '@/components/workspace/PageBoundary';
 import { workspaceDestination } from '@/lib/navigationIntent';
+import { useAuth } from '@/contexts/AuthContext';
+import { isMasterSeat } from '@/lib/estateAccess';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
@@ -68,6 +70,14 @@ const LiveExperimentRoomPage = lazy(() => import('./pages/workspace/LiveExperime
 // TelemetryBoundary still catches everything, but a root catch replaces the
 // whole screen — one broken page would take the navigation with it and leave
 // the operator with nothing but a reload.
+// Estate surfaces (Fleet) exist only for a signed-in master-level CNWB seat. Anyone else is sent to the workspace front
+// page: not a 403 page, because the surface should not exist for them at all. The level is backend-owned.
+function EstateOnly({ enabled, children }) {
+    const { user } = useAuth();
+    if (enabled && !isMasterSeat(user)) return <Navigate to="/app" replace />;
+    return children;
+}
+
 const WORKSPACE_ROUTES = [
     { index: true, label: 'Front Page', element: OverviewPage },
     { path: 'operator', label: 'Operator cockpit', element: OperatorPage },
@@ -79,7 +89,7 @@ const WORKSPACE_ROUTES = [
     { path: 'classrooms/:roomId', label: 'Classroom', element: ClassroomsPage },
     { path: 'erp', label: 'ERP', element: ErpPage },
     { path: 'operations', label: 'Operations', element: OperationsPage },
-    { path: 'fleet', label: 'Fleet', element: FleetPage },
+    { path: 'fleet', label: 'Fleet', element: FleetPage, estate: true },
     { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'research', label: 'Mission research', element: ResearchPage },
@@ -191,7 +201,7 @@ export function AppRoutes() {
                         </ProtectedRoute>
                     }
                 >
-                    {WORKSPACE_ROUTES.map(({ path, index, label, element: Element }) => (
+                    {WORKSPACE_ROUTES.map(({ path, index, label, element: Element, estate }) => (
                         <Route
                             key={path || 'index'}
                             index={index}
@@ -199,7 +209,9 @@ export function AppRoutes() {
                             element={
                                 <PageBoundary key={path || 'index'} name={label}>
                                     <Suspense fallback={<RouteLoading />}>
-                                        <MotionEntrance><Element /></MotionEntrance>
+                                        <EstateOnly enabled={estate}>
+                                            <MotionEntrance><Element /></MotionEntrance>
+                                        </EstateOnly>
                                     </Suspense>
                                 </PageBoundary>
                             }

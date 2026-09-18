@@ -1,0 +1,77 @@
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/pocketbase/pb_hooks/estate.pb.js
+// Stage:       11_COMMIT
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// CAPS:        pending
+// CK:          pending
+// Seat:        C-ONE
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-18
+// Depends:     apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js
+// EnumType:    Service
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js; VERIFIED_BY apps/web/src/pages/workspace/FleetPage.jsx
+// Intent:      Keep the CNWB seat level backend-owned and serve the estate fleet snapshot only to master seats.
+// ───────────────────────────────────────────────────────────────
+//
+// Two rules, both fail-closed:
+//   1. A client may never set or change `users.cnwb_seat_level`. Only a superuser (the seat login on the private plane
+//      acts with superuser auth) may. Measured 2026-09-18: PocketBase auth collections let a user update their own
+//      record, so without this guard a user could promote themselves.
+//   2. The estate fleet snapshot is NOT a public file any more. It is read from BUILDANDDO_ESTATE_DIR (or
+//      pb_data/estate) and answered only to an authenticated user whose level is `master`; everyone else gets 404,
+//      the same answer as for a path that does not exist.
+
+const SEAT_FIELD = 'cnwb_seat_level';
+const MASTER = 'master';
+
+function isSuperuser(e) {
+    try { return typeof e.hasSuperuserAuth === 'function' ? e.hasSuperuserAuth() : false; } catch (_err) { return false; }
+}
+
+onRecordCreateRequest((e) => {
+    if (!isSuperuser(e) && e.record.getString(SEAT_FIELD)) {
+        throw new ForbiddenError(`${SEAT_FIELD} is set by the seat login, not by the client.`);
+    }
+    e.next();
+}, 'users');
+
+onRecordUpdateRequest((e) => {
+    if (!isSuperuser(e)) {
+        const before = e.record.original().getString(SEAT_FIELD);
+        const after = e.record.getString(SEAT_FIELD);
+        if (before !== after) {
+            throw new ForbiddenError(`${SEAT_FIELD} is set by the seat login, not by the client.`);
+        }
+    }
+    e.next();
+}, 'users');
+
+routerAdd('GET', '/api/buildanddo/estate/fleet-status', (e) => {
+    const level = e.auth ? String(e.auth.getString(SEAT_FIELD) || '').trim().toLowerCase() : '';
+    if (level !== MASTER) {
+        return e.json(404, { error: 'not found' });
+    }
+    const dir = $os.getenv('BUILDANDDO_ESTATE_DIR') || `${__hooks}/../pb_data/estate`;
+    const path = `${dir}/fleet-status.json`;
+    let raw = null;
+    try {
+        raw = toString($os.readFile(path));
+    } catch (_err) {
+        raw = null;
+    }
+    if (!raw) {
+        return e.json(200, {
+            state: 'UNMEASURED',
+            reason: 'fleet snapshot not published on this instance',
+            expected_path: path,
+            served_to: 'master seat',
+        });
+    }
+    try {
+        const doc = JSON.parse(raw);
+        doc.served_to = 'master seat';
+        return e.json(200, doc);
+    } catch (_err) {
+        return e.json(200, { state: 'UNMEASURED', reason: 'fleet snapshot is not valid JSON', expected_path: path });
+    }
+}, $apis.requireAuth('users'));
