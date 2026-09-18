@@ -913,6 +913,30 @@ def ssh_base(prefix: str) -> tuple[list[str], str, str, int, Path]:
     return base, remote_root, f"{user}@{host}", port, key
 
 
+def _deploy_ssh_webroot_nt(artifact: Path, base: list[str], remote_root: str, backup_tgz: str, target: str, env_name: str) -> dict[str, Any]:
+    """Windows path: no usable local rsync. Tar the artifact, ship it over OpenSSH, and let the
+    host run rsync (same --delete/exclude semantics) from an incoming directory."""
+    import tarfile
+    stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    incoming = f"{remote_root}.incoming-{stamp}"
+    qin = shlex.quote(incoming)
+    qroot = shlex.quote(remote_root)
+    excludes = " ".join(shlex.quote(f"--exclude={x.strip()}") for x in [".citadel_backups/", *os.environ.get("BUILDANDDO_DEPLOY_EXCLUDES", "").split(",")] if x.strip())
+    with tempfile.TemporaryDirectory() as td:
+        tgz = Path(td) / "artifact.tgz"
+        with tarfile.open(tgz, "w:gz") as tar:
+            for item in sorted(artifact.rglob("*")):
+                tar.add(item, arcname=item.relative_to(artifact).as_posix(), recursive=False)
+        with tgz.open("rb") as fh:
+            up = subprocess.run([*base, f"mkdir -p {qin} && tar -xzf - -C {qin}"], stdin=fh, capture_output=True, text=True, timeout=900)
+    if up.returncode != 0:
+        raise ReleaseError("artifact upload (tar stream) failed")
+    sync = run([*base, f"rsync -a --delete {excludes} {qin}/ {qroot}/ && rm -rf {qin}"], timeout=600)
+    if sync.returncode != 0:
+        raise ReleaseError("server-side rsync failed after upload; incoming dir left for inspection")
+    return {"mode": "ssh_webroot", "transport": "tar-stream+server-side-rsync", "target": target, "remote_root": remote_root, "backup": backup_tgz, "remote_writes": 1, "environment": env_name}
+
+
 def deploy_ssh_webroot(artifact: Path, sha: str, env_name: str) -> dict[str, Any]:
     prefix = f"BUILDANDDO_{env_name.upper()}"
     base, remote_root, target, port, key = ssh_base(prefix)
@@ -931,12 +955,15 @@ def deploy_ssh_webroot(artifact: Path, sha: str, env_name: str) -> dict[str, Any
     result = run([*base, pre], timeout=300)
     if result.returncode != 0:
         raise ReleaseError("remote backup/precheck failed")
+    if os.name == "nt":
+        return _deploy_ssh_webroot_nt(artifact, base, remote_root, backup_tgz, target, env_name)
     rsync = run(
         [
             "rsync",
             "-az",
             "--delete",
             "--exclude=.citadel_backups/",
+            *[f"--exclude={x.strip()}" for x in os.environ.get("BUILDANDDO_DEPLOY_EXCLUDES", "").split(",") if x.strip()],
             "-e",
             f"ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -i {shlex.quote(str(key))} -p {port}",
             str(artifact) + "/",
