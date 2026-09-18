@@ -27,7 +27,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "blueprint",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "editorial-auth"
       ],
       "tenant_id": null
     },
@@ -517,7 +518,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 33715,
+      "lines": 33937,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -534,7 +535,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "blueprint",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "editorial-auth"
       ],
       "tenant_id": null
     },
@@ -650,7 +652,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1035,
+      "lines": 1062,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -668,7 +670,8 @@
         "buildanddo-upgrade",
         "workflow-runs",
         "blueprint",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "editorial-auth"
       ],
       "tenant_id": null
     },
@@ -972,7 +975,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1317,
+      "lines": 1356,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -990,7 +993,8 @@
         "buildanddo-upgrade",
         "workflow-runs",
         "blueprint",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "editorial-auth"
       ],
       "tenant_id": null
     },
@@ -5037,15 +5041,17 @@
         "AuthLayout"
       ],
       "dependencies": [
+        "./auth.css",
+        "@/components/ThemeControls",
         "lucide-react",
         "react",
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 116,
+      "lines": 104,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Theme authentication screens and provide a skip target while excluding them from indexing.",
+      "intent_statement": "Frame native account access with the existing editorial learning identity, clear form hierarchy and consistent public and theme controls.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -5057,7 +5063,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "editorial-auth"
       ],
       "tenant_id": null
     },
@@ -5071,16 +5078,24 @@
       "enum_type": "Test",
       "functions": [],
       "dependencies": [
-        "apps/web/src/pages/LoginPage.jsx",
+        "@/lib/pocketbaseClient",
+        "@/pages/ForgotPasswordPage",
+        "@/pages/LoginPage",
+        "@/pages/SignupPage",
+        "@/test/utils",
         "apps/web/src/components/auth/AuthLayout.jsx",
-        "apps/web/src/test/utils.jsx"
+        "apps/web/src/pages/LoginPage.jsx",
+        "apps/web/src/test/utils.jsx",
+        "react",
+        "react-router-dom",
+        "vitest"
       ],
-      "lines": 215,
+      "lines": 329,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Cover the sign-in form's client validation and both post-login destinations, so a routing regression cannot strand a new user.",
+      "intent_statement": "Keep validation, password visibility and failed-login recovery accessible while preserving classroom destinations through account access.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -5090,7 +5105,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
-        "classrooms"
+        "classrooms",
+        "editorial-auth"
       ],
       "tenant_id": null
     },
@@ -9177,11 +9193,21 @@
       "functions": [
         "LoginPage"
       ],
-      "dependencies": [],
-      "lines": 152,
+      "dependencies": [
+        "@/components/auth/AuthLayout",
+        "@/components/site/ui",
+        "@/components/ui/input",
+        "@/components/ui/label",
+        "@/contexts/AuthContext",
+        "@/lib/navigationIntent",
+        "lucide-react",
+        "react",
+        "react-router-dom"
+      ],
+      "lines": 182,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Return an authenticated reader to the requested class and let the workspace gate distinguish unavailable and absent workspaces.",
+      "intent_statement": "Make native sign-in easier to complete and recover with password visibility, account-email guidance and accessible errors while preserving safe classroom destinations.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9193,7 +9219,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
-        "classrooms"
+        "classrooms",
+        "editorial-auth"
       ],
       "tenant_id": null
     },
@@ -20142,6 +20169,72 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/auth/AuthLayout.jsx",
+        "apps/web/src/components/auth/__tests__/LoginPage.test.jsx",
+        "apps/web/src/components/auth/auth.css",
+        "apps/web/src/pages/LoginPage.jsx"
+      ],
+      "lines": 149,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the editorial account-access changes, observed source and layout evidence, and outstanding React and live-auth acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-auth"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/auth/auth.css",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/auth/AuthLayout.jsx",
+        "apps/web/src/index.css"
+      ],
+      "lines": 202,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give account access an editorial hierarchy with readable controls in both themes and on small screens.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-auth"
       ],
       "tenant_id": null
     },
@@ -32296,6 +32389,96 @@
       "created_by": "BITS-CODEGEN"
     },
     {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md",
+      "target": "apps/web/src/components/auth/AuthLayout.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md consumes apps/web/src/components/auth/AuthLayout.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md",
+      "target": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md consumes apps/web/src/components/auth/__tests__/LoginPage.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md",
+      "target": "apps/web/src/components/auth/auth.css",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md consumes apps/web/src/components/auth/auth.css.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md",
+      "target": "apps/web/src/pages/LoginPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md consumes apps/web/src/pages/LoginPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx",
+      "target": "apps/web/src/components/auth/AuthLayout.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx validates apps/web/src/components/auth/AuthLayout.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx",
+      "target": "apps/web/src/pages/ForgotPasswordPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx validates apps/web/src/pages/ForgotPasswordPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx",
+      "target": "apps/web/src/pages/SignupPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/auth/__tests__/LoginPage.test.jsx validates apps/web/src/pages/SignupPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/auth/auth.css",
+      "target": "apps/web/src/components/auth/AuthLayout.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/auth/auth.css consumes apps/web/src/components/auth/AuthLayout.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/auth/auth.css",
+      "target": "apps/web/src/index.css",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/auth/auth.css consumes apps/web/src/index.css.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/build.test.mjs",
@@ -33698,12 +33881,51 @@
       "timestamp": "2026-09-18T14:29:25.956910+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md",
+      "description": "Editorial account-access source retains native login and classroom return contracts. The focused classroom suite passes 20/20; full Node regression passes 345/345 and Python upgrade regression passes 293 with 18 explicit native dependency skips. Limited source diagnostics parse 258 modules. These results do not execute the React auth components or establish native hosted authentication.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T14:50:28.388123+00:00",
+      "commit_sha": null,
+      "smoke_result": "345/345 Node; 293 pass + 18 skip Python"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md",
+      "description": "The 16 authored auth component cases cannot execute because Vitest is missing. Official lint cannot resolve eslint-plugin-import; the application build cannot spawn Vite. Component coverage and native/browser/independent auth acceptance remain unmeasured; no dependency replacement, gate bypass, credential or deployment was used.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T14:46:16.603870+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md",
+      "description": "Current context and public-boundary gates pass. The auth continuation has 4/7 scoped smoke checks passing; three frontend commands cannot start. Static JSX/CSS previews for login, signup and reset at six widths in two themes have no horizontal overflow or off-screen controls (36/36); these use component/utility adapters and fallback fonts, not React, Tailwind, auth or routing. All 108 previous dispatch events remain unchanged.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T14:56:07.286138+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 576,
-    "type_b_count": 1215,
-    "type_c_count": 108,
+    "type_a_count": 578,
+    "type_b_count": 1224,
+    "type_c_count": 111,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

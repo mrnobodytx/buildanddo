@@ -20,6 +20,45 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Editorial sign-in continuation — 2026-09-18
+
+The owner supplied a login screenshot and requested a substantial improvement,
+with the broader learning/classroom brand proposal as design context. Continue
+this existing A2 source dispatch for login and the shared authentication layout.
+The initial bounded pass keeps the existing editorial palette and fonts, updates
+the auth wordmark, and makes the form easier to use. The wider classroom, domain
+canonical and private Platform Edit Fabric adoption work remain separate scopes.
+
+Acceptance:
+
+1. Give sign-in, account creation and password recovery a consistent editorial
+   shell: B&D wordmark, learn/build/verify story, readable form hierarchy, theme
+   control and useful public learning links. Use the existing design tokens.
+2. Improve sign-in with password visibility, account-email guidance, field-linked
+   errors and focus on invalid input. Preserve PocketBase login, validation,
+   busy/error recovery, safe return destinations and signup continuation.
+3. Support narrow screens, keyboard navigation, light/dark themes and reduced
+   motion. Illustrations describe the workflow; they never assert live activity,
+   user progress, verification or media availability.
+4. Extend meaningful auth interaction tests, check the classroom return path and
+   run available source/regression/governance gates. Report missing React/Vite
+   dependencies separately from any source-generated browser layout preview.
+5. Preserve previous source and memory events, record the actual evidence and
+   prepare review metadata. No provider, credential, backend, release-control,
+   production deployment or canonical-domain change is authorized by this pass.
+
+The existing private fabric is not materialized in this session. The local
+file contract is recorded in the auth report; it is not a fabric-generated
+EditContract or an independent verification receipt.
+
+Observed source outcome: the editorial auth shell and improved sign-in controls
+are implemented. Source diagnostics pass across 258 modules; regression passes
+345 Node and 293 Python cases with 18 explicit skips. Thirty-six static layout
+previews have no horizontal overflow or off-screen controls. Sixteen authored
+auth component cases, official lint and the build remain unexecuted because the
+frontend dependencies are absent. Native auth and independent rendered acceptance
+remain open; auth-report.md separates source/design evidence from those gates.
+
 ## Automatic workspace knowledge continuation — 2026-09-18
 
 The owner requests automatic context assembly, organization and categorization

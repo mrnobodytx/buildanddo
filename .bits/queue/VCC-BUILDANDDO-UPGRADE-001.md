@@ -20,6 +20,33 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Editorial sign-in authorized 2026-09-18
+
+The owner's screenshot and request continue the existing A2 public-source scope.
+Implement the login/shared-auth experience first, using the supplied learning
+brand direction. The former DORA and workspace knowledge changes are retained.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| AU1 | Inspect screenshot, auth contracts and existing visual tokens | Current source and auth-test review | PASS — existing native auth and safe return routes identified |
+| AU2 | Redesign the shared auth shell and improve sign-in usability | Source review and focused auth interaction tests | source complete; 16 React cases await missing Vitest |
+| AU3 | Verify desktop/mobile layout, themes, validation and return paths | Available rendered/source checks and classroom regression | 36 static preview cases and 20 classroom cases pass; actual React/native acceptance pending |
+| AU4 | Record evidence and preserve prior memory | Context, boundary and dispatch memory gates | PASS — context and 896-file boundary; 578 file vectors, 1224 edges, 111 events; all 108 prior events retained |
+
+Memory brief: sign-in, signup and reset share AuthLayout; login calls the existing
+PocketBase auth context and preserves workspaceDestination. The supplied image
+shows a display name in the email field. Reuse current validation and explain the
+account-email requirement. React, Vitest and Vite are absent at inspection; a
+browser executable is available. Do not call a layout preview a rendered React
+test or invent independent verification. No authenticated workspace is supplied.
+Other seats' domain/fabric/CI findings are reported context, not inspected runtime
+facts in this source pass. No external seat event, deploy or provider call occurs.
+
+Evidence: .bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md. Source diagnostics
+and 345 Node/293 Python cases pass, with 18 explicit skips. Smoke is 4/7 because
+Vitest, the repository lint plugin and Vite are absent. Static design previews do
+not establish React, native auth, staging or independent verification.
+
 ## Automatic workspace knowledge authorized 2026-09-18
 
 The owner requests context assembly and categorized knowledge graphs, following
