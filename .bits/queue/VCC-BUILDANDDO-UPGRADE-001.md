@@ -20,6 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Capability roadmap assistance authorized 2026-09-18
+
+The owner's assistance request continues this dispatch for a local public
+handoff and evidence bookkeeping. Private repair execution remains outside the
+public checkout; C-ONE and VCC are proposed receiving roles, not launched seats.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| CR1 | Inspect private-source availability and public reuse | Tracked-path inspection and existing consumer contracts | PASS — private repair modules absent; estate and workspace context documented |
+| CR2 | Specify four repairs and independent negative controls | Synthetic diagnostic block in the handoff | PASS for examples — collision/path controls and normal/-O/-OO exits observed; private source unverified |
+| CR3 | Preserve history and validate the public handoff | Context, boundary and dispatch-memory gates | PASS — 4/4 documentation smoke; 600 file vectors, 1,273 edges, 122 events; all 120 prior events unchanged |
+
+Memory brief: the supplied private verification report is operator-provided
+context, not a run performed by this seat. The public estate compiler retains
+module evidence; workspace knowledge projects currently readable records.
+Neither establishes an organization ownership producer or private runtime.
+Do not import private operational records, transmit a seat event, probe MCP,
+infer approval from a surface flag, or reuse the retired private host. Historical
+application tests are not rerun or claimed as evidence for this documentation.
+
 ## Newspaper front page authorized 2026-09-18
 
 The owner requests the supplied newspaper layout in the current site colors,
