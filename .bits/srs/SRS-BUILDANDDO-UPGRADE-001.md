@@ -36,6 +36,14 @@ memory validators. Report unavailable installed/native/rendered checks
 separately. Source integration does not lift the owner's PR merge hold or
 authorize private runtime, staging or production work.
 
+Observed source integration: 404 Node cases pass; Python runs 367 cases with
+345 passing and 22 native skips. All 66 compiler cases pass, including the
+archive regression, with 99.43% operator statement coverage. Both blueprint
+views and their tests are retained; the extraction export uses the moved saved
+contract. Context, public-boundary and memory checks pass with all 138 distinct
+parent events preserved. Native/rendered, lint/build and private runtime gates
+retain their explicit dependency or receiving blockers.
+
 ## Operator acceptance continuation — 2026-09-18
 
 The owner directs continued work in the attached BuildAndDo checkout while the

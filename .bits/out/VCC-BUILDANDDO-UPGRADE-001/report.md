@@ -129,6 +129,131 @@
 
 # Dispatch implementation report
 
+## PR 40 main integration — 2026-09-18
+
+### §1 SUMMARY
+
+Status: PARTIAL — source integration complete; publication and existing runtime acceptance remain open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-phase-a-20260917-R9HXJV
+Tasks: 3/3 local integration tasks complete
+Smoke: 5/9 source/native/frontend groups
+CKS Gate: not specified in the repository registry; CKS: pending
+CAPS: pending; CK: pending
+Source commits: 1 (657a9a8c1e8bbefea7034b00ef21b7b478fa10b0)
+
+The requested main-to-feature merge preserves both blueprint views, the policy
+and operator work, native CI gates and both governance histories. Main's moved
+saved-document contract required corresponding operator imports and portable
+archive dependencies. No private runtime acceptance is inferred from this merge.
+
+### §2 TASK RESULTS
+
+Task MERGE-1 — Reconcile both implementations
+Status: PASS
+Output: Ten conflicts resolved. Analyze PDF and its tests stay intact; saved
+extraction export, Operator navigation and export tests move to Saved PDFs.
+The combined guidance retains CPU blueprint and native operator acceptance.
+Verify: `node --test tests/upgrade/blueprint-client.test.mjs tests/upgrade/blueprint-saved-client.test.mjs tests/upgrade/operator-client.test.mjs tests/upgrade/operator-system.test.mjs` — 43 pass.
+Files: blueprint pages/tests, contribution guidance, docs/blueprints.md, SRS/queue
+CKET: 07_BUILD, 08_TEST, 04_HYPOTHESIZE, 06_PLAN, 11_COMMIT
+
+Task MERGE-2 — Preserve compiler and archive behavior
+Status: PASS
+Output: The operator uses blueprint_documents.py; its worker archive includes
+the saved contract, scan and model dependencies. Both checkout and fresh archive
+execution pass. The existing capability bounds and source-tamper tests remain.
+Verify: `python tests/upgrade/check_federal_foundry.py` — 66 pass; 97.94–100%
+statement coverage across the measured modules, including 99.43% for operator.py.
+Files: operator.py, bundle.py, operator fixture and compiler tests
+CKET: 07_BUILD, 08_TEST
+
+Task MERGE-3 — Retain provenance and measured acceptance
+Status: PASS for local integration
+Output: All 138 distinct parent events remain verbatim; current metadata and
+relationships match the resolved source. Public boundary checks 957 files.
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`;
+`python scripts/ci/agent_context.py --check`;
+`python scripts/ci/verify_public_boundary.py`;
+`git merge-base --is-ancestor 448356f448cb9cc191aadf9c96af12ad8a4a48f9 HEAD`
+Files: context lock, report, memory, SRS/queue
+CKET: 04_HYPOTHESIZE, 11_COMMIT
+
+### §3 SMOKE TEST RESULTS
+
+| Group | Command | Expected and observed result |
+|---|---|---|
+| 1. Node regression | `node --test tests/upgrade/*.test.mjs` | PASS — 404 tests, no failures or skips |
+| 2. Python regression | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | PASS for available source — 367 discovered, 345 passed, 22 native-dependency skips |
+| 3. Compiler coverage | `python tests/upgrade/check_federal_foundry.py` | PASS — 66 cases, no skips; every measured module above 80% |
+| 4. Static source | `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`; `python -m mypy --strict --follow-imports=silent --explicit-package-bases apps/federal_foundry apps/mission_suite/bundle.py`; `python -m ruff check apps/federal_foundry/operator.py apps/mission_suite/bundle.py tests/upgrade/test_operator_compiler.py` | PASS — 282 modules parsed, seven typed source files, Ruff clean; does not replace rendered tests or repository lint |
+| 5. Governance | The three Python validators in MERGE-3 | PASS — measured context matches, boundary passes, memory has no orphan or missing historical event |
+| 6. Native operator | `python tests/upgrade/test_suite_native.py --require-binary` | FAIL/blocked — required PocketBase binary unavailable; seven suite/operator cases skipped in discovery |
+| 7. Rendered blueprint/operator | `npm run test --prefix apps/web -- src/pages/workspace/__tests__/BlueprintPage.test.jsx src/pages/workspace/__tests__/BlueprintSavedPage.test.jsx src/pages/workspace/__tests__/OperatorPage.test.jsx` | FAIL/blocked — Vitest unavailable |
+| 8. Repository lint | `npm run lint` | FAIL/blocked — concurrently unavailable; declared ESLint toolchain also absent |
+| 9. Production build | `npm run build` | FAIL/blocked — concurrently unavailable; declared Vite toolchain also absent |
+
+Red/green evidence: the initial operator import failed because main moved
+MAX_BLUEPRINT_BYTES and the saved Blueprint schema. After rebinding, the coverage
+run exposed a missing blueprint_documents module in the fresh worker archive.
+The revised source allowlist includes its scan/model dependencies; all 26
+operator cases and the subsequent 66-case coverage gate pass. No alternate
+parser, dispatcher, authority policy or dependency was introduced.
+
+The first typing invocation omitted the repository's namespace-package option;
+rerunning with --explicit-package-bases passes. The first context check counted
+unresolved index entries; regenerating after resolution passes. The four blocked
+runtime/frontend groups require their declared dependencies and the same verify
+commands above. No package substitution or weakened gate was used. Native PDF
+acceptance remains open because pypdf is absent; its cases are among the skips.
+
+Logs from this run are /tmp/buildanddo-merge-node.log,
+/tmp/buildanddo-merge-python.log, /tmp/buildanddo-merge-foundry.log and the
+corresponding focused-node, operator, source, mypy, native, web, lint and build
+logs. The failing archive run is retained at
+/tmp/buildanddo-merge-foundry-before.log. These local logs are not hosted CI proof.
+
+### §4 MEMORY INGEST
+
+Type A count: 627; Type B count: 1373; Type C count: 141
+IOO compliance: complete; DKG orphans: 0
+Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+The 114 head events and 122 main events share 98 identical records. All 138
+unique originals are retained unchanged, with three integration observations
+linked to the actual source merge commit.
+
+### §5 CKET FILING
+
+No new source file is authored by this resolution. Existing 07_BUILD and 08_TEST
+sources retain their CGRF headers; merged public upstream files retain their
+original provenance. Documentation uses 06_PLAN, specifications/context use
+04_HYPOTHESIZE, and report/memory/dispatch/CI use 11_COMMIT. The memory validator
+checks file metadata and every declared relationship. REFLEX remains a private
+post-merge check and is not claimed here.
+
+### §6 GOVERNANCE
+
+Entity: Citadel Nexus Inc.
+Authority: A2 public source integration; prepared operator plans remain A0.
+Public boundary: PASS, 957 tracked files. No private runtime was accessed.
+Secret assurance: boundary/source review only; no separate credential scan run.
+License posture: unchanged. Stripe mode: not applicable to this resolution.
+CKS, CAPS and CK: pending. Required actor label: actor:agent; the inspected
+PR has only its existing Bits AI label, so actor-label acceptance remains open.
+
+### §7 NEXT ACTIONS
+
+Use the coding agent UI's Update Pull Request button to synchronize this branch;
+direct git push is unavailable in this session. The PR itself remains on hold
+until native/rendered acceptance, lint, build, measured private OP-00, an NXC
+read, one BuildAndDo staging loop, distinct producer/verifier identities and the
+public/private boundary have their required evidence. Existing CNWB and policy
+handoffs remain current; no new receiving dispatch or external message was sent.
+Out-of-scope fixes: none. Suggested next dispatch: the already supplied private
+VCC-BUILDANDDO-OPERATOR-RUNTIME-001, starting with OP-00 in its receiving session.
+
 ## Operator native acceptance and receiving handoff — 2026-09-18
 
 ### §1 SUMMARY

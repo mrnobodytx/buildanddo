@@ -29,9 +29,9 @@ rendered and private-runtime acceptance hold remains in effect.
 
 | Phase | Task | Gate command | Status |
 |---|---|---|---|
-| MERGE-1 | Preserve both public implementations and continuation histories | Targeted blueprint/operator tests and parent-content audit | source resolved; final verification in progress |
-| MERGE-2 | Reconcile the moved document contract and portable archive | `python tests/upgrade/check_federal_foundry.py` | source resolved; archive regression recheck in progress |
-| MERGE-3 | Retain both event histories and verify the integrated tree | Context, boundary, memory and regression gates | in progress; native/rendered/private acceptance remains open |
+| MERGE-1 | Preserve both public implementations and continuation histories | Targeted blueprint/operator tests and parent-content audit | done — ten conflicts resolved; both blueprint views, operator export and native gates retained |
+| MERGE-2 | Reconcile the moved document contract and portable archive | `python tests/upgrade/check_federal_foundry.py` | done — 66 cases pass, including the previously failing portable archive; compiler statement coverage 99.43% |
+| MERGE-3 | Retain both event histories and verify the integrated tree | Context, boundary, memory and regression gates | done for local integration — 404 Node passes, 345 Python passes and 22 native skips; all 138 parent events retained; publication and native/rendered/private acceptance remain open |
 
 Memory brief: main adds a separate Analyze PDF view and moves the existing
 saved-document contract to `apps/research/blueprint_documents.py` and the saved
@@ -40,6 +40,14 @@ that saved flow; retain the newer analysis, knowledge and public-page changes.
 The old operator import and portable archive fail after a textual merge alone.
 Both parents contain 138 distinct historical events; preserve every event
 verbatim. This request authorizes branch integration, not merging PR 40 into main.
+
+Observed integration: the complete source regression, compiler coverage, strict
+typing, Ruff, 282-module source diagnostic, context, boundary and memory checks
+pass. The required native entry point fails without PocketBase. Rendered tests
+cannot start without Vitest; root lint and build stop without concurrently, and
+their frontend toolchain is also unavailable. No dependency or gate was relaxed.
+The branch is ready for the coding agent UI's Update Pull Request action; direct
+push is unavailable in this session. The existing owner acceptance hold remains.
 
 ## Operator acceptance continuation authorized 2026-09-18
 

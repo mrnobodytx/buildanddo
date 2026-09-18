@@ -525,7 +525,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 37614,
+      "lines": 37653,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -596,7 +596,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 2191,
+      "lines": 2316,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -668,7 +668,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1243,
+      "lines": 1251,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -998,7 +998,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1615,
+      "lines": 1623,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -37597,12 +37597,51 @@
       "timestamp": "2026-09-18T17:43:45.420110+00:00",
       "commit_sha": "e7969373867f07fd507386732ce579a09ffc4044",
       "smoke_result": "4/8"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "apps/mission_suite/bundle.py",
+      "description": "The textual main merge exposed an obsolete saved-blueprint import and a missing saved parser in the portable worker archive. Both were repaired by using blueprint_documents and including its scan/model dependencies; the existing fresh-archive regression now passes.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T18:05:09.379400+00:00",
+      "commit_sha": "657a9a8c1e8bbefea7034b00ef21b7b478fa10b0",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "apps/federal_foundry/operator.py",
+      "description": "Integrated source regression passed 404 Node tests and 345 Python tests, with 22 native-dependency skips. The compiler gate passed all 66 cases with 99.43 percent operator statement coverage. Strict typing, Ruff and 282-module source diagnostics passed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T18:05:09.379400+00:00",
+      "commit_sha": "657a9a8c1e8bbefea7034b00ef21b7b478fa10b0",
+      "smoke_result": "66/66"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+      "description": "Five of nine local smoke groups passed. Native PocketBase, rendered tests, lint and build remain blocked by unavailable declared dependencies; private OP-00 and staging proof remain unmeasured. Context and boundary checks passed with 957 files. All 138 distinct parent events were preserved and PR merge remains on hold.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T18:05:09.379400+00:00",
+      "commit_sha": "657a9a8c1e8bbefea7034b00ef21b7b478fa10b0",
+      "smoke_result": "5/9"
     }
   ],
   "summary": {
     "type_a_count": 627,
     "type_b_count": 1373,
-    "type_c_count": 138,
+    "type_c_count": 141,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
