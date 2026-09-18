@@ -133,7 +133,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-17T15:17:54.790881+00:00",
+  "generated_at": "2026-09-18T13:31:41.907116+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -466,11 +466,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 33,
-    "python_files": 143,
+    "python_files": 170,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 842,
+    "tracked_files": 879,
     "web_source_files": 255
   },
   "schema_version": 1,
