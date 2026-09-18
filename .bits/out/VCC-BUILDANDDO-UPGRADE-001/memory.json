@@ -31,7 +31,8 @@
         "editorial-auth",
         "editorial-frontpage",
         "editorial-artwork",
-        "living-newspaper"
+        "living-newspaper",
+        "capability-repair-handoff"
       ],
       "tenant_id": null
     },
@@ -521,7 +522,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 35269,
+      "lines": 35373,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -542,7 +543,8 @@
         "editorial-auth",
         "editorial-frontpage",
         "editorial-artwork",
-        "living-newspaper"
+        "living-newspaper",
+        "capability-repair-handoff"
       ],
       "tenant_id": null
     },
@@ -658,7 +660,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1087,
+      "lines": 1107,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -680,7 +682,8 @@
         "editorial-auth",
         "editorial-frontpage",
         "editorial-artwork",
-        "living-newspaper"
+        "living-newspaper",
+        "capability-repair-handoff"
       ],
       "tenant_id": null
     },
@@ -984,7 +987,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1429,
+      "lines": 1459,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1006,7 +1009,8 @@
         "editorial-auth",
         "editorial-frontpage",
         "editorial-artwork",
-        "living-newspaper"
+        "living-newspaper",
+        "capability-repair-handoff"
       ],
       "tenant_id": null
     },
@@ -35252,12 +35256,112 @@
       "timestamp": "2026-09-18T16:35:37.787304+00:00",
       "commit_sha": null,
       "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        "apps/estate/README.md",
+        "docs/workspace-knowledge.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py"
+      ],
+      "lines": 259,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the private repair owner concrete identity, ownership, selftest and materialization acceptance without copying private evidence or granting execution authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "capability-repair-handoff"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md depends on .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md",
+      "target": "apps/estate/README.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md consumes apps/estate/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md",
+      "target": "docs/workspace-knowledge.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md consumes docs/workspace-knowledge.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md verified by .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md",
+      "description": "The handoff diagnostic block executed with synthetic inputs only: equal SRS lists collide while source/path locators remain distinct; Windows key normalization retains the unknown-content guard; bare assertions disappear under -O/-OO while explicit failures retain exit 7. No private implementation was imported or patched.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T16:45:28.573482+00:00",
+      "commit_sha": null,
+      "smoke_result": "3/3"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md",
+      "description": "Public handoff context and boundary checks passed: the measured inventory matches with six existing findings and four unwired gates retained; 930 tracked public files pass the boundary scan. The private compiler, Windows installer, authenticated MCP and runtime surfaces remain unverified; no external action occurred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T16:46:13.794119+00:00",
+      "commit_sha": null,
+      "smoke_result": "2/2"
     }
   ],
   "summary": {
-    "type_a_count": 599,
-    "type_b_count": 1269,
-    "type_c_count": 120,
+    "type_a_count": 600,
+    "type_b_count": 1273,
+    "type_c_count": 122,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

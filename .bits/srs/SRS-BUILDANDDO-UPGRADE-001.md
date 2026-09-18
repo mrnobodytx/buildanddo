@@ -20,6 +20,36 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Capability roadmap repair handoff — 2026-09-18
+
+The owner asks how this seat can assist with a private compiler verification
+report. Continue this existing dispatch for a public handoff and local diagnostic
+examples only. The named private compiler, materializer and overlay applier are
+absent here. Their implementation requires the receiving repository's dispatch;
+this continuation does not authorize private edits or runtime activation.
+
+Acceptance:
+
+1. Prepare a sanitized C-ONE repair contract with independent VCC verification:
+   lossless capability identity, explicit ownership production, optimization-safe
+   selftests, and Windows materialization keys with honest partial-write state.
+2. Define negative controls, downstream identity migration and one complete
+   owner/capability/workflow/receipt acceptance path. Preserve approval gates;
+   distinguish discovered contracts, authorized execution and measured runtime.
+3. Map existing public estate and workspace-context consumers without creating
+   another graph or claiming that their module/category edges prove ownership.
+4. Exercise small synthetic reproductions, validate context/boundary/provenance,
+   and retain all prior memory events. Private counts, paths, hashes and raw
+   evidence stay with the receiving seat. Source fixes remain unverified here.
+
+Handoff: .bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md.
+The handoff includes its local report and executable diagnostic examples.
+
+Public outcome: the four repair contracts and independent acceptance path are
+recorded. Synthetic identity/path/optimization diagnostics and the context,
+930-file public-boundary and memory checks pass. All 120 prior events remain
+unchanged. The private implementation and its runtime have not been validated.
+
 ## Newspaper front page continuation — 2026-09-18
 
 The owner supplied a three-column newspaper reference: researched news at left,
