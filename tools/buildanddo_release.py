@@ -1065,8 +1065,10 @@ def find_data_dog_private(root: Path) -> Path | None:
     return None
 
 
-def _dd_unix_seconds(value: Any) -> int:
-    """Convert an ISO-8601 timestamp to Unix seconds for Datadog DORA v2."""
+def _dd_unix_ns(value: Any) -> int:
+    """ISO-8601 -> Unix nanoseconds for Datadog DORA v2. Nanoseconds, not seconds: a deploy and its readback
+    are typically < 1 s apart, and the API rejects finished_at <= started_at (measured 2026-09-18: HTTP 400
+    "finished_at is required and must be greater than started_at" after truncating to seconds)."""
     if isinstance(value, (int, float)):
         return int(value)
     timestamp = str(value)
@@ -1075,7 +1077,7 @@ def _dd_unix_seconds(value: Any) -> int:
     ts = dt.datetime.fromisoformat(timestamp)
     if ts.tzinfo is None:
         ts = ts.replace(tzinfo=dt.timezone.utc)
-    return int(ts.timestamp())
+    return int(ts.timestamp()) * 1_000_000_000 + ts.microsecond * 1_000
 
 
 def datadog_dora(root: Path, repo: Path, sha: str) -> dict[str, Any]:
@@ -1086,12 +1088,15 @@ def datadog_dora(root: Path, repo: Path, sha: str) -> dict[str, Any]:
     bridge_used = False
     status = 0
     response: Any = {}
+    started_at = _dd_unix_ns(read_json(receipt_path(root, "production_deployment")).get("deployed_at") or utcnow())
+    # The API requires finished_at > started_at; never let an equal or inverted readback clock collapse the window.
+    finished_at = max(_dd_unix_ns(verification.get("verified_at") or utcnow()), started_at + 1)
     body = {
         "data": {
             "attributes": {
                 "service": "buildanddo-public",
-                "started_at": _dd_unix_seconds(read_json(receipt_path(root, "production_deployment")).get("deployed_at") or utcnow()),
-                "finished_at": _dd_unix_seconds(verification.get("verified_at") or utcnow()),
+                "started_at": started_at,
+                "finished_at": finished_at,
                 "git": {
                     "commit_sha": sha,
                     "repository_url": _repository_url(repo),
