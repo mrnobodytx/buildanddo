@@ -129,6 +129,155 @@
 
 # Dispatch implementation report
 
+## Operator native acceptance and receiving handoff — 2026-09-18
+
+### §1 SUMMARY
+
+Status: PARTIAL — native acceptance is required and authored; installed and private runtime evidence remains open
+Dispatch: VCC-BUILDANDDO-UPGRADE-001
+Seat: BITS-CODEGEN
+SRS: SRS-BUILDANDDO-UPGRADE-001
+Branch: dd/bits/SRS-BUILDANDDO-UPGRADE-001-blueprint-phase-a-20260917-R9HXJV
+Tasks: 2/3 accepted; native runtime execution remains partial
+Smoke: 4/8 source/native/frontend groups
+CKS Gate: not specified in the repository registry; CKS: pending
+CAPS: pending; CK: pending
+Source commits: 1 (e7969373867f07fd507386732ce579a09ffc4044)
+
+The owner directed continued work in the attached repository. Four operator
+cases now run inside the existing native suite CI matrix. They reuse the native
+server lifecycle, auth and suite job protocol and inspect only disposable test
+databases. Existing required check names remain stable. No private adapter,
+dispatcher, runtime binding, provider credential or deployment was created.
+
+### §2 TASK RESULTS
+
+Task DX — Native operator acceptance
+Status: PARTIAL
+Output: Four new cases cover no-store/redacted read-only job snapshots, native
+record visibility, current role/revocation, bounded pagination and missing stores.
+A real fixture queue/claim transition is read through the operator endpoint;
+read-only database fingerprints detect unintended work or receipt writes.
+Verify: `python tests/upgrade/test_suite_native.py --require-binary`
+Files: tests/upgrade/test_suite_native.py, .github/workflows/pr-governance.yml,
+AGENTS.md, apps/web/src/components/workspace/ProgressionPipeline.jsx
+CKET: 08_TEST, 11_COMMIT, 04_HYPOTHESIZE, 07_BUILD
+The required command fails without PocketBase. All seven native suite/operator
+cases skip under ordinary discovery; authored assertions are not native proof.
+
+Task DY — Receiving scope and competition proof
+Status: PASS for the public handoff
+Output: The handoff records the managed provider's observed CNWB remote,
+owner-supplied private dispatch/SRS, OP-00 inventory fields, one BuildAndDo
+staging loop, distinct producer/verifier identities and the owner's merge hold.
+Cultural Property and broader federal pursuits are deferred from that proof.
+Verify: `rg -n 'gitlab.citadel-nexus.com/guilds/cnwb|VCC-BUILDANDDO-OPERATOR-RUNTIME-001|SRS-CN-BUILDANDDO-OPERATOR-RUNTIME-001|Merge hold|producer must differ' .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md`
+Files: docs/operator-plane.md, operator receiving handoff, current SRS/queue
+CKET: 06_PLAN, 11_COMMIT, 04_HYPOTHESIZE
+Private ref, registration/status, tenant/workspace, adapter inventory and live
+readback remain unmeasured. The earlier attachment rejection was not retried.
+
+Task DZ — Preserve measured acceptance
+Status: PASS for available source evidence
+Output: 347 Node cases pass; Python discovers 322 cases with 302 passing and
+20 native skips. The focused operator subset passes 27 cases. Ruff, Python and
+embedded-JavaScript syntax, 255-module source diagnostics and public governance
+checks pass. All 110 earlier memory events are retained unchanged.
+Verify: the commands and explicit limitations below
+Files: measured context, dispatch report and memory
+CKET: 04_HYPOTHESIZE, 11_COMMIT
+
+### §3 SMOKE TEST RESULTS
+
+| Check | Command | Expected | Actual |
+| --- | --- | --- | --- |
+| 1 | `node --test tests/upgrade/*.test.mjs` | Source cases pass | PASS: 347/347 |
+| 2 | `python -m unittest discover -s tests/upgrade -p 'test_*.py'` | Source cases pass and native gaps are explicit | PASS for source: 302 pass, 20 skip, 0 failures/errors |
+| 3 | `python scripts/ci/agent_context.py --check` | Measured lock matches | PASS; six pre-existing findings and four unwired gates remain |
+| 4 | `python scripts/ci/verify_public_boundary.py` | Public path/secret boundary passes | PASS: 839 files; actor label not measured |
+| 5 | `python tests/upgrade/test_suite_native.py --require-binary` | Native execution passes without skips | FAIL: PocketBase binary absent; exit 1 |
+| 6 | `npm --prefix apps/web test -- src/pages/workspace/__tests__/OperatorPage.test.jsx src/pages/workspace/__tests__/MissionsPage.test.jsx src/pages/workspace/__tests__/BlueprintPage.test.jsx` | Rendered acceptance passes | FAIL: Vitest absent; exit 127 |
+| 7 | `npm --prefix apps/web run lint` | Repository lint passes | FAIL: eslint-plugin-import absent; exit 2 |
+| 8 | `npm --prefix apps/web run build` | Normal Vite artifact exists | FAIL: Vite ENOENT; exit 1 |
+
+For check 5, no native binary or cached container image is available. The applied
+source change places operator tests in the existing required native matrix for
+both declared versions; it does not resolve local binary availability. Re-run
+the same required command with its installed `BUILDANDDO_TEST_POCKETBASE` binding.
+
+For checks 6–8, `npm ci --offline --ignore-scripts --no-audit --fund=false`
+fails with ENOTCACHED because the lock's dependency archives are absent. The
+manifest, lock and required gates remain intact. Provision the declared packages
+in an allowed environment, then re-run the exact commands above. No network
+installation, dependency substitute or source-only replacement is claimed.
+
+Additional measured checks:
+
+- `node --test tests/upgrade/operator-client.test.mjs tests/upgrade/operator-system.test.mjs`: 27/27 pass.
+- `python -m ruff check tests/upgrade/test_suite_native.py` and `python -m ruff format --check tests/upgrade/test_suite_native.py`: PASS.
+- `python -m py_compile tests/upgrade/test_suite_native.py`: PASS; the embedded fixture migration also passes Node syntax checking.
+- `node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs`: PASS, 255 modules; this is not repository lint or rendered acceptance.
+- The existing `dossier-native` CI matrix still invokes `test_suite_native.py --require-binary` for `compose` and `package`; four new operator methods are discovered. This source inspection is not a hosted matrix result.
+
+The inspected PR head reports `Workers Builds: buildanddo` as failed, with zero
+annotations and no diagnostic text. Datadog PR insights returns no analysis for
+that head. No root cause or hosting fix is inferred from that missing evidence.
+Build-generated fleet summaries remain the repository's historical projection;
+running the asset generator does not measure current private fleet capacity.
+
+### §4 MEMORY INGEST
+
+Type A count: 555
+Type B count: 1231
+Type C count: 114
+IOO compliance: complete
+DKG orphans: 0
+Payload: .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json
+Verify: `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`
+
+All 110 preceding events remain intact. Existing file vectors retain their
+position; changed line counts, intent and declared dependencies are refreshed.
+The native test adds two declared VALIDATES edges to the operator route and
+projection. New events distinguish source passes from unavailable acceptance.
+
+### §5 CKET FILING
+
+06_PLAN: docs/operator-plane.md
+04_HYPOTHESIZE: AGENTS.md, current SRS and measured context
+07_BUILD: existing contribution-pipeline check description
+08_TEST: existing native suite fixture and operator cases
+11_COMMIT: existing CI step description, queue, receiving handoff, report, memory
+13_SAVE: none
+CGRF headers: no new repository files; existing native test dependencies/edges updated
+REFLEX check: deferred to the existing post-merge owner
+
+### §6 GOVERNANCE
+
+Entity: Citadel Nexus Inc.
+License posture: unchanged; no legal or licensing file modified
+Hard-NO scan: no private implementation, infrastructure or deployment-control files added
+Secret scan: public boundary passes; no private credential access
+Stripe mode: not applicable; no checkout code changed
+Actor: actor:agent required on publication; label application unverified
+Authority: A2 public test/CI/docs source; disposable native fixture scope only
+Verify boundary: `python scripts/ci/verify_public_boundary.py`
+
+### §7 NEXT ACTIONS
+
+Keep the branch on the owner's merge hold. Native/rendered acceptance, lint,
+build, measured OP-00, one NXC read, the staging loop, distinct producer/verifier
+receipts and public/private boundary evidence are all required. Source test
+success does not clear the missing gates.
+
+Use the supplied receiving SRS/dispatch in a GitLab-capable CNWB session with
+observed ref, registered authority and permitted tenant/workspace. First return
+OP-00, then prove one BuildAndDo evidence blocker through staging and UI readback.
+No source body, credentials or procurement-sensitive material should enter the
+public cockpit. No additional federal lane or private integration is implemented.
+
+Handoff: .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md
+Bugs filed: none; no external messages were sent.
+
 ## Read-first operator continuation — 2026-09-18
 
 ### §1 SUMMARY

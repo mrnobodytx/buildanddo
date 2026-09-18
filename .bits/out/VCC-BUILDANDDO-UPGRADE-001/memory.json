@@ -15,7 +15,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -28,7 +28,8 @@
         "buildanddo-upgrade",
         "blueprint",
         "policy-intelligence",
-        "operator-plane"
+        "operator-plane",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -113,7 +114,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 33748,
+      "lines": 33832,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -178,7 +179,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 2042,
+      "lines": 2191,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish implemented upgrade behavior from measured acceptance and blocked environment checks.",
@@ -197,7 +198,8 @@
         "workflow-runs",
         "blueprint",
         "policy-intelligence",
-        "operator-plane"
+        "operator-plane",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -249,12 +251,12 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1018,
+      "lines": 1052,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -268,7 +270,8 @@
         "workflow-runs",
         "blueprint",
         "policy-intelligence",
-        "operator-plane"
+        "operator-plane",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -412,12 +415,12 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1304,
+      "lines": 1335,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -431,7 +434,8 @@
         "workflow-runs",
         "blueprint",
         "policy-intelligence",
-        "operator-plane"
+        "operator-plane",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -586,7 +590,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -639,7 +644,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Define machine-facing governance for agents working in buildanddo.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -649,7 +654,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -1745,7 +1751,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1755,7 +1761,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -19136,14 +19143,16 @@
       "dependencies": [
         "tests/upgrade/test_dossier_native.py",
         "apps/mission_suite/engine.py",
-        "apps/pocketbase/pb_hooks/mission-suite.js"
+        "apps/pocketbase/pb_hooks/mission-suite.js",
+        "apps/pocketbase/pb_hooks/operator.pb.js",
+        "apps/pocketbase/pb_hooks/workspace-operator.js"
       ],
-      "lines": 374,
+      "lines": 570,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Require native authentication, date fields, transactions and same-input Python processing before accepting a box-worker runtime.",
+      "intent_statement": "Require native suite execution and scoped, read-only operator observations before accepting a box-worker runtime.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -19154,7 +19163,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "mission-suite",
-        "government-learning"
+        "government-learning",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -32730,12 +32740,12 @@
         "apps/mission_suite/worker.py",
         ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md"
       ],
-      "lines": 90,
+      "lines": 135,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Bound private operator-plane receiving work to identified existing adapters, current evidence and explicit execution authority.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -32745,7 +32755,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "operator-plane"
+        "operator-plane",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -32995,12 +33006,12 @@
         "apps/web/src/pages/workspace/OperatorPage.jsx",
         "docs/blueprints.md"
       ],
-      "lines": 178,
+      "lines": 202,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the public operator review loop usable with explicit evidence, freshness, authority and private receiving boundaries.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -33010,7 +33021,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "operator-plane"
+        "operator-plane",
+        "operator-acceptance"
       ],
       "tenant_id": null
     },
@@ -33731,12 +33743,84 @@
       "timestamp": "2026-09-18T02:36:46.459635+00:00",
       "commit_sha": "26f73df57db15927a101fb8e86ad5d28317ab156",
       "smoke_result": "4/7"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_suite_native.py",
+      "target": "apps/pocketbase/pb_hooks/operator.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Require installed operator authorization and sanitized readback through the existing native suite gate.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_suite_native.py",
+      "target": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Require installed operator authorization and sanitized readback through the existing native suite gate.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "commit",
+      "file_path": "tests/upgrade/test_suite_native.py",
+      "description": "Record four native operator cases in the existing suite matrix and retain the owner-supplied CNWB receiving scope and merge hold. No private implementation or external write was made.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T17:43:45.420110+00:00",
+      "commit_sha": "e7969373867f07fd507386732ce579a09ffc4044",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/operator-system.test.mjs",
+      "description": "Current source regression passes all 347 Node cases and 302 Python cases. Python discovers 322 with 20 native skips; the focused operator subset passes 27 cases. Ruff, syntax and 255-module source diagnostics pass. New native assertions remain unexecuted.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T17:43:45.420110+00:00",
+      "commit_sha": "e7969373867f07fd507386732ce579a09ffc4044",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/test_suite_native.py",
+      "description": "Required native acceptance exits 1 because PocketBase is absent. Rendered tests exit 127 for missing Vitest; lint exits 2 for missing eslint-plugin-import; build exits 1 for missing Vite. Offline installation fails ENOTCACHED. Gates and declared dependencies were retained.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T17:43:45.420110+00:00",
+      "commit_sha": "e7969373867f07fd507386732ce579a09ffc4044",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+      "description": "Four of eight current source/native/frontend smoke groups pass. Context and public-boundary checks pass with 839 files. The handoff records the provider-resolved CNWB remote and supplied private identifiers without claiming a ref, registration, tenant, adapter inventory or live staging proof. All 110 earlier events remain unchanged.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T17:43:45.420110+00:00",
+      "commit_sha": "e7969373867f07fd507386732ce579a09ffc4044",
+      "smoke_result": "4/8"
     }
   ],
   "summary": {
     "type_a_count": 555,
-    "type_b_count": 1229,
-    "type_c_count": 110,
+    "type_b_count": 1231,
+    "type_c_count": 114,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
