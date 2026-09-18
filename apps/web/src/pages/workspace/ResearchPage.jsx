@@ -10,7 +10,7 @@
 // Created:     2026-09-15
 // Depends:     apps/web/src/hooks/useMissionResearch.js, apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/missionResearch.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useMissionResearch.js; CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/missionResearch.js
+// EnumEdges:   CONSUMES apps/web/src/hooks/useMissionResearch.js; CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/missionResearch.js; CONSUMES apps/web/src/pages/workspace/KnowledgePage.jsx
 // DAG Node:    none
 // Intent:      Let members submit and review mission sources from either channel without presenting machine extraction as verified evidence.
 // ───────────────────────────────────────────────────────────────
@@ -89,6 +89,7 @@ function ResearchDesk({ control, page, onPage, missionFilter, initialSource }) {
     return <div className="space-y-6 ph-no-capture" data-dd-privacy="mask">
         <PageHeader title="Mission research" description="Submit web sources, documents, audio or video. Review extracted material before attaching it to the mission’s Evidence Ledger." />
         <div className="flex flex-wrap gap-4"><Link to="/app/missions" className={linkClass}>Missions</Link><Link to="/app/evidence" className={linkClass}>Evidence Ledger</Link>
+            <Link to={form.mission ? `/app/knowledge?mission=${encodeURIComponent(form.mission)}` : '/app/knowledge'} className={linkClass}>Knowledge graph & context</Link>
             <Link to="/app/integrations" className={linkClass}>Processing configuration</Link><Link to="/app/settings#discord-account" className={linkClass}>Link Discord</Link></div>
         <div aria-live="polite" className="space-y-2">
             {(validation || control.writeError) && <p role="alert" className="text-sm text-destructive">{validation || control.writeError}</p>}

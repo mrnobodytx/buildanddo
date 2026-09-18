@@ -12,145 +12,141 @@
 // EnumType:    Test
 // EnumEdges:   VALIDATES apps/web/src/pages/workspace/BlueprintPage.jsx
 // DAG Node:    none
-// Intent:      Exercise rendered upload, review, proposal export and private-state cleanup against the existing research storage fixture.
+// Intent:      Verify the rendered PDF review flow, prompt generation, export and account/workspace isolation.
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import BlueprintPage from '@/pages/workspace/BlueprintPage';
 import pb from '@/lib/pocketbaseClient';
-import { renderWithProviders, screen, setupUser, waitFor, within } from '@/test/utils';
-import { blueprintFixture, hash } from '../../../../../../tests/upgrade/blueprint-fixture.mjs';
-import { plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
+import { setDemoMode } from '@/lib/demoWorkspace';
+import { act, renderWithProviders, screen, setupUser, waitFor } from '@/test/utils';
+import { decisionFixture, layoutBlueprintResult } from '../../../../../../tests/upgrade/decision-fixture.mjs';
 
-vi.mock('@/lib/pocketbaseClient', () => ({ default: { authStore: { record: { id: 'editor' } }, send: vi.fn(), collection: vi.fn(), files: {} } }));
-vi.mock('@/lib/observability/mutations', () => ({ observeMutation: (_name, _verb, operation) => operation() }));
+vi.mock('@/lib/pocketbaseClient', () => ({ default: { authStore: { record: { id: 'member' } }, send: vi.fn() } }));
 let backend;
-const route = async (path, options) => {
-    if (options.body instanceof FormData) {
-        const file = options.body.get('asset');
-        return backend.upload({ actor: pb.authStore.record.id, name: file.name, bytes: Buffer.from('%PDF-fixture'),
-            fields: { request_key: options.body.get('request_key'), input_sha256: options.body.get('input_sha256') } });
-    }
-    const event = backend.event(pb.authStore.record.id, options.body || {}, { workspace: path.split('/')[4],
-        id: path.split('/')[6] || '', query: options.query || {} });
-    return plain(options.method === 'POST' ? backend.blueprint.command(event) : path.split('/')[6] ? backend.blueprint.detail(event) : backend.blueprint.snapshot(event));
-};
-const renderPage = (actor = 'editor') => {
-    pb.authStore.record = { id: actor };
-    return renderWithProviders(<BlueprintPage />, { auth: { user: { id: actor }, isAuthed: true },
-        workspace: { active: { id: 'ws1', owner: 'owner' } }, route: '/app/blueprints' });
-};
-const ready = (overrides = {}) => {
-    const saved = backend.upload();
-    const claim = backend.work('claim', { id: saved.record.submission });
-    backend.work('complete', { id: claim.id, attempt: claim.job.attempt, result: { ...backend.result, ...overrides }, failure: '' }, { revision: claim.revision });
-    return saved;
-};
-const upload = async (user) => {
-    const file = new File(['%PDF-fixture'], 'sample.pdf', { type: 'application/pdf' });
-    Object.defineProperty(file, 'arrayBuffer', { value: async () => new TextEncoder().encode('%PDF-fixture').buffer });
-    await user.upload(await screen.findByLabelText('Blueprint PDF'), file);
-    await user.click(screen.getByRole('button', { name: 'Upload blueprint', exact: true }));
-};
+let result;
+const originalCreate = URL.createObjectURL;
+const originalRevoke = URL.revokeObjectURL;
 
 beforeEach(() => {
-    backend = blueprintFixture();
-    pb.send.mockImplementation(route);
-    vi.stubGlobal('crypto', { randomUUID: () => 'rendered_blueprint_request01',
-        subtle: { digest: async () => Uint8Array.from(Buffer.from(hash('%PDF-fixture'), 'hex')).buffer } });
-    vi.stubGlobal('URL', class extends URL {
-        static createObjectURL = vi.fn(() => 'blob:blueprint-proposal');
-        static revokeObjectURL = vi.fn();
+    setDemoMode(false); pb.authStore.record = { id: 'member' };
+    result = layoutBlueprintResult(); backend = decisionFixture();
+    backend.transport((options) => {
+        const value = structuredClone(result);
+        if (!JSON.parse(options.body).include_prompts) value.session_prompts = [];
+        return { statusCode: 200, json: value };
     });
-    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    pb.send.mockReset();
+    pb.send.mockImplementation(async (path, options) => {
+        if (path === '/api/buildanddo/workspaces/ws1/blueprints' && options.method === 'GET')
+            return { workspace: 'ws1', role: 'editor', page: 1, has_more: false, items: [] };
+        expect(path).toBe('/api/buildanddo/workspaces/ws1/blueprints/analyze');
+        return backend.request(options.body, { operation: 'blueprints/analyze' }).result;
+    });
+    URL.createObjectURL = vi.fn(() => 'blob:mission-plan');
+    URL.revokeObjectURL = vi.fn();
 });
-afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+afterEach(() => {
+    setDemoMode(false); vi.restoreAllMocks();
+    URL.createObjectURL = originalCreate; URL.revokeObjectURL = originalRevoke;
+});
 
-describe('BlueprintPage', () => {
-    it('uploads a PDF and refreshes the completed requirement and A0 assessment', async () => {
-        const user = setupUser(); renderPage(); await upload(user);
-        await waitFor(() => expect(backend.data.workspace_blueprints).toHaveLength(1));
-        const submission = backend.data.research_submissions[0];
-        const claim = backend.work('claim', { id: submission.id });
-        backend.work('complete', { id: claim.id, attempt: claim.job.attempt, result: backend.result, failure: '' }, { revision: claim.revision });
-        await user.click(screen.getByRole('button', { name: 'Refresh status' }));
-        expect(await screen.findByRole('heading', { name: 'Portal' })).toBeVisible();
-        expect(screen.getByRole('region', { name: 'Extracted requirements' })).toHaveTextContent('Account Service must encrypt records.');
-        expect(within(screen.getByRole('region', { name: 'Extracted requirements' })).getAllByText('Needs review')).toHaveLength(5);
-        expect(backend.data.evidence).toHaveLength(0);
+function renderPage() {
+    return renderWithProviders(<BlueprintPage />, {
+        auth: { user: { id: 'member' }, isAuthed: true },
+        workspace: { active: { id: 'ws1' } }, route: '/app/blueprints',
     });
+}
+async function selectPdf(user) {
+    const bytes = new Uint8Array([37, 80, 68, 70, 45, 49, 46, 52]);
+    const file = new File([bytes], 'sample.pdf', { type: 'application/pdf' });
+    Object.defineProperty(file, 'arrayBuffer', { value: async () => bytes.buffer });
+    await user.upload(screen.getByLabelText('Blueprint PDF (up to 20 MiB)'), file);
+}
 
-    it('retains and recovers an uncertain upload without adding another document', async () => {
-        let lost = true;
-        pb.send.mockImplementation(async (path, options) => { const result = await route(path, options); if (options.method === 'POST' && lost) { lost = false; throw new Error(); } return result; });
-        const user = setupUser(); renderPage(); await upload(user);
-        expect(await screen.findByRole('button', { name: 'Retry previous request' })).toBeEnabled();
-        await user.click(screen.getByRole('button', { name: 'Retry previous request' }));
-        await waitFor(() => expect(screen.queryByRole('button', { name: 'Retry previous request' })).not.toBeInTheDocument());
-        expect(backend.data.research_uploads).toHaveLength(1);
-    });
-
-    it('renders document markup as text and exports a proposed definition', async () => {
-        const result = plain(backend.result);
-        result.blueprint.requirements[0].text = '<script>source instructions</script>';
-        ready(result);
-        const user = setupUser(); renderPage();
-        await user.click(await screen.findByRole('button', { name: /sample.pdf/ }));
-        expect(await screen.findByText('<script>source instructions</script>')).toBeVisible();
-        expect(document.querySelector('script')).toBeNull();
-        await user.click(screen.getByRole('button', { name: 'Export mission definition' }));
-        await user.click(screen.getByRole('button', { name: 'Export extracted blueprint' }));
-        const blob = URL.createObjectURL.mock.calls[0][0];
-        const content = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsText(blob); });
-        const definition = JSON.parse(content);
-        expect(definition.definition.status).toBe('proposed');
-        expect(definition.definition.mission_plan.authorization).toBe('');
-        expect(definition.evaluation.verified).toBe(false);
-        const extractedBlob = URL.createObjectURL.mock.calls[1][0];
-        const extractedContent = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsText(extractedBlob); });
-        expect(JSON.parse(extractedContent)).toEqual(result.blueprint);
-        expect(backend.data.missions).toHaveLength(2);
-    });
-
-    it('shows flat fallback and truncation without inventing requirements', async () => {
-        ready({ processor: 'local-document', blueprint: null, blueprint_failure: 'no_requirements', evaluation: null, truncated: true });
-        const user = setupUser(); renderPage(); await user.click(await screen.findByRole('button', { name: /sample.pdf/ }));
-        expect(await screen.findByText(/Structured extraction was unavailable/)).toBeVisible();
-        expect(screen.getByText(/Extraction is truncated/)).toBeVisible();
-        expect(screen.queryByRole('button', { name: 'Export mission definition' })).not.toBeInTheDocument();
-    });
-
-    it('keeps viewer access read-only and clears details after revocation', async () => {
-        ready();
-        const user = setupUser(); renderPage('viewer');
-        expect(await screen.findByLabelText('Blueprint PDF')).toBeDisabled();
-        await user.click(screen.getByRole('button', { name: /sample.pdf/ }));
-        expect(await screen.findByRole('heading', { name: 'Portal' })).toBeVisible();
-        backend.app.delete(backend.app.findRecordById('workspace_members', 'viewermember'));
-        await user.click(screen.getByRole('button', { name: 'Refresh status' }));
-        await waitFor(() => expect(screen.queryByRole('heading', { name: 'Portal' })).not.toBeInTheDocument());
-        expect(screen.getAllByRole('alert').length).toBeGreaterThan(0);
-    });
-
-    it('synchronously clears saved documents when the account or workspace changes', async () => {
-        ready();
-        const user = setupUser(); const rendered = renderPage();
-        await user.click(await screen.findByRole('button', { name: /sample.pdf/ }));
-        expect(await screen.findByRole('heading', { name: 'Portal' })).toBeVisible();
-        rendered.auth.user = { id: 'otherowner' }; rendered.workspace.active = { id: 'ws2' }; pb.authStore.record = { id: 'otherowner' };
-        rendered.rerender(<BlueprintPage />);
-        expect(screen.queryByRole('heading', { name: 'Portal' })).not.toBeInTheDocument();
+describe('BlueprintPage review flow', () => {
+    it('keeps saved uploads reachable and clears analysis when changing views', async () => {
+        const user = setupUser(); renderPage(); await selectPdf(user);
+        await user.click(screen.getByRole('button', { name: 'Analyze blueprint' }));
+        expect(await screen.findByRole('heading', { name: 'Pass 1 — Scan' })).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Saved PDFs' }));
         expect(await screen.findByText('No blueprints have been uploaded to this workspace.')).toBeVisible();
+        expect(screen.getByLabelText('Blueprint PDF')).toBeVisible();
+        expect(screen.queryByRole('heading', { name: 'Pass 1 — Scan' })).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Analyze PDF' }));
+        expect(screen.getByLabelText('Blueprint PDF (up to 20 MiB)')).toBeVisible();
+        expect(screen.queryByRole('heading', { name: 'Pass 1 — Scan' })).not.toBeInTheDocument();
     });
 
-    it('shows blocked processing and permits a retry only after configuration is available', async () => {
-        backend.env.value = '';
-        const saved = backend.upload(); const user = setupUser(); renderPage();
-        await user.click(await screen.findByRole('button', { name: /sample.pdf/ }));
-        expect(await screen.findByText(/Document processing is unavailable/)).toBeVisible();
-        backend.env.value = JSON.stringify(backend.registered);
-        await user.click(screen.getByRole('button', { name: 'Retry extraction' }));
-        await waitFor(() => expect(backend.data.research_submissions.find((row) => row.id === saved.record.submission).status).toBe('queued'));
+    it('displays the three passes, confidence, dependencies and ordered challenges from the adapter', async () => {
+        const user = setupUser(); renderPage(); await selectPdf(user);
+        await user.click(screen.getByRole('button', { name: 'Analyze blueprint' }));
+        expect(await screen.findByRole('heading', { name: 'Pass 1 — Scan' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: 'Pass 2 — Parsed structure' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: 'Pass 3 — Assessment' })).toBeVisible();
+        expect(screen.getAllByText(/Confidence 97%/).length).toBeGreaterThan(0);
+        expect(screen.getByRole('heading', { name: 'Component dependencies' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: '1. Event database' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: '2. Event worker' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: '3. Notification service' })).toBeVisible();
+        expect(screen.queryByRole('region', { name: 'Session prompts for review' })).not.toBeInTheDocument();
+        expect(backend.rows).toHaveLength(3);
+    });
+
+    it('generates review-only session prompts on request and exports the mission as JSON', async () => {
+        const user = setupUser(); renderPage(); await selectPdf(user);
+        await user.click(screen.getByRole('button', { name: 'Analyze blueprint' }));
+        await user.click(await screen.findByRole('button', { name: 'Generate session prompts' }));
+        expect(await screen.findByRole('region', { name: 'Session prompts for review' })).toBeVisible();
+        await user.click(screen.getByText('Prompt 1 · Event database'));
+        expect(screen.getByLabelText('Review prompt 1').value).toContain('Authority: A0');
+        expect(screen.getByLabelText('Review prompt 1')).toHaveAttribute('readonly');
+        expect(pb.send.mock.calls.at(-1)[1].body.include_prompts).toBe(true);
+        expect(backend.rows).toHaveLength(3);
+        const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+        await user.click(screen.getByRole('button', { name: 'Export mission plan as JSON' }));
+        expect(URL.createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
+        expect(click).toHaveBeenCalled();
+        expect(screen.queryByRole('button', { name: /Create session/i })).not.toBeInTheDocument();
+    });
+
+    it('renders document markup as text and makes processing failures recoverable', async () => {
+        result.blueprint.parsed.requirements[0].text = '<img src=x onerror=alert(1)> untrusted requirement';
+        const user = setupUser(); renderPage(); await selectPdf(user);
+        pb.send.mockRejectedValueOnce(new Error('private processor diagnostic'));
+        await user.click(screen.getByRole('button', { name: 'Analyze blueprint' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent(/Analysis is unavailable/);
+        expect(screen.queryByText(/private processor diagnostic/)).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Analyze blueprint' }));
+        expect(await screen.findByText('<img src=x onerror=alert(1)> untrusted requirement')).toBeVisible();
+        expect(document.querySelector('[onerror]')).toBeNull();
+    });
+
+    it('keeps scan results available when dependencies prevent a mission plan', async () => {
+        result.mission_plan = null; result.planning_error = 'cyclic_dependencies'; result.session_prompts = [];
+        const user = setupUser(); renderPage(); await selectPdf(user);
+        await user.click(screen.getByRole('button', { name: 'Analyze blueprint' }));
+        expect(await screen.findByRole('heading', { name: 'Pass 1 — Scan' })).toBeVisible();
+        expect(screen.getByRole('alert')).toHaveTextContent(/cyclic dependencies/);
+        expect(screen.queryByRole('button', { name: 'Generate session prompts' })).not.toBeInTheDocument();
+    });
+
+    it('clears results when the workspace changes and discards an old response', async () => {
+        let complete;
+        pb.send.mockImplementation(() => new Promise((resolve) => { complete = resolve; }));
+        const user = setupUser(); const view = renderPage(); await selectPdf(user);
+        await user.click(screen.getByRole('button', { name: 'Analyze blueprint' }));
+        await waitFor(() => expect(pb.send).toHaveBeenCalled());
+        view.workspace.active = { id: 'ws2' }; view.rerender(<BlueprintPage />);
+        await act(async () => { complete({ ...result, workspace: 'ws1' }); });
+        expect(screen.queryByRole('heading', { name: 'Pass 1 — Scan' })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Analyze blueprint' })).toBeDisabled();
+    });
+
+    it('does not process PDFs in demonstration mode', () => {
+        setDemoMode(true); renderPage();
+        expect(screen.getByRole('status')).toHaveTextContent(/turn off demonstration mode/);
+        expect(screen.getByLabelText('Blueprint PDF (up to 20 MiB)')).toBeDisabled();
+        expect(pb.send).not.toHaveBeenCalled();
     });
 });

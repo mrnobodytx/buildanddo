@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-18
-# Depends:     apps/federal_foundry/catalog.py, apps/federal_foundry/protocol.py, apps/research/blueprints.py, apps/mission_suite/bundle.py
+# Depends:     apps/federal_foundry/catalog.py, apps/federal_foundry/protocol.py, apps/research/blueprint_documents.py, apps/mission_suite/bundle.py
 # EnumType:    Service
-# EnumEdges:   DEPENDS_ON apps/federal_foundry/catalog.py; DEPENDS_ON apps/federal_foundry/protocol.py; CONSUMES apps/research/blueprints.py; DEPENDS_ON apps/mission_suite/bundle.py
+# EnumEdges:   DEPENDS_ON apps/federal_foundry/catalog.py; DEPENDS_ON apps/federal_foundry/protocol.py; CONSUMES apps/research/blueprint_documents.py; DEPENDS_ON apps/mission_suite/bundle.py
 # DAG Node:    none
 # Intent:      Discover public source capabilities and compile bounded operator proposals without inventing runtime readiness or authorizing work.
 # ───────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ from apps.federal_foundry.compiler import cgrf, json_text
 from apps.federal_foundry.protocol import make_task
 from apps.mission_suite.bundle import source_fingerprint
 from apps.mission_suite.engine import decode, instant, obj, text
-from apps.research.blueprints import Blueprint, MAX_BLUEPRINT_BYTES
+from apps.research.blueprint_documents import Blueprint, MAX_BLUEPRINT_BYTES
 from scripts.ci.evidence_epoch import sha256_json
 
 SCHEMA = "buildanddo.operator-blueprint/v1"
@@ -62,7 +62,7 @@ EXTRA_CAPABILITIES = (
         "blueprint-extraction",
         "Structured blueprint extraction",
         "Preserve document requirements, sections and source provenance as observations.",
-        ("apps/research/blueprints.py", "apps/research/documents.py"),
+        ("apps/research/blueprint_documents.py", "apps/research/documents.py"),
     ),
     (
         "research-pipeline",

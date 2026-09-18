@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-17
-# Depends:     apps/research/blueprints.py
+# Depends:     apps/research/blueprint_documents.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES apps/research/blueprints.py
+# EnumEdges:   VALIDATES apps/research/blueprint_documents.py
 # DAG Node:    none
 # Intent:      Exercise blueprint extraction, source isolation and typed A0 assessments, separating native PDF admission from controlled doubles.
 # ───────────────────────────────────────────────────────────────
@@ -33,13 +33,13 @@ import unittest
 from unittest.mock import patch
 
 from apps.decision.contract import DecisionResult, TypedAnswer, decide
-from apps.research import blueprints
-from apps.research.blueprints import Blueprint, extract_blueprint, parse_upload, structure_text
+from apps.research import blueprint_documents as blueprints
+from apps.research.blueprint_documents import Blueprint, extract_blueprint, parse_upload, structure_text
 from apps.research.contracts import MAX_FILE, ProcessorSettings, ResearchError
 from apps.research.processing import Processor, parse_document
 from apps.research.transport import decode_json, multipart
 from apps.research.worker import Worker
-from apps.decision.workloads.blueprint_evaluation import evaluate_blueprint
+from apps.decision.workloads.blueprint_document_evaluation import evaluate_blueprint
 from tests.upgrade.blueprint_fixture import SPEC, pdf_bytes
 from tests.upgrade.research_support import Backend
 
@@ -166,17 +166,35 @@ class ParserTests(unittest.TestCase):
         for data, name in [(b"", "empty.pdf"), (b" " * 20, "blank.txt"), (b"not a document", "run.sh"), (b"x" * (MAX_FILE + 1), "huge.pdf")]:
             with self.subTest(name=name), self.assertRaises(ResearchError):
                 parse_upload(data, name)
-        fake = SimpleNamespace(PdfReader=lambda data: SimpleNamespace(is_encrypted=True, pages=[]), __version__="fixture")
+        fake = SimpleNamespace(PdfReader=lambda data, **options: SimpleNamespace(is_encrypted=True, pages=[]), __version__="fixture")
         with patch.dict(sys.modules, {"pypdf": fake}), self.assertRaises(ResearchError) as caught:
             extract_blueprint(SOURCE, "locked.pdf")
         self.assertEqual(caught.exception.reason, "unsupported")
 
-    def test_pdf_metadata_reuses_document_admission_without_native_parser_claim(self):
-        fake = SimpleNamespace(PdfReader=lambda data: SimpleNamespace(is_encrypted=False, pages=[SimpleNamespace(extract_text=lambda: SPEC)]), __version__="fixture")
-        with patch.dict(sys.modules, {"pypdf": fake}):
+    def test_saved_pdf_uses_the_shared_scan_once_without_native_parser_claim(self):
+        page = SimpleNamespace(extract_text=lambda **options: SPEC, mediabox=SimpleNamespace(width=612, height=792))
+        fake = SimpleNamespace(PdfReader=lambda data, **options: SimpleNamespace(is_encrypted=False, pages=[page]), __version__="fixture")
+        with patch.dict(sys.modules, {"pypdf": fake}), patch.object(blueprints, "scan_pdf", wraps=blueprints.scan_pdf) as scanner:
             result = extract_blueprint(SOURCE, "sample.pdf")
+        scanner.assert_called_once_with(SOURCE, "sample.pdf")
         self.assertEqual(result.page_count, 1)
         self.assertEqual(result.source_hash, DIGEST)
+
+    def test_saved_pdf_keeps_flat_text_when_structuring_is_unavailable(self):
+        page = SimpleNamespace(extract_text=lambda **options: SPEC, mediabox=SimpleNamespace(width=612, height=792))
+        fake = SimpleNamespace(PdfReader=lambda data, **options: SimpleNamespace(is_encrypted=False, pages=[page]), __version__="fixture")
+        for phase in ("parse_scan", "assess"):
+            with (
+                self.subTest(phase=phase),
+                patch.dict(sys.modules, {"pypdf": fake}),
+                patch("apps.research.blueprints." + phase, side_effect=RuntimeError("private analysis diagnostic")),
+                patch.object(blueprints, "structure_text", side_effect=RuntimeError("private saved diagnostic")),
+            ):
+                result = parse_upload(SOURCE, "sample.pdf")
+                self.assertEqual(result["text"], SPEC.strip())
+                self.assertIsNone(result["blueprint"])
+                self.assertEqual(result["blueprint_failure"], "structure_failed")
+                self.assertNotIn("private", json.dumps(result))
 
     def test_source_is_never_imported_or_executed(self):
         with tempfile.TemporaryDirectory() as folder:

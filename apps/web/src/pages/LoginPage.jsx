@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowRight, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import AuthLayout from '@/components/auth/AuthLayout';
 import { Button } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
@@ -19,6 +19,10 @@ export default function LoginPage() {
     const [errors, setErrors] = useState({});
     const [status, setStatus] = useState('idle');
     const [serverError, setServerError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+    const busy = status === 'submitting';
 
     const setField = (field, value) => {
         setForm((p) => ({ ...p, [field]: value }));
@@ -33,6 +37,8 @@ export default function LoginPage() {
             next.email = 'That email address doesn\u2019t look right.';
         if (!form.password) next.password = 'Enter your password.';
         setErrors(next);
+        if (next.email) emailRef.current?.focus();
+        else if (next.password) passwordRef.current?.focus();
         return Object.keys(next).length === 0;
     };
 
@@ -57,8 +63,9 @@ export default function LoginPage() {
 
     return (
         <AuthLayout
-            title="Sign in to BuildAndDo"
-            subtitle="Welcome back. Pick up where you left off in your workspace."
+            title="Welcome back."
+            pageTitle="Sign in"
+            subtitle="Sign in to learn, build and pick up where you left off."
             footer={
                 <>
                     New to BuildAndDo?{' '}
@@ -72,47 +79,70 @@ export default function LoginPage() {
                 </>
             }
         >
-            <form onSubmit={handleSubmit} noValidate className="space-y-5">
+            <form onSubmit={handleSubmit} noValidate aria-label="Sign in" aria-busy={busy} className="space-y-5">
                 <div className="grid gap-2">
                     <Label htmlFor="login-email">Email address</Label>
                     <Input
                         id="login-email"
+                        name="email"
+                        ref={emailRef}
                         type="email"
                         value={form.email}
                         onChange={(e) => setField('email', e.target.value)}
-                        placeholder="you@business.com"
+                        placeholder="you@example.com"
                         autoComplete="email"
-                        autoFocus
+                        autoCapitalize="none"
+                        spellCheck={false}
+                        disabled={busy}
                         aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? 'login-email-hint login-email-error' : 'login-email-hint'}
                     />
+                    <p id="login-email-hint" className="auth-email-hint">Use your account email, not your display name.</p>
                     {errors.email && (
-                        <p className="text-sm text-destructive" role="alert">
+                        <p id="login-email-error" className="text-sm text-destructive" role="alert">
                             {errors.email}
                         </p>
                     )}
                 </div>
 
                 <div className="grid gap-2">
-                    <div className="flex items-center justify-between">
+                    <div className="auth-password-label">
                         <Label htmlFor="login-password">Password</Label>
                         <Link
                             to="/forgot-password"
-                            className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+                            className="auth-recovery-link"
                         >
                             Forgot password?
                         </Link>
                     </div>
-                    <Input
-                        id="login-password"
-                        type="password"
-                        value={form.password}
-                        onChange={(e) => setField('password', e.target.value)}
-                        placeholder="Your password"
-                        autoComplete="current-password"
-                        aria-invalid={Boolean(errors.password)}
-                    />
+                    <div className="auth-password-field">
+                        <Input
+                            id="login-password"
+                            name="password"
+                            ref={passwordRef}
+                            type={showPassword ? 'text' : 'password'}
+                            value={form.password}
+                            onChange={(e) => setField('password', e.target.value)}
+                            placeholder="Your password"
+                            autoComplete="current-password"
+                            disabled={busy}
+                            aria-invalid={Boolean(errors.password)}
+                            aria-describedby={errors.password ? 'login-password-error' : undefined}
+                        />
+                        <button
+                            type="button"
+                            className="auth-password-toggle"
+                            onClick={() => setShowPassword((visible) => !visible)}
+                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            aria-controls="login-password"
+                            aria-pressed={showPassword}
+                            disabled={busy}
+                        >
+                            {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+                        </button>
+                    </div>
                     {errors.password && (
-                        <p className="text-sm text-destructive" role="alert">
+                        <p id="login-password-error" className="text-sm text-destructive" role="alert">
                             {errors.password}
                         </p>
                     )}
@@ -123,7 +153,7 @@ export default function LoginPage() {
                         className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
                         role="alert"
                     >
-                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                         {serverError}
                     </p>
                 )}
@@ -131,18 +161,18 @@ export default function LoginPage() {
                 <Button
                     type="submit"
                     size="lg"
-                    disabled={status === 'submitting'}
+                    disabled={busy}
                     className="w-full"
                 >
-                    {status === 'submitting' ? (
+                    {busy ? (
                         <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                             Signing in…
                         </>
                     ) : (
                         <>
                             Sign in
-                            <ArrowRight className="h-4 w-4" />
+                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
                         </>
                     )}
                 </Button>

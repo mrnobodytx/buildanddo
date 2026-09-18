@@ -1,0 +1,76 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-18
+# Depends:     apps/web/public/images/editorial/reference-engravings.png
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES apps/web/public/images/editorial/reference-engravings.png
+# DAG Node:    none
+# Intent:      Preserve the source crop coordinates and ink conversion for the eight owner-supplied newspaper illustrations.
+# ───────────────────────────────────────────────────────────────
+
+file: apps/web/public/images/editorial/reference-engravings.png
+source: Owner-supplied newspaper reference, image_def12df049a540a1.png
+source_dimensions: [1363, 783]
+source_sha256: 9ad64837338c1804c0b7f122390dd7a00646d2991530c508523d512fdc97a379
+asset_sha256: 1f5d9de6c7b79deaa41e6ed0b81a46ba2db868b2389e82fe5a768bf404f4e496
+width: 576
+height: 296
+tile_width: 144
+tile_height: 148
+padding: 8
+conversion: >-
+  Crop at native resolution; gray = floor((299*r + 587*g + 114*b + 500)/1000).
+  Ink and paper are the 1st and 99th percentile grayscale values of each crop.
+  Alpha = clamp(round((paper-gray)*255/(paper-ink)), 0, 255).
+  Store white RGB with that alpha for an SVG mask filled by the existing theme ink.
+  Pack in row order with eight transparent pixels on every edge; no resampling.
+# source_box is [left, top, right-exclusive, bottom-exclusive].
+# sprite_box is [x, y, width, height], including the transparent padding.
+subjects:
+  wireless:
+    source_box: [2, 94, 130, 226]
+    sprite_box: [0, 0, 144, 148]
+    ink: 38
+    paper: 179
+  flight:
+    source_box: [2, 249, 130, 381]
+    sprite_box: [144, 0, 144, 148]
+    ink: 44
+    paper: 203
+  medicine:
+    source_box: [2, 406, 130, 538]
+    sprite_box: [288, 0, 144, 148]
+    ink: 43
+    paper: 199
+  automobile:
+    source_box: [2, 564, 130, 696]
+    sprite_box: [432, 0, 144, 148]
+    ink: 43
+    paper: 192
+  storefront:
+    source_box: [1040, 94, 1168, 226]
+    sprite_box: [0, 148, 144, 148]
+    ink: 41
+    paper: 214
+  gears:
+    source_box: [1040, 250, 1168, 382]
+    sprite_box: [144, 148, 144, 148]
+    ink: 40
+    paper: 209
+  ship:
+    source_box: [1040, 407, 1168, 539]
+    sprite_box: [288, 148, 144, 148]
+    ink: 42
+    paper: 207
+  typewriter:
+    source_box: [1040, 565, 1168, 697]
+    sprite_box: [432, 148, 144, 148]
+    ink: 36
+    paper: 203

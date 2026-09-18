@@ -1,0 +1,52 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/web/public/images/editorial/reference-backgrounds.png.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-18
+# Depends:     apps/web/public/images/editorial/reference-engravings.png
+# EnumType:    ConfigDoc
+# EnumEdges:   CONSUMES apps/web/public/images/editorial/reference-engravings.png; PRODUCES apps/web/public/images/editorial/reference-backgrounds.png
+# DAG Node:    none
+# Intent:      Remove stationary duplicates behind moving reference subjects while retaining the untouched source for reduced motion.
+# ───────────────────────────────────────────────────────────────
+
+file: apps/web/public/images/editorial/reference-backgrounds.png
+source: apps/web/public/images/editorial/reference-engravings.png
+width: 576
+height: 296
+tile_width: 144
+tile_height: 148
+padding: 8
+source_sha256: 1f5d9de6c7b79deaa41e6ed0b81a46ba2db868b2389e82fe5a768bf404f4e496
+asset_sha256: 5136b35976fb0ecd8734e787df4cbac166a2854262bd217feb6f59073e9353d4
+conversion: >-
+  Keep source ink alpha outside the listed repair regions and transparent gutters.
+  Dilate flight, ship and typewriter repair polygons by three pixels within each
+  original 128 by 132 crop. Fill inward from known four-connected neighbours,
+  then diffuse for sixty Jacobi iterations. Clamp inferred ink alpha to 0..70;
+  add 0.12 times the deviation from 45 of the tile's repeating 9 by 12 corner
+  texture at (10,10). The storefront doorway uses ink alpha 150. Round and clamp
+  to 0..255; retain white RGB so both themes use the same currentColor mask.
+  The original atlas is unchanged; moving parts and static fallbacks use it.
+regions:
+  flight:
+    tile: [144, 0]
+    polygon: [[14, 91], [22, 87], [18, 76], [17, 69], [23, 71], [34, 80], [68, 65], [31, 40], [38, 38], [80, 57], [105, 49], [117, 43], [121, 47], [116, 53], [109, 61], [107, 73], [99, 80], [126, 94], [116, 96], [93, 89], [87, 85], [80, 93], [73, 94], [71, 89], [34, 96], [31, 103], [25, 102], [23, 96], [14, 96]]
+  storefront:
+    tile: [0, 148]
+    polygon: [[88, 80], [101, 84], [101, 114], [88, 119]]
+    fill: 150
+  gears:
+    tile: [144, 148]
+    circles: [[50, 54, 39], [108, 67, 35], [66, 109, 34]]
+  ship:
+    tile: [288, 148]
+    polygon: [[18, 113], [13, 95], [22, 95], [25, 80], [30, 76], [30, 55], [33, 55], [33, 32], [36, 25], [39, 55], [44, 56], [42, 78], [50, 79], [53, 72], [60, 74], [62, 62], [70, 58], [78, 54], [78, 39], [82, 38], [82, 25], [84, 17], [87, 34], [92, 35], [92, 39], [89, 41], [90, 54], [101, 56], [102, 31], [105, 24], [108, 32], [108, 62], [116, 70], [124, 82], [118, 100], [110, 114]]
+  typewriter:
+    tile: [432, 148]
+    polygon: [[41, 16], [109, 18], [109, 40], [121, 42], [123, 48], [130, 48], [134, 55], [130, 60], [122, 60], [120, 65], [30, 63], [27, 57], [21, 59], [16, 61], [15, 47], [23, 43], [28, 48], [35, 45], [38, 41]]

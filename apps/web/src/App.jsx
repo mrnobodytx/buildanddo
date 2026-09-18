@@ -36,6 +36,7 @@ const FleetPage = lazy(() => import('./pages/workspace/FleetPage'));
 const PlatformHealthPage = lazy(() => import('./pages/workspace/PlatformHealthPage'));
 const EvidencePage = lazy(() => import('./pages/workspace/EvidencePage'));
 const ResearchPage = lazy(() => import('./pages/workspace/ResearchPage'));
+const KnowledgePage = lazy(() => import('./pages/workspace/KnowledgePage'));
 const BlueprintPage = lazy(() => import('./pages/workspace/BlueprintPage'));
 const PolicyPage = lazy(() => import('./pages/workspace/PolicyPage'));
 const OperatorPage = lazy(() => import('./pages/workspace/OperatorPage'));
@@ -59,6 +60,9 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const DocsPage = lazy(() => import('./pages/DocsPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const RoomsPage = lazy(() => import('./pages/workspace/RoomsPage'));
+const SystemsRoomPage = lazy(() => import('./pages/workspace/SystemsRoomPage'));
+const LiveExperimentRoomPage = lazy(() => import('./pages/workspace/LiveExperimentRoomPage'));
 
 // Each workspace page is mounted inside its own error boundary. The root
 // TelemetryBoundary still catches everything, but a root catch replaces the
@@ -79,6 +83,7 @@ const WORKSPACE_ROUTES = [
     { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'research', label: 'Mission research', element: ResearchPage },
+    { path: 'knowledge', label: 'Knowledge & context', element: KnowledgePage },
     { path: 'blueprints', label: 'Blueprints', element: BlueprintPage },
     { path: 'policy', label: 'Policy intelligence', element: PolicyPage },
     { path: 'suite', label: 'Mission suite', element: SuitePage },
@@ -95,6 +100,9 @@ const WORKSPACE_ROUTES = [
     { path: 'integrations', label: 'Sinks & extensions', element: IntegrationsPage },
     { path: 'wiki', label: 'Workspace wiki', element: WikiPage },
     { path: 'forums', label: 'Workspace forum', element: ForumsPage },
+    { path: 'rooms/systems', label: 'Systems Room', element: SystemsRoomPage },
+    { path: 'rooms/live', label: 'Live Experiment', element: LiveExperimentRoomPage },
+    { path: 'rooms/:room?', label: 'Living Rooms', element: RoomsPage },
 ];
 
 // Redirect already-authenticated users away from the auth screens.

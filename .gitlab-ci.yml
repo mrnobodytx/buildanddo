@@ -1,0 +1,54 @@
+# Private CI for the buildanddo GitLab intake mirror (gitlab.citadel-nexus.com/root/buildanddo).
+# GitHub (mrnobodytx/buildanddo) is the public collaboration/submission plane; this project
+# runs the private release pipeline on a dedicated shell runner (tag: buildanddo).
+stages:
+  - verify
+  - test
+
+integrity_gate:
+  stage: verify
+  tags:
+    - buildanddo
+  script:
+    # npm workspaces: the lockfile is at the repo root (apps/*), not inside apps/web -
+    # `npm ci --prefix apps/web` fails EUSAGE looking for a lockfile that isn't there.
+    - npm ci
+    - python3 scripts/ci/integrity_regression_check.py
+    - python3 scripts/ci/verify_public_boundary.py --root .
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+
+praxis_evidence_tests:
+  stage: test
+  tags:
+    - buildanddo
+  # PB_SUPERUSER_EMAIL / PB_SUPERUSER_PASSWORD / PB_API_URL are GitLab CI/CD
+  # variables (masked), not the gitignored secrets/deploy.local.env - a fresh
+  # CI checkout never has that file. client.py's _load_secrets() already
+  # merges os.environ, so no code change was needed to pick these up.
+  script:
+    - python3 services/praxis_evidence/run_all_tests.py
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+
+# BEGIN CITADEL BUILDANDDO VERIFIED RELEASE v1
+# GitLab runner builds and packages the exact candidate after all existing
+# pipeline gates pass. Remote staging/production mutation is deliberately NOT
+# performed by the runner: the local/Rig1 release controller downloads this
+# immutable artifact, deploys it, performs external /_version readback, and only
+# then emits DORA. # verify-production
+buildanddo_release_candidate:
+  stage: .post
+  rules:
+    - if: '$BUILDANDDO_RELEASE_ENABLE == "1"'
+      when: on_success
+    - when: never
+  script:
+    - python3 tools/buildanddo_release.py plan --root . --repo .
+    - python3 tools/buildanddo_release.py build --root . --repo .
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      - .citadel-release/
+# END CITADEL BUILDANDDO VERIFIED RELEASE v1

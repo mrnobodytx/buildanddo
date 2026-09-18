@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/hooks/useMissionResearch.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/components/workspace/TutorialCatalog.jsx; CONSUMES apps/web/src/lib/workspaceSummary.js
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/components/workspace/TutorialCatalog.jsx; CONSUMES apps/web/src/lib/workspaceSummary.js; CONSUMES apps/web/src/components/editorial/EditorialFrontPage.jsx; CONSUMES apps/web/src/hooks/useMissionResearch.js
 // DAG Node:    none
 // Intent:      Project authenticated workspace records onto the front page with provenance, recoverable intake and no anonymous private reads.
 // ───────────────────────────────────────────────────────────────
@@ -37,6 +37,7 @@ import EarlyAccess from '@/components/site/EarlyAccess';
 import Faq, { FAQ_ITEMS } from '@/components/site/Faq';
 import Seo from '@/components/Seo';
 import EditorialStory from '@/components/motion/EditorialStory';
+import EditorialFrontPage from '@/components/editorial/EditorialFrontPage';
 import ReadingProgress from '@/components/motion/ReadingProgress';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import {
@@ -48,6 +49,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { useMissionResearch } from '@/hooks/useMissionResearch';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { truncate } from '@/lib/format';
 import {
@@ -71,7 +73,7 @@ import {
 } from '@/components/site/ui';
 
 const DESCRIPTION =
-    'BuildAndDo is a business newspaper for your own operations. It tells you what changed, what to do next, and proves whether it worked — using only data from sources you connect. No mock metrics, no fabricated results.';
+    'Learn with people and AI. Build something real. Read researched ideas, explore the platform, and follow your daily workspace highlights with their sources and evidence.';
 
 const structuredData = [
     {
@@ -104,54 +106,6 @@ const structuredData = [
         })),
     },
 ];
-
-function todayLabel() {
-    const d = new Date();
-    return d.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-}
-
-function editionLabel() {
-    const d = new Date();
-    const iso = d.toISOString().slice(0, 10);
-    return `Edition · ${iso}`;
-}
-
-/* ---- Masthead ----------------------------------------------------------- */
-function Masthead() {
-    return (
-        <div className="border-b border-foreground/80 bg-background">
-            <div className="mx-auto max-w-6xl px-4 sm:px-6">
-                <div className="flex flex-col items-center py-5 text-center">
-                    <p className="font-evidence text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-                        {todayLabel()}
-                    </p>
-                    <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-6xl">
-                        BUILDANDDO
-                    </h1>
-                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                        Your business changed today. BuildAndDo tells you what changed, what to do
-                        next, and proves whether it worked.
-                    </p>
-                </div>
-            </div>
-            <div className="rule-double" />
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 sm:px-6">
-                <span className="font-evidence text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                    {editionLabel()}
-                </span>
-                <span className="font-evidence text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                    Vol. I · No. 1
-                </span>
-            </div>
-            <div className="rule-thin" />
-        </div>
-    );
-}
 
 /* ---- Workspace-backed front page --------------------------------------- */
 function recordState(source) {
@@ -186,103 +140,6 @@ function SourceState({ source, label, empty, emptyMessage, children }) {
             <p className="text-sm text-muted-foreground">{emptyMessage || `No ${label} yet.`}</p>
         );
     return children;
-}
-
-function FrontPageHero({ sources }) {
-    const { isAuthed } = useAuth();
-    const verified = verifiedEvidence(sources.evidence?.records || []);
-    const edition = latestPublishedEdition(sources.editions?.records || []);
-    return (
-        <Section className="py-12 sm:py-16">
-            <div className="grid gap-8 lg:grid-cols-12">
-                <div className="lg:col-span-7">
-                    <SectionLabel icon={Newspaper}>Front Page</SectionLabel>
-                    <h2 className="mt-3 font-display text-3xl font-bold leading-[1.08] tracking-tight sm:text-5xl">
-                        Your business, in its own words and records.
-                    </h2>
-                    <p className="drop-cap mt-5 max-w-xl text-base leading-relaxed text-foreground/90 sm:text-lg">
-                        See what changed, review the next step, and inspect the evidence. This
-                        edition draws from the same records as your workspace desks. Their sources
-                        and recorded status stay attached.
-                    </p>
-                    <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                        Sign in to read your workspace edition. Unavailable data is labelled; an
-                        empty workspace stays empty until you add real records.
-                    </p>
-                    <div className="mt-7 flex flex-wrap gap-3">
-                        <Button href="#challenge-desk" size="lg">
-                            Submit a business challenge
-                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                        </Button>
-                        <Button href="#evidence-ledger" variant="secondary" size="lg">
-                            View evidence
-                        </Button>
-                        <Button href="#daily-edition" variant="secondary" size="lg">
-                            Read the Daily Edition
-                        </Button>
-                    </div>
-                </div>
-                <div className="lg:col-span-5">
-                    <Card className="h-full p-5">
-                        <SectionLabel icon={Gauge}>Account state</SectionLabel>
-                        <Rule className="my-4" />
-                        <dl className="space-y-3 font-evidence text-xs leading-relaxed text-muted-foreground">
-                            <div className="flex flex-wrap justify-between gap-3">
-                                <dt>Authenticated</dt>
-                                <dd className="text-foreground">{isAuthed ? 'Yes' : 'No'}</dd>
-                            </div>
-                            <div className="flex flex-wrap justify-between gap-3">
-                                <dt>Sources marked connected</dt>
-                                <dd className="text-foreground">
-                                    {countValue(
-                                        sources.services,
-                                        sources.services?.records.filter(
-                                            (record) => record.status === 'connected',
-                                        ).length,
-                                    )}
-                                </dd>
-                            </div>
-                            <div className="flex flex-wrap justify-between gap-3">
-                                <dt>Evidence marked verified today</dt>
-                                <dd className="text-foreground">
-                                    {countValue(
-                                        sources.evidence,
-                                        verified.filter((record) => isToday(record.created)).length,
-                                    )}
-                                </dd>
-                            </div>
-                            <div className="flex flex-wrap justify-between gap-3">
-                                <dt>Published edition</dt>
-                                <dd className="text-foreground">
-                                    {countValue(
-                                        sources.editions,
-                                        edition
-                                            ? recordTimestamp(
-                                                  edition.edition_date || edition.created,
-                                              )
-                                            : 'None yet',
-                                    )}
-                                </dd>
-                            </div>
-                        </dl>
-                        <Rule className="my-4" />
-                        <p className="text-xs leading-relaxed text-muted-foreground">
-                            Connection status and verification labels describe saved records.
-                            Inspect the desk for their supporting evidence.
-                        </p>
-                        <Button
-                            href={isAuthed ? '/app' : '/signup'}
-                            size="sm"
-                            className="mt-4 w-full"
-                        >
-                            {isAuthed ? 'Open workspace' : 'Create account'}
-                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                        </Button>
-                    </Card>
-                </div>
-            </div>
-        </Section>
-    );
 }
 
 function GlanceMetric({ icon: Icon, label, source, count, href }) {
@@ -787,10 +644,10 @@ function FieldManual() {
     );
 }
 
-function EditionContent({ sources = {} }) {
+function EditionContent({ sources = {}, workspaceControls, workspaceId = '' }) {
     return (
         <>
-            <FrontPageHero sources={sources} />
+            <EditorialFrontPage sources={sources} workspaceControls={workspaceControls} workspaceId={workspaceId} />
             <BusinessAtAGlance sources={sources} />
             <ChallengeDesk challenges={sources.challenges} />
             <EvidenceLedger evidence={sources.evidence} />
@@ -804,6 +661,7 @@ function EditionContent({ sources = {} }) {
 
 function WorkspaceEdition() {
     const { active, workspaces, setActive } = useWorkspace();
+    const research = useMissionResearch({ page: 1 });
     const signals = useWorkspaceRecords('signals', { sort: '-created' });
     const missions = useWorkspaceRecords('missions', { sort: '-created' });
     const evidence = useWorkspaceRecords('evidence', { sort: '-created' });
@@ -813,6 +671,7 @@ function WorkspaceEdition() {
     const support = useWorkspaceRecords('support_sources', { sort: '-last_sync' });
     const challenges = useWorkspaceRecords('challenge_submissions', { sort: '-created' });
     const sources = {
+        research,
         signals,
         missions,
         evidence,
@@ -824,45 +683,21 @@ function WorkspaceEdition() {
     };
     return (
         <div data-dd-privacy="mask" className="ph-no-capture">
-            <Section className="border-b border-border py-5">
-                <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                        <label
-                            htmlFor="home-workspace"
-                            className="mb-2 block text-xs font-semibold uppercase tracking-wide text-muted-foreground"
-                        >
-                            Your workspace edition
-                        </label>
-                        <select
-                            id="home-workspace"
-                            value={active.id}
-                            onChange={(event) => setActive(event.target.value)}
-                            className="min-h-11 w-full max-w-md border border-border bg-background px-3 py-2 text-base"
-                        >
-                            {workspaces.map((workspace) => (
-                                <option key={workspace.id} value={workspace.id}>
-                                    {workspace.name}
-                                </option>
-                            ))}
-                        </select>
-                        <p className="mt-2 text-xs text-muted-foreground">
-                            These records are visible to your signed-in account.
-                        </p>
-                    </div>
-                    <Button
-                        variant="secondary"
-                        size="sm"
+            <EditionContent sources={sources} workspaceId={active.id} workspaceControls={
+                <div>
+                    <label htmlFor="home-workspace">Your workspace edition</label>
+                    <select id="home-workspace" value={active.id} onChange={(event) => setActive(event.target.value)}>
+                        {workspaces.map((workspace) => <option key={workspace.id} value={workspace.id}>{workspace.name}</option>)}
+                    </select>
+                    <p className="frontpage-note">Visible to your signed-in account.</p>
+                    <Button variant="secondary" size="sm"
                         disabled={Object.values(sources).some((source) => source.loading)}
-                        onClick={() => {
-                            Object.values(sources).forEach((source) => source.refresh());
-                        }}
-                    >
+                        onClick={() => { Object.values(sources).forEach((source) => source.refresh()); }}>
                         Refresh workspace data
                     </Button>
+                    <DemoModeBanner />
                 </div>
-                <DemoModeBanner />
-            </Section>
-            <EditionContent sources={sources} />
+            } />
         </div>
     );
 }
@@ -877,27 +712,14 @@ function HomeEdition() {
         return <WorkspaceEdition key={`${user.id}:${active.id}:${demo}`} />;
     }
     return (
-        <>
-            {isAuthed && (
-                <Section className="border-b border-border py-5">
-                    {loading ? (
-                        <ListSkeleton label="Loading your workspaces…" />
-                    ) : error ? (
-                        <DegradedNotice message={error} onRetry={refresh} />
-                    ) : (
-                        <div className="flex flex-wrap items-center gap-4">
-                            <p className="text-sm text-muted-foreground">
-                                Create a workspace to start your business edition.
-                            </p>
-                            <Button href="/onboarding" size="sm">
-                                Set up workspace
-                            </Button>
-                        </div>
-                    )}
-                </Section>
-            )}
-            <EditionContent />
-        </>
+        <EditionContent workspaceControls={isAuthed ? (
+            loading ? <ListSkeleton label="Loading your workspaces…" />
+                : error ? <DegradedNotice message={error} onRetry={refresh} />
+                    : <div>
+                        <p className="frontpage-note">Create a workspace to start your business edition.</p>
+                        <Button href="/onboarding" size="sm">Set up workspace</Button>
+                    </div>
+        ) : undefined} />
     );
 }
 
@@ -922,7 +744,6 @@ export default function HomePage() {
 
             <Header />
             <main id="main-content" tabIndex={-1}>
-                <Masthead />
                 <ReadingProgress className="mx-auto max-w-6xl px-4" />
                 <HomeEdition />
                 <EditorialStory />

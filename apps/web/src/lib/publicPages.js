@@ -99,3 +99,9 @@ export const PUBLIC_PAGES = [
 ];
 
 export const PUBLIC_NAV = PUBLIC_PAGES.filter((page) => page.path !== '/');
+
+// Header grouping: product routes carry the primary weight; company/editorial routes
+// (About, Blog, Contact) sit in a small secondary cluster. Footer and crawlers keep the flat list.
+const SECONDARY_NAV_PATHS = new Set(['/about', '/blog', '/contact']);
+export const PUBLIC_NAV_PRIMARY = PUBLIC_NAV.filter((page) => !SECONDARY_NAV_PATHS.has(page.path));
+export const PUBLIC_NAV_SECONDARY = PUBLIC_NAV.filter((page) => SECONDARY_NAV_PATHS.has(page.path));

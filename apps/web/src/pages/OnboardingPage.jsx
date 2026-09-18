@@ -222,7 +222,7 @@ export default function OnboardingPage() {
                 <div className="mt-10">
                     <SectionLabel>Onboarding · Step 1 of 1</SectionLabel>
                     <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                        Which business should BuildAndDo understand?
+                        What do you want to do? Learn something, build something, complete a project, join a class, join a challenge, or explore.
                     </h1>
                     <p className="mt-4 text-base leading-relaxed text-muted-foreground">
                         Search for or enter the domain you want BuildAndDo to

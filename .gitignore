@@ -60,3 +60,6 @@ apps/web/public/roadmap-status.json
 # projection is missing rather than drawing stale data when it was not written.
 apps/web/public/fleet-status.json
 apps/web/public/platform-health.json
+
+# BuildAndDo verified release artifacts
+.citadel-release/

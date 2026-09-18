@@ -8,20 +8,23 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-17
-# Depends:     apps/research/blueprints.py, apps/pocketbase/pb_hooks/blueprint.pb.js, apps/decision/workloads/blueprint_evaluation.py, apps/web/src/pages/workspace/BlueprintPage.jsx, docs/operator-plane.md
+# Depends:     apps/research/blueprint_documents.py, apps/pocketbase/pb_hooks/blueprint.pb.js, apps/decision/workloads/blueprint_document_evaluation.py, apps/web/src/pages/workspace/BlueprintPage.jsx, docs/operator-plane.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/research/blueprints.py; CONSUMES apps/pocketbase/pb_hooks/blueprint.pb.js; CONSUMES apps/decision/workloads/blueprint_evaluation.py; CONSUMES apps/web/src/pages/workspace/BlueprintPage.jsx; CONSUMES docs/operator-plane.md
+# EnumEdges:   CONSUMES apps/research/blueprint_documents.py; CONSUMES apps/pocketbase/pb_hooks/blueprint.pb.js; CONSUMES apps/decision/workloads/blueprint_document_evaluation.py; CONSUMES apps/web/src/pages/workspace/BlueprintPage.jsx; CONSUMES docs/operator-plane.md
 # DAG Node:    none
 # Intent:      Explain the asynchronous blueprint review contract, extraction limits and evidence required before claiming native acceptance.
 # ───────────────────────────────────────────────────────────────
 
 # Blueprint extraction, Phase A
 
-Open **Blueprints** in the workspace navigation at `/app/blueprints`. Editors,
+Open **Blueprints**, then **Saved PDFs**, at `/app/blueprints`. Editors,
 administrators and owners can upload a PDF, review extracted requirements and
 component dependencies, and export a proposed mission or challenge definition.
 Viewers can inspect existing blueprints. Account and workspace changes clear
-private page state, in-flight responses and prepared download links.
+private page state, in-flight responses and prepared download links. The
+**Analyze PDF** view exposes scan, parse and assessment results, component
+dependencies, ordered challenges and session prompts for human review; see
+`docs/blueprint-pipeline.md` for its local Python bridge.
 
 **Export extracted blueprint** downloads the unchanged structured extraction
 for the existing federal compiler's `operator --blueprint` input. The Operator
@@ -33,6 +36,12 @@ capability is required, using the same research bindings and integration revisio
 as mission research. This source change does not start a worker or install a
 migration in an existing deployment. See `docs/mission-research.md` for the
 existing worker configuration. No additional Python dependency is introduced.
+
+The saved document adapter in `apps/research/blueprint_documents.py` reuses the
+three-pass PDF scanner's reading order while retaining the v1 stored fields,
+stable requirement IDs and observation timestamp. Its existing five-question
+evaluation lives in `apps/decision/workloads/blueprint_document_evaluation.py`;
+the mission pipeline retains its source-linked evaluation receipts separately.
 
 ## API and processing lifecycle
 
@@ -144,7 +153,7 @@ python tests/upgrade/blueprint_fixture.py
 python tests/upgrade/check_blueprints.py
 node --test tests/upgrade/blueprint-*.test.mjs
 npm --prefix apps/web test -- --run src/pages/workspace/__tests__/BlueprintPage.test.jsx
-python -m mypy --strict --explicit-package-bases apps/research/blueprints.py apps/research/processing.py apps/research/worker.py apps/decision/workloads/blueprint_evaluation.py
+python -m mypy --strict --explicit-package-bases apps/research/blueprint_documents.py apps/research/processing.py apps/research/worker.py apps/decision/workloads/blueprint_document_evaluation.py
 ```
 
 The sample fixture is `tests/upgrade/fixtures/sample-blueprint.pdf`; its generator

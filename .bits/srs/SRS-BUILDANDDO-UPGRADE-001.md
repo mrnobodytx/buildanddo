@@ -20,6 +20,22 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## PR 40 main integration continuation — 2026-09-18
+
+The owner requests updating the existing policy/operator PR branch from main.
+Resolve the shared governance and blueprint conflicts without discarding either
+parent's functionality or historical evidence. Keep both Analyze PDF and Saved
+PDFs; retain the operator extraction export in the saved-document flow. Rebind
+the operator compiler and portable archive to the document contract moved by
+main, and preserve both native CI requirements.
+
+Acceptance: exercise the existing blueprint/operator and portable compiler
+regressions, audit the automatic route/navigation merges, regenerate measured
+context, preserve all 138 distinct parent events, and run the boundary and
+memory validators. Report unavailable installed/native/rendered checks
+separately. Source integration does not lift the owner's PR merge hold or
+authorize private runtime, staging or production work.
+
 ## Operator acceptance continuation — 2026-09-18
 
 The owner directs continued work in the attached BuildAndDo checkout while the
@@ -160,6 +176,270 @@ Sentinel source, feed activation, NATS/NXC/DKG/FTS/FAISS bindings, delivery and
 actual mission-outcome evidence remain PI-00–PI-10 receiving work in
 `.bits/handoffs/2026-09-18-bits-codegen-cmax-b-policy-intelligence.md`.
 
+## Capability roadmap repair handoff — 2026-09-18
+
+The owner asks how this seat can assist with a private compiler verification
+report. Continue this existing dispatch for a public handoff and local diagnostic
+examples only. The named private compiler, materializer and overlay applier are
+absent here. Their implementation requires the receiving repository's dispatch;
+this continuation does not authorize private edits or runtime activation.
+
+Acceptance:
+
+1. Prepare a sanitized C-ONE repair contract with independent VCC verification:
+   lossless capability identity, explicit ownership production, optimization-safe
+   selftests, and Windows materialization keys with honest partial-write state.
+2. Define negative controls, downstream identity migration and one complete
+   owner/capability/workflow/receipt acceptance path. Preserve approval gates;
+   distinguish discovered contracts, authorized execution and measured runtime.
+3. Map existing public estate and workspace-context consumers without creating
+   another graph or claiming that their module/category edges prove ownership.
+4. Exercise small synthetic reproductions, validate context/boundary/provenance,
+   and retain all prior memory events. Private counts, paths, hashes and raw
+   evidence stay with the receiving seat. Source fixes remain unverified here.
+
+Handoff: .bits/handoffs/2026-09-18-bits-codegen-c-one-capability-repair.md.
+The handoff includes its local report and executable diagnostic examples.
+
+Public outcome: the four repair contracts and independent acceptance path are
+recorded. Synthetic identity/path/optimization diagnostics and the context,
+930-file public-boundary and memory checks pass. All 120 prior events remain
+unchanged. The private implementation and its runtime have not been validated.
+
+## Newspaper front page continuation — 2026-09-18
+
+The owner supplied a three-column newspaper reference: researched news at left,
+daily highlights at center, and a separate reel of platform areas at right.
+The follow-up requests reusable LivingStill, VerticalNewsReel and AndroidPhoneFrame
+components, slow engraving motion, and an interactive phone preview below the
+center story. Continue the existing A2 public-source dispatch and current palette.
+
+Acceptance:
+
+1. Build the three-column editorial front page with the current paper, ink, red
+   and dark-theme tokens. Preserve the existing detailed desks, challenge form,
+   learning links and account/workspace isolation. Stack content accessibly on
+   narrow screens without clipping text, controls or the phone content.
+2. Give the research and platform reels independent controls and timing. Reuse
+   the installed motion policy; pause automatic movement for hover, keyboard
+   focus, hidden/offscreen views and reduced motion. Keep inactive links out of
+   the focus order and handle empty, single and changed item sets safely.
+3. Use original-source, dated public research selections until an operator feed
+   is supplied, clearly distinguish them from completed workspace research, and
+   reuse authenticated research reads. Platform selections link to real areas;
+   do not invent popularity counts, customers, live news or verified outcomes.
+4. Derive daily highlights from current readable records with original dates
+   and status. Show loading, unavailable and empty states. Illustrations remain
+   decorative, and the phone is an interactive web preview rather than a claim
+   of a released native application.
+5. Verify selection, reel lifecycle, scope changes, accessibility and responsive
+   layout with available local tooling. Record missing React/Vite dependencies
+   separately from source-adapter and static browser evidence. Preserve earlier
+   memory events; no provider call, deployment or backend mutation is authorized.
+
+Observed source outcome: the three-column front page, two independent sidebar
+reels, living vector engravings and interactive web phone composition are in
+place. Sixteen new Node cases pass; the two helper modules have 100 percent
+line/function and 98.73 percent aggregate branch coverage. Regression passes
+361 Node and 293 Python cases with 18 explicit skips. Forty-eight static browser
+layout cases pass after correcting enlarged-text clipping. Thirteen React cases
+are authored; missing Vitest, the lint plugin and Vite prevent rendered/lint/build
+acceptance. frontpage-report.md records source, layout and live-workspace limits.
+
+Artwork correction requested 2026-09-18: the animated subjects must match the
+owner's supplied reference. Replace the unrelated vector substitutes with its
+wireless, flight, medicine, automobile, storefront, gears, ship and typewriter
+illustrations. Keep the existing palette, layout, story destinations, source
+claims and motion/accessibility controls. Retain source crop provenance and
+check the actual artwork in both themes, narrow frames and reduced motion.
+This is a local A2 source correction under the same dispatch.
+
+Correction evidence: all eight crops match the supplied source pixels after the
+documented ink conversion. Browser sampling passes 720 motion/crop checks and
+48 layout cases; 361 Node and 293 Python tests pass, with 18 dependency skips.
+React tests, lint and build remain unavailable. See artwork-report.md for the
+source recipe, observed checks and their runtime limits.
+
+Living-picture follow-up requested 2026-09-18: the owner wants the pictures to
+look like looping video inside a living newspaper. Animate the subjects within
+the eight matched reference illustrations, keeping their frames and backgrounds
+fixed. Reuse the reference ink, current colors, reel controls and media policy.
+Give each subject appropriate internal motion (transmission, propeller, liquid,
+wheels, shopfront, gears, water and typing), with independent timing. Reduced
+motion and disabled media show the original still; hover, keyboard pause, hidden
+slides, offscreen elements and hidden documents suspend every internal layer.
+Verify changing interior pixels and stationary surroundings over time, not only
+static screenshots. Keep rendered CSS evidence distinct from actual React
+interaction when dependencies are unavailable. This remains local A2 source work.
+
+Living-picture source evidence: 48 scene comparisons show changing interior
+pixels with fixed outer frames in both themes and three picture sizes. All
+pause/resume, reduced-motion, disabled-media and print observations pass. The
+48-case layout matrix, 361 Node and 293 Python regressions pass (18 native skips).
+Four additional React cases await Vitest; lint and build also remain unavailable.
+See living-newspaper-report.md and its validation record for exact source limits.
+
+## Editorial sign-in continuation — 2026-09-18
+
+The owner supplied a login screenshot and requested a substantial improvement,
+with the broader learning/classroom brand proposal as design context. Continue
+this existing A2 source dispatch for login and the shared authentication layout.
+The initial bounded pass keeps the existing editorial palette and fonts, updates
+the auth wordmark, and makes the form easier to use. The wider classroom, domain
+canonical and private Platform Edit Fabric adoption work remain separate scopes.
+
+Acceptance:
+
+1. Give sign-in, account creation and password recovery a consistent editorial
+   shell: B&D wordmark, learn/build/verify story, readable form hierarchy, theme
+   control and useful public learning links. Use the existing design tokens.
+2. Improve sign-in with password visibility, account-email guidance, field-linked
+   errors and focus on invalid input. Preserve PocketBase login, validation,
+   busy/error recovery, safe return destinations and signup continuation.
+3. Support narrow screens, keyboard navigation, light/dark themes and reduced
+   motion. Illustrations describe the workflow; they never assert live activity,
+   user progress, verification or media availability.
+4. Extend meaningful auth interaction tests, check the classroom return path and
+   run available source/regression/governance gates. Report missing React/Vite
+   dependencies separately from any source-generated browser layout preview.
+5. Preserve previous source and memory events, record the actual evidence and
+   prepare review metadata. No provider, credential, backend, release-control,
+   production deployment or canonical-domain change is authorized by this pass.
+
+The existing private fabric is not materialized in this session. The local
+file contract is recorded in the auth report; it is not a fabric-generated
+EditContract or an independent verification receipt.
+
+Observed source outcome: the editorial auth shell and improved sign-in controls
+are implemented. Source diagnostics pass across 258 modules; regression passes
+345 Node and 293 Python cases with 18 explicit skips. Thirty-six static layout
+previews have no horizontal overflow or off-screen controls. Sixteen authored
+auth component cases, official lint and the build remain unexecuted because the
+frontend dependencies are absent. Native auth and independent rendered acceptance
+remain open; auth-report.md separates source/design evidence from those gates.
+
+## Automatic workspace knowledge continuation — 2026-09-18
+
+The owner requests automatic context assembly, organization and categorization
+into knowledge graphs for BuildAndDo, with inference routed through Cloudflare
+and no local Ollama on the boxes. Continue the existing A2 public application
+source dispatch. The earlier DORA seconds conversion remains intact.
+
+Acceptance:
+
+1. Project readable workspace missions, evidence, completed research, signals
+   and published wiki pages into a deterministic graph. Retain source IDs,
+   dates, recorded evidence states and explicit relationships. Categorization
+   is explained by source metadata or vocabulary rules; it does not establish
+   facts, merge people by name or promote verification.
+2. Reuse PocketBase users and current workspace/record permissions. Exclude
+   personal dossiers, unpublished wiki drafts, unreadable mission sources and
+   other workspaces. Bound source scans and text; report unavailable or capped
+   inputs. Rebuild on reads so edits, deletions and revoked access are respected
+   without a second persistent store or a schema migration.
+3. Assemble relevance-ranked context with a mission anchor, related records,
+   stable citations and an enforced character budget. Treat source text as data,
+   preserve provenance and expose omissions. No model, secret or local inference
+   daemon is required for assembly; queries and source content stay out of logs.
+4. Add a workspace Knowledge page with category/source filters, an interactive
+   graph, source inspection and automatic context assembly. Connect mission and
+   research entry points. Clear prior-account/workspace results, ignore stale
+   responses and refresh visible views without overlapping requests.
+5. Exercise the real graph, routes and browser adapter with permission, ranking,
+   budget, deletion, partial-source and response-race regressions. Add rendered
+   tests and distinguish unavailable browser/native runners from passed source
+   checks. Record the Cloudflare receiving contract without inventing an endpoint
+   or claiming live inference, deployment or private-stack changes.
+
+Verify: `node --test tests/upgrade/knowledge-*.test.mjs`, the KnowledgePage
+Vitest suite, existing dispatch smoke, context, boundary and memory gates.
+The Cloudflare Worker/gateway contract has been requested from the owner;
+context consumption by that private runtime remains receiving-seat work.
+
+Observed source outcome: automatic graph/context APIs, the Knowledge workspace
+page and mission/research entry points are implemented. Twenty-five focused
+tests pass against actual modules with storage/transport doubles; core source
+coverage is 100% lines and 95.88% aggregate branches. Regression passes 345 Node
+and 293 Python tests with 18 explicit native skips; six DORA tests remain green.
+Nine rendered/hook cases are authored but unexecuted because frontend packages
+are absent. Native PocketBase and live inference remain acceptance gaps, not
+successful skips. The knowledge report records runnable evidence and rollback.
+The supplied private edit-fabric adoption remains other-seat work; this source
+provides reference data without creating an edit contract or execution authority.
+
+## Blueprint PR 38 integration continuation — 2026-09-17
+
+The owner reports merge conflicts and failing governance checks. Continue the
+existing A2 dispatch for integration with the PR's actual main base and local
+verification; no deployment, hosted write or new authority is authorized.
+
+Acceptance:
+
+1. Preserve main's protected blueprint upload, worker, saved review and proposal
+   contracts alongside the three-pass extractor and mission planning chain.
+   Register multipart intake and immediate analysis at distinct authenticated
+   routes, retain both test suites, and share the PDF scanner in the worker.
+2. Reconcile specifications and measured context semantically. Keep one current
+   file vector per path, derive relationship vectors from the actual headers,
+   and retain all distinct events from both parents without fabricating evidence.
+3. Run both blueprint coverage gates, decision and source regressions, typing,
+   public boundary, dependency lock and provenance checks. Keep native and
+   rendered acceptance separate when their installed dependencies are absent.
+4. Inspect actual provider check and actor-label state. Do not relax the actor
+   gate, infer hosted Workers diagnostics, or claim publication from local work.
+
+Observed integration outcome: both saved upload/review and immediate analysis
+are preserved under distinct authenticated routes. The saved schema uses the
+shared PDF scan, and flat excerpts survive structuring failures with an observed
+red/green regression. Both parent histories are retained without duplicate file
+vectors. Final regression passes 320 Node and 293 Python tests, with 18 explicit
+native skips. Source typing, statement coverage, context, boundary and manifest
+lock checks pass. The actor label, native PDF/PocketBase, fourteen rendered
+tests and unavailable Workers diagnostics remain acceptance gaps. See
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md for current evidence;
+the earlier continuation results below remain historical observations.
+
+## Blueprint pipeline continuation — 2026-09-17
+
+The owner requests deterministic CPU scan/parse/assess extraction, requirement
+evaluation through the existing Python BDR, component/dependency planning,
+ordered mission challenges and human-reviewed session prompts. This is an A2
+public-source continuation of the existing in-progress dispatch. The starting
+checkout contains the research worker and BDR Phase 1, but none of the reported
+blueprint files or sample PDF; this continuation supplies those missing pieces.
+
+Acceptance:
+
+1. Use the already declared pypdf dependency and standard library only. Preserve
+   PDF digest, page/block locations, heading hierarchy, lists, tables, entities,
+   requirements and resolved references across three deterministic CPU passes.
+   Report sparse pages, ambiguity, duplicates, completeness and confidence.
+2. Evaluate requirements through BDR; preserve answers and abstentions. Generate
+   an explicit component graph, dependency-ordered challenges and review-only
+   prompts with source/evaluation provenance and no authority escalation.
+3. Replace PocketBase's JavaScript decision approximation with a bounded local
+   Python adapter. Reuse native account/workspace authorization, persist private
+   decision receipts with stable IDs, and retain receipts on migration rollback.
+4. Expose authenticated PDF analysis and a workspace blueprint page with all
+   three passes, component dependencies, ordered challenges, prompt review and
+   JSON export. Submitted content is data, never executable instructions.
+5. Exercise the complete PDF-to-prompt chain offline, including provenance,
+   confidence, authority, malformed input, cycles and workspace isolation.
+   Report unavailable native dependencies separately from source-double tests.
+
+No session creation, mission activation, verification settlement, deployment,
+secret access, external model call or private-plane write is authorized.
+Extraction and planning remain unverified; their confidence is heuristic.
+
+Source outcome: all five requested source areas are supplied, including the
+previously absent blueprint modules and page. The focused suite passes 42
+tests, skips two native PDF cases and measures 94.17–100% statement coverage
+per new Python module. Regression passes 299 Node and 266 Python tests, with
+14 native dependency skips. Shared data-name normalization has an observed
+red/green regression. The native-required PDF gate is wired to the existing
+dependency-enabled CI job and correctly fails in this sandbox. Six rendered
+UI tests, native PocketBase and actual hosted acceptance remain unverified;
+missing pypdf and frontend dependencies are recorded in the blueprint report.
 ## Blueprint extractor Phase A continuation — 2026-09-17
 
 The owner requests structured blueprint extraction, research processing, native

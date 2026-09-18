@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-18
-# Depends:     apps/federal_foundry/operator.py, apps/federal_foundry/__main__.py, apps/research/blueprints.py
+# Depends:     apps/federal_foundry/operator.py, apps/federal_foundry/__main__.py, apps/research/blueprint_documents.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES apps/federal_foundry/operator.py; VALIDATES apps/federal_foundry/__main__.py; CONSUMES apps/research/blueprints.py
+# EnumEdges:   VALIDATES apps/federal_foundry/operator.py; VALIDATES apps/federal_foundry/__main__.py; CONSUMES apps/research/blueprint_documents.py
 # DAG Node:    none
 # Intent:      Verify discovered capability evidence, bounded proposal authority, deterministic interoperability and non-destructive operator compilation.
 # ───────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ from apps.federal_foundry.operator import (
 )
 from apps.federal_foundry.protocol import make_task
 from apps.mission_suite.bundle import SOURCE_FILES, package
-from apps.research.blueprints import structure_text
+from apps.research.blueprint_documents import structure_text
 from apps.research.contracts import ResearchError
 
 AT = "2026-09-18T12:00:00Z"
@@ -75,7 +75,7 @@ class OperatorCompilerTests(unittest.TestCase):
     def source_copy(self) -> Path:
         root = self.root / "portable"
         for name in set(SOURCE_FILES) | {
-            "apps/federal_foundry/operator.py", "apps/research/blueprints.py", "apps/research/documents.py",
+            "apps/federal_foundry/operator.py", "apps/research/blueprint_documents.py", "apps/research/documents.py",
         }:
             target = root / name
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -219,9 +219,9 @@ class OperatorCompilerTests(unittest.TestCase):
 
     def test_symlinked_and_nonregular_sources_cannot_escape_discovery(self) -> None:
         root = self.source_copy()
-        path = root / "apps/research/blueprints.py"
+        path = root / "apps/research/blueprint_documents.py"
         path.unlink()
-        path.symlink_to(ROOT / "apps/research/blueprints.py")
+        path.symlink_to(ROOT / "apps/research/blueprint_documents.py")
         with self.assertRaisesRegex(ResearchError, "unsafe_source"):
             operator_blueprint(self.catalog, root=root, evaluated_at=AT)
         path.unlink()
@@ -235,7 +235,7 @@ class OperatorCompilerTests(unittest.TestCase):
 
     def test_oversized_unreadable_and_unsafe_source_paths_are_bounded(self) -> None:
         root = self.source_copy()
-        path = root / "apps/research/blueprints.py"
+        path = root / "apps/research/blueprint_documents.py"
         path.write_bytes(b"x" * 2_000_001)
         with self.assertRaisesRegex(ResearchError, "source_too_large"):
             operator_blueprint(self.catalog, root=root, evaluated_at=AT)
@@ -252,7 +252,7 @@ class OperatorCompilerTests(unittest.TestCase):
         original = make_task
 
         def mutate(catalog, lane, role):
-            path = root / "apps/research/blueprints.py"
+            path = root / "apps/research/blueprint_documents.py"
             path.write_text(path.read_text() + "\n# concurrent source change\n")
             return original(catalog, lane, role)
 

@@ -32,6 +32,13 @@
 schema_version: 1
 
 srs:
+  - code: SRS-BUILDANDDO-ESTATE-001
+    title: Citadel Estate Intelligence deterministic repository compiler
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-ESTATE-001.md
+    notes: Owner-requested additive CPU-only census, module graph, reconciliation, structural validation and local seals; existing application code and all external effects excluded
+
   - code: SRS-BUILDANDDO-DECISION-001
     title: BuildAndDo Decision Runtime Phase 1 typed decision primitive
     status: in_progress

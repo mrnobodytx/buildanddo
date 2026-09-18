@@ -20,6 +20,27 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## PR 40 main integration authorized 2026-09-18
+
+The owner requests merging the latest main into the existing PR branch,
+resolving conflicts and retaining the result for PR synchronization. This is
+an A2 source integration under the existing dispatch. The earlier native,
+rendered and private-runtime acceptance hold remains in effect.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| MERGE-1 | Preserve both public implementations and continuation histories | Targeted blueprint/operator tests and parent-content audit | source resolved; final verification in progress |
+| MERGE-2 | Reconcile the moved document contract and portable archive | `python tests/upgrade/check_federal_foundry.py` | source resolved; archive regression recheck in progress |
+| MERGE-3 | Retain both event histories and verify the integrated tree | Context, boundary, memory and regression gates | in progress; native/rendered/private acceptance remains open |
+
+Memory brief: main adds a separate Analyze PDF view and moves the existing
+saved-document contract to `apps/research/blueprint_documents.py` and the saved
+UI to `BlueprintSavedPage.jsx`. Carry the operator export and its tests into
+that saved flow; retain the newer analysis, knowledge and public-page changes.
+The old operator import and portable archive fail after a textual merge alone.
+Both parents contain 138 distinct historical events; preserve every event
+verbatim. This request authorizes branch integration, not merging PR 40 into main.
+
 ## Operator acceptance continuation authorized 2026-09-18
 
 The owner directs continued public-repository work after the managed provider
@@ -135,6 +156,176 @@ lint and build acceptance. All 98 preceding memory events remain historical.
 No actual government source, private Sentinel service, bus, email or deployment
 was invoked; the dispatch remains in progress for those receiving dependencies.
 
+## Capability roadmap assistance authorized 2026-09-18
+
+The owner's assistance request continues this dispatch for a local public
+handoff and evidence bookkeeping. Private repair execution remains outside the
+public checkout; C-ONE and VCC are proposed receiving roles, not launched seats.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| CR1 | Inspect private-source availability and public reuse | Tracked-path inspection and existing consumer contracts | PASS — private repair modules absent; estate and workspace context documented |
+| CR2 | Specify four repairs and independent negative controls | Synthetic diagnostic block in the handoff | PASS for examples — collision/path controls and normal/-O/-OO exits observed; private source unverified |
+| CR3 | Preserve history and validate the public handoff | Context, boundary and dispatch-memory gates | PASS — 4/4 documentation smoke; 600 file vectors, 1,273 edges, 122 events; all 120 prior events unchanged |
+
+Memory brief: the supplied private verification report is operator-provided
+context, not a run performed by this seat. The public estate compiler retains
+module evidence; workspace knowledge projects currently readable records.
+Neither establishes an organization ownership producer or private runtime.
+Do not import private operational records, transmit a seat event, probe MCP,
+infer approval from a surface flag, or reuse the retired private host. Historical
+application tests are not rerun or claimed as evidence for this documentation.
+
+## Newspaper front page authorized 2026-09-18
+
+The owner requests the supplied newspaper layout in the current site colors,
+independent news/platform reels, slow living engravings and a CSS phone with
+interactive content. This continues the existing A2 application-source dispatch.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| NP1 | Map reference, existing data and motion policy | Source and source-scope inspection | PASS — reuse scoped research, record selectors and current motion preferences |
+| NP2 | Build newspaper, independent reels and phone preview | Focused selection and interaction checks | source complete; 16 Node cases pass; 13 React cases await Vitest |
+| NP3 | Validate themes, responsive layout and retained home behavior | Available rendered/source, regression and layout checks | 48 static layout cases, 361 Node and 293 Python pass; 18 native skips; frontend gates unavailable |
+| NP4 | Record evidence and preserve memory | Context, boundary and dispatch-memory gates | PASS — 591 file vectors, 1253 edges, 114 events; all 111 prior events retained |
+| NP5 | Compare animated subjects with the supplied reference | Reference and component inspection | PASS — the five vector substitutes do not match the eight reference subjects |
+| NP6 | Restore reference artwork and explicit reel mappings | Local asset/source review | PASS — eight exact source crops; theme ink and full silhouettes retained in 720 sampled animation frames |
+| NP7 | Check artwork, themes, crops and retained behavior | Browser/source checks and dispatch smoke | Source/static PASS — 720 motion/crop and 48 layout checks; 361 Node and 293 Python pass, 18 skips; React/lint/build remain unavailable |
+| NP8 | Define subject motion within the retained reference artwork | Reference layers and policy review | PASS — local A2 continuation; existing eight subjects and media activity policy retained |
+| NP9 | Animate picture interiors with independent loops and complete pause behavior | Time-sampled browser rendering and component cases | Source/CSS PASS — 48 scene comparisons and 12 pause/static observations; four React cases await Vitest |
+| NP10 | Verify responsive/reduced motion behavior and preserve evidence | Dispatch smoke, context, boundary and memory checks | Source/browser checks PASS — 48 layout cases, 361 Node and 293 Python pass, 18 skips; 4/7 smoke; full React acceptance open |
+
+Memory brief: HomePage already isolates records by account/workspace/demo tree.
+Research has an authenticated read adapter; public news and popularity analytics
+are not configured. Public reading must carry its original source/date and stay
+separate from workspace results. Browser tools are installed; React, Vitest and
+Vite are absent. A source-generated preview cannot establish application behavior.
+
+## Editorial sign-in authorized 2026-09-18
+
+The owner's screenshot and request continue the existing A2 public-source scope.
+Implement the login/shared-auth experience first, using the supplied learning
+brand direction. The former DORA and workspace knowledge changes are retained.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| AU1 | Inspect screenshot, auth contracts and existing visual tokens | Current source and auth-test review | PASS — existing native auth and safe return routes identified |
+| AU2 | Redesign the shared auth shell and improve sign-in usability | Source review and focused auth interaction tests | source complete; 16 React cases await missing Vitest |
+| AU3 | Verify desktop/mobile layout, themes, validation and return paths | Available rendered/source checks and classroom regression | 36 static preview cases and 20 classroom cases pass; actual React/native acceptance pending |
+| AU4 | Record evidence and preserve prior memory | Context, boundary and dispatch memory gates | PASS — context and 896-file boundary; 578 file vectors, 1224 edges, 111 events; all 108 prior events retained |
+
+Memory brief: sign-in, signup and reset share AuthLayout; login calls the existing
+PocketBase auth context and preserves workspaceDestination. The supplied image
+shows a display name in the email field. Reuse current validation and explain the
+account-email requirement. React, Vitest and Vite are absent at inspection; a
+browser executable is available. Do not call a layout preview a rendered React
+test or invent independent verification. No authenticated workspace is supplied.
+Other seats' domain/fabric/CI findings are reported context, not inspected runtime
+facts in this source pass. No external seat event, deploy or provider call occurs.
+
+Evidence: .bits/out/VCC-BUILDANDDO-UPGRADE-001/auth-report.md. Source diagnostics
+and 345 Node/293 Python cases pass, with 18 explicit skips. Smoke is 4/7 because
+Vitest, the repository lint plugin and Vite are absent. Static design previews do
+not establish React, native auth, staging or independent verification.
+
+## Automatic workspace knowledge authorized 2026-09-18
+
+The owner requests context assembly and categorized knowledge graphs, following
+the clarification that inference uses Cloudflare rather than local Ollama. This
+continues the registered A2 source dispatch; external inference and deployment
+remain separate runtime effects.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| KG1 | Inspect retained work, source permissions and reusable data | Repository/source inspection | PASS — DORA fix retained; no cancelled knowledge edits found |
+| KG2 | Build permission-scoped graph and bounded context API | `node --test tests/upgrade/knowledge-system.test.mjs` | PASS — 15 source cases; current access, provenance, updates, bounds and partial coverage |
+| KG3 | Connect Knowledge page, automatic refresh and mission/research entry points | Knowledge client and rendered tests | PARTIAL — 10 connected client cases pass; page and mission panel implemented; nine React cases await Vitest |
+| KG4 | Verify source, regression and native/browser limits | Existing smoke, targeted coverage and boundary gates | PARTIAL — 345 Node and 293 Python passes, 18 explicit skips; native PocketBase and frontend gates unavailable |
+| KG5 | Retain memory and document Cloudflare consumption | Context, dispatch memory and source report | PASS — 576 file vectors, 1,215 declared edges and 108 events; all 105 prior events retained |
+
+Memory brief: missions/evidence/signals already expose native record rules;
+research and wiki use locked collections with authenticated custom read routes.
+Research results contain parser provenance and mission relations. The existing
+Praxis evidence fabric owns claim verification and lineage; this projection
+does not replace that authority. No Cloudflare inference endpoint, credentials,
+authenticated shared workspace or local Ollama runtime is supplied. Source
+validation can run offline with the existing Node storage/transport doubles;
+native PocketBase and frontend packages are initially unavailable.
+
+Source outcome: five readable source collections feed stable record/category/topic
+nodes and recorded mission/research/evidence relationships. Context is assembled
+automatically with cited provenance, source availability and exact character
+bounds. No record, verification state or provider is mutated. The four core
+backend/client modules measure 100% lines and 95.88% aggregate branches under
+explicit storage/transport doubles. Six retained DORA tests pass. The limited
+source diagnostic parses 258 modules; it is not the official frontend lint gate.
+
+Frontend test/lint/build commands fail because Vitest, eslint-plugin-import and
+Vite are absent. Nine rendered/hook cases are authored but unexecuted; native
+PocketBase and live Cloudflare acceptance remain open. The other seats own
+Platform Edit Fabric adoption and private execution. Their quoted local-model
+probe conflicts with the earlier Cloudflare routing statement; actual runtime
+binding must be confirmed by the receiving seat. No live model, seat event,
+private edit resolver, deployment or external write is claimed.
+
+Evidence: .bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md.
+Consumer contract: docs/workspace-knowledge.md and
+.bits/handoffs/2026-09-18-bits-codegen-cmax-b-knowledge-context.md.
+Final local smoke: 4/7. Context, boundary (894 files) and memory pass;
+CGRF provenance covers 15/15 new files. Frontend failures remain unresolved
+dependency gaps, with independent native/rendered acceptance still required.
+
+## Blueprint PR 38 integration authorized 2026-09-17
+
+The owner's conflict and governance report continues this in-progress A2 source
+dispatch. Update from the named origin/main base and retain both implementations.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| A | Reconcile saved intake and immediate analysis with distinct routes and shared PDF scan | node --test tests/upgrade/decision-runtime.test.mjs tests/upgrade/blueprint-client.test.mjs tests/upgrade/blueprint-saved-client.test.mjs tests/upgrade/blueprint-system.test.mjs | PASS: 41 source tests; duplicate-route regression reproduced and resolved |
+| B | Retain both Python contracts and their coverage | python tests/upgrade/check_blueprint_pipeline.py; python tests/upgrade/check_blueprints.py; python tests/upgrade/check_decision_runtime.py | PASS for source: 69, 51 and 64 passes; native skips remain explicit; saved PDF fallback has red/green evidence |
+| C | Reconcile source records and both parents' event histories | python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py | PASS: one current vector per path, header-derived edges, all 102 distinct parent events retained |
+| D | Validate the integrated tree and report provider limits | python scripts/ci/agent_context.py --check; python scripts/ci/verify_public_boundary.py; python scripts/ci/supply_chain.py --skip-audit --check-lock | Local source checks PASS; hosted label, native/rendered acceptance and Workers diagnostics remain open |
+
+The actor:agent label must be applied through the source-control UI; repository
+CLI writes are unavailable in this session. No workflow check is bypassed.
+
+Recovered integration evidence: 320 Node and 293 Python tests pass, with 18
+native dependency skips. The targeted pipeline measures 91.57–100% statement
+coverage across both blueprint contracts; the saved worker gate measures
+88.27–98.31%. Strict typing passes sixteen files and the limited frontend
+diagnostic parses 252 modules. Existing smoke remains 4/7 because Vitest,
+eslint-plugin-import and Vite are absent. Native pypdf/PocketBase acceptance
+and fourteen rendered tests remain unverified. The unchanged advisory changelog
+check is stale; Workers check 105249499047 supplies no diagnostic text.
+The current blueprint-report.md records exact commands, causes and limits.
+
+## Blueprint pipeline continuation authorized 2026-09-17
+
+The current owner request continues this A2 source dispatch with five tasks.
+The blueprint files described in the source conversation are absent at the
+starting revision. Reuse the existing research contracts, native PocketBase
+authorization, BDR runtime and workspace shell to supply the missing pipeline.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| BP1 | CPU scan, parse and assessment with page provenance | `python -m unittest tests.upgrade.test_blueprint_extraction` | source PASS; native PDF unavailable |
+| BP2 | BDR, components, missions and review-only prompts | `python -m unittest tests.upgrade.test_blueprint_pipeline` | source PASS; native PDF chain unavailable |
+| BP3 | Python process bridge and retained decision receipts | `node --test tests/upgrade/decision-runtime.test.mjs` | PASS: real Python and policy with a storage double; native PocketBase unverified |
+| BP4 | Workspace analysis and prompt/export review | `npm --prefix apps/web test -- BlueprintPage` | source supplied; six rendered tests require missing frontend dependencies |
+| BP5 | Offline integration and regression evidence | `python tests/upgrade/check_blueprint_pipeline.py` | PASS: 42 tests, 2 native skips, 94.17–100% statement coverage |
+
+Run the existing smoke gates as well. No live authenticated workspace is
+provided, so no seat event is fabricated. Python pypdf and frontend packages
+are initially unavailable; distinguish native acceptance from test doubles.
+
+Current local regression: 299 Node passes; 266 Python passes with 14 native
+dependency skips. The mandatory `--require-pdf` gate fails here because pypdf
+is unavailable and is wired into the CI job that installs the declared parser.
+Strict typing and source lint pass. Vite build, Vitest and official frontend
+lint cannot start because their dependencies are missing. No deployment or
+native PocketBase migration is claimed. Evidence and runnable commands are in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/blueprint-report.md.
 ## Blueprint Phase A continuation authorized 2026-09-17
 
 The current owner request continues the registered A2 research/workspace source

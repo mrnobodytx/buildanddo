@@ -45,7 +45,7 @@ export function operatorFixture() {
 export function operatorPlan({ problem, document } = {}) {
     const result = spawnSync('python', ['-c',
         'import json,sys; from apps.federal_foundry.catalog import load_catalog; from apps.federal_foundry.operator import operator_blueprint; ' +
-        'from apps.research.blueprints import structure_text; options=json.load(sys.stdin); ' +
+        'from apps.research.blueprint_documents import structure_text; options=json.load(sys.stdin); ' +
         'blueprint=structure_text(options["document"],source_file="synthetic.pdf",source_hash="a"*64,page_count=1).to_dict() if options.get("document") else None; ' +
         'blueprint.update(extracted_at="2026-09-18T11:00:00Z") if blueprint else None; ' +
         'print(json.dumps(operator_blueprint(load_catalog(), problem=options.get("problem"), blueprint=blueprint, evaluated_at="2026-09-18T12:00:00Z"), sort_keys=True, ensure_ascii=False))'],

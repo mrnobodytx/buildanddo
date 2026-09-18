@@ -8,12 +8,15 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-17
-// Depends:     apps/web/src/lib/missionResearch.js, apps/web/src/lib/missionLearning.js, apps/pocketbase/pb_hooks/blueprint.pb.js
+// Depends:     apps/web/src/lib/blueprintAnalysis.js, apps/web/src/lib/missionResearch.js, apps/web/src/lib/missionLearning.js, apps/pocketbase/pb_hooks/blueprint.pb.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/web/src/lib/missionResearch.js; CONSUMES apps/web/src/lib/missionLearning.js; CONSUMES apps/pocketbase/pb_hooks/blueprint.pb.js
+// EnumEdges:   CONSUMES apps/web/src/lib/blueprintAnalysis.js; CONSUMES apps/web/src/lib/missionResearch.js; CONSUMES apps/web/src/lib/missionLearning.js; CONSUMES apps/pocketbase/pb_hooks/blueprint.pb.js
 // DAG Node:    none
 // Intent:      Keep blueprint uploads and proposal exports scoped to one account while retaining uncertain request identity and unknown assessments.
 // ───────────────────────────────────────────────────────────────
+
+import { createBlueprintAnalysisClient } from './blueprintAnalysis.js';
+export { exportMissionPlan } from './blueprintAnalysis.js';
 
 import { createResearchClient, RESEARCH_STATES } from './missionResearch.js';
 import { emptyPlan } from './missionLearning.js';
@@ -59,6 +62,7 @@ export function createBlueprintClient({ client, accountId, workspaceId, demo = f
     observe = (_name, _verb, operation) => operation() }) {
     const current = () => !demo && id(accountId) && id(workspaceId) && isCurrent() && client.authStore.record?.id === accountId;
     const prefix = `/api/buildanddo/workspaces/${encodeURIComponent(workspaceId)}/blueprints`;
+    const analysis = createBlueprintAnalysisClient({ client, accountId, workspaceId, demo, isCurrent });
     const research = createResearchClient({ client, accountId, workspaceId, demo, isCurrent, observe });
     let pending = null; let busy = false;
     const failure = (error, writing = false) => ({ ok: false,
@@ -103,6 +107,7 @@ export function createBlueprintClient({ client, accountId, workspaceId, demo = f
         return key;
     };
     return {
+        analyze: analysis.analyze,
         read: (page = 1) => read('', { page }, (data) => data?.workspace === workspaceId && ['owner', 'admin', 'editor', 'viewer'].includes(data.role) &&
             data.page === page && typeof data.has_more === 'boolean' && list(data.items, 20, (row) => recordShape(row, workspaceId))),
         detail: (recordId) => id(recordId) ? read(`/${recordId}`, {}, (data) => data?.workspace === workspaceId && data.record?.id === recordId &&
