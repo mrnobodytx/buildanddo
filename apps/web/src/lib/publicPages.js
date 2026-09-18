@@ -20,9 +20,9 @@ export const PUBLIC_PAGES = [
     {
         path: '/',
         label: 'Home',
-        title: 'BuildAndDo — Your business, in evidence',
+        title: 'BuildAndDo — learn by doing, together',
         description:
-            'Notice what changed, approve a bounded mission, and verify the outcome. A business newspaper built from the sources you connect.',
+            'Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.',
         type: 'WebPage',
     },
     {
@@ -85,7 +85,7 @@ export const PUBLIC_PAGES = [
         label: 'Blog',
         title: 'The BuildAndDo journal',
         description:
-            'Field notes on evidence, bounded work and running a business with a traceable record of decisions.',
+            'Field notes on learning by doing, bounded work and keeping a traceable record of what you built.',
         type: 'Blog',
     },
     {
