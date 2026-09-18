@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-18
+# Depends:     apps/web/src/components/editorial/Engraving.jsx, apps/web/src/components/editorial/editorial.css
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES apps/web/src/components/editorial/Engraving.jsx; VALIDATES apps/web/src/components/editorial/editorial.css; PRODUCES .bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json
+# DAG Node:    none
+# Intent:      Retain time-sampled browser observations and source fingerprints without claiming React or deployed acceptance.
+# ───────────────────────────────────────────────────────────────
+
+file: .bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json
+schema: buildanddo.living-newspaper-validation/v1

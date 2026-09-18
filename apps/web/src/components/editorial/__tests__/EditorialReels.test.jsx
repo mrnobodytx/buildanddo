@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/web/src/components/editorial/VerticalNewsReel.jsx, apps/web/src/components/editorial/LivingStill.jsx, apps/web/src/components/editorial/AndroidPhoneFrame.jsx, apps/web/src/components/editorial/EditorialFrontPage.jsx
+// Depends:     apps/web/src/components/editorial/VerticalNewsReel.jsx, apps/web/src/components/editorial/LivingStill.jsx, apps/web/src/components/editorial/AndroidPhoneFrame.jsx, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/components/editorial/Engraving.jsx
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/web/src/components/editorial/VerticalNewsReel.jsx; VALIDATES apps/web/src/components/editorial/LivingStill.jsx; VALIDATES apps/web/src/components/editorial/AndroidPhoneFrame.jsx; VALIDATES apps/web/src/components/editorial/EditorialFrontPage.jsx
+// EnumEdges:   VALIDATES apps/web/src/components/editorial/VerticalNewsReel.jsx; VALIDATES apps/web/src/components/editorial/LivingStill.jsx; VALIDATES apps/web/src/components/editorial/AndroidPhoneFrame.jsx; VALIDATES apps/web/src/components/editorial/EditorialFrontPage.jsx; VALIDATES apps/web/src/components/editorial/Engraving.jsx
 // DAG Node:    none
 // Intent:      Exercise independent story navigation, accessible pauses, changing sources and interactive phone content using the actual components.
 // ───────────────────────────────────────────────────────────────
@@ -24,6 +24,7 @@ import VerticalNewsReel from '../VerticalNewsReel';
 import LivingStill from '../LivingStill';
 import AndroidPhoneFrame from '../AndroidPhoneFrame';
 import EditorialFrontPage from '../EditorialFrontPage';
+import Engraving from '../Engraving';
 
 const policy = vi.hoisted(() => ({ active: true, enabled: true, automatic: true }));
 vi.mock('@/contexts/MotionContext', () => ({
@@ -34,7 +35,7 @@ vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ isAuthed: true, use
 const items = ['First', 'Second', 'Third', 'Fourth', 'Fifth'].map((title, index) => ({
     id: String(index), title, description: 'Read this story in its original context.',
     kicker: 'Research', source: 'Original source', date: '2026-01-01',
-    href: '/practice', linkLabel: 'Read ' + title, illustration: 'library',
+    href: '/practice', linkLabel: 'Read ' + title, illustration: 'wireless',
 }));
 const mount = (child) => render(<MemoryRouter>{child}</MemoryRouter>);
 const reel = (name) => within(screen.getByRole('region', { name }));
@@ -173,6 +174,54 @@ describe('independent newspaper reels', () => {
         mount(<main><AndroidPhoneFrame><a href="/classrooms">Find a classroom</a></AndroidPhoneFrame></main>);
         expect(screen.getAllByRole('main')).toHaveLength(1);
         expect(screen.getByRole('link', { name: 'Find a classroom' })).toHaveAttribute('href', '/classrooms');
+    });
+
+    it('animates the illustration interior and retains photograph panning', () => {
+        const view = mount(<VerticalNewsReel items={[items[0], { ...items[1], image: '/photo.png', motion: 'left' }]} label="Pictures" />);
+        const frames = view.container.querySelectorAll('.living-still__image');
+        expect(frames[0]).toHaveClass('living-still--scene');
+        expect(frames[0].querySelector('.engraving__animated')).toBeInTheDocument();
+        expect(frames[1]).toHaveClass('living-still--left');
+        expect(frames[1].querySelector('img')).toHaveAttribute('src', '/photo.png');
+    });
+
+    it('pauses picture layers for hover, keyboard entry, buffers and visibility changes', () => {
+        const view = mount(<VerticalNewsReel items={items} label="Pictures" visibleCount={1} />);
+        const column = screen.getByRole('region', { name: 'Pictures' });
+        const activeFrame = () => column.querySelector('article:not([aria-hidden]) figure');
+        expect(activeFrame()).toHaveAttribute('data-moving', 'on');
+        column.querySelectorAll('article[aria-hidden] figure').forEach(frame => expect(frame).toHaveAttribute('data-moving', 'off'));
+        fireEvent.mouseEnter(column);
+        expect(activeFrame()).toHaveAttribute('data-moving', 'off');
+        fireEvent.mouseLeave(column);
+        expect(activeFrame()).toHaveAttribute('data-moving', 'on');
+        act(() => reel('Pictures').getByRole('link', { name: 'Read First' }).focus());
+        expect(activeFrame()).toHaveAttribute('data-moving', 'off');
+        fireEvent.click(reel('Pictures').getByRole('button', { name: 'Play Pictures' }));
+        expect(activeFrame()).toHaveAttribute('data-moving', 'on');
+        policy.active = false;
+        view.rerender(<MemoryRouter><VerticalNewsReel items={items} label="Pictures" visibleCount={1} /></MemoryRouter>);
+        expect(activeFrame()).toHaveAttribute('data-moving', 'off');
+    });
+
+    it('retains an original still and gives repeated scene masks independent IDs', () => {
+        const view = mount(<><LivingStill motion="scene"><Engraving kind="gears" /></LivingStill><LivingStill motion="scene"><Engraving kind="gears" /></LivingStill></>);
+        const identifiers = [...view.container.querySelectorAll('[id]')].map(node => node.id);
+        expect(new Set(identifiers).size).toBe(identifiers.length);
+        expect(view.container.querySelectorAll('.engraving__still')).toHaveLength(2);
+        expect(view.container.querySelectorAll('.engraving__motion')).toHaveLength(6);
+        Object.assign(policy, { active: false, enabled: false });
+        view.rerender(<MemoryRouter><LivingStill motion="scene"><Engraving kind="gears" /></LivingStill></MemoryRouter>);
+        expect(view.container.querySelector('figure')).toHaveAttribute('data-motion-enabled', 'off');
+        expect(view.container.querySelector('.engraving__still')).toBeInTheDocument();
+        expect(view.container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    });
+
+    it('uses a complete typewriter scene for an unknown illustration', () => {
+        const view = mount(<LivingStill motion="scene"><Engraving kind="unavailable" /></LivingStill>);
+        expect(view.container.querySelector('svg')).toHaveAttribute('data-engraving', 'typewriter');
+        expect(view.container.querySelector('.engraving__still')).toBeInTheDocument();
+        expect(view.container.querySelectorAll('.engraving__motion').length).toBeGreaterThan(0);
     });
 
     it('switches the phone reading independently of both desktop reels', async () => {

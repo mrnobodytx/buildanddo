@@ -18,67 +18,69 @@
 import { isToday, latestPublishedEdition } from './workspaceSummary.js';
 
 // Editorial reading selections, not a live news feed. Dates belong to the sources.
+// Decorative subjects follow the supplied newspaper's left column, top to bottom.
 export const RESEARCH_READING = Object.freeze([
     {
         id: 'retrieval', kicker: 'Machine learning', title: 'Give the answer a source.',
         description: 'Retrieval-augmented generation brings documents into language-model answers. Read the original method and its evaluation.',
-        source: 'Lewis et al. · arXiv', date: '2020-05-22', illustration: 'library',
+        source: 'Lewis et al. · arXiv', date: '2020-05-22', illustration: 'wireless',
         href: 'https://arxiv.org/abs/2005.11401', linkLabel: 'Read the paper',
         motion: 'push', duration: 16,
     },
     {
         id: 'react', kicker: 'Agents & reasoning', title: 'Reason, act, then observe.',
         description: 'ReAct interleaves reasoning with actions and observations. The paper studies how that changes task performance.',
-        source: 'Yao et al. · arXiv', date: '2022-10-06', illustration: 'workshop',
+        source: 'Yao et al. · arXiv', date: '2022-10-06', illustration: 'flight',
         href: 'https://arxiv.org/abs/2210.03629', linkLabel: 'Read the paper',
         motion: 'left', duration: 19,
     },
     {
         id: 'risk-framework', kicker: 'Evaluation & trust', title: 'A framework for better questions.',
         description: 'NIST organizes AI risk work around Govern, Map, Measure and Manage. Start with the framework itself.',
-        source: 'NIST · AI RMF 1.0', date: '2023-01-26', illustration: 'ledger',
+        source: 'NIST · AI RMF 1.0', date: '2023-01-26', illustration: 'medicine',
         href: 'https://doi.org/10.6028/NIST.AI.100-1', linkLabel: 'Read the framework',
         motion: 'pull', duration: 17,
     },
     {
         id: 'attention', kicker: 'Research foundations', title: 'A different way to pay attention.',
         description: 'The Transformer replaces recurrent layers with attention. Revisit the architecture behind modern language models.',
-        source: 'Vaswani et al. · arXiv', date: '2017-06-12', illustration: 'observatory',
+        source: 'Vaswani et al. · arXiv', date: '2017-06-12', illustration: 'automobile',
         href: 'https://arxiv.org/abs/1706.03762', linkLabel: 'Read the paper',
         motion: 'rise', duration: 21,
     },
 ]);
 
 // These are editorial starting points, not a ranking inferred from private usage.
+// Use the reference's right-column subjects; the extra practice card shares gears.
 export const PLATFORM_AREAS = Object.freeze([
     {
         id: 'classrooms', kicker: 'Learn with people', title: 'The classroom.',
         description: 'Follow a shared lesson, bring a question, and work through it together.',
-        source: 'Classrooms', illustration: 'library', href: '/classrooms',
+        source: 'Classrooms', illustration: 'storefront', href: '/classrooms',
         linkLabel: 'Find a classroom', motion: 'push', duration: 18,
     },
     {
         id: 'missions', kicker: 'Turn intent into work', title: 'The mission desk.',
         description: 'Give a real problem a clear scope, a next step, and a record of what happened.',
-        source: 'Workspace', illustration: 'workshop', href: '/app/missions',
+        source: 'Workspace', illustration: 'gears', href: '/app/missions',
         linkLabel: 'Open missions', motion: 'left', duration: 22,
     },
     {
         id: 'knowledge', kicker: 'Connect the pieces', title: 'The knowledge room.',
         description: 'Explore the sources and relationships already recorded in your workspace.',
-        source: 'Workspace', illustration: 'globe', href: '/app/knowledge',
+        source: 'Workspace', illustration: 'ship', href: '/app/knowledge',
         linkLabel: 'Explore knowledge', motion: 'pull', duration: 19,
     },
     {
         id: 'evidence', kicker: 'Show your work', title: 'The evidence ledger.',
         description: 'Keep the observation, its source, and the review alongside the claim.',
-        source: 'Workspace', illustration: 'ledger', href: '/app/evidence',
+        source: 'Workspace', illustration: 'typewriter', href: '/app/evidence',
         linkLabel: 'Inspect evidence', motion: 'rise', duration: 24,
     },
     {
         id: 'practice', kicker: 'Try a method', title: 'The practice library.',
         description: 'Discover ways to turn an objective into a bounded, testable piece of work.',
-        source: 'Practice', illustration: 'observatory', href: '/practice',
+        source: 'Practice', illustration: 'gears', href: '/practice',
         linkLabel: 'Browse practices', motion: 'right', duration: 20,
     },
 ]);
@@ -117,7 +119,8 @@ export function researchReelItems(research, workspaceId, now = new Date()) {
             description: compact(item.context, 170) || 'Open the research desk to inspect the original source and extracted material.',
             source: 'Workspace research', date: item.processed_at,
             href: '/app/research?source=' + encodeURIComponent(item.id),
-            linkLabel: 'Inspect the research', illustration: ['library', 'observatory', 'ledger'][index % 3],
+            // Saved research has no artwork metadata; keep a neutral subject as its position changes.
+            linkLabel: 'Inspect the research', illustration: 'typewriter',
             motion: ['push', 'left', 'pull', 'rise'][index % 4], duration: 16 + index % 4 * 2,
         }));
 }

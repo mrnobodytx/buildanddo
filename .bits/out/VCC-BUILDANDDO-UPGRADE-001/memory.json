@@ -29,7 +29,9 @@
         "blueprint",
         "workspace-knowledge",
         "editorial-auth",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -519,7 +521,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 34746,
+      "lines": 35269,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -538,7 +540,9 @@
         "blueprint",
         "workspace-knowledge",
         "editorial-auth",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -654,7 +658,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1081,
+      "lines": 1087,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -674,7 +678,9 @@
         "blueprint",
         "workspace-knowledge",
         "editorial-auth",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -978,7 +984,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1396,
+      "lines": 1429,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -998,7 +1004,9 @@
         "blueprint",
         "workspace-knowledge",
         "editorial-auth",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -4623,7 +4631,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 232,
+      "lines": 238,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep protected workspace routes recoverable and expose automatic knowledge assembly through the existing lazy route boundary.",
@@ -5643,7 +5651,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 142,
+      "lines": 175,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose public sections, mobile navigation and a persistent theme control.",
@@ -6717,7 +6725,7 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 275,
+      "lines": 276,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the knowledge workspace discoverable in the existing persistent and mobile workspace navigation.",
@@ -8620,7 +8628,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 101,
+      "lines": 107,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep public navigation, canonical metadata and crawler output on the same route catalogue.",
@@ -20445,16 +20453,19 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "Gear",
+        "SceneEffects",
         "Engraving"
       ],
       "dependencies": [
+        "apps/web/public/images/editorial/reference-backgrounds.png",
+        "apps/web/public/images/editorial/reference-engravings.png",
+        "apps/web/src/index.css",
         "react"
       ],
-      "lines": 132,
+      "lines": 152,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Illustrate research and platform areas with original ink drawings that adapt to the existing paper and dark themes.",
+      "intent_statement": "Bring the reference subjects to life inside fixed frames while retaining their original stills and theme ink.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -20466,7 +20477,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -20484,12 +20497,13 @@
       "dependencies": [
         "./editorial.css",
         "@/contexts/MotionContext",
+        "apps/web/src/contexts/MotionContext.jsx",
         "react"
       ],
       "lines": 44,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Move a still illustration gently inside a fixed crop only while its reader and motion policy permit it.",
+      "intent_statement": "Keep picture motion inside a fixed frame and suspend every layer when the reader or motion policy requires it.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -20501,7 +20515,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -20524,6 +20539,11 @@
         "@/lib/editorialContent",
         "@/lib/editorialReel",
         "@/lib/motion/runtime",
+        "apps/web/src/components/editorial/Engraving.jsx",
+        "apps/web/src/components/editorial/LivingStill.jsx",
+        "apps/web/src/contexts/MotionContext.jsx",
+        "apps/web/src/lib/editorialContent.js",
+        "apps/web/src/lib/editorialReel.js",
         "lucide-react",
         "react",
         "react-router-dom"
@@ -20543,7 +20563,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -20559,15 +20580,21 @@
       "dependencies": [
         "../AndroidPhoneFrame",
         "../EditorialFrontPage",
+        "../Engraving",
         "../LivingStill",
         "../VerticalNewsReel",
         "@testing-library/react",
         "@testing-library/user-event",
+        "apps/web/src/components/editorial/AndroidPhoneFrame.jsx",
+        "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+        "apps/web/src/components/editorial/Engraving.jsx",
+        "apps/web/src/components/editorial/LivingStill.jsx",
+        "apps/web/src/components/editorial/VerticalNewsReel.jsx",
         "react",
         "react-router-dom",
         "vitest"
       ],
-      "lines": 203,
+      "lines": 252,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise independent story navigation, accessible pauses, changing sources and interactive phone content using the actual components.",
@@ -20582,7 +20609,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -20599,12 +20628,12 @@
         "apps/web/src/components/editorial/EditorialFrontPage.jsx",
         "apps/web/src/index.css"
       ],
-      "lines": 259,
+      "lines": 329,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Translate the newspaper reference into readable columns and slow motion using only the existing theme palette.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -20614,7 +20643,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -20632,9 +20662,10 @@
         "editorialDate"
       ],
       "dependencies": [
-        "./workspaceSummary.js"
+        "./workspaceSummary.js",
+        "apps/web/src/lib/workspaceSummary.js"
       ],
-      "lines": 166,
+      "lines": 169,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep public research reading distinct from current private records and preserve dates and evidence states.",
@@ -20649,7 +20680,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "editorial-artwork"
       ],
       "tenant_id": null
     },
@@ -20715,6 +20747,259 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "editorial-frontpage"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py",
+        "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml",
+        "apps/web/src/components/editorial/Engraving.jsx",
+        "apps/web/src/lib/editorialContent.js"
+      ],
+      "lines": 138,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record reference fidelity and crop evidence for the artwork correction with explicit frontend execution limits.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-artwork"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/public/images/editorial/reference-engravings.png",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [],
+      "lines": 0,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the source crop coordinates and ink conversion for the eight owner-supplied newspaper illustrations.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-artwork"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/public/images/editorial/reference-engravings.png"
+      ],
+      "lines": 76,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the source crop coordinates and ink conversion for the eight owner-supplied newspaper illustrations.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "editorial-artwork"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json",
+        "apps/web/src/components/editorial/Engraving.jsx",
+        "apps/web/src/components/editorial/LivingStill.jsx"
+      ],
+      "lines": 166,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the living-picture implementation and separate measured CSS motion from unavailable application acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "living-newspaper"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/editorial/Engraving.jsx",
+        "apps/web/src/components/editorial/editorial.css"
+      ],
+      "lines": 794,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain time-sampled browser observations and source fingerprints without claiming React or deployed acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "living-newspaper"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/editorial/Engraving.jsx",
+        "apps/web/src/components/editorial/editorial.css"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain time-sampled browser observations and source fingerprints without claiming React or deployed acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "living-newspaper"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/public/images/editorial/reference-backgrounds.png",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [],
+      "dependencies": [
+        "apps/web/public/images/editorial/reference-engravings.png"
+      ],
+      "lines": 0,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Remove stationary duplicates behind moving reference subjects while retaining the untouched source for reduced motion.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "living-newspaper"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/public/images/editorial/reference-backgrounds.png.cgrf.yaml",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/public/images/editorial/reference-engravings.png"
+      ],
+      "lines": 52,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Remove stationary duplicates behind moving reference subjects while retaining the untouched source for reduced motion.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "living-newspaper"
       ],
       "tenant_id": null
     },
@@ -33249,6 +33534,166 @@
       "created_by": "BITS-CODEGEN"
     },
     {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "target": "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md consumes apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "target": "apps/web/src/components/editorial/Engraving.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md consumes apps/web/src/components/editorial/Engraving.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "target": "apps/web/src/lib/editorialContent.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md consumes apps/web/src/lib/editorialContent.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml",
+      "target": "apps/web/public/images/editorial/reference-engravings.png",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/public/images/editorial/reference-engravings.png.cgrf.yaml validates apps/web/public/images/editorial/reference-engravings.png.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/Engraving.jsx",
+      "target": "apps/web/public/images/editorial/reference-engravings.png",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/Engraving.jsx consumes apps/web/public/images/editorial/reference-engravings.png.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md",
+      "target": "apps/web/src/components/editorial/Engraving.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md consumes apps/web/src/components/editorial/Engraving.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md",
+      "target": "apps/web/src/components/editorial/LivingStill.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md consumes apps/web/src/components/editorial/LivingStill.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.cgrf.yaml produces .bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.cgrf.yaml",
+      "target": "apps/web/src/components/editorial/Engraving.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.cgrf.yaml validates apps/web/src/components/editorial/Engraving.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.cgrf.yaml",
+      "target": "apps/web/src/components/editorial/editorial.css",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-validation.json.cgrf.yaml validates apps/web/src/components/editorial/editorial.css.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/public/images/editorial/reference-backgrounds.png.cgrf.yaml",
+      "target": "apps/web/public/images/editorial/reference-engravings.png",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/public/images/editorial/reference-backgrounds.png.cgrf.yaml consumes apps/web/public/images/editorial/reference-engravings.png.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/public/images/editorial/reference-backgrounds.png.cgrf.yaml",
+      "target": "apps/web/public/images/editorial/reference-backgrounds.png",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "apps/web/public/images/editorial/reference-backgrounds.png.cgrf.yaml produces apps/web/public/images/editorial/reference-backgrounds.png.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/Engraving.jsx",
+      "target": "apps/web/public/images/editorial/reference-backgrounds.png",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/Engraving.jsx consumes apps/web/public/images/editorial/reference-backgrounds.png.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx",
+      "target": "apps/web/src/components/editorial/Engraving.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/editorial/__tests__/EditorialReels.test.jsx validates apps/web/src/components/editorial/Engraving.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/build.test.mjs",
@@ -34729,12 +35174,90 @@
       "timestamp": "2026-09-18T15:40:46.301959+00:00",
       "commit_sha": null,
       "smoke_result": "4/7 smoke; 48/48 static layout"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "description": "The eight owner-supplied newspaper subjects replace unrelated vector art. Native browser PNG decoding verifies all 135168 source pixels against the documented ink conversion. All 720 sampled CSS motion/crop checks retain complete artwork in both themes; pause and reduced motion pass. Static layout passes 48 cases. Existing regression passes 361 Node and 293 Python cases with 18 explicit skips.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T15:59:22.278108+00:00",
+      "commit_sha": null,
+      "smoke_result": "8/8 crops; 720/720 motion/crop; 48/48 layout"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "description": "Actual React tests, official lint and Vite build cannot start because Vitest, eslint-plugin-import and Vite are unavailable. The updated fixture is retained for the declared runner. Static JSX/browser previews and source diagnostics do not establish real React interactions or application-build acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T15:56:56.242443+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/artwork-report.md",
+      "description": "Artwork correction source/static checks pass with 4/7 application smoke. The tracked-file inventory mismatch after staging the asset/report was corrected by refreshing the lock; context and the 924-file public boundary pass. Provenance records the source digest, native crop boxes and themed atlas. All 114 earlier dispatch events remain unchanged; no backend, provider or deployed-site acceptance is claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T16:03:43.025250+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md",
+      "description": "All eight reference pictures now have internal CSS motion inside stationary frames. Browser pixel comparisons pass in both themes and three frame sizes (48 scenes), with 12 pause/resume, disabled-media, reduced-motion and print observations. All 48 public/long-title layout cases pass. Regression passes 361 Node and 293 Python cases with 18 native-dependency skips; limited diagnostics parse 276 modules. Browser fixtures use actual artwork/CSS with static JSX adapters, not React.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T16:29:23.500386+00:00",
+      "commit_sha": null,
+      "smoke_result": "48/48 scenes; 12/12 controls; 48/48 layout"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md",
+      "description": "Actual React tests, official lint and the Vite build cannot start because Vitest, eslint-plugin-import and Vite are missing. Four additional component cases cover fixed picture interiors, pause propagation, unique masks and fallback scenes but remain unexecuted. Source/browser observations do not establish real React interaction or build acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T16:29:14.938166+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/living-newspaper-report.md",
+      "description": "The living-newspaper continuation passes four of seven application smoke groups. The measured context and 929-file public-boundary checks pass. Existing scene artwork is retained, and the new locally repaired background atlas has source/output provenance. All 117 historical dispatch events remain unchanged. Frontend runtime acceptance stays open; no deployment or external write occurred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T16:35:37.787304+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 591,
-    "type_b_count": 1253,
-    "type_c_count": 114,
+    "type_a_count": 599,
+    "type_b_count": 1269,
+    "type_c_count": 120,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
