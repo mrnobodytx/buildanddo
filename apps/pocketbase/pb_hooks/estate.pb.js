@@ -21,14 +21,11 @@
 //      pb_data/estate) and answered only to an authenticated user whose level is `master`; everyone else gets 404,
 //      the same answer as for a path that does not exist.
 
-const SEAT_FIELD = 'cnwb_seat_level';
-const MASTER = 'master';
-
-function isSuperuser(e) {
-    try { return typeof e.hasSuperuserAuth === 'function' ? e.hasSuperuserAuth() : false; } catch (_err) { return false; }
-}
-
+// PocketBase >=0.23 runs every handler in its own VM: file-scope helpers are NOT visible inside handlers
+// (measured 2026-09-18 on staging 0.39.8: "ReferenceError: realtimeConfig is not defined"). Helpers live in
+// the sibling lib and are require()d inside each handler, the same way main's hooks load telemetry.js.
 onRecordCreateRequest((e) => {
+    const { SEAT_FIELD, isSuperuser } = require(`${__hooks}/estate-lib.js`);
     if (!isSuperuser(e) && e.record.getString(SEAT_FIELD)) {
         throw new ForbiddenError(`${SEAT_FIELD} is set by the seat login, not by the client.`);
     }
@@ -36,6 +33,7 @@ onRecordCreateRequest((e) => {
 }, 'users');
 
 onRecordUpdateRequest((e) => {
+    const { SEAT_FIELD, isSuperuser } = require(`${__hooks}/estate-lib.js`);
     if (!isSuperuser(e)) {
         const before = e.record.original().getString(SEAT_FIELD);
         const after = e.record.getString(SEAT_FIELD);
@@ -47,6 +45,7 @@ onRecordUpdateRequest((e) => {
 }, 'users');
 
 routerAdd('GET', '/api/buildanddo/estate/fleet-status', (e) => {
+    const { SEAT_FIELD, MASTER } = require(`${__hooks}/estate-lib.js`);
     const level = e.auth ? String(e.auth.getString(SEAT_FIELD) || '').trim().toLowerCase() : '';
     if (level !== MASTER) {
         return e.json(404, { error: 'not found' });
