@@ -464,8 +464,8 @@ CI_JOB_BLOCK = f"""
       when: on_success
     - when: never
   script:
-    - python tools/buildanddo_release.py plan --root . --repo .
-    - python tools/buildanddo_release.py build --root . --repo .
+    - python3 tools/buildanddo_release.py plan --root . --repo .
+    - python3 tools/buildanddo_release.py build --root . --repo .
   artifacts:
     when: always
     expire_in: 14 days
