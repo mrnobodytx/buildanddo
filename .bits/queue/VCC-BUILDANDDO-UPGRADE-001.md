@@ -20,6 +20,53 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Automatic workspace knowledge authorized 2026-09-18
+
+The owner requests context assembly and categorized knowledge graphs, following
+the clarification that inference uses Cloudflare rather than local Ollama. This
+continues the registered A2 source dispatch; external inference and deployment
+remain separate runtime effects.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| KG1 | Inspect retained work, source permissions and reusable data | Repository/source inspection | PASS — DORA fix retained; no cancelled knowledge edits found |
+| KG2 | Build permission-scoped graph and bounded context API | `node --test tests/upgrade/knowledge-system.test.mjs` | PASS — 15 source cases; current access, provenance, updates, bounds and partial coverage |
+| KG3 | Connect Knowledge page, automatic refresh and mission/research entry points | Knowledge client and rendered tests | PARTIAL — 10 connected client cases pass; page and mission panel implemented; nine React cases await Vitest |
+| KG4 | Verify source, regression and native/browser limits | Existing smoke, targeted coverage and boundary gates | PARTIAL — 345 Node and 293 Python passes, 18 explicit skips; native PocketBase and frontend gates unavailable |
+| KG5 | Retain memory and document Cloudflare consumption | Context, dispatch memory and source report | PASS — 576 file vectors, 1,215 declared edges and 108 events; all 105 prior events retained |
+
+Memory brief: missions/evidence/signals already expose native record rules;
+research and wiki use locked collections with authenticated custom read routes.
+Research results contain parser provenance and mission relations. The existing
+Praxis evidence fabric owns claim verification and lineage; this projection
+does not replace that authority. No Cloudflare inference endpoint, credentials,
+authenticated shared workspace or local Ollama runtime is supplied. Source
+validation can run offline with the existing Node storage/transport doubles;
+native PocketBase and frontend packages are initially unavailable.
+
+Source outcome: five readable source collections feed stable record/category/topic
+nodes and recorded mission/research/evidence relationships. Context is assembled
+automatically with cited provenance, source availability and exact character
+bounds. No record, verification state or provider is mutated. The four core
+backend/client modules measure 100% lines and 95.88% aggregate branches under
+explicit storage/transport doubles. Six retained DORA tests pass. The limited
+source diagnostic parses 258 modules; it is not the official frontend lint gate.
+
+Frontend test/lint/build commands fail because Vitest, eslint-plugin-import and
+Vite are absent. Nine rendered/hook cases are authored but unexecuted; native
+PocketBase and live Cloudflare acceptance remain open. The other seats own
+Platform Edit Fabric adoption and private execution. Their quoted local-model
+probe conflicts with the earlier Cloudflare routing statement; actual runtime
+binding must be confirmed by the receiving seat. No live model, seat event,
+private edit resolver, deployment or external write is claimed.
+
+Evidence: .bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md.
+Consumer contract: docs/workspace-knowledge.md and
+.bits/handoffs/2026-09-18-bits-codegen-cmax-b-knowledge-context.md.
+Final local smoke: 4/7. Context, boundary (894 files) and memory pass;
+CGRF provenance covers 15/15 new files. Frontend failures remain unresolved
+dependency gaps, with independent native/rendered acceptance still required.
+
 ## Blueprint PR 38 integration authorized 2026-09-17
 
 The owner's conflict and governance report continues this in-progress A2 source

@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 489,
+      "lines": 497,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -26,7 +26,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "blueprint"
+        "blueprint",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -516,7 +517,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 32832,
+      "lines": 33715,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -532,7 +533,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "blueprint"
+        "blueprint",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -648,7 +650,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 988,
+      "lines": 1035,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -665,7 +667,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "workflow-runs",
-        "blueprint"
+        "blueprint",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -969,7 +972,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1268,
+      "lines": 1317,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -986,7 +989,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "workflow-runs",
-        "blueprint"
+        "blueprint",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -1003,7 +1007,7 @@
         ".bits/context.md",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 193,
+      "lines": 200,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
@@ -4611,12 +4615,12 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 230,
+      "lines": 232,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Preserve route loading and offer retry when the workspace list cannot be read instead of treating an outage as a new account.",
+      "intent_statement": "Keep protected workspace routes recoverable and expose automatic knowledge assembly through the existing lazy route boundary.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -4627,7 +4631,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "blueprint"
+        "blueprint",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -6692,12 +6697,12 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 274,
+      "lines": 275,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
+      "intent_statement": "Make the knowledge workspace discoverable in the existing persistent and mobile workspace navigation.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -6708,7 +6713,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "blueprint"
+        "blueprint",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -9085,7 +9091,7 @@
       "dependencies": [
         "apps/web/src/components/site/PublicPage.jsx"
       ],
-      "lines": 186,
+      "lines": 193,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain critical workspace flows with searchable public documentation and real destinations.",
@@ -9100,7 +9106,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -9981,9 +9988,10 @@
         "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
         "apps/web/src/components/workspace/missions/MissionReview.jsx",
         "apps/web/src/components/workspace/missions/MissionLearning.jsx",
-        "apps/web/src/components/workspace/missions/MissionGuide.jsx"
+        "apps/web/src/components/workspace/missions/MissionGuide.jsx",
+        "apps/web/src/components/workspace/KnowledgeContext.jsx"
       ],
-      "lines": 708,
+      "lines": 712,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
@@ -9998,7 +10006,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -10091,12 +10100,12 @@
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/missionResearch.js"
       ],
-      "lines": 179,
+      "lines": 180,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let members submit and review mission sources from either channel without presenting machine extraction as verified evidence.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -10106,7 +10115,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "mission-research"
+        "mission-research",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -19618,6 +19628,520 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "backend-reuse"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-knowledge-context.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/workspace-knowledge.md",
+        "apps/pocketbase/pb_hooks/knowledge.pb.js"
+      ],
+      "lines": 83,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Hand off consumption of scoped workspace context to the existing private planning and Cloudflare caller without duplicating execution authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/workspace-knowledge.md",
+        "tests/upgrade/knowledge-system.test.mjs",
+        "tests/upgrade/knowledge-client.test.mjs",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json"
+      ],
+      "lines": 165,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record measured workspace knowledge acceptance, source coverage and runtime gaps while preserving the dispatch's prior evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/knowledge-graph.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "clip",
+        "terms",
+        "categories",
+        "buildGraph",
+        "rankedDocuments",
+        "assembleContext"
+      ],
+      "dependencies": [],
+      "lines": 178,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Organize authorized source records and assemble bounded cited context without changing their evidence state or requiring inference.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/knowledge.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-knowledge.js"
+      ],
+      "lines": 26,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose private read-only graph and context assembly through PocketBase users authentication without logging queries in URLs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/workspace-knowledge.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "input",
+        "document",
+        "scan",
+        "collect",
+        "scope",
+        "snapshot",
+        "assemble"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_hooks/knowledge-graph.js"
+      ],
+      "lines": 204,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Rebuild workspace knowledge from current readable records while retaining permission, source-availability and scan boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/KnowledgeContext.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "KnowledgeContextResults",
+        "MissionKnowledgeContext"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useWorkspaceKnowledge.js"
+      ],
+      "lines": 68,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Surface automatically assembled mission context with readable citations, explicit omissions and an intentional export.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/__tests__/useWorkspaceKnowledge.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Wrapper"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useWorkspaceKnowledge.js",
+        "tests/upgrade/knowledge-fixture.mjs"
+      ],
+      "lines": 72,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify context polling, cancellation and response isolation across account, query, workspace and visibility changes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/useWorkspaceKnowledge.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "useWorkspaceKnowledge"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceKnowledge.js"
+      ],
+      "lines": 66,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Assemble context automatically on query and scope changes while bounding visible polling and clearing stale private results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/workspaceKnowledge.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "valid",
+        "createKnowledgeClient",
+        "knowledgeSourceHref",
+        "knowledgeNeighborhood"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/knowledge.pb.js"
+      ],
+      "lines": 117,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Deliver current scoped graph responses and cited context without retaining private data across accounts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/KnowledgePage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "GraphNeighborhood",
+        "GraphBrowser",
+        "KnowledgeDesk",
+        "KnowledgePage"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useWorkspaceKnowledge.js",
+        "apps/web/src/components/workspace/KnowledgeContext.jsx",
+        "apps/web/src/lib/workspaceKnowledge.js"
+      ],
+      "lines": 164,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make workspace knowledge discoverable through an accessible graph, source categories and automatic cited context assembly.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/KnowledgePage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/workspace/KnowledgePage.jsx",
+        "apps/web/src/components/workspace/KnowledgeContext.jsx",
+        "tests/upgrade/knowledge-fixture.mjs"
+      ],
+      "lines": 100,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise rendered graph navigation and automatic context with the actual backend policy and explicit storage doubles.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/workspace-knowledge.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-knowledge.js",
+        "apps/web/src/pages/workspace/KnowledgePage.jsx"
+      ],
+      "lines": 184,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain automatic workspace context, its source boundaries and its provider-independent receiving contract.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/knowledge-client.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "connected"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceKnowledge.js",
+        "tests/upgrade/knowledge-fixture.mjs"
+      ],
+      "lines": 139,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify the connected browser and backend contract, response races, permission loss and malformed graph rejection.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/knowledge-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "knowledgeFixture"
+      ],
+      "dependencies": [
+        "tests/upgrade/research-fixture.mjs",
+        "apps/pocketbase/pb_hooks/workspace-knowledge.js"
+      ],
+      "lines": 38,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise real workspace knowledge services with explicit storage doubles and public synthetic source records.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/knowledge-system.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/knowledge-fixture.mjs",
+        "apps/pocketbase/pb_hooks/knowledge-graph.js",
+        "apps/pocketbase/pb_hooks/knowledge.pb.js"
+      ],
+      "lines": 224,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify graph provenance, current authorization, automatic updates and context budgets against actual application source.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-knowledge"
       ],
       "tenant_id": null
     },
@@ -31452,6 +31976,326 @@
       "created_by": "BITS-CODEGEN"
     },
     {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-knowledge-context.md",
+      "target": "apps/pocketbase/pb_hooks/knowledge.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-knowledge-context.md consumes apps/pocketbase/pb_hooks/knowledge.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-knowledge-context.md",
+      "target": "docs/workspace-knowledge.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-knowledge-context.md consumes docs/workspace-knowledge.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md",
+      "target": "docs/workspace-knowledge.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md consumes docs/workspace-knowledge.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md",
+      "target": "tests/upgrade/knowledge-client.test.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md consumes tests/upgrade/knowledge-client.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md",
+      "target": "tests/upgrade/knowledge-system.test.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md consumes tests/upgrade/knowledge-system.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/knowledge-graph.js",
+      "target": "tests/upgrade/knowledge-system.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/knowledge-graph.js verified by tests/upgrade/knowledge-system.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/knowledge.pb.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-knowledge.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/knowledge.pb.js consumes apps/pocketbase/pb_hooks/workspace-knowledge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-knowledge.js",
+      "target": "apps/pocketbase/pb_hooks/knowledge-graph.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-knowledge.js consumes apps/pocketbase/pb_hooks/knowledge-graph.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-knowledge.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-knowledge.js consumes apps/pocketbase/pb_hooks/workspace-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/KnowledgeContext.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceKnowledge.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/KnowledgeContext.jsx consumes apps/web/src/hooks/useWorkspaceKnowledge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/__tests__/useWorkspaceKnowledge.test.jsx",
+      "target": "tests/upgrade/knowledge-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/__tests__/useWorkspaceKnowledge.test.jsx consumes tests/upgrade/knowledge-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/__tests__/useWorkspaceKnowledge.test.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceKnowledge.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/__tests__/useWorkspaceKnowledge.test.jsx validates apps/web/src/hooks/useWorkspaceKnowledge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useWorkspaceKnowledge.js",
+      "target": "apps/web/src/lib/workspaceKnowledge.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/useWorkspaceKnowledge.js consumes apps/web/src/lib/workspaceKnowledge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workspaceKnowledge.js",
+      "target": "apps/pocketbase/pb_hooks/knowledge.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/workspaceKnowledge.js consumes apps/pocketbase/pb_hooks/knowledge.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/KnowledgePage.jsx",
+      "target": "apps/web/src/components/workspace/KnowledgeContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/KnowledgePage.jsx consumes apps/web/src/components/workspace/KnowledgeContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/KnowledgePage.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceKnowledge.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/KnowledgePage.jsx consumes apps/web/src/hooks/useWorkspaceKnowledge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/KnowledgePage.jsx",
+      "target": "apps/web/src/lib/workspaceKnowledge.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/KnowledgePage.jsx consumes apps/web/src/lib/workspaceKnowledge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/MissionsPage.jsx",
+      "target": "apps/web/src/components/workspace/KnowledgeContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/MissionsPage.jsx consumes apps/web/src/components/workspace/KnowledgeContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/ResearchPage.jsx",
+      "target": "apps/web/src/pages/workspace/KnowledgePage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/ResearchPage.jsx consumes apps/web/src/pages/workspace/KnowledgePage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/KnowledgePage.test.jsx",
+      "target": "tests/upgrade/knowledge-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/KnowledgePage.test.jsx consumes tests/upgrade/knowledge-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/KnowledgePage.test.jsx",
+      "target": "apps/web/src/components/workspace/KnowledgeContext.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/KnowledgePage.test.jsx validates apps/web/src/components/workspace/KnowledgeContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/KnowledgePage.test.jsx",
+      "target": "apps/web/src/pages/workspace/KnowledgePage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/KnowledgePage.test.jsx validates apps/web/src/pages/workspace/KnowledgePage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/workspace-knowledge.md",
+      "target": "apps/pocketbase/pb_hooks/workspace-knowledge.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/workspace-knowledge.md consumes apps/pocketbase/pb_hooks/workspace-knowledge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/workspace-knowledge.md",
+      "target": "apps/web/src/pages/workspace/KnowledgePage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/workspace-knowledge.md consumes apps/web/src/pages/workspace/KnowledgePage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/knowledge-client.test.mjs",
+      "target": "tests/upgrade/knowledge-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/knowledge-client.test.mjs consumes tests/upgrade/knowledge-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/knowledge-client.test.mjs",
+      "target": "apps/web/src/lib/workspaceKnowledge.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/knowledge-client.test.mjs validates apps/web/src/lib/workspaceKnowledge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/knowledge-fixture.mjs",
+      "target": "tests/upgrade/research-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/knowledge-fixture.mjs consumes tests/upgrade/research-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/knowledge-fixture.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-knowledge.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/knowledge-fixture.mjs validates apps/pocketbase/pb_hooks/workspace-knowledge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/knowledge-system.test.mjs",
+      "target": "tests/upgrade/knowledge-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/knowledge-system.test.mjs consumes tests/upgrade/knowledge-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/knowledge-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/knowledge-graph.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/knowledge-system.test.mjs validates apps/pocketbase/pb_hooks/knowledge-graph.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/knowledge-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/knowledge.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/knowledge-system.test.mjs validates apps/pocketbase/pb_hooks/knowledge.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/build.test.mjs",
@@ -32815,12 +33659,51 @@
       "description": "Native-required PDF acceptance remains unavailable because pypdf is absent; PocketBase, Vitest, Vite and the official frontend lint dependency are absent. PR 38 lacks actor:agent and Workers check 105249499047 has no exposed diagnostic text. Existing advisory changelog freshness is stale. No gate, provider label, deployment or authority was changed to conceal these acceptance gaps.",
       "smoke_result": "4/7",
       "type": "C"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md",
+      "description": "Automatic workspace knowledge source: 25 focused actual-module tests pass with explicit storage/transport doubles; four core modules measure 100% lines, 95.88% aggregate branches and 100% functions. Full Node regression passes 345 cases; Python upgrade regression passes 293 with 18 explicit native dependency skips. Six retained DORA tests pass and the limited diagnostic parses 258 frontend modules. Source evidence does not establish rendered, native PocketBase or live provider acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T14:23:12.497356+00:00",
+      "commit_sha": null,
+      "smoke_result": "25/25 focused"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md",
+      "description": "Knowledge rendered acceptance remains unexecuted: the full web test command cannot find Vitest, repository lint cannot resolve eslint-plugin-import and the build cannot spawn Vite. Nine React/hook tests are authored. Native PocketBase and an authenticated live workspace are unavailable; Cloudflare caller and export authority remain receiving-seat dependencies. No gate or external runtime was changed to conceal the gaps.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T14:22:21.086086+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/knowledge-report.md",
+      "description": "Knowledge continuation local smoke passes Node and Python regressions plus the current context inventory and public-boundary scan (4/7); three frontend commands fail for missing installed dependencies. The public receiving contract leaves Platform Edit Fabric adoption, private execution and live inference with CMAX-B/IDE1. All 105 prior dispatch events are preserved unchanged.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-18T14:29:25.956910+00:00",
+      "commit_sha": null,
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 561,
-    "type_b_count": 1183,
-    "type_c_count": 105,
+    "type_a_count": 576,
+    "type_b_count": 1215,
+    "type_c_count": 108,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

@@ -20,6 +20,55 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Automatic workspace knowledge continuation — 2026-09-18
+
+The owner requests automatic context assembly, organization and categorization
+into knowledge graphs for BuildAndDo, with inference routed through Cloudflare
+and no local Ollama on the boxes. Continue the existing A2 public application
+source dispatch. The earlier DORA seconds conversion remains intact.
+
+Acceptance:
+
+1. Project readable workspace missions, evidence, completed research, signals
+   and published wiki pages into a deterministic graph. Retain source IDs,
+   dates, recorded evidence states and explicit relationships. Categorization
+   is explained by source metadata or vocabulary rules; it does not establish
+   facts, merge people by name or promote verification.
+2. Reuse PocketBase users and current workspace/record permissions. Exclude
+   personal dossiers, unpublished wiki drafts, unreadable mission sources and
+   other workspaces. Bound source scans and text; report unavailable or capped
+   inputs. Rebuild on reads so edits, deletions and revoked access are respected
+   without a second persistent store or a schema migration.
+3. Assemble relevance-ranked context with a mission anchor, related records,
+   stable citations and an enforced character budget. Treat source text as data,
+   preserve provenance and expose omissions. No model, secret or local inference
+   daemon is required for assembly; queries and source content stay out of logs.
+4. Add a workspace Knowledge page with category/source filters, an interactive
+   graph, source inspection and automatic context assembly. Connect mission and
+   research entry points. Clear prior-account/workspace results, ignore stale
+   responses and refresh visible views without overlapping requests.
+5. Exercise the real graph, routes and browser adapter with permission, ranking,
+   budget, deletion, partial-source and response-race regressions. Add rendered
+   tests and distinguish unavailable browser/native runners from passed source
+   checks. Record the Cloudflare receiving contract without inventing an endpoint
+   or claiming live inference, deployment or private-stack changes.
+
+Verify: `node --test tests/upgrade/knowledge-*.test.mjs`, the KnowledgePage
+Vitest suite, existing dispatch smoke, context, boundary and memory gates.
+The Cloudflare Worker/gateway contract has been requested from the owner;
+context consumption by that private runtime remains receiving-seat work.
+
+Observed source outcome: automatic graph/context APIs, the Knowledge workspace
+page and mission/research entry points are implemented. Twenty-five focused
+tests pass against actual modules with storage/transport doubles; core source
+coverage is 100% lines and 95.88% aggregate branches. Regression passes 345 Node
+and 293 Python tests with 18 explicit native skips; six DORA tests remain green.
+Nine rendered/hook cases are authored but unexecuted because frontend packages
+are absent. Native PocketBase and live inference remain acceptance gaps, not
+successful skips. The knowledge report records runnable evidence and rollback.
+The supplied private edit-fabric adoption remains other-seat work; this source
+provides reference data without creating an edit contract or execution authority.
+
 ## Blueprint PR 38 integration continuation — 2026-09-17
 
 The owner reports merge conflicts and failing governance checks. Continue the
