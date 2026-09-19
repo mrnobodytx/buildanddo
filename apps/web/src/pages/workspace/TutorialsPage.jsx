@@ -34,7 +34,7 @@ export default function TutorialsPage() {
         <div className="space-y-8">
             <PageHeader
                 title="Field Manual"
-                description="Work through business planning, mission evidence and government-submission lessons. Read a worked example, practice and check your understanding."
+                description="Build your skills with interactive tutorials. Resume saved checkpoints, practice what you learn and earn completion certificates as your learning journey grows."
             />
             <div className="flex flex-wrap gap-4 text-sm"><Link className="underline underline-offset-4" to="/app/classrooms">Learn together in Classrooms</Link><Link className="underline underline-offset-4" to="/app/missions">Create a government submission mission</Link><Link className="underline underline-offset-4" to="/app/suite">Open mission suite</Link></div>
 
