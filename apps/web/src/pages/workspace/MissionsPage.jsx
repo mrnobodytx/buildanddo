@@ -30,9 +30,9 @@
 
 import { MotionList } from '@/components/motion/MotionPrimitives';
 import { useMotionPreferences } from '@/contexts/MotionContext';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CalendarClock, Plus, Target } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import {
     Dialog,
@@ -130,6 +130,9 @@ function SavedPlan({ mission }) {
 
 function MissionDesk() {
     const { setDemo } = useDemoMode();
+    const [params] = useSearchParams();
+    const requested = params.get('mission');
+    const requestedId = /^[A-Za-z0-9_-]{1,64}$/.test(requested || '') ? requested : null;
     const missions = useWorkspaceRecords('missions', { sort: '-created' });
     const evidence = useWorkspaceRecords('evidence', { sort: '-created' });
     const {
@@ -145,7 +148,10 @@ function MissionDesk() {
         clearWriteError,
     } = missions;
     const [builder, setBuilder] = useState(null);
-    const [detailId, setDetailId] = useState(null);
+    const [detailId, setDetailId] = useState(requestedId);
+    // Resolve links only against the existing scoped record list. A URL never
+    // fetches a foreign mission, opens approval or performs a transition.
+    useEffect(() => { setDetailId(requestedId); }, [requestedId]);
     const [approvalId, setApprovalId] = useState(null);
     const [approvalConfirmed, setApprovalConfirmed] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(null);

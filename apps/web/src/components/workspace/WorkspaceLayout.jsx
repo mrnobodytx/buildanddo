@@ -40,6 +40,7 @@ import { DemoModeBanner } from './WorkspaceNotices';
 
 const NAV = [
     { to: '/app', label: 'Front Page', icon: LayoutDashboard, end: true },
+    { to: '/app/operator', label: 'Operator cockpit', icon: Activity },
     { to: '/app/signals', label: 'Signals', icon: Radar },
     { to: '/app/missions', label: 'Challenge Desk', icon: Target },
     { to: '/app/workflows', label: 'Workflows', icon: Workflow },
@@ -47,6 +48,7 @@ const NAV = [
     { to: '/app/research', label: 'Mission research', icon: FileSearch },
     { to: '/app/knowledge', label: 'Knowledge & context', icon: Network },
     { to: '/app/blueprints', label: 'Blueprints', icon: FileSearch },
+    { to: '/app/policy', label: 'Policy intelligence', icon: Scale },
     { to: '/app/suite', label: 'Mission suite', icon: Boxes },
     { to: '/app/dossier', label: 'My dossier', icon: BookOpen },
     { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },

@@ -38,6 +38,8 @@ const EvidencePage = lazy(() => import('./pages/workspace/EvidencePage'));
 const ResearchPage = lazy(() => import('./pages/workspace/ResearchPage'));
 const KnowledgePage = lazy(() => import('./pages/workspace/KnowledgePage'));
 const BlueprintPage = lazy(() => import('./pages/workspace/BlueprintPage'));
+const PolicyPage = lazy(() => import('./pages/workspace/PolicyPage'));
+const OperatorPage = lazy(() => import('./pages/workspace/OperatorPage'));
 const SuitePage = lazy(() => import('./pages/workspace/SuitePage'));
 const DossierPage = lazy(() => import('./pages/workspace/DossierPage'));
 const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
@@ -68,6 +70,7 @@ const LiveExperimentRoomPage = lazy(() => import('./pages/workspace/LiveExperime
 // the operator with nothing but a reload.
 const WORKSPACE_ROUTES = [
     { index: true, label: 'Front Page', element: OverviewPage },
+    { path: 'operator', label: 'Operator cockpit', element: OperatorPage },
     { path: 'signals', label: 'Signals', element: SignalsPage },
     { path: 'missions', label: 'Challenge Desk', element: MissionsPage },
     { path: 'workflows', label: 'Workflows', element: WorkflowsPage },
@@ -82,6 +85,7 @@ const WORKSPACE_ROUTES = [
     { path: 'research', label: 'Mission research', element: ResearchPage },
     { path: 'knowledge', label: 'Knowledge & context', element: KnowledgePage },
     { path: 'blueprints', label: 'Blueprints', element: BlueprintPage },
+    { path: 'policy', label: 'Policy intelligence', element: PolicyPage },
     { path: 'suite', label: 'Mission suite', element: SuitePage },
     { path: 'dossier', label: 'My dossier', element: DossierPage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },

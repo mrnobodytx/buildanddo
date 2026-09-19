@@ -20,6 +20,150 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## PR 40 main integration authorized 2026-09-18
+
+The owner requests merging the latest main into the existing PR branch,
+resolving conflicts and retaining the result for PR synchronization. This is
+an A2 source integration under the existing dispatch. The earlier native,
+rendered and private-runtime acceptance hold remains in effect.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| MERGE-1 | Preserve both public implementations and continuation histories | Targeted blueprint/operator tests and parent-content audit | done — ten conflicts resolved; both blueprint views, operator export and native gates retained |
+| MERGE-2 | Reconcile the moved document contract and portable archive | `python tests/upgrade/check_federal_foundry.py` | done — 66 cases pass, including the previously failing portable archive; compiler statement coverage 99.43% |
+| MERGE-3 | Retain both event histories and verify the integrated tree | Context, boundary, memory and regression gates | done for local integration — 404 Node passes, 345 Python passes and 22 native skips; all 138 parent events retained; publication and native/rendered/private acceptance remain open |
+
+Memory brief: main adds a separate Analyze PDF view and moves the existing
+saved-document contract to `apps/research/blueprint_documents.py` and the saved
+UI to `BlueprintSavedPage.jsx`. Carry the operator export and its tests into
+that saved flow; retain the newer analysis, knowledge and public-page changes.
+The old operator import and portable archive fail after a textual merge alone.
+Both parents contain 138 distinct historical events; preserve every event
+verbatim. This request authorizes branch integration, not merging PR 40 into main.
+
+Observed integration: the complete source regression, compiler coverage, strict
+typing, Ruff, 282-module source diagnostic, context, boundary and memory checks
+pass. The required native entry point fails without PocketBase. Rendered tests
+cannot start without Vitest; root lint and build stop without concurrently, and
+their frontend toolchain is also unavailable. No dependency or gate was relaxed.
+The branch is ready for the coding agent UI's Update Pull Request action; direct
+push is unavailable in this session. The existing owner acceptance hold remains.
+
+## Operator acceptance continuation authorized 2026-09-18
+
+The owner directs continued public-repository work after the managed provider
+rejected attaching the GitLab receiving project to this GitHub-only session.
+This continuation uses the existing public A2 dispatch. It neither registers
+the private receiving dispatch nor creates a private implementation here.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DX | Exercise the operator through the existing native suite fixture and CI job | `python tests/upgrade/test_suite_native.py --require-binary` | source complete, runtime unverified — four new native cases in the existing required matrix; missing binary fails the required command |
+| DY | Reconcile the receiving handoff and competition acceptance | Handoff and source review | done — observed remote and supplied IDs recorded; OP-00 first, then one BuildAndDo staging loop with a distinct verifier; owner merge hold retained |
+| DZ | Verify available evidence and retain outstanding merge gates | Operator tests, web checks, context/boundary/memory | done for available evidence — 347 Node passes, 302 Python passes, 20 native skips; current source/native/frontend smoke 4/8; required runtime checks remain open |
+
+Memory brief: the branch already contains the public operator feature. The
+managed repository provider resolved `guilds/CNWB` to
+`https://gitlab.citadel-nexus.com/guilds/cnwb`, then rejected attachment because
+this session supports GitHub repositories only. Do not retry via another
+transport. The owner supplied `VCC-BUILDANDDO-OPERATOR-RUNTIME-001` and
+`SRS-CN-BUILDANDDO-OPERATOR-RUNTIME-001`; private registration/ref/scope remain
+unmeasured. Keep all 110 preceding events. Existing web test packages and the
+PocketBase binary are absent; no private tenant or service credentials are read.
+
+Observed continuation: 27 focused operator cases and all 347 Node cases pass.
+Python discovers 322 cases: 302 pass and 20 skip, including the seven native
+suite/operator cases. The source wiring audit confirms the existing required
+suite command runs the four new cases on both declared PocketBase versions.
+Ruff, Python/embedded-JavaScript syntax and the 255-module source diagnostic
+pass. Required native execution fails without PocketBase; rendered tests, lint
+and build fail for missing Vitest, eslint-plugin-import and Vite. Offline
+installation fails with ENOTCACHED; no dependency versions or gates were weakened.
+The known Workers Builds failure exposes no diagnostic annotation, and Datadog
+PR insights has no analysis for the inspected head; no hosting fix is inferred.
+The retained report distinguishes these results from private runtime proof.
+
+## Read-first operator loop continuation authorized 2026-09-18
+
+The owner requests the operator-plane loop alongside Cultural Property and the
+BuildAndDo demo. Public source work continues under this existing A2 dispatch;
+actual private runtime bindings and A3 actions retain their receiving authority.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DS | Inspect source capability, mission and connector owners | Read-only inventory and registered scope | done — existing parser, suite, foundry and membership/receipt owners inspected |
+| DT | Extend the federal compiler with source discovery and operator blueprints | Operator Python suite and foundry regressions | done for source — 26 operator cases; 66 combined foundry coverage cases pass; compiler 99.43% statements |
+| DU | Project bounded workspace state through existing read authority | Operator backend/client Node suite | done for source — final 27 connected cases pass, including standalone approvals and mid-read role downgrade; native acceptance open |
+| DV | Surface the operator cockpit and explicit mission proposal flow | Operator client and rendered tests | done for source — compiler/browser parity, inert imports and durable proposals pass; 14 operator and two mission-link rendered cases await Vitest |
+| DW | Verify source, retain evidence and record private receiving work | Regression, context, boundary and memory gates | done for available evidence — 347 full Node cases, 302 Python passes and 16 native skips; all 27 operator cases pass; 4/7 smoke; private/runtime and rendered acceptance open |
+
+Memory brief: Phase A extraction and policy review are the committed baseline.
+There are five prepared federal lanes with explicitly unknown deadlines; no
+Cultural Property specification is in this checkout. The existing suite worker
+supports maritime and submission analyses, not arbitrary GPU jobs. Datadog read
+tools are attached; the other named private providers and fleet are not. Missing
+runtime proof is not a healthy connection or idle capacity. Reuse the prepared
+builder/verifier contracts, current PocketBase access, bounded worker leases and
+research proposal receipts. No authenticated workspace is supplied, so no seat
+event is fabricated. Retain earlier acceptance gaps and memory history.
+
+Observed operator source outcome: the public cockpit reads independently paged
+workspace summaries and separates saved approvals from routine work. The existing
+foundry compiler discovers eight source capability groups, retains document
+provenance and prepares ten existing builder/verifier packets for five lanes.
+All opportunity deadlines remain unknown. Real compiler output passes the browser
+import and manifest checks; compilation creates zero hosted dispatches. Native
+mission proposal receipts recover uncertain responses and unchanged recompilation.
+Output-directory replacement and stale-role regressions passed after fixes.
+Atomic publication now binds a complete private candidate before exposing it;
+Linux no-replace support is required, with no unsafe fallback on other platforms.
+
+Selected backend/client coverage is 100% lines and 92.50–96.60% branches. Strict
+typing of seven source files, Ruff and the 255-module source diagnostic pass.
+Vitest, eslint-plugin-import and Vite are absent; native PocketBase/pypdf are
+unavailable. Missing private repository/dispatch, authenticated workspace and
+official Cultural Property/opportunity evidence remain receiving prerequisites
+in `.bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md`. All 104 prior
+memory events remain historical. No live workspace or private system was changed.
+
+## Policy intelligence continuation authorized 2026-09-18
+
+The owner requests the generic Sentinel policy rail and BuildAndDo signal-to-
+mission flow. Public source work continues under this existing A2 dispatch;
+private service wiring requires the actual Sentinel repository and receiving
+authority. The repository location has been requested while public work proceeds.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| DN | Inspect existing owners and record the public/private contract | Context and source inspection | done — research, native missions and prior Sentinel handoff inspected |
+| DO | Normalize policy observations and project watches, sources and relationships | `python tests/upgrade/check_policy_intelligence.py` | done for source — 26 cases, 98.73–100% statement coverage, deterministic synthetic demo; live feeds remain receiving work |
+| DP | Consume policy packs and propose bounded review missions in BuildAndDo | `node --test tests/upgrade/policy-intelligence.test.mjs` and rendered page tests | done for source — 15 connected cases and Python/browser parity pass; six rendered cases await Vitest |
+| DQ | Record the private Sentinel bindings and receiving acceptance | `docs/policy-intelligence.md` and policy handoff | done for public contract — PI-00–PI-10 define source, bus, graph/search, verification, UI, delivery and outcome acceptance; private repository/dispatch are missing |
+| DR | Verify public source and retain measured evidence | Regression, typing, context, boundary and memory gates | done for available public evidence — 319 Node and 276 Python passes, 16 native skips; 4/7 smoke; native/rendered and Sentinel acceptance remain open |
+
+Memory brief: the public checkout has a bounded Firecrawl/document research
+Processor and native PocketBase research commands, including idempotent mission
+proposals. The existing Sentinel Maritime handoff records that actual Sentinel,
+NXC/NNC, private graph and release owners are outside this checkout. No secondary
+repository, authenticated workspace or feed is attached. Reuse these boundaries;
+do not send seat events, treat source URLs or hashes as verification, fabricate
+live legislative activity, or create alternative private infrastructure. The
+current module will produce portable local observations and a review consumer;
+private scheduling, source verification and alert delivery remain receiving work.
+
+Observed policy source outcome: the portable domain pack extends the existing
+research Processor and strict JSON contracts. The BuildAndDo consumer imports
+bounded tenant packs, preserves source/correction history and proposes explicit
+source-review missions through the existing native command. A red/green test
+fixed unchanged recaptures conflicting with an earlier proposal; content-derived
+candidate keys now recover the same mission after uncertain responses and reloads.
+The selected browser client has 100% lines and 95.28% branches under Node; strict
+typing of the four new Python modules, Ruff and the 252-module source diagnostic
+pass. Missing Vitest, eslint-plugin-import and Vite prevent rendered, official
+lint and build acceptance. All 98 preceding memory events remain historical.
+No actual government source, private Sentinel service, bus, email or deployment
+was invoked; the dispatch remains in progress for those receiving dependencies.
+
 ## Capability roadmap assistance authorized 2026-09-18
 
 The owner's assistance request continues this dispatch for a local public

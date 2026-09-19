@@ -18,7 +18,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomUUID, webcrypto } from 'node:crypto';
-import { createBlueprintClient, blueprintDefinition } from '../../apps/web/src/lib/blueprints.js';
+import { createBlueprintClient, blueprintDefinition, blueprintExtraction } from '../../apps/web/src/lib/blueprints.js';
 import { blueprintFixture } from './blueprint-fixture.mjs';
 import { plain } from './admin-fixture.mjs';
 
@@ -168,4 +168,14 @@ test('original PDF download uses the existing protected research file client', a
     assert.equal((await c.api.original(record.upload)).ok, true);
     c.setCurrent(false);
     assert.equal((await c.api.original(record.upload)).reason, 'scope_changed');
+});
+
+test('extractor export preserves the compiler input without mutating saved observations', async () => {
+    const c = connected(); const record = await ready(c);
+    const extracted = blueprintExtraction(record);
+    assert.deepEqual(extracted, record.blueprint);
+    assert.equal(extracted.source_hash, record.input_sha256);
+    extracted.requirements[0].text = 'Changed local copy';
+    assert.notEqual(extracted.requirements[0].text, record.blueprint.requirements[0].text);
+    assert.throws(() => blueprintExtraction({ ...record, status: 'processing' }), /ready/);
 });

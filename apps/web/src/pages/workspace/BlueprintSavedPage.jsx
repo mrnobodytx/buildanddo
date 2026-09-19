@@ -23,7 +23,7 @@ import { PageControls, PlainArticle, controlInput, dateLabel } from '@/component
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
-import { createBlueprintClient, blueprintDefinition } from '@/lib/blueprints';
+import { createBlueprintClient, blueprintDefinition, blueprintExtraction } from '@/lib/blueprints';
 import { RESEARCH_STATES } from '@/lib/missionResearch';
 import pb from '@/lib/pocketbaseClient';
 import { observeMutation } from '@/lib/observability/mutations';
@@ -57,7 +57,8 @@ function BlueprintResult({ record, onExport }) {
             <p className="text-sm">Assessments are advisory. “Needs review” means BDR abstained or no assessment is available.</p>
             {record.evaluation_failure && <p role="status" className="text-sm">The decision assessment is unavailable; the extracted blueprint is saved.</p>}
             <div className="flex flex-wrap gap-3"><Button variant="secondary" onClick={() => onExport('mission')}>Export mission definition</Button>
-                <Button variant="secondary" onClick={() => onExport('challenge')}>Export challenge definition</Button></div>
+                <Button variant="secondary" onClick={() => onExport('challenge')}>Export challenge definition</Button>
+                <Button variant="secondary" onClick={() => onExport('extraction')}>Export extracted blueprint</Button></div>
             <p className="text-xs text-muted-foreground">Exports are proposals for review. Complete the plan and obtain approval before implementation.</p>
         </div>
         <section aria-label="Extracted requirements" className="space-y-4"><h3 className="font-headline text-xl">Requirements ({blueprint.requirements.length})</h3>
@@ -136,7 +137,7 @@ function BlueprintDesk({ accountId, workspaceId }) {
     };
     const download = (kind) => {
         try {
-            const payload = blueprintDefinition(record, kind);
+            const payload = kind === 'extraction' ? blueprintExtraction(record) : blueprintDefinition(record, kind);
             const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2) + '\n'], { type: 'application/json' }));
             const link = document.createElement('a'); link.href = url; link.download = `blueprint-${record.id}-${kind}.json`;
             link.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -152,7 +153,7 @@ function BlueprintDesk({ accountId, workspaceId }) {
     const disabled = !writable || write.saving || write.uncertain;
     return <div className="space-y-6 ph-no-capture" data-dd-privacy="mask">
         <PageHeader title="Blueprints" description="Upload a specification PDF, review its requirements and dependencies, and prepare a mission or challenge proposal." />
-        <div className="flex flex-wrap gap-4"><Link className={linkClass} to="/app/research">Mission research</Link><Link className={linkClass} to="/app/missions">Challenge Desk</Link><Link className={linkClass} to="/app/integrations">Processing settings</Link></div>
+        <div className="flex flex-wrap gap-4"><Link className={linkClass} to="/app/research">Mission research</Link><Link className={linkClass} to="/app/missions">Challenge Desk</Link><Link className={linkClass} to="/app/operator">Operator</Link><Link className={linkClass} to="/app/integrations">Processing settings</Link></div>
         {snapshot.loading && <p role="status">Loading blueprints…</p>}
         {snapshot.error && <p role="alert">{snapshot.error}</p>}
         <Button variant="secondary" onClick={() => { void load(); void inspect(); }}>Refresh status</Button>

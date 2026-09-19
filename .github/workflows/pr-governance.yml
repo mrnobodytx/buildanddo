@@ -208,7 +208,7 @@ jobs:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
         run: python tests/upgrade/test_dossier_native.py --require-binary
 
-      - name: Require native suite leases, scoped processing, reviews and rollback
+      - name: Require native suite leases, operator visibility, read-only snapshots and rollback
         env:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
         run: python tests/upgrade/test_suite_native.py --require-binary
