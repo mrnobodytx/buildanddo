@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/claims.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/models.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/ingestion/claims.py, libs/semantic_twin/ingestion/source.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/models.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/vocabulary.py
+# EnumEdges:   EXTENDS libs/semantic_twin/ingestion/claims.py; PRODUCES libs/semantic_twin/phase1/compiler.py
 # DAG Node:    semantic-twin.phase-1.claim-intelligence
 # Intent:      Add symbol-level, multi-file and staleness evidence to deterministic documentation claim classifications.
 # ───────────────────────────────────────────────────────
@@ -20,20 +20,17 @@
 from __future__ import annotations
 
 import ast
+import hashlib
+import re
 from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from pathlib import Path
-import re
 
-from ..ingestion.graph import SemanticGraph
-from ..ingestion.builder import ObjectDraft, RelationDraft, object_kind
-from ..ingestion.inputs import SourceSnapshot
-from ..models import CanonicalObjectEnvelope
+from ..ingestion.claims import _candidate_terms, classify_claim
+from ..ingestion.drafts import GraphDraft, ObjectDraft, RelationDraft, make_object
+from ..receipts import EvidenceKind
 from ..vocabulary import EvidenceState, RelationPredicate
 from .common import relation, stable_id
-from .compat import make_object
-
 
 _CODE_SPAN = re.compile(r"`([^`]+)`")
 _PATH_SUFFIXES = (".py", ".js", ".jsx", ".ts", ".tsx", ".md", ".json", ".yml", ".yaml")
@@ -47,25 +44,22 @@ class SourceEvidence:
     source_path: str
     line: int
     kind: str
-    snapshot: SourceSnapshot
 
 
 def _terms(text: str) -> tuple[str, ...]:
     """Extract high-specificity code spans and identifiers from a claim."""
 
-    explicit = [value.strip() for value in _CODE_SPAN.findall(text) if value.strip()]
-    identifiers = re.findall(r"\b[A-Za-z_][A-Za-z0-9_]{3,}\b", text)
-    return tuple(dict.fromkeys((*explicit, *identifiers)))
+    return _candidate_terms(text)
 
 
-def _source_symbols(path: Path, source: str) -> dict[str, int]:
+def _source_symbols(path: str, text: str) -> dict[str, int]:
     """Index Python definitions while allowing non-Python files to participate."""
 
-    if path.suffix != ".py":
+    if not path.endswith(".py"):
         return {}
     try:
-        tree = ast.parse(source, filename=str(path))
-    except (OSError, UnicodeError, SyntaxError):
+        tree = ast.parse(text, filename=path)
+    except SyntaxError:
         return {}
     return {
         node.name: node.lineno
@@ -79,7 +73,7 @@ def collect_source_evidence(
     source_paths: tuple[str, ...],
     terms: tuple[str, ...],
     *,
-    snapshots: Mapping[str, SourceSnapshot] | None = None,
+    snapshots: Mapping[str, str] | None = None,
 ) -> tuple[SourceEvidence, ...]:
     """Find deterministic literal and Python symbol matches across selected files."""
 
@@ -87,35 +81,32 @@ def collect_source_evidence(
     for source_path in sorted(set(source_paths)):
         path = repository_root / source_path
         try:
-            snapshot = (snapshots or {}).get(source_path)
-            if snapshot is None:
-                snapshot = SourceSnapshot.capture(path, source_path=source_path)
-            source = snapshot.content.decode("utf-8", errors="replace")
-            lines = source.splitlines()
-        except OSError:
+            text = (
+                snapshots[source_path]
+                if snapshots is not None
+                else path.read_text(encoding="utf-8")
+            )
+            lines = text.splitlines()
+        except (OSError, UnicodeError, KeyError):
             continue
-        symbols = _source_symbols(path, source)
+        symbols = _source_symbols(source_path, text)
         for term in terms:
             normalized = term.removesuffix("()")
             if normalized in symbols:
                 evidence.append(
-                    SourceEvidence(
-                        term, source_path, symbols[normalized], "symbol", snapshot
-                    )
+                    SourceEvidence(term, source_path, symbols[normalized], "symbol")
                 )
                 continue
             for line_number, line in enumerate(lines, 1):
                 if term.casefold() in line.casefold():
                     evidence.append(
-                        SourceEvidence(
-                            term, source_path, line_number, "literal", snapshot
-                        )
+                        SourceEvidence(term, source_path, line_number, "literal")
                     )
                     break
     return tuple(evidence)
 
 
-def _claim_text(item: CanonicalObjectEnvelope) -> str:
+def _claim_text(item: ObjectDraft) -> str:
     """Read claim text from a canonical documentation claim object."""
 
     if not item.claims:
@@ -138,7 +129,7 @@ def _missing_references(text: str, repository_root: Path) -> tuple[str, ...]:
 
 
 def assess_claims(
-    base_graph: SemanticGraph,
+    base_graph: GraphDraft,
     repository_root: Path,
     *,
     source_paths: tuple[str, ...],
@@ -148,16 +139,10 @@ def assess_claims(
     """Produce symbol-supported claim assessments and explicit staleness flags."""
 
     versions = document_versions or {}
-    snapshots: dict[str, SourceSnapshot] = {}
-    for path in source_paths:
-        if (repository_root / path).is_file():
-            snapshots[path] = SourceSnapshot.capture(
-                repository_root / path, source_path=path
-            )
     symbol_targets: dict[str, str] = {}
     for item in base_graph.objects:
         if (
-            object_kind(item) not in {"CodeSymbol", "ConfigurationKey"}
+            item.object_type not in {"CodeSymbol", "ConfigurationKey"}
             or not item.claims
         ):
             continue
@@ -165,17 +150,27 @@ def assess_claims(
             value = item.claims[0].get(key)
             if value is not None:
                 symbol_targets[str(value)] = item.semantic_id
+    texts: dict[str, str] = {}
+    digests = []
+    for path in source_paths:
+        try:
+            raw = (repository_root / path).read_bytes()
+            texts[path] = raw.decode("utf-8")
+            digests.append((path, hashlib.sha256(raw).hexdigest()))
+        except (OSError, UnicodeError):
+            continue
+    source_text = "\n".join(texts.values())
     results = []
     for item in base_graph.objects:
-        if object_kind(item) != "DocumentationClaim":
+        if item.object_type != "DocumentationClaim":
             continue
         text = _claim_text(item)
         terms = _terms(text)
         evidence = collect_source_evidence(
-            repository_root, source_paths, terms, snapshots=snapshots
+            repository_root, source_paths, terms, snapshots=texts
         )
         missing = _missing_references(text, repository_root)
-        source_path = item.source.uri_or_path or "documentation"
+        source_path = item.source_path
         version = versions.get(source_path)
         stale_version = bool(version and current_commit and version != current_commit)
         stale = bool(missing or stale_version)
@@ -202,30 +197,28 @@ def assess_claims(
         classification = (
             "UNMEASURED"
             if stale or not evidence
-            else str(item.claims[0].get("classification", "ENTAILED"))
+            else classify_claim(text, source_text).value
         )
         evidence_state = (
             EvidenceState.UNMEASURED
             if classification == "UNMEASURED"
+            else EvidenceState.CONTRADICTED
+            if classification == "CONTRADICTED"
             else EvidenceState.INFERRED
         )
-        snapshot = SourceSnapshot.derived(
-            source_path,
-            {
-                "claim": item.to_dict(),
-                "sources": {
-                    path: {
-                        "version": source.version,
-                        "reference": str(source.reference()),
-                    }
-                    for path, source in snapshots.items()
-                },
-            },
-            observed_at=max(
-                (source.observed_at for source in snapshots.values()),
-                default=item.observed_time or datetime.now(timezone.utc),
-            ),
-        )
+        if classification in {"ENTAILED", "CONTRADICTED"}:
+            relations.append(
+                RelationDraft(
+                    predicate=RelationPredicate.ENTAILS
+                    if classification == "ENTAILED"
+                    else RelationPredicate.CONTRADICTS,
+                    target=item.semantic_id,
+                    evidence=tuple(texts),
+                    confidence=1.0,
+                    state=evidence_state,
+                    evidence_kinds=(EvidenceKind.DETERMINISTIC_PROOF,),
+                )
+            )
         results.append(
             make_object(
                 stable_id(
@@ -233,10 +226,9 @@ def assess_claims(
                 ),
                 "DocumentationClaimAssessment",
                 source_path,
-                snapshot=snapshot,
                 claims=(
                     {
-                        "claim_id": str(item.semantic_id),
+                        "claim_id": item.semantic_id,
                         "classification": classification,
                         "source_evidence": [
                             {
@@ -244,10 +236,6 @@ def assess_claims(
                                 "source_path": hit.source_path,
                                 "line": hit.line,
                                 "kind": hit.kind,
-                                "source_version": hit.snapshot.version,
-                                "source_reference": str(
-                                    hit.snapshot.reference(f"line:{hit.line}")
-                                ),
                             }
                             for hit in evidence
                         ],
@@ -261,6 +249,8 @@ def assess_claims(
                 evidence_state=evidence_state,
                 lifecycle_state="ASSESSED_STATICALLY",
                 commit=current_commit,
+                input_digest=item.input_digest,
+                supporting_digests=digests,
                 documentation=(source_path,),
             )
         )

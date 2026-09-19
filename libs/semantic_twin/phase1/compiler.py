@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/compiler.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/__init__.py, libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/phase1/claims.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/phase1/context.py, libs/semantic_twin/phase1/history.py, libs/semantic_twin/phase1/memory.py, libs/semantic_twin/phase1/merkle.py, libs/semantic_twin/phase1/providers.py, libs/semantic_twin/phase1/release_state.py, libs/semantic_twin/phase1/sbom.py, libs/semantic_twin/phase1/truth.py, libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/ingestion, libs/semantic_twin/phase1/release_state.py, libs/semantic_twin/phase1/history.py, libs/semantic_twin/phase1/sbom.py, libs/semantic_twin/phase1/providers.py, libs/semantic_twin/phase1/memory.py, libs/semantic_twin/phase1/claims.py, libs/semantic_twin/phase1/truth.py, libs/semantic_twin/phase1/merkle.py, libs/semantic_twin/phase1/context.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/__init__.py; CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/phase1/claims.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/phase1/context.py; CONSUMES libs/semantic_twin/phase1/history.py; CONSUMES libs/semantic_twin/phase1/memory.py; CONSUMES libs/semantic_twin/phase1/merkle.py; CONSUMES libs/semantic_twin/phase1/providers.py; CONSUMES libs/semantic_twin/phase1/release_state.py; CONSUMES libs/semantic_twin/phase1/sbom.py; CONSUMES libs/semantic_twin/phase1/truth.py; CONSUMES libs/semantic_twin/vocabulary.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion; CONSUMES libs/semantic_twin/phase1/release_state.py; CONSUMES libs/semantic_twin/phase1/history.py; CONSUMES libs/semantic_twin/phase1/sbom.py; CONSUMES libs/semantic_twin/phase1/providers.py; CONSUMES libs/semantic_twin/phase1/memory.py; CONSUMES libs/semantic_twin/phase1/claims.py; CONSUMES libs/semantic_twin/phase1/truth.py; PRODUCES libs/semantic_twin/phase1/merkle.py; PRODUCES libs/semantic_twin/phase1/context.py
 # DAG Node:    semantic-twin.phase-1.compiler
 # Intent:      Join all ten local Phase 1 capabilities into one connected graph, release-truth matrix, semantic epoch and query proof bundle.
 # ────────────────────────────────────────────────────────
@@ -19,20 +19,19 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from ..ingestion import RELEASE_PATH_IDS, graph_payload
-from ..ingestion.graph import SemanticGraph, combine_graphs
-from ..ingestion.builder import ObjectDraft
-from ..ingestion.inputs import SourceSnapshot
+from ..ingestion import graph_payload
+from ..ingestion.drafts import GraphDraft, ObjectDraft, combine_drafts, make_object
+from ..ingestion.graph import SemanticGraph
+from ..ingestion.pipeline import extract_release_twin
+from ..ingestion.release import RELEASE_PATH_KEYS
 from ..vocabulary import EvidenceState, RelationPredicate
 from .claims import assess_claims
 from .common import relation, stable_id
-from .compat import compile_bounded_base, make_object
 from .context import ContextProofBundle, compile_context_bundle
 from .history import history_graph, read_git_history
 from .memory import discover_memory_paths, ingest_memory_file
@@ -46,8 +45,7 @@ from .release_state import (
 from .sbom import discover_sbom_paths, parse_sbom, sbom_graph
 from .truth import TRUTH_MATRIX_ID, reconcile_release_truth
 
-
-_ANCHOR_ID = RELEASE_PATH_IDS[-1]
+_ANCHOR_ID = RELEASE_PATH_KEYS[-1]
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,6 +61,8 @@ class Phase1Inputs:
     history_paths: tuple[str, ...] = ("tools/buildanddo_release.py", ".bits")
     claim_source_paths: tuple[str, ...] = ("tools/buildanddo_release.py",)
     expected_artifact_digest: str | None = None
+    artifact_digest_field: str = "artifact_tree_sha256"
+    expected_commit: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,10 +79,43 @@ class Phase1Compilation:
 
         return {
             "schema_version": "semantic-twin.phase1-complete/v2",
+            "semantic_root": self.epoch.root_digest,
+            "capture_time": self.epoch.metadata.created_at.isoformat(),
+            "input_status": self.input_status(),
             "graph": graph_payload(self.graph),
             "truth_matrix_id": self.truth_matrix_id,
             "epoch": self.epoch.to_dict(),
             "context": self.context.to_dict(),
+        }
+
+    def input_status(self) -> dict[str, object]:
+        """Report observed input categories separately from release verification."""
+        counts: dict[str, int] = {}
+        for item in self.graph.objects:
+            kind = str(item.claims[-1].get("ingestion_kind"))
+            counts[kind] = counts.get(kind, 0) + 1
+        categories = {
+            "source": ("CodeModule", "CodeSymbol"),
+            "documentation": ("DocumentationClaim",),
+            "dispatch_reports": ("DeploymentReceipt",),
+            "release_receipts": ("ReleaseStateReceipt",),
+            "git_history": ("GitCommit",),
+            "sbom": ("SoftwarePackage",),
+            "gitlab": ("GitLabPipeline", "GitLabJob", "GitLabArtifact"),
+            "datadog": (
+                "DatadogDoraDeployment",
+                "DatadogTrace",
+                "DatadogEvent",
+                "RuntimeVerification",
+            ),
+            "memory": ("MemoryFileVector", "MemoryEdgeVector", "MemoryEventVector"),
+        }
+        return {
+            name: {
+                "object_count": (count := sum(counts.get(kind, 0) for kind in kinds)),
+                "status": "OBSERVED_INPUT" if count else "UNMEASURED",
+            }
+            for name, kinds in categories.items()
         }
 
 
@@ -93,11 +126,6 @@ def _gap_object(name: str, *, commit: str | None) -> ObjectDraft:
         stable_id("phase1-gap", name),
         "UnmeasuredInput",
         f"semantic-twin:missing:{name}",
-        snapshot=SourceSnapshot.derived(
-            f"semantic-twin:missing:{name}",
-            {"input": name, "status": "UNMEASURED"},
-            observed_at=datetime.now(timezone.utc),
-        ),
         claims=({"input": name, "status": "UNMEASURED"},),
         relations=(
             relation(
@@ -115,27 +143,21 @@ def _gap_object(name: str, *, commit: str | None) -> ObjectDraft:
     )
 
 
-def _commit_from_base(graph: SemanticGraph) -> str | None:
+def _commit_from_base(graph: GraphDraft) -> str | None:
     """Read the current source commit carried by the bounded base graph."""
 
-    item = graph.by_id().get(RELEASE_PATH_IDS[0])
-    if item is None:
-        return None
-    metadata = item.claims[-1].get("ingestion")
-    if isinstance(metadata, Mapping):
-        commit = metadata.get("repository_commit_context")
-        return str(commit) if commit is not None else None
-    return None
+    item = graph.by_id().get(RELEASE_PATH_KEYS[0])
+    return item.commit if item is not None else None
 
 
 def _optional_graphs(
     root: Path,
     inputs: Phase1Inputs,
     commit: str | None,
-) -> tuple[SemanticGraph, ...]:
+) -> tuple[GraphDraft, ...]:
     """Compile optional local evidence sources or explicit gap objects."""
 
-    graphs: list[SemanticGraph] = []
+    graphs: list[GraphDraft] = []
     release_paths = (
         inputs.release_receipts
         if inputs.release_receipts is not None
@@ -150,7 +172,7 @@ def _optional_graphs(
             )
         )
     else:
-        graphs.append(SemanticGraph((_gap_object("release-state", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("release-state", commit=commit),)))
 
     sbom_paths = (
         inputs.sbom_paths
@@ -161,7 +183,7 @@ def _optional_graphs(
         documents = tuple(parse_sbom(path, repository_root=root) for path in sbom_paths)
         graphs.append(sbom_graph(documents, anchor_id=_ANCHOR_ID, commit=commit))
     else:
-        graphs.append(SemanticGraph((_gap_object("sbom", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("sbom", commit=commit),)))
 
     for path in inputs.gitlab_exports:
         graphs.append(
@@ -173,7 +195,7 @@ def _optional_graphs(
             )
         )
     if not inputs.gitlab_exports:
-        graphs.append(SemanticGraph((_gap_object("gitlab-export", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("gitlab-export", commit=commit),)))
 
     for path in inputs.datadog_exports:
         graphs.append(
@@ -185,7 +207,7 @@ def _optional_graphs(
             )
         )
     if not inputs.datadog_exports:
-        graphs.append(SemanticGraph((_gap_object("datadog-export", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("datadog-export", commit=commit),)))
 
     memory_paths = (
         inputs.memory_paths
@@ -202,7 +224,7 @@ def _optional_graphs(
             )
         )
     if not memory_paths:
-        graphs.append(SemanticGraph((_gap_object("memory", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("memory", commit=commit),)))
     return tuple(graphs)
 
 
@@ -213,22 +235,31 @@ def compile_phase1(
     query: str = "release production verification artifact DORA evidence",
     historical_cutoff: datetime | None = None,
     commit: str | None = None,
+    observed_at: datetime | None = None,
 ) -> Phase1Compilation:
     """Compile all ten local Phase 1 capabilities into deterministic proofs."""
 
     root = repository_root.resolve()
+    captured = observed_at or datetime.now(timezone.utc)
     selected_inputs = inputs or Phase1Inputs()
-    base_graph = compile_bounded_base(root, commit=commit)
+    base_graph = extract_release_twin(root, commit=commit)
     resolved_commit = commit or _commit_from_base(base_graph)
-    history = read_git_history(
-        root,
-        max_count=selected_inputs.history_limit,
-        paths=selected_inputs.history_paths,
-    )
-    history_semantics = history_graph(history, anchor_id=RELEASE_PATH_IDS[0])
+    if selected_inputs.history_limit < 1:
+        raise ValueError("history_limit must be positive")
+    if (root / ".git").exists():
+        history = read_git_history(
+            root,
+            max_count=selected_inputs.history_limit,
+            paths=selected_inputs.history_paths,
+        )
+        history_semantics = history_graph(history, anchor_id=RELEASE_PATH_KEYS[0])
+    else:
+        history_semantics = GraphDraft(
+            (_gap_object("git-history", commit=resolved_commit),)
+        )
     optional_graphs = _optional_graphs(root, selected_inputs, resolved_commit)
-    preliminary = combine_graphs(base_graph, history_semantics, *optional_graphs)
-    assessments = SemanticGraph(
+    preliminary = combine_drafts(base_graph, history_semantics, *optional_graphs)
+    assessments = GraphDraft(
         assess_claims(
             base_graph,
             root,
@@ -236,13 +267,17 @@ def compile_phase1(
             current_commit=resolved_commit,
         )
     )
-    with_claims = combine_graphs(preliminary, assessments)
+    with_claims = combine_drafts(preliminary, assessments)
     truth = reconcile_release_truth(
         with_claims,
-        expected_commit=resolved_commit,
+        expected_commit=selected_inputs.expected_commit or resolved_commit,
         expected_artifact_digest=selected_inputs.expected_artifact_digest,
+        artifact_digest_field=selected_inputs.artifact_digest_field,
     )
-    complete_graph = combine_graphs(with_claims, SemanticGraph((truth,)))
+    complete_graph = combine_drafts(with_claims, GraphDraft((truth,))).resolve(
+        repository_root=root,
+        observed_at=captured,
+    )
     if not complete_graph.is_connected():
         raise ValueError(
             "complete Phase 1 graph is not connected: "

@@ -205,3 +205,17 @@ srs:
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md
     notes: Owner-authorized P0 completion and compatibility migration of existing local ingestion and Phase 1 consumers to strict version 2 contracts; new ingestion features, persistence, mutation, policy execution, signing and external effects excluded
+
+  - code: SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+    title: Living Semantic System Twin bounded release ingestion
+    status: delivered
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001.md
+    notes: Restore the registration of the bounded compiler merged in PR 51; version-two integration is covered by the P1-COMPLETE dispatch
+
+  - code: SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+    title: Complete and integrate Phase 1 with the version-two contracts
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md
+    notes: Owner requested the remaining Phase 1 work after the merged-contract audit; migrate both ingestion layers, validate proofs and replay, and account for available evidence without deployment or credential access

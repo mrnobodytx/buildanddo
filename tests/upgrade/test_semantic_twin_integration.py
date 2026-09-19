@@ -50,12 +50,18 @@ from libs.semantic_twin.ingestion.builder import (
     make_object,
     object_kind,
 )
+from libs.semantic_twin.ingestion.drafts import (
+    GraphDraft,
+    combine_drafts,
+    make_object as make_batch_object,
+)
 from libs.semantic_twin.ingestion.graph import (
     SemanticGraph,
     add_relations,
     combine_graphs,
 )
 from libs.semantic_twin.ingestion.inputs import SourceSnapshot
+from libs.semantic_twin.phase1.context import compile_context_bundle
 from libs.semantic_twin.phase1.merkle import build_epoch
 from libs.semantic_twin.phase1.providers import ingest_datadog_export
 
@@ -201,6 +207,48 @@ class RevisionBindingTests(unittest.TestCase):
             graph.relations()[0].evidence, graph.relations()[1].evidence
         )
 
+    def test_batch_graph_preserves_local_aliases_for_snapshot_fragments(self) -> None:
+        target = make_batch_object(
+            "target",
+            "UnmeasuredInput",
+            "semantic-twin:target",
+            claims=({"input": "fixture", "status": "UNMEASURED"},),
+            evidence_state=EvidenceState.UNMEASURED,
+        )
+        batch = GraphDraft((target,)).resolve(observed_at=CAPTURED_AT)
+        source = node(
+            "source",
+            relations=(
+                RelationDraft(RelationPredicate.ABOUT, "target", ("fixture:source",)),
+            ),
+        )
+        graph = combine_graphs(SemanticGraph((source,)), batch)
+        self.assertTrue(graph.is_connected())
+        edge = graph.relations()[0]
+        self.assertEqual(edge.target, batch.objects[0].semantic_id)
+        self.assertEqual(edge.target_version, batch.objects[0].source.version)
+        self.assertEqual(object_kind(batch.objects[0]), "UnmeasuredInput")
+
+    def test_batch_and_snapshot_graphs_reject_conflicting_local_keys(self) -> None:
+        target = make_batch_object(
+            "shared", "File", "semantic-twin:target", claims=({"name": "target"},)
+        )
+        batch = GraphDraft((target,)).resolve(observed_at=CAPTURED_AT)
+        with self.assertRaisesRegex(ContractError, "conflicting extraction key"):
+            combine_graphs(SemanticGraph((node("shared"),)), batch)
+
+    def test_context_cannot_hide_pending_edges(self) -> None:
+        source = node(
+            "source",
+            relations=(
+                RelationDraft(RelationPredicate.ABOUT, "target", ("fixture:source",)),
+            ),
+        )
+        fragment = SemanticGraph((source,))
+        epoch = build_epoch(SemanticGraph(fragment.objects))
+        with self.assertRaises(ContractError):
+            compile_context_bundle(fragment, epoch, query="source")
+
 
 class CaptureContractTests(unittest.TestCase):
     """Keep capture evidence separate from code, provider and policy assertions."""
@@ -267,17 +315,16 @@ class CaptureContractTests(unittest.TestCase):
             self.assertIs(edge.state, EvidenceState.UNMEASURED)
             self.assertEqual(edge.evidence, ())
             self.assertIsNone(edge.verification)
-        self.assertIn(
-            RelationPredicate.VERIFIED_BY,
+        self.assertEqual(
             {edge.predicate for edge in graph.relations()},
-        )
-        self.assertIn(
-            RelationPredicate.DEPLOYED_AS,
-            {edge.predicate for edge in graph.relations()},
+            {RelationPredicate.SUCCEEDED_BY},
         )
         for item in graph.objects:
+            self.assertIs(item.object_type, EntityType.CAPABILITY)
+            self.assertFalse(item.claims[0]["execution_observed"])
             self.assertIs(item.state.tevv_state, TevvState.NOT_TESTED)
             self.assertIsNone(item.verification)
+            self.assertIsNone(item.runtime.observed_status)
 
     def test_provider_pass_is_only_a_captured_observation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -285,7 +332,13 @@ class CaptureContractTests(unittest.TestCase):
             path.write_text(
                 json.dumps({"verifications": [{"id": "one", "state": "PASS"}]})
             )
-            graph = ingest_datadog_export(path, anchor_id="anchor")
+            fragment = ingest_datadog_export(path, anchor_id="anchor")
+            anchor = make_batch_object(
+                "anchor", "Observation", "semantic-twin:anchor", claims=()
+            )
+            graph = combine_drafts(GraphDraft((anchor,)), fragment).resolve(
+                observed_at=CAPTURED_AT
+            )
         item = next(
             item for item in graph.objects if object_kind(item) == "RuntimeVerification"
         )
@@ -324,12 +377,16 @@ class GraphWireTests(unittest.TestCase):
         graph = SemanticGraph((first, second))
         payload = json.loads(serialize_graph(graph))
         self.assertEqual(payload["schema_version"], "semantic-twin.graph/v2")
+        leaves = {
+            leaf["subject"]["semantic_id"]: leaf for leaf in payload["leaf_digests"]
+        }
         for raw in payload["objects"]:
             obj = CanonicalObjectEnvelope.from_dict(raw)
             self.assertEqual(obj, graph.by_id()[obj.semantic_id])
             self.assertEqual(canonical_object_bytes(obj), obj.to_json().encode("utf-8"))
+            self.assertEqual(leaves[obj.semantic_id]["subject"], obj.subject.to_dict())
             self.assertEqual(
-                payload["leaf_digests"][obj.semantic_id],
+                leaves[obj.semantic_id]["digest"]["value"],
                 hashlib.sha256(canonical_object_bytes(obj)).hexdigest(),
             )
             self.assertIs(obj.state.merkle_state, MerkleState.UNHASHED)

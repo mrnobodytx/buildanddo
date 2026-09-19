@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/receipts.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/ingestion/graph.py, .bits/out
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/vocabulary.py
+# EnumEdges:   CONSUMES .bits/out; PRODUCES libs/semantic_twin/ingestion/pipeline.py; DEPENDS_ON libs/semantic_twin/ingestion/graph.py
 # DAG Node:    semantic-twin.phase-1.receipt-ingestion
 # Intent:      Normalize local report and memory evidence into receipt records without treating source assertions as deployed truth.
 # ──────────────────────────────────────────────────────────
@@ -19,19 +19,17 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
-from dataclasses import dataclass
 import hashlib
 import json
-from pathlib import Path
 import re
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
+from ..contracts import ContractError
 from ..vocabulary import EvidenceState, RelationPredicate
-from .builder import ObjectDraft, RelationDraft
-from .graph import make_object
-from .inputs import SourceSnapshot
-
+from .drafts import ObjectDraft, RelationDraft, make_object
 
 _TIMESTAMP = re.compile(
     r"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})\b"
@@ -59,7 +57,31 @@ class DeploymentReceipt:
     states: tuple[str, ...]
     verification_results: tuple[str, ...]
     evidence_refs: tuple[str, ...]
-    snapshot: SourceSnapshot
+    source_digest: str
+
+
+def read_json(path: Path, *, raw: bytes | None = None) -> Any:
+    """Read captured JSON, rejecting ambiguous keys and non-finite values."""
+
+    def pairs(values: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in values:
+            if key in result:
+                raise ContractError(f"duplicate JSON key: {key}")
+            result[key] = value
+        return result
+
+    def constant(value: str) -> object:
+        raise ContractError(f"non-finite JSON value: {value}")
+
+    try:
+        return json.loads(
+            path.read_bytes() if raw is None else raw,
+            object_pairs_hook=pairs,
+            parse_constant=constant,
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ContractError(f"invalid JSON export: {path}") from exc
 
 
 def _stable(values: Iterable[str]) -> tuple[str, ...]:
@@ -85,8 +107,8 @@ def _json_values(value: Any, prefix: str = "") -> Iterable[tuple[str, Any]]:
 def _markdown_receipt(path: Path, source_path: str) -> DeploymentReceipt:
     """Extract evidence fields from a Markdown dispatch report."""
 
-    snapshot = SourceSnapshot.capture(path, source_path=source_path)
-    text = snapshot.content.decode("utf-8", errors="replace")
+    raw = path.read_bytes()
+    text = raw.decode("utf-8")
     timestamps = _stable(_TIMESTAMP.findall(text))
     shas = _stable(value.lower() for value in _SHA.findall(text))
     verification = _stable(value.upper() for value in _VERIFICATION.findall(text))
@@ -111,18 +133,15 @@ def _markdown_receipt(path: Path, source_path: str) -> DeploymentReceipt:
         states=states,
         verification_results=verification,
         evidence_refs=_stable(references),
-        snapshot=snapshot,
+        source_digest=hashlib.sha256(raw).hexdigest(),
     )
 
 
 def _json_receipt(path: Path, source_path: str) -> DeploymentReceipt:
     """Extract evidence fields from a JSON memory payload."""
 
-    snapshot = SourceSnapshot.capture(path, source_path=source_path)
-    try:
-        payload = json.loads(snapshot.content.decode("utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError):
-        payload = {}
+    raw = path.read_bytes()
+    payload = read_json(path, raw=raw)
     timestamps: list[str] = []
     shas: list[str] = []
     states: list[str] = []
@@ -153,7 +172,7 @@ def _json_receipt(path: Path, source_path: str) -> DeploymentReceipt:
         states=_stable(states),
         verification_results=_stable(verification),
         evidence_refs=_stable(references),
-        snapshot=snapshot,
+        source_digest=hashlib.sha256(raw).hexdigest(),
     )
 
 
@@ -206,11 +225,6 @@ def receipt_objects(
 
     objects: list[ObjectDraft] = []
     for record in records:
-        evidence_state = (
-            EvidenceState.CONTRADICTED
-            if "FAIL" in record.verification_results
-            else EvidenceState.OBSERVED
-        )
         relation = RelationDraft(
             predicate=RelationPredicate.REFINES,
             target=release_receipt_id,
@@ -223,7 +237,6 @@ def receipt_objects(
                 _receipt_id(record),
                 "DeploymentReceipt",
                 record.source_path,
-                snapshot=record.snapshot,
                 claims=(
                     {
                         "dispatch_id": record.dispatch_id,
@@ -236,15 +249,11 @@ def receipt_objects(
                     },
                 ),
                 relations=(relation,),
-                evidence_state=evidence_state,
+                evidence_state=EvidenceState.OBSERVED,
                 lifecycle_state="INGESTED_EVIDENCE",
                 commit=commit,
                 documentation=(record.source_path,),
-                runtime_status=(
-                    record.verification_results[-1]
-                    if record.verification_results
-                    else None
-                ),
+                input_digest=record.source_digest,
             )
         )
     return tuple(objects)

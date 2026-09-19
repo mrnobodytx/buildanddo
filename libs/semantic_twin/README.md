@@ -136,33 +136,41 @@ python -m mypy --strict libs/semantic_twin
 The bounded release compiler and the local Phase 1 compiler emit strict v2
 objects. Their outer payload versions are `semantic-twin.graph/v2` and
 `semantic-twin.phase1-complete/v2`. Read each `objects` entry with
-`CanonicalObjectEnvelope.from_dict`; graph `leaf_digests` are a separate index
-over the exact `to_json()` bytes. Serializing a graph does not change an object's
-Merkle state or create an incomplete leaf binding.
+`CanonicalObjectEnvelope.from_dict`. Graph `leaf_digests` are separate typed
+records containing the subject identity/revision and a SHA-256 digest of the
+exact `to_json()` bytes. Serializing a graph does not change an object's Merkle
+state or create an incomplete leaf binding.
 
-Extractor categories such as `GitLabJob` remain in the `ingestion.kind` claim
-metadata; `object_type` always uses the frozen `EntityType`. Extractor-local keys
-are mapped to type-qualified canonical identities. This is reconstruction from
-captured inputs, not a decoder for version-one envelopes.
+Extractor categories such as `GitLabJob` remain in claim metadata;
+`object_kind` reads both batch `ingestion_kind` and snapshot `ingestion.kind`
+records. `object_type` always uses the frozen `EntityType`. Extractor-local keys
+map to type-qualified canonical identities. This reconstructs captured inputs;
+it does not decode version-one envelopes.
 
-`SourceSnapshot` binds the bytes actually read, their SHA-256 content revision,
-source path, section selectors and capture time. A supplied repository commit is
-retained as context; it does not assert that a dirty file or an external export
-matches that commit. Observation timestamps describe capture, independently of
-Git author time, deployment time or file mtime. Replaying the same snapshots is
-deterministic; a new capture has a new observation time and can have a new graph
-digest even when file bytes are unchanged.
+Batch adapters bind the SHA-256 revisions of the bytes actually parsed and
+reject conflicting input revisions during resolution. `SourceSnapshot` also
+supports caller-captured bytes, source paths, section selectors and timestamps
+through the snapshot builder. A supplied repository commit remains context; it
+does not assert that a dirty file or an external export matches that commit.
+Observation timestamps describe capture, independently of Git author time,
+deployment time or file mtime. Replaying the same inputs and capture time is
+deterministic; a new observation time can change the graph digest.
 
-Adapters can assemble graph fragments. Pending edges remain separate from
-canonical objects until both endpoints are available. Combining fragments binds
-the actual endpoint types and revisions; unresolved edges block serialization
-and epoch creation. Existing bound edges reject a changed target revision.
+Batch adapters assemble `GraphDraft` fragments and resolve them together with
+their anchors. The snapshot builder can also assemble `SemanticGraph` fragments
+with pending edges separate from canonical objects. Resolved batch graphs retain
+their local aliases so both paths compose through `combine_graphs`. Combining
+fragments binds actual endpoint types and revisions; conflicting aliases and
+changed target revisions fail validation. Unresolved edges block serialization,
+epoch creation and context compilation. The patch-free `phase1.compat` entry
+points remain available for snapshot-builder callers.
 
-The static release diagram retains candidate verification/deployment edges as
-`UNMEASURED`. Documentation classifications retain their heuristic origin, memory
-edges remain recorded assertions, and provider `PASS` fields stay observations
-with `NOT_TESTED` TEVV. None of those inputs mint verification receipts or a live
-runtime status. Receipt-file I/O and event publication have distinct endpoints.
+The static release diagram uses capability nodes whose proposed sequence edges
+remain `UNMEASURED`. They do not represent executed deployments. Documentation
+classifications retain their AST/string origin, memory edges remain recorded
+assertions, and provider `PASS` fields stay observations with `NOT_TESTED` TEVV.
+None of those inputs mint verification receipts or a live runtime status.
+Receipt-file I/O and event publication have distinct endpoints.
 
 Run the combined contract and consumer acceptance suite:
 

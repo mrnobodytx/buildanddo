@@ -1,35 +1,34 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/memory.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/vocabulary.py
+# Depends:     .bits/out, libs/semantic_twin/phase1/common.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/vocabulary.py
+# EnumEdges:   CONSUMES .bits/out; PRODUCES libs/semantic_twin/phase1/compiler.py
 # DAG Node:    semantic-twin.phase-1.memory
-# Intent:      Preserve Type A/B/C memory assertions and endpoint references without turning metadata into runtime facts.
+# Intent:      Preserve Type A, B and C memory meaning as typed objects and Phase 0 edges instead of flattening payloads into generic receipts.
 # ───────────────────────────────────────────────────────
 
 """Compile governed memory vectors into typed semantic objects and edges."""
 
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Mapping
-import json
+from functools import partial
 from pathlib import Path
 from typing import Any
 
-from ..ingestion.graph import SemanticGraph
-from ..ingestion.builder import RelationDraft
-from ..ingestion.inputs import SourceSnapshot
+from ..contracts import ContractError
+from ..ingestion.drafts import GraphDraft, RelationDraft, make_object
 from ..vocabulary import EvidenceState, RelationPredicate
-from .common import as_mapping, relation, relative_path, stable_id
-from .compat import make_object
+from .common import as_mapping, read_json, relation, relative_path, stable_id
 
 
 def discover_memory_paths(repository_root: Path) -> tuple[Path, ...]:
@@ -56,26 +55,26 @@ def ingest_memory_file(
     anchor_id: str,
     repository_root: Path | None = None,
     commit: str | None = None,
-) -> SemanticGraph:
+) -> GraphDraft:
     """Compile one memory payload into Type A/B/C semantic objects."""
 
+    raw = path.read_bytes()
+    payload = as_mapping(read_json(path, raw=raw))
+    make = partial(make_object, input_digest=hashlib.sha256(raw).hexdigest())
     source = relative_path(path, repository_root)
-    snapshot = SourceSnapshot.capture(path, source_path=source)
-    payload = as_mapping(json.loads(snapshot.content))
     vectors_value = payload.get("vectors")
-    vectors = (
-        tuple(as_mapping(item) for item in vectors_value)
-        if isinstance(vectors_value, list)
-        else ()
-    )
+    if not isinstance(vectors_value, list) or any(
+        not isinstance(item, Mapping) for item in vectors_value
+    ):
+        raise ContractError("memory vectors must be an array of objects")
+    vectors = tuple(as_mapping(item) for item in vectors_value)
     root_id = stable_id("memory-payload", source)
     summary = as_mapping(payload.get("summary"))
     objects = [
-        make_object(
+        make(
             root_id,
             "MemoryPayload",
             source,
-            snapshot=snapshot,
             claims=(dict(summary),),
             relations=(relation(RelationPredicate.REFINES, anchor_id, source),),
             evidence_state=EvidenceState.OBSERVED,
@@ -101,11 +100,10 @@ def ingest_memory_file(
         reference_id = stable_id("memory-reference", source, reference)
         endpoint_ids[reference] = reference_id
         objects.append(
-            make_object(
+            make(
                 reference_id,
                 "MemoryReference",
                 source,
-                snapshot=snapshot,
                 claims=({"reference": reference},),
                 relations=(relation(RelationPredicate.MEMBER_OF, root_id, source),),
                 evidence_state=EvidenceState.OBSERVED,
@@ -136,16 +134,13 @@ def ingest_memory_file(
                 )
             if target_ref:
                 relations.append(
-                    # This memory records an assertion about an endpoint; it is
-                    # not itself executable code or an authenticated authority.
                     relation(RelationPredicate.REFERENCES, target_ref, source)
                 )
         objects.append(
-            make_object(
+            make(
                 vector_id,
                 object_types.get(vector_type, "MemoryVector"),
                 source,
-                snapshot=snapshot,
                 claims=(dict(vector),),
                 relations=tuple(relations),
                 evidence_state=EvidenceState.OBSERVED,
@@ -154,4 +149,4 @@ def ingest_memory_file(
                 documentation=(source,),
             )
         )
-    return SemanticGraph(tuple(objects))
+    return GraphDraft(tuple(objects))

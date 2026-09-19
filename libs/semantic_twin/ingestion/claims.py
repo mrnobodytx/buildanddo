@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/claims.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/ingestion/graph.py, .bits/srs, tools/buildanddo_release.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/vocabulary.py
+# EnumEdges:   CONSUMES .bits/srs; CONSUMES tools/buildanddo_release.py; PRODUCES libs/semantic_twin/ingestion/pipeline.py; DEPENDS_ON libs/semantic_twin/ingestion/graph.py
 # DAG Node:    semantic-twin.phase-1.claim-extraction
 # Intent:      Turn testable SRS statements into sourced claim objects with conservative AST/string entailment, contradiction or unmeasured dispositions.
 # ─────────────────────────────────────────────────────────
@@ -19,17 +19,15 @@
 
 from __future__ import annotations
 
+import ast
+import hashlib
+import re
 from dataclasses import dataclass
 from enum import Enum
-import hashlib
 from pathlib import Path
-import re
 
 from ..vocabulary import EvidenceState, RelationPredicate
-from .builder import ObjectDraft, RelationDraft
-from .graph import make_object
-from .inputs import SourceSnapshot
-
+from .drafts import ObjectDraft, RelationDraft, make_object
 
 _LIST_ITEM = re.compile(r"^\s*(?:[-*+] |\d+[.)]\s+)(?:\[[ xX]\]\s*)?(.*\S)\s*$")
 _CODE_SPAN = re.compile(r"`([^`]+)`")
@@ -72,8 +70,9 @@ class DocumentationClaim:
     section: str
     disposition: ClaimDisposition
     matched_terms: tuple[str, ...]
-    snapshot: SourceSnapshot
-    controller_snapshot: SourceSnapshot
+    source_digest: str
+    controller_path: str
+    controller_digest: str
 
 
 def _candidate_terms(claim: str) -> tuple[str, ...]:
@@ -115,21 +114,78 @@ def _matched_terms(claim: str, controller_source: str) -> tuple[str, ...]:
 
 
 def classify_claim(claim: str, controller_source: str) -> ClaimDisposition:
-    """Classify a claim through conservative literal source matching."""
+    """Classify only explicit source-presence propositions using AST facts.
 
-    matches = _matched_terms(claim, controller_source)
-    if not matches:
-        normalized = " ".join(claim.casefold().split()).strip(" .")
-        source_normalized = " ".join(controller_source.casefold().split())
-        if len(normalized) >= 24 and normalized in source_normalized:
-            matches = (normalized,)
-    if not matches:
+    A matching identifier alone says nothing about readback correctness,
+    deployment success, timing guarantees or other behavioral prose.
+    """
+    terms = _candidate_terms(claim)
+    if not terms:
         return ClaimDisposition.UNMEASURED
+    try:
+        tree = ast.parse(controller_source)
+    except SyntaxError:
+        return ClaimDisposition.UNMEASURED
+    text = claim.casefold()
+    facts: set[str] = set()
+    if re.search(r"\b(?:define|defines|defined)\b", text):
+        facts = {
+            node.name
+            for node in ast.walk(tree)
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+        }
+    elif re.search(r"\b(?:call|calls)\b", text):
+        facts = {
+            ast.unparse(node.func)
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call)
+        }
+    elif re.search(r"\b(?:import|imports)\b", text):
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                facts.update(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom):
+                facts.add(node.module or "")
+                facts.update(alias.name for alias in node.names)
+    elif re.search(r"\b(?:read|reads)\b", text):
+        for node in ast.walk(tree):
+            if (
+                isinstance(node, ast.Call)
+                and node.args
+                and ast.unparse(node.func)
+                in {
+                    "os.environ.get",
+                    "os.getenv",
+                    "os.environ.setdefault",
+                }
+            ):
+                if isinstance(node.args[0], ast.Constant) and isinstance(
+                    node.args[0].value, str
+                ):
+                    facts.add(node.args[0].value)
+            elif (
+                isinstance(node, ast.Subscript)
+                and isinstance(node.ctx, ast.Load)
+                and ast.unparse(node.value) == "os.environ"
+            ):
+                if isinstance(node.slice, ast.Constant) and isinstance(
+                    node.slice.value, str
+                ):
+                    facts.add(node.slice.value)
+    elif re.search(r"\b(?:contain|contains|mentions)\b", text):
+        facts = {term for term in terms if term in controller_source}
+    else:
+        return ClaimDisposition.UNMEASURED
+    matches = [term.removesuffix("()") in facts for term in terms]
     if _ABSENCE_NEGATION.search(claim):
-        return ClaimDisposition.CONTRADICTED
+        return (
+            ClaimDisposition.CONTRADICTED
+            if any(matches)
+            else ClaimDisposition.UNMEASURED
+        )
     if _NEGATION.search(claim):
         return ClaimDisposition.UNMEASURED
-    return ClaimDisposition.ENTAILED
+    return ClaimDisposition.ENTAILED if all(matches) else ClaimDisposition.UNMEASURED
 
 
 def _claim_id(source_path: str, line: int, text: str) -> str:
@@ -145,8 +201,9 @@ def _documentation_claim(
     section: str,
     text: str,
     controller_source: str,
-    snapshot: SourceSnapshot,
-    controller_snapshot: SourceSnapshot,
+    source_digest: str,
+    controller_path: str,
+    controller_digest: str,
 ) -> DocumentationClaim:
     """Create one fully classified documentation claim."""
 
@@ -159,8 +216,9 @@ def _documentation_claim(
         section=section,
         disposition=disposition,
         matched_terms=_matched_terms(text, controller_source),
-        snapshot=snapshot,
-        controller_snapshot=controller_snapshot,
+        source_digest=source_digest,
+        controller_path=controller_path,
+        controller_digest=controller_digest,
     )
 
 
@@ -169,15 +227,20 @@ def extract_documentation_claims(
     controller_path: Path,
     *,
     repository_root: Path | None = None,
-    controller_snapshot: SourceSnapshot | None = None,
 ) -> tuple[DocumentationClaim, ...]:
     """Extract list claims from testable sections of every BuildAndDo SRS."""
 
-    controller_snapshot = controller_snapshot or SourceSnapshot.capture(controller_path)
-    controller_source = controller_snapshot.content.decode("utf-8")
+    controller_raw = controller_path.read_bytes()
+    controller_source = controller_raw.decode("utf-8")
+    controller_digest = hashlib.sha256(controller_raw).hexdigest()
     root = repository_root.resolve() if repository_root is not None else None
+    controller_locator = controller_path.resolve().as_posix()
+    if root is not None and controller_path.resolve().is_relative_to(root):
+        controller_locator = controller_path.resolve().relative_to(root).as_posix()
     claims: list[DocumentationClaim] = []
     for path in sorted(srs_directory.glob("SRS-BUILDANDDO-*.md")):
+        raw = path.read_bytes()
+        source_digest = hashlib.sha256(raw).hexdigest()
         resolved = path.resolve()
         if root is not None:
             try:
@@ -186,7 +249,6 @@ def extract_documentation_claims(
                 source_path = resolved.as_posix()
         else:
             source_path = path.as_posix()
-        snapshot = SourceSnapshot.capture(path, source_path=source_path)
         section = ""
         in_code_fence = False
         pending_line: int | None = None
@@ -206,8 +268,9 @@ def extract_documentation_claims(
                         pending_section,
                         text,
                         controller_source,
-                        snapshot,
-                        controller_snapshot,
+                        source_digest,
+                        controller_locator,
+                        controller_digest,
                     )
                 )
             pending_line = None
@@ -215,7 +278,7 @@ def extract_documentation_claims(
             pending_parts = []
 
         for line_number, raw_line in enumerate(
-            snapshot.content.decode("utf-8").splitlines(),
+            raw.decode("utf-8").splitlines(),
             1,
         ):
             stripped = raw_line.strip()
@@ -276,7 +339,7 @@ def claim_objects(
         relation = RelationDraft(
             predicate=predicate,
             target=code_module_id,
-            evidence=(reference,),
+            evidence=(reference, claim.controller_path),
             confidence=confidence,
             state=evidence_state,
         )
@@ -285,18 +348,12 @@ def claim_objects(
                 claim.claim_id,
                 "DocumentationClaim",
                 claim.source_path,
-                snapshot=claim.snapshot,
                 claims=(
                     {
                         "text": claim.text,
                         "line": claim.line,
                         "section": claim.section,
                         "classification": claim.disposition.value,
-                        "classification_method": "static lexical heuristic; not a proof",
-                        "controller_source_version": claim.controller_snapshot.version,
-                        "controller_source_reference": str(
-                            claim.controller_snapshot.reference()
-                        ),
                         "matched_terms": list(claim.matched_terms),
                     },
                 ),
@@ -305,6 +362,8 @@ def claim_objects(
                 lifecycle_state="CLASSIFIED",
                 commit=commit,
                 documentation=(reference,),
+                input_digest=claim.source_digest,
+                supporting_digests=((claim.controller_path, claim.controller_digest),),
             )
         )
     return tuple(objects)

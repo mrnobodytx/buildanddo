@@ -115,6 +115,8 @@ def canonical_id(kind: str, local_key: str) -> SemanticId:
 def object_kind(item: CanonicalObjectEnvelope) -> str:
     """Read the original extractor category without extending EntityType."""
     for claim in reversed(item.claims):
+        if isinstance(kind := claim.get("ingestion_kind"), str):
+            return kind
         metadata = claim.get("ingestion")
         if isinstance(metadata, Mapping) and isinstance(metadata.get("kind"), str):
             return str(metadata["kind"])

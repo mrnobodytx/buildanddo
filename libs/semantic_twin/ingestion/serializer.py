@@ -1,18 +1,18 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/serializer.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
 # Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/models.py
 # EnumType:    Adapter
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/models.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/models.py; PRODUCES semantic-twin.graph/v2
 # DAG Node:    semantic-twin.phase-1.serializer
-# Intent:      Serialize strict v2 objects unchanged and publish detached digests over their exact canonical bytes.
+# Intent:      Serialize complete canonical envelopes unchanged with detached subject-bound SHA-256 leaf digests.
 # ──────────────────────────────────────────────────────────
 
 """Serialize semantic graphs with deterministic Merkle leaf digests."""
@@ -23,54 +23,56 @@ import hashlib
 import json
 from typing import Any
 
+from ..merkle import CanonicalSerialization, ContentDigest
 from ..models import CanonicalObjectEnvelope
+from .drafts import canonical_json
 from .graph import SemanticGraph
 
-
-def _canonical_json(value: Any) -> bytes:
-    """Encode a JSON value using the graph's canonical byte representation."""
-
-    return json.dumps(
-        value,
-        ensure_ascii=False,
-        separators=(",", ":"),
-        sort_keys=True,
-    ).encode("utf-8")
+SERIALIZATION = CanonicalSerialization()
 
 
 def canonical_object_bytes(item: CanonicalObjectEnvelope) -> bytes:
-    """Use the exact P0 serialization profile without modifying the envelope."""
+    """Serialize the complete unmodified envelope using the Phase 0 profile."""
     return item.to_json().encode("utf-8")
 
 
 def object_leaf_digest(item: CanonicalObjectEnvelope) -> str:
-    """Return the SHA-256 digest of one canonical envelope."""
-
+    """Hash every envelope field, including identity, evidence and state."""
     return hashlib.sha256(canonical_object_bytes(item)).hexdigest()
 
 
 def graph_payload(graph: SemanticGraph) -> dict[str, Any]:
-    """Return the deterministic JSON-ready semantic graph payload."""
+    """Return canonical envelopes and separate subject-bound digest records.
 
+    Hash records stay outside their hashed objects, avoiding circular hashes or
+    an unsupported change to the object's Merkle state.
+    """
     graph.require_resolved()
-    objects: list[dict[str, object]] = []
-    leaf_digests: dict[str, str] = {}
-    for item in sorted(graph.objects, key=lambda value: value.semantic_id):
-        payload = item.to_dict()
-        leaf_digests[str(item.semantic_id)] = object_leaf_digest(item)
-        objects.append(payload)
+    objects = sorted(graph.objects, key=lambda value: value.semantic_id)
     return {
         "schema_version": "semantic-twin.graph/v2",
         "object_count": len(objects),
-        "objects": objects,
-        "leaf_digests": leaf_digests,
+        "serialization": SERIALIZATION.to_dict(),
+        "hash_scope": "complete-object-envelope",
+        "objects": [item.to_dict() for item in objects],
+        "leaf_digests": [
+            {
+                "subject": item.subject.to_dict(),
+                "digest": ContentDigest(object_leaf_digest(item)).to_dict(),
+            }
+            for item in objects
+        ],
     }
 
 
 def serialize_graph(graph: SemanticGraph, *, indent: int | None = None) -> str:
-    """Serialize a semantic graph to canonical or human-indented JSON."""
-
+    """Serialize a graph in canonical or indented JSON form."""
     payload = graph_payload(graph)
     if indent is None:
-        return _canonical_json(payload).decode("utf-8")
-    return json.dumps(payload, ensure_ascii=False, indent=indent, sort_keys=True) + "\n"
+        return canonical_json(payload).decode("utf-8")
+    return (
+        json.dumps(
+            payload, ensure_ascii=True, indent=indent, sort_keys=True, allow_nan=False
+        )
+        + "\n"
+    )

@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/source.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/receipts.py, libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/ingestion/graph.py, tools/buildanddo_release.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/receipts.py; CONSUMES libs/semantic_twin/vocabulary.py
+# EnumEdges:   CONSUMES tools/buildanddo_release.py; PRODUCES libs/semantic_twin/ingestion/pipeline.py; DEPENDS_ON libs/semantic_twin/ingestion/graph.py
 # DAG Node:    semantic-twin.phase-1.source-ingestion
 # Intent:      Derive code symbols, call edges, configuration reads, receipt writes, publications and external dependencies without importing or executing the release controller.
 # ──────────────────────────────────────────────────────────
@@ -20,19 +20,18 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 from collections import defaultdict
 from collections.abc import Iterable
 from dataclasses import dataclass
-import hashlib
+from datetime import datetime
+from functools import partial
 from pathlib import Path
 from urllib.parse import quote
 
-from ..receipts import EvidenceKind
 from ..vocabulary import EvidenceState, RelationPredicate
-from .builder import ObjectDraft, RelationDraft, object_kind
-from .graph import SemanticGraph, make_object
-from .inputs import SourceSnapshot
-
+from .drafts import GraphDraft, ObjectDraft, RelationDraft, make_object
+from .graph import SemanticGraph
 
 _DEFINITION_NODES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
 _EXTERNAL_DEPENDENCIES = (
@@ -237,17 +236,15 @@ def _relation(
         evidence=(evidence,),
         confidence=confidence,
         state=state,
-        kinds=(EvidenceKind.SOURCE, EvidenceKind.STATIC_ANALYSIS),
     )
 
 
-def ingest_release_source(
+def extract_release_source(
     controller_path: Path,
     *,
     repository_root: Path | None = None,
     commit: str | None = None,
-    snapshot: SourceSnapshot | None = None,
-) -> SemanticGraph:
+) -> GraphDraft:
     """Parse a release controller into code, configuration and event objects."""
 
     controller = controller_path.resolve()
@@ -258,8 +255,9 @@ def ingest_release_source(
         relative = controller.relative_to(root).as_posix()
     except ValueError:
         relative = controller.as_posix()
-    snapshot = snapshot or SourceSnapshot.capture(controller, source_path=relative)
-    source_text = snapshot.content.decode("utf-8")
+    raw = controller.read_bytes()
+    source_text = raw.decode("utf-8")
+    make = partial(make_object, input_digest=hashlib.sha256(raw).hexdigest())
     tree = ast.parse(source_text, filename=relative)
     visitor = _DefinitionVisitor()
     visitor.visit(tree)
@@ -270,9 +268,7 @@ def ingest_release_source(
         symbol.qualname: f"code://{relative}#symbol/{_semantic_fragment(symbol.qualname)}"
         for symbol in symbols
     }
-    by_short_name: dict[str, list[_Symbol]] = defaultdict(list)
-    for symbol in symbols:
-        by_short_name[symbol.name].append(symbol)
+    by_qualified = {symbol.qualname: symbol for symbol in symbols}
 
     symbol_relations: dict[str, list[RelationDraft]] = {
         symbol.qualname: [
@@ -327,18 +323,38 @@ def ingest_release_source(
             called = _dotted_name(node.func)
             if called:
                 short_name = called.rsplit(".", 1)[-1]
-                candidates = by_short_name.get(short_name, [])
                 target: _Symbol | None = None
                 parent = symbol.qualname.rpartition(".")[0]
-                if parent:
-                    qualified = f"{parent}.{short_name}"
-                    target = next(
-                        (item for item in candidates if item.qualname == qualified),
-                        None,
-                    )
-                if target is None and len(candidates) == 1:
-                    target = candidates[0]
-                if target is not None and target.qualname != symbol.qualname:
+                if isinstance(node.func, ast.Name):
+                    shadowed = {
+                        n.id
+                        for n in nodes
+                        if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)
+                    }
+                    shadowed.update(n.arg for n in nodes if isinstance(n, ast.arg))
+                    scope = symbol.qualname
+                    while short_name not in shadowed:
+                        enclosing = by_qualified.get(scope)
+                        if (
+                            enclosing is None
+                            or enclosing.kind != "class"
+                            or enclosing is symbol
+                        ):
+                            target = by_qualified.get(
+                                f"{scope}.{short_name}" if scope else short_name
+                            )
+                        if target is not None or not scope:
+                            break
+                        scope = scope.rpartition(".")[0]
+                elif called.rpartition(".")[0] in {"self", "cls"} and parent:
+                    enclosing = by_qualified.get(parent)
+                    if enclosing is not None and enclosing.kind == "class":
+                        target = by_qualified.get(f"{parent}.{short_name}")
+                elif (
+                    owner := by_qualified.get(called.rpartition(".")[0])
+                ) is not None and owner.kind == "class":
+                    target = by_qualified.get(called)
+                if target is not None:
                     caller_relations.append(
                         _relation(
                             RelationPredicate.CALLS,
@@ -359,7 +375,7 @@ def ingest_release_source(
                         (
                             _relation(
                                 RelationPredicate.WRITES,
-                                f"receipt-file://{event_id}",
+                                f"file://buildanddo/receipt/{_semantic_fragment(receipt)}",
                                 evidence,
                                 state=EvidenceState.OBSERVED,
                             ),
@@ -384,7 +400,7 @@ def ingest_release_source(
                         caller_relations.append(
                             _relation(
                                 RelationPredicate.READS,
-                                f"receipt-file://event://buildanddo/receipt/{_semantic_fragment(receipt)}",
+                                f"file://buildanddo/receipt/{_semantic_fragment(receipt)}",
                                 evidence,
                                 state=EvidenceState.OBSERVED,
                             )
@@ -427,6 +443,7 @@ def ingest_release_source(
             (sorted(dependency_evidence[dependency_name]) or [relative])[0],
         )
         for dependency_name, dependency_id, _ in _EXTERNAL_DEPENDENCIES
+        if dependency_evidence[dependency_name]
     )
     module_relations.extend(
         _relation(
@@ -441,11 +458,10 @@ def ingest_release_source(
         )
         for name in sorted(event_evidence)
     )
-    module = make_object(
+    module = make(
         module_id,
         "CodeModule",
         relative,
-        snapshot=snapshot,
         claims=(
             {
                 "name": controller.name,
@@ -461,11 +477,10 @@ def ingest_release_source(
     objects: list[ObjectDraft] = [module]
     for symbol in symbols:
         objects.append(
-            make_object(
+            make(
                 symbol_ids[symbol.qualname],
                 "CodeSymbol",
                 relative,
-                snapshot=snapshot,
                 claims=(
                     {
                         "name": symbol.name,
@@ -483,11 +498,10 @@ def ingest_release_source(
 
     for key in sorted(configuration_evidence):
         objects.append(
-            make_object(
+            make(
                 f"config://buildanddo/{_semantic_fragment(key)}",
                 "ConfigurationKey",
                 relative,
-                snapshot=snapshot,
                 claims=({"key": key, "consumed": True},),
                 relations=(
                     _relation(
@@ -502,13 +516,14 @@ def ingest_release_source(
         )
 
     for dependency_name, dependency_id, _ in _EXTERNAL_DEPENDENCIES:
+        if not dependency_evidence[dependency_name]:
+            continue
         dependency_refs = sorted(dependency_evidence[dependency_name]) or [relative]
         objects.append(
-            make_object(
+            make(
                 dependency_id,
                 "ExternalDependency",
                 relative,
-                snapshot=snapshot,
                 claims=({"name": dependency_name, "external": True},),
                 relations=(
                     _relation(
@@ -523,17 +538,33 @@ def ingest_release_source(
         )
 
     for event_name in sorted(event_evidence):
+        if event_name != "dora_deployment":
+            objects.append(
+                make(
+                    f"file://buildanddo/receipt/{_semantic_fragment(event_name)}",
+                    "ReceiptFile",
+                    relative,
+                    claims=({"name": event_name, "template": True},),
+                    relations=(
+                        _relation(
+                            RelationPredicate.ASSOCIATED_WITH,
+                            module_id,
+                            sorted(event_evidence[event_name])[0],
+                        ),
+                    ),
+                    commit=commit,
+                )
+            )
         event_id = (
             "event://datadog/dora_deployment"
             if event_name == "dora_deployment"
             else f"event://buildanddo/receipt/{_semantic_fragment(event_name)}"
         )
         objects.append(
-            make_object(
+            make(
                 event_id,
                 "PublishedEvent",
                 relative,
-                snapshot=snapshot,
                 claims=(
                     {
                         "name": event_name,
@@ -556,33 +587,32 @@ def ingest_release_source(
             )
         )
 
-        if event_name != "dora_deployment":
-            objects.append(
-                make_object(
-                    f"receipt-file://{event_id}",
-                    "File",
-                    relative,
-                    snapshot=snapshot,
-                    claims=({"receipt_name": event_name, "modeled_file": True},),
-                    relations=(
-                        _relation(
-                            RelationPredicate.ASSOCIATED_WITH,
-                            event_id,
-                            sorted(event_evidence[event_name])[0],
-                        ),
-                    ),
-                    commit=commit,
-                )
-            )
-    return SemanticGraph(tuple(objects))
+    return GraphDraft(tuple(objects))
 
 
-def source_symbol_ids(graph: SemanticGraph) -> dict[str, str]:
+def ingest_release_source(
+    controller_path: Path,
+    *,
+    repository_root: Path | None = None,
+    commit: str | None = None,
+    observed_at: datetime | None = None,
+) -> SemanticGraph:
+    """Return validated v2 code, configuration, file and event envelopes."""
+    root = repository_root or controller_path.resolve().parent
+    return extract_release_source(
+        controller_path, repository_root=root, commit=commit
+    ).resolve(
+        repository_root=root,
+        observed_at=observed_at,
+    )
+
+
+def source_symbol_ids(graph: GraphDraft | SemanticGraph) -> dict[str, str]:
     """Map extracted qualified symbol names to their semantic identities."""
 
     result: dict[str, str] = {}
     for item in graph.objects:
-        if object_kind(item) != "CodeSymbol":
+        if item.object_type != "CodeSymbol":
             continue
         qualified_name = item.claims[0].get("qualified_name")
         if isinstance(qualified_name, str):
@@ -590,11 +620,13 @@ def source_symbol_ids(graph: SemanticGraph) -> dict[str, str]:
     return result
 
 
-def source_module_id(graph: SemanticGraph) -> str:
+def source_module_id(graph: GraphDraft | SemanticGraph) -> str:
     """Return the single code-module identity from a source ingestion graph."""
 
     modules = [
-        item.semantic_id for item in graph.objects if object_kind(item) == "CodeModule"
+        item.semantic_id
+        for item in graph.objects
+        if item.object_type in {"CodeModule", "Module"}
     ]
     if len(modules) != 1:
         raise ValueError(f"expected exactly one code module, found {len(modules)}")

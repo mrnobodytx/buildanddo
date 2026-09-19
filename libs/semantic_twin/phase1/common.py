@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/common.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/receipts.py, libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Adapter
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/receipts.py; CONSUMES libs/semantic_twin/vocabulary.py
+# EnumEdges:   PRODUCES libs/semantic_twin/phase1/compiler.py; CONSUMES libs/semantic_twin/ingestion/graph.py
 # DAG Node:    semantic-twin.phase-1.common
 # Intent:      Keep local Phase 1 adapters deterministic through shared identity, path, JSON and relation helpers.
 # ────────────────────────────────────────────────────────
@@ -19,15 +19,14 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 import hashlib
-import json
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
-from ..ingestion.builder import RelationDraft
-from ..receipts import EvidenceKind
+from ..ingestion.drafts import RelationDraft
+from ..ingestion.receipts import read_json as read_json
 from ..vocabulary import EvidenceState, RelationPredicate
 
 
@@ -57,15 +56,6 @@ def relative_path(path: Path, repository_root: Path | None) -> str:
     return resolved.as_posix()
 
 
-def read_json(path: Path) -> Any:
-    """Read one JSON value and report its path on malformed input."""
-
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        raise ValueError(f"invalid JSON export: {path}") from exc
-
-
 def as_mapping(value: Any) -> Mapping[str, Any]:
     """Return a JSON object or an empty read-only-compatible mapping."""
 
@@ -79,7 +69,6 @@ def relation(
     *,
     state: EvidenceState = EvidenceState.OBSERVED,
     confidence: float = 1.0,
-    kinds: tuple[EvidenceKind, ...] = (EvidenceKind.SOURCE,),
 ) -> RelationDraft:
     """Create one deterministic evidence-bearing Phase 0 relation."""
 
@@ -89,5 +78,4 @@ def relation(
         evidence=(evidence,),
         confidence=confidence,
         state=state,
-        kinds=kinds,
     )
