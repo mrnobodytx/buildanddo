@@ -10,7 +10,7 @@
 # Created:     2026-09-19
 # Depends:     libs/semantic_twin/phase1/merkle.py, libs/semantic_twin/ingestion/graph.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/phase1/merkle.py; PRODUCES semantic-twin.context-proof/v1
+# EnumEdges:   CONSUMES libs/semantic_twin/phase1/merkle.py; PRODUCES semantic-twin.context-proof/v2
 # DAG Node:    semantic-twin.phase-1.context-proof
 # Intent:      Compile query-scoped, inclusion-proven context bundles with explicit historical cutoffs and selection reasons.
 # ───────────────────────────────────────────────────────
@@ -19,111 +19,105 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime
 import hashlib
-import json
 import re
-from typing import Any
+from dataclasses import dataclass, replace
+from datetime import datetime, timezone
+from typing import Literal
 
+from ..contracts import Contract, ContractError, require
+from ..identity import SemanticId
+from ..ingestion.drafts import canonical_json
 from ..ingestion.graph import SemanticGraph
+from ..ingestion.serializer import object_leaf_digest
+from ..merkle import ContextRoot, InclusionProof
 from ..models import CanonicalObjectEnvelope
 from .merkle import SemanticEpoch, inclusion_proof, verify_inclusion
 
-
-_WORD = re.compile(r"[A-Za-z0-9_./:-]+")
+_WORD = re.compile(r"[A-Za-z0-9_]+")
 
 
 @dataclass(frozen=True, slots=True)
-class ContextSelection:
-    """Explain why one semantic object entered a context proof bundle."""
+class ContextSelection(Contract):
+    """Carry the exact answer context alongside its membership proof."""
 
-    semantic_id: str
-    object_type: str
+    envelope: CanonicalObjectEnvelope
+    proof: InclusionProof
     score: int
     matched_terms: tuple[str, ...]
-    proof: dict[str, object]
+
+    @property
+    def semantic_id(self) -> SemanticId:
+        """Return the identity authenticated by the selected envelope hash."""
+        return self.envelope.semantic_id
 
 
 @dataclass(frozen=True, slots=True)
-class ContextProofBundle:
-    """Carry query, epoch, replay boundary and verified object selections."""
+class ContextExclusion(Contract):
+    """Explain a conservative temporal exclusion without exposing later facts."""
 
-    schema_version: str
+    semantic_id: SemanticId
+    reason: str
+
+
+@dataclass(frozen=True, slots=True)
+class ContextProofBundle(Contract):
+    """Bind question, selection reasons, object bytes and replay boundary."""
+
+    schema_version: Literal["semantic-twin.context-proof/v2"]
     query: str
-    epoch_id: str
+    epoch_id: SemanticId
     semantic_root: str
-    historical_cutoff: str | None
+    historical_cutoff: datetime | None
+    limit: int
     selections: tuple[ContextSelection, ...]
-    excluded_later_objects: tuple[str, ...]
-    context_root: str
-
-    def to_dict(self) -> dict[str, object]:
-        """Render the proof bundle as stable JSON data."""
-
-        return {
-            "schema_version": self.schema_version,
-            "query": self.query,
-            "epoch_id": self.epoch_id,
-            "semantic_root": self.semantic_root,
-            "historical_cutoff": self.historical_cutoff,
-            "selections": [
-                {
-                    "semantic_id": item.semantic_id,
-                    "object_type": item.object_type,
-                    "score": item.score,
-                    "matched_terms": list(item.matched_terms),
-                    "proof": item.proof,
-                }
-                for item in self.selections
-            ],
-            "excluded_later_objects": list(self.excluded_later_objects),
-            "context_root": self.context_root,
-        }
+    exclusions: tuple[ContextExclusion, ...]
+    context_root: ContextRoot
 
 
 def _terms(value: str) -> set[str]:
-    """Tokenize semantic query and object data for deterministic matching."""
-
-    return {item.casefold() for item in _WORD.findall(value) if len(item) > 1}
-
-
-def _object_time(item: CanonicalObjectEnvelope) -> datetime | None:
-    """Extract the first ISO timestamp carried by common observation claims."""
-
-    observed_time = item.observed_time
-    if isinstance(observed_time, datetime):
-        return observed_time
-    if not item.claims:
-        return None
-    for key in ("authored_at", "timestamp", "generated_at", "deployed_at"):
-        value = item.claims[0].get(key)
-        if isinstance(value, str):
-            try:
-                return datetime.fromisoformat(value.replace("Z", "+00:00"))
-            except ValueError:
-                continue
-    return None
+    return {word.casefold() for word in _WORD.findall(value) if len(word) > 1}
 
 
 def _selection_score(
     item: CanonicalObjectEnvelope, query_terms: set[str]
 ) -> tuple[int, tuple[str, ...]]:
-    """Score exact token overlap in identity, type and canonical claims."""
-
-    searchable = json.dumps(
+    payload = item.to_dict()
+    text = canonical_json(
         {
-            "semantic_id": item.semantic_id,
-            "object_type": item.object_type,
-            "claims": [dict(claim) for claim in item.claims],
-            "relations": [relation.predicate.value for relation in item.relations],
-        },
-        ensure_ascii=False,
-        sort_keys=True,
-    )
-    object_terms = _terms(searchable)
-    matched = tuple(sorted(query_terms & object_terms))
+            "object_type": payload["object_type"],
+            "claims": payload["claims"],
+            "relations": [r.predicate.value for r in item.relations],
+        }
+    ).decode("utf-8")
+    matched = tuple(sorted(query_terms & _terms(text)))
     return len(matched), matched
+
+
+def _exclusion(item: CanonicalObjectEnvelope, cutoff: datetime | None) -> str | None:
+    if cutoff is None:
+        return None
+    if item.observed_time is None:
+        return "observation_time_unknown"
+    evidence_times = tuple(e.observed_at for e in item.evidence) + tuple(
+        e.observed_at for r in item.relations for e in r.evidence
+    )
+    if item.observed_time > cutoff or any(t > cutoff for t in evidence_times):
+        return "observed_after_cutoff"
+    if item.valid_time.valid_from is not None and item.valid_time.valid_from > cutoff:
+        return "valid_after_cutoff"
+    if (
+        item.valid_time.valid_until is not None
+        and item.valid_time.valid_until <= cutoff
+    ):
+        return "no_longer_valid_at_cutoff"
+    return None
+
+
+def _context_digest(bundle: ContextProofBundle) -> ContextRoot:
+    payload = bundle.to_dict()
+    del payload["context_root"]
+    return ContextRoot(hashlib.sha256(canonical_json(payload)).hexdigest())
 
 
 def compile_context_bundle(
@@ -134,83 +128,116 @@ def compile_context_bundle(
     historical_cutoff: datetime | None = None,
     limit: int = 20,
 ) -> ContextProofBundle:
-    """Select relevant objects and bind each to the current semantic epoch."""
-
-    if not query.strip():
-        raise ValueError("query must not be empty")
-    if limit < 1:
-        raise ValueError("limit must be positive")
-    query_terms = _terms(query)
-    scored: list[tuple[int, tuple[str, ...], CanonicalObjectEnvelope]] = []
-    excluded: list[str] = []
+    """Select available facts, retaining their bytes and exact Phase 0 proofs."""
+    require(bool(query.strip()), "query must not be empty")
+    require(limit > 0, "limit must be positive")
+    if historical_cutoff is not None:
+        require(
+            historical_cutoff.tzinfo is not None
+            and historical_cutoff.utcoffset() is not None,
+            "historical cutoff must be timezone-aware",
+        )
+        historical_cutoff = historical_cutoff.astimezone(timezone.utc)
+    leaves = {leaf.subject.semantic_id: leaf for leaf in epoch.leaves}
+    require(set(leaves) == set(graph.by_id()), "context graph differs from epoch")
     for item in graph.objects:
-        item_time = _object_time(item)
-        if (
-            historical_cutoff is not None
-            and item_time is not None
-            and item_time > historical_cutoff
-        ):
-            excluded.append(item.semantic_id)
-            continue
-        score, matched = _selection_score(item, query_terms)
-        if score:
-            scored.append((score, matched, item))
-    scored.sort(key=lambda value: (-value[0], value[2].semantic_id))
-    selected = scored[:limit]
-    selections = tuple(
-        ContextSelection(
-            semantic_id=item.semantic_id,
-            object_type=item.object_type,
-            score=score,
-            matched_terms=matched,
-            proof=inclusion_proof(epoch, item.semantic_id).to_dict(),
+        leaf = leaves[item.semantic_id]
+        require(
+            leaf.subject == item.subject
+            and leaf.digest.value == object_leaf_digest(item),
+            "context graph content differs from epoch",
         )
-        for score, matched, item in selected
-    )
-    cutoff = historical_cutoff.isoformat() if historical_cutoff is not None else None
-    root_payload: dict[str, Any] = {
-        "query": query,
-        "epoch_id": epoch.epoch_id,
-        "semantic_root": epoch.root_digest,
-        "historical_cutoff": cutoff,
-        "semantic_ids": [item.semantic_id for item in selections],
-        "excluded_later_objects": sorted(excluded),
+    excluded = {
+        item.semantic_id: reason
+        for item in graph.objects
+        if (reason := _exclusion(item, historical_cutoff)) is not None
     }
-    context_root = hashlib.sha256(
-        json.dumps(root_payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    ).hexdigest()
-    return ContextProofBundle(
-        schema_version="semantic-twin.context-proof/v1",
-        query=query,
-        epoch_id=epoch.epoch_id,
-        semantic_root=epoch.root_digest,
-        historical_cutoff=cutoff,
-        selections=selections,
-        excluded_later_objects=tuple(sorted(excluded)),
-        context_root=context_root,
+    # Keep an entire authenticated envelope out if it would reveal a later target.
+    if historical_cutoff is not None:
+        changed = True
+        while changed:
+            changed = False
+            for item in graph.objects:
+                if item.semantic_id not in excluded and any(
+                    r.target in excluded for r in item.relations
+                ):
+                    excluded[item.semantic_id] = "references_unavailable_object"
+                    changed = True
+    terms = _terms(query)
+    scored = []
+    for item in graph.objects:
+        if item.semantic_id not in excluded:
+            score, matched = _selection_score(item, terms)
+            if score:
+                scored.append((score, matched, item))
+    scored.sort(key=lambda value: (-value[0], value[2].semantic_id))
+    selections = tuple(
+        ContextSelection(item, inclusion_proof(epoch, item.semantic_id), score, matched)
+        for score, matched, item in scored[:limit]
     )
+    bundle = ContextProofBundle(
+        "semantic-twin.context-proof/v2",
+        query,
+        epoch.epoch_id,
+        epoch.root_digest,
+        historical_cutoff,
+        limit,
+        selections,
+        tuple(ContextExclusion(key, excluded[key]) for key in sorted(excluded)),
+        ContextRoot("0" * 64),
+    )
+    return replace(bundle, context_root=_context_digest(bundle))
 
 
-def verify_context_bundle(bundle: ContextProofBundle) -> bool:
-    """Verify every selected object's inclusion proof against the semantic root."""
-
-    from .merkle import InclusionProof, ProofStep
-
-    for selection in bundle.selections:
-        proof_data = selection.proof
-        steps_value = proof_data.get("steps")
-        if not isinstance(steps_value, list):
+def verify_context_bundle(
+    bundle: ContextProofBundle,
+    expected_root: str,
+    *,
+    expected_query: str | None = None,
+    expected_context_root: str | None = None,
+) -> bool:
+    """Verify content, query metadata and temporal eligibility against a trusted root."""
+    try:
+        if (
+            bundle.semantic_root != expected_root
+            or bundle.context_root != _context_digest(bundle)
+        ):
             return False
-        steps = tuple(
-            ProofStep(str(item.get("side")), str(item.get("digest")))
-            for item in steps_value
-            if isinstance(item, dict)
-        )
-        proof = InclusionProof(
-            semantic_id=str(proof_data.get("semantic_id")),
-            leaf_digest=str(proof_data.get("leaf_digest")),
-            steps=steps,
-        )
-        if not verify_inclusion(proof, bundle.semantic_root):
+        if expected_query is not None and bundle.query != expected_query:
             return False
-    return True
+        if (
+            expected_context_root is not None
+            and bundle.context_root.value != expected_context_root
+        ):
+            return False
+        if (
+            not bundle.query.strip()
+            or bundle.limit < 1
+            or len(bundle.selections) > bundle.limit
+        ):
+            return False
+        ids = tuple(item.semantic_id for item in bundle.selections)
+        excluded = {item.semantic_id for item in bundle.exclusions}
+        if len(set(ids)) != len(ids) or excluded.intersection(ids):
+            return False
+        terms = _terms(bundle.query)
+        for selection in bundle.selections:
+            if selection.proof.root.epoch_id != bundle.epoch_id:
+                return False
+            if not verify_inclusion(
+                selection.proof, expected_root, item=selection.envelope
+            ):
+                return False
+            score, matched = _selection_score(selection.envelope, terms)
+            if score < 1 or (score, matched) != (
+                selection.score,
+                selection.matched_terms,
+            ):
+                return False
+            if _exclusion(selection.envelope, bundle.historical_cutoff) is not None:
+                return False
+            if any(r.target in excluded for r in selection.envelope.relations):
+                return False
+        return True
+    except (ContractError, ValueError, TypeError):
+        return False

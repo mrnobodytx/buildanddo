@@ -19,14 +19,14 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 import hashlib
-import json
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
-from ..models import Relation
+from ..ingestion.drafts import RelationDraft
+from ..ingestion.receipts import read_json as read_json
 from ..vocabulary import EvidenceState, RelationPredicate
 
 
@@ -56,15 +56,6 @@ def relative_path(path: Path, repository_root: Path | None) -> str:
     return resolved.as_posix()
 
 
-def read_json(path: Path) -> Any:
-    """Read one JSON value and report its path on malformed input."""
-
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        raise ValueError(f"invalid JSON export: {path}") from exc
-
-
 def as_mapping(value: Any) -> Mapping[str, Any]:
     """Return a JSON object or an empty read-only-compatible mapping."""
 
@@ -78,10 +69,10 @@ def relation(
     *,
     state: EvidenceState = EvidenceState.OBSERVED,
     confidence: float = 1.0,
-) -> Relation:
+) -> RelationDraft:
     """Create one deterministic evidence-bearing Phase 0 relation."""
 
-    return Relation(
+    return RelationDraft(
         predicate=predicate,
         target=target,
         evidence=(evidence,),

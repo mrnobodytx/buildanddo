@@ -1,10 +1,10 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/pipeline.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
@@ -19,16 +19,16 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
 
-from ..models import Relation
 from ..vocabulary import EvidenceState, RelationPredicate
 from .claims import claim_objects, extract_documentation_claims
-from .graph import SemanticGraph, add_relations, combine_graphs
+from .drafts import GraphDraft, RelationDraft, add_relations, combine_drafts
+from .graph import SemanticGraph
 from .receipts import ingest_deployment_receipts, receipt_objects
-from .release import RELEASE_PATH_IDS, build_release_path_graph
-from .source import ingest_release_source, source_module_id, source_symbol_ids
-
+from .release import RELEASE_PATH_KEYS, extract_release_path
+from .source import extract_release_source, source_module_id, source_symbol_ids
 
 _STAGE_IMPLEMENTATIONS = (
     "git_head",
@@ -73,10 +73,10 @@ def _repository_commit(root: Path) -> str | None:
 
 
 def _implemented_release_graph(
-    graph: SemanticGraph,
+    graph: GraphDraft,
     symbols: dict[str, str],
     controller_path: str,
-) -> SemanticGraph:
+) -> GraphDraft:
     """Bind each modeled stage to the controller function that implements it."""
 
     objects = []
@@ -86,7 +86,7 @@ def _implemented_release_graph(
         if target is None:
             objects.append(item)
             continue
-        relation = Relation(
+        relation = RelationDraft(
             predicate=RelationPredicate.IMPLEMENTED_BY,
             target=target,
             evidence=(controller_path,),
@@ -94,26 +94,26 @@ def _implemented_release_graph(
             state=EvidenceState.OBSERVED,
         )
         objects.append(add_relations(item, (relation,)))
-    return SemanticGraph(tuple(objects))
+    return GraphDraft(tuple(objects))
 
 
-def compile_release_twin(
+def extract_release_twin(
     repository_root: Path,
     *,
     controller_relative_path: str = "tools/buildanddo_release.py",
     commit: str | None = None,
-) -> SemanticGraph:
+) -> GraphDraft:
     """Compile the BuildAndDo release subsystem from local public inputs."""
 
     root = repository_root.resolve()
     resolved_commit = commit or _repository_commit(root)
     controller = root / controller_relative_path
-    source_graph = ingest_release_source(
+    source_graph = extract_release_source(
         controller,
         repository_root=root,
         commit=resolved_commit,
     )
-    release_graph = build_release_path_graph(
+    release_graph = extract_release_path(
         controller,
         commit=resolved_commit,
         source_reference=controller_relative_path,
@@ -129,24 +129,37 @@ def compile_release_twin(
         controller,
         repository_root=root,
     )
-    claim_graph = SemanticGraph(
+    claim_graph = GraphDraft(
         claim_objects(claims, code_module_id=module_id, commit=resolved_commit)
     )
     receipts = ingest_deployment_receipts(
         root / ".bits" / "out",
         repository_root=root,
     )
-    receipt_graph = SemanticGraph(
+    receipt_graph = GraphDraft(
         receipt_objects(
             receipts,
-            release_receipt_id=RELEASE_PATH_IDS[-1],
+            release_receipt_id=RELEASE_PATH_KEYS[-1],
             commit=resolved_commit,
         )
     )
-    combined = combine_graphs(source_graph, release_graph, claim_graph, receipt_graph)
-    if not combined.is_connected():
-        raise ValueError(
-            "compiled release twin is not connected: "
-            f"orphans={combined.orphan_ids()} unresolved={combined.unresolved_targets()}"
-        )
+    combined = combine_drafts(source_graph, release_graph, claim_graph, receipt_graph)
     return combined
+
+
+def compile_release_twin(
+    repository_root: Path,
+    *,
+    controller_relative_path: str = "tools/buildanddo_release.py",
+    commit: str | None = None,
+    observed_at: datetime | None = None,
+) -> SemanticGraph:
+    """Rebuild the bounded subsystem as fully resolved Phase 0 v2 objects."""
+    graph = extract_release_twin(
+        repository_root,
+        controller_relative_path=controller_relative_path,
+        commit=commit,
+    ).resolve(repository_root=repository_root, observed_at=observed_at)
+    if not graph.is_connected():
+        raise ValueError("compiled release twin is not connected")
+    return graph

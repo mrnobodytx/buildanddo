@@ -1,0 +1,185 @@
+{
+  "schema_version": "semantic-twin.phase1-validation/v2",
+  "recorded_at": "2026-09-19T02:28:35.853700+00:00",
+  "scope": "local software integration; operational evidence remains unmeasured",
+  "tests": {
+    "baseline_tests_run": 80,
+    "baseline_errors": 16,
+    "current_tests_run": 104,
+    "current_errors": 0,
+    "current_failures": 0,
+    "new_regression_tests": 19,
+    "command": "python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py' -v",
+    "trace_log_sha256": "acd6f0bdbf5a2a244f82b7397c25f1538f73fc53d43e56eb86e8d4a0108e596a"
+  },
+  "coverage": {
+    "tool": "Python stdlib trace",
+    "implementation_modules": {
+      "libs/semantic_twin/ingestion/claims.py": {
+        "executable_lines": 263,
+        "percent": 95
+      },
+      "libs/semantic_twin/ingestion/drafts.py": {
+        "executable_lines": 295,
+        "percent": 98
+      },
+      "libs/semantic_twin/ingestion/graph.py": {
+        "executable_lines": 73,
+        "percent": 86
+      },
+      "libs/semantic_twin/ingestion/pipeline.py": {
+        "executable_lines": 109,
+        "percent": 98
+      },
+      "libs/semantic_twin/ingestion/receipts.py": {
+        "executable_lines": 178,
+        "percent": 98
+      },
+      "libs/semantic_twin/ingestion/release.py": {
+        "executable_lines": 59,
+        "percent": 100
+      },
+      "libs/semantic_twin/ingestion/serializer.py": {
+        "executable_lines": 35,
+        "percent": 100
+      },
+      "libs/semantic_twin/ingestion/source.py": {
+        "executable_lines": 443,
+        "percent": 97
+      },
+      "libs/semantic_twin/phase1/claims.py": {
+        "executable_lines": 184,
+        "percent": 94
+      },
+      "libs/semantic_twin/phase1/common.py": {
+        "executable_lines": 39,
+        "percent": 100
+      },
+      "libs/semantic_twin/phase1/compiler.py": {
+        "executable_lines": 203,
+        "percent": 98
+      },
+      "libs/semantic_twin/phase1/context.py": {
+        "executable_lines": 176,
+        "percent": 92
+      },
+      "libs/semantic_twin/phase1/history.py": {
+        "executable_lines": 167,
+        "percent": 97
+      },
+      "libs/semantic_twin/phase1/memory.py": {
+        "executable_lines": 104,
+        "percent": 100
+      },
+      "libs/semantic_twin/phase1/merkle.py": {
+        "executable_lines": 123,
+        "percent": 100
+      },
+      "libs/semantic_twin/phase1/providers.py": {
+        "executable_lines": 180,
+        "percent": 98
+      },
+      "libs/semantic_twin/phase1/release_state.py": {
+        "executable_lines": 147,
+        "percent": 97
+      },
+      "libs/semantic_twin/phase1/sbom.py": {
+        "executable_lines": 228,
+        "percent": 92
+      },
+      "libs/semantic_twin/phase1/truth.py": {
+        "executable_lines": 272,
+        "percent": 97
+      }
+    },
+    "minimum_percent": 86,
+    "note": "Entry-point and package import lines are not included in this trace summary; CLI behavior is exercised by the suite."
+  },
+  "static_checks": {
+    "mypy": "PASS; strict with followed imports, 23 source files",
+    "ruff": "PASS"
+  },
+  "runtime_evidence": {
+    "release_receipts": "UNMEASURED",
+    "gitlab": "UNMEASURED",
+    "datadog": "UNMEASURED",
+    "note": "No public deployment receipts or provider exports were supplied. Bounded connected Datadog lookups returned no matching observations; DORA API records were not queried."
+  },
+  "availability_queries": [
+    {
+      "product": "logs",
+      "query": "service:buildanddo-public",
+      "from": "2026-09-18T00:00:00Z",
+      "to": "2026-09-19T02:16:51Z",
+      "returned_records": 0
+    },
+    {
+      "product": "tracked deployment events",
+      "query": "service:buildanddo-public source:change_tracking",
+      "from": "2026-09-18T00:00:00Z",
+      "to": "2026-09-19T02:16:51Z",
+      "returned_records": 0
+    }
+  ],
+  "cloud_ci": {
+    "status": "UNVERIFIED",
+    "reason": "GitHub diagnostics unavailable from this sandbox; connected PR/job diagnostic lookups returned no evidence."
+  },
+  "graph_capture": {
+    "observed_at": "2026-09-19T02:36:30.543811+00:00",
+    "repository_head_at_capture": "a47b004595369241cbc32b5e5e4b21a3ad506bd4",
+    "scope": "working tree input snapshots and ten local history entries at capture time",
+    "objects": 4110,
+    "relations": 9587,
+    "connected": true,
+    "orphan_count": 0,
+    "unresolved_target_count": 0,
+    "canonical_round_trips": 4110,
+    "semantic_root": "1af5ef14fe0c7ecc78438d167268ed33d0292effce986b5890745273251bbf25",
+    "context_selections": 20,
+    "context_root": "c296f7cc367f6be1518fd6529ee97a567771255ba8c0c6abfdf98669810b1b15",
+    "context_proof_valid": true,
+    "payload_sha256": "e3edb48f7e0ad5b033f957578ddbc1cebfe793653ac1f1909fe99baba6cc1c9f",
+    "input_status": {
+      "datadog": {
+        "object_count": 0,
+        "status": "UNMEASURED"
+      },
+      "dispatch_reports": {
+        "object_count": 14,
+        "status": "OBSERVED_INPUT"
+      },
+      "documentation": {
+        "object_count": 146,
+        "status": "OBSERVED_INPUT"
+      },
+      "git_history": {
+        "object_count": 10,
+        "status": "OBSERVED_INPUT"
+      },
+      "gitlab": {
+        "object_count": 0,
+        "status": "UNMEASURED"
+      },
+      "memory": {
+        "object_count": 2679,
+        "status": "OBSERVED_INPUT"
+      },
+      "release_receipts": {
+        "object_count": 0,
+        "status": "UNMEASURED"
+      },
+      "sbom": {
+        "object_count": 774,
+        "status": "OBSERVED_INPUT"
+      },
+      "source": {
+        "object_count": 75,
+        "status": "OBSERVED_INPUT"
+      }
+    },
+    "release_truth": "INCOMPLETE",
+    "artifact_location": "/tmp/buildanddo-semantic-twin-v2.json",
+    "retention": "Full public-input capture remains in the session temporary directory, not in Git."
+  }
+}

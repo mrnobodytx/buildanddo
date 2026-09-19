@@ -12,141 +12,186 @@
 # EnumType:    Doc
 # EnumEdges:   DEPENDS_ON .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md; VALIDATES .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001/memory.json; VERIFIED_BY tests/upgrade/test_semantic_twin_phase1_complete.py
 # DAG Node:    semantic-twin.phase-1.complete.report
-# Intent:      Preserve reviewer-runnable evidence for the ten local Phase 1 capabilities and disclose the inherited ingestion regression.
+# Intent:      Record the repaired Phase 1 v2 integration, observed validation and remaining runtime evidence gaps.
 # ───────────────────────────────────────────────────────
+
 
 # VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001 Report
 
 ## §1 SUMMARY
 
-Status:      COMPLETE
+Status:      PARTIAL (software integration complete; real release inputs unavailable)
 Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 Seat:        BITS-CODEGEN
 SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
-Branch:      bits/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001-full-ingestion
-Tasks:       10/10
-Smoke:       8/9
+Branch:      Session-managed branch; public synchronization uses the coding-agent UI
+Tasks:       10/10 local capabilities; operational validation awaiting three input categories
+Smoke:       local results below; cloud CI unverified
 CKS Gate:    B+/75
 CKS:         pending
 CAPS:        pending
 CK:          pending
-Commits:     2 (implementation plus measured-context refresh)
+Commits:     0 at validation capture; workspace bookkeeping follows validation
+
+The owner's continuation authorizes A2 repair of both ingestion layers against
+merged Phase 0 v2. Earlier pre-merge green results are superseded by this report.
+The current baseline reproduced 16 errors across 80 executed tests. The repaired
+combined suite executes all 104 tests successfully, including 19 new regressions.
 
 ## §2 TASK RESULTS
 
-Task 1 — Release-state receipt ingestion
-  Status:  PASS
-  Output:  Controller JSON receipts yield source, artifact, environment, timestamp, state and evidence objects without executing release code.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.ReleaseStateTests -v`
-  Files:   `libs/semantic_twin/phase1/release_state.py`
-  CKET:    07_BUILD
+### A — Canonical source, claims and receipt ingestion: PASS
 
-Task 2 — Local Git evolution ingestion
-  Status:  PASS
-  Output:  Bounded read-only Git log data yields commits, parents, path changes, introduction/removal/change edges and commit-time validity intervals.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.GitHistoryTests -v`
-  Files:   `libs/semantic_twin/phase1/history.py`
-  CKET:    07_BUILD
+Both compilers now resolve extracted facts in two passes into typed Phase 0 v2
+objects. Every relation has a source subject, endpoint types and exact target
+revision; evidence is scoped to its subject. Source versions hash parsed bytes,
+not a potentially unrelated HEAD. Conflicting source snapshots are rejected.
+Canonical constructors and both Phase 0 suites remain unchanged.
 
-Task 3 — SBOM and lock ingestion
-  Status:  PASS
-  Output:  CycloneDX, SPDX and npm lock inputs yield versioned packages, licenses and dependency edges.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.SbomTests -v`
-  Files:   `libs/semantic_twin/phase1/sbom.py`
-  CKET:    07_BUILD
+The release path is connected through source-backed capability records. Static
+source cannot mint deployment or verification receipts. Call extraction keeps
+recursion without binding unrelated attribute calls to local functions. Claim
+classification restricts entailment to explicit AST/string propositions.
 
-Task 4 — Captured GitLab exports
-  Status:  PASS
-  Output:  Pipelines, jobs and artifacts retain captured status, SHA, runner fields and artifact-to-job provenance; no live provider call occurs.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.ProviderExportTests.test_gitlab_export -v`
-  Files:   `libs/semantic_twin/phase1/providers.py`
-  CKET:    07_BUILD
+Verify: `python -m unittest tests.upgrade.test_semantic_twin_ingestion tests.upgrade.test_semantic_twin_integration_v2.CanonicalResolutionTests -v`
+Files: `libs/semantic_twin/ingestion/`, focused tests. CKET: 07_BUILD, 08_TEST.
 
-Task 5 — Captured Datadog exports
-  Status:  PASS
-  Output:  DORA, trace, event and runtime-verification records remain sourced observations rather than promoted runtime truth.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.ProviderExportTests.test_datadog_export -v`
-  Files:   `libs/semantic_twin/phase1/providers.py`
-  CKET:    07_BUILD
+### B — Ten adapters, release reconciliation and context proofs: PASS
 
-Task 6 — Typed memory ingestion
-  Status:  PASS
-  Output:  Type A, B and C vectors compile into distinct semantic objects with EnumSpeak relations and explicit reference endpoints.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.MemoryTests -v`
-  Files:   `libs/semantic_twin/phase1/memory.py`
-  CKET:    07_BUILD
+Release-state receipts, Git evolution, SBOM/lock data, captured GitLab/Datadog
+exports and typed memory compose with the source graph. Nested controller
+receipts retain expected/deployed SHA, health/readback fields, timestamps and
+artifact-tree identity. Pipeline/deployment PASS does not replace readback;
+input/payload/archive hashes do not silently substitute for artifact-tree hashes.
+Earlier dated observations remain in the graph while current observations drive
+the matrix. Unknown and contradictory evidence stay explicit. Memory edges remain
+claims, not assertions of observed calls or verified runtime state.
 
-Task 7 — Symbol evidence and staleness
-  Status:  PASS
-  Output:  Claims receive multi-file literal/AST symbol evidence plus missing-path and document-version staleness flags.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.ClaimIntelligenceTests -v`
-  Files:   `libs/semantic_twin/phase1/claims.py`
-  CKET:    07_BUILD
+Epochs and proofs use Phase 0 contracts and whole canonical envelope hashes.
+Context bundles retain exact selected payloads, scoped proofs, question and
+selection metadata. Altered content fails verification against a trusted root.
+Historical filtering excludes later/unknown observations and later references;
+Git author timestamps do not backdate newly captured evidence. The process-global
+compatibility monkeypatch has been removed.
 
-Task 8 — Release-truth reconciliation
-  Status:  PASS
-  Output:  Expected and observed source SHA, artifact, staging, production and DORA values resolve independently to match, conflict or unmeasured rows.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.ReconciliationTests -v`
-  Files:   `libs/semantic_twin/phase1/truth.py`
-  CKET:    07_BUILD
+Verify: `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete tests.upgrade.test_semantic_twin_integration_v2 -v`
+Files: `libs/semantic_twin/phase1/`, focused tests. CKET: 07_BUILD, 08_TEST, 06_PLAN.
 
-Task 9 — Semantic epoch and inclusion proofs
-  Status:  PASS
-  Output:  Sorted domain-separated leaves produce deterministic graph roots, semantic epochs and tamper-evident inclusion paths.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.MerkleEpochTests -v`
-  Files:   `libs/semantic_twin/phase1/merkle.py`
-  CKET:    07_BUILD
+### C — Combined contracts and negative integrity checks: PASS
 
-Task 10 — Context proof query and replay
-  Status:  PASS
-  Output:  Query selections carry relevance terms, inclusion proofs and historical cutoffs that exclude later knowledge.
-  Verify:  `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete.ContextProofTests -v`
-  Files:   `libs/semantic_twin/phase1/context.py`, `libs/semantic_twin/phase1/compiler.py`
-  CKET:    07_BUILD
+104/104 tests pass together. The added regressions cover canonical wire round
+trips, scoped endpoint revisions, input changes, malformed JSON and provider
+shapes, false release success, missing fields, contradictory readbacks, DORA
+ordering, deterministic roots, changed proof bytes and replay boundaries.
+
+Verify: `python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py' -v`
+Measured test counts and per-module trace coverage: `validation.json` beside this report.
+CKET: 08_TEST, 11_COMMIT.
+
+### D — Local capture and evidence availability: PARTIAL operational acceptance
+
+The local compiler emits a graph, typed epoch and context bundle. Capture metadata
+and actual input availability are recorded in `validation.json`; full generated
+payloads stay outside the repository. Run the same compiler for a fresh capture:
+
+`python -m libs.semantic_twin.phase1 --repo . --history-limit 10 --output /tmp/buildanddo-semantic-twin-v2.json`
+
+Real controller deployment receipts and GitLab/Datadog exports have not been
+supplied. The connected service was found, but bounded traces/logs/change-tracking
+lookups returned no matching observations from 2026-09-18 through the recorded
+lookup time. No live DORA API result or private GitLab evidence was available.
+Those lookups establish an availability gap, not absence of a real deployment.
+`input_status` and the truth matrix therefore preserve UNMEASURED/INCOMPLETE.
+
+CKET: 11_COMMIT. No external mutation or deployment was performed.
 
 ## §3 SMOKE TEST RESULTS
 
-1. Focused behavior: `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete -v`; expected 13 cases; actual 13/13 PASS.
-2. Phase 0 contracts: `python -m unittest tests.upgrade.test_semantic_twin -v`; expected current ten-axis contracts; actual 23/23 PASS.
-3. Coverage: `python -m trace --count --summary --missing --coverdir <temporary-directory> --module unittest tests.upgrade.test_semantic_twin_phase1_complete`; expected at least 80 percent per new module; actual 91–100 percent PASS.
-4. Static checks: `python -m compileall -q libs/semantic_twin/phase1 tests/upgrade/test_semantic_twin_phase1_complete.py`; `python -m mypy --strict --follow-imports=skip libs/semantic_twin/phase1`; Ruff check and format check; expected clean new package; actual PASS.
-5. Real local compile: `python -m libs.semantic_twin.phase1 --repo . --history-limit 10 --output <temporary-file>` plus proof inspection; expected connected rooted payload; actual 3,931 objects, 9,279 relations, zero orphans/unresolved targets, 20 selections and verified context proof PASS.
-6. Public boundary: `python scripts/ci/verify_public_boundary.py`; expected no failures; actual PASS across 982 files.
-7. Measured context: `python scripts/ci/agent_context.py --check`; expected current lock; actual PASS with seven pre-existing findings and four pre-existing unwired gates retained.
-8. Memory integrity: `jq` count, IOO and DKG-orphan assertions against `.bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001/memory.json`; expected true; actual PASS.
-9. Repository upgrade discovery: `python -m unittest discover -s tests/upgrade -p 'test_*.py'`; expected merged suites to pass; actual FAIL in five pre-existing bounded-ingestion cases. Root cause: PR merge order left `libs/semantic_twin/ingestion/graph.py` constructing three state axes after Phase 0 made ten axes mandatory. Applied in-scope fix: `phase1/compat.py` supplies all ten axes while compiling the complete graph, so all new and Phase 0 tests pass. Residual direct-suite repair requires an A2 dispatch because this A1 dispatch forbids editing the existing ingestion package.
+| Check | Runnable verification | Observed result |
+|-------|-----------------------|-----------------|
+| Baseline reproduction | Run the combined suite on the merged baseline | 80 executed, 16 errors: old relation/envelope constructor signatures |
+| Combined behavior | `python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py' -v` | PASS, 104/104 |
+| Coverage | `python -m trace --count --summary --missing --coverdir /tmp/semantic-twin-coverage --module unittest discover -s tests/upgrade -p 'test_semantic_twin*.py'` | PASS, 86–100% across 19 measured implementation modules; new resolver 98% |
+| Types | `python -m mypy --strict libs/semantic_twin/ingestion libs/semantic_twin/phase1` | PASS, 23 files; followed imports, no skip |
+| Lint | `python -m ruff check libs/semantic_twin/ingestion libs/semantic_twin/phase1 tests/upgrade/test_semantic_twin_ingestion.py tests/upgrade/test_semantic_twin_phase1_complete.py tests/upgrade/test_semantic_twin_integration_v2.py` | PASS |
+| Syntax | `python -m compileall -q libs/semantic_twin/ingestion libs/semantic_twin/phase1 tests/upgrade/test_semantic_twin_integration_v2.py` | PASS |
+| Boundary | `python scripts/ci/verify_public_boundary.py` | PASS, 1,018 files, zero failures |
+| Context | `python scripts/ci/agent_context.py --check` | PASS; six existing findings/four unwired gates retained |
+
+The baseline failure is fixed by typed resolution, exact snapshot evidence and
+canonical Phase 0 proof contracts. The validation layer remains unchanged.
+Entry-point/import lines are not reported by this trace summary; their behavior
+is exercised by CLI tests. Coverage used a stdlib-ignore path to avoid tracing
+the interpreter; no third-party package was installed. Cloud CI was not rerun:
+GitHub diagnostics were unreachable and connected PR/job lookups gave no detail.
+The prior remote failure is not claimed fixed based solely on local results.
 
 ## §4 MEMORY INGEST
 
-Type A count: 22
-Type B count: 55
-Type C count: 4
+Type A count: 36
+Type B count: 103
+Type C count: 3
 IOO compliance: PASS
 DKG orphans:    0
 Payload: `.bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001/memory.json`
+Counts and metadata are regenerated from the actual touched files and their headers.
+No CK, CAPS, CKS, deployment verification or provider success is fabricated.
+
+The final memory check initially rejected three older header edge names
+(`DESCRIBES`, `IMPLEMENTS`, `REFINES`). They now use the allowed `CONSUMES` and
+`EXTENDS` verbs and the payload was regenerated. Verify counts, IOO and edge
+vocabulary with this standalone check:
+
+```bash
+python - <<'PY'
+from collections import Counter
+from pathlib import Path
+import json
+data = json.loads(Path('.bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001/memory.json').read_text())
+counts = Counter(row['type'] for row in data['vectors'])
+allowed = {'CONSUMES', 'PRODUCES', 'VALIDATES', 'TRIGGERS', 'GATES', 'OWNS', 'DEPENDS_ON', 'EXTENDS', 'FIXES', 'SUPERSEDES', 'VERIFIED_BY', 'USES_TEMPLATE'}
+edges = [row for row in data['vectors'] if row['type'] == 'B']
+ends = {row[key] for row in edges for key in ('source', 'target')}
+assert all(row['edge_type'] in allowed for row in edges)
+assert all(counts[k] == data['summary'][f'type_{k.lower()}_count'] for k in 'ABC')
+for row in data['vectors']:
+    if row['type'] == 'A':
+        assert row['file_path'] in ends
+        assert all(row.get(k) is not None and row[k] != '' for k in ('intent_statement', 'objective_id', 'outcome', 'supersedes'))
+print('PASS: memory counts, IOO, edge vocabulary and zero DKG orphans')
+PY
+```
 
 ## §5 CKET FILING
 
-04_HYPOTHESIZE/ : `.bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md`, `.bits/srs_registry.yml`, `.bits/context.lock.json`
-07_BUILD/       : `libs/semantic_twin/phase1/**`
-08_TEST/        : `tests/upgrade/test_semantic_twin_phase1_complete.py`
-11_COMMIT/      : `.bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md`, `.bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001/**`
+06_PLAN/        : `libs/semantic_twin/phase1/README.md`
+04_HYPOTHESIZE/ : SRS, registry and measured context lock
+07_BUILD/       : `libs/semantic_twin/ingestion/`, `libs/semantic_twin/phase1/`
+08_TEST/        : bounded, complete and v2 integration test suites
+11_COMMIT/      : dispatch and report/memory/validation artifacts
 13_SAVE/        : none
-CGRF headers:    PASS on all new commentable files; JSON payload has a sibling CGRF descriptor
+CGRF headers:    present on new commentable files; new JSON has a sibling descriptor
 REFLEX check:    deferred to post-merge
 
 ## §6 GOVERNANCE
 
 Entity:           Citadel Nexus Inc. (Delaware C-Corp)
 License posture:  Existing repository license unchanged
-Hard-NO scan:     0 violations
-Secret scan:      clean; public-boundary scanner reports no credential findings
-Stripe mode:      not applicable; no checkout or payment code changed
-Authority:        A1 additive local adapters only; no network, credentials, provider calls, release execution, persistence, signing, attestation or promotion
+Hard-NO scope:    No controller, Phase 0, workflow, application or private-plane edits
+Secret scan:      No raw credentials added; public-boundary check passes
+Stripe mode:      Not applicable; no checkout/payment change
+Authority:        Owner-authorized A2 continuation; connected read-only availability checks only
+Actor label:      Apply actor:agent when creating/updating the PR
 
 ## §7 NEXT ACTIONS
 
-Blockers:           direct execution of the earlier bounded-ingestion suite remains broken on main by the three-axis/ten-axis merge mismatch
-Handoffs requested: CMAX-B: authorize an A2 repair dispatch for `libs/semantic_twin/ingestion/graph.py` and its regression suite
-Suggested next dispatch: SRS-BUILDANDDO-SEMANTIC-TWIN-COMPAT-001 — align merged bounded ingestion with the ten-axis Phase 0 contract
-Bugs filed (out of scope, comment-only): inherited semantic-twin ingestion factory incompatibility documented in §3 check 9
+Blockers: public controller receipts and GitLab/Datadog exports for the intended
+release are unavailable. No additional code authority is needed to ingest supplied
+public files. See `libs/semantic_twin/phase1/README.md` for formats and invocation.
+
+Handoffs requested: none published; no external writes were authorized.
+Suggested next dispatch: supply the intended release SHA/artifact-tree digest and
+public evidence capture, then reconcile a fresh epoch and independently review
+production readback. A validated local compiler does not establish an
+operationally verified deployment.
+Bugs filed: none; the inherited contract incompatibility was repaired in scope.

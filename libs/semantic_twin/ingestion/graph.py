@@ -1,10 +1,10 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/graph.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
@@ -20,28 +20,11 @@
 from __future__ import annotations
 
 from collections import deque
-from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import dataclass, replace
-from typing import Any
+from dataclasses import dataclass
 
-from ..models import (
-    Authority,
-    CanonicalObjectEnvelope,
-    Documentation,
-    MerkleBinding,
-    ObjectState,
-    Ownership,
-    Provenance,
-    Relation,
-    Runtime,
-    Source,
-    ValidTime,
-)
-from ..vocabulary import AuthorityTier, EvidenceState, ShaclState
-
-
-SCHEMA_VERSION = "semantic-twin.object/v1"
-EXTRACTOR_VERSION = "buildanddo-release-ingestion/1"
+from ..contracts import ContractError
+from ..models import CanonicalObjectEnvelope
+from ..relations import Relation
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,6 +36,21 @@ class SemanticGraph:
     def __post_init__(self) -> None:
         """Reject duplicate semantic identities at the graph boundary."""
 
+        if any(type(item) is not CanonicalObjectEnvelope for item in self.objects):
+            raise ContractError(
+                "resolve extraction drafts before constructing a semantic graph"
+            )
+        indexed = {item.semantic_id: item for item in self.objects}
+        for item in self.objects:
+            for edge in item.relations:
+                target = indexed.get(edge.target)
+                if target is not None and (
+                    edge.target_version != target.source.version
+                    or edge.target_type is not target.object_type
+                ):
+                    raise ContractError(
+                        "relation target type/revision differs from graph object"
+                    )
         identities = [item.semantic_id for item in self.objects]
         if len(identities) != len(set(identities)):
             duplicates = sorted(
@@ -121,88 +119,6 @@ class SemanticGraph:
         return seen == identities
 
 
-def make_object(
-    semantic_id: str,
-    object_type: str,
-    source_path: str,
-    *,
-    claims: Sequence[Mapping[str, Any]],
-    relations: Sequence[Relation] = (),
-    evidence_state: EvidenceState = EvidenceState.OBSERVED,
-    lifecycle_state: str = "INGESTED",
-    commit: str | None = None,
-    documentation: Sequence[str] = (),
-    runtime_status: str | None = None,
-) -> CanonicalObjectEnvelope:
-    """Create one read-only canonical envelope for an ingested object."""
-
-    return CanonicalObjectEnvelope(
-        semantic_id=semantic_id,
-        object_type=object_type,
-        schema_version=SCHEMA_VERSION,
-        source=Source(
-            system="buildanddo",
-            uri_or_path=source_path,
-            commit=commit,
-        ),
-        valid_time=ValidTime(),
-        observed_time=None,
-        state=ObjectState(
-            evidence_state=evidence_state,
-            shacl_state=ShaclState.NOT_EVALUATED,
-            lifecycle_state=lifecycle_state,
-        ),
-        claims=tuple(claims),
-        relations=tuple(relations),
-        provenance=Provenance(
-            derived_from=(source_path,),
-            parser_version="python-ast/stdlib",
-            extractor_version=EXTRACTOR_VERSION,
-        ),
-        merkle=MerkleBinding(),
-        ownership=Ownership(owner="Citadel Nexus Inc.", guild="BuildAndDo"),
-        authority=Authority(
-            required_tier=AuthorityTier.A0,
-            mutability="read-only",
-        ),
-        runtime=Runtime(observed_status=runtime_status),
-        documentation=Documentation(references=tuple(documentation)),
-    )
-
-
-def add_relations(
-    item: CanonicalObjectEnvelope, relations: Iterable[Relation]
-) -> CanonicalObjectEnvelope:
-    """Return an envelope with stable, de-duplicated additional relations."""
-
-    combined = (*item.relations, *relations)
-    unique: dict[tuple[str, str, tuple[str, ...], float | None, str], Relation] = {}
-    for relation in combined:
-        key = (
-            relation.predicate.value,
-            relation.target,
-            relation.evidence,
-            relation.confidence,
-            relation.state.value,
-        )
-        unique[key] = relation
-    ordered = tuple(
-        unique[key]
-        for key in sorted(
-            unique,
-            key=lambda value: (
-                value[0],
-                value[1],
-                value[2],
-                -1.0 if value[3] is None else value[3],
-                value[4],
-            ),
-        )
-    )
-    return replace(item, relations=ordered)
-
-
 def combine_graphs(*graphs: SemanticGraph) -> SemanticGraph:
-    """Combine graphs while retaining the caller's deterministic order."""
-
+    """Combine canonical graphs without bypassing endpoint revision checks."""
     return SemanticGraph(tuple(item for graph in graphs for item in graph.objects))

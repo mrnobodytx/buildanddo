@@ -19,15 +19,15 @@
 
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ..ingestion.graph import SemanticGraph
+from ..ingestion.drafts import GraphDraft, make_object
 from ..vocabulary import EvidenceState, RelationPredicate
 from .common import as_mapping, read_json, relation, relative_path, stable_id
-from .compat import make_object
 
 
 @dataclass(frozen=True, slots=True)
@@ -49,6 +49,7 @@ class SbomDocument:
     source_path: str
     format: str
     packages: tuple[PackageRecord, ...]
+    source_digest: str
 
 
 def discover_sbom_paths(repository_root: Path) -> tuple[Path, ...]:
@@ -216,7 +217,8 @@ def _npm_lock(payload: Mapping[str, Any]) -> tuple[PackageRecord, ...]:
 def parse_sbom(path: Path, *, repository_root: Path | None = None) -> SbomDocument:
     """Parse CycloneDX, SPDX or npm lock JSON from one local file."""
 
-    payload = as_mapping(read_json(path))
+    raw = path.read_bytes()
+    payload = as_mapping(read_json(path, raw=raw))
     if payload.get("bomFormat") == "CycloneDX":
         format_name = "cyclonedx"
         packages = _cyclonedx(payload)
@@ -232,6 +234,7 @@ def parse_sbom(path: Path, *, repository_root: Path | None = None) -> SbomDocume
         source_path=relative_path(path, repository_root),
         format=format_name,
         packages=packages,
+        source_digest=hashlib.sha256(raw).hexdigest(),
     )
 
 
@@ -240,7 +243,7 @@ def sbom_graph(
     *,
     anchor_id: str,
     commit: str | None = None,
-) -> SemanticGraph:
+) -> GraphDraft:
     """Convert supply-chain documents into connected package dependency graphs."""
 
     objects = []
@@ -272,6 +275,7 @@ def sbom_graph(
                 lifecycle_state="OBSERVED_LOCAL_MANIFEST",
                 commit=commit,
                 documentation=(document.source_path,),
+                input_digest=document.source_digest,
             )
         )
         for item in document.packages:
@@ -287,6 +291,7 @@ def sbom_graph(
                     RelationPredicate.DEPENDS_ON,
                     package_ids[target],
                     document.source_path,
+                    state=EvidenceState.INFERRED,
                 )
                 for target in item.dependencies
                 if target in package_ids
@@ -309,6 +314,7 @@ def sbom_graph(
                     evidence_state=EvidenceState.OBSERVED,
                     lifecycle_state="OBSERVED_LOCAL_MANIFEST",
                     commit=commit,
+                    input_digest=document.source_digest,
                 )
             )
-    return SemanticGraph(tuple(objects))
+    return GraphDraft(tuple(objects))

@@ -1,10 +1,10 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/__init__.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
@@ -17,6 +17,7 @@
 
 """Expose the BuildAndDo release semantic ingestion API."""
 
+from ..contracts import SCHEMA_VERSION
 from .claims import (
     ClaimDisposition,
     DocumentationClaim,
@@ -24,14 +25,14 @@ from .claims import (
     classify_claim,
     extract_documentation_claims,
 )
-from .graph import (
+from .drafts import (
     EXTRACTOR_VERSION,
-    SCHEMA_VERSION,
-    SemanticGraph,
+    GraphDraft,
     add_relations,
-    combine_graphs,
+    combine_drafts,
     make_object,
 )
+from .graph import SemanticGraph, combine_graphs
 from .pipeline import compile_release_twin
 from .receipts import (
     DeploymentReceipt,
@@ -55,6 +56,8 @@ __all__ = [
     "DeploymentReceipt",
     "DocumentationClaim",
     "SemanticGraph",
+    "GraphDraft",
+    "combine_drafts",
     "add_relations",
     "build_release_path_graph",
     "canonical_object_bytes",

@@ -20,17 +20,18 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from ..ingestion import RELEASE_PATH_IDS, graph_payload
-from ..ingestion.graph import SemanticGraph, combine_graphs
-from ..models import CanonicalObjectEnvelope
+from ..ingestion import graph_payload
+from ..ingestion.drafts import GraphDraft, ObjectDraft, combine_drafts, make_object
+from ..ingestion.graph import SemanticGraph
+from ..ingestion.pipeline import extract_release_twin
+from ..ingestion.release import RELEASE_PATH_KEYS
 from ..vocabulary import EvidenceState, RelationPredicate
 from .claims import assess_claims
 from .common import relation, stable_id
-from .compat import compile_bounded_base, make_object
 from .context import ContextProofBundle, compile_context_bundle
 from .history import history_graph, read_git_history
 from .memory import discover_memory_paths, ingest_memory_file
@@ -44,8 +45,7 @@ from .release_state import (
 from .sbom import discover_sbom_paths, parse_sbom, sbom_graph
 from .truth import TRUTH_MATRIX_ID, reconcile_release_truth
 
-
-_ANCHOR_ID = RELEASE_PATH_IDS[-1]
+_ANCHOR_ID = RELEASE_PATH_KEYS[-1]
 
 
 @dataclass(frozen=True, slots=True)
@@ -61,6 +61,8 @@ class Phase1Inputs:
     history_paths: tuple[str, ...] = ("tools/buildanddo_release.py", ".bits")
     claim_source_paths: tuple[str, ...] = ("tools/buildanddo_release.py",)
     expected_artifact_digest: str | None = None
+    artifact_digest_field: str = "artifact_tree_sha256"
+    expected_commit: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -76,15 +78,48 @@ class Phase1Compilation:
         """Render graph, reconciliation and proof metadata as one payload."""
 
         return {
-            "schema_version": "semantic-twin.phase1-complete/v1",
+            "schema_version": "semantic-twin.phase1-complete/v2",
+            "semantic_root": self.epoch.root_digest,
+            "capture_time": self.epoch.metadata.created_at.isoformat(),
+            "input_status": self.input_status(),
             "graph": graph_payload(self.graph),
             "truth_matrix_id": self.truth_matrix_id,
             "epoch": self.epoch.to_dict(),
             "context": self.context.to_dict(),
         }
 
+    def input_status(self) -> dict[str, object]:
+        """Report observed input categories separately from release verification."""
+        counts: dict[str, int] = {}
+        for item in self.graph.objects:
+            kind = str(item.claims[-1].get("ingestion_kind"))
+            counts[kind] = counts.get(kind, 0) + 1
+        categories = {
+            "source": ("CodeModule", "CodeSymbol"),
+            "documentation": ("DocumentationClaim",),
+            "dispatch_reports": ("DeploymentReceipt",),
+            "release_receipts": ("ReleaseStateReceipt",),
+            "git_history": ("GitCommit",),
+            "sbom": ("SoftwarePackage",),
+            "gitlab": ("GitLabPipeline", "GitLabJob", "GitLabArtifact"),
+            "datadog": (
+                "DatadogDoraDeployment",
+                "DatadogTrace",
+                "DatadogEvent",
+                "RuntimeVerification",
+            ),
+            "memory": ("MemoryFileVector", "MemoryEdgeVector", "MemoryEventVector"),
+        }
+        return {
+            name: {
+                "object_count": (count := sum(counts.get(kind, 0) for kind in kinds)),
+                "status": "OBSERVED_INPUT" if count else "UNMEASURED",
+            }
+            for name, kinds in categories.items()
+        }
 
-def _gap_object(name: str, *, commit: str | None) -> CanonicalObjectEnvelope:
+
+def _gap_object(name: str, *, commit: str | None) -> ObjectDraft:
     """Represent a missing optional input as explicit UNMEASURED state."""
 
     return make_object(
@@ -108,21 +143,21 @@ def _gap_object(name: str, *, commit: str | None) -> CanonicalObjectEnvelope:
     )
 
 
-def _commit_from_base(graph: SemanticGraph) -> str | None:
+def _commit_from_base(graph: GraphDraft) -> str | None:
     """Read the current source commit carried by the bounded base graph."""
 
-    item = graph.by_id().get(RELEASE_PATH_IDS[0])
-    return item.source.commit if item is not None else None
+    item = graph.by_id().get(RELEASE_PATH_KEYS[0])
+    return item.commit if item is not None else None
 
 
 def _optional_graphs(
     root: Path,
     inputs: Phase1Inputs,
     commit: str | None,
-) -> tuple[SemanticGraph, ...]:
+) -> tuple[GraphDraft, ...]:
     """Compile optional local evidence sources or explicit gap objects."""
 
-    graphs: list[SemanticGraph] = []
+    graphs: list[GraphDraft] = []
     release_paths = (
         inputs.release_receipts
         if inputs.release_receipts is not None
@@ -137,7 +172,7 @@ def _optional_graphs(
             )
         )
     else:
-        graphs.append(SemanticGraph((_gap_object("release-state", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("release-state", commit=commit),)))
 
     sbom_paths = (
         inputs.sbom_paths
@@ -148,7 +183,7 @@ def _optional_graphs(
         documents = tuple(parse_sbom(path, repository_root=root) for path in sbom_paths)
         graphs.append(sbom_graph(documents, anchor_id=_ANCHOR_ID, commit=commit))
     else:
-        graphs.append(SemanticGraph((_gap_object("sbom", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("sbom", commit=commit),)))
 
     for path in inputs.gitlab_exports:
         graphs.append(
@@ -160,7 +195,7 @@ def _optional_graphs(
             )
         )
     if not inputs.gitlab_exports:
-        graphs.append(SemanticGraph((_gap_object("gitlab-export", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("gitlab-export", commit=commit),)))
 
     for path in inputs.datadog_exports:
         graphs.append(
@@ -172,7 +207,7 @@ def _optional_graphs(
             )
         )
     if not inputs.datadog_exports:
-        graphs.append(SemanticGraph((_gap_object("datadog-export", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("datadog-export", commit=commit),)))
 
     memory_paths = (
         inputs.memory_paths
@@ -189,7 +224,7 @@ def _optional_graphs(
             )
         )
     if not memory_paths:
-        graphs.append(SemanticGraph((_gap_object("memory", commit=commit),)))
+        graphs.append(GraphDraft((_gap_object("memory", commit=commit),)))
     return tuple(graphs)
 
 
@@ -200,22 +235,31 @@ def compile_phase1(
     query: str = "release production verification artifact DORA evidence",
     historical_cutoff: datetime | None = None,
     commit: str | None = None,
+    observed_at: datetime | None = None,
 ) -> Phase1Compilation:
     """Compile all ten local Phase 1 capabilities into deterministic proofs."""
 
     root = repository_root.resolve()
+    captured = observed_at or datetime.now(timezone.utc)
     selected_inputs = inputs or Phase1Inputs()
-    base_graph = compile_bounded_base(root, commit=commit)
+    base_graph = extract_release_twin(root, commit=commit)
     resolved_commit = commit or _commit_from_base(base_graph)
-    history = read_git_history(
-        root,
-        max_count=selected_inputs.history_limit,
-        paths=selected_inputs.history_paths,
-    )
-    history_semantics = history_graph(history, anchor_id=RELEASE_PATH_IDS[0])
+    if selected_inputs.history_limit < 1:
+        raise ValueError("history_limit must be positive")
+    if (root / ".git").exists():
+        history = read_git_history(
+            root,
+            max_count=selected_inputs.history_limit,
+            paths=selected_inputs.history_paths,
+        )
+        history_semantics = history_graph(history, anchor_id=RELEASE_PATH_KEYS[0])
+    else:
+        history_semantics = GraphDraft(
+            (_gap_object("git-history", commit=resolved_commit),)
+        )
     optional_graphs = _optional_graphs(root, selected_inputs, resolved_commit)
-    preliminary = combine_graphs(base_graph, history_semantics, *optional_graphs)
-    assessments = SemanticGraph(
+    preliminary = combine_drafts(base_graph, history_semantics, *optional_graphs)
+    assessments = GraphDraft(
         assess_claims(
             base_graph,
             root,
@@ -223,13 +267,17 @@ def compile_phase1(
             current_commit=resolved_commit,
         )
     )
-    with_claims = combine_graphs(preliminary, assessments)
+    with_claims = combine_drafts(preliminary, assessments)
     truth = reconcile_release_truth(
         with_claims,
-        expected_commit=resolved_commit,
+        expected_commit=selected_inputs.expected_commit or resolved_commit,
         expected_artifact_digest=selected_inputs.expected_artifact_digest,
+        artifact_digest_field=selected_inputs.artifact_digest_field,
     )
-    complete_graph = combine_graphs(with_claims, SemanticGraph((truth,)))
+    complete_graph = combine_drafts(with_claims, GraphDraft((truth,))).resolve(
+        repository_root=root,
+        observed_at=captured,
+    )
     if not complete_graph.is_connected():
         raise ValueError(
             "complete Phase 1 graph is not connected: "

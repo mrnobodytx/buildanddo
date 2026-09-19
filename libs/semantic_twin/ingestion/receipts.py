@@ -1,10 +1,10 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/receipts.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
@@ -19,18 +19,17 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
-from dataclasses import dataclass
 import hashlib
 import json
-from pathlib import Path
 import re
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
-from ..models import CanonicalObjectEnvelope, Relation
+from ..contracts import ContractError
 from ..vocabulary import EvidenceState, RelationPredicate
-from .graph import make_object
-
+from .drafts import ObjectDraft, RelationDraft, make_object
 
 _TIMESTAMP = re.compile(
     r"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})\b"
@@ -58,6 +57,31 @@ class DeploymentReceipt:
     states: tuple[str, ...]
     verification_results: tuple[str, ...]
     evidence_refs: tuple[str, ...]
+    source_digest: str
+
+
+def read_json(path: Path, *, raw: bytes | None = None) -> Any:
+    """Read captured JSON, rejecting ambiguous keys and non-finite values."""
+
+    def pairs(values: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in values:
+            if key in result:
+                raise ContractError(f"duplicate JSON key: {key}")
+            result[key] = value
+        return result
+
+    def constant(value: str) -> object:
+        raise ContractError(f"non-finite JSON value: {value}")
+
+    try:
+        return json.loads(
+            path.read_bytes() if raw is None else raw,
+            object_pairs_hook=pairs,
+            parse_constant=constant,
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ContractError(f"invalid JSON export: {path}") from exc
 
 
 def _stable(values: Iterable[str]) -> tuple[str, ...]:
@@ -83,7 +107,8 @@ def _json_values(value: Any, prefix: str = "") -> Iterable[tuple[str, Any]]:
 def _markdown_receipt(path: Path, source_path: str) -> DeploymentReceipt:
     """Extract evidence fields from a Markdown dispatch report."""
 
-    text = path.read_text(encoding="utf-8", errors="replace")
+    raw = path.read_bytes()
+    text = raw.decode("utf-8")
     timestamps = _stable(_TIMESTAMP.findall(text))
     shas = _stable(value.lower() for value in _SHA.findall(text))
     verification = _stable(value.upper() for value in _VERIFICATION.findall(text))
@@ -108,16 +133,15 @@ def _markdown_receipt(path: Path, source_path: str) -> DeploymentReceipt:
         states=states,
         verification_results=verification,
         evidence_refs=_stable(references),
+        source_digest=hashlib.sha256(raw).hexdigest(),
     )
 
 
 def _json_receipt(path: Path, source_path: str) -> DeploymentReceipt:
     """Extract evidence fields from a JSON memory payload."""
 
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError):
-        payload = {}
+    raw = path.read_bytes()
+    payload = read_json(path, raw=raw)
     timestamps: list[str] = []
     shas: list[str] = []
     states: list[str] = []
@@ -148,6 +172,7 @@ def _json_receipt(path: Path, source_path: str) -> DeploymentReceipt:
         states=_stable(states),
         verification_results=_stable(verification),
         evidence_refs=_stable(references),
+        source_digest=hashlib.sha256(raw).hexdigest(),
     )
 
 
@@ -195,17 +220,12 @@ def receipt_objects(
     *,
     release_receipt_id: str,
     commit: str | None = None,
-) -> tuple[CanonicalObjectEnvelope, ...]:
+) -> tuple[ObjectDraft, ...]:
     """Convert normalized receipt files into canonical graph objects."""
 
-    objects: list[CanonicalObjectEnvelope] = []
+    objects: list[ObjectDraft] = []
     for record in records:
-        evidence_state = (
-            EvidenceState.CONTRADICTED
-            if "FAIL" in record.verification_results
-            else EvidenceState.OBSERVED
-        )
-        relation = Relation(
+        relation = RelationDraft(
             predicate=RelationPredicate.REFINES,
             target=release_receipt_id,
             evidence=(record.source_path,),
@@ -229,15 +249,11 @@ def receipt_objects(
                     },
                 ),
                 relations=(relation,),
-                evidence_state=evidence_state,
+                evidence_state=EvidenceState.OBSERVED,
                 lifecycle_state="INGESTED_EVIDENCE",
                 commit=commit,
                 documentation=(record.source_path,),
-                runtime_status=(
-                    record.verification_results[-1]
-                    if record.verification_results
-                    else None
-                ),
+                input_digest=record.source_digest,
             )
         )
     return tuple(objects)

@@ -17,13 +17,12 @@
 
 """Expose complete local Phase 1 semantic twin compilation."""
 
+from ..merkle import InclusionProof, ProofStep
 from .claims import SourceEvidence, assess_claims, collect_source_evidence
 from .compiler import Phase1Compilation, Phase1Inputs, compile_phase1
 from .context import ContextProofBundle, compile_context_bundle, verify_context_bundle
 from .history import CommitObservation, FileChange, read_git_history
 from .merkle import (
-    InclusionProof,
-    ProofStep,
     SemanticEpoch,
     build_epoch,
     inclusion_proof,

@@ -19,135 +19,177 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import hashlib
+from dataclasses import dataclass
+from datetime import datetime
 
+from ..contracts import Contract, ContractError, require
+from ..identity import SemanticId, ValidTime
 from ..ingestion.graph import SemanticGraph
-from ..ingestion.serializer import object_leaf_digest
+from ..ingestion.serializer import SERIALIZATION, object_leaf_digest
+from ..merkle import (
+    ContentDigest,
+    EpochBoundary,
+    EpochScope,
+    InclusionProof,
+    MerkleEpoch,
+    MerkleLeaf,
+    MerkleRoot,
+    ProofSide,
+    ProofStep,
+)
+from ..models import CanonicalObjectEnvelope
+
+PRODUCER = SemanticId("cni://agent/buildanddo-semantic-twin-ingestion")
 
 
 def _parent(left: str, right: str) -> str:
-    """Hash one domain-separated Merkle parent."""
-
+    """Hash an ordered binary parent with its node domain separator."""
     return hashlib.sha256(
         b"\x01" + bytes.fromhex(left) + bytes.fromhex(right)
     ).hexdigest()
 
 
-@dataclass(frozen=True, slots=True)
-class ProofStep:
-    """Record one sibling hash and its side in an inclusion proof."""
-
-    side: str
-    digest: str
-
-
-@dataclass(frozen=True, slots=True)
-class InclusionProof:
-    """Bind one semantic object leaf to an epoch root."""
-
-    semantic_id: str
-    leaf_digest: str
-    steps: tuple[ProofStep, ...]
-
-    def to_dict(self) -> dict[str, object]:
-        """Render a JSON-ready proof."""
-
-        return {
-            "semantic_id": self.semantic_id,
-            "leaf_digest": self.leaf_digest,
-            "steps": [
-                {"side": step.side, "digest": step.digest} for step in self.steps
-            ],
-        }
+def _levels(digests: tuple[str, ...]) -> tuple[tuple[str, ...], ...]:
+    """Build binary levels with duplicate-last padding for odd populations."""
+    if not digests:
+        raise ContractError("cannot root an empty graph")
+    levels = [digests]
+    while len(levels[-1]) > 1:
+        level = levels[-1]
+        padded = level + (level[-1],) if len(level) % 2 else level
+        levels.append(
+            tuple(_parent(padded[i], padded[i + 1]) for i in range(0, len(padded), 2))
+        )
+    return tuple(levels)
 
 
 @dataclass(frozen=True, slots=True)
-class SemanticEpoch:
-    """Describe one deterministic graph root and all leaf identities."""
+class SemanticEpoch(Contract):
+    """Bind typed Phase 0 leaves to the exact ordered semantic epoch."""
 
-    epoch_id: str
-    root_digest: str
-    object_count: int
-    leaves: tuple[tuple[str, str], ...]
+    metadata: MerkleEpoch
+    leaves: tuple[MerkleLeaf, ...]
 
-    def to_dict(self) -> dict[str, object]:
-        """Render epoch metadata without claiming signature or attestation."""
+    def __post_init__(self) -> None:
+        Contract.__post_init__(self)
+        ids = tuple(leaf.subject.semantic_id for leaf in self.leaves)
+        require(
+            ids == tuple(sorted(set(ids))),
+            "epoch leaves must have unique sorted identities",
+        )
+        require(
+            len(self.leaves) == self.metadata.root.leaf_count,
+            "epoch leaf count mismatch",
+        )
+        require(
+            all(
+                leaf.epoch_id == self.epoch_id
+                and leaf.serialization == self.metadata.serialization
+                for leaf in self.leaves
+            ),
+            "leaf metadata disagrees with epoch",
+        )
+        require(
+            _levels(tuple(leaf.digest.value for leaf in self.leaves))[-1][0]
+            == self.root_digest,
+            "epoch root does not match its leaf set",
+        )
 
-        return {
-            "epoch_id": self.epoch_id,
-            "root_digest": self.root_digest,
-            "object_count": self.object_count,
-            "merkle_state": "ROOTED",
-            "attested": False,
-            "leaves": [
-                {"semantic_id": semantic_id, "leaf_digest": digest}
-                for semantic_id, digest in self.leaves
-            ],
-        }
+    @property
+    def epoch_id(self) -> SemanticId:
+        """Return the canonical epoch identity."""
+        return self.metadata.epoch_id
+
+    @property
+    def root_digest(self) -> str:
+        """Return the SHA-256 semantic root."""
+        return self.metadata.root.digest.value
+
+    @property
+    def object_count(self) -> int:
+        """Return the number of bound objects."""
+        return self.metadata.root.leaf_count
 
 
 def build_epoch(graph: SemanticGraph) -> SemanticEpoch:
-    """Root sorted graph leaves into a deterministic semantic epoch."""
-
-    if not graph.objects:
-        raise ValueError("cannot build an epoch from an empty graph")
+    """Root whole canonical objects using the Phase 0 leaf and epoch contracts."""
+    ordered = tuple(sorted(graph.objects, key=lambda value: value.semantic_id))
+    digests = tuple(object_leaf_digest(item) for item in ordered)
+    root = _levels(digests)[-1][0]
+    times = tuple(
+        item.observed_time for item in ordered if item.observed_time is not None
+    )
+    require(bool(times), "an epoch requires a recorded capture time")
+    created: datetime = max(times)
+    epoch_id = SemanticId(f"cni://epoch/buildanddo/{root}")
+    metadata = MerkleEpoch(
+        epoch_id=epoch_id,
+        boundary=EpochBoundary(
+            EpochScope.DEVELOPMENT,
+            SemanticId("cni://system/buildanddo"),
+            ValidTime(valid_from=min(times)),
+        ),
+        root=MerkleRoot(ContentDigest(root), epoch_id, len(ordered)),
+        serialization=SERIALIZATION,
+        created_at=created,
+        producer_id=PRODUCER,
+    )
     leaves = tuple(
-        (item.semantic_id, object_leaf_digest(item))
-        for item in sorted(graph.objects, key=lambda value: value.semantic_id)
+        MerkleLeaf(
+            item.subject,
+            ContentDigest(digest),
+            SERIALIZATION,
+            epoch_id,
+            created,
+            PRODUCER,
+        )
+        for item, digest in zip(ordered, digests, strict=True)
     )
-    level = [digest for _, digest in leaves]
-    while len(level) > 1:
-        if len(level) % 2:
-            level.append(level[-1])
-        level = [
-            _parent(level[index], level[index + 1]) for index in range(0, len(level), 2)
-        ]
-    root = level[0]
-    return SemanticEpoch(
-        epoch_id=f"semantic-epoch:{root[:24]}",
-        root_digest=root,
-        object_count=len(leaves),
-        leaves=leaves,
-    )
+    return SemanticEpoch(metadata, leaves)
 
 
 def inclusion_proof(epoch: SemanticEpoch, semantic_id: str) -> InclusionProof:
-    """Build the inclusion path for one semantic identity."""
-
-    identities = [item[0] for item in epoch.leaves]
-    if semantic_id not in identities:
+    """Build a typed path with index and tree shape bound to the epoch."""
+    ids = [str(leaf.subject.semantic_id) for leaf in epoch.leaves]
+    if semantic_id not in ids:
         raise KeyError(semantic_id)
-    index = identities.index(semantic_id)
-    level = [item[1] for item in epoch.leaves]
-    leaf = level[index]
-    steps: list[ProofStep] = []
-    while len(level) > 1:
-        if len(level) % 2:
-            level.append(level[-1])
-        sibling_index = index - 1 if index % 2 else index + 1
+    index = ids.index(semantic_id)
+    original_index = index
+    steps = []
+    for level in _levels(tuple(leaf.digest.value for leaf in epoch.leaves))[:-1]:
+        sibling = index - 1 if index % 2 else min(index + 1, len(level) - 1)
         steps.append(
             ProofStep(
-                side="left" if index % 2 else "right",
-                digest=level[sibling_index],
+                ProofSide.LEFT if index % 2 else ProofSide.RIGHT,
+                ContentDigest(level[sibling]),
             )
         )
-        level = [
-            _parent(level[offset], level[offset + 1])
-            for offset in range(0, len(level), 2)
-        ]
         index //= 2
-    return InclusionProof(semantic_id, leaf, tuple(steps))
+    return InclusionProof(
+        epoch.leaves[original_index].digest,
+        epoch.metadata.root,
+        original_index,
+        tuple(steps),
+    )
 
 
-def verify_inclusion(proof: InclusionProof, root_digest: str) -> bool:
-    """Verify an inclusion proof against the expected semantic root."""
-
-    current = proof.leaf_digest
-    for step in proof.steps:
+def verify_inclusion(
+    proof: InclusionProof,
+    root_digest: str,
+    *,
+    item: CanonicalObjectEnvelope | None = None,
+) -> bool:
+    """Check path hashes against a trusted root and optionally exact object bytes."""
+    if proof.root.digest.value != root_digest:
+        return False
+    if item is not None and object_leaf_digest(item) != proof.leaf_digest.value:
+        return False
+    current = proof.leaf_digest.value
+    for step in proof.path:
         current = (
-            _parent(step.digest, current)
-            if step.side == "left"
-            else _parent(current, step.digest)
+            _parent(step.digest.value, current)
+            if step.side is ProofSide.LEFT
+            else _parent(current, step.digest.value)
         )
     return current == root_digest

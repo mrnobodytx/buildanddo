@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/release.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
 # Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; IMPLEMENTS .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001.md; DESCRIBES tools/buildanddo_release.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; EXTENDS .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001.md; CONSUMES tools/buildanddo_release.py
 # DAG Node:    semantic-twin.phase-1.release-path
 # Intent:      Express the release truth chain as eight canonical objects whose evidenced relations preserve staging and production verification order.
 # ──────────────────────────────────────────────────────────
@@ -19,62 +19,39 @@
 
 from __future__ import annotations
 
+import hashlib
+from datetime import datetime
 from pathlib import Path
 
-from ..models import Relation
 from ..vocabulary import EvidenceState, RelationPredicate
-from .graph import SemanticGraph, make_object
+from .drafts import GraphDraft, RelationDraft, make_object, semantic_id
+from .graph import SemanticGraph
 
-
-RELEASE_PATH_IDS = (
-    "release://buildanddo/source-commit",
-    "release://buildanddo/build-artifact",
-    "release://buildanddo/staging-deploy",
-    "release://buildanddo/staging-verify",
-    "release://buildanddo/production-deploy",
-    "release://buildanddo/production-verify",
-    "release://buildanddo/dora-emit",
-    "release://buildanddo/evidence-receipt",
-)
-
-
-def _relation(
-    predicate: RelationPredicate,
-    target: str,
-    controller: str,
-    *,
-    state: EvidenceState = EvidenceState.INFERRED,
-) -> Relation:
-    """Create one source-evidenced release-path edge."""
-
-    return Relation(
-        predicate=predicate,
-        target=target,
-        evidence=(controller,),
-        confidence=1.0,
-        state=state,
+RELEASE_PATH_KEYS = tuple(
+    f"release://buildanddo/{name}"
+    for name in (
+        "source-commit",
+        "build-artifact",
+        "staging-deploy",
+        "staging-verify",
+        "production-deploy",
+        "production-verify",
+        "dora-emit",
+        "evidence-receipt",
     )
+)
+RELEASE_PATH_IDS = tuple(semantic_id("ReleaseStage", key) for key in RELEASE_PATH_KEYS)
 
 
-def build_release_path_graph(
+def extract_release_path(
     controller_path: Path,
     *,
     commit: str | None = None,
     source_reference: str | None = None,
-) -> SemanticGraph:
-    """Build the eight-stage release truth graph in execution order."""
-
+) -> GraphDraft:
+    """Describe eight source-modeled capabilities without claiming execution."""
     source = source_reference or controller_path.as_posix()
-    object_types = (
-        "SourceCommit",
-        "BuildArtifact",
-        "Deployment",
-        "Verification",
-        "Deployment",
-        "Verification",
-        "PublishedEvent",
-        "EvidenceReceipt",
-    )
+    digest = hashlib.sha256(controller_path.read_bytes()).hexdigest()
     stages = (
         "source commit",
         "build artifact",
@@ -85,46 +62,53 @@ def build_release_path_graph(
         "DORA emit",
         "evidence receipt",
     )
-    relations = (
-        (
-            _relation(
-                RelationPredicate.SUCCEEDED_BY,
-                RELEASE_PATH_IDS[1],
-                source,
-            ),
-        ),
-        (
-            _relation(RelationPredicate.BUILT_FROM, RELEASE_PATH_IDS[0], source),
-            _relation(RelationPredicate.DEPLOYED_AS, RELEASE_PATH_IDS[2], source),
-        ),
-        (
-            _relation(RelationPredicate.VERIFIED_BY, RELEASE_PATH_IDS[3], source),
-            _relation(RelationPredicate.SUCCEEDED_BY, RELEASE_PATH_IDS[3], source),
-        ),
-        (_relation(RelationPredicate.PROMOTED_TO, RELEASE_PATH_IDS[4], source),),
-        (_relation(RelationPredicate.VERIFIED_BY, RELEASE_PATH_IDS[5], source),),
-        (_relation(RelationPredicate.PUBLISHES, RELEASE_PATH_IDS[6], source),),
-        (_relation(RelationPredicate.EVIDENCED_BY, RELEASE_PATH_IDS[7], source),),
-        (_relation(RelationPredicate.DERIVED_FROM, RELEASE_PATH_IDS[6], source),),
-    )
-    objects = tuple(
-        make_object(
-            RELEASE_PATH_IDS[index],
-            object_types[index],
-            source,
-            claims=(
-                {
-                    "stage": stage,
-                    "position": index + 1,
-                    "truth_scope": "BuildAndDo release and deployment",
-                },
-            ),
-            relations=relations[index],
-            evidence_state=EvidenceState.INFERRED,
-            lifecycle_state="MODELED",
-            commit=commit,
-            documentation=(source,),
+    objects = []
+    for index, stage in enumerate(stages):
+        relations = (
+            ()
+            if index == 7
+            else (
+                RelationDraft(
+                    predicate=RelationPredicate.SUCCEEDED_BY,
+                    target=RELEASE_PATH_KEYS[index + 1],
+                    evidence=(source,),
+                    confidence=1.0,
+                    state=EvidenceState.INFERRED,
+                ),
+            )
         )
-        for index, stage in enumerate(stages)
-    )
-    return SemanticGraph(objects)
+        objects.append(
+            make_object(
+                RELEASE_PATH_KEYS[index],
+                "ReleaseStage",
+                source,
+                claims=(
+                    {
+                        "stage": stage,
+                        "position": index + 1,
+                        "truth_scope": "source-modeled release sequence",
+                        "execution_observed": False,
+                    },
+                ),
+                relations=relations,
+                evidence_state=EvidenceState.INFERRED,
+                lifecycle_state="MODELED",
+                commit=commit,
+                documentation=(source,),
+                input_digest=digest,
+            )
+        )
+    return GraphDraft(tuple(objects))
+
+
+def build_release_path_graph(
+    controller_path: Path,
+    *,
+    commit: str | None = None,
+    source_reference: str | None = None,
+    observed_at: datetime | None = None,
+) -> SemanticGraph:
+    """Build a canonical static model of the eight-stage release path."""
+    return extract_release_path(
+        controller_path, commit=commit, source_reference=source_reference
+    ).resolve(observed_at=observed_at)

@@ -19,43 +19,85 @@
 
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Mapping
 from dataclasses import dataclass
-import hashlib
-import json
 from pathlib import Path
 from typing import Any
 
-from ..ingestion.graph import SemanticGraph
+from ..contracts import ContractError
+from ..ingestion.drafts import GraphDraft, make_object
 from ..vocabulary import EvidenceState, RelationPredicate
-from .common import as_mapping, relation, relative_path, stable_id
-from .compat import make_object
+from .common import read_json, relation, relative_path, stable_id
 
-
-_TIME_KEYS = ("generated_at", "deployed_at", "verified_at", "emitted_at", "built_at")
-_SHA_KEYS = ("commit_sha", "candidate_sha", "deployed_sha", "sha")
-_DIGEST_KEYS = ("artifact_sha256", "artifact_digest", "payload_sha256", "sha256")
+_TIME_KEYS = (
+    "verified_at",
+    "emitted_at",
+    "deployed_at",
+    "built_at",
+    "generated_at",
+    "timestamp",
+)
+_NESTED = {
+    "build",
+    "artifact",
+    "deployment",
+    "verification",
+    "dora",
+    "staging",
+    "production",
+}
+_FIELDS = (
+    "schema",
+    "state",
+    "status",
+    "environment",
+    "expected_sha",
+    "deployed_sha",
+    "commit_sha",
+    "candidate_sha",
+    "artifact_tree_sha256",
+    "artifact_sha256",
+    "artifact_digest",
+    "payload_sha256",
+    "receipt_path",
+    "health_pass",
+    "sha_match",
+    "flagship_lesson_readback",
+    "health_status",
+    "version_status",
+    "http_status",
+    "remote_writes",
+    *_TIME_KEYS,
+)
 
 
 @dataclass(frozen=True, slots=True)
 class ReleaseStateReceipt:
-    """Retain normalized controller release evidence and its exact file digest."""
+    """Keep each receipt's exact file identity apart from release identities."""
 
     name: str
     source_path: str
-    schema: str | None
-    state: str | None
-    environment: str | None
-    timestamp: str | None
-    commit_sha: str | None
-    artifact_digest: str | None
-    receipt_path: str | None
-    payload_digest: str
+    pointer: str
+    fields: Mapping[str, Any]
+    source_digest: str
+
+    @property
+    def environment(self) -> str | None:
+        value = self.fields.get("environment")
+        return value if isinstance(value, str) else None
+
+    @property
+    def commit_sha(self) -> str | None:
+        for key in ("commit_sha", "candidate_sha", "deployed_sha"):
+            value = self.fields.get(key)
+            if isinstance(value, str):
+                return value
+        return None
 
 
 def discover_release_receipts(repository_root: Path) -> tuple[Path, ...]:
-    """Find bounded controller receipt locations without scanning unrelated JSON."""
-
+    """Find controller receipts while excluding files inside deployed artifacts."""
     candidates: set[Path] = set()
     state_root = repository_root / "state"
     if state_root.is_dir():
@@ -66,49 +108,74 @@ def discover_release_receipts(repository_root: Path) -> tuple[Path, ...]:
         )
     artifact_root = repository_root / ".citadel-release"
     if artifact_root.is_dir():
-        candidates.update(artifact_root.rglob("*.json"))
-    return tuple(sorted(candidates, key=lambda item: item.as_posix()))
+        candidates.update(artifact_root.glob("*.json"))
+    return tuple(sorted(candidates))
 
 
-def _first_text(payload: Mapping[str, Any], keys: tuple[str, ...]) -> str | None:
-    """Return the first non-empty scalar text under a known field name."""
-
-    for key in keys:
-        value = payload.get(key)
-        if isinstance(value, (str, int, float)) and str(value).strip():
-            return str(value).strip()
-    return None
+def _kind(payload: Mapping[str, Any], name: str) -> str:
+    schema = payload.get("schema")
+    if schema == "buildanddo.external-readback/v1":
+        return "verification"
+    if schema == "buildanddo.release-artifact/v1":
+        return "build"
+    if schema == "buildanddo.deployment/v1":
+        return "deployment"
+    if "dora" in name.casefold():
+        return "dora"
+    return "summary"
 
 
 def ingest_release_receipts(
-    paths: tuple[Path, ...],
-    *,
-    repository_root: Path | None = None,
+    paths: tuple[Path, ...], *, repository_root: Path | None = None
 ) -> tuple[ReleaseStateReceipt, ...]:
-    """Normalize explicit release receipt paths in deterministic order."""
-
-    records: list[ReleaseStateReceipt] = []
-    for path in sorted(paths, key=lambda item: item.as_posix()):
+    """Normalize root and nested controller receipts without dropping readback identity."""
+    records = []
+    for path in sorted(set(paths)):
         raw = path.read_bytes()
-        try:
-            payload = as_mapping(json.loads(raw.decode("utf-8")))
-        except (UnicodeError, json.JSONDecodeError) as exc:
-            raise ValueError(f"invalid release receipt: {path}") from exc
+        payload = read_json(path, raw=raw)
+        if not isinstance(payload, Mapping):
+            raise ContractError(f"release receipt must be an object: {path}")
         source = relative_path(path, repository_root)
-        records.append(
-            ReleaseStateReceipt(
-                name=path.name.removesuffix(".json").removesuffix(".latest"),
-                source_path=source,
-                schema=_first_text(payload, ("schema",)),
-                state=_first_text(payload, ("state", "status", "result")),
-                environment=_first_text(payload, ("environment", "env")),
-                timestamp=_first_text(payload, _TIME_KEYS),
-                commit_sha=_first_text(payload, _SHA_KEYS),
-                artifact_digest=_first_text(payload, _DIGEST_KEYS),
-                receipt_path=_first_text(payload, ("receipt_path",)),
-                payload_digest=hashlib.sha256(raw).hexdigest(),
-            )
-        )
+        digest = hashlib.sha256(raw).hexdigest()
+        name = path.stem.removesuffix(".latest")
+
+        def visit(
+            value: Mapping[str, Any],
+            pointer: str,
+            environment: str | None,
+            name_hint: str,
+        ) -> None:
+            fields = {key: value[key] for key in _FIELDS if key in value}
+            explicit = value.get("environment")
+            env = explicit if isinstance(explicit, str) else environment
+            if env is not None:
+                fields["environment"] = env
+            fields["receipt_kind"] = _kind(value, name_hint)
+            manifest = value.get("manifest")
+            if isinstance(manifest, Mapping) and isinstance(
+                manifest.get("tree_sha256"), str
+            ):
+                fields["artifact_tree_sha256"] = manifest["tree_sha256"]
+            if (
+                pointer == ""
+                or fields.get("schema")
+                or any(key in value for key in _TIME_KEYS)
+                or name_hint == "dora"
+            ):
+                records.append(
+                    ReleaseStateReceipt(name, source, pointer, fields, digest)
+                )
+            for key in sorted(_NESTED):
+                child = value.get(key)
+                if isinstance(child, Mapping):
+                    visit(
+                        child,
+                        pointer + "/" + key,
+                        key if key in {"staging", "production"} else env,
+                        key,
+                    )
+
+        visit(payload, "", None, name)
     return tuple(records)
 
 
@@ -117,49 +184,31 @@ def release_receipt_graph(
     *,
     anchor_id: str,
     commit: str | None = None,
-) -> SemanticGraph:
-    """Convert release-state receipts into anchor-connected semantic objects."""
-
+) -> GraphDraft:
+    """Stage captured receipt facts without granting a VERIFIED evidence state."""
     objects = []
     for record in records:
-        object_id = stable_id(
-            "release-state", record.source_path, record.payload_digest
-        )
-        evidence_state = (
-            EvidenceState.CONTRADICTED
-            if record.state and record.state.upper().startswith("FAIL")
-            else EvidenceState.OBSERVED
-        )
         objects.append(
             make_object(
-                object_id,
+                stable_id("release-state", record.source_path, record.pointer),
                 "ReleaseStateReceipt",
                 record.source_path,
                 claims=(
                     {
+                        **record.fields,
                         "name": record.name,
-                        "schema": record.schema,
-                        "state": record.state,
-                        "environment": record.environment,
-                        "timestamp": record.timestamp,
-                        "commit_sha": record.commit_sha,
-                        "artifact_digest": record.artifact_digest,
-                        "receipt_path": record.receipt_path,
-                        "payload_digest": record.payload_digest,
+                        "json_pointer": record.pointer,
+                        "source_digest": record.source_digest,
                     },
                 ),
                 relations=(
-                    relation(
-                        RelationPredicate.REFINES,
-                        anchor_id,
-                        record.source_path,
-                    ),
+                    relation(RelationPredicate.REFINES, anchor_id, record.source_path),
                 ),
-                evidence_state=evidence_state,
+                evidence_state=EvidenceState.OBSERVED,
                 lifecycle_state="OBSERVED_LOCAL_RECEIPT",
                 commit=commit,
                 documentation=(record.source_path,),
-                runtime_status=record.state,
+                input_digest=record.source_digest,
             )
         )
-    return SemanticGraph(tuple(objects))
+    return GraphDraft(tuple(objects))

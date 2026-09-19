@@ -19,17 +19,15 @@
 
 from __future__ import annotations
 
+import subprocess
 from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
-import subprocess
 
-from ..ingestion.graph import SemanticGraph
-from ..models import CanonicalObjectEnvelope, ValidTime
+from ..identity import ValidTime
+from ..ingestion.drafts import GraphDraft, ObjectDraft, make_object
 from ..vocabulary import EvidenceState, RelationPredicate
 from .common import named_id, relation, stable_id
-from .compat import make_object
-
 
 _RECORD = "\x1e"
 _FIELD = "\x1f"
@@ -135,10 +133,10 @@ def read_git_history(
 
 
 def _with_valid_time(
-    item: CanonicalObjectEnvelope,
+    item: ObjectDraft,
     valid_from: str,
     valid_until: str | None,
-) -> CanonicalObjectEnvelope:
+) -> ObjectDraft:
     """Bind an observed history object to its bounded commit-time interval."""
 
     start = datetime.fromisoformat(valid_from)
@@ -152,14 +150,16 @@ def history_graph(
     observations: tuple[CommitObservation, ...],
     *,
     anchor_id: str,
-) -> SemanticGraph:
+) -> GraphDraft:
     """Convert commit and path evolution into one anchor-connected graph."""
 
     objects = []
     included = {item.commit for item in observations}
     for index, item in enumerate(observations):
         commit_id = named_id("git-commit", item.commit)
-        valid_until = observations[index - 1].authored_at if index > 0 else None
+        valid_until = (
+            None  # A commit observation does not expire at an unrelated commit.
+        )
         relations = [
             relation(
                 RelationPredicate.REFINES if index == 0 else RelationPredicate.ABOUT,
@@ -237,4 +237,4 @@ def history_graph(
                     valid_until,
                 )
             )
-    return SemanticGraph(tuple(objects))
+    return GraphDraft(tuple(objects))

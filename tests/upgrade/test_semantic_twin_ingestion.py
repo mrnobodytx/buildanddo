@@ -1,10 +1,10 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        tests/upgrade/test_semantic_twin_ingestion.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
@@ -21,11 +21,16 @@ from __future__ import annotations
 
 import hashlib
 import json
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 
-from libs.semantic_twin import EvidenceState, RelationPredicate
+from libs.semantic_twin import (
+    CanonicalObjectEnvelope,
+    EntityType,
+    EvidenceState,
+    RelationPredicate,
+)
 from libs.semantic_twin.ingestion import (
     ClaimDisposition,
     build_release_path_graph,
@@ -39,7 +44,6 @@ from libs.semantic_twin.ingestion import (
 )
 from libs.semantic_twin.ingestion.__main__ import main as ingestion_main
 from libs.semantic_twin.ingestion.pipeline import _repository_commit
-
 
 REPO = Path(__file__).resolve().parents[2]
 CONTROLLER = REPO / "tools" / "buildanddo_release.py"
@@ -84,13 +88,13 @@ class SourceIngestionTests(unittest.TestCase):
         dependencies = {
             str(obj.claims[0]["name"])
             for obj in self.graph.objects
-            if obj.object_type == "ExternalDependency"
+            if obj.object_type is EntityType.SERVICE
         }
         self.assertEqual(dependencies, {"Datadog API", "GitHub", "GitLab"})
         events = {
             str(obj.claims[0]["name"])
             for obj in self.graph.objects
-            if obj.object_type == "PublishedEvent"
+            if obj.object_type is EntityType.EVENT_TYPE
         }
         self.assertIn("dora_deployment", events)
         self.assertIn("production_dora", events)
@@ -128,6 +132,14 @@ class ReleaseGraphTests(unittest.TestCase):
         self.assertEqual(graph.unresolved_targets(), ())
         for obj in graph.objects:
             self.assertIsInstance(obj.state.evidence_state, EvidenceState)
+            self.assertIsInstance(obj.object_type, EntityType)
+            self.assertEqual(CanonicalObjectEnvelope.from_dict(obj.to_dict()), obj)
+            self.assertEqual(obj.schema_version, "2")
+            for edge in obj.relations:
+                self.assertEqual(edge.source, obj.subject)
+                self.assertEqual(
+                    edge.target_version, graph.by_id()[edge.target].source.version
+                )
             for relation in obj.relations:
                 self.assertIsInstance(relation.predicate, RelationPredicate)
                 self.assertIsInstance(relation.state, EvidenceState)
@@ -166,7 +178,7 @@ class ClaimExtractionTests(unittest.TestCase):
     def test_classifies_entailed_contradicted_and_unmeasured_claims(self) -> None:
         source = CONTROLLER.read_text(encoding="utf-8")
         self.assertEqual(
-            classify_claim("`verify_environment` performs readback.", source),
+            classify_claim("The controller defines `verify_environment`.", source),
             ClaimDisposition.ENTAILED,
         )
         self.assertEqual(
@@ -185,7 +197,7 @@ class ClaimExtractionTests(unittest.TestCase):
             spec.write_text(
                 "# Fixture\n\n"
                 "## Invariants\n\n"
-                "- `verify_environment` performs external readback.\n"
+                "- The controller defines `verify_environment`.\n"
                 "- The controller never calls `verify_environment`.\n\n"
                 "## Acceptance evidence\n\n"
                 "1. A signed SBOM is uploaded.\n",
@@ -258,9 +270,9 @@ class SerializerTests(unittest.TestCase):
         payload = json.loads(first)
         self.assertEqual(payload["object_count"], 8)
         envelopes = {item.semantic_id: item for item in graph.objects}
-        for item in payload["objects"]:
-            envelope = envelopes[item["semantic_id"]]
-            digest = item["merkle"]["leaf_digest"]
+        for item in payload["leaf_digests"]:
+            envelope = envelopes[item["subject"]["semantic_id"]]
+            digest = item["digest"]["value"]
             self.assertEqual(len(digest), 64)
             self.assertEqual(
                 digest,
@@ -282,12 +294,19 @@ class SerializerTests(unittest.TestCase):
             )
             payload = json.loads(output.read_text(encoding="utf-8"))
         self.assertEqual(result, 0)
-        self.assertEqual(payload["schema_version"], "semantic-twin.graph/v1")
+        self.assertEqual(payload["schema_version"], "semantic-twin.graph/v2")
         self.assertGreater(payload["object_count"], 100)
         source_commit = next(
-            item for item in payload["objects"] if item["object_type"] == "SourceCommit"
+            item
+            for item in payload["objects"]
+            if item["claims"][0].get("stage") == "source commit"
         )
-        self.assertRegex(source_commit["source"]["commit"], r"^[0-9a-f]{40}$")
+        self.assertRegex(
+            source_commit["claims"][-1]["source_commit"], r"^[0-9a-f]{40}$"
+        )
+        self.assertRegex(
+            source_commit["source"]["document_version"], r"^sha256:[0-9a-f]{64}$"
+        )
 
 
 if __name__ == "__main__":
