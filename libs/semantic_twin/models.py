@@ -8,23 +8,36 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/contracts.py, libs/semantic_twin/identity.py, libs/semantic_twin/merkle.py, libs/semantic_twin/receipts.py, libs/semantic_twin/relations.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Schema
-# EnumEdges:   CONSUMES libs/semantic_twin/vocabulary.py; EXTENDS .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md
+# EnumEdges:   DEPENDS_ON libs/semantic_twin/contracts.py; DEPENDS_ON libs/semantic_twin/identity.py; DEPENDS_ON libs/semantic_twin/merkle.py; DEPENDS_ON libs/semantic_twin/receipts.py; DEPENDS_ON libs/semantic_twin/relations.py; DEPENDS_ON libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-0.envelopes
 # Intent:      Provide immutable canonical object and event envelopes with explicit identity, provenance, evidence and authority fields.
 # ──────────────────────────────────────────────────────────
 
-"""Define immutable canonical envelopes for system-twin objects and events."""
+"""Define version-two object and event contracts with explicit evidence boundaries."""
 
 from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
-from types import MappingProxyType
-from typing import Any, TypeAlias
+from typing import Literal, TypeAlias, cast
 
+from .contracts import Contract, require, text
+from .identity import EntityType, SemanticId, SubjectRef, ValidTime
+from .merkle import ContextRoot, MerkleBinding, SemanticRoot, SourceRevision
+from .receipts import (
+    CausalSupport,
+    CorpusValidation,
+    EvidenceReference,
+    PolicyDecisionReceipt,
+    ShaclValidationResult,
+    TevvResult,
+    VerificationReceipt,
+    validate_evidence,
+)
+from .relations import Relation
 from .vocabulary import (
     AuthorityTier,
     CausalState,
@@ -32,13 +45,11 @@ from .vocabulary import (
     CorpusUseState,
     EvidenceState,
     MerkleState,
-    RelationPredicate,
     SemanticTransactionState,
     ShaclState,
     StateAxis,
     TevvState,
 )
-
 
 AxisState: TypeAlias = (
     EvidenceState
@@ -54,73 +65,42 @@ AxisState: TypeAlias = (
 )
 
 
-def _require_text(value: str, field_name: str) -> None:
-    """Require a non-empty string value."""
-
-    if not isinstance(value, str) or not value.strip():
-        raise ValueError(f"{field_name} must be a non-empty string")
-
-
-def _require_aware(value: datetime | None, field_name: str) -> None:
-    """Require timezone-aware timestamps when a timestamp is present."""
-
-    if value is not None and (value.tzinfo is None or value.utcoffset() is None):
-        raise ValueError(f"{field_name} must be timezone-aware")
-
-
-def _timestamp(value: datetime | None) -> str | None:
-    """Render an optional timestamp in its canonical ISO-8601 form."""
-
-    return value.isoformat() if value is not None else None
-
-
 @dataclass(frozen=True, slots=True)
-class Source:
-    """Identify the system and versioned location that supplied an object."""
+class Source(Contract):
+    """Identify a source location and an immutable revision or document version."""
 
     system: str
-    uri_or_path: str | None = None
+    uri_or_path: str
     repository: str | None = None
     commit: str | None = None
     document_version: str | None = None
 
     def __post_init__(self) -> None:
-        """Validate source identity and require one addressable locator."""
-
-        _require_text(self.system, "source.system")
-        locators = (
-            self.uri_or_path,
-            self.repository,
-            self.commit,
-            self.document_version,
+        Contract.__post_init__(self)
+        text(self.system, "source.system")
+        text(self.uri_or_path, "source.uri_or_path")
+        require(
+            self.commit is not None or self.document_version is not None,
+            "source requires a commit or document version",
         )
-        if not any(isinstance(value, str) and value.strip() for value in locators):
-            raise ValueError("source must include at least one locator or version")
+        if self.commit is not None:
+            SourceRevision(self.commit)
+        if self.document_version is not None:
+            text(self.document_version, "source.document_version")
+        if self.repository is not None:
+            text(self.repository, "source.repository")
 
-
-@dataclass(frozen=True, slots=True)
-class ValidTime:
-    """Bound the real-world validity interval of an object."""
-
-    valid_from: datetime | None = None
-    valid_until: datetime | None = None
-
-    def __post_init__(self) -> None:
-        """Validate timestamp awareness and interval ordering."""
-
-        _require_aware(self.valid_from, "valid_time.from")
-        _require_aware(self.valid_until, "valid_time.until")
-        if (
-            self.valid_from is not None
-            and self.valid_until is not None
-            and self.valid_until < self.valid_from
-        ):
-            raise ValueError("valid_time.until must not precede valid_time.from")
+    @property
+    def version(self) -> str:
+        """Return the source revision used to bind all receipts."""
+        return (
+            self.commit if self.commit is not None else cast(str, self.document_version)
+        )
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class ObjectState:
-    """Represent all ten independent semantic-twin state axes."""
+class ObjectState(Contract):
+    """Represent ten axes without mistaking structural checks for observed truth."""
 
     evidence_state: EvidenceState
     shacl_state: ShaclState
@@ -134,60 +114,13 @@ class ObjectState:
     lifecycle_state: str
 
     def __post_init__(self) -> None:
-        """Validate the open lifecycle value and cross-axis prerequisites."""
-
-        typed_axes = (
-            (self.evidence_state, EvidenceState, StateAxis.EVIDENCE),
-            (self.shacl_state, ShaclState, StateAxis.SHACL),
-            (self.merkle_state, MerkleState, StateAxis.MERKLE),
-            (self.cgrf_action_state, CgrfActionState, StateAxis.CGRF_ACTION),
-            (self.tevv_state, TevvState, StateAxis.TEVV),
-            (
-                self.semantic_transaction_state,
-                SemanticTransactionState,
-                StateAxis.SEMANTIC_TRANSACTION,
-            ),
-            (self.causal_state, CausalState, StateAxis.CAUSAL),
-            (self.corpus_use_state, CorpusUseState, StateAxis.CORPUS_USE),
-            (self.authority_tier, AuthorityTier, StateAxis.AUTHORITY),
-        )
-        for value, expected_type, axis in typed_axes:
-            if not isinstance(value, expected_type):
-                raise TypeError(
-                    f"{axis.value} must be {expected_type.__name__}, "
-                    f"not {type(value).__name__}"
-                )
-        if type(self.lifecycle_state) is not str:
-            raise TypeError("lifecycle_state must be str")
-        _require_text(self.lifecycle_state, "state.lifecycle_state")
-        self._validate_cross_axis_invariants()
-
-    def _validate_cross_axis_invariants(self) -> None:
-        """Reject composite states that make unsupported success claims."""
-
+        Contract.__post_init__(self)
+        text(self.lifecycle_state, "lifecycle_state")
         transaction = self.semantic_transaction_state
-        if (
-            transaction
-            in {
-                SemanticTransactionState.SHACL_VALIDATED,
-                SemanticTransactionState.EVIDENCE_BOUND,
-                SemanticTransactionState.POLICY_EVALUATED,
-                SemanticTransactionState.AUTHORIZED,
-                SemanticTransactionState.EXECUTING,
-                SemanticTransactionState.MUTATED_UNVERIFIED,
-                SemanticTransactionState.VERIFYING,
-                SemanticTransactionState.VERIFIED,
-                SemanticTransactionState.CANONICALIZED,
-                SemanticTransactionState.WATCH,
-            }
-            and self.shacl_state is not ShaclState.CONFORMS
-        ):
-            raise ValueError(
-                "semantic transaction requires SHACL CONFORMS at or after "
-                "SHACL_VALIDATED"
-            )
-
-        if transaction in {
+        staged = {
+            SemanticTransactionState.SHACL_VALIDATED,
+            SemanticTransactionState.EVIDENCE_BOUND,
+            SemanticTransactionState.POLICY_EVALUATED,
             SemanticTransactionState.AUTHORIZED,
             SemanticTransactionState.EXECUTING,
             SemanticTransactionState.MUTATED_UNVERIFIED,
@@ -195,191 +128,155 @@ class ObjectState:
             SemanticTransactionState.VERIFIED,
             SemanticTransactionState.CANONICALIZED,
             SemanticTransactionState.WATCH,
-        } and self.cgrf_action_state in {
-            CgrfActionState.OBSERVED,
-            CgrfActionState.PROPOSED,
-            CgrfActionState.POLICY_EVALUATING,
-            CgrfActionState.DENIED,
-            CgrfActionState.FAILED_CLOSED,
-            CgrfActionState.ROLLED_BACK,
-            CgrfActionState.SUPERSEDED,
-        }:
-            raise ValueError(
-                "authorized semantic transaction requires an authorized CGRF action"
+        }
+        authorized = staged - {
+            SemanticTransactionState.SHACL_VALIDATED,
+            SemanticTransactionState.EVIDENCE_BOUND,
+            SemanticTransactionState.POLICY_EVALUATED,
+        }
+        if transaction in staged:
+            require(
+                self.shacl_state is ShaclState.CONFORMS,
+                "semantic transaction requires SHACL CONFORMS",
             )
-
-        verified_transaction = transaction in {
+        if transaction in authorized:
+            require(
+                self.cgrf_action_state
+                in {
+                    CgrfActionState.AUTHORIZED,
+                    CgrfActionState.RESERVED,
+                    CgrfActionState.EXECUTING,
+                    CgrfActionState.MUTATED_UNVERIFIED,
+                    CgrfActionState.VERIFYING,
+                    CgrfActionState.VERIFIED,
+                    CgrfActionState.WATCH,
+                },
+                "semantic transaction requires authorized CGRF state",
+            )
+        if (
+            self.evidence_state is EvidenceState.VERIFIED
+            or self.cgrf_action_state is CgrfActionState.VERIFIED
+        ):
+            require(self.tevv_state is TevvState.PASS, "VERIFIED requires TEVV PASS")
+        if transaction in {
             SemanticTransactionState.VERIFIED,
             SemanticTransactionState.CANONICALIZED,
-        }
-        if verified_transaction and (
-            self.evidence_state is not EvidenceState.VERIFIED
-            or self.tevv_state is not TevvState.PASS
-            or self.cgrf_action_state is not CgrfActionState.VERIFIED
-        ):
-            raise ValueError(
-                "verified semantic transaction requires VERIFIED evidence, "
-                "TEVV PASS and CGRF VERIFIED"
+        }:
+            require(
+                self.evidence_state is EvidenceState.VERIFIED
+                and self.cgrf_action_state is CgrfActionState.VERIFIED
+                and self.tevv_state is TevvState.PASS,
+                "verified transaction requires VERIFIED evidence, CGRF VERIFIED and TEVV PASS",
             )
-
+        if transaction is SemanticTransactionState.CANONICALIZED:
+            require(
+                self.merkle_state
+                in {
+                    MerkleState.ROOTED,
+                    MerkleState.ATTESTED,
+                    MerkleState.INCLUSION_PROVEN,
+                },
+                "canonical transaction requires a current Merkle root",
+            )
         if (
-            transaction is SemanticTransactionState.CANONICALIZED
-            and self.merkle_state
-            in {
-                MerkleState.UNHASHED,
-                MerkleState.CORRUPT,
-                MerkleState.QUARANTINED,
-            }
+            self.causal_state is CausalState.VERIFIED_CAUSE
+            or self.corpus_use_state is CorpusUseState.VERIFIED_FOR_CITADEL
         ):
-            raise ValueError(
-                "canonicalized semantic transaction requires a valid canonical digest"
-            )
-
-        if self.causal_state is CausalState.VERIFIED_CAUSE and (
-            self.evidence_state is not EvidenceState.VERIFIED
-            or self.tevv_state is not TevvState.PASS
-        ):
-            raise ValueError("VERIFIED_CAUSE requires VERIFIED evidence and TEVV PASS")
-
-        if self.corpus_use_state is CorpusUseState.VERIFIED_FOR_CITADEL and (
-            self.evidence_state is not EvidenceState.VERIFIED
-            or self.tevv_state is not TevvState.PASS
-        ):
-            raise ValueError(
-                "VERIFIED_FOR_CITADEL requires VERIFIED evidence and TEVV PASS"
+            require(
+                self.evidence_state is EvidenceState.VERIFIED
+                and self.tevv_state is TevvState.PASS,
+                "verified causal/corpus state requires VERIFIED evidence and TEVV PASS",
             )
 
     def axis_value(self, axis: StateAxis) -> AxisState:
-        """Return one typed state-axis value."""
-
-        values: dict[StateAxis, AxisState] = {
-            StateAxis.EVIDENCE: self.evidence_state,
-            StateAxis.SHACL: self.shacl_state,
-            StateAxis.MERKLE: self.merkle_state,
-            StateAxis.CGRF_ACTION: self.cgrf_action_state,
-            StateAxis.TEVV: self.tevv_state,
-            StateAxis.SEMANTIC_TRANSACTION: self.semantic_transaction_state,
-            StateAxis.CAUSAL: self.causal_state,
-            StateAxis.CORPUS_USE: self.corpus_use_state,
-            StateAxis.AUTHORITY: self.authority_tier,
-            StateAxis.LIFECYCLE: self.lifecycle_state,
-        }
-        return values[axis]
-
-    def to_dict(self) -> dict[str, str]:
-        """Render all ten axes using their canonical wire values."""
-
-        return {axis.value: str(self.axis_value(axis)) for axis in StateAxis}
+        """Return the value of one explicit state axis."""
+        require(type(axis) is StateAxis, "axis must be StateAxis")
+        return cast(AxisState, getattr(self, axis.value))
 
 
 @dataclass(frozen=True, slots=True)
-class Relation:
-    """Describe one typed, evidenced edge from the enclosing object."""
+class Provenance(Contract):
+    """Preserve derivation and context without substituting parser version for origin."""
 
-    predicate: RelationPredicate
-    target: str
-    evidence: tuple[str, ...]
-    confidence: float | None
-    state: EvidenceState
-
-    def __post_init__(self) -> None:
-        """Validate edge identity, evidence references and confidence."""
-
-        _require_text(self.target, "relation.target")
-        for reference in self.evidence:
-            _require_text(reference, "relation.evidence[]")
-        if self.confidence is not None and not 0.0 <= self.confidence <= 1.0:
-            raise ValueError("relation.confidence must be between 0.0 and 1.0")
-
-
-@dataclass(frozen=True, slots=True)
-class Provenance:
-    """Record derivation and replay roots for a semantic object."""
-
-    derived_from: tuple[str, ...] = ()
+    derived_from: tuple[SemanticId, ...]
     parser_version: str | None = None
     extractor_version: str | None = None
-    context_root: str | None = None
-    semantic_root: str | None = None
+    context_root: ContextRoot | None = None
+    semantic_root: SemanticRoot | None = None
 
     def __post_init__(self) -> None:
-        """Require at least one substantive provenance reference."""
-
-        values = (
-            *self.derived_from,
-            self.parser_version,
-            self.extractor_version,
-            self.context_root,
-            self.semantic_root,
+        Contract.__post_init__(self)
+        require(bool(self.derived_from), "provenance requires source references")
+        require(
+            len(set(self.derived_from)) == len(self.derived_from),
+            "duplicate provenance reference",
         )
-        if not any(isinstance(value, str) and value.strip() for value in values):
-            raise ValueError(
-                "provenance must include at least one reference or version"
-            )
+        for value in (self.parser_version, self.extractor_version):
+            if value is not None:
+                text(value, "provenance version")
 
 
 @dataclass(frozen=True, slots=True)
-class MerkleBinding:
-    """Bind an object to an optional leaf and semantic epoch root."""
+class Ownership(Contract):
+    """Name accountable identities."""
 
-    leaf_digest: str | None = None
-    epoch_id: str | None = None
-    root_digest: str | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class Ownership:
-    """Name the owner and guild accountable for an object."""
-
-    owner: str
-    guild: str | None = None
+    owner: SemanticId
+    guild: SemanticId | None = None
 
     def __post_init__(self) -> None:
-        """Validate the required owner identity."""
-
-        _require_text(self.owner, "ownership.owner")
+        Contract.__post_init__(self)
+        if self.guild is not None:
+            self.guild.require_namespace("guild")
 
 
 @dataclass(frozen=True, slots=True)
-class Authority:
-    """Declare the authority ceiling and mutability of an object."""
+class Authority(Contract):
+    """Declare the required consequence tier; this field grants no authority."""
 
     required_tier: AuthorityTier
-    mutability: str
-
-    def __post_init__(self) -> None:
-        """Validate the mutability contract."""
-
-        _require_text(self.mutability, "authority.mutability")
+    mutability: Literal["immutable", "versioned", "governed"]
 
 
 @dataclass(frozen=True, slots=True)
-class Runtime:
-    """Attach current runtime standing and telemetry references."""
+class Runtime(Contract):
+    """Attach measured runtime standing and addressable telemetry."""
 
     observed_status: str | None = None
-    telemetry_refs: tuple[str, ...] = ()
+    telemetry_refs: tuple[SemanticId, ...] = ()
+
+    def __post_init__(self) -> None:
+        Contract.__post_init__(self)
+        if self.observed_status is not None:
+            text(self.observed_status, "runtime.observed_status")
+            require(bool(self.telemetry_refs), "runtime status requires telemetry")
 
 
 @dataclass(frozen=True, slots=True)
-class Documentation:
-    """Attach exact documentation references to an object."""
+class Documentation(Contract):
+    """Attach exact versioned document sections."""
 
-    references: tuple[str, ...] = ()
+    references: tuple[SemanticId, ...] = ()
+
+    def __post_init__(self) -> None:
+        Contract.__post_init__(self)
+        require(
+            all(r.scheme == "doc" for r in self.references),
+            "documentation requires versioned doc references",
+        )
 
 
-@dataclass(frozen=True, slots=True)
-class CanonicalObjectEnvelope:
-    """Carry the common minimum envelope for every system-twin object."""
+@dataclass(frozen=True, slots=True, kw_only=True)
+class CanonicalObjectEnvelope(Contract):
+    """Carry section 44 fields and the typed receipts supporting their declared states."""
 
-    semantic_id: str
-    object_type: str
-    schema_version: str
+    semantic_id: SemanticId
+    object_type: EntityType
+    schema_version: Literal["2"]
     source: Source
     valid_time: ValidTime
     observed_time: datetime | None
     state: ObjectState
-    claims: tuple[Mapping[str, Any], ...]
+    claims: tuple[Mapping[str, object], ...]
     relations: tuple[Relation, ...]
     provenance: Provenance
     merkle: MerkleBinding
@@ -387,161 +284,265 @@ class CanonicalObjectEnvelope:
     authority: Authority
     runtime: Runtime
     documentation: Documentation
+    evidence: tuple[EvidenceReference, ...] = ()
+    shacl: ShaclValidationResult | None = None
+    tevv: TevvResult | None = None
+    verification: VerificationReceipt | None = None
+    policy: PolicyDecisionReceipt | None = None
+    causal: CausalSupport | None = None
+    corpus: CorpusValidation | None = None
+
+    @property
+    def subject(self) -> SubjectRef:
+        """Return the exact identity/revision all evidence must concern."""
+        return SubjectRef(self.semantic_id, self.source.version)
 
     def __post_init__(self) -> None:
-        """Validate identity and freeze claim mappings at the envelope boundary."""
-
-        _require_text(self.semantic_id, "semantic_id")
-        _require_text(self.object_type, "object_type")
-        _require_text(self.schema_version, "schema_version")
-        _require_aware(self.observed_time, "observed_time")
-        frozen_claims = tuple(MappingProxyType(dict(claim)) for claim in self.claims)
-        object.__setattr__(self, "claims", frozen_claims)
-        object.__setattr__(self, "relations", tuple(self.relations))
-
-    def to_dict(self) -> dict[str, Any]:
-        """Render the exact section 44 wire envelope."""
-
-        return {
-            "semantic_id": self.semantic_id,
-            "object_type": self.object_type,
-            "schema_version": self.schema_version,
-            "source": {
-                "system": self.source.system,
-                "uri_or_path": self.source.uri_or_path,
-                "repository": self.source.repository,
-                "commit": self.source.commit,
-                "document_version": self.source.document_version,
-            },
-            "valid_time": {
-                "from": _timestamp(self.valid_time.valid_from),
-                "until": _timestamp(self.valid_time.valid_until),
-            },
-            "observed_time": _timestamp(self.observed_time),
-            "state": self.state.to_dict(),
-            "claims": [dict(claim) for claim in self.claims],
-            "relations": [
-                {
-                    "predicate": relation.predicate.value,
-                    "target": relation.target,
-                    "evidence": list(relation.evidence),
-                    "confidence": relation.confidence,
-                    "state": relation.state.value,
-                }
-                for relation in self.relations
-            ],
-            "provenance": {
-                "derived_from": list(self.provenance.derived_from),
-                "parser_version": self.provenance.parser_version,
-                "extractor_version": self.provenance.extractor_version,
-                "context_root": self.provenance.context_root,
-                "semantic_root": self.provenance.semantic_root,
-            },
-            "merkle": {
-                "leaf_digest": self.merkle.leaf_digest,
-                "epoch_id": self.merkle.epoch_id,
-                "root_digest": self.merkle.root_digest,
-            },
-            "ownership": {
-                "owner": self.ownership.owner,
-                "guild": self.ownership.guild,
-            },
-            "authority": {
-                "required_tier": self.authority.required_tier.value,
-                "mutability": self.authority.mutability,
-            },
-            "runtime": {
-                "observed_status": self.runtime.observed_status,
-                "telemetry_refs": list(self.runtime.telemetry_refs),
-            },
-            "documentation": {"references": list(self.documentation.references)},
+        Contract.__post_init__(self)
+        subject = self.subject
+        self.semantic_id.require_entity_type(self.object_type)
+        require(
+            self.authority.required_tier is self.state.authority_tier,
+            "envelope authority tier disagrees with state",
+        )
+        require(
+            all(
+                r.source == subject and r.source_type is self.object_type
+                for r in self.relations
+            ),
+            "relation source/type/version differs from enclosing object",
+        )
+        self.merkle.validate_state(self.state.merkle_state, subject)
+        measured = self.state.evidence_state not in {
+            EvidenceState.UNMEASURED,
+            EvidenceState.QUARANTINED,
+            EvidenceState.RETIRED,
+            EvidenceState.SUPERSEDED,
         }
+        validate_evidence(self.evidence, subject, required=measured)
+        if measured:
+            require(
+                self.observed_time is not None, "measured object requires observed_time"
+            )
+        if self.observed_time is not None:
+            require(
+                all(e.observed_at <= self.observed_time for e in self.evidence),
+                "object cites future evidence",
+            )
+        for receipt in (
+            self.shacl,
+            self.tevv,
+            self.verification,
+            self.policy,
+            self.causal,
+            self.corpus,
+        ):
+            if receipt is not None:
+                require(
+                    receipt.subject == subject,
+                    "envelope receipt subject/version mismatch",
+                )
+        if self.state.shacl_state is not ShaclState.NOT_EVALUATED:
+            require(
+                self.shacl is not None and self.shacl.state is self.state.shacl_state,
+                "SHACL state requires matching result",
+            )
+        if self.shacl is not None:
+            require(
+                self.shacl.state is self.state.shacl_state,
+                "SHACL result disagrees with state",
+            )
+        if self.state.tevv_state is not TevvState.NOT_TESTED:
+            require(
+                self.tevv is not None and self.tevv.state is self.state.tevv_state,
+                "TEVV state requires matching result",
+            )
+        if self.tevv is not None:
+            require(
+                self.tevv.state is self.state.tevv_state,
+                "TEVV result disagrees with state",
+            )
+        if self.verification is not None:
+            require(
+                self.verification.result == self.tevv,
+                "verification result differs from envelope TEVV",
+            )
+        if (
+            self.state.evidence_state is EvidenceState.VERIFIED
+            or self.state.cgrf_action_state is CgrfActionState.VERIFIED
+        ):
+            require(
+                self.verification is not None,
+                "VERIFIED requires a verification receipt",
+            )
+            assert self.verification is not None
+            self.verification.require_pass(subject)
+            require(
+                all(e in self.verification.result.evidence for e in self.evidence),
+                "verified object contains unchecked evidence",
+            )
+            require(
+                self.verification.policy.tier is self.authority.required_tier,
+                "verification authority tier differs from envelope",
+            )
+        if self.policy is not None:
+            require(
+                self.policy.tier is self.authority.required_tier,
+                "policy tier differs from envelope authority",
+            )
+            if self.verification is not None:
+                require(
+                    self.verification.policy == self.policy,
+                    "verification policy differs from envelope policy",
+                )
+        if self.state.cgrf_action_state in {
+            CgrfActionState.AUTHORIZED,
+            CgrfActionState.RESERVED,
+            CgrfActionState.EXECUTING,
+            CgrfActionState.MUTATED_UNVERIFIED,
+            CgrfActionState.VERIFYING,
+            CgrfActionState.VERIFIED,
+            CgrfActionState.WATCH,
+            CgrfActionState.ROLLBACK_REQUIRED,
+            CgrfActionState.ROLLED_BACK,
+        }:
+            require(
+                self.policy is not None and self.policy.allowed,
+                "governed state requires policy allow",
+            )
+        if self.state.cgrf_action_state is CgrfActionState.DENIED:
+            require(
+                self.policy is not None and not self.policy.allowed,
+                "DENIED requires a policy denial",
+            )
+        if self.causal is not None:
+            require(
+                self.causal.state is self.state.causal_state,
+                "causal support disagrees with state",
+            )
+        if self.state.causal_state is not CausalState.TEMPORAL_ONLY:
+            require(self.causal is not None, "causal state requires scoped support")
+        if self.corpus is not None:
+            require(
+                self.corpus.state is self.state.corpus_use_state,
+                "corpus validation disagrees with state",
+            )
+        if self.state.corpus_use_state is not CorpusUseState.DISCOVERY_ONLY:
+            require(
+                self.corpus is not None,
+                "corpus use requires bounded validation metadata",
+            )
 
 
 @dataclass(frozen=True, slots=True)
-class EventSubject:
-    """Identify the typed object that an event concerns."""
+class EventSubject(Contract):
+    """Identify an event's typed, versioned subject."""
 
-    type: str
-    id: str
+    type: EntityType
+    id: SemanticId
+    version: str
 
     def __post_init__(self) -> None:
-        """Validate the subject type and identity."""
+        Contract.__post_init__(self)
+        self.id.require_entity_type(self.type)
+        text(self.version, "event subject version")
 
-        _require_text(self.type, "subject.type")
-        _require_text(self.id, "subject.id")
+    @property
+    def reference(self) -> SubjectRef:
+        """Return the versioned evidence subject."""
+        return SubjectRef(self.id, self.version)
 
 
 @dataclass(frozen=True, slots=True)
-class EventContext:
-    """Preserve execution, release, tracing, mission and semantic context."""
+class EventContext(Contract):
+    """Preserve optional lineage and replay context with distinct root types."""
 
-    persona_id: str | None = None
+    persona_id: SemanticId | None = None
     release_sha: str | None = None
     trace_id: str | None = None
-    mission_id: str | None = None
-    context_root: str | None = None
-    semantic_epoch: str | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class EventEvidence:
-    """Bind an event to typed evidence standing."""
-
-    evidence_id: str
-    state: EvidenceState
+    mission_id: SemanticId | None = None
+    context_root: ContextRoot | None = None
+    semantic_epoch: SemanticId | None = None
+    correlation_id: str | None = None
+    parent_op_id: str | None = None
 
     def __post_init__(self) -> None:
-        """Validate the evidence identity."""
-
-        _require_text(self.evidence_id, "evidence.evidence_id")
+        Contract.__post_init__(self)
+        if self.release_sha is not None:
+            SourceRevision(self.release_sha)
+        if self.semantic_epoch is not None:
+            self.semantic_epoch.require_namespace("epoch")
+        for value in (self.trace_id, self.correlation_id, self.parent_op_id):
+            if value is not None:
+                text(value, "event context identifier")
 
 
 @dataclass(frozen=True, slots=True)
-class CanonicalEventEnvelope:
-    """Carry the canonical event fields across projections and audit surfaces."""
+class EventEvidence(Contract):
+    """Bind event evidence standing to an addressable source and optional verdict."""
 
-    id: str
+    evidence_id: SemanticId
+    state: EvidenceState
+    reference: EvidenceReference
+    verification: VerificationReceipt | None = None
+
+    def __post_init__(self) -> None:
+        Contract.__post_init__(self)
+        require(
+            self.evidence_id == self.reference.evidence_id, "event evidence ID mismatch"
+        )
+        if self.verification is not None:
+            require(
+                self.verification.subject == self.reference.subject,
+                "event verification subject/version mismatch",
+            )
+        if self.state is EvidenceState.VERIFIED:
+            require(
+                self.verification is not None,
+                "VERIFIED event requires a verification receipt",
+            )
+            assert self.verification is not None
+            self.verification.require_pass(self.reference.subject)
+            require(
+                self.reference in self.verification.result.evidence,
+                "event evidence is absent from verification",
+            )
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class CanonicalEventEnvelope(Contract):
+    """Carry section 45 fields with schema and event-subject consistency checks."""
+
+    id: SemanticId
     type: str
-    version: str
+    version: Literal["2"]
     tenant_id: str
     occurred_at: datetime
     subject: EventSubject
     context: EventContext
-    data: Mapping[str, Any]
+    data: Mapping[str, object]
     evidence: EventEvidence
 
     def __post_init__(self) -> None:
-        """Validate event identity and freeze the top-level event payload."""
-
-        _require_text(self.id, "id")
-        _require_text(self.type, "type")
-        _require_text(self.version, "version")
-        _require_text(self.tenant_id, "tenant_id")
-        _require_aware(self.occurred_at, "occurred_at")
-        object.__setattr__(self, "data", MappingProxyType(dict(self.data)))
-
-    def to_dict(self) -> dict[str, Any]:
-        """Render the exact section 45 wire envelope."""
-
-        return {
-            "id": self.id,
-            "type": self.type,
-            "version": self.version,
-            "tenant_id": self.tenant_id,
-            "occurred_at": _timestamp(self.occurred_at),
-            "subject": {"type": self.subject.type, "id": self.subject.id},
-            "context": {
-                "persona_id": self.context.persona_id,
-                "release_sha": self.context.release_sha,
-                "trace_id": self.context.trace_id,
-                "mission_id": self.context.mission_id,
-                "context_root": self.context.context_root,
-                "semantic_epoch": self.context.semantic_epoch,
-            },
-            "data": dict(self.data),
-            "evidence": {
-                "evidence_id": self.evidence.evidence_id,
-                "state": self.evidence.state.value,
-            },
-        }
+        Contract.__post_init__(self)
+        self.id.require_namespace("event")
+        text(self.type, "event type")
+        text(self.tenant_id, "tenant_id")
+        require(
+            self.subject.reference == self.evidence.reference.subject,
+            "event evidence subject/version mismatch",
+        )
+        require(
+            self.evidence.reference.observed_at <= self.occurred_at,
+            "event cites future evidence",
+        )
+        if self.evidence.verification is not None:
+            require(
+                self.evidence.verification.result.evaluated_at <= self.occurred_at,
+                "event predates verification",
+            )
+        if self.type.endswith(".verified"):
+            require(
+                self.evidence.state is EvidenceState.VERIFIED,
+                "verified event type requires VERIFIED evidence",
+            )

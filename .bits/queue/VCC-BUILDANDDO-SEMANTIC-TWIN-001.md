@@ -34,24 +34,29 @@ states, predicates, authority, transitions and canonical object/event envelopes.
 | 4 | Pass syntax, public-boundary and context gates | `python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin.py && python scripts/ci/verify_public_boundary.py && python scripts/ci/agent_context.py --check && echo PASS` | done |
 | 5 | Prove and correct the ten-axis representation gap | `python -m unittest tests.upgrade.test_semantic_twin.VocabularyTests.test_state_vector_has_exactly_ten_named_axes -v && echo PASS` | done |
 | 6 | Apply five evidenced deltas atomically with cross-axis checks | `python -m unittest tests.upgrade.test_semantic_twin.CompositeStateTests -v && echo PASS` | done |
+| 7 | Complete semantic IDs, wire schema and Merkle metadata | `python -m unittest tests.upgrade.test_semantic_twin_contracts.IdentityTests tests.upgrade.test_semantic_twin_contracts.MerkleTests tests.upgrade.test_semantic_twin_contracts.WireTests && echo PASS` | done |
+| 8 | Bind predicates and promotions to typed receipts | `python -m unittest tests.upgrade.test_semantic_twin_contracts.ReceiptTests tests.upgrade.test_semantic_twin_contracts.RelationTests tests.upgrade.test_semantic_twin_contracts.PromotionTests && echo PASS` | done |
+| 9 | Complete governed semantic transaction and consistency contracts | `python -m unittest tests.upgrade.test_semantic_twin_contracts.TransactionTests tests.upgrade.test_semantic_twin_contracts.ConsistencyTests && echo PASS` | done |
 
 ## Constraints
 
 - Files this dispatch may touch: `libs/semantic_twin/**`,
-  `tests/upgrade/test_semantic_twin.py`,
+  `tests/upgrade/test_semantic_twin*.py`,
   `.bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md`, `.bits/srs_registry.yml`,
   `.bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md`, `.bits/context.lock.json`,
   `.bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/**`.
 - Files it must not touch: application runtime, PocketBase schema/hooks, existing
   governance policy, workflows, deployment, signing or private-plane files.
-- Anything that would raise risk above A1: external calls, credentials, persisted
+- Anything excluded from the authorized A2 contract completion: external calls, credentials, persisted
   state, runtime actions, canonical promotion, verification settlement or deployment.
 
 ## Smoke test
 
 ```bash
-python -m unittest tests.upgrade.test_semantic_twin -v
-python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin.py
+python -m unittest tests.upgrade.test_semantic_twin tests.upgrade.test_semantic_twin_contracts -v
+python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin.py tests/upgrade/test_semantic_twin_contracts.py
+python -m mypy --strict libs/semantic_twin
+python -m ruff check libs/semantic_twin tests/upgrade/test_semantic_twin.py tests/upgrade/test_semantic_twin_contracts.py
 python scripts/ci/verify_public_boundary.py
 python scripts/ci/agent_context.py --check
 ```
