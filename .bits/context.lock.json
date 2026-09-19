@@ -134,7 +134,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-18T18:05:50.524491+00:00",
+  "generated_at": "2026-09-19T01:01:07.572372+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -301,6 +301,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
         "status": "in_progress",
         "title": "Living Semantic System Twin Phase 0 vocabulary and contracts"
+      },
+      {
+        "code": "SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001.md",
+        "status": "in_progress",
+        "title": "Living Semantic System Twin Phase 1 BuildAndDo release ingestion"
       },
       {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
@@ -474,11 +481,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 33,
-    "python_files": 178,
+    "python_files": 193,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 957,
+    "tracked_files": 982,
     "web_source_files": 289
   },
   "schema_version": 1,
@@ -486,8 +493,8 @@
     "findings": 6,
     "findings_high": 6,
     "pipelines": 7,
-    "srs_open": 23,
-    "srs_total": 26,
+    "srs_open": 24,
+    "srs_total": 27,
     "unwired_gates": 4
   },
   "tests": {

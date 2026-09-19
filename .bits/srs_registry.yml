@@ -205,3 +205,10 @@ srs:
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md
     notes: Agent self-authorized additive stdlib package and tests; ingestion, persistence, mutation, policy execution, signing and external effects excluded
+
+  - code: SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+    title: Living Semantic System Twin Phase 1 BuildAndDo release ingestion
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001.md
+    notes: Owner-requested additive stdlib-only static ingestion of the public release controller, BuildAndDo SRS claims and local dispatch evidence; deployment, external calls, persistence and canonical promotion excluded
