@@ -18,6 +18,7 @@
 """Expose the Living Semantic System Twin Phase 0 public contract."""
 
 from .models import (
+    AxisState,
     Authority,
     CanonicalEventEnvelope,
     CanonicalObjectEnvelope,
@@ -45,6 +46,8 @@ from .transitions import (
     SHACL_TRANSITIONS,
     TEVV_TRANSITIONS,
     InvalidTransitionError,
+    StateDelta,
+    apply_state_deltas,
     allowed_transitions,
     can_automatically_promote,
     can_transition,
@@ -64,6 +67,7 @@ from .vocabulary import (
     RelationPredicate,
     SemanticTransactionState,
     ShaclState,
+    StateAxis,
     TevvState,
 )
 
@@ -83,6 +87,7 @@ __all__ = [
     "TEVV_TRANSITIONS",
     "Authority",
     "AuthorityTier",
+    "AxisState",
     "CanonicalEventEnvelope",
     "CanonicalObjectEnvelope",
     "CausalState",
@@ -104,10 +109,13 @@ __all__ = [
     "Runtime",
     "SemanticTransactionState",
     "ShaclState",
+    "StateAxis",
+    "StateDelta",
     "Source",
     "TevvState",
     "ValidTime",
     "allowed_transitions",
+    "apply_state_deltas",
     "can_automatically_promote",
     "can_transition",
     "require_transition",
