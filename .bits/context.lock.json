@@ -303,6 +303,13 @@
         "title": "Living Semantic System Twin Phase 0 vocabulary and contracts"
       },
       {
+        "code": "SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001.md",
+        "status": "in_progress",
+        "title": "Living Semantic System Twin Phase 1 BuildAndDo release ingestion"
+      },
+      {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-SUPPLY-001.md",
@@ -486,8 +493,8 @@
     "findings": 6,
     "findings_high": 6,
     "pipelines": 7,
-    "srs_open": 23,
-    "srs_total": 26,
+    "srs_open": 24,
+    "srs_total": 27,
     "unwired_gates": 4
   },
   "tests": {
