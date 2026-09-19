@@ -633,6 +633,30 @@ executable are absent. Do not infer activation from merges or fixture results.
 No seat message is fabricated. The initial dossier scope is private to each
 canonical user, with explicit entry and no passive Discord collection.
 
+## Interactive learning continuation — 2026-09-19
+
+Owner request: an interactive tutorial that awards a completion certificate,
+updates personal progress and contributes to persistent growth. Authority: the
+existing A2 learning scope; local source and disposable test fixtures only.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| TL1 | Persist versioned checkpoints and atomic completion/certificate receipts | `node --test tests/upgrade/tutorial-learning-system.test.mjs` | PASS for source contracts |
+| TL2 | Add guided interaction, resume, certificate download and growth feedback to the shared Field Manual | `node --test tests/upgrade/tutorial-learning-client.test.mjs`; targeted component tests | source complete; rendered acceptance blocked by missing Vitest |
+| TL3 | Validate isolation, retries, native migration retention and browser behavior | native tutorial-learning tests; web lint/build | contract and certificate browser checks PASS; native/Vite/ESLint dependencies missing |
+| TL4 | Record evidence and remaining runtime requirements | context, boundary and dispatch-evidence checks | evidence in learning-report.md; no live backend changes |
+
+Memory brief: all 33 authored lessons already have structured sections, practice
+and knowledge checks. Existing tutorial_progress stores account learning history,
+but old browser checks do not establish an assessed completion. Mission learning
+points are educational; contributor_reputation XP/TP require independent audit
+outcomes and must not receive tutorial credit. Preserve those distinctions.
+
+The existing PocketBase CI matrix now requires native tutorial auth, concurrent
+completion and retained down/up history on both declared versions. Its `ci:test`
+description is updated in AGENTS.md and ProgressionPipeline. Configure no new
+provider or deployment. Recorded validation: `.bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-report.md`.
+
 ## Authorization and objective
 
 Owner Dmitry Richard explicitly authorized task-table creation, SRS registration

@@ -218,6 +218,11 @@ jobs:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
         run: python tests/upgrade/test_classroom_native.py --require-binary
 
+      - name: Require native tutorial checkpoints, certificates, concurrent credit and retention
+        env:
+          BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
+        run: python tests/upgrade/test_tutorial_learning_native.py --require-binary
+
   federal-foundry:
     name: ci:test / Federal portfolio (Python ${{ matrix.python }})
     runs-on: ubuntu-latest

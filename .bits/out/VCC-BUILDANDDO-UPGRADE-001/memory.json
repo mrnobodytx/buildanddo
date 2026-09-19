@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 498,
+      "lines": 519,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -35,7 +35,8 @@
         "editorial-frontpage",
         "editorial-artwork",
         "living-newspaper",
-        "capability-repair-handoff"
+        "capability-repair-handoff",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -525,7 +526,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 37653,
+      "lines": 38597,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -549,7 +550,8 @@
         "editorial-frontpage",
         "editorial-artwork",
         "living-newspaper",
-        "capability-repair-handoff"
+        "capability-repair-handoff",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -668,7 +670,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1251,
+      "lines": 1275,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -694,7 +696,8 @@
         "editorial-frontpage",
         "editorial-artwork",
         "living-newspaper",
-        "capability-repair-handoff"
+        "capability-repair-handoff",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -998,7 +1001,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1623,
+      "lines": 1656,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1024,7 +1027,8 @@
         "editorial-frontpage",
         "editorial-artwork",
         "living-newspaper",
-        "capability-repair-handoff"
+        "capability-repair-handoff",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -1041,7 +1045,7 @@
         ".bits/context.md",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 200,
+      "lines": 221,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
@@ -1257,7 +1261,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 284,
+      "lines": 289,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate contribution review on manifest integrity, component coverage and public adapter tests.",
@@ -1273,7 +1277,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "operator-acceptance"
+        "operator-acceptance",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -1337,7 +1342,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "operator-acceptance"
+        "operator-acceptance",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -6601,7 +6607,7 @@
         "apps/web/src/components/site/ui.jsx",
         ".github/workflows/pr-governance.yml"
       ],
-      "lines": 294,
+      "lines": 295,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
@@ -6617,7 +6623,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "operator-acceptance"
+        "operator-acceptance",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -6671,7 +6678,7 @@
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/observability/mutations.js"
       ],
-      "lines": 141,
+      "lines": 168,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.",
@@ -6686,7 +6693,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "backend-reuse"
+        "backend-reuse",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -6705,7 +6713,7 @@
         "apps/web/src/lib/tutorialCurriculum.js",
         "apps/web/src/components/ui/dialog.jsx"
       ],
-      "lines": 118,
+      "lines": 119,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let learners read complete lessons, practice and check understanding with accessible focus and explicit progress persistence.",
@@ -6720,7 +6728,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "business-learning"
+        "business-learning",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -8457,10 +8466,10 @@
       "dependencies": [
         "apps/web/src/components/ProtectedRoute.jsx"
       ],
-      "lines": 55,
+      "lines": 58,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Preserve local classroom links through sign-in and keep their identifiers out of browser telemetry.",
+      "intent_statement": "Preserve local classroom links through sign-in and keep classroom and personal learning identifiers out of browser telemetry.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "success",
       "supersedes": false,
@@ -8472,7 +8481,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
-        "classrooms"
+        "classrooms",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -10438,7 +10448,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -11312,7 +11323,7 @@
         "apps/web/src/components/workspace/TutorialReader.jsx",
         "apps/web/src/pages/workspace/ErpPage.jsx"
       ],
-      "lines": 168,
+      "lines": 172,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain how to test business planning, reviewed content and the first 25 tutorials without confusing source, learning or publication records with live delivery.",
@@ -11327,7 +11338,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "business-learning"
+        "business-learning",
+        "interactive-learning"
       ],
       "tenant_id": null
     },
@@ -37636,12 +37648,944 @@
       "timestamp": "2026-09-18T18:05:09.379400+00:00",
       "commit_sha": "657a9a8c1e8bbefea7034b00ef21b7b478fa10b0",
       "smoke_result": "5/9"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/interactive-learning.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json"
+      ],
+      "lines": 130,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record observed interactive-learning source checks and distinguish certificate rendering from unrun application and native acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json"
+      ],
+      "lines": 128,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Identify the measured learning validation artifact without embedding comments in JSON.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Identify the measured learning validation artifact without embedding comments in JSON.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/tutorial-learning.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "schema",
+        "account",
+        "enrollment",
+        "strings",
+        "supported",
+        "snapshot",
+        "lessonFor",
+        "output",
+        "projectProgress",
+        "detailResult",
+        "detail",
+        "command",
+        "list"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js"
+      ],
+      "lines": 203,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/tutorial-learning.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/tutorial-learning.js"
+      ],
+      "lines": 29,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep personal learning commands authenticated, bounded and uncached through native PocketBase auth.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js"
+      ],
+      "lines": 65,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain account-owned tutorial checkpoints and completion certificates behind authenticated commands.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/InteractiveTutorial.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "currentStep",
+        "InteractiveTutorial"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/tutorialLearning.js",
+        "apps/web/src/components/workspace/TutorialGrowth.jsx",
+        "apps/web/src/components/ui/dialog.jsx"
+      ],
+      "lines": 126,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Guide learners through recoverable checkpoints and practice before revealing their saved completion certificate.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/TutorialGrowth.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "CertificateDownload",
+        "LearningCertificate",
+        "TutorialGrowth"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/tutorialLearning.js",
+        "apps/web/src/components/site/ui.jsx"
+      ],
+      "lines": 105,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make saved learning credit, earned milestones and recoverable completion certificates visible across the Field Manual.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "openTutorial",
+        "throughPractice"
+      ],
+      "dependencies": [
+        "apps/web/src/components/workspace/TutorialCatalog.jsx",
+        "apps/web/src/components/workspace/InteractiveTutorial.jsx",
+        "apps/web/src/components/workspace/TutorialGrowth.jsx",
+        "tests/upgrade/tutorial-learning-fixture.mjs"
+      ],
+      "lines": 207,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise guided learning, recovery, certificate export and account switches through rendered production components.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/tutorialLearning.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "validCertificate",
+        "enrollment",
+        "detail",
+        "summary",
+        "createTutorialLearningClient",
+        "certificateDocument"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/tutorialCurriculum.js",
+        "apps/pocketbase/pb_hooks/tutorial-learning.pb.js"
+      ],
+      "lines": 149,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Recover personal learning saves without duplicate credit and export only a validated completion certificate.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/interactive-learning.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/tutorial-learning.js",
+        "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+        "apps/web/src/components/workspace/InteractiveTutorial.jsx",
+        "apps/web/src/components/workspace/TutorialGrowth.jsx"
+      ],
+      "lines": 122,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain persistent guided learning and the exact completion, growth and certificate guarantees an installed backend must verify.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_tutorial_learning_native.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "LearningServer",
+        "NativeLearningTests"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_dossier_native.py",
+        "apps/pocketbase/pb_hooks/tutorial-learning.js",
+        "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js"
+      ],
+      "lines": 312,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require real PocketBase auth, concurrent completion and migration retention before accepting installed interactive learning.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/tutorial-learning-client.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "setup"
+      ],
+      "dependencies": [
+        "tests/upgrade/tutorial-learning-fixture.mjs",
+        "apps/web/src/lib/tutorialLearning.js",
+        "apps/web/src/lib/navigationIntent.js"
+      ],
+      "lines": 204,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify lost-response recovery, account isolation and safe certificate exports through the real client and command source.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/tutorial-learning-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "learningFixture"
+      ],
+      "dependencies": [
+        "tests/upgrade/admin-fixture.mjs",
+        "apps/pocketbase/pb_hooks/tutorial-learning.js"
+      ],
+      "lines": 44,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise actual learning commands against the existing explicit transactional storage double.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/tutorial-learning-system.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/tutorial-learning-fixture.mjs",
+        "apps/pocketbase/pb_hooks/tutorial-learning.pb.js",
+        "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js"
+      ],
+      "lines": 239,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prevent unearned certificates, duplicate credit, cross-account reads and partial completion receipts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "interactive-learning"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "target": "apps/web/src/lib/tutorialLearning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialCatalog.jsx declares CONSUMES apps/web/src/lib/tutorialLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "target": "apps/web/src/components/workspace/TutorialGrowth.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialCatalog.jsx declares CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "target": "apps/web/src/components/workspace/InteractiveTutorial.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialCatalog.jsx declares CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-report.md",
+      "target": "docs/interactive-learning.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-report.md declares CONSUMES docs/interactive-learning.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/tutorial-learning.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/tutorial-learning.js declares DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/tutorial-learning.js",
+      "target": "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/tutorial-learning.js declares CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/tutorial-learning.pb.js",
+      "target": "apps/pocketbase/pb_hooks/tutorial-learning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/tutorial-learning.pb.js declares DEPENDS_ON apps/pocketbase/pb_hooks/tutorial-learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+      "target": "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js declares DEPENDS_ON apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/InteractiveTutorial.jsx",
+      "target": "apps/web/src/lib/tutorialLearning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/InteractiveTutorial.jsx declares CONSUMES apps/web/src/lib/tutorialLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/InteractiveTutorial.jsx",
+      "target": "apps/web/src/components/workspace/TutorialGrowth.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/InteractiveTutorial.jsx declares CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/InteractiveTutorial.jsx",
+      "target": "apps/web/src/components/ui/dialog.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/InteractiveTutorial.jsx declares CONSUMES apps/web/src/components/ui/dialog.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialGrowth.jsx",
+      "target": "apps/web/src/lib/tutorialLearning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialGrowth.jsx declares CONSUMES apps/web/src/lib/tutorialLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/TutorialGrowth.jsx",
+      "target": "apps/web/src/components/site/ui.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/TutorialGrowth.jsx declares CONSUMES apps/web/src/components/site/ui.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx",
+      "target": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx declares VALIDATES apps/web/src/components/workspace/TutorialCatalog.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx",
+      "target": "apps/web/src/components/workspace/InteractiveTutorial.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx declares VALIDATES apps/web/src/components/workspace/InteractiveTutorial.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx",
+      "target": "apps/web/src/components/workspace/TutorialGrowth.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx declares VALIDATES apps/web/src/components/workspace/TutorialGrowth.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx",
+      "target": "tests/upgrade/tutorial-learning-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx declares CONSUMES tests/upgrade/tutorial-learning-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/tutorialLearning.js",
+      "target": "apps/web/src/lib/tutorialCurriculum.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/tutorialLearning.js declares CONSUMES apps/web/src/lib/tutorialCurriculum.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/tutorialLearning.js",
+      "target": "apps/pocketbase/pb_hooks/tutorial-learning.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/tutorialLearning.js declares CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/interactive-learning.md",
+      "target": "apps/pocketbase/pb_hooks/tutorial-learning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/interactive-learning.md declares CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/interactive-learning.md",
+      "target": "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/interactive-learning.md declares CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/interactive-learning.md",
+      "target": "apps/web/src/components/workspace/InteractiveTutorial.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/interactive-learning.md declares CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/interactive-learning.md",
+      "target": "apps/web/src/components/workspace/TutorialGrowth.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/interactive-learning.md declares CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_tutorial_learning_native.py",
+      "target": "tests/upgrade/test_dossier_native.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_tutorial_learning_native.py declares CONSUMES tests/upgrade/test_dossier_native.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_tutorial_learning_native.py",
+      "target": "apps/pocketbase/pb_hooks/tutorial-learning.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_tutorial_learning_native.py declares VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_tutorial_learning_native.py",
+      "target": "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_tutorial_learning_native.py declares VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-client.test.mjs",
+      "target": "tests/upgrade/tutorial-learning-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/tutorial-learning-client.test.mjs declares CONSUMES tests/upgrade/tutorial-learning-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-client.test.mjs",
+      "target": "apps/web/src/lib/tutorialLearning.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/tutorial-learning-client.test.mjs declares VALIDATES apps/web/src/lib/tutorialLearning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-client.test.mjs",
+      "target": "apps/web/src/lib/navigationIntent.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/tutorial-learning-client.test.mjs declares VALIDATES apps/web/src/lib/navigationIntent.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-fixture.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/tutorial-learning-fixture.mjs declares CONSUMES tests/upgrade/admin-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-fixture.mjs",
+      "target": "apps/pocketbase/pb_hooks/tutorial-learning.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/tutorial-learning-fixture.mjs declares VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-system.test.mjs",
+      "target": "tests/upgrade/tutorial-learning-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/tutorial-learning-system.test.mjs declares CONSUMES tests/upgrade/tutorial-learning-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-system.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/tutorial-learning.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/tutorial-learning-system.test.mjs declares VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-system.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/tutorial-learning-system.test.mjs declares VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/tutorial-learning-system.test.mjs",
+      "description": "Observed 43/43 targeted learning/classroom Node cases and 425/425 broader Node cases. Production learning command, migration, routes and client measured 100% line coverage through explicit storage/transport doubles; native and React acceptance are separate.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-19T03:38:27.494982+00:00",
+      "commit_sha": null,
+      "smoke_result": "43/43"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "tests/upgrade/test_tutorial_learning_native.py",
+      "description": "Native learning acceptance could not start because no PocketBase binary is installed. Vitest, Vite and the lint plugin are also unavailable; offline npm recovery returned ENOTCACHED. Four native and eight rendered cases remain authored but unexecuted; the native command is now a required existing CI-matrix step.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-19T03:38:27.494982+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "apps/web/src/lib/tutorialLearning.js",
+      "description": "Opened the production-generated synthetic Test Learner certificate in a local browser at 320px and 1280px. No horizontal overflow, scripts or external resources were observed; print media retained a one-page certificate. This measures the exported HTML only, not native or full-application acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-19T03:38:27.494982+00:00",
+      "commit_sha": null,
+      "smoke_result": "3/3"
     }
   ],
   "summary": {
-    "type_a_count": 627,
-    "type_b_count": 1373,
-    "type_c_count": 141,
+    "type_a_count": 642,
+    "type_b_count": 1410,
+    "type_c_count": 144,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
