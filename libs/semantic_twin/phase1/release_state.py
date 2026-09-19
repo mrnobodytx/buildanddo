@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/release_state.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     tools/buildanddo_release.py, libs/semantic_twin/phase1/common.py
+# Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES state/sprint; CONSUMES .citadel-release; PRODUCES libs/semantic_twin/phase1/compiler.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.release-state
 # Intent:      Normalize controller-generated release JSON into observed receipt objects without executing deployment code.
 # ────────────────────────────────────────────────────────
@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Any
 
 from ..ingestion.graph import SemanticGraph
+from ..ingestion.inputs import SourceSnapshot
 from ..vocabulary import EvidenceState, RelationPredicate
 from .common import as_mapping, relation, relative_path, stable_id
 from .compat import make_object
@@ -51,6 +52,7 @@ class ReleaseStateReceipt:
     artifact_digest: str | None
     receipt_path: str | None
     payload_digest: str
+    snapshot: SourceSnapshot
 
 
 def discover_release_receipts(repository_root: Path) -> tuple[Path, ...]:
@@ -89,7 +91,9 @@ def ingest_release_receipts(
 
     records: list[ReleaseStateReceipt] = []
     for path in sorted(paths, key=lambda item: item.as_posix()):
-        raw = path.read_bytes()
+        source = relative_path(path, repository_root)
+        snapshot = SourceSnapshot.capture(path, source_path=source)
+        raw = snapshot.content
         try:
             payload = as_mapping(json.loads(raw.decode("utf-8")))
         except (UnicodeError, json.JSONDecodeError) as exc:
@@ -107,6 +111,7 @@ def ingest_release_receipts(
                 artifact_digest=_first_text(payload, _DIGEST_KEYS),
                 receipt_path=_first_text(payload, ("receipt_path",)),
                 payload_digest=hashlib.sha256(raw).hexdigest(),
+                snapshot=snapshot,
             )
         )
     return tuple(records)
@@ -135,6 +140,7 @@ def release_receipt_graph(
                 object_id,
                 "ReleaseStateReceipt",
                 record.source_path,
+                snapshot=record.snapshot,
                 claims=(
                     {
                         "name": record.name,

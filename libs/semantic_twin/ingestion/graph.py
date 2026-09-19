@@ -1,208 +1,203 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/graph.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/models.py, libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/contracts.py, libs/semantic_twin/identity.py, libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/models.py, libs/semantic_twin/relations.py
 # EnumType:    Schema
-# EnumEdges:   CONSUMES libs/semantic_twin/models.py; CONSUMES libs/semantic_twin/vocabulary.py; PRODUCES libs/semantic_twin/ingestion/source.py; PRODUCES libs/semantic_twin/ingestion/release.py
+# EnumEdges:   CONSUMES libs/semantic_twin/contracts.py; CONSUMES libs/semantic_twin/identity.py; CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/models.py; CONSUMES libs/semantic_twin/relations.py
 # DAG Node:    semantic-twin.phase-1.graph
-# Intent:      Hold ingested envelopes in a deterministic graph that can prove target resolution, connectivity and absence of orphan objects.
+# Intent:      Bind extraction fragments to actual v2 endpoint revisions and reject unresolved exports or stale graph edges.
 # ───────────────────────────────────────────────────────────
 
-"""Build and validate in-memory semantic graphs from Phase 0 envelopes."""
+"""Resolve extraction fragments into strict, revision-bound semantic graphs."""
 
 from __future__ import annotations
 
 from collections import deque
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, replace
-from typing import Any
+from types import MappingProxyType
 
-from ..models import (
-    Authority,
-    CanonicalObjectEnvelope,
-    Documentation,
-    MerkleBinding,
-    ObjectState,
-    Ownership,
-    Provenance,
-    Relation,
-    Runtime,
-    Source,
-    ValidTime,
+from ..contracts import require
+from ..identity import SemanticId
+from ..models import CanonicalObjectEnvelope
+from ..relations import Relation
+from .builder import (
+    ObjectDraft,
+    PendingRelation,
+    RelationDraft,
+    make_object as make_object,
+    pending_relation,
 )
-from ..vocabulary import AuthorityTier, EvidenceState, ShaclState
+from .inputs import SourceSnapshot
 
 
-SCHEMA_VERSION = "semantic-twin.object/v1"
-EXTRACTOR_VERSION = "buildanddo-release-ingestion/1"
+SCHEMA_VERSION = "2"
+EXTRACTOR_VERSION = "buildanddo-local-ingestion/2"
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, init=False)
 class SemanticGraph:
-    """Store unique canonical objects and expose structural graph checks."""
+    """Keep canonical objects separate from explicitly unresolved fragment edges.
+
+    Fragments may reference an object supplied by a later adapter. Such edges
+    remain pending and cannot be serialized or hashed. Combining fragments binds
+    both endpoints to the actual object revisions and invokes P0 validation.
+    """
 
     objects: tuple[CanonicalObjectEnvelope, ...]
+    pending: tuple[PendingRelation, ...]
+    aliases: Mapping[str, SemanticId]
 
-    def __post_init__(self) -> None:
-        """Reject duplicate semantic identities at the graph boundary."""
-
-        identities = [item.semantic_id for item in self.objects]
-        if len(identities) != len(set(identities)):
-            duplicates = sorted(
-                identity
-                for identity in set(identities)
-                if identities.count(identity) > 1
+    def __init__(
+        self,
+        objects: Iterable[CanonicalObjectEnvelope | ObjectDraft],
+        *,
+        pending: Iterable[PendingRelation] = (),
+        aliases: Mapping[str, SemanticId] | None = None,
+    ) -> None:
+        indexed: dict[SemanticId, CanonicalObjectEnvelope] = {}
+        names = dict(aliases or {})
+        waiting = list(pending)
+        for value in objects:
+            item = value.envelope if isinstance(value, ObjectDraft) else value
+            require(
+                isinstance(item, CanonicalObjectEnvelope),
+                "graph requires canonical objects",
             )
-            raise ValueError(f"duplicate semantic identities: {duplicates}")
+            require(item.semantic_id not in indexed, "duplicate semantic identities")
+            indexed[item.semantic_id] = item
+            keys: tuple[str, ...] = (str(item.semantic_id),)
+            if isinstance(value, ObjectDraft):
+                keys += (value.local_key,)
+                waiting.extend(value.pending)
+            for key in keys:
+                require(
+                    key not in names or names[key] == item.semantic_id,
+                    "conflicting extraction key",
+                )
+                names[key] = item.semantic_id
+        unresolved: list[PendingRelation] = []
+        added: dict[SemanticId, list[Relation]] = {key: [] for key in indexed}
+        for edge in waiting:
+            source = indexed.get(edge.source.semantic_id)
+            require(
+                source is not None and source.subject == edge.source,
+                "pending source revision missing",
+            )
+            assert source is not None
+            target_id = names.get(edge.draft.target)
+            target = indexed.get(target_id) if target_id is not None else None
+            if target is None:
+                unresolved.append(edge)
+            else:
+                added[source.semantic_id].append(edge.bind(source, target))
+        for identity, item in tuple(indexed.items()):
+            combined = (*item.relations, *added[identity])
+            # The complete canonical edge, including revision and evidence, is
+            # the deduplication key. Distinct receipts must not collapse.
+            unique = {edge.to_json(): edge for edge in combined}
+            relations = tuple(unique[key] for key in sorted(unique))
+            for bound in relations:
+                target = indexed.get(bound.target)
+                if target is not None:
+                    require(
+                        bound.target_type is target.object_type
+                        and bound.target_version == target.source.version,
+                        "relation target type/revision differs from graph object",
+                    )
+            indexed[identity] = replace(item, relations=relations)
+        object.__setattr__(self, "objects", tuple(indexed.values()))
+        object.__setattr__(self, "pending", tuple(unresolved))
+        object.__setattr__(self, "aliases", MappingProxyType(names))
 
     def by_id(self) -> dict[str, CanonicalObjectEnvelope]:
-        """Index objects by semantic identity."""
-
-        return {item.semantic_id: item for item in self.objects}
+        """Index only canonical identities, not temporary extractor keys."""
+        return {str(item.semantic_id): item for item in self.objects}
 
     def relations(self) -> tuple[Relation, ...]:
-        """Return every embedded relation in stable object order."""
-
-        return tuple(relation for item in self.objects for relation in item.relations)
+        """Return fully bound edges in stable object order."""
+        return tuple(edge for item in self.objects for edge in item.relations)
 
     def unresolved_targets(self) -> tuple[str, ...]:
-        """Return relation targets that do not identify an object in the graph."""
-
+        """Report both deferred draft targets and missing canonical endpoints."""
         identities = set(self.by_id())
         return tuple(
             sorted(
-                {
-                    relation.target
-                    for relation in self.relations()
-                    if relation.target not in identities
+                {edge.draft.target for edge in self.pending}
+                | {
+                    str(edge.target)
+                    for edge in self.relations()
+                    if edge.target not in identities
                 }
             )
         )
 
-    def orphan_ids(self) -> tuple[str, ...]:
-        """Return objects with no inbound or outbound resolved relation."""
+    def require_resolved(self) -> None:
+        """Fail closed before export if any relation lacks an endpoint revision."""
+        require(not self.unresolved_targets(), "graph contains unresolved targets")
 
+    def orphan_ids(self) -> tuple[str, ...]:
+        """Return identities without any resolved inbound or outbound relation."""
         identities = set(self.by_id())
         connected: set[str] = set()
         for item in self.objects:
-            for relation in item.relations:
-                if relation.target in identities:
-                    connected.add(item.semantic_id)
-                    connected.add(relation.target)
+            for edge in item.relations:
+                if edge.target in identities:
+                    connected.update((item.semantic_id, edge.target))
         return tuple(sorted(identities - connected))
 
     def is_connected(self) -> bool:
-        """Report whether every object belongs to one resolved component."""
-
+        """Report whether the complete graph forms one resolved component."""
         if not self.objects or self.unresolved_targets() or self.orphan_ids():
             return False
-        identities = set(self.by_id())
-        neighbours: dict[str, set[str]] = {identity: set() for identity in identities}
+        neighbours: dict[str, set[str]] = {key: set() for key in self.by_id()}
         for item in self.objects:
-            for relation in item.relations:
-                if relation.target in identities:
-                    neighbours[item.semantic_id].add(relation.target)
-                    neighbours[relation.target].add(item.semantic_id)
+            for edge in item.relations:
+                neighbours[item.semantic_id].add(edge.target)
+                neighbours[edge.target].add(item.semantic_id)
         seen: set[str] = set()
-        pending: deque[str] = deque((self.objects[0].semantic_id,))
-        while pending:
-            current = pending.popleft()
-            if current in seen:
-                continue
-            seen.add(current)
-            pending.extend(sorted(neighbours[current] - seen))
-        return seen == identities
-
-
-def make_object(
-    semantic_id: str,
-    object_type: str,
-    source_path: str,
-    *,
-    claims: Sequence[Mapping[str, Any]],
-    relations: Sequence[Relation] = (),
-    evidence_state: EvidenceState = EvidenceState.OBSERVED,
-    lifecycle_state: str = "INGESTED",
-    commit: str | None = None,
-    documentation: Sequence[str] = (),
-    runtime_status: str | None = None,
-) -> CanonicalObjectEnvelope:
-    """Create one read-only canonical envelope for an ingested object."""
-
-    return CanonicalObjectEnvelope(
-        semantic_id=semantic_id,
-        object_type=object_type,
-        schema_version=SCHEMA_VERSION,
-        source=Source(
-            system="buildanddo",
-            uri_or_path=source_path,
-            commit=commit,
-        ),
-        valid_time=ValidTime(),
-        observed_time=None,
-        state=ObjectState(
-            evidence_state=evidence_state,
-            shacl_state=ShaclState.NOT_EVALUATED,
-            lifecycle_state=lifecycle_state,
-        ),
-        claims=tuple(claims),
-        relations=tuple(relations),
-        provenance=Provenance(
-            derived_from=(source_path,),
-            parser_version="python-ast/stdlib",
-            extractor_version=EXTRACTOR_VERSION,
-        ),
-        merkle=MerkleBinding(),
-        ownership=Ownership(owner="Citadel Nexus Inc.", guild="BuildAndDo"),
-        authority=Authority(
-            required_tier=AuthorityTier.A0,
-            mutability="read-only",
-        ),
-        runtime=Runtime(observed_status=runtime_status),
-        documentation=Documentation(references=tuple(documentation)),
-    )
+        queue: deque[str] = deque((self.objects[0].semantic_id,))
+        while queue:
+            identity = queue.popleft()
+            if identity not in seen:
+                seen.add(identity)
+                queue.extend(sorted(neighbours[identity] - seen))
+        return seen == set(neighbours)
 
 
 def add_relations(
-    item: CanonicalObjectEnvelope, relations: Iterable[Relation]
-) -> CanonicalObjectEnvelope:
-    """Return an envelope with stable, de-duplicated additional relations."""
-
-    combined = (*item.relations, *relations)
-    unique: dict[tuple[str, str, tuple[str, ...], float | None, str], Relation] = {}
-    for relation in combined:
-        key = (
-            relation.predicate.value,
-            relation.target,
-            relation.evidence,
-            relation.confidence,
-            relation.state.value,
-        )
-        unique[key] = relation
-    ordered = tuple(
-        unique[key]
-        for key in sorted(
-            unique,
-            key=lambda value: (
-                value[0],
-                value[1],
-                value[2],
-                -1.0 if value[3] is None else value[3],
-                value[4],
-            ),
-        )
+    item: CanonicalObjectEnvelope,
+    relations: Iterable[RelationDraft],
+    *,
+    snapshot: SourceSnapshot,
+) -> ObjectDraft:
+    """Attach extraction assertions for binding during the next graph assembly."""
+    return ObjectDraft(
+        str(item.semantic_id),
+        item,
+        tuple(pending_relation(item, edge, snapshot) for edge in relations),
     )
-    return replace(item, relations=ordered)
 
 
 def combine_graphs(*graphs: SemanticGraph) -> SemanticGraph:
-    """Combine graphs while retaining the caller's deterministic order."""
-
-    return SemanticGraph(tuple(item for graph in graphs for item in graph.objects))
+    """Resolve fragment edges using the combined canonical endpoint index."""
+    aliases: dict[str, SemanticId] = {}
+    for graph in graphs:
+        for key, identity in graph.aliases.items():
+            require(
+                key not in aliases or aliases[key] == identity,
+                "conflicting extraction key",
+            )
+            aliases[key] = identity
+    return SemanticGraph(
+        (item for graph in graphs for item in graph.objects),
+        pending=(edge for graph in graphs for edge in graph.pending),
+        aliases=aliases,
+    )

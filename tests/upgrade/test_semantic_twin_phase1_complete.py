@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        tests/upgrade/test_semantic_twin_phase1_complete.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/phase1, libs/semantic_twin/ingestion
+# Depends:     libs/semantic_twin/__init__.py, libs/semantic_twin/ingestion/__init__.py, libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/phase1/__init__.py, libs/semantic_twin/phase1/__main__.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/phase1/history.py, libs/semantic_twin/phase1/memory.py, libs/semantic_twin/phase1/merkle.py, libs/semantic_twin/phase1/providers.py, libs/semantic_twin/phase1/release_state.py, libs/semantic_twin/phase1/sbom.py, libs/semantic_twin/phase1/truth.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES libs/semantic_twin/phase1; EXTENDS tests/upgrade/test_semantic_twin_ingestion.py
+# EnumEdges:   CONSUMES libs/semantic_twin/__init__.py; CONSUMES libs/semantic_twin/ingestion/__init__.py; CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/phase1/__init__.py; CONSUMES libs/semantic_twin/phase1/__main__.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/phase1/history.py; CONSUMES libs/semantic_twin/phase1/memory.py; CONSUMES libs/semantic_twin/phase1/merkle.py; CONSUMES libs/semantic_twin/phase1/providers.py; CONSUMES libs/semantic_twin/phase1/release_state.py; CONSUMES libs/semantic_twin/phase1/sbom.py; CONSUMES libs/semantic_twin/phase1/truth.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.complete.tests
 # Intent:      Prove all ten complete Phase 1 adapters, reconciliation, epoch and replay proof behaviors without live providers or deployment actions.
 # ───────────────────────────────────────────────────────
@@ -19,6 +19,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import replace
 from datetime import datetime, timezone
 import json
@@ -30,6 +31,14 @@ from unittest.mock import patch
 
 from libs.semantic_twin.ingestion import RELEASE_PATH_IDS
 from libs.semantic_twin.ingestion.graph import SemanticGraph, combine_graphs
+from libs.semantic_twin import CanonicalObjectEnvelope, EntityType
+from libs.semantic_twin.ingestion.builder import (
+    ObjectDraft,
+    RelationDraft,
+    canonical_id,
+    object_kind,
+)
+from libs.semantic_twin.ingestion.inputs import SourceSnapshot
 from libs.semantic_twin.phase1 import (
     Phase1Inputs,
     assess_claims,
@@ -45,7 +54,7 @@ from libs.semantic_twin.phase1 import (
 )
 from libs.semantic_twin.phase1.__main__ import main as phase1_main
 from libs.semantic_twin.phase1.common import relation
-from libs.semantic_twin.phase1.compat import make_object
+from libs.semantic_twin.phase1.compat import make_object as build_object
 from libs.semantic_twin.phase1.history import history_graph, parse_git_log
 from libs.semantic_twin.phase1.memory import ingest_memory_file
 from libs.semantic_twin.phase1.merkle import ProofStep
@@ -66,6 +75,31 @@ from libs.semantic_twin.vocabulary import EvidenceState, RelationPredicate
 REPO = Path(__file__).resolve().parents[2]
 ANCHOR = RELEASE_PATH_IDS[-1]
 COMMIT = "a" * 40
+FIXTURE_TIME = datetime(2026, 9, 19, tzinfo=timezone.utc)
+
+
+def make_object(
+    identity: str,
+    kind: str,
+    source_path: str,
+    *,
+    claims: tuple[Mapping[str, object], ...],
+    relations: tuple[RelationDraft, ...] = (),
+    observed_at: datetime = FIXTURE_TIME,
+) -> ObjectDraft:
+    """Build a simulated observation with explicit, replayable fixture input."""
+    return build_object(
+        identity,
+        kind,
+        source_path,
+        snapshot=SourceSnapshot.derived(
+            source_path,
+            {"fixture": identity, "claims": claims},
+            observed_at=observed_at,
+        ),
+        claims=claims,
+        relations=relations,
+    )
 
 
 def _write_json(path: Path, value: object) -> Path:
@@ -76,7 +110,7 @@ def _write_json(path: Path, value: object) -> Path:
     return path
 
 
-def _anchor() -> object:
+def _anchor() -> ObjectDraft:
     """Create the release evidence anchor used by standalone graph tests."""
 
     return make_object(
@@ -141,7 +175,7 @@ class GitHistoryTests(unittest.TestCase):
         )
         self.assertGreaterEqual(len(observed), 1)
         graph = history_graph(parsed, anchor_id=ANCHOR)
-        self.assertIn("GitCommit", {item.object_type for item in graph.objects})
+        self.assertIn("GitCommit", {object_kind(item) for item in graph.objects})
         self.assertIsNotNone(graph.objects[0].valid_time.valid_from)
         predicates = {edge.predicate for edge in graph.relations()}
         self.assertIn(RelationPredicate.INTRODUCED_BY, predicates)
@@ -229,7 +263,7 @@ class ProviderExportTests(unittest.TestCase):
             )
             graph = ingest_gitlab_export(path, anchor_id=ANCHOR, repository_root=root)
             self.assertEqual(
-                {item.object_type for item in graph.objects},
+                {object_kind(item) for item in graph.objects},
                 {"GitLabExport", "GitLabPipeline", "GitLabJob", "GitLabArtifact"},
             )
             self.assertTrue(
@@ -239,10 +273,10 @@ class ProviderExportTests(unittest.TestCase):
                 )
             )
             artifact = next(
-                item for item in graph.objects if item.object_type == "GitLabArtifact"
+                item for item in graph.objects if object_kind(item) == "GitLabArtifact"
             )
             self.assertEqual(
-                artifact.relations[0].predicate, RelationPredicate.BUILT_FROM
+                artifact.relations[0].predicate, RelationPredicate.DERIVED_FROM
             )
 
     def test_datadog_export(self) -> None:
@@ -267,7 +301,7 @@ class ProviderExportTests(unittest.TestCase):
             graph = ingest_datadog_export(path, anchor_id=ANCHOR, repository_root=root)
             self.assertEqual(len(graph.objects), 5)
             self.assertIn(
-                "RuntimeVerification", {item.object_type for item in graph.objects}
+                "RuntimeVerification", {object_kind(item) for item in graph.objects}
             )
             self.assertTrue(
                 all(
@@ -300,13 +334,23 @@ class MemoryTests(unittest.TestCase):
                 },
             )
             graph = ingest_memory_file(path, anchor_id=ANCHOR, repository_root=root)
-            types = {item.object_type for item in graph.objects}
+            types = {object_kind(item) for item in graph.objects}
             self.assertTrue(
                 {"MemoryFileVector", "MemoryEdgeVector", "MemoryEventVector"}.issubset(
                     types
                 )
             )
             self.assertIn(
+                RelationPredicate.REFERENCES,
+                {edge.predicate for edge in graph.relations()},
+            )
+            edge_vector = next(
+                item
+                for item in graph.objects
+                if object_kind(item) == "MemoryEdgeVector"
+            )
+            self.assertEqual(edge_vector.claims[0]["edge_type"], "CALLS")
+            self.assertNotIn(
                 RelationPredicate.CALLS, {edge.predicate for edge in graph.relations()}
             )
             combined = combine_graphs(SemanticGraph((_anchor(),)), graph)
@@ -370,14 +414,15 @@ class ClaimIntelligenceTests(unittest.TestCase):
                 document_versions={"docs/release.md": "b" * 40},
             )
             by_claim = {item.claims[0]["claim_id"]: item for item in assessments}
-            self.assertTrue(by_claim["claim://one"].claims[0]["stale"])
-            self.assertTrue(by_claim["claim://one"].claims[0]["source_evidence"])
+            self.assertTrue(by_claim[claim.semantic_id].claims[0]["stale"])
+            self.assertTrue(by_claim[claim.semantic_id].claims[0]["source_evidence"])
             self.assertEqual(
-                by_claim["claim://stale"].claims[0]["classification"], "UNMEASURED"
+                by_claim[stale_claim.semantic_id].claims[0]["classification"],
+                "UNMEASURED",
             )
             self.assertEqual(
-                by_claim["claim://stale"].claims[0]["stale_missing_references"],
-                ["missing/release.py"],
+                by_claim[stale_claim.semantic_id].claims[0]["stale_missing_references"],
+                ("missing/release.py",),
             )
 
 
@@ -431,14 +476,14 @@ class MerkleEpochTests(unittest.TestCase):
 
         first = make_object(
             "fixture://one",
-            "Fixture",
+            "Observation",
             "fixture:one",
             claims=({"name": "one"},),
             relations=(relation(RelationPredicate.ABOUT, "fixture://two", "fixture"),),
         )
         second = make_object(
             "fixture://two",
-            "Fixture",
+            "Observation",
             "fixture:two",
             claims=({"name": "two"},),
             relations=(relation(RelationPredicate.ABOUT, "fixture://one", "fixture"),),
@@ -448,7 +493,7 @@ class MerkleEpochTests(unittest.TestCase):
     def test_roots_and_proofs_are_deterministic_and_tamper_evident(self) -> None:
         epoch = build_epoch(self.graph())
         self.assertEqual(epoch, build_epoch(self.graph()))
-        proof = inclusion_proof(epoch, "fixture://one")
+        proof = inclusion_proof(epoch, canonical_id("Observation", "fixture://one"))
         self.assertTrue(verify_inclusion(proof, epoch.root_digest))
         tampered = replace(
             proof,
@@ -465,6 +510,7 @@ class ContextProofTests(unittest.TestCase):
             "context://early",
             "GitCommit",
             "git:early",
+            observed_at=datetime(2026, 1, 1, tzinfo=timezone.utc),
             claims=(
                 {
                     "subject": "production release",
@@ -477,6 +523,7 @@ class ContextProofTests(unittest.TestCase):
             "context://late",
             "GitCommit",
             "git:late",
+            observed_at=datetime(2026, 3, 1, tzinfo=timezone.utc),
             claims=(
                 {
                     "subject": "production verification",
@@ -496,9 +543,9 @@ class ContextProofTests(unittest.TestCase):
             historical_cutoff=datetime(2026, 2, 1, tzinfo=timezone.utc),
         )
         self.assertEqual(
-            [item.semantic_id for item in bundle.selections], ["context://early"]
+            [item.semantic_id for item in bundle.selections], [early.semantic_id]
         )
-        self.assertEqual(bundle.excluded_later_objects, ("context://late",))
+        self.assertEqual(bundle.excluded_later_objects, (late.semantic_id,))
         self.assertTrue(verify_context_bundle(bundle))
 
 
@@ -528,11 +575,14 @@ class CompleteCompilerTests(unittest.TestCase):
         gaps = [
             item
             for item in value.graph.objects
-            if item.object_type == "UnmeasuredInput"
+            if object_kind(item) == "UnmeasuredInput"
         ]
         self.assertEqual(len(gaps), 5)
         self.assertTrue(verify_context_bundle(value.context))
         self.assertEqual(value.epoch.object_count, len(value.graph.objects))
+        for item in value.graph.objects:
+            self.assertIsInstance(item.object_type, EntityType)
+            self.assertEqual(CanonicalObjectEnvelope.from_json(item.to_json()), item)
 
     def test_compiler_joins_explicit_local_exports(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -587,7 +637,7 @@ class CompleteCompilerTests(unittest.TestCase):
                     ),
                     commit=COMMIT,
                 )
-            object_types = {item.object_type for item in value.graph.objects}
+            object_types = {object_kind(item) for item in value.graph.objects}
             self.assertTrue(
                 {
                     "ReleaseStateReceipt",
@@ -599,8 +649,12 @@ class CompleteCompilerTests(unittest.TestCase):
             )
             self.assertEqual(
                 value.to_dict()["schema_version"],
-                "semantic-twin.phase1-complete/v1",
+                "semantic-twin.phase1-complete/v2",
             )
+            for payload in value.to_dict()["graph"]["objects"]:
+                self.assertEqual(
+                    CanonicalObjectEnvelope.from_dict(payload).to_dict(), payload
+                )
 
     def test_cli_writes_the_compilation_payload(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -1,259 +1,690 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-  "scope": "Local standard-library contract checks; no authenticity, deployment or real-world verification claim.",
-  "recorded_at": "2026-09-19T01:41:14.306451+00:00",
-  "baseline": {
-    "observed_at": "2026-09-19T01:13:43.230737+00:00",
-    "baseline": "ea3e46e4be8cb07192b9ba0305d7eaa31dbda001",
-    "checks": {
-      "arbitrary_semantic_id": "ACCEPTED_INVALID",
-      "unknown_schema_version": "ACCEPTED_INVALID",
-      "empty_inclusion_proof": "ACCEPTED_INVALID",
-      "unevidenced_verified_cause": "ACCEPTED_INVALID",
-      "verified_without_tevv": "ACCEPTED_INVALID",
-      "bare_boolean_verifier": true,
-      "missing_types": [
-        "SemanticId",
-        "MerkleLeaf",
-        "MerkleEpoch",
-        "InclusionProof",
-        "Attestation",
-        "SemanticTransaction",
-        "ChangeContract",
-        "ShaclValidationResult",
-        "TevvResult",
-        "VerificationReceipt",
-        "RelationContract"
+  "scope": "P0 contracts plus compatibility of existing local ingestion and Phase 1 consumers; no live service, authority or receipt-authenticity claim.",
+  "recorded_at": "2026-09-19T02:19:28.691611+00:00",
+  "python_version": "3.12.13",
+  "integration_baseline": {
+    "ref": "a47b004595369241cbc32b5e5e4b21a3ad506bd4",
+    "recorded_at": "2026-09-19T02:00:37.402750+00:00",
+    "command": "python -m unittest tests.upgrade.test_semantic_twin tests.upgrade.test_semantic_twin_contracts tests.upgrade.test_semantic_twin_ingestion tests.upgrade.test_semantic_twin_phase1_complete -q",
+    "tests_run": 80,
+    "errors": 16,
+    "failure": "Relation.__init__ missing source, source_type, target_type and target_version; existing consumers still used v1 objects."
+  },
+  "focused": {
+    "command": "python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py'",
+    "started_at": "2026-09-19T02:15:48.167154+00:00",
+    "finished_at": "2026-09-19T02:16:21.493335+00:00",
+    "tests_run": 100,
+    "passed": 100,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "skips": [],
+    "coverage": {
+      "method": "stdlib sys.monitoring line events and trace executable-line inventory; synthetic line zero excluded",
+      "modules": [
+        {
+          "path": "libs/semantic_twin/__init__.py",
+          "executable": 12,
+          "covered": 12,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/contracts.py",
+          "executable": 225,
+          "covered": 223,
+          "percent": 99.11,
+          "missing_lines": [
+            73,
+            223
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/identity.py",
+          "executable": 258,
+          "covered": 258,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/__init__.py",
+          "executable": 9,
+          "covered": 9,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/__main__.py",
+          "executable": 34,
+          "covered": 29,
+          "percent": 85.29,
+          "missing_lines": [
+            56,
+            57,
+            58,
+            59,
+            66
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/builder.py",
+          "executable": 195,
+          "covered": 194,
+          "percent": 99.49,
+          "missing_lines": [
+            121
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/claims.py",
+          "executable": 217,
+          "covered": 211,
+          "percent": 97.24,
+          "missing_lines": [
+            125,
+            185,
+            186,
+            268,
+            269,
+            270
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/graph.py",
+          "executable": 131,
+          "covered": 131,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/inputs.py",
+          "executable": 84,
+          "covered": 83,
+          "percent": 98.81,
+          "missing_lines": [
+            109
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/pipeline.py",
+          "executable": 106,
+          "covered": 100,
+          "percent": 94.34,
+          "missing_lines": [
+            74,
+            90,
+            91,
+            156,
+            157,
+            158
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/receipts.py",
+          "executable": 171,
+          "covered": 167,
+          "percent": 97.66,
+          "missing_lines": [
+            124,
+            125,
+            181,
+            182
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/release.py",
+          "executable": 75,
+          "covered": 75,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/serializer.py",
+          "executable": 36,
+          "covered": 36,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/ingestion/source.py",
+          "executable": 416,
+          "covered": 404,
+          "percent": 97.12,
+          "missing_lines": [
+            93,
+            110,
+            193,
+            204,
+            214,
+            259,
+            260,
+            334,
+            335,
+            336,
+            337,
+            600
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/merkle.py",
+          "executable": 303,
+          "covered": 303,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/models.py",
+          "executable": 387,
+          "covered": 360,
+          "percent": 93.02,
+          "missing_lines": [
+            87,
+            172,
+            173,
+            174,
+            175,
+            176,
+            177,
+            179,
+            409,
+            410,
+            411,
+            414,
+            415,
+            416,
+            419,
+            420,
+            421,
+            424,
+            426,
+            427,
+            428,
+            431,
+            432,
+            433,
+            472,
+            474,
+            477
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/__init__.py",
+          "executable": 10,
+          "covered": 10,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/phase1/__main__.py",
+          "executable": 33,
+          "covered": 32,
+          "percent": 96.97,
+          "missing_lines": [
+            67
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/claims.py",
+          "executable": 186,
+          "covered": 179,
+          "percent": 96.24,
+          "missing_lines": [
+            65,
+            68,
+            69,
+            92,
+            95,
+            96,
+            122
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/common.py",
+          "executable": 47,
+          "covered": 43,
+          "percent": 91.49,
+          "missing_lines": [
+            63,
+            64,
+            65,
+            66
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/compat.py",
+          "executable": 11,
+          "covered": 11,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/phase1/compiler.py",
+          "executable": 177,
+          "covered": 171,
+          "percent": 96.61,
+          "missing_lines": [
+            123,
+            128,
+            247,
+            248,
+            249,
+            250
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/context.py",
+          "executable": 148,
+          "covered": 134,
+          "percent": 90.54,
+          "missing_lines": [
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105,
+            106,
+            140,
+            142,
+            203,
+            215
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/history.py",
+          "executable": 183,
+          "covered": 179,
+          "percent": 97.81,
+          "missing_lines": [
+            88,
+            113,
+            136,
+            150
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/memory.py",
+          "executable": 107,
+          "covered": 102,
+          "percent": 95.33,
+          "missing_lines": [
+            38,
+            39,
+            40,
+            41,
+            69
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/merkle.py",
+          "executable": 89,
+          "covered": 87,
+          "percent": 97.75,
+          "missing_lines": [
+            94,
+            121
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/providers.py",
+          "executable": 149,
+          "covered": 148,
+          "percent": 99.33,
+          "missing_lines": [
+            51
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/release_state.py",
+          "executable": 116,
+          "covered": 112,
+          "percent": 96.55,
+          "missing_lines": [
+            71,
+            99,
+            100,
+            134
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/sbom.py",
+          "executable": 231,
+          "covered": 213,
+          "percent": 92.21,
+          "missing_lines": [
+            96,
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105,
+            153,
+            168,
+            169,
+            170,
+            171,
+            172,
+            191,
+            237
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/phase1/truth.py",
+          "executable": 154,
+          "covered": 151,
+          "percent": 98.05,
+          "missing_lines": [
+            79,
+            144,
+            200
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/promotions.py",
+          "executable": 141,
+          "covered": 136,
+          "percent": 96.45,
+          "missing_lines": [
+            186,
+            187,
+            188,
+            189,
+            190
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/receipts.py",
+          "executable": 471,
+          "covered": 471,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/relations.py",
+          "executable": 326,
+          "covered": 311,
+          "percent": 95.4,
+          "missing_lines": [
+            384,
+            385,
+            386,
+            387,
+            390,
+            391,
+            392,
+            394,
+            395,
+            396,
+            397,
+            398,
+            400,
+            401,
+            402
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/schema.py",
+          "executable": 30,
+          "covered": 28,
+          "percent": 93.33,
+          "missing_lines": [
+            56,
+            60
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/transactions.py",
+          "executable": 437,
+          "covered": 429,
+          "percent": 98.17,
+          "missing_lines": [
+            265,
+            266,
+            267,
+            268,
+            447,
+            448,
+            449,
+            570
+          ]
+        },
+        {
+          "path": "libs/semantic_twin/transitions.py",
+          "executable": 499,
+          "covered": 499,
+          "percent": 100.0,
+          "missing_lines": []
+        },
+        {
+          "path": "libs/semantic_twin/vocabulary.py",
+          "executable": 274,
+          "covered": 274,
+          "percent": 100.0,
+          "missing_lines": []
+        }
       ]
     }
   },
-  "regressions": {
-    "observed_red_at": "2026-09-19T01:34:02.412363+00:00",
-    "red_failures": 4,
-    "green_failures": 0,
-    "cases": [
-      "unchecked evidence substitution",
-      "unrelated causal verification",
-      "wrong policy on authority edge",
-      "conflicting records under one receipt ID"
-    ],
-    "verify": "python -m unittest tests.upgrade.test_semantic_twin_contracts.ConsistencyTests -v"
-  },
-  "focused": {
-    "started_at": "2026-09-19T01:37:32.667609+00:00",
-    "finished_at": "2026-09-19T01:37:43.458986+00:00",
-    "method": "stdlib trace executable lines",
-    "tests_run": 62,
-    "skipped": 0,
+  "repository": {
+    "command": "python -m unittest discover -s tests/upgrade -p 'test_*.py'",
+    "started_at": "2026-09-19T02:13:32.226399+00:00",
+    "finished_at": "2026-09-19T02:14:46.046482+00:00",
+    "tests_run": 467,
+    "passed": 445,
     "failures": 0,
     "errors": 0,
-    "modules": [
+    "skipped": 22,
+    "skips": [
       {
-        "path": "libs/semantic_twin/__init__.py",
-        "covered": 12,
-        "executable": 13,
-        "percent": 92.31,
-        "missing_lines": [
-          0
-        ]
+        "test": "test_native_pdf_three_passes_are_byte_for_byte_deterministic (test_blueprint_extraction.ExtractionTests.test_native_pdf_three_passes_are_byte_for_byte_deterministic)",
+        "reason": "pypdf is declared but unavailable in this sandbox"
       },
       {
-        "path": "libs/semantic_twin/contracts.py",
-        "covered": 223,
-        "executable": 226,
-        "percent": 98.67,
-        "missing_lines": [
-          0,
-          73,
-          223
-        ]
+        "test": "test_end_to_end_sample_pdf_to_bdr_components_mission_and_session_provenance (test_blueprint_pipeline.PipelineTests.test_end_to_end_sample_pdf_to_bdr_components_mission_and_session_provenance)",
+        "reason": "native PDF-to-prompt acceptance requires the already declared pypdf"
       },
       {
-        "path": "libs/semantic_twin/identity.py",
-        "covered": 258,
-        "executable": 259,
-        "percent": 99.61,
-        "missing_lines": [
-          0
-        ]
+        "test": "test_native_empty_encrypted_and_excessive_page_pdfs (test_blueprints.ParserTests.test_native_empty_encrypted_and_excessive_page_pdfs)",
+        "reason": "pypdf is unavailable; native empty/encrypted PDF admission not verified"
       },
       {
-        "path": "libs/semantic_twin/merkle.py",
-        "covered": 303,
-        "executable": 304,
-        "percent": 99.67,
-        "missing_lines": [
-          0
-        ]
+        "test": "test_native_pdf_fixture_and_active_content_are_text_only (test_blueprints.ParserTests.test_native_pdf_fixture_and_active_content_are_text_only)",
+        "reason": "pypdf is unavailable; native PDF extraction not verified"
       },
       {
-        "path": "libs/semantic_twin/models.py",
-        "covered": 358,
-        "executable": 388,
-        "percent": 92.27,
-        "missing_lines": [
-          0,
-          87,
-          172,
-          173,
-          174,
-          175,
-          176,
-          177,
-          179,
-          216,
-          229,
-          409,
-          410,
-          411,
-          414,
-          415,
-          416,
-          419,
-          420,
-          421,
-          424,
-          426,
-          427,
-          428,
-          431,
-          432,
-          433,
-          472,
-          474,
-          477
-        ]
+        "test": "test_native_rollback_retains_source_and_disables_blueprint_operations (test_blueprints_native.NativeBlueprintTests.test_native_rollback_retains_source_and_disables_blueprint_operations)",
+        "reason": "PocketBase and pypdf are required for native blueprint acceptance"
       },
       {
-        "path": "libs/semantic_twin/promotions.py",
-        "covered": 136,
-        "executable": 142,
-        "percent": 95.77,
-        "missing_lines": [
-          0,
-          186,
-          187,
-          188,
-          189,
-          190
-        ]
+        "test": "test_native_round_trip_duplicate_receipt_and_locked_collection_access (test_blueprints_native.NativeBlueprintTests.test_native_round_trip_duplicate_receipt_and_locked_collection_access)",
+        "reason": "PocketBase and pypdf are required for native blueprint acceptance"
       },
       {
-        "path": "libs/semantic_twin/receipts.py",
-        "covered": 471,
-        "executable": 472,
-        "percent": 99.79,
-        "missing_lines": [
-          0
-        ]
+        "test": "test_native_concurrent_retries_and_membership_revocation (test_classroom_native.NativeClassroomTests.test_native_concurrent_retries_and_membership_revocation)",
+        "reason": "Native PocketBase unavailable; classroom runtime acceptance remains open."
       },
       {
-        "path": "libs/semantic_twin/relations.py",
-        "covered": 311,
-        "executable": 327,
-        "percent": 95.11,
-        "missing_lines": [
-          0,
-          384,
-          385,
-          386,
-          387,
-          390,
-          391,
-          392,
-          394,
-          395,
-          396,
-          397,
-          398,
-          400,
-          401,
-          402
-        ]
+        "test": "test_native_down_retains_history_and_reup_restores_the_protocol (test_classroom_native.NativeClassroomTests.test_native_down_retains_history_and_reup_restores_the_protocol)",
+        "reason": "Native PocketBase unavailable; classroom runtime acceptance remains open."
       },
       {
-        "path": "libs/semantic_twin/schema.py",
-        "covered": 28,
-        "executable": 31,
-        "percent": 90.32,
-        "missing_lines": [
-          0,
-          56,
-          60
-        ]
+        "test": "test_native_lifecycle_lesson_presence_and_locked_raw_collections (test_classroom_native.NativeClassroomTests.test_native_lifecycle_lesson_presence_and_locked_raw_collections)",
+        "reason": "Native PocketBase unavailable; classroom runtime acceptance remains open."
       },
       {
-        "path": "libs/semantic_twin/transactions.py",
-        "covered": 429,
-        "executable": 438,
-        "percent": 97.95,
-        "missing_lines": [
-          0,
-          265,
-          266,
-          267,
-          268,
-          447,
-          448,
-          449,
-          570
-        ]
+        "test": "test_native_serialization_without_login (test_discordbot_adapter.AdapterTests.test_native_serialization_without_login)",
+        "reason": "Discord.py is unavailable: native serialization remains an acceptance gate."
       },
       {
-        "path": "libs/semantic_twin/transitions.py",
-        "covered": 499,
-        "executable": 500,
-        "percent": 99.8,
-        "missing_lines": [
-          0
-        ]
+        "test": "test_native_auth_locked_collections_and_encrypted_content (test_dossier_native.NativeDossierTests.test_native_auth_locked_collections_and_encrypted_content)",
+        "reason": "Native PocketBase binary unavailable; no auth/rules/crypto claim."
       },
       {
-        "path": "libs/semantic_twin/vocabulary.py",
-        "covered": 274,
-        "executable": 275,
-        "percent": 99.64,
-        "missing_lines": [
-          0
-        ]
+        "test": "test_native_concurrent_retries_and_deletion_do_not_duplicate_or_resurrect (test_dossier_native.NativeDossierTests.test_native_concurrent_retries_and_deletion_do_not_duplicate_or_resurrect)",
+        "reason": "Native PocketBase binary unavailable; no auth/rules/crypto claim."
+      },
+      {
+        "test": "test_native_external_auth_link_resolves_user_and_unlink_revokes_discord (test_dossier_native.NativeDossierTests.test_native_external_auth_link_resolves_user_and_unlink_revokes_discord)",
+        "reason": "Native PocketBase binary unavailable; no auth/rules/crypto claim."
+      },
+      {
+        "test": "test_native_key_loss_fails_closed_without_overwriting_ciphertext (test_dossier_native.NativeDossierTests.test_native_key_loss_fails_closed_without_overwriting_ciphertext)",
+        "reason": "Native PocketBase binary unavailable; no auth/rules/crypto claim."
+      },
+      {
+        "test": "test_native_pdf_extracts_actual_pdf_text (test_research_runtime.DocumentTests.test_native_pdf_extracts_actual_pdf_text)",
+        "reason": "The native PDF parser must run on the dependency-enabled runner."
+      },
+      {
+        "test": "test_native_dates_hashes_auth_and_completion_recovery (test_suite_native.NativeSuiteTests.test_native_dates_hashes_auth_and_completion_recovery)",
+        "reason": "Native PocketBase binary unavailable"
+      },
+      {
+        "test": "test_native_membership_revocation_fences_worker_completion (test_suite_native.NativeSuiteTests.test_native_membership_revocation_fences_worker_completion)",
+        "reason": "Native PocketBase binary unavailable"
+      },
+      {
+        "test": "test_native_operator_bounds_pages_and_keeps_missing_sources_unavailable (test_suite_native.NativeSuiteTests.test_native_operator_bounds_pages_and_keeps_missing_sources_unavailable)",
+        "reason": "Native PocketBase binary unavailable"
+      },
+      {
+        "test": "test_native_operator_membership_does_not_bypass_record_rules (test_suite_native.NativeSuiteTests.test_native_operator_membership_does_not_bypass_record_rules)",
+        "reason": "Native PocketBase binary unavailable"
+      },
+      {
+        "test": "test_native_operator_reads_current_jobs_without_private_input_or_writes (test_suite_native.NativeSuiteTests.test_native_operator_reads_current_jobs_without_private_input_or_writes)",
+        "reason": "Native PocketBase binary unavailable"
+      },
+      {
+        "test": "test_native_operator_rechecks_downgraded_and_revoked_membership (test_suite_native.NativeSuiteTests.test_native_operator_rechecks_downgraded_and_revoked_membership)",
+        "reason": "Native PocketBase binary unavailable"
+      },
+      {
+        "test": "test_native_rollback_retains_runs_and_reup_restores_protocol (test_suite_native.NativeSuiteTests.test_native_rollback_retains_runs_and_reup_restores_protocol)",
+        "reason": "Native PocketBase binary unavailable"
       }
     ]
   },
-  "repository": {
-    "command": "python -m unittest discover -s tests/upgrade -p test_*.py",
-    "started_at": "2026-09-19T01:37:32.926143+00:00",
-    "finished_at": "2026-09-19T01:38:06.020236+00:00",
-    "tests_run": 429,
-    "passed": 407,
-    "skipped": 22,
-    "failures": 0,
-    "errors": 0,
-    "limitation": "Existing skips require optional providers or native integrations; they are not counted as passes."
+  "regressions": {
+    "new_tests": 15,
+    "command": "python -m unittest tests.upgrade.test_semantic_twin_integration -v",
+    "cases": [
+      "exact endpoint revisions",
+      "stale target rejection",
+      "pending source revision rejection",
+      "unresolved export and epoch rejection",
+      "conflicting extraction identities",
+      "predicate endpoint types remain strict",
+      "receipt-sensitive edge deduplication",
+      "captured bytes and actual timestamps",
+      "unverified commit context",
+      "timestamp and line-reference normalization",
+      "unmeasured static verification edges",
+      "captured PASS does not verify reality",
+      "source parsing without execution",
+      "strict v2 round trips and canonical digest bytes",
+      "order-independent replay of the same snapshots"
+    ]
   },
-  "static_checks": [
-    "strict mypy: 12 source files",
-    "Ruff lint and formatting",
-    "Python compileall",
-    "schema CLI JSON export",
-    "stdlib-only import audit"
-  ],
+  "static_checks": {
+    "mypy": {
+      "command": "python -m mypy --strict libs/semantic_twin",
+      "state": "PASS",
+      "source_files": 37
+    },
+    "ruff": {
+      "command": "python -m ruff check libs/semantic_twin tests/upgrade/test_semantic_twin*.py",
+      "state": "PASS"
+    },
+    "format": {
+      "command": "python -m ruff format --check libs/semantic_twin tests/upgrade/test_semantic_twin*.py",
+      "state": "PASS",
+      "files": 42
+    },
+    "compileall": {
+      "command": "python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin*.py",
+      "state": "PASS"
+    },
+    "schema": {
+      "command": "python -m libs.semantic_twin.schema",
+      "state": "PASS",
+      "id": "urn:citadel:semantic-twin:schema:2",
+      "definitions": 53,
+      "top_level_contracts": 4
+    },
+    "dependency_audit": {
+      "state": "PASS",
+      "modules": 37,
+      "external_imports": []
+    }
+  },
   "boundaries": {
     "public_scan": {
-      "state": "PASS",
-      "files_checked": 979
+      "actor": null,
+      "failures": [],
+      "files_checked": 1017,
+      "state": "PASS"
     },
-    "measured_context": {
+    "context_inventory": {
       "state": "PASS",
-      "existing_findings": 6,
+      "existing_findings": 8,
       "existing_unwired_gates": 4
+    },
+    "actor_label": "actor:agent required at PR creation; not applied in this session"
+  },
+  "historical_contract_evidence": {
+    "gap_baseline": {
+      "observed_at": "2026-09-19T01:13:43.230737+00:00",
+      "baseline": "ea3e46e4be8cb07192b9ba0305d7eaa31dbda001",
+      "checks": {
+        "arbitrary_semantic_id": "ACCEPTED_INVALID",
+        "unknown_schema_version": "ACCEPTED_INVALID",
+        "empty_inclusion_proof": "ACCEPTED_INVALID",
+        "unevidenced_verified_cause": "ACCEPTED_INVALID",
+        "verified_without_tevv": "ACCEPTED_INVALID",
+        "bare_boolean_verifier": true,
+        "missing_types": [
+          "SemanticId",
+          "MerkleLeaf",
+          "MerkleEpoch",
+          "InclusionProof",
+          "Attestation",
+          "SemanticTransaction",
+          "ChangeContract",
+          "ShaclValidationResult",
+          "TevvResult",
+          "VerificationReceipt",
+          "RelationContract"
+        ]
+      }
+    },
+    "receipt_binding_regressions": {
+      "observed_red_at": "2026-09-19T01:34:02.412363+00:00",
+      "red_failures": 4,
+      "green_failures": 0,
+      "cases": [
+        "unchecked evidence substitution",
+        "unrelated causal verification",
+        "wrong policy on authority edge",
+        "conflicting records under one receipt ID"
+      ],
+      "verify": "python -m unittest tests.upgrade.test_semantic_twin_contracts.ConsistencyTests -v"
     }
   },
   "not_executed": [
-    "Live evidence acquisition or receipt authentication",
-    "Merkle digest/proof/signature computation",
-    "CGRF policy execution, persistence or deployment",
-    "Frontend build and UI tests (no frontend changes)",
-    "pytest/pytest-cov (unavailable; unittest and stdlib trace used)"
+    "Live evidence acquisition, producer authentication, external signature/attestation verification",
+    "CGRF policy execution, graph persistence, external writes or deployment",
+    "Frontend build and UI tests; no frontend changes",
+    "pytest/pytest-cov unavailable; unittest and standard-library line tracing used"
   ]
 }

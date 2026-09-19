@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/common.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/receipts.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Adapter
-# EnumEdges:   PRODUCES libs/semantic_twin/phase1/compiler.py; CONSUMES libs/semantic_twin/ingestion/graph.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/receipts.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.common
 # Intent:      Keep local Phase 1 adapters deterministic through shared identity, path, JSON and relation helpers.
 # ────────────────────────────────────────────────────────
@@ -26,7 +26,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
-from ..models import Relation
+from ..ingestion.builder import RelationDraft
+from ..receipts import EvidenceKind
 from ..vocabulary import EvidenceState, RelationPredicate
 
 
@@ -78,13 +79,15 @@ def relation(
     *,
     state: EvidenceState = EvidenceState.OBSERVED,
     confidence: float = 1.0,
-) -> Relation:
+    kinds: tuple[EvidenceKind, ...] = (EvidenceKind.SOURCE,),
+) -> RelationDraft:
     """Create one deterministic evidence-bearing Phase 0 relation."""
 
-    return Relation(
+    return RelationDraft(
         predicate=predicate,
         target=target,
         evidence=(evidence,),
         confidence=confidence,
         state=state,
+        kinds=kinds,
     )

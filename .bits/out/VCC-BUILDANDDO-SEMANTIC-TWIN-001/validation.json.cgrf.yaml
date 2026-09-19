@@ -8,14 +8,14 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     tests/upgrade/test_semantic_twin.py, tests/upgrade/test_semantic_twin_contracts.py
+# Depends:     tests/upgrade/test_semantic_twin.py, tests/upgrade/test_semantic_twin_contracts.py, tests/upgrade/test_semantic_twin_ingestion.py, tests/upgrade/test_semantic_twin_integration.py, tests/upgrade/test_semantic_twin_phase1_complete.py
 # EnumType:    Schema
-# EnumEdges:   VERIFIED_BY tests/upgrade/test_semantic_twin.py; VERIFIED_BY tests/upgrade/test_semantic_twin_contracts.py; PRODUCES .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json
+# EnumEdges:   VERIFIED_BY tests/upgrade/test_semantic_twin.py; VERIFIED_BY tests/upgrade/test_semantic_twin_contracts.py; VERIFIED_BY tests/upgrade/test_semantic_twin_ingestion.py; VERIFIED_BY tests/upgrade/test_semantic_twin_integration.py; VERIFIED_BY tests/upgrade/test_semantic_twin_phase1_complete.py; PRODUCES .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json
 # DAG Node:    semantic-twin.phase-0.validation
 # Intent:      Retain measured baseline failures, regression results and coverage so P0 completion claims can be checked independently.
 # ───────────────────────────────────────────────────────────────
 
 artifact: validation.json
 encoding: utf-8
-scope: local-contract-validation
-schema_version: 1
+scope: local-contract-and-consumer-validation
+schema_version: 2

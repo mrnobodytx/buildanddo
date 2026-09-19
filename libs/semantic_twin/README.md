@@ -130,3 +130,42 @@ measurement require externally observed evidence, beyond P0 unit tests.
 python -m unittest tests.upgrade.test_semantic_twin tests.upgrade.test_semantic_twin_contracts
 python -m mypy --strict libs/semantic_twin
 ```
+
+## Existing ingestion consumers
+
+The bounded release compiler and the local Phase 1 compiler emit strict v2
+objects. Their outer payload versions are `semantic-twin.graph/v2` and
+`semantic-twin.phase1-complete/v2`. Read each `objects` entry with
+`CanonicalObjectEnvelope.from_dict`; graph `leaf_digests` are a separate index
+over the exact `to_json()` bytes. Serializing a graph does not change an object's
+Merkle state or create an incomplete leaf binding.
+
+Extractor categories such as `GitLabJob` remain in the `ingestion.kind` claim
+metadata; `object_type` always uses the frozen `EntityType`. Extractor-local keys
+are mapped to type-qualified canonical identities. This is reconstruction from
+captured inputs, not a decoder for version-one envelopes.
+
+`SourceSnapshot` binds the bytes actually read, their SHA-256 content revision,
+source path, section selectors and capture time. A supplied repository commit is
+retained as context; it does not assert that a dirty file or an external export
+matches that commit. Observation timestamps describe capture, independently of
+Git author time, deployment time or file mtime. Replaying the same snapshots is
+deterministic; a new capture has a new observation time and can have a new graph
+digest even when file bytes are unchanged.
+
+Adapters can assemble graph fragments. Pending edges remain separate from
+canonical objects until both endpoints are available. Combining fragments binds
+the actual endpoint types and revisions; unresolved edges block serialization
+and epoch creation. Existing bound edges reject a changed target revision.
+
+The static release diagram retains candidate verification/deployment edges as
+`UNMEASURED`. Documentation classifications retain their heuristic origin, memory
+edges remain recorded assertions, and provider `PASS` fields stay observations
+with `NOT_TESTED` TEVV. None of those inputs mint verification receipts or a live
+runtime status. Receipt-file I/O and event publication have distinct endpoints.
+
+Run the combined contract and consumer acceptance suite:
+
+```sh
+python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py'
+```

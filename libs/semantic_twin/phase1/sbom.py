@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/sbom.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     package-lock.json, libs/semantic_twin/phase1/common.py
+# Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/receipts.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES package-lock.json; PRODUCES libs/semantic_twin/phase1/compiler.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/receipts.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.sbom
 # Intent:      Normalize CycloneDX, SPDX and npm lock manifests into versioned package and dependency semantics.
 # ───────────────────────────────────────────────────────
@@ -20,13 +20,16 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from ..ingestion.graph import SemanticGraph
+from ..ingestion.inputs import SourceSnapshot
+from ..receipts import EvidenceKind
 from ..vocabulary import EvidenceState, RelationPredicate
-from .common import as_mapping, read_json, relation, relative_path, stable_id
+from .common import as_mapping, relation, relative_path, stable_id
 from .compat import make_object
 
 
@@ -49,6 +52,7 @@ class SbomDocument:
     source_path: str
     format: str
     packages: tuple[PackageRecord, ...]
+    snapshot: SourceSnapshot
 
 
 def discover_sbom_paths(repository_root: Path) -> tuple[Path, ...]:
@@ -216,7 +220,10 @@ def _npm_lock(payload: Mapping[str, Any]) -> tuple[PackageRecord, ...]:
 def parse_sbom(path: Path, *, repository_root: Path | None = None) -> SbomDocument:
     """Parse CycloneDX, SPDX or npm lock JSON from one local file."""
 
-    payload = as_mapping(read_json(path))
+    snapshot = SourceSnapshot.capture(
+        path, source_path=relative_path(path, repository_root)
+    )
+    payload = as_mapping(json.loads(snapshot.content))
     if payload.get("bomFormat") == "CycloneDX":
         format_name = "cyclonedx"
         packages = _cyclonedx(payload)
@@ -232,6 +239,7 @@ def parse_sbom(path: Path, *, repository_root: Path | None = None) -> SbomDocume
         source_path=relative_path(path, repository_root),
         format=format_name,
         packages=packages,
+        snapshot=snapshot,
     )
 
 
@@ -255,6 +263,7 @@ def sbom_graph(
                 document_id,
                 "SoftwareBillOfMaterials",
                 document.source_path,
+                snapshot=document.snapshot,
                 claims=(
                     {
                         "format": document.format,
@@ -287,6 +296,8 @@ def sbom_graph(
                     RelationPredicate.DEPENDS_ON,
                     package_ids[target],
                     document.source_path,
+                    state=EvidenceState.INFERRED,
+                    kinds=(EvidenceKind.STATIC_ANALYSIS,),
                 )
                 for target in item.dependencies
                 if target in package_ids
@@ -296,6 +307,7 @@ def sbom_graph(
                     package_ids[item.key],
                     "SoftwarePackage",
                     document.source_path,
+                    snapshot=document.snapshot,
                     claims=(
                         {
                             "key": item.key,

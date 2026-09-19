@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/history.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     .git, libs/semantic_twin/phase1/common.py
+# Depends:     libs/semantic_twin/identity.py, libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES .git; PRODUCES libs/semantic_twin/phase1/compiler.py
+# EnumEdges:   CONSUMES libs/semantic_twin/identity.py; CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.git-history
 # Intent:      Compile bounded local Git evolution into commit and file-change semantics without remote access or repository mutation.
 # ───────────────────────────────────────────────────────
@@ -19,13 +19,15 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
-from datetime import datetime
+from dataclasses import dataclass, field, replace
+from datetime import datetime, timezone
 from pathlib import Path
 import subprocess
 
 from ..ingestion.graph import SemanticGraph
-from ..models import CanonicalObjectEnvelope, ValidTime
+from ..ingestion.builder import ObjectDraft
+from ..ingestion.inputs import SourceSnapshot
+from ..identity import ValidTime
 from ..vocabulary import EvidenceState, RelationPredicate
 from .common import named_id, relation, stable_id
 from .compat import make_object
@@ -57,6 +59,7 @@ class CommitObservation:
     authored_at: str
     subject: str
     changes: tuple[FileChange, ...]
+    observed_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 def _parse_change(line: str) -> FileChange | None:
@@ -135,17 +138,22 @@ def read_git_history(
 
 
 def _with_valid_time(
-    item: CanonicalObjectEnvelope,
+    item: ObjectDraft,
     valid_from: str,
     valid_until: str | None,
-) -> CanonicalObjectEnvelope:
+) -> ObjectDraft:
     """Bind an observed history object to its bounded commit-time interval."""
 
     start = datetime.fromisoformat(valid_from)
     end = datetime.fromisoformat(valid_until) if valid_until is not None else None
     if end is not None and end < start:
         end = None
-    return replace(item, valid_time=ValidTime(valid_from=start, valid_until=end))
+    return replace(
+        item,
+        envelope=replace(
+            item.envelope, valid_time=ValidTime(valid_from=start, valid_until=end)
+        ),
+    )
 
 
 def history_graph(
@@ -158,6 +166,20 @@ def history_graph(
     objects = []
     included = {item.commit for item in observations}
     for index, item in enumerate(observations):
+        snapshot = SourceSnapshot.derived(
+            f"git:{item.commit}",
+            {
+                "commit": item.commit,
+                "parents": item.parents,
+                "authored_at": item.authored_at,
+                "subject": item.subject,
+                "changes": [
+                    (change.status, change.path, change.old_path)
+                    for change in item.changes
+                ],
+            },
+            observed_at=item.observed_at,
+        )
         commit_id = named_id("git-commit", item.commit)
         valid_until = observations[index - 1].authored_at if index > 0 else None
         relations = [
@@ -182,6 +204,7 @@ def history_graph(
                     commit_id,
                     "GitCommit",
                     f"git:{item.commit}",
+                    snapshot=snapshot,
                     claims=(
                         {
                             "commit": item.commit,
@@ -217,7 +240,8 @@ def history_graph(
                     make_object(
                         change_id,
                         "GitFileChange",
-                        f"git:{item.commit}:{change.path}",
+                        snapshot.source_path,
+                        snapshot=snapshot,
                         claims=(
                             {
                                 "status": change.status,

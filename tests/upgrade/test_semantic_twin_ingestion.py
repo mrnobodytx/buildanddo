@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        tests/upgrade/test_semantic_twin_ingestion.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion, tools/buildanddo_release.py, .bits/srs, .bits/out
+# Depends:     libs/semantic_twin/__init__.py, libs/semantic_twin/ingestion/__init__.py, libs/semantic_twin/ingestion/__main__.py, libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/pipeline.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES libs/semantic_twin/ingestion; CONSUMES tools/buildanddo_release.py; CONSUMES .bits/srs; CONSUMES .bits/out
+# EnumEdges:   CONSUMES libs/semantic_twin/__init__.py; CONSUMES libs/semantic_twin/ingestion/__init__.py; CONSUMES libs/semantic_twin/ingestion/__main__.py; CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/pipeline.py
 # DAG Node:    semantic-twin.phase-1.release-ingestion.tests
 # Intent:      Prove release ingestion is connected, vocabulary-bound, evidence-aware and byte-for-byte deterministic.
 # ──────────────────────────────────────────────────────────
@@ -25,7 +25,13 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from libs.semantic_twin import EvidenceState, RelationPredicate
+from libs.semantic_twin import (
+    CanonicalObjectEnvelope,
+    EntityType,
+    EvidenceState,
+    RelationPredicate,
+)
+from libs.semantic_twin.ingestion.builder import object_kind
 from libs.semantic_twin.ingestion import (
     ClaimDisposition,
     build_release_path_graph,
@@ -84,13 +90,13 @@ class SourceIngestionTests(unittest.TestCase):
         dependencies = {
             str(obj.claims[0]["name"])
             for obj in self.graph.objects
-            if obj.object_type == "ExternalDependency"
+            if object_kind(obj) == "ExternalDependency"
         }
         self.assertEqual(dependencies, {"Datadog API", "GitHub", "GitLab"})
         events = {
             str(obj.claims[0]["name"])
             for obj in self.graph.objects
-            if obj.object_type == "PublishedEvent"
+            if object_kind(obj) == "PublishedEvent"
         }
         self.assertIn("dora_deployment", events)
         self.assertIn("production_dora", events)
@@ -127,6 +133,8 @@ class ReleaseGraphTests(unittest.TestCase):
         self.assertTrue(graph.is_connected())
         self.assertEqual(graph.unresolved_targets(), ())
         for obj in graph.objects:
+            self.assertEqual(CanonicalObjectEnvelope.from_json(obj.to_json()), obj)
+            self.assertIsInstance(obj.object_type, EntityType)
             self.assertIsInstance(obj.state.evidence_state, EvidenceState)
             for relation in obj.relations:
                 self.assertIsInstance(relation.predicate, RelationPredicate)
@@ -260,7 +268,9 @@ class SerializerTests(unittest.TestCase):
         envelopes = {item.semantic_id: item for item in graph.objects}
         for item in payload["objects"]:
             envelope = envelopes[item["semantic_id"]]
-            digest = item["merkle"]["leaf_digest"]
+            digest = payload["leaf_digests"][item["semantic_id"]]
+            self.assertIsNone(item["merkle"]["leaf_digest"])
+            self.assertEqual(CanonicalObjectEnvelope.from_dict(item), envelope)
             self.assertEqual(len(digest), 64)
             self.assertEqual(
                 digest,
@@ -282,12 +292,21 @@ class SerializerTests(unittest.TestCase):
             )
             payload = json.loads(output.read_text(encoding="utf-8"))
         self.assertEqual(result, 0)
-        self.assertEqual(payload["schema_version"], "semantic-twin.graph/v1")
+        self.assertEqual(payload["schema_version"], "semantic-twin.graph/v2")
         self.assertGreater(payload["object_count"], 100)
         source_commit = next(
-            item for item in payload["objects"] if item["object_type"] == "SourceCommit"
+            item
+            for item in payload["objects"]
+            if object_kind(CanonicalObjectEnvelope.from_dict(item)) == "SourceCommit"
         )
-        self.assertRegex(source_commit["source"]["commit"], r"^[0-9a-f]{40}$")
+        self.assertRegex(
+            source_commit["source"]["document_version"], r"^sha256:[0-9a-f]{64}$"
+        )
+        self.assertIsNone(source_commit["source"]["commit"])
+        self.assertRegex(
+            source_commit["claims"][-1]["ingestion"]["repository_commit_context"],
+            r"^[0-9a-f]{40}$",
+        )
 
 
 if __name__ == "__main__":

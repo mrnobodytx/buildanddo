@@ -204,4 +204,4 @@ srs:
     status: in_progress
     risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md
-    notes: Owner-authorized P0 completion freezes version 2 IDs, Merkle metadata, predicates, receipts, governed transactions and wire validation; ingestion, persistence, mutation, policy execution, signing and external effects excluded
+    notes: Owner-authorized P0 completion and compatibility migration of existing local ingestion and Phase 1 consumers to strict version 2 contracts; new ingestion features, persistence, mutation, policy execution, signing and external effects excluded
