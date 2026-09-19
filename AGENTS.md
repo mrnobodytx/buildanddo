@@ -82,7 +82,7 @@ changes follow the tiered authorization rules above.
 | Frontend      | React 18+, Vite, TypeScript                     |
 | Backend       | PocketBase (Go-based BaaS)                      |
 | Hosting       | Cloudflare Pages / Hostinger VPS                |
-| Event bus     | NATS JetStream `147.93.43.117:4222`             |
+| Event bus     | NATS JetStream `           |
 | Auth          | PocketBase built-in auth                        |
 | Observability | Datadog APM + Logs + RUM (pending instrumentation) |
 
