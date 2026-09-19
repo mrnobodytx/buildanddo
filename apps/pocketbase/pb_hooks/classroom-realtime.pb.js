@@ -116,6 +116,45 @@ routerAdd("POST", "/api/classroom/tracks", (e) => {
 });
 
 // ---------------------------------------------------------------------------
+// PUT /api/classroom/renegotiate — the answer leg of a pull.
+//
+// When a session pulls a remote track the SFU replies `requiresImmediateRenegotiation: true` with its own
+// offer; the browser sets it, creates an answer and must PUT that answer here or the pull never completes.
+// Measured 2026-09-18 in docs/operations/runbooks/forge_sfu_manifest_proof.py: without this leg the puller
+// receives zero frames; with it, 516 audio frames arrived in 10 s.
+// Authority: none. Renegotiating an existing session grants no new track and no publish right — the push
+// decision stays in /api/classroom/tracks. Any authenticated seat may renegotiate its own session.
+// ---------------------------------------------------------------------------
+routerAdd("PUT", "/api/classroom/renegotiate", (e) => {
+    const L = require(`${__hooks}/classroom-realtime-lib.js`);
+    const seat = L.callerSeat(e);
+    if (!seat) return e.json(401, { message: "authentication required" });
+    const cfg = L.realtimeConfig();
+    if (cfg.reason) return e.json(503, { message: "realtime_not_configured", reason: cfg.reason });
+    let body = {};
+    try { body = e.requestInfo().body || {}; } catch (_) { body = {}; }
+    const sessionId = String(body.sessionId || "");
+    if (!sessionId) return e.json(400, { message: "sessionId required" });
+    const desc = body.sessionDescription;
+    if (!desc || !desc.sdp || (desc.type !== "answer" && desc.type !== "offer")) {
+        return e.json(400, { message: "sessionDescription answer or offer required" });
+    }
+    const out = L.callRealtime(
+        "/" + cfg.appId + "/sessions/" + encodeURIComponent(sessionId) + "/renegotiate",
+        cfg.secret,
+        { sessionDescription: { type: desc.type, sdp: String(desc.sdp) } },
+        "PUT");
+    if (out.status !== 200 && out.status !== 201) {
+        return e.json(502, {
+            message: "realtime_renegotiate_failed",
+            status: out.status,
+            reason: String(out.body.errorDescription || out.body.errorCode || "").slice(0, 160),
+        });
+    }
+    return e.json(200, out.body || {});
+});
+
+// ---------------------------------------------------------------------------
 // GET /api/classroom/health — configuration state by NAME only, no secrets.
 // ---------------------------------------------------------------------------
 routerAdd("GET", "/api/classroom/health", (e) => {

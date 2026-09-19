@@ -18,12 +18,13 @@ function mayPublish(seat) {
     return allowed.indexOf(String(seat || "").toLowerCase()) !== -1;
 }
 
-/** One authenticated Cloudflare call. Returns {status, body} and never throws. */
-function callRealtime(path, secret, payload) {
+/** One authenticated Cloudflare call. Returns {status, body} and never throws.
+ *  method defaults to POST; the SFU's renegotiate endpoint is a PUT. */
+function callRealtime(path, secret, payload, method) {
     try {
         const res = $http.send({
             url: RTC_BASE + path,
-            method: "POST",
+            method: method || "POST",
             headers: {
                 Authorization: "Bearer " + secret,
                 "Content-Type": "application/json",
