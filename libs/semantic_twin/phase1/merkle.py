@@ -114,6 +114,7 @@ class SemanticEpoch(Contract):
 
 def build_epoch(graph: SemanticGraph) -> SemanticEpoch:
     """Root whole canonical objects using the Phase 0 leaf and epoch contracts."""
+    graph.require_resolved()
     ordered = tuple(sorted(graph.objects, key=lambda value: value.semantic_id))
     digests = tuple(object_leaf_digest(item) for item in ordered)
     root = _levels(digests)[-1][0]

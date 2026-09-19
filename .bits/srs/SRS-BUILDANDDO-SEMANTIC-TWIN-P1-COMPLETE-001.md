@@ -95,6 +95,7 @@ produce deterministic Merkle inclusion and context proof artifacts.
 
 ## Rollback
 
-Revert the continuation and regenerate the context lock. This restores the prior
-contract mismatch, so dependent consumers must use a compatible snapshot. No
-remote system, deployed application or persisted runtime state needs compensation.
+Revert the continuation and regenerate the context lock to restore main's
+snapshot-based integration. Consumers of batch drafts and typed leaf/context
+records must use a matching compiler revision. No remote system, deployed
+application or persisted runtime state needs compensation.

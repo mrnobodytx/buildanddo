@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/models.py, libs/semantic_twin/relations.py
+# Depends:     libs/semantic_twin/models.py, libs/semantic_twin/relations.py, libs/semantic_twin/ingestion/graph.py
 # EnumType:    Adapter
-# EnumEdges:   CONSUMES libs/semantic_twin/models.py; CONSUMES libs/semantic_twin/relations.py; PRODUCES libs/semantic_twin/ingestion/graph.py; SUPERSEDES libs/semantic_twin/phase1/compat.py
+# EnumEdges:   CONSUMES libs/semantic_twin/models.py; CONSUMES libs/semantic_twin/relations.py; DEPENDS_ON libs/semantic_twin/ingestion/graph.py
 # Intent:      Resolve extracted facts in two passes so canonical edges bind real endpoint types, revisions and source evidence.
 # ───────────────────────────────────────────────────────────────
 
@@ -397,7 +397,7 @@ class GraphDraft:
                     evidence=(ref,),
                 )
             )
-        return SemanticGraph(tuple(objects))
+        return SemanticGraph(tuple(objects), aliases=identifiers)
 
 
 def combine_drafts(*graphs: GraphDraft) -> GraphDraft:

@@ -37,6 +37,8 @@ states, predicates, authority, transitions and canonical object/event envelopes.
 | 7 | Complete semantic IDs, wire schema and Merkle metadata | `python -m unittest tests.upgrade.test_semantic_twin_contracts.IdentityTests tests.upgrade.test_semantic_twin_contracts.MerkleTests tests.upgrade.test_semantic_twin_contracts.WireTests && echo PASS` | done |
 | 8 | Bind predicates and promotions to typed receipts | `python -m unittest tests.upgrade.test_semantic_twin_contracts.ReceiptTests tests.upgrade.test_semantic_twin_contracts.RelationTests tests.upgrade.test_semantic_twin_contracts.PromotionTests && echo PASS` | done |
 | 9 | Complete governed semantic transaction and consistency contracts | `python -m unittest tests.upgrade.test_semantic_twin_contracts.TransactionTests tests.upgrade.test_semantic_twin_contracts.ConsistencyTests && echo PASS` | done |
+| 10 | Migrate existing consumers to strict v2 objects and revision-bound relations | `python -m unittest tests.upgrade.test_semantic_twin_ingestion tests.upgrade.test_semantic_twin_phase1_complete && echo PASS` | done |
+| 11 | Prove combined acceptance and strict graph round trips | `python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py' && echo PASS` | done |
 
 ## Constraints
 
@@ -53,10 +55,13 @@ states, predicates, authority, transitions and canonical object/event envelopes.
 ## Smoke test
 
 ```bash
-python -m unittest tests.upgrade.test_semantic_twin tests.upgrade.test_semantic_twin_contracts -v
-python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin.py tests/upgrade/test_semantic_twin_contracts.py
+python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py' -v
+python -m unittest discover -s tests/upgrade -p 'test_*.py' -v
+python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin*.py
 python -m mypy --strict libs/semantic_twin
-python -m ruff check libs/semantic_twin tests/upgrade/test_semantic_twin.py tests/upgrade/test_semantic_twin_contracts.py
+python -m ruff check libs/semantic_twin tests/upgrade/test_semantic_twin*.py
+python -m ruff format --check libs/semantic_twin tests/upgrade/test_semantic_twin*.py
+python -m libs.semantic_twin.schema
 python scripts/ci/verify_public_boundary.py
 python scripts/ci/agent_context.py --check
 ```

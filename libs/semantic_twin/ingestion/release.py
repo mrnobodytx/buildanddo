@@ -71,9 +71,9 @@ def extract_release_path(
                 RelationDraft(
                     predicate=RelationPredicate.SUCCEEDED_BY,
                     target=RELEASE_PATH_KEYS[index + 1],
-                    evidence=(source,),
-                    confidence=1.0,
-                    state=EvidenceState.INFERRED,
+                    evidence=(),
+                    confidence=None,
+                    state=EvidenceState.UNMEASURED,
                 ),
             )
         )

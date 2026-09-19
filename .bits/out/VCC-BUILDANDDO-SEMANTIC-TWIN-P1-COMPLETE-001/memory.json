@@ -44,7 +44,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001/report.md"
       ],
-      "lines": 2437,
+      "lines": 2627,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the governed memory payload for complete local Phase 1 structure, proof artifacts and verification evidence.",
@@ -76,7 +76,7 @@
         ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md",
         "tests/upgrade/test_semantic_twin_phase1_complete.py"
       ],
-      "lines": 197,
+      "lines": 227,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Record the repaired Phase 1 v2 integration, observed validation and remaining runtime evidence gaps.",
@@ -107,7 +107,7 @@
       "dependencies": [
         "tests/upgrade/test_semantic_twin_integration_v2.py"
       ],
-      "lines": 185,
+      "lines": 240,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe measured local validation and capture metadata without treating absent runtime evidence as verified deployment truth.",
@@ -170,7 +170,7 @@
         ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md",
         ".bits/srs_registry.yml"
       ],
-      "lines": 96,
+      "lines": 102,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Authorize the Phase 1 v2 integration repair and local evidence validation without deployment, signing or external-write authority.",
@@ -202,7 +202,7 @@
         ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001.md",
         "libs/semantic_twin/ingestion"
       ],
-      "lines": 100,
+      "lines": 101,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Complete Phase 1 with deterministic local history, supply-chain, provider-export, memory, reconciliation, epoch and replay proof compilation.",
@@ -238,6 +238,38 @@
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "phase1-v2-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "libs/semantic_twin/__init__.py",
+        "libs/semantic_twin/schema.py"
+      ],
+      "lines": 179,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the frozen contracts, explicit version break and evidence trust boundary before runtime integration.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
       "outcome": "success",
       "supersedes": false,
@@ -327,6 +359,53 @@
     },
     {
       "type": "A",
+      "file_path": "libs/semantic_twin/ingestion/builder.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "entity_type",
+        "canonical_id",
+        "object_kind",
+        "RelationDraft",
+        "PendingRelation",
+        "ObjectDraft",
+        "pending_relation",
+        "make_object"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/ingestion/inputs.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/models.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/relations.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 296,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compile explicitly typed extraction records into strict v2 envelopes and defer edge binding until both revisions exist.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "phase1-v2-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
       "file_path": "libs/semantic_twin/ingestion/claims.py",
       "cket_stage": "07_BUILD",
       "srs_codes": [
@@ -389,47 +468,13 @@
       ],
       "dependencies": [
         "libs/semantic_twin/models.py",
-        "libs/semantic_twin/relations.py"
+        "libs/semantic_twin/relations.py",
+        "libs/semantic_twin/ingestion/graph.py"
       ],
       "lines": 407,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Resolve extracted facts in two passes so canonical edges bind real endpoint types, revisions and source evidence.",
-      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "outcome": "success",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-        "phase1-v2-integration"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "libs/semantic_twin/ingestion/graph.py",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001"
-      ],
-      "enum_type": "Schema",
-      "functions": [
-        "SemanticGraph",
-        "combine_graphs"
-      ],
-      "dependencies": [
-        "libs/semantic_twin/models.py",
-        "libs/semantic_twin/vocabulary.py"
-      ],
-      "lines": 124,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Hold ingested envelopes in a deterministic graph that can prove target resolution, connectivity and absence of orphan objects.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
       "outcome": "success",
       "supersedes": false,
@@ -579,10 +624,10 @@
         "libs/semantic_twin/ingestion/graph.py",
         "libs/semantic_twin/models.py"
       ],
-      "lines": 77,
+      "lines": 78,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Produce stable canonical JSON and one self-excluding SHA-256 Merkle leaf digest for every ingested envelope.",
+      "intent_statement": "Serialize complete canonical envelopes unchanged with detached subject-bound SHA-256 leaf digests.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
       "outcome": "success",
       "supersedes": false,
@@ -659,7 +704,7 @@
         "libs/semantic_twin/phase1/compiler.py",
         "libs/semantic_twin/phase1/context.py"
       ],
-      "lines": 162,
+      "lines": 179,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Document reproducible v2 ingestion, evidence inputs and the limits of release and context proof claims.",
@@ -826,37 +871,6 @@
     },
     {
       "type": "A",
-      "file_path": "libs/semantic_twin/phase1/compat.py",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001"
-      ],
-      "enum_type": "Adapter",
-      "functions": [],
-      "dependencies": [
-        "libs/semantic_twin/ingestion/drafts.py"
-      ],
-      "lines": 0,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Remove the process-global factory patch after replacing it with direct canonical v2 resolution.",
-      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "outcome": "success",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-        "phase1-v2-integration"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
       "file_path": "libs/semantic_twin/phase1/compiler.py",
       "cket_stage": "07_BUILD",
       "srs_codes": [
@@ -925,7 +939,7 @@
         "libs/semantic_twin/phase1/merkle.py",
         "libs/semantic_twin/ingestion/graph.py"
       ],
-      "lines": 243,
+      "lines": 244,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Compile query-scoped, inclusion-proven context bundles with explicit historical cutoffs and selection reasons.",
@@ -1041,7 +1055,7 @@
         "libs/semantic_twin/ingestion/serializer.py",
         "libs/semantic_twin/ingestion/graph.py"
       ],
-      "lines": 195,
+      "lines": 196,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Root the deterministic object set into a semantic epoch with independently verifiable inclusion proofs.",
@@ -1246,10 +1260,53 @@
         ".bits/srs",
         ".bits/out"
       ],
-      "lines": 313,
+      "lines": 314,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prove release ingestion is connected, vocabulary-bound, evidence-aware and byte-for-byte deterministic.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "phase1-v2-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_semantic_twin_integration.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "capture",
+        "node",
+        "RevisionBindingTests",
+        "CaptureContractTests",
+        "GraphWireTests"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/__init__.py",
+        "libs/semantic_twin/ingestion/__init__.py",
+        "libs/semantic_twin/ingestion/builder.py",
+        "libs/semantic_twin/ingestion/graph.py",
+        "libs/semantic_twin/ingestion/inputs.py",
+        "libs/semantic_twin/phase1/merkle.py",
+        "libs/semantic_twin/phase1/providers.py"
+      ],
+      "lines": 422,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prevent source-revision, endpoint, wire-format and false-verification regressions at the P0 consumer boundary.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
       "outcome": "success",
       "supersedes": false,
@@ -1514,6 +1571,26 @@
     },
     {
       "type": "B",
+      "source": "libs/semantic_twin/README.md",
+      "target": "libs/semantic_twin/__init__.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/README.md consumes libs/semantic_twin/__init__.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/README.md",
+      "target": "libs/semantic_twin/schema.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/README.md consumes libs/semantic_twin/schema.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "libs/semantic_twin/ingestion/__init__.py",
       "target": "libs/semantic_twin/ingestion/claims.py",
       "edge_type": "CONSUMES",
@@ -1614,6 +1691,86 @@
     },
     {
       "type": "B",
+      "source": "libs/semantic_twin/ingestion/builder.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/ingestion/builder.py consumes libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/ingestion/builder.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/ingestion/builder.py consumes libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/ingestion/builder.py",
+      "target": "libs/semantic_twin/ingestion/inputs.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/ingestion/builder.py consumes libs/semantic_twin/ingestion/inputs.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/ingestion/builder.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/ingestion/builder.py consumes libs/semantic_twin/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/ingestion/builder.py",
+      "target": "libs/semantic_twin/models.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/ingestion/builder.py consumes libs/semantic_twin/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/ingestion/builder.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/ingestion/builder.py consumes libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/ingestion/builder.py",
+      "target": "libs/semantic_twin/relations.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/ingestion/builder.py consumes libs/semantic_twin/relations.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/ingestion/builder.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/ingestion/builder.py consumes libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "libs/semantic_twin/ingestion/claims.py",
       "target": ".bits/srs",
       "edge_type": "CONSUMES",
@@ -1676,59 +1833,9 @@
       "type": "B",
       "source": "libs/semantic_twin/ingestion/drafts.py",
       "target": "libs/semantic_twin/ingestion/graph.py",
-      "edge_type": "PRODUCES",
+      "edge_type": "DEPENDS_ON",
       "weight": 1.0,
-      "description": "libs/semantic_twin/ingestion/drafts.py produces libs/semantic_twin/ingestion/graph.py.",
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "libs/semantic_twin/ingestion/drafts.py",
-      "target": "libs/semantic_twin/phase1/compat.py",
-      "edge_type": "SUPERSEDES",
-      "weight": 1.0,
-      "description": "libs/semantic_twin/ingestion/drafts.py supersedes libs/semantic_twin/phase1/compat.py.",
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "libs/semantic_twin/ingestion/graph.py",
-      "target": "libs/semantic_twin/models.py",
-      "edge_type": "CONSUMES",
-      "weight": 1.0,
-      "description": "libs/semantic_twin/ingestion/graph.py consumes libs/semantic_twin/models.py.",
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "libs/semantic_twin/ingestion/graph.py",
-      "target": "libs/semantic_twin/vocabulary.py",
-      "edge_type": "CONSUMES",
-      "weight": 1.0,
-      "description": "libs/semantic_twin/ingestion/graph.py consumes libs/semantic_twin/vocabulary.py.",
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "libs/semantic_twin/ingestion/graph.py",
-      "target": "libs/semantic_twin/ingestion/release.py",
-      "edge_type": "PRODUCES",
-      "weight": 1.0,
-      "description": "libs/semantic_twin/ingestion/graph.py produces libs/semantic_twin/ingestion/release.py.",
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "libs/semantic_twin/ingestion/graph.py",
-      "target": "libs/semantic_twin/ingestion/source.py",
-      "edge_type": "PRODUCES",
-      "weight": 1.0,
-      "description": "libs/semantic_twin/ingestion/graph.py produces libs/semantic_twin/ingestion/source.py.",
+      "description": "libs/semantic_twin/ingestion/drafts.py depends_on libs/semantic_twin/ingestion/graph.py.",
       "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -2344,6 +2451,76 @@
     },
     {
       "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_integration.py",
+      "target": "libs/semantic_twin/__init__.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_integration.py consumes libs/semantic_twin/__init__.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_integration.py",
+      "target": "libs/semantic_twin/ingestion/__init__.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_integration.py consumes libs/semantic_twin/ingestion/__init__.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_integration.py",
+      "target": "libs/semantic_twin/ingestion/builder.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_integration.py consumes libs/semantic_twin/ingestion/builder.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_integration.py",
+      "target": "libs/semantic_twin/ingestion/graph.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_integration.py consumes libs/semantic_twin/ingestion/graph.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_integration.py",
+      "target": "libs/semantic_twin/ingestion/inputs.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_integration.py consumes libs/semantic_twin/ingestion/inputs.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_integration.py",
+      "target": "libs/semantic_twin/phase1/merkle.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_integration.py consumes libs/semantic_twin/phase1/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_integration.py",
+      "target": "libs/semantic_twin/phase1/providers.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_integration.py consumes libs/semantic_twin/phase1/providers.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "tests/upgrade/test_semantic_twin_integration_v2.py",
       "target": "libs/semantic_twin/ingestion",
       "edge_type": "VALIDATES",
@@ -2386,7 +2563,7 @@
       "type": "C",
       "event_type": "test_fail",
       "file_path": "libs/semantic_twin/ingestion",
-      "description": "Reproduced the merged Phase 1 constructor mismatch: 80 tests executed, 16 errors.",
+      "description": "Historical baseline reproduced the Phase 1 constructor mismatch: 80 tests executed, 16 errors.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": "semantic-twin.phase-1.complete",
@@ -2397,35 +2574,48 @@
     },
     {
       "type": "C",
-      "event_type": "test_pass",
-      "file_path": "libs/semantic_twin/phase1",
-      "description": "All 104 combined Phase 0 and Phase 1 tests passed, including 19 new evidence and proof regressions.",
+      "event_type": "test_fail",
+      "file_path": "libs/semantic_twin/ingestion",
+      "description": "Initial reconciliation with main ran 119 tests and exposed unresolved export guards plus draft/wire API mismatches: 3 failures and 2 errors.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": "semantic-twin.phase-1.complete",
       "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "timestamp": "2026-09-19T02:26:15.877190+00:00",
+      "timestamp": "2026-09-19T02:48:14.677475+00:00",
       "commit_sha": null,
-      "smoke_result": "104/104"
+      "smoke_result": "119 run / 3 failures / 2 errors"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "libs/semantic_twin/phase1",
+      "description": "All 122 combined contract and ingestion tests passed, retaining both integration suites and three new cross-builder regressions.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "semantic-twin.phase-1.complete",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "timestamp": "2026-09-19T02:55:41.406008+00:00",
+      "commit_sha": null,
+      "smoke_result": "122/122"
     },
     {
       "type": "C",
       "event_type": "smoke_run",
       "file_path": "libs/semantic_twin/phase1",
-      "description": "Strict mypy with followed imports, Ruff, syntax, public-boundary and measured-context checks passed; actual provider/deployment inputs remain unavailable.",
+      "description": "The broader upgrade suite passed 467 tests with 22 declared skips; strict types, lint, formatting, syntax, boundary and context checks passed. Runtime receipt and provider inputs remain unavailable.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": "semantic-twin.phase-1.complete",
       "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-      "timestamp": "2026-09-19T02:29:06.388684+00:00",
+      "timestamp": "2026-09-19T02:52:46.539450+00:00",
       "commit_sha": null,
-      "smoke_result": null
+      "smoke_result": "467 passed / 22 skipped"
     }
   ],
   "summary": {
-    "type_a_count": 36,
-    "type_b_count": 103,
-    "type_c_count": 3,
+    "type_a_count": 37,
+    "type_b_count": 115,
+    "type_c_count": 4,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",

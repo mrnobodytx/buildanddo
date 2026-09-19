@@ -307,6 +307,7 @@ class SerializerTests(unittest.TestCase):
         self.assertRegex(
             source_commit["source"]["document_version"], r"^sha256:[0-9a-f]{64}$"
         )
+        self.assertIsNone(source_commit["source"]["commit"])
 
 
 if __name__ == "__main__":

@@ -107,10 +107,23 @@ as claims with references, rather than reasserted as observed code or runtime ed
 ## Canonical graphs and proofs
 
 `compile_release_twin` and `compile_phase1` return canonical graphs. Individual
-adapters build `GraphDraft` fragments; combine those with their anchors and call
+Phase 1 adapters and bounded `extract_*` functions build `GraphDraft` fragments;
+combine those with their anchors and call
 `resolve(repository_root=..., observed_at=...)` to validate the full graph.
 Resolution supplies typed semantic IDs, endpoint types and exact revisions,
 subject-scoped evidence, and all ten state axes. No factory is monkeypatched.
+
+The snapshot builder API from Phase 0 remains available: `SourceSnapshot`,
+`ingestion.builder.make_object`, and `SemanticGraph` fragments with pending
+edges. Resolved batch graphs retain local aliases so `combine_graphs` can join
+them with snapshot fragments. Conflicting aliases and changed endpoint revisions
+are rejected. Serialization, epoch creation and context compilation require all
+edges to be resolved. `phase1.compat` retains its patch-free builder and bounded
+compiler entry points.
+
+The eight static release nodes describe capabilities. Their proposed order has
+`UNMEASURED` edges and no runtime verification evidence; captured receipts are
+separate observations used by the release-truth matrix.
 
 The JSON graph uses `semantic-twin.graph/v2`. Every item in `objects` round-trips
 through `CanonicalObjectEnvelope.from_json`. Leaf metadata is separate from the
@@ -119,6 +132,10 @@ keys, compact JSON, ASCII escapes, finite numbers). Envelope evidence or
 provenance changes therefore invalidate its leaf. Objects keep `UNHASHED` state;
 the separate typed epoch and proofs bind those exact bytes without recursively
 embedding a leaf digest in itself.
+
+Each `leaf_digests` entry contains `subject` and `digest` records, binding a
+semantic ID and source revision to a typed content digest. Consumers of the
+earlier ID-to-digest mapping must read these records instead.
 
 The epoch uses Phase 0 `MerkleEpoch`, `MerkleLeaf`, `MerkleRoot` and
 `InclusionProof`. Leaves are sorted by semantic ID. Parent hashes use `0x01 ||

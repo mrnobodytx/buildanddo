@@ -1,20 +1,31 @@
 {
   "schema_version": "semantic-twin.phase1-validation/v2",
-  "recorded_at": "2026-09-19T02:28:35.853700+00:00",
+  "recorded_at": "2026-09-19T02:56:52.006758+00:00",
   "scope": "local software integration; operational evidence remains unmeasured",
   "tests": {
     "baseline_tests_run": 80,
     "baseline_errors": 16,
-    "current_tests_run": 104,
+    "current_tests_run": 122,
     "current_errors": 0,
     "current_failures": 0,
-    "new_regression_tests": 19,
+    "new_regression_tests": 22,
     "command": "python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py' -v",
-    "trace_log_sha256": "acd6f0bdbf5a2a244f82b7397c25f1538f73fc53d43e56eb86e8d4a0108e596a"
+    "trace_log_sha256": "e56baae21a98a665b7c62c9f45aeac30202bf405b30d011e8641ae107cab9e79",
+    "inherited_main_integration_tests": 15,
+    "new_merge_regression_tests": 3,
+    "broader_upgrade_tests_run": 489,
+    "broader_upgrade_tests_passed": 467,
+    "broader_upgrade_tests_skipped": 22,
+    "broader_upgrade_command": "python -m unittest discover -s tests/upgrade -p 'test_*.py' -v",
+    "broader_upgrade_log_sha256": "5b13a2a9ad46df4556f68da418ae79d03c0ada74dcbca975746de1548d8f81ca"
   },
   "coverage": {
     "tool": "Python stdlib trace",
     "implementation_modules": {
+      "libs/semantic_twin/ingestion/builder.py": {
+        "executable_lines": 200,
+        "percent": 96
+      },
       "libs/semantic_twin/ingestion/claims.py": {
         "executable_lines": 263,
         "percent": 95
@@ -24,8 +35,12 @@
         "percent": 98
       },
       "libs/semantic_twin/ingestion/graph.py": {
-        "executable_lines": 73,
-        "percent": 86
+        "executable_lines": 132,
+        "percent": 100
+      },
+      "libs/semantic_twin/ingestion/inputs.py": {
+        "executable_lines": 85,
+        "percent": 89
       },
       "libs/semantic_twin/ingestion/pipeline.py": {
         "executable_lines": 109,
@@ -40,7 +55,7 @@
         "percent": 100
       },
       "libs/semantic_twin/ingestion/serializer.py": {
-        "executable_lines": 35,
+        "executable_lines": 36,
         "percent": 100
       },
       "libs/semantic_twin/ingestion/source.py": {
@@ -60,19 +75,19 @@
         "percent": 98
       },
       "libs/semantic_twin/phase1/context.py": {
-        "executable_lines": 176,
+        "executable_lines": 177,
         "percent": 92
       },
       "libs/semantic_twin/phase1/history.py": {
         "executable_lines": 167,
-        "percent": 97
+        "percent": 95
       },
       "libs/semantic_twin/phase1/memory.py": {
         "executable_lines": 104,
         "percent": 100
       },
       "libs/semantic_twin/phase1/merkle.py": {
-        "executable_lines": 123,
+        "executable_lines": 124,
         "percent": 100
       },
       "libs/semantic_twin/phase1/providers.py": {
@@ -92,12 +107,16 @@
         "percent": 97
       }
     },
-    "minimum_percent": 86,
+    "minimum_percent": 89,
     "note": "Entry-point and package import lines are not included in this trace summary; CLI behavior is exercised by the suite."
   },
   "static_checks": {
-    "mypy": "PASS; strict with followed imports, 23 source files",
-    "ruff": "PASS"
+    "mypy": "PASS; strict with followed imports, 38 source files",
+    "ruff": "PASS",
+    "format": "PASS; 44 files",
+    "syntax": "PASS",
+    "public_boundary": "PASS; 1022 files, no failures",
+    "measured_context": "PASS; regenerated after resolving the merge index"
   },
   "runtime_evidence": {
     "release_receipts": "UNMEASURED",
@@ -123,23 +142,28 @@
   ],
   "cloud_ci": {
     "status": "UNVERIFIED",
-    "reason": "GitHub diagnostics unavailable from this sandbox; connected PR/job diagnostic lookups returned no evidence."
+    "reason": "Local conflict resolution has not been synchronized through the coding-agent UI; remote CI has not rerun for this tree.",
+    "last_published_check": {
+      "name": "Workers Builds: buildanddo",
+      "conclusion": "FAILURE",
+      "completed_at": "2026-09-19T02:40:44Z"
+    }
   },
   "graph_capture": {
-    "observed_at": "2026-09-19T02:36:30.543811+00:00",
-    "repository_head_at_capture": "a47b004595369241cbc32b5e5e4b21a3ad506bd4",
+    "observed_at": "2026-09-19T02:59:45.924556+00:00",
+    "repository_head_at_capture": "5c54af0395cf21e8fd19dcc91a42a42ad28a0699",
     "scope": "working tree input snapshots and ten local history entries at capture time",
-    "objects": 4110,
-    "relations": 9587,
+    "objects": 4249,
+    "relations": 9921,
     "connected": true,
     "orphan_count": 0,
     "unresolved_target_count": 0,
-    "canonical_round_trips": 4110,
-    "semantic_root": "1af5ef14fe0c7ecc78438d167268ed33d0292effce986b5890745273251bbf25",
+    "canonical_round_trips": 4249,
+    "semantic_root": "978a36193c50cb36287acd1c8eba268d246aeb0022907795457c19a240438cb2",
     "context_selections": 20,
-    "context_root": "c296f7cc367f6be1518fd6529ee97a567771255ba8c0c6abfdf98669810b1b15",
+    "context_root": "7e6a4b6790b71c01b16fc2876a509c165786fbd0109949b65864d888aca132b8",
     "context_proof_valid": true,
-    "payload_sha256": "e3edb48f7e0ad5b033f957578ddbc1cebfe793653ac1f1909fe99baba6cc1c9f",
+    "payload_sha256": "ad733f0420b02a7da82a1d7e79bd45e1fc55590dd10fedde99211d4f93fe1bc0",
     "input_status": {
       "datadog": {
         "object_count": 0,
@@ -150,7 +174,7 @@
         "status": "OBSERVED_INPUT"
       },
       "documentation": {
-        "object_count": 146,
+        "object_count": 147,
         "status": "OBSERVED_INPUT"
       },
       "git_history": {
@@ -162,7 +186,7 @@
         "status": "UNMEASURED"
       },
       "memory": {
-        "object_count": 2679,
+        "object_count": 2792,
         "status": "OBSERVED_INPUT"
       },
       "release_receipts": {
@@ -181,5 +205,36 @@
     "release_truth": "INCOMPLETE",
     "artifact_location": "/tmp/buildanddo-semantic-twin-v2.json",
     "retention": "Full public-input capture remains in the session temporary directory, not in Git."
+  },
+  "merge_resolution": {
+    "pull_request": 55,
+    "incoming_ref": "origin/main",
+    "incoming_revision": "e744542e7289d9da40e93e4e8f45a28130f41b28",
+    "conflicted_paths_resolved": 23,
+    "initial_combined_tests": {
+      "run": 119,
+      "failures": 3,
+      "errors": 2
+    },
+    "targeted_red": {
+      "run": 18,
+      "failures": 6,
+      "errors": 1
+    },
+    "targeted_green": {
+      "run": 18,
+      "failures": 0,
+      "errors": 0
+    },
+    "retained": [
+      "Main source snapshots, pending-relation binding and patch-free compatibility entry points",
+      "P1 batch resolution, conservative release reconciliation and typed payload-bound proofs",
+      "Both integration suites and canonical Phase 0 validators"
+    ],
+    "regressions": [
+      "Batch aliases resolve snapshot-fragment references",
+      "Conflicting aliases fail across both builders",
+      "Context compilation rejects pending edges even when object payloads match an epoch"
+    ]
   }
 }

@@ -32,6 +32,11 @@ acceptance. This continuation must pass all four gates:
 | B | Integrate all adapters, canonical epochs and context replay | `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete -v` | done |
 | C | Verify Phase 0 compatibility and negative integrity cases | `python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py' -v` | done |
 | D | Compile current evidence, record gaps, and validate governance | `python scripts/ci/verify_public_boundary.py` and `python scripts/ci/agent_context.py --check` | done; runtime inputs remain unavailable |
+| E | Reconcile PR #55 with main while retaining both integration suites | `python -m unittest tests.upgrade.test_semantic_twin_integration -v` and the combined suite | done |
+
+The owner's follow-up requests resolution of PR #55's merge conflicts. Preserve
+main's snapshot/deferred-edge APIs and the Phase 1 batch/proof implementation,
+reconcile their consumer documentation, and regenerate this dispatch's evidence.
 
 ## Objective
 
@@ -56,7 +61,8 @@ semantic reconciliation and replayable proof compilation.
 ## Constraints
 
 - Files this dispatch may touch: `libs/semantic_twin/phase1/**`,
-  `libs/semantic_twin/ingestion/**`, `tests/upgrade/test_semantic_twin_ingestion.py`,
+  `libs/semantic_twin/ingestion/**`, `libs/semantic_twin/README.md`,
+  `tests/upgrade/test_semantic_twin_ingestion.py`,
   `tests/upgrade/test_semantic_twin_phase1_complete.py`, additional focused Phase 1
   migration tests, this SRS/dispatch,
   `.bits/srs_registry.yml`, `.bits/context.lock.json`, and

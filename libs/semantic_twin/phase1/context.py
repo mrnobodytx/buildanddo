@@ -129,6 +129,7 @@ def compile_context_bundle(
     limit: int = 20,
 ) -> ContextProofBundle:
     """Select available facts, retaining their bytes and exact Phase 0 proofs."""
+    graph.require_resolved()
     require(bool(query.strip()), "query must not be empty")
     require(limit > 0, "limit must be positive")
     if historical_cutoff is not None:

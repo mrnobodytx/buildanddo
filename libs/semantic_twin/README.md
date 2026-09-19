@@ -130,3 +130,50 @@ measurement require externally observed evidence, beyond P0 unit tests.
 python -m unittest tests.upgrade.test_semantic_twin tests.upgrade.test_semantic_twin_contracts
 python -m mypy --strict libs/semantic_twin
 ```
+
+## Existing ingestion consumers
+
+The bounded release compiler and the local Phase 1 compiler emit strict v2
+objects. Their outer payload versions are `semantic-twin.graph/v2` and
+`semantic-twin.phase1-complete/v2`. Read each `objects` entry with
+`CanonicalObjectEnvelope.from_dict`. Graph `leaf_digests` are separate typed
+records containing the subject identity/revision and a SHA-256 digest of the
+exact `to_json()` bytes. Serializing a graph does not change an object's Merkle
+state or create an incomplete leaf binding.
+
+Extractor categories such as `GitLabJob` remain in claim metadata;
+`object_kind` reads both batch `ingestion_kind` and snapshot `ingestion.kind`
+records. `object_type` always uses the frozen `EntityType`. Extractor-local keys
+map to type-qualified canonical identities. This reconstructs captured inputs;
+it does not decode version-one envelopes.
+
+Batch adapters bind the SHA-256 revisions of the bytes actually parsed and
+reject conflicting input revisions during resolution. `SourceSnapshot` also
+supports caller-captured bytes, source paths, section selectors and timestamps
+through the snapshot builder. A supplied repository commit remains context; it
+does not assert that a dirty file or an external export matches that commit.
+Observation timestamps describe capture, independently of Git author time,
+deployment time or file mtime. Replaying the same inputs and capture time is
+deterministic; a new observation time can change the graph digest.
+
+Batch adapters assemble `GraphDraft` fragments and resolve them together with
+their anchors. The snapshot builder can also assemble `SemanticGraph` fragments
+with pending edges separate from canonical objects. Resolved batch graphs retain
+their local aliases so both paths compose through `combine_graphs`. Combining
+fragments binds actual endpoint types and revisions; conflicting aliases and
+changed target revisions fail validation. Unresolved edges block serialization,
+epoch creation and context compilation. The patch-free `phase1.compat` entry
+points remain available for snapshot-builder callers.
+
+The static release diagram uses capability nodes whose proposed sequence edges
+remain `UNMEASURED`. They do not represent executed deployments. Documentation
+classifications retain their AST/string origin, memory edges remain recorded
+assertions, and provider `PASS` fields stay observations with `NOT_TESTED` TEVV.
+None of those inputs mint verification receipts or a live runtime status.
+Receipt-file I/O and event publication have distinct endpoints.
+
+Run the combined contract and consumer acceptance suite:
+
+```sh
+python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py'
+```

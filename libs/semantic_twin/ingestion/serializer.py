@@ -12,7 +12,7 @@
 # EnumType:    Adapter
 # EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/models.py; PRODUCES semantic-twin.graph/v2
 # DAG Node:    semantic-twin.phase-1.serializer
-# Intent:      Produce stable canonical JSON and one self-excluding SHA-256 Merkle leaf digest for every ingested envelope.
+# Intent:      Serialize complete canonical envelopes unchanged with detached subject-bound SHA-256 leaf digests.
 # ──────────────────────────────────────────────────────────
 
 """Serialize semantic graphs with deterministic Merkle leaf digests."""
@@ -47,6 +47,7 @@ def graph_payload(graph: SemanticGraph) -> dict[str, Any]:
     Hash records stay outside their hashed objects, avoiding circular hashes or
     an unsupported change to the object's Merkle state.
     """
+    graph.require_resolved()
     objects = sorted(graph.objects, key=lambda value: value.semantic_id)
     return {
         "schema_version": "semantic-twin.graph/v2",

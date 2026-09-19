@@ -31,12 +31,13 @@ CKS Gate:    B+/75
 CKS:         pending
 CAPS:        pending
 CK:          pending
-Commits:     0 at validation capture; workspace bookkeeping follows validation
+Commits:     1 implementation change before the merge validation capture; merge bookkeeping follows validation
 
 The owner's continuation authorizes A2 repair of both ingestion layers against
 merged Phase 0 v2. Earlier pre-merge green results are superseded by this report.
-The current baseline reproduced 16 errors across 80 executed tests. The repaired
-combined suite executes all 104 tests successfully, including 19 new regressions.
+The original baseline reproduced 16 errors across 80 executed tests. The resolved
+tree passes all 122 combined tests, retaining both integration suites and three
+new regressions for interoperability between batch and snapshot fragments.
 
 ## §2 TASK RESULTS
 
@@ -48,8 +49,9 @@ revision; evidence is scoped to its subject. Source versions hash parsed bytes,
 not a potentially unrelated HEAD. Conflicting source snapshots are rejected.
 Canonical constructors and both Phase 0 suites remain unchanged.
 
-The release path is connected through source-backed capability records. Static
-source cannot mint deployment or verification receipts. Call extraction keeps
+The release path is connected through source-backed capability records. Its
+proposed sequence edges remain UNMEASURED with no runtime evidence. Static source
+cannot mint deployment or verification receipts. Call extraction keeps
 recursion without binding unrelated attribute calls to local functions. Claim
 classification restricts entailment to explicit AST/string propositions.
 
@@ -72,14 +74,15 @@ Context bundles retain exact selected payloads, scoped proofs, question and
 selection metadata. Altered content fails verification against a trusted root.
 Historical filtering excludes later/unknown observations and later references;
 Git author timestamps do not backdate newly captured evidence. The process-global
-compatibility monkeypatch has been removed.
+compatibility monkeypatch has been removed. Main's patch-free compatibility
+entry points remain available.
 
 Verify: `python -m unittest tests.upgrade.test_semantic_twin_phase1_complete tests.upgrade.test_semantic_twin_integration_v2 -v`
 Files: `libs/semantic_twin/phase1/`, focused tests. CKET: 07_BUILD, 08_TEST, 06_PLAN.
 
 ### C — Combined contracts and negative integrity checks: PASS
 
-104/104 tests pass together. The added regressions cover canonical wire round
+122/122 tests pass together. The added regressions cover canonical wire round
 trips, scoped endpoint revisions, input changes, malformed JSON and provider
 shapes, false release success, missing fields, contradictory readbacks, DORA
 ordering, deterministic roots, changed proof bytes and replay boundaries.
@@ -105,32 +108,59 @@ Those lookups establish an availability gap, not absence of a real deployment.
 
 CKET: 11_COMMIT. No external mutation or deployment was performed.
 
+### E — Reconcile PR #55 with main: PASS
+
+Resolved 23 conflicts with the independently merged integration. Main's snapshot
+builder, deferred-edge checks and original integration suite compose with the
+P1 batch resolver and payload-bound proof layer. Batch aliases survive canonical
+resolution; cross-builder alias conflicts fail closed. Unresolved edges cannot
+be serialized, rooted or selected into a context bundle. Typed digest records
+retain subject identity and source revision. The compatibility entry points do
+not modify module globals.
+
+The initial combined run exposed three failures and two errors across 119 tests.
+After adapting draft/digest assertions, the focused red run had six failures and
+one error across 18 tests. Restored export guards, preserved alias maps, shared
+kind lookup and unmeasured static sequence edges fix these integration gaps;
+all 18 targeted tests now pass. Three added regressions independently cover
+cross-builder references, conflicting aliases and unresolved context export.
+
+Verify: `python -m unittest tests.upgrade.test_semantic_twin_integration -v`
+Files: batch resolution, snapshot kind lookup, graph export/context guards,
+release model, integration tests and consumer documentation. CKET: 07_BUILD,
+08_TEST, 06_PLAN. Main's canonical contracts and release controller are unchanged.
+
 ## §3 SMOKE TEST RESULTS
 
 | Check | Runnable verification | Observed result |
 |-------|-----------------------|-----------------|
-| Baseline reproduction | Run the combined suite on the merged baseline | 80 executed, 16 errors: old relation/envelope constructor signatures |
-| Combined behavior | `python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py' -v` | PASS, 104/104 |
-| Coverage | `python -m trace --count --summary --missing --coverdir /tmp/semantic-twin-coverage --module unittest discover -s tests/upgrade -p 'test_semantic_twin*.py'` | PASS, 86–100% across 19 measured implementation modules; new resolver 98% |
-| Types | `python -m mypy --strict libs/semantic_twin/ingestion libs/semantic_twin/phase1` | PASS, 23 files; followed imports, no skip |
-| Lint | `python -m ruff check libs/semantic_twin/ingestion libs/semantic_twin/phase1 tests/upgrade/test_semantic_twin_ingestion.py tests/upgrade/test_semantic_twin_phase1_complete.py tests/upgrade/test_semantic_twin_integration_v2.py` | PASS |
-| Syntax | `python -m compileall -q libs/semantic_twin/ingestion libs/semantic_twin/phase1 tests/upgrade/test_semantic_twin_integration_v2.py` | PASS |
-| Boundary | `python scripts/ci/verify_public_boundary.py` | PASS, 1,018 files, zero failures |
-| Context | `python scripts/ci/agent_context.py --check` | PASS; six existing findings/four unwired gates retained |
+| Focused merge regression | `python -m unittest tests.upgrade.test_semantic_twin_integration -v` | PASS, 18/18; captured red run had six failures and one error |
+| Combined behavior | `python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py' -v` | PASS, 122/122 |
+| Broader compatibility | `python -m unittest discover -s tests/upgrade -p 'test_*.py' -v` | PASS, 467 passed and 22 declared skips out of 489 collected |
+| Coverage | `python -m trace --count --summary --missing --coverdir /tmp/semantic-twin-coverage --module unittest discover -s tests/upgrade -p 'test_semantic_twin*.py'` | PASS, 89–100% across 21 measured implementation modules |
+| Types | `python -m mypy --strict libs/semantic_twin` | PASS, 38 files; followed imports |
+| Lint | `python -m ruff check libs/semantic_twin tests/upgrade/test_semantic_twin*.py` | PASS |
+| Formatting | `python -m ruff format --check libs/semantic_twin tests/upgrade/test_semantic_twin*.py` | PASS, 44 files |
+| Syntax | `python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin*.py` | PASS |
+| Boundary | `python scripts/ci/verify_public_boundary.py` | PASS, 1,022 files, zero failures |
+| Context | `python scripts/ci/agent_context.py --check` | PASS after regenerating the resolved file inventory; six existing findings/four unwired gates retained |
 
-The baseline failure is fixed by typed resolution, exact snapshot evidence and
-canonical Phase 0 proof contracts. The validation layer remains unchanged.
-Entry-point/import lines are not reported by this trace summary; their behavior
-is exercised by CLI tests. Coverage used a stdlib-ignore path to avoid tracing
-the interpreter; no third-party package was installed. Cloud CI was not rerun:
-GitHub diagnostics were unreachable and connected PR/job lookups gave no detail.
-The prior remote failure is not claimed fixed based solely on local results.
+The context check initially detected the stale file count produced from the
+unmerged index. Regenerating the lock after resolution fixes that mismatch.
+Coverage uses Python stdlib tracing with the interpreter directory ignored;
+entry-point/import lines are not included in its module summary, and CLI behavior
+is exercised by the suite. No third-party runtime dependency was added.
+
+Remote CI has not rerun for this local resolution. The last published PR #55
+Cloudflare Workers build reported FAILURE; local green checks do not establish
+remote success. Earlier connected availability lookups remain historical and
+were not rerun during conflict resolution. Runtime evidence is still incomplete.
 
 ## §4 MEMORY INGEST
 
-Type A count: 36
-Type B count: 103
-Type C count: 3
+Type A count: 37
+Type B count: 115
+Type C count: 4
 IOO compliance: PASS
 DKG orphans:    0
 Payload: `.bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001/memory.json`
@@ -177,7 +207,7 @@ REFLEX check:    deferred to post-merge
 
 Entity:           Citadel Nexus Inc. (Delaware C-Corp)
 License posture:  Existing repository license unchanged
-Hard-NO scope:    No controller, Phase 0, workflow, application or private-plane edits
+Hard-NO scope:    Controller, canonical Phase 0 contracts, workflows, application and private plane unchanged relative to main
 Secret scan:      No raw credentials added; public-boundary check passes
 Stripe mode:      Not applicable; no checkout/payment change
 Authority:        Owner-authorized A2 continuation; connected read-only availability checks only
