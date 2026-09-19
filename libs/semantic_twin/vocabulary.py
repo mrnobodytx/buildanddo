@@ -155,6 +155,21 @@ class CorpusUseState(StringEnum):
     REJECTED_FOR_CITADEL = "REJECTED_FOR_CITADEL"
 
 
+class StateAxis(StringEnum):
+    """Name the ten independent dimensions in a system-twin state vector."""
+
+    EVIDENCE = "evidence_state"
+    SHACL = "shacl_state"
+    MERKLE = "merkle_state"
+    CGRF_ACTION = "cgrf_action_state"
+    TEVV = "tevv_state"
+    SEMANTIC_TRANSACTION = "semantic_transaction_state"
+    CAUSAL = "causal_state"
+    CORPUS_USE = "corpus_use_state"
+    AUTHORITY = "authority_tier"
+    LIFECYCLE = "lifecycle_state"
+
+
 class AuthorityTier(StringEnum):
     """Bound an operation by consequence and required governance friction."""
 

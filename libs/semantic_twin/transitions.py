@@ -19,11 +19,15 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from enum import Enum
 from types import MappingProxyType
-from typing import Final, Iterable, Mapping, TypeAlias
+from typing import Final, Iterable, Mapping, TypeAlias, cast
+
+from .models import AxisState, ObjectState
 
 from .vocabulary import (
+    AuthorityTier,
     CausalState,
     CgrfActionState,
     CorpusUseState,
@@ -31,6 +35,7 @@ from .vocabulary import (
     MerkleState,
     SemanticTransactionState,
     ShaclState,
+    StateAxis,
     TevvState,
 )
 
@@ -99,7 +104,6 @@ SHACL_TRANSITIONS: Final[Mapping[TransitionState, frozenset[TransitionState]]] =
                 ShaclState.DEFERRED,
             },
             ShaclState.CONFORMS: {
-                SemanticTransactionState.EVIDENCE_BOUND,
                 ShaclState.SUPERSEDED,
             },
             ShaclState.WARNING: {
@@ -453,6 +457,8 @@ def can_transition(
 ) -> bool:
     """Return whether a target is an allowed immediate next state."""
 
+    if type(current) is not type(target):
+        return False
     return target in allowed_transitions(
         current,
         direct_deterministic_verifier=direct_deterministic_verifier,
@@ -481,3 +487,154 @@ def can_automatically_promote(source: str, target: str) -> bool:
     return (source.strip().lower(), target.strip().lower()) not in (
         FORBIDDEN_AUTOMATIC_PROMOTIONS
     )
+
+
+AXIS_STATE_TYPES: Final[Mapping[StateAxis, type[object]]] = MappingProxyType(
+    {
+        StateAxis.EVIDENCE: EvidenceState,
+        StateAxis.SHACL: ShaclState,
+        StateAxis.MERKLE: MerkleState,
+        StateAxis.CGRF_ACTION: CgrfActionState,
+        StateAxis.TEVV: TevvState,
+        StateAxis.SEMANTIC_TRANSACTION: SemanticTransactionState,
+        StateAxis.CAUSAL: CausalState,
+        StateAxis.CORPUS_USE: CorpusUseState,
+        StateAxis.AUTHORITY: AuthorityTier,
+        StateAxis.LIFECYCLE: str,
+    }
+)
+
+
+@dataclass(frozen=True, slots=True)
+class StateDelta:
+    """Describe one evidenced compare-and-set change on a named state axis."""
+
+    axis: StateAxis
+    before: AxisState
+    after: AxisState
+    reason: str
+    evidence: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        """Require axis-safe values and replayable evidence."""
+
+        if not isinstance(self.axis, StateAxis):
+            raise TypeError("state delta axis must be StateAxis")
+        expected_type = AXIS_STATE_TYPES[self.axis]
+        values = (self.before, self.after)
+        if self.axis is StateAxis.LIFECYCLE:
+            valid_types = all(type(value) is str for value in values)
+        else:
+            valid_types = all(isinstance(value, expected_type) for value in values)
+        if not valid_types:
+            raise TypeError(
+                f"{self.axis.value} deltas require {expected_type.__name__} values"
+            )
+        if self.before == self.after:
+            raise ValueError("state delta must change its axis value")
+        if not isinstance(self.reason, str) or not self.reason.strip():
+            raise ValueError("state delta reason must be a non-empty string")
+        if not self.evidence or any(
+            not isinstance(item, str) or not item.strip() for item in self.evidence
+        ):
+            raise ValueError("state delta requires non-empty evidence references")
+
+    def to_dict(self) -> dict[str, object]:
+        """Render a replayable wire representation of the delta."""
+
+        return {
+            "axis": self.axis.value,
+            "before": str(self.before),
+            "after": str(self.after),
+            "reason": self.reason,
+            "evidence": list(self.evidence),
+        }
+
+
+def apply_state_deltas(
+    current: ObjectState,
+    deltas: Iterable[StateDelta],
+    *,
+    direct_deterministic_verifier: bool = False,
+) -> ObjectState:
+    """Validate and atomically apply independent changes across the state vector.
+
+    Every delta is compare-and-set against ``current``. All scalar transitions and
+    the final cross-axis state are validated before a new immutable vector is
+    returned. Authority and open lifecycle changes remain outside this automatic
+    operation because Phase 0 defines no safe transition policy for either axis.
+    """
+
+    requested = tuple(deltas)
+    if not requested:
+        raise ValueError("at least one state delta is required")
+    axes = tuple(delta.axis for delta in requested)
+    if len(axes) != len(set(axes)):
+        raise InvalidTransitionError("a state change set may modify each axis once")
+
+    updates: dict[str, object] = {}
+    for delta in requested:
+        actual = current.axis_value(delta.axis)
+        if actual != delta.before or type(actual) is not type(delta.before):
+            raise InvalidTransitionError(
+                f"stale state delta for {delta.axis.value}: "
+                f"expected {delta.before}, found {actual}"
+            )
+        if delta.axis in {StateAxis.AUTHORITY, StateAxis.LIFECYCLE}:
+            raise InvalidTransitionError(
+                f"{delta.axis.value} has no automatic Phase 0 transition policy"
+            )
+        before = cast(TransitionState, delta.before)
+        after = cast(TransitionState, delta.after)
+        require_transition(
+            before,
+            after,
+            direct_deterministic_verifier=direct_deterministic_verifier,
+        )
+        updates[delta.axis.value] = delta.after
+
+    try:
+        return ObjectState(
+            evidence_state=cast(
+                EvidenceState,
+                updates.get(StateAxis.EVIDENCE.value, current.evidence_state),
+            ),
+            shacl_state=cast(
+                ShaclState,
+                updates.get(StateAxis.SHACL.value, current.shacl_state),
+            ),
+            merkle_state=cast(
+                MerkleState,
+                updates.get(StateAxis.MERKLE.value, current.merkle_state),
+            ),
+            cgrf_action_state=cast(
+                CgrfActionState,
+                updates.get(
+                    StateAxis.CGRF_ACTION.value,
+                    current.cgrf_action_state,
+                ),
+            ),
+            tevv_state=cast(
+                TevvState,
+                updates.get(StateAxis.TEVV.value, current.tevv_state),
+            ),
+            semantic_transaction_state=cast(
+                SemanticTransactionState,
+                updates.get(
+                    StateAxis.SEMANTIC_TRANSACTION.value,
+                    current.semantic_transaction_state,
+                ),
+            ),
+            causal_state=cast(
+                CausalState,
+                updates.get(StateAxis.CAUSAL.value, current.causal_state),
+            ),
+            corpus_use_state=cast(
+                CorpusUseState,
+                updates.get(StateAxis.CORPUS_USE.value, current.corpus_use_state),
+            ),
+            authority_tier=current.authority_tier,
+            lifecycle_state=current.lifecycle_state,
+        )
+    except ValueError as exc:
+        raise InvalidTransitionError(f"inconsistent final state: {exc}") from exc

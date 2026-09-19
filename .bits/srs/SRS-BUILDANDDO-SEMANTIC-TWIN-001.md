@@ -17,7 +17,7 @@
 
 # SRS-BUILDANDDO-SEMANTIC-TWIN-001 — Living Semantic System Twin Phase 0
 
-**Status:** in_progress **Risk:** A1 **Seat:** BITS-CODEGEN
+**Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 
 ## Problem
 
@@ -32,6 +32,8 @@ evidence, authorization and verification.
 Provide one dependency-free Python package that freezes the Phase 0 vocabulary,
 explicit transition policies, canonical object and event envelopes, authority
 tiers and the fifteen design laws before any runtime integration is attempted.
+The contract must model all ten state axes together and settle independent state
+deltas atomically rather than treating cross-axis progress as one scalar enum.
 
 ## Scope
 
@@ -41,8 +43,12 @@ tiers and the fifteen design laws before any runtime integration is attempted.
   from sections 44 and 45.
 - Encode the explicit lifecycle progressions, conditional direct-observation
   verification rule and forbidden automatic promotions.
+- Represent evidence, SHACL, Merkle, CGRF action, TEVV, semantic transaction,
+  causal, corpus-use, authority and lifecycle as ten separate object-state axes.
+- Add evidenced compare-and-set deltas whose complete final vector is validated
+  before any immutable result is returned.
 - Add stdlib unit tests covering vocabulary completeness, envelope validation,
-  normal progressions and prohibited shortcuts.
+  normal progressions, five-delta atomic settlement and prohibited shortcuts.
 
 ## Out of scope
 
@@ -58,12 +64,16 @@ tiers and the fifteen design laws before any runtime integration is attempted.
 - SHACL conformance, Merkle validity, CGRF authorization and deployment are never
   represented as proof of factual or technical correctness.
 - Envelope instances require semantic identity, source/provenance and typed state.
+- Same-axis transition tables never contain values from another state family.
+- A stale, duplicate, mistyped or inconsistent delta rejects the full change set.
+- Authority and open lifecycle axes cannot self-promote through the automatic
+  delta operation because Phase 0 defines no safe transition policy for them.
 - The package has no dependency beyond the Python standard library.
 
 ## Acceptance evidence
 
 1. `python -m unittest tests.upgrade.test_semantic_twin -v` passes vocabulary,
-   transition and envelope contract tests.
+   transition, ten-axis, five-delta and envelope contract tests.
 2. `python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin.py`
    accepts every new Python module.
 3. `python scripts/ci/verify_public_boundary.py` reports `PASS`.

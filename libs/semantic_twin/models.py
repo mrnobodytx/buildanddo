@@ -23,9 +23,35 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from types import MappingProxyType
-from typing import Any
+from typing import Any, TypeAlias
 
-from .vocabulary import AuthorityTier, EvidenceState, RelationPredicate, ShaclState
+from .vocabulary import (
+    AuthorityTier,
+    CausalState,
+    CgrfActionState,
+    CorpusUseState,
+    EvidenceState,
+    MerkleState,
+    RelationPredicate,
+    SemanticTransactionState,
+    ShaclState,
+    StateAxis,
+    TevvState,
+)
+
+
+AxisState: TypeAlias = (
+    EvidenceState
+    | ShaclState
+    | MerkleState
+    | CgrfActionState
+    | TevvState
+    | SemanticTransactionState
+    | CausalState
+    | CorpusUseState
+    | AuthorityTier
+    | str
+)
 
 
 def _require_text(value: str, field_name: str) -> None:
@@ -92,18 +118,158 @@ class ValidTime:
             raise ValueError("valid_time.until must not precede valid_time.from")
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, kw_only=True)
 class ObjectState:
-    """Keep evidence, structural validation and lifecycle state distinct."""
+    """Represent all ten independent semantic-twin state axes."""
 
     evidence_state: EvidenceState
     shacl_state: ShaclState
+    merkle_state: MerkleState
+    cgrf_action_state: CgrfActionState
+    tevv_state: TevvState
+    semantic_transaction_state: SemanticTransactionState
+    causal_state: CausalState
+    corpus_use_state: CorpusUseState
+    authority_tier: AuthorityTier
     lifecycle_state: str
 
     def __post_init__(self) -> None:
-        """Validate the open lifecycle vocabulary without weakening typed states."""
+        """Validate the open lifecycle value and cross-axis prerequisites."""
 
+        typed_axes = (
+            (self.evidence_state, EvidenceState, StateAxis.EVIDENCE),
+            (self.shacl_state, ShaclState, StateAxis.SHACL),
+            (self.merkle_state, MerkleState, StateAxis.MERKLE),
+            (self.cgrf_action_state, CgrfActionState, StateAxis.CGRF_ACTION),
+            (self.tevv_state, TevvState, StateAxis.TEVV),
+            (
+                self.semantic_transaction_state,
+                SemanticTransactionState,
+                StateAxis.SEMANTIC_TRANSACTION,
+            ),
+            (self.causal_state, CausalState, StateAxis.CAUSAL),
+            (self.corpus_use_state, CorpusUseState, StateAxis.CORPUS_USE),
+            (self.authority_tier, AuthorityTier, StateAxis.AUTHORITY),
+        )
+        for value, expected_type, axis in typed_axes:
+            if not isinstance(value, expected_type):
+                raise TypeError(
+                    f"{axis.value} must be {expected_type.__name__}, "
+                    f"not {type(value).__name__}"
+                )
+        if type(self.lifecycle_state) is not str:
+            raise TypeError("lifecycle_state must be str")
         _require_text(self.lifecycle_state, "state.lifecycle_state")
+        self._validate_cross_axis_invariants()
+
+    def _validate_cross_axis_invariants(self) -> None:
+        """Reject composite states that make unsupported success claims."""
+
+        transaction = self.semantic_transaction_state
+        if (
+            transaction
+            in {
+                SemanticTransactionState.SHACL_VALIDATED,
+                SemanticTransactionState.EVIDENCE_BOUND,
+                SemanticTransactionState.POLICY_EVALUATED,
+                SemanticTransactionState.AUTHORIZED,
+                SemanticTransactionState.EXECUTING,
+                SemanticTransactionState.MUTATED_UNVERIFIED,
+                SemanticTransactionState.VERIFYING,
+                SemanticTransactionState.VERIFIED,
+                SemanticTransactionState.CANONICALIZED,
+                SemanticTransactionState.WATCH,
+            }
+            and self.shacl_state is not ShaclState.CONFORMS
+        ):
+            raise ValueError(
+                "semantic transaction requires SHACL CONFORMS at or after "
+                "SHACL_VALIDATED"
+            )
+
+        if transaction in {
+            SemanticTransactionState.AUTHORIZED,
+            SemanticTransactionState.EXECUTING,
+            SemanticTransactionState.MUTATED_UNVERIFIED,
+            SemanticTransactionState.VERIFYING,
+            SemanticTransactionState.VERIFIED,
+            SemanticTransactionState.CANONICALIZED,
+            SemanticTransactionState.WATCH,
+        } and self.cgrf_action_state in {
+            CgrfActionState.OBSERVED,
+            CgrfActionState.PROPOSED,
+            CgrfActionState.POLICY_EVALUATING,
+            CgrfActionState.DENIED,
+            CgrfActionState.FAILED_CLOSED,
+            CgrfActionState.ROLLED_BACK,
+            CgrfActionState.SUPERSEDED,
+        }:
+            raise ValueError(
+                "authorized semantic transaction requires an authorized CGRF action"
+            )
+
+        verified_transaction = transaction in {
+            SemanticTransactionState.VERIFIED,
+            SemanticTransactionState.CANONICALIZED,
+        }
+        if verified_transaction and (
+            self.evidence_state is not EvidenceState.VERIFIED
+            or self.tevv_state is not TevvState.PASS
+            or self.cgrf_action_state is not CgrfActionState.VERIFIED
+        ):
+            raise ValueError(
+                "verified semantic transaction requires VERIFIED evidence, "
+                "TEVV PASS and CGRF VERIFIED"
+            )
+
+        if (
+            transaction is SemanticTransactionState.CANONICALIZED
+            and self.merkle_state
+            in {
+                MerkleState.UNHASHED,
+                MerkleState.CORRUPT,
+                MerkleState.QUARANTINED,
+            }
+        ):
+            raise ValueError(
+                "canonicalized semantic transaction requires a valid canonical digest"
+            )
+
+        if self.causal_state is CausalState.VERIFIED_CAUSE and (
+            self.evidence_state is not EvidenceState.VERIFIED
+            or self.tevv_state is not TevvState.PASS
+        ):
+            raise ValueError("VERIFIED_CAUSE requires VERIFIED evidence and TEVV PASS")
+
+        if self.corpus_use_state is CorpusUseState.VERIFIED_FOR_CITADEL and (
+            self.evidence_state is not EvidenceState.VERIFIED
+            or self.tevv_state is not TevvState.PASS
+        ):
+            raise ValueError(
+                "VERIFIED_FOR_CITADEL requires VERIFIED evidence and TEVV PASS"
+            )
+
+    def axis_value(self, axis: StateAxis) -> AxisState:
+        """Return one typed state-axis value."""
+
+        values: dict[StateAxis, AxisState] = {
+            StateAxis.EVIDENCE: self.evidence_state,
+            StateAxis.SHACL: self.shacl_state,
+            StateAxis.MERKLE: self.merkle_state,
+            StateAxis.CGRF_ACTION: self.cgrf_action_state,
+            StateAxis.TEVV: self.tevv_state,
+            StateAxis.SEMANTIC_TRANSACTION: self.semantic_transaction_state,
+            StateAxis.CAUSAL: self.causal_state,
+            StateAxis.CORPUS_USE: self.corpus_use_state,
+            StateAxis.AUTHORITY: self.authority_tier,
+            StateAxis.LIFECYCLE: self.lifecycle_state,
+        }
+        return values[axis]
+
+    def to_dict(self) -> dict[str, str]:
+        """Render all ten axes using their canonical wire values."""
+
+        return {axis.value: str(self.axis_value(axis)) for axis in StateAxis}
 
 
 @dataclass(frozen=True, slots=True)
@@ -252,11 +418,7 @@ class CanonicalObjectEnvelope:
                 "until": _timestamp(self.valid_time.valid_until),
             },
             "observed_time": _timestamp(self.observed_time),
-            "state": {
-                "evidence_state": self.state.evidence_state.value,
-                "shacl_state": self.state.shacl_state.value,
-                "lifecycle_state": self.state.lifecycle_state,
-            },
+            "state": self.state.to_dict(),
             "claims": [dict(claim) for claim in self.claims],
             "relations": [
                 {

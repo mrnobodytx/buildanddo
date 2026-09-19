@@ -23,14 +23,14 @@ Status:      COMPLETE
 Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 Seat:        BITS-CODEGEN
 SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
-Branch:      bits/SRS-BUILDANDDO-SEMANTIC-TWIN-001-phase-0
-Tasks:       4/4
-Smoke:       4/4
+Branch:      bits/SRS-BUILDANDDO-SEMANTIC-TWIN-001-ten-axis-deltas
+Tasks:       6/6
+Smoke:       6/6
 CKS Gate:    pending
 CKS:         pending
 CAPS:        pending
 CK:          pending
-Commits:     1 (SHA assigned by the focused repository commit)
+Commits:     2 (initial Phase 0 plus the focused ten-axis correction)
 
 ## §2 TASK RESULTS
 
@@ -43,14 +43,14 @@ Task 1 — Frozen vocabulary
 
 Task 2 — Transition policy
   Status:  PASS
-  Output:  Immutable transition maps require staged evidence, causality, policy, hashing, testing and corpus promotion.
+  Output:  Same-axis transition maps require staged evidence, causality, policy, hashing, testing and corpus promotion without mixing enum families.
   Verify:  `python -m unittest tests.upgrade.test_semantic_twin.TransitionTests -v`
   Files:   `libs/semantic_twin/transitions.py`
   CKET:    07_BUILD
 
 Task 3 — Canonical envelopes
   Status:  PASS
-  Output:  Immutable object and event dataclasses validate identity, provenance, time, confidence, evidence and exact wire projection.
+  Output:  Immutable object and event dataclasses validate identity, provenance, time, confidence, evidence and a ten-axis wire projection.
   Verify:  `python -m unittest tests.upgrade.test_semantic_twin.EnvelopeTests -v`
   Files:   `libs/semantic_twin/models.py`, `libs/semantic_twin/__init__.py`
   CKET:    07_BUILD
@@ -62,24 +62,86 @@ Task 4 — Repository gates
   Files:   `tests/upgrade/test_semantic_twin.py`, `.bits/context.lock.json`
   CKET:    08_TEST, 04_HYPOTHESIZE
 
+Task 5 — Ten-axis failure proof and correction
+  Status:  PASS
+  Output:  Baseline measurement found only 3/10 object-state axes; the corrected envelope exposes all ten as typed fields.
+  Verify:  `python -m unittest tests.upgrade.test_semantic_twin.VocabularyTests.test_state_vector_has_exactly_ten_named_axes -v`
+  Files:   `libs/semantic_twin/vocabulary.py`, `libs/semantic_twin/models.py`
+  CKET:    07_BUILD
+
+Task 6 — Atomic state deltas
+  Status:  PASS
+  Output:  Five independently evidenced deltas settle atomically, reject stale/duplicate/mistyped inputs and enforce final cross-axis prerequisites.
+  Verify:  `python -m unittest tests.upgrade.test_semantic_twin.CompositeStateTests -v`
+  Files:   `libs/semantic_twin/transitions.py`, `tests/upgrade/test_semantic_twin.py`
+  CKET:    07_BUILD, 08_TEST
+
 ## §3 SMOKE TEST RESULTS
 
-1. Vocabulary: expected frozen values and complete predicate partition; 4 tests observed PASS.
+Baseline red proof: the merged Phase 0 `ObjectState` exposed 3 fields instead of
+10 and omitted authority, causal, CGRF, corpus-use, Merkle, semantic-transaction
+and TEVV axes. The package also had no `StateAxis`, `StateDelta` or
+`apply_state_deltas` symbol, so it could not express a five-delta transaction.
+The observed baseline commands exited non-zero with those exact missing fields
+and symbols before implementation.
+
+Baseline reproduction (the assertion proves the measured old shape, not the
+corrected behavior):
+
+```bash
+python - <<'PY'
+import ast
+import subprocess
+
+baseline = "5703d8ee3deedae1de3e93424265a8238f87eab6"
+models = subprocess.check_output(
+    ["git", "show", f"{baseline}:libs/semantic_twin/models.py"], text=True
+)
+api = subprocess.check_output(
+    ["git", "show", f"{baseline}:libs/semantic_twin/__init__.py"], text=True
+)
+tree = ast.parse(models)
+state = next(
+    node for node in tree.body
+    if isinstance(node, ast.ClassDef) and node.name == "ObjectState"
+)
+axes = [
+    node.target.id for node in state.body
+    if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name)
+]
+required = {"StateAxis", "StateDelta", "apply_state_deltas"}
+missing = sorted(name for name in required if name not in api)
+print(f"baseline_object_axes={len(axes)}/10 names={axes}")
+print(f"baseline_missing_delta_api={missing}")
+assert len(axes) == 3 and len(missing) == 3
+PY
+```
+
+Observed: `baseline_object_axes=3/10`; all three delta API symbols absent.
+
+1. Vocabulary: expected frozen values, ten axes and complete predicate partition; 5 tests observed PASS.
    Command: `python -m unittest tests.upgrade.test_semantic_twin.VocabularyTests -v`
-2. Transitions: expected staged promotion and typed rejection of shortcuts; 7 tests observed PASS.
+2. Transitions: expected same-family staged promotion and typed rejection of shortcuts; 7 tests observed PASS.
    Command: `python -m unittest tests.upgrade.test_semantic_twin.TransitionTests -v`
 3. Envelopes: expected immutable validated section 44/45 contracts; 4 tests observed PASS.
    Command: `python -m unittest tests.upgrade.test_semantic_twin.EnvelopeTests -v`
-4. Governance: expected syntax, type, style, public-boundary and context-lock PASS; all observed PASS.
+4. Composite state: expected ten represented axes and atomic five-delta behavior; 7 tests observed PASS.
+   Command: `python -m unittest tests.upgrade.test_semantic_twin.CompositeStateTests -v`
+5. Full focused suite: expected all vocabulary, scalar, envelope and composite checks PASS; 23 tests observed PASS.
+   Command: `python -m unittest tests.upgrade.test_semantic_twin -v`
+6. Governance: expected syntax, type, style, public-boundary and context-lock PASS; all observed PASS.
    Commands: `python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin.py`; `python -m mypy --strict libs/semantic_twin`; `python -m ruff check libs/semantic_twin tests/upgrade/test_semantic_twin.py`; `python scripts/ci/verify_public_boundary.py`; `python scripts/ci/agent_context.py --check`
 
-Supplemental regression: 326 Python upgrade tests passed with 18 declared skips. Root and direct frontend lint/build commands were not runnable because this checkout lacks `concurrently`, `eslint-plugin-import` and `vite`; no frontend lint/build success is claimed.
+Supplemental regression: 390 Python upgrade tests passed with 22 declared skips.
+Stdlib trace measured 94 percent line coverage in `models.py`, 96 percent in
+`transitions.py` and 100 percent in `vocabulary.py`. This change has no frontend
+surface, so frontend lint/build were not repeated for the correction.
 
 ## §4 MEMORY INGEST
 
 Type A count: 12
 Type B count: 24
-Type C count: 3
+Type C count: 6
 IOO compliance: PASS
 DKG orphans:    0
 Payload: `.bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json`
@@ -102,7 +164,7 @@ License posture:  Existing repository license unchanged
 Hard-NO scan:     0 violations
 Secret scan:      clean (no PAT/key prefixes detected in changed files)
 Stripe mode:      not applicable; no checkout or payment code changed
-Authority:        A1 additive contracts only; no persistence, external write, mutation, signing, verification settlement or deployment
+Authority:        A2 owner-requested correction to existing contracts; no persistence, external write, mutation, signing, verification settlement or deployment
 
 ## §7 NEXT ACTIONS
 
