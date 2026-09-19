@@ -30,7 +30,7 @@ CKS Gate:    B+/75
 CKS:         pending
 CAPS:        pending
 CK:          pending
-Commits:     1 (SHA assigned by the focused repository commit)
+Commits:     2 (implementation plus measured-context refresh)
 
 ## §2 TASK RESULTS
 
