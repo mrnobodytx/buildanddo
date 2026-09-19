@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/vocabulary.py, libs/semantic_twin/contracts.py, libs/semantic_twin/identity.py, libs/semantic_twin/models.py, libs/semantic_twin/promotions.py, libs/semantic_twin/receipts.py
 # EnumType:    Schema
-# EnumEdges:   CONSUMES libs/semantic_twin/vocabulary.py; VALIDATES libs/semantic_twin/models.py
+# EnumEdges:   CONSUMES libs/semantic_twin/vocabulary.py; VALIDATES libs/semantic_twin/models.py; DEPENDS_ON libs/semantic_twin/contracts.py; DEPENDS_ON libs/semantic_twin/identity.py; DEPENDS_ON libs/semantic_twin/promotions.py; DEPENDS_ON libs/semantic_twin/receipts.py
 # DAG Node:    semantic-twin.phase-0.transitions
 # Intent:      Make lifecycle gates executable while preventing unsupported evidence, causality and success shortcuts.
 # ───────────────────────────────────────────────────────────
@@ -19,12 +19,16 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, fields, replace
 from enum import Enum
 from types import MappingProxyType
-from typing import Final, Iterable, Mapping, TypeAlias, cast
+from typing import Any, Final, Iterable, Mapping, Self, TypeAlias, cast
 
+from .contracts import Contract, ContractError, require, text
+from .identity import SubjectRef
 from .models import AxisState, ObjectState
+from .promotions import PromotionProof, requires_proof
+from .receipts import EvidenceReference, validate_evidence
 
 from .vocabulary import (
     AuthorityTier,
@@ -52,7 +56,7 @@ TransitionState: TypeAlias = (
 )
 
 
-class InvalidTransitionError(ValueError):
+class InvalidTransitionError(ContractError):
     """Report an attempted lifecycle shortcut or invalid cross-family change."""
 
 
@@ -428,65 +432,76 @@ FORBIDDEN_AUTOMATIC_PROMOTIONS: Final[frozenset[tuple[str, str]]] = frozenset(
 )
 
 
-def allowed_transitions(
-    current: TransitionState,
-    *,
-    direct_deterministic_verifier: bool = False,
-) -> frozenset[TransitionState]:
-    """Return the next states permitted by the frozen Phase 0 policy.
+def allowed_transitions(current: TransitionState) -> frozenset[TransitionState]:
+    """Return adjacency only; can_transition also checks typed prerequisites.
 
-    The specification permits ``OBSERVED -> VERIFIED`` only when a policy-defined
-    direct deterministic verifier has sufficient evidence. The opt-in flag makes
-    that exceptional proof obligation explicit at the call site.
+    Evidence and SHACL adjacency follows sections 36.2 and 25.4. Other tables
+    preserve the conservative P0 progression profile; the specification does not
+    define exhaustive edges for those families. Direct deterministic observation
+    verification is a conditional exception, checked by require_transition.
     """
-
     try:
-        targets = TRANSITION_POLICIES[type(current)][current]
+        return TRANSITION_POLICIES[type(current)][current]
     except KeyError as exc:
-        raise TypeError(f"unsupported state type: {type(current).__name__}") from exc
-    if direct_deterministic_verifier and current is EvidenceState.OBSERVED:
-        return targets | {EvidenceState.VERIFIED}
-    return targets
-
-
-def can_transition(
-    current: TransitionState,
-    target: TransitionState,
-    *,
-    direct_deterministic_verifier: bool = False,
-) -> bool:
-    """Return whether a target is an allowed immediate next state."""
-
-    if type(current) is not type(target):
-        return False
-    return target in allowed_transitions(
-        current,
-        direct_deterministic_verifier=direct_deterministic_verifier,
-    )
+        raise ContractError(
+            f"unsupported state type: {type(current).__name__}"
+        ) from exc
 
 
 def require_transition(
     current: TransitionState,
     target: TransitionState,
     *,
-    direct_deterministic_verifier: bool = False,
+    subject: SubjectRef | None = None,
+    proof: PromotionProof | None = None,
 ) -> None:
-    """Raise when an immediate transition is not allowed."""
+    """Require an adjacent, evidenced change for the exact subject revision."""
+    try:
+        require(type(current) is type(target), "state transition cannot cross axes")
+        direct = current is EvidenceState.OBSERVED and target is EvidenceState.VERIFIED
+        require(
+            direct or target in allowed_transitions(current),
+            "state edge is not allowed",
+        )
+        if requires_proof(target):
+            require(
+                type(subject) is SubjectRef and type(proof) is PromotionProof,
+                "transition requires subject and typed promotion proof",
+            )
+        if proof is not None:
+            require(
+                type(proof) is PromotionProof and proof.subject == subject,
+                "promotion subject/version mismatch",
+            )
+            proof.validate_for(current, target)
+    except ContractError as exc:
+        raise InvalidTransitionError(
+            f"transition not allowed: {current} -> {target}: {exc}"
+        ) from exc
 
-    if not can_transition(
-        current,
-        target,
-        direct_deterministic_verifier=direct_deterministic_verifier,
-    ):
-        raise InvalidTransitionError(f"transition not allowed: {current} -> {target}")
+
+def can_transition(
+    current: TransitionState,
+    target: TransitionState,
+    *,
+    subject: SubjectRef | None = None,
+    proof: PromotionProof | None = None,
+) -> bool:
+    """Return whether both adjacency and required receipt contracts are satisfied."""
+    try:
+        require_transition(current, target, subject=subject, proof=proof)
+    except InvalidTransitionError:
+        return False
+    return True
 
 
 def can_automatically_promote(source: str, target: str) -> bool:
-    """Reject the specification's six forbidden automatic promotions."""
+    """Recognize only the observation-to-inference shorthand; never grant authority.
 
-    return (source.strip().lower(), target.strip().lower()) not in (
-        FORBIDDEN_AUTOMATIC_PROMOTIONS
-    )
+    Unknown phrases fail closed. Actual state changes must use require_transition
+    or apply_state_deltas with their typed evidence.
+    """
+    return (source.strip().lower(), target.strip().lower()) == ("observed", "inferred")
 
 
 AXIS_STATE_TYPES: Final[Mapping[StateAxis, type[object]]] = MappingProxyType(
@@ -506,135 +521,200 @@ AXIS_STATE_TYPES: Final[Mapping[StateAxis, type[object]]] = MappingProxyType(
 
 
 @dataclass(frozen=True, slots=True)
-class StateDelta:
-    """Describe one evidenced compare-and-set change on a named state axis."""
+class StateDelta(Contract):
+    """Describe one version-bound compare-and-set change and its prerequisite proof."""
 
     axis: StateAxis
     before: AxisState
     after: AxisState
     reason: str
-    evidence: tuple[str, ...]
+    subject: SubjectRef
+    evidence: tuple[EvidenceReference, ...]
+    proof: PromotionProof | None = None
 
     def __post_init__(self) -> None:
-        """Require axis-safe values and replayable evidence."""
-
-        if not isinstance(self.axis, StateAxis):
-            raise TypeError("state delta axis must be StateAxis")
-        expected_type = AXIS_STATE_TYPES[self.axis]
-        values = (self.before, self.after)
+        Contract.__post_init__(self)
+        expected = AXIS_STATE_TYPES[self.axis]
+        require(
+            type(self.before) is expected and type(self.after) is expected,
+            f"{self.axis.value} deltas require {expected.__name__}",
+        )
+        require(self.before != self.after, "state delta must change its axis value")
+        text(self.reason, "state delta reason")
+        validate_evidence(self.evidence, self.subject)
         if self.axis is StateAxis.LIFECYCLE:
-            valid_types = all(type(value) is str for value in values)
-        else:
-            valid_types = all(isinstance(value, expected_type) for value in values)
-        if not valid_types:
-            raise TypeError(
-                f"{self.axis.value} deltas require {expected_type.__name__} values"
+            text(str(self.before), "lifecycle before")
+            text(str(self.after), "lifecycle after")
+        if self.proof is not None:
+            require(
+                self.proof.subject == self.subject,
+                "delta proof subject/version mismatch",
             )
-        if self.before == self.after:
-            raise ValueError("state delta must change its axis value")
-        if not isinstance(self.reason, str) or not self.reason.strip():
-            raise ValueError("state delta reason must be a non-empty string")
-        if not self.evidence or any(
-            not isinstance(item, str) or not item.strip() for item in self.evidence
-        ):
-            raise ValueError("state delta requires non-empty evidence references")
+            require(
+                self.proof.evidence == self.evidence,
+                "delta proof evidence differs from delta evidence",
+            )
 
-    def to_dict(self) -> dict[str, object]:
-        """Render a replayable wire representation of the delta."""
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, object]) -> Self:
+        """Decode each scalar using its named axis, avoiding equal enum spellings."""
+        require(isinstance(payload, Mapping), "delta must be an object")
+        names = {"axis", "before", "after", "reason", "subject", "evidence", "proof"}
+        require(
+            not payload.keys() - names and names - {"proof"} <= payload.keys(),
+            "unknown or missing delta fields",
+        )
+        require(type(payload["axis"]) is str, "delta axis must be a wire string")
+        try:
+            axis = StateAxis(payload["axis"])
+        except ValueError as exc:
+            raise ContractError("unknown delta axis") from exc
+        enum_type = AXIS_STATE_TYPES[axis]
+        require(
+            type(payload["before"]) is str and type(payload["after"]) is str,
+            "delta states must be wire strings",
+        )
+        try:
+            before = (
+                payload["before"]
+                if enum_type is str
+                else cast(type[Enum], enum_type)(payload["before"])
+            )
+            after = (
+                payload["after"]
+                if enum_type is str
+                else cast(type[Enum], enum_type)(payload["after"])
+            )
+        except ValueError as exc:
+            raise ContractError("invalid state for delta axis") from exc
+        subject = SubjectRef.from_dict(cast(Mapping[str, object], payload["subject"]))
+        raw_evidence = payload["evidence"]
+        require(
+            isinstance(raw_evidence, (tuple, list)), "delta evidence must be an array"
+        )
+        evidence = tuple(
+            EvidenceReference.from_dict(item)
+            for item in cast(list[Mapping[str, object]], raw_evidence)
+        )
+        proof = (
+            None
+            if payload.get("proof") is None
+            else PromotionProof.from_dict(cast(Mapping[str, object], payload["proof"]))
+        )
+        return cls(
+            axis,
+            cast(AxisState, before),
+            cast(AxisState, after),
+            cast(str, payload["reason"]),
+            subject,
+            evidence,
+            proof,
+        )
 
-        return {
-            "axis": self.axis.value,
-            "before": str(self.before),
-            "after": str(self.after),
-            "reason": self.reason,
-            "evidence": list(self.evidence),
-        }
+    @classmethod
+    def json_schema(cls) -> dict[str, Any]:
+        """Constrain the before/after wire enum to the chosen axis."""
+        schema = super(StateDelta, cls).json_schema()
+        definition = schema["$defs"][cls.__name__]
+        definition["allOf"] = [
+            {
+                "if": {"properties": {"axis": {"const": axis.value}}},
+                "then": {
+                    "properties": {
+                        field: (
+                            {"type": "string", "minLength": 1}
+                            if axis is StateAxis.LIFECYCLE
+                            else {
+                                "enum": [v.value for v in cast(type[Enum], enum_type)]
+                            }
+                        )
+                        for field in ("before", "after")
+                    }
+                },
+            }
+            for axis, enum_type in AXIS_STATE_TYPES.items()
+        ]
+        return schema
 
 
 def apply_state_deltas(
     current: ObjectState,
     deltas: Iterable[StateDelta],
     *,
-    direct_deterministic_verifier: bool = False,
+    subject: SubjectRef,
 ) -> ObjectState:
-    """Validate and atomically apply independent changes across the state vector.
+    """Return a new state only after every scoped delta and final invariant passes.
 
-    Every delta is compare-and-set against ``current``. All scalar transitions and
-    the final cross-axis state are validated before a new immutable vector is
-    returned. Authority and open lifecycle changes remain outside this automatic
-    operation because Phase 0 defines no safe transition policy for either axis.
+    This is an in-memory, all-or-nothing validation operation. It does not lock
+    storage, write a graph, authenticate receipts, or confer execution authority.
+    Authority and open lifecycle axes have no automatic P0 transition policy.
     """
-
+    require(
+        type(current) is ObjectState and type(subject) is SubjectRef,
+        "state and subject contracts are required",
+    )
     requested = tuple(deltas)
-    if not requested:
-        raise ValueError("at least one state delta is required")
+    require(bool(requested), "at least one state delta is required")
+    require(
+        all(type(delta) is StateDelta for delta in requested),
+        "expected StateDelta contracts",
+    )
     axes = tuple(delta.axis for delta in requested)
     if len(axes) != len(set(axes)):
         raise InvalidTransitionError("a state change set may modify each axis once")
-
-    updates: dict[str, object] = {}
+    _check_receipt_identity(requested)
+    updates: dict[str, Any] = {}
     for delta in requested:
+        if delta.subject != subject:
+            raise InvalidTransitionError("state delta subject/version mismatch")
         actual = current.axis_value(delta.axis)
         if actual != delta.before or type(actual) is not type(delta.before):
-            raise InvalidTransitionError(
-                f"stale state delta for {delta.axis.value}: "
-                f"expected {delta.before}, found {actual}"
-            )
+            raise InvalidTransitionError(f"stale state delta for {delta.axis.value}")
         if delta.axis in {StateAxis.AUTHORITY, StateAxis.LIFECYCLE}:
             raise InvalidTransitionError(
                 f"{delta.axis.value} has no automatic Phase 0 transition policy"
             )
-        before = cast(TransitionState, delta.before)
-        after = cast(TransitionState, delta.after)
         require_transition(
-            before,
-            after,
-            direct_deterministic_verifier=direct_deterministic_verifier,
+            cast(TransitionState, delta.before),
+            cast(TransitionState, delta.after),
+            subject=subject,
+            proof=delta.proof,
         )
         updates[delta.axis.value] = delta.after
-
     try:
-        return ObjectState(
-            evidence_state=cast(
-                EvidenceState,
-                updates.get(StateAxis.EVIDENCE.value, current.evidence_state),
-            ),
-            shacl_state=cast(
-                ShaclState,
-                updates.get(StateAxis.SHACL.value, current.shacl_state),
-            ),
-            merkle_state=cast(
-                MerkleState,
-                updates.get(StateAxis.MERKLE.value, current.merkle_state),
-            ),
-            cgrf_action_state=cast(
-                CgrfActionState,
-                updates.get(
-                    StateAxis.CGRF_ACTION.value,
-                    current.cgrf_action_state,
-                ),
-            ),
-            tevv_state=cast(
-                TevvState,
-                updates.get(StateAxis.TEVV.value, current.tevv_state),
-            ),
-            semantic_transaction_state=cast(
-                SemanticTransactionState,
-                updates.get(
-                    StateAxis.SEMANTIC_TRANSACTION.value,
-                    current.semantic_transaction_state,
-                ),
-            ),
-            causal_state=cast(
-                CausalState,
-                updates.get(StateAxis.CAUSAL.value, current.causal_state),
-            ),
-            corpus_use_state=cast(
-                CorpusUseState,
-                updates.get(StateAxis.CORPUS_USE.value, current.corpus_use_state),
-            ),
-            authority_tier=current.authority_tier,
-            lifecycle_state=current.lifecycle_state,
-        )
-    except ValueError as exc:
+        return replace(current, **updates)
+    except ContractError as exc:
         raise InvalidTransitionError(f"inconsistent final state: {exc}") from exc
+
+
+def _check_receipt_identity(deltas: tuple[StateDelta, ...]) -> None:
+    """Reject conflicting records under one receipt ID while allowing distinct tests."""
+    seen: dict[str, Contract] = {}
+    visited: set[int] = set()
+
+    def visit(value: object) -> None:
+        if isinstance(value, tuple):
+            for child in value:
+                visit(child)
+        elif isinstance(value, Contract) and id(value) not in visited:
+            visited.add(id(value))
+            for name in (
+                "receipt_id",
+                "result_id",
+                "decision_id",
+                "validation_id",
+                "evidence_id",
+                "grant_id",
+                "attestation_id",
+            ):
+                identifier = getattr(value, name, None)
+                if identifier is not None:
+                    key = str(identifier)
+                    if key in seen and seen[key] != value:
+                        raise InvalidTransitionError(f"conflicting records for {key}")
+                    seen[key] = value
+                    break
+            for field in fields(value):  # type: ignore[arg-type]
+                visit(getattr(value, field.name))
+
+    visit(deltas)

@@ -21,11 +21,11 @@
 
 ## Problem
 
-The Living Semantic System Twin specification names shared states, predicates,
-authority boundaries and object/event envelopes, but BuildAndDo has no executable
-contract for them. Later ingestion or governance work would otherwise invent
-incompatible spellings, skip lifecycle gates, or conflate structural validity,
-evidence, authorization and verification.
+The initial vocabulary and ten-axis correction lacked canonical identifiers,
+complete Merkle and transaction schemas, and typed evidence for promotions.
+Arbitrary IDs, empty inclusion bindings and under-evidenced verified relations
+were accepted. Later ingestion and governance require executable contracts that
+keep structural validity, evidence, authorization and verification distinct.
 
 ## Intent
 
@@ -50,7 +50,23 @@ deltas atomically rather than treating cross-axis progress as one scalar enum.
 - Add stdlib unit tests covering vocabulary completeness, envelope validation,
   normal progressions, five-delta atomic settlement and prohibited shortcuts.
 
-## Out of scope
+## P0 completion authorized by the owner
+
+The follow-up request to produce every audited missing part authorizes A2
+completion of this package under the existing in-progress dispatch. Freeze
+semantic identifiers and entity types, Merkle metadata and proof contracts,
+predicate domain/range/evidence rules, typed policy/SHACL/TEVV/execution receipts,
+CGRF change contracts and the semantic transaction schema. Enforce receipt scope,
+independent verification, envelope consistency and immutable round-trip wire
+contracts. Publish schema version `2`; reject incompatible version `1` payloads
+rather than guessing missing evidence. Exact state vocabulary remains unchanged.
+Typed receipts describe externally produced evidence; local validation performs
+no signing, evidence measurement, policy decision or live promotion.
+
+Verification: `python -m unittest tests.upgrade.test_semantic_twin tests.upgrade.test_semantic_twin_contracts`
+and `python -m mypy --strict libs/semantic_twin`.
+
+## Execution exclusions
 
 - Repository ingestion, graph storage, SHACL engines, Merkle hashing or signing.
 - CGRF policy evaluation, mutation execution, TEVV settlement or canonical promotion.
@@ -72,14 +88,20 @@ deltas atomically rather than treating cross-axis progress as one scalar enum.
 
 ## Acceptance evidence
 
-1. `python -m unittest tests.upgrade.test_semantic_twin -v` passes vocabulary,
-   transition, ten-axis, five-delta and envelope contract tests.
-2. `python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin.py`
+1. `python -m unittest tests.upgrade.test_semantic_twin tests.upgrade.test_semantic_twin_contracts -v`
+   passes frozen vocabulary, all contracts, strict wire decoding and atomic deltas,
+   including every order of a five-delta batch and rejection of mismatched receipts.
+2. `python -m compileall -q libs/semantic_twin tests/upgrade/test_semantic_twin.py tests/upgrade/test_semantic_twin_contracts.py`
    accepts every new Python module.
 3. `python scripts/ci/verify_public_boundary.py` reports `PASS`.
 4. `python scripts/ci/agent_context.py --check` reports a current context lock.
+5. `python -m mypy --strict libs/semantic_twin` and Ruff pass.
+6. `python -m libs.semantic_twin.schema` emits a deterministic Draft 2020-12 schema.
+7. Standard-library trace records at least 80 percent executable-line coverage
+   in every package module. Broader upgrade tests retain their declared skips.
 
 ## Rollback
 
-Remove the additive `libs/semantic_twin` package, its unit test and this dispatch's
-governance artifacts. No schema, remote state or runtime integration needs reversal.
+Revert this version-two completion to restore the previous contract API. There
+is no database or deployment to reverse. Version-one payloads require explicit
+reconstruction from source and receipts; missing proof must never be fabricated.
