@@ -202,6 +202,6 @@ srs:
   - code: SRS-BUILDANDDO-SEMANTIC-TWIN-001
     title: Living Semantic System Twin Phase 0 vocabulary and contracts
     status: in_progress
-    risk: A1
+    risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md
-    notes: Agent self-authorized additive stdlib package and tests; ingestion, persistence, mutation, policy execution, signing and external effects excluded
+    notes: Owner-requested correction covers existing Phase 0 contracts; ingestion, persistence, mutation, policy execution, signing and external effects excluded

@@ -20,7 +20,7 @@
 from __future__ import annotations
 
 import unittest
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, fields
 from datetime import datetime, timedelta, timezone
 
 from libs.semantic_twin import (
@@ -51,9 +51,12 @@ from libs.semantic_twin import (
     SemanticTransactionState,
     ShaclState,
     Source,
+    StateAxis,
+    StateDelta,
     TevvState,
     ValidTime,
     allowed_transitions,
+    apply_state_deltas,
     can_automatically_promote,
     can_transition,
     require_transition,
@@ -176,6 +179,22 @@ class VocabularyTests(unittest.TestCase):
         self.assertEqual(AuthorityTier.A3.display_name, "High-consequence/external")
         self.assertIn("independent verification", AuthorityTier.A3.default_friction)
 
+    def test_state_vector_has_exactly_ten_named_axes(self) -> None:
+        expected = (
+            "evidence_state",
+            "shacl_state",
+            "merkle_state",
+            "cgrf_action_state",
+            "tevv_state",
+            "semantic_transaction_state",
+            "causal_state",
+            "corpus_use_state",
+            "authority_tier",
+            "lifecycle_state",
+        )
+        self.assertEqual(tuple(axis.value for axis in StateAxis), expected)
+        self.assertEqual(tuple(field.name for field in fields(ObjectState)), expected)
+
     def test_relation_groups_cover_every_predicate_once(self) -> None:
         expected = {
             "contains",
@@ -295,10 +314,16 @@ class TransitionTests(unittest.TestCase):
         self.assertFalse(can_automatically_promote("correlation", "causation"))
         self.assertFalse(can_automatically_promote("chronology", "causation"))
 
-    def test_shacl_conformance_enters_evidence_binding_not_truth(self) -> None:
-        self.assertIn(
+    def test_shacl_conformance_is_not_a_cross_axis_transition(self) -> None:
+        self.assertNotIn(
             SemanticTransactionState.EVIDENCE_BOUND,
             allowed_transitions(ShaclState.CONFORMS),
+        )
+        self.assertFalse(
+            can_transition(
+                ShaclState.CONFORMS,
+                SemanticTransactionState.EVIDENCE_BOUND,
+            )
         )
         self.assertFalse(can_transition(ShaclState.CONFORMS, EvidenceState.VERIFIED))
 
@@ -394,6 +419,13 @@ class EnvelopeTests(unittest.TestCase):
             state=ObjectState(
                 evidence_state=EvidenceState.OBSERVED,
                 shacl_state=ShaclState.CONFORMS,
+                merkle_state=MerkleState.CANONICALIZED,
+                cgrf_action_state=CgrfActionState.PROPOSED,
+                tevv_state=TevvState.NOT_TESTED,
+                semantic_transaction_state=SemanticTransactionState.PARSED,
+                causal_state=CausalState.TEMPORAL_ONLY,
+                corpus_use_state=CorpusUseState.DISCOVERY_ONLY,
+                authority_tier=AuthorityTier.A1,
                 lifecycle_state="ACTIVE",
             ),
             claims=({"text": "Classroom depends on identity."},),
@@ -422,6 +454,9 @@ class EnvelopeTests(unittest.TestCase):
         self.assertEqual(wire["valid_time"]["from"], self.now.isoformat())
         self.assertEqual(wire["relations"][0]["predicate"], "depends_on")
         self.assertEqual(wire["state"]["evidence_state"], "OBSERVED")
+        self.assertEqual(len(wire["state"]), 10)
+        self.assertEqual(wire["state"]["merkle_state"], "CANONICALIZED")
+        self.assertEqual(wire["state"]["authority_tier"], "A1")
         with self.assertRaises(TypeError):
             envelope.claims[0]["text"] = "changed"
         with self.assertRaises(FrozenInstanceError):
@@ -492,6 +527,245 @@ class EnvelopeTests(unittest.TestCase):
                     state=EvidenceState.OBSERVED,
                 ),
             )
+
+
+class CompositeStateTests(unittest.TestCase):
+    """Prove ten-axis representation and atomic multi-delta behavior."""
+
+    @staticmethod
+    def initial_state() -> ObjectState:
+        """Return a consistent ten-axis candidate state."""
+
+        return ObjectState(
+            evidence_state=EvidenceState.UNMEASURED,
+            shacl_state=ShaclState.NOT_EVALUATED,
+            merkle_state=MerkleState.UNHASHED,
+            cgrf_action_state=CgrfActionState.OBSERVED,
+            tevv_state=TevvState.NOT_TESTED,
+            semantic_transaction_state=SemanticTransactionState.DRAFT,
+            causal_state=CausalState.TEMPORAL_ONLY,
+            corpus_use_state=CorpusUseState.DISCOVERY_ONLY,
+            authority_tier=AuthorityTier.A1,
+            lifecycle_state="CANDIDATE",
+        )
+
+    @staticmethod
+    def five_discovery_deltas() -> tuple[StateDelta, ...]:
+        """Return five independent first-step deltas."""
+
+        return (
+            StateDelta(
+                StateAxis.EVIDENCE,
+                EvidenceState.UNMEASURED,
+                EvidenceState.OBSERVED,
+                "Bind the source observation.",
+                ("cni://evidence/source-1",),
+            ),
+            StateDelta(
+                StateAxis.SHACL,
+                ShaclState.NOT_EVALUATED,
+                ShaclState.CONFORMS,
+                "Validate the candidate shape.",
+                ("cni://evidence/shacl-1",),
+            ),
+            StateDelta(
+                StateAxis.MERKLE,
+                MerkleState.UNHASHED,
+                MerkleState.CANONICALIZED,
+                "Produce canonical bytes.",
+                ("cni://evidence/canonical-1",),
+            ),
+            StateDelta(
+                StateAxis.CGRF_ACTION,
+                CgrfActionState.OBSERVED,
+                CgrfActionState.PROPOSED,
+                "Propose bounded review.",
+                ("cni://evidence/proposal-1",),
+            ),
+            StateDelta(
+                StateAxis.SEMANTIC_TRANSACTION,
+                SemanticTransactionState.DRAFT,
+                SemanticTransactionState.PARSED,
+                "Parse the transaction contract.",
+                ("cni://evidence/parse-1",),
+            ),
+        )
+
+    def test_five_deltas_apply_atomically_across_ten_axes(self) -> None:
+        before = self.initial_state()
+        after = apply_state_deltas(before, self.five_discovery_deltas())
+
+        changed = {
+            axis
+            for axis in StateAxis
+            if before.axis_value(axis) != after.axis_value(axis)
+        }
+        self.assertEqual(
+            changed,
+            {
+                StateAxis.EVIDENCE,
+                StateAxis.SHACL,
+                StateAxis.MERKLE,
+                StateAxis.CGRF_ACTION,
+                StateAxis.SEMANTIC_TRANSACTION,
+            },
+        )
+        self.assertEqual(len(after.to_dict()), 10)
+        self.assertEqual(before.evidence_state, EvidenceState.UNMEASURED)
+
+    def test_delta_order_does_not_change_atomic_result(self) -> None:
+        before = self.initial_state()
+        forward = apply_state_deltas(before, self.five_discovery_deltas())
+        reverse = apply_state_deltas(
+            before,
+            reversed(self.five_discovery_deltas()),
+        )
+        self.assertEqual(forward, reverse)
+
+    def test_five_interdependent_verification_deltas_commit_together(self) -> None:
+        before = ObjectState(
+            evidence_state=EvidenceState.TESTING,
+            shacl_state=ShaclState.CONFORMS,
+            merkle_state=MerkleState.ROOTED,
+            cgrf_action_state=CgrfActionState.VERIFYING,
+            tevv_state=TevvState.TESTING,
+            semantic_transaction_state=SemanticTransactionState.VERIFYING,
+            causal_state=CausalState.EXPERIMENTALLY_SUPPORTED,
+            corpus_use_state=CorpusUseState.TESTED_IN_CITADEL,
+            authority_tier=AuthorityTier.A2,
+            lifecycle_state="ACTIVE",
+        )
+        deltas = (
+            StateDelta(
+                StateAxis.EVIDENCE,
+                EvidenceState.TESTING,
+                EvidenceState.VERIFIED,
+                "Verification evidence passed.",
+                ("cni://evidence/test-1",),
+            ),
+            StateDelta(
+                StateAxis.CGRF_ACTION,
+                CgrfActionState.VERIFYING,
+                CgrfActionState.VERIFIED,
+                "Independent postconditions passed.",
+                ("cni://evidence/verifier-1",),
+            ),
+            StateDelta(
+                StateAxis.TEVV,
+                TevvState.TESTING,
+                TevvState.PASS,
+                "Defined TEVV assertions passed.",
+                ("cni://evidence/tevv-1",),
+            ),
+            StateDelta(
+                StateAxis.SEMANTIC_TRANSACTION,
+                SemanticTransactionState.VERIFYING,
+                SemanticTransactionState.VERIFIED,
+                "The semantic transaction met every postcondition.",
+                ("cni://evidence/transaction-1",),
+            ),
+            StateDelta(
+                StateAxis.CAUSAL,
+                CausalState.EXPERIMENTALLY_SUPPORTED,
+                CausalState.VERIFIED_CAUSE,
+                "Independent causal verification passed.",
+                ("cni://evidence/causal-1",),
+            ),
+        )
+
+        after = apply_state_deltas(before, reversed(deltas))
+
+        self.assertEqual(after.evidence_state, EvidenceState.VERIFIED)
+        self.assertEqual(after.cgrf_action_state, CgrfActionState.VERIFIED)
+        self.assertEqual(after.tevv_state, TevvState.PASS)
+        self.assertEqual(
+            after.semantic_transaction_state,
+            SemanticTransactionState.VERIFIED,
+        )
+        self.assertEqual(after.causal_state, CausalState.VERIFIED_CAUSE)
+
+    def test_one_invalid_delta_rejects_the_entire_change_set(self) -> None:
+        before = self.initial_state()
+        invalid = (*self.five_discovery_deltas()[:4],)
+        invalid += (
+            StateDelta(
+                StateAxis.SEMANTIC_TRANSACTION,
+                SemanticTransactionState.DRAFT,
+                SemanticTransactionState.AUTHORIZED,
+                "Attempt an unsupported shortcut.",
+                ("cni://evidence/proposal-1",),
+            ),
+        )
+        with self.assertRaises(InvalidTransitionError):
+            apply_state_deltas(before, invalid)
+        self.assertEqual(before, self.initial_state())
+
+    def test_stale_duplicate_and_cross_family_deltas_are_rejected(self) -> None:
+        before = self.initial_state()
+        stale = StateDelta(
+            StateAxis.EVIDENCE,
+            EvidenceState.OBSERVED,
+            EvidenceState.INFERRED,
+            "Use a stale observation.",
+            ("cni://evidence/stale-1",),
+        )
+        with self.assertRaisesRegex(InvalidTransitionError, "stale"):
+            apply_state_deltas(before, (stale,))
+        with self.assertRaisesRegex(InvalidTransitionError, "each axis once"):
+            apply_state_deltas(
+                before,
+                (
+                    self.five_discovery_deltas()[0],
+                    self.five_discovery_deltas()[0],
+                ),
+            )
+        with self.assertRaisesRegex(TypeError, "EvidenceState"):
+            StateDelta(
+                StateAxis.EVIDENCE,
+                ShaclState.NOT_EVALUATED,
+                ShaclState.CONFORMS,
+                "Mix state families.",
+                ("cni://evidence/invalid-1",),
+            )
+
+    def test_verified_claims_require_consistent_final_axes(self) -> None:
+        with self.assertRaisesRegex(ValueError, "TEVV PASS"):
+            ObjectState(
+                evidence_state=EvidenceState.VERIFIED,
+                shacl_state=ShaclState.CONFORMS,
+                merkle_state=MerkleState.ROOTED,
+                cgrf_action_state=CgrfActionState.VERIFIED,
+                tevv_state=TevvState.FAIL,
+                semantic_transaction_state=SemanticTransactionState.VERIFIED,
+                causal_state=CausalState.EXPERIMENTALLY_SUPPORTED,
+                corpus_use_state=CorpusUseState.TESTED_IN_CITADEL,
+                authority_tier=AuthorityTier.A2,
+                lifecycle_state="ACTIVE",
+            )
+
+    def test_authority_and_open_lifecycle_do_not_self_promote(self) -> None:
+        before = self.initial_state()
+        authority = StateDelta(
+            StateAxis.AUTHORITY,
+            AuthorityTier.A1,
+            AuthorityTier.A2,
+            "Attempt self-promotion.",
+            ("cni://evidence/request-1",),
+        )
+        lifecycle = StateDelta(
+            StateAxis.LIFECYCLE,
+            "CANDIDATE",
+            "ACTIVE",
+            "Attempt an undefined lifecycle edge.",
+            ("cni://evidence/request-2",),
+        )
+        for delta in (authority, lifecycle):
+            with self.subTest(axis=delta.axis):
+                with self.assertRaisesRegex(
+                    InvalidTransitionError,
+                    "no automatic Phase 0 transition policy",
+                ):
+                    apply_state_deltas(before, (delta,))
 
 
 if __name__ == "__main__":
