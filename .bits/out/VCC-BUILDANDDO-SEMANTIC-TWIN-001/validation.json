@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+  "scope": "Local standard-library contract checks; no authenticity, deployment or real-world verification claim.",
+  "recorded_at": "2026-09-19T01:41:14.306451+00:00",
+  "baseline": {
+    "observed_at": "2026-09-19T01:13:43.230737+00:00",
+    "baseline": "ea3e46e4be8cb07192b9ba0305d7eaa31dbda001",
+    "checks": {
+      "arbitrary_semantic_id": "ACCEPTED_INVALID",
+      "unknown_schema_version": "ACCEPTED_INVALID",
+      "empty_inclusion_proof": "ACCEPTED_INVALID",
+      "unevidenced_verified_cause": "ACCEPTED_INVALID",
+      "verified_without_tevv": "ACCEPTED_INVALID",
+      "bare_boolean_verifier": true,
+      "missing_types": [
+        "SemanticId",
+        "MerkleLeaf",
+        "MerkleEpoch",
+        "InclusionProof",
+        "Attestation",
+        "SemanticTransaction",
+        "ChangeContract",
+        "ShaclValidationResult",
+        "TevvResult",
+        "VerificationReceipt",
+        "RelationContract"
+      ]
+    }
+  },
+  "regressions": {
+    "observed_red_at": "2026-09-19T01:34:02.412363+00:00",
+    "red_failures": 4,
+    "green_failures": 0,
+    "cases": [
+      "unchecked evidence substitution",
+      "unrelated causal verification",
+      "wrong policy on authority edge",
+      "conflicting records under one receipt ID"
+    ],
+    "verify": "python -m unittest tests.upgrade.test_semantic_twin_contracts.ConsistencyTests -v"
+  },
+  "focused": {
+    "started_at": "2026-09-19T01:37:32.667609+00:00",
+    "finished_at": "2026-09-19T01:37:43.458986+00:00",
+    "method": "stdlib trace executable lines",
+    "tests_run": 62,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "modules": [
+      {
+        "path": "libs/semantic_twin/__init__.py",
+        "covered": 12,
+        "executable": 13,
+        "percent": 92.31,
+        "missing_lines": [
+          0
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/contracts.py",
+        "covered": 223,
+        "executable": 226,
+        "percent": 98.67,
+        "missing_lines": [
+          0,
+          73,
+          223
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/identity.py",
+        "covered": 258,
+        "executable": 259,
+        "percent": 99.61,
+        "missing_lines": [
+          0
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/merkle.py",
+        "covered": 303,
+        "executable": 304,
+        "percent": 99.67,
+        "missing_lines": [
+          0
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/models.py",
+        "covered": 358,
+        "executable": 388,
+        "percent": 92.27,
+        "missing_lines": [
+          0,
+          87,
+          172,
+          173,
+          174,
+          175,
+          176,
+          177,
+          179,
+          216,
+          229,
+          409,
+          410,
+          411,
+          414,
+          415,
+          416,
+          419,
+          420,
+          421,
+          424,
+          426,
+          427,
+          428,
+          431,
+          432,
+          433,
+          472,
+          474,
+          477
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/promotions.py",
+        "covered": 136,
+        "executable": 142,
+        "percent": 95.77,
+        "missing_lines": [
+          0,
+          186,
+          187,
+          188,
+          189,
+          190
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/receipts.py",
+        "covered": 471,
+        "executable": 472,
+        "percent": 99.79,
+        "missing_lines": [
+          0
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/relations.py",
+        "covered": 311,
+        "executable": 327,
+        "percent": 95.11,
+        "missing_lines": [
+          0,
+          384,
+          385,
+          386,
+          387,
+          390,
+          391,
+          392,
+          394,
+          395,
+          396,
+          397,
+          398,
+          400,
+          401,
+          402
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/schema.py",
+        "covered": 28,
+        "executable": 31,
+        "percent": 90.32,
+        "missing_lines": [
+          0,
+          56,
+          60
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/transactions.py",
+        "covered": 429,
+        "executable": 438,
+        "percent": 97.95,
+        "missing_lines": [
+          0,
+          265,
+          266,
+          267,
+          268,
+          447,
+          448,
+          449,
+          570
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/transitions.py",
+        "covered": 499,
+        "executable": 500,
+        "percent": 99.8,
+        "missing_lines": [
+          0
+        ]
+      },
+      {
+        "path": "libs/semantic_twin/vocabulary.py",
+        "covered": 274,
+        "executable": 275,
+        "percent": 99.64,
+        "missing_lines": [
+          0
+        ]
+      }
+    ]
+  },
+  "repository": {
+    "command": "python -m unittest discover -s tests/upgrade -p test_*.py",
+    "started_at": "2026-09-19T01:37:32.926143+00:00",
+    "finished_at": "2026-09-19T01:38:06.020236+00:00",
+    "tests_run": 429,
+    "passed": 407,
+    "skipped": 22,
+    "failures": 0,
+    "errors": 0,
+    "limitation": "Existing skips require optional providers or native integrations; they are not counted as passes."
+  },
+  "static_checks": [
+    "strict mypy: 12 source files",
+    "Ruff lint and formatting",
+    "Python compileall",
+    "schema CLI JSON export",
+    "stdlib-only import audit"
+  ],
+  "boundaries": {
+    "public_scan": {
+      "state": "PASS",
+      "files_checked": 979
+    },
+    "measured_context": {
+      "state": "PASS",
+      "existing_findings": 6,
+      "existing_unwired_gates": 4
+    }
+  },
+  "not_executed": [
+    "Live evidence acquisition or receipt authentication",
+    "Merkle digest/proof/signature computation",
+    "CGRF policy execution, persistence or deployment",
+    "Frontend build and UI tests (no frontend changes)",
+    "pytest/pytest-cov (unavailable; unittest and stdlib trace used)"
+  ]
+}

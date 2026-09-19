@@ -4,80 +4,19 @@
       "type": "A",
       "file_path": ".bits/context.lock.json",
       "cket_stage": "04_HYPOTHESIZE",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
       "enum_type": "ConfigDoc",
       "functions": [],
-      "dependencies": [".bits/srs_registry.yml", "scripts/ci/agent_context.py"],
+      "dependencies": [
+        ".bits/srs_registry.yml",
+        "scripts/ci/agent_context.py"
+      ],
       "lines": 505,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the measured repository inventory aligned with the corrected ten-axis semantic-twin contract and test surface.",
-      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "outcome": "stored",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": ".bits/srs_registry.yml",
-      "cket_stage": "04_HYPOTHESIZE",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
-      "enum_type": "ConfigDoc",
-      "functions": [],
-      "dependencies": [".bits/context.md", "scripts/ci/agent_context.py"],
-      "lines": 207,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Record the owner-requested A2 correction to the existing Phase 0 semantic-twin contracts.",
-      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "outcome": "stored",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
-      "cket_stage": "04_HYPOTHESIZE",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
-      "enum_type": "Doc",
-      "functions": [],
-      "dependencies": ["AGENTS.md"],
-      "lines": 85,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Require a dependency-free ten-axis state vector and atomic delta contract before semantic-twin ingestion or mutation work begins.",
-      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "outcome": "stored",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md",
-      "cket_stage": "11_COMMIT",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
-      "enum_type": "Doc",
-      "functions": [],
-      "dependencies": [".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md", ".bits/srs_registry.yml"],
-      "lines": 65,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Gate the owner-requested ten-axis correction without granting ingestion, mutation, verification settlement or external-write authority.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
       "outcome": "success",
       "supersedes": false,
@@ -85,18 +24,333 @@
       "seat": "BITS-CODEGEN",
       "domain": "engineering",
       "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml"
+      ],
+      "lines": 1977,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain substantive file, relationship and validation history for post-merge semantic-twin learning.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe the governed memory payload that retains Phase 0 vocabulary, contract and validation evidence.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
+        "tests/upgrade/test_semantic_twin.py",
+        "tests/upgrade/test_semantic_twin_contracts.py",
+        "libs/semantic_twin/README.md"
+      ],
+      "lines": 183,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve reviewer-runnable evidence that Phase 0 freezes meaning without granting runtime, mutation or verification authority.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/test_semantic_twin.py",
+        "tests/upgrade/test_semantic_twin_contracts.py"
+      ],
+      "lines": 259,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain measured baseline failures, regression results and coverage so P0 completion claims can be checked independently.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/test_semantic_twin.py",
+        "tests/upgrade/test_semantic_twin_contracts.py"
+      ],
+      "lines": 21,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain measured baseline failures, regression results and coverage so P0 completion claims can be checked independently.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 70,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Authorize and gate the additive semantic-twin vocabulary without granting ingestion, mutation, verification or external-write authority.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "AGENTS.md"
+      ],
+      "lines": 107,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Freeze the dependency-free vocabulary and envelope contracts needed before semantic-twin ingestion or mutation work begins.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs_registry.yml",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/context.md",
+        "scripts/ci/agent_context.py"
+      ],
+      "lines": 207,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "libs/semantic_twin/__init__.py",
+        "libs/semantic_twin/schema.py"
+      ],
+      "lines": 132,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the frozen contracts, explicit version break and evidence trust boundary before runtime integration.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
       "tenant_id": null
     },
     {
       "type": "A",
       "file_path": "libs/semantic_twin/__init__.py",
       "cket_stage": "07_BUILD",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
       "enum_type": "Scaffold",
       "functions": [],
-      "dependencies": ["libs/semantic_twin/vocabulary.py", "libs/semantic_twin/transitions.py", "libs/semantic_twin/models.py"],
-      "lines": 122,
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/relations.py",
+        "libs/semantic_twin/models.py",
+        "libs/semantic_twin/transactions.py",
+        "libs/semantic_twin/promotions.py",
+        "libs/semantic_twin/transitions.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 255,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose the frozen Phase 0 vocabulary, transition policies and envelopes through one stable import surface.",
@@ -107,21 +361,41 @@
       "seat": "BITS-CODEGEN",
       "domain": "engineering",
       "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
       "tenant_id": null
     },
     {
       "type": "A",
-      "file_path": "libs/semantic_twin/vocabulary.py",
+      "file_path": "libs/semantic_twin/contracts.py",
       "cket_stage": "07_BUILD",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
       "enum_type": "Schema",
-      "functions": ["StringEnum", "EvidenceState", "ShaclState", "MerkleState", "CgrfActionState", "TevvState", "SemanticTransactionState", "CausalState", "CorpusUseState", "StateAxis", "AuthorityTier", "RelationPredicate", "DESIGN_LAWS"],
-      "dependencies": [".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md"],
-      "lines": 397,
+      "functions": [
+        "CitadelError",
+        "ContractError",
+        "require",
+        "text",
+        "WireString",
+        "freeze_json",
+        "_hints",
+        "_decode",
+        "_encode",
+        "Contract",
+        "_schema"
+      ],
+      "dependencies": [],
+      "lines": 321,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give every Phase 0 consumer one exact vocabulary for ten independent state axes and relation meaning.",
+      "intent_statement": "Make every P0 contract strictly typed, deeply immutable and round-trippable without runtime dependencies.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
       "outcome": "success",
       "supersedes": false,
@@ -129,21 +403,38 @@
       "seat": "BITS-CODEGEN",
       "domain": "engineering",
       "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
       "tenant_id": null
     },
     {
       "type": "A",
-      "file_path": "libs/semantic_twin/transitions.py",
+      "file_path": "libs/semantic_twin/identity.py",
       "cket_stage": "07_BUILD",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
       "enum_type": "Schema",
-      "functions": ["InvalidTransitionError", "StateDelta", "allowed_transitions", "can_transition", "require_transition", "can_automatically_promote", "apply_state_deltas"],
-      "dependencies": ["libs/semantic_twin/vocabulary.py"],
-      "lines": 640,
+      "functions": [
+        "EntityType",
+        "_normalize_component",
+        "SemanticId",
+        "SubjectRef",
+        "ValidTime"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 435,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Apply evidenced compare-and-set deltas atomically while preventing stale, cross-family and cross-axis success shortcuts.",
+      "intent_statement": "Preserve source-qualified semantic identity and version scope before objects or receipts enter the twin.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
       "outcome": "success",
       "supersedes": false,
@@ -151,21 +442,108 @@
       "seat": "BITS-CODEGEN",
       "domain": "engineering",
       "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/merkle.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "HashAlgorithm",
+        "ContentDigest",
+        "PayloadDigest",
+        "ArtifactDigest",
+        "DeploymentDigest",
+        "ContextRoot",
+        "SemanticRoot",
+        "EvidenceRoot",
+        "SourceRoot",
+        "ParentRoot",
+        "SourceRevision",
+        "CanonicalSerialization",
+        "EpochScope",
+        "EpochBoundary",
+        "MerkleLeaf",
+        "MerkleNode",
+        "MerkleRoot",
+        "Attestation",
+        "MerkleEpoch",
+        "ProofSide",
+        "ProofStep",
+        "InclusionProof",
+        "InclusionVerificationReceipt",
+        "MerkleBinding"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 466,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Freeze replay identity and proof metadata while leaving hashing and attestation execution to their owners.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
       "tenant_id": null
     },
     {
       "type": "A",
       "file_path": "libs/semantic_twin/models.py",
       "cket_stage": "07_BUILD",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
       "enum_type": "Schema",
-      "functions": ["Source", "ValidTime", "ObjectState", "Relation", "Provenance", "MerkleBinding", "Ownership", "Authority", "Runtime", "Documentation", "CanonicalObjectEnvelope", "EventSubject", "EventContext", "EventEvidence", "CanonicalEventEnvelope"],
-      "dependencies": ["libs/semantic_twin/vocabulary.py"],
-      "lines": 547,
+      "functions": [
+        "Source",
+        "ObjectState",
+        "Provenance",
+        "Ownership",
+        "Authority",
+        "Runtime",
+        "Documentation",
+        "CanonicalObjectEnvelope",
+        "EventSubject",
+        "EventContext",
+        "EventEvidence",
+        "CanonicalEventEnvelope"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/relations.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 548,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Provide immutable canonical envelopes whose object state represents and validates all ten independent axes.",
+      "intent_statement": "Provide immutable canonical object and event envelopes with explicit identity, provenance, evidence and authority fields.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
       "outcome": "success",
       "supersedes": false,
@@ -173,21 +551,343 @@
       "seat": "BITS-CODEGEN",
       "domain": "engineering",
       "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/promotions.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "PromotionProof",
+        "requires_proof"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/transactions.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 213,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind every privileged state promotion to its required typed evidence without treating caller booleans as verification.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/receipts.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "EvidenceKind",
+        "EvidenceReference",
+        "validate_evidence",
+        "ActorType",
+        "AuthorityGrant",
+        "PolicyDecisionReceipt",
+        "IssueSeverity",
+        "ShaclIssue",
+        "ShaclValidationResult",
+        "VerificationMethod",
+        "PostconditionResult",
+        "TevvResult",
+        "VerificationReceipt",
+        "CausalSupport",
+        "ExecutionOutcome",
+        "ExecutionReceipt",
+        "CorpusValidation"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 648,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require addressable, version-bound and independent evidence for promotion without minting external verification.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/relations.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "RelationContract",
+        "Relation"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/receipts.py"
+      ],
+      "lines": 414,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make every frozen predicate declare admissible endpoints and bind promotion to its evidence discipline.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/schema.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "canonical_schema",
+        "main"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/models.py",
+        "libs/semantic_twin/transactions.py",
+        "libs/semantic_twin/transitions.py"
+      ],
+      "lines": 60,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Export a deterministic versioned wire schema from the same definitions used for runtime validation.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/transactions.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "Actor",
+        "TransactionIntent",
+        "StateRoots",
+        "ChangeProposal",
+        "CompensationPlan",
+        "ChangeContract",
+        "RollbackReceipt",
+        "GraphPromotionReceipt",
+        "SemanticTransaction"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/relations.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 584,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Freeze governed semantic transactions with exact authority, execution, independent verification and compensation boundaries.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/transitions.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "InvalidTransitionError",
+        "_freeze_transitions",
+        "allowed_transitions",
+        "require_transition",
+        "can_transition",
+        "can_automatically_promote",
+        "StateDelta",
+        "apply_state_deltas",
+        "_check_receipt_identity"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/vocabulary.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/models.py",
+        "libs/semantic_twin/promotions.py",
+        "libs/semantic_twin/receipts.py"
+      ],
+      "lines": 720,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make lifecycle gates executable while preventing unsupported evidence, causality and success shortcuts.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/vocabulary.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "StringEnum",
+        "EvidenceState",
+        "ShaclState",
+        "MerkleState",
+        "CgrfActionState",
+        "TevvState",
+        "SemanticTransactionState",
+        "CausalState",
+        "CorpusUseState",
+        "StateAxis",
+        "AuthorityTier",
+        "RelationPredicate"
+      ],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md"
+      ],
+      "lines": 397,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give every Phase 0 consumer one exact vocabulary for evidence, validation, authority, causality and relation meaning.",
+      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
       "tenant_id": null
     },
     {
       "type": "A",
       "file_path": "tests/upgrade/test_semantic_twin.py",
       "cket_stage": "08_TEST",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
       "enum_type": "Test",
-      "functions": ["VocabularyTests", "TransitionTests", "EnvelopeTests", "CompositeStateTests"],
-      "dependencies": ["libs/semantic_twin"],
-      "lines": 772,
+      "functions": [
+        "VocabularyTests",
+        "TransitionTests",
+        "EnvelopeTests",
+        "CompositeStateTests"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_semantic_twin_contracts.py",
+        "libs/semantic_twin"
+      ],
+      "lines": 689,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Prove the baseline scale defect and the corrected ten-axis, five-delta atomic settlement behavior.",
+      "intent_statement": "Prove vocabulary completeness, immutable envelope validation and rejection of unsupported semantic promotions.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
       "outcome": "success",
       "supersedes": false,
@@ -195,99 +895,929 @@
       "seat": "BITS-CODEGEN",
       "domain": "engineering",
       "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
       "tenant_id": null
     },
     {
       "type": "A",
-      "file_path": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
-      "cket_stage": "11_COMMIT",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
-      "enum_type": "Doc",
-      "functions": [],
-      "dependencies": [".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md", "tests/upgrade/test_semantic_twin.py"],
-      "lines": 174,
+      "file_path": "tests/upgrade/test_semantic_twin_contracts.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "sid",
+        "evidence",
+        "state",
+        "shape",
+        "verification",
+        "merkle",
+        "relation",
+        "roots",
+        "transaction",
+        "object_envelope",
+        "event_envelope",
+        "IdentityTests",
+        "WireTests",
+        "MerkleTests",
+        "causal",
+        "corpus",
+        "ReceiptTests",
+        "RelationTests",
+        "TransactionTests",
+        "ConsistencyTests",
+        "PromotionTests"
+      ],
+      "dependencies": [
+        "libs/semantic_twin"
+      ],
+      "lines": 1632,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Preserve runnable red and green evidence for the ten-axis and five-delta Phase 0 correction.",
+      "intent_statement": "Reproduce the audited gaps and prove scoped evidence, wire compatibility and governed transaction contract behavior.",
       "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
       "seat": "BITS-CODEGEN",
       "domain": "engineering",
       "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
+      "tags": [
+        "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "semantic-twin",
+        "contracts-v2"
+      ],
       "tenant_id": null
     },
     {
-      "type": "A",
-      "file_path": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml",
-      "cket_stage": "11_COMMIT",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
-      "enum_type": "Schema",
-      "functions": [],
-      "dependencies": [".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md"],
-      "lines": 20,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Describe the governed memory payload that retains Phase 0 vocabulary, contract and validation evidence.",
-      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "outcome": "stored",
-      "supersedes": false,
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml depends_on .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md.",
       "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
-      "tenant_id": null
+      "created_by": "BITS-CODEGEN"
     },
     {
-      "type": "A",
-      "file_path": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json",
-      "cket_stage": "11_COMMIT",
-      "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
-      "enum_type": "Schema",
-      "functions": [],
-      "dependencies": [".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml"],
-      "lines": 380,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Retain substantive file, relationship and validation history for post-merge semantic-twin learning.",
-      "objective_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "outcome": "stored",
-      "supersedes": false,
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml produces .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.",
       "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": ["VCC-BUILDANDDO-SEMANTIC-TWIN-001", "BITS-CODEGEN", "SRS-BUILDANDDO-SEMANTIC-TWIN-001", "semantic-twin"],
-      "tenant_id": null
+      "created_by": "BITS-CODEGEN"
     },
-    {"type": "B", "source": ".bits/srs_registry.yml", "target": "bits/SRS-* branches", "edge_type": "GATES", "weight": 1.0, "description": "The registry gates branches to registered SRS scopes.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/srs_registry.yml", "target": ".bits/srs", "edge_type": "VALIDATES", "weight": 1.0, "description": "The registry validates that every registered SRS has a specification.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md", "target": "bits/SRS-BUILDANDDO-SEMANTIC-TWIN-001-* branches", "edge_type": "GATES", "weight": 1.0, "description": "The semantic-twin SRS gates branches claiming its Phase 0 scope.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md", "target": "libs/semantic_twin", "edge_type": "VALIDATES", "weight": 1.0, "description": "The SRS defines the acceptance contract applied to the semantic-twin package.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md", "target": "bits/SRS-BUILDANDDO-SEMANTIC-TWIN-001-* branches", "edge_type": "GATES", "weight": 1.0, "description": "The dispatch gates the dedicated Phase 0 branch.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md", "target": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md", "edge_type": "DEPENDS_ON", "weight": 1.0, "description": "The dispatch task table depends on the registered semantic-twin SRS.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "libs/semantic_twin/vocabulary.py", "target": "libs/semantic_twin/models.py", "edge_type": "PRODUCES", "weight": 1.0, "description": "The frozen vocabulary produces typed states and predicates consumed by the envelopes.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "libs/semantic_twin/vocabulary.py", "target": "libs/semantic_twin/transitions.py", "edge_type": "PRODUCES", "weight": 1.0, "description": "The frozen vocabulary produces lifecycle states consumed by transition policies.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "libs/semantic_twin/transitions.py", "target": "libs/semantic_twin/vocabulary.py", "edge_type": "CONSUMES", "weight": 1.0, "description": "Transition policies consume the frozen state enums.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "libs/semantic_twin/transitions.py", "target": "libs/semantic_twin/models.py", "edge_type": "VALIDATES", "weight": 1.0, "description": "Transition policies validate state progressions represented by envelope fields.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "libs/semantic_twin/models.py", "target": "libs/semantic_twin/vocabulary.py", "edge_type": "CONSUMES", "weight": 1.0, "description": "Canonical envelopes consume the frozen states, predicates and authority tiers.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "libs/semantic_twin/models.py", "target": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md", "edge_type": "EXTENDS", "weight": 1.0, "description": "The dataclasses extend the SRS into executable section 44 and 45 contracts.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "libs/semantic_twin/__init__.py", "target": "libs/semantic_twin/vocabulary.py", "edge_type": "CONSUMES", "weight": 1.0, "description": "The public package surface consumes the vocabulary exports.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "libs/semantic_twin/__init__.py", "target": "libs/semantic_twin/transitions.py", "edge_type": "CONSUMES", "weight": 1.0, "description": "The public package surface consumes the transition APIs.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "libs/semantic_twin/__init__.py", "target": "libs/semantic_twin/models.py", "edge_type": "CONSUMES", "weight": 1.0, "description": "The public package surface consumes the canonical envelope types.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "tests/upgrade/test_semantic_twin.py", "target": "libs/semantic_twin/vocabulary.py", "edge_type": "VALIDATES", "weight": 1.0, "description": "Unit tests validate exact frozen vocabulary values and relation coverage.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "tests/upgrade/test_semantic_twin.py", "target": "libs/semantic_twin/transitions.py", "edge_type": "VALIDATES", "weight": 1.0, "description": "Unit tests validate staged progressions and prohibited shortcuts.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": "tests/upgrade/test_semantic_twin.py", "target": "libs/semantic_twin/models.py", "edge_type": "VALIDATES", "weight": 1.0, "description": "Unit tests validate immutable envelopes and exact wire projection.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md", "target": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md", "edge_type": "DEPENDS_ON", "weight": 1.0, "description": "The completion report depends on the authorized SRS scope.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md", "target": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json", "edge_type": "VALIDATES", "weight": 1.0, "description": "The report records the memory counts and compliance result.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md", "target": ".bits/context.lock.json", "edge_type": "VALIDATES", "weight": 1.0, "description": "The report records the passing measured context gate.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md", "target": "tests/upgrade/test_semantic_twin.py", "edge_type": "VERIFIED_BY", "weight": 1.0, "description": "The report's behavior claims are verified by the focused unit suite.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml", "target": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md", "edge_type": "DEPENDS_ON", "weight": 1.0, "description": "The memory descriptor depends on the dispatch completion report.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
-    {"type": "B", "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml", "target": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json", "edge_type": "PRODUCES", "weight": 1.0, "description": "The CGRF descriptor identifies the adjacent memory payload.", "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001", "created_by": "BITS-CODEGEN"},
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md depends_on .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md validates .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md validates .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
+      "target": ".bits/context.lock.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md validates .bits/context.lock.json.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
+      "target": "tests/upgrade/test_semantic_twin.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md verified_by tests/upgrade/test_semantic_twin.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
+      "target": "tests/upgrade/test_semantic_twin_contracts.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md verified_by tests/upgrade/test_semantic_twin_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md",
+      "target": "libs/semantic_twin/README.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md consumes libs/semantic_twin/README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json.cgrf.yaml",
+      "target": "tests/upgrade/test_semantic_twin.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json.cgrf.yaml verified_by tests/upgrade/test_semantic_twin.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json.cgrf.yaml",
+      "target": "tests/upgrade/test_semantic_twin_contracts.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json.cgrf.yaml verified_by tests/upgrade/test_semantic_twin_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json.cgrf.yaml produces .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md",
+      "target": "bits/SRS-BUILDANDDO-SEMANTIC-TWIN-001-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md gates bits/SRS-BUILDANDDO-SEMANTIC-TWIN-001-* branches.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md depends_on .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
+      "target": "bits/SRS-BUILDANDDO-SEMANTIC-TWIN-001-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md gates bits/SRS-BUILDANDDO-SEMANTIC-TWIN-001-* branches.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
+      "target": "libs/semantic_twin",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md validates libs/semantic_twin.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": "bits/SRS-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": ".bits/srs_registry.yml gates bits/SRS-* branches.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": ".bits/srs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/srs_registry.yml validates .bits/srs.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/README.md",
+      "target": "libs/semantic_twin/__init__.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/README.md consumes libs/semantic_twin/__init__.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/README.md",
+      "target": "libs/semantic_twin/schema.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/README.md consumes libs/semantic_twin/schema.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/relations.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/relations.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/models.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/transactions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/transactions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/promotions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/transitions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/transitions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/__init__.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/__init__.py consumes libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/contracts.py",
+      "target": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/contracts.py extends .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/identity.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/identity.py depends_on libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/identity.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/identity.py depends_on libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/merkle.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/merkle.py depends_on libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/merkle.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/merkle.py depends_on libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/merkle.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/merkle.py depends_on libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/models.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/models.py depends_on libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/models.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/models.py depends_on libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/models.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/models.py depends_on libs/semantic_twin/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/models.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/models.py depends_on libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/models.py",
+      "target": "libs/semantic_twin/relations.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/models.py depends_on libs/semantic_twin/relations.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/models.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/models.py depends_on libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/promotions.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/promotions.py depends_on libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/promotions.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/promotions.py depends_on libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/promotions.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/promotions.py depends_on libs/semantic_twin/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/promotions.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/promotions.py depends_on libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/promotions.py",
+      "target": "libs/semantic_twin/transactions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/promotions.py depends_on libs/semantic_twin/transactions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/promotions.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/promotions.py depends_on libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/receipts.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/receipts.py depends_on libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/receipts.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/receipts.py depends_on libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/receipts.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/receipts.py depends_on libs/semantic_twin/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/receipts.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/receipts.py depends_on libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/relations.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/relations.py depends_on libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/relations.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/relations.py depends_on libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/schema.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/schema.py depends_on libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/schema.py",
+      "target": "libs/semantic_twin/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/schema.py depends_on libs/semantic_twin/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/schema.py",
+      "target": "libs/semantic_twin/transactions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/schema.py depends_on libs/semantic_twin/transactions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/schema.py",
+      "target": "libs/semantic_twin/transitions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/schema.py depends_on libs/semantic_twin/transitions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transactions.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transactions.py depends_on libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transactions.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transactions.py depends_on libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transactions.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transactions.py depends_on libs/semantic_twin/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transactions.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transactions.py depends_on libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transactions.py",
+      "target": "libs/semantic_twin/relations.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transactions.py depends_on libs/semantic_twin/relations.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transactions.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transactions.py depends_on libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transitions.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transitions.py consumes libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transitions.py",
+      "target": "libs/semantic_twin/models.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transitions.py validates libs/semantic_twin/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transitions.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transitions.py depends_on libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transitions.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transitions.py depends_on libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transitions.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transitions.py depends_on libs/semantic_twin/promotions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/transitions.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/transitions.py depends_on libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/vocabulary.py",
+      "target": "libs/semantic_twin/models.py",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/vocabulary.py produces libs/semantic_twin/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/vocabulary.py",
+      "target": "libs/semantic_twin/transitions.py",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/vocabulary.py produces libs/semantic_twin/transitions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin.py",
+      "target": "tests/upgrade/test_semantic_twin_contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin.py depends_on tests/upgrade/test_semantic_twin_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin.py validates libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin.py",
+      "target": "libs/semantic_twin/transitions.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin.py validates libs/semantic_twin/transitions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin.py",
+      "target": "libs/semantic_twin/models.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin.py validates libs/semantic_twin/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/models.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/relations.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/relations.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/transactions.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/transactions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/promotions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/transitions.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/transitions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_contracts.py",
+      "target": "libs/semantic_twin/schema.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_contracts.py validates libs/semantic_twin/schema.py.",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "created_by": "BITS-CODEGEN"
+    },
     {
       "type": "C",
       "event_type": "test_pass",
@@ -365,16 +1895,83 @@
       "timestamp": "2026-09-19T00:57:52Z",
       "commit_sha": null,
       "smoke_result": "6/6 dispatch gates"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/test_semantic_twin_contracts.py",
+      "description": "P0 v2 completion: Four receipt-binding regressions reproduced before correction; same-subject receipts alone were insufficient.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "semantic-twin.phase-0 contract prerequisites",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "timestamp": "2026-09-19T01:34:02.412363+00:00",
+      "commit_sha": null,
+      "smoke_result": "3/7"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "libs/semantic_twin",
+      "description": "P0 v2 completion: All 62 focused tests passed; every package module exceeded 90 percent executable-line coverage.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "semantic-twin.phase-0 contract prerequisites",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "timestamp": "2026-09-19T01:37:43.458986+00:00",
+      "commit_sha": null,
+      "smoke_result": "62/62"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade",
+      "description": "P0 v2 completion: Repository regression ran 429 tests: 407 passed, 22 skipped, zero failures/errors.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "semantic-twin.phase-0 contract prerequisites",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "timestamp": "2026-09-19T01:38:06.020236+00:00",
+      "commit_sha": null,
+      "smoke_result": "407/407; 22 skipped"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/context.lock.json",
+      "description": "P0 v2 completion: Public boundary passed across 979 tracked files and generated context was refreshed after staging; six pre-existing findings retained.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "semantic-twin.phase-0 contract prerequisites",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "timestamp": "2026-09-19T01:45:00.996791+00:00",
+      "commit_sha": null,
+      "smoke_result": "6/6"
+    },
+    {
+      "type": "C",
+      "event_type": "dispatch_completed",
+      "file_path": "libs/semantic_twin",
+      "description": "P0 v2 completion: Version-two contracts cover canonical identity, Merkle metadata, predicates, evidence receipts, governed transactions, wire parsing and atomic deltas; runtime effects remain excluded.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "semantic-twin.phase-0 contract prerequisites",
+      "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
+      "timestamp": "2026-09-19T01:45:00.996791+00:00",
+      "commit_sha": null,
+      "smoke_result": "9/9"
     }
   ],
   "summary": {
-    "type_a_count": 12,
-    "type_b_count": 24,
-    "type_c_count": 6,
+    "type_a_count": 24,
+    "type_b_count": 86,
+    "type_c_count": 11,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-SEMANTIC-TWIN-001",
-    "srs_codes": ["SRS-BUILDANDDO-SEMANTIC-TWIN-001"],
+    "srs_codes": [
+      "SRS-BUILDANDDO-SEMANTIC-TWIN-001"
+    ],
     "seat": "BITS-CODEGEN"
   }
 }

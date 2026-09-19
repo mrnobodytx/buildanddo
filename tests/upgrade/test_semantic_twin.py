@@ -8,59 +8,41 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin
+# Depends:     tests/upgrade/test_semantic_twin_contracts.py, libs/semantic_twin
 # EnumType:    Test
-# EnumEdges:   VALIDATES libs/semantic_twin/vocabulary.py; VALIDATES libs/semantic_twin/transitions.py; VALIDATES libs/semantic_twin/models.py
+# EnumEdges:   DEPENDS_ON tests/upgrade/test_semantic_twin_contracts.py; VALIDATES libs/semantic_twin/vocabulary.py; VALIDATES libs/semantic_twin/transitions.py; VALIDATES libs/semantic_twin/models.py
 # DAG Node:    semantic-twin.phase-0.tests
 # Intent:      Prove vocabulary completeness, immutable envelope validation and rejection of unsupported semantic promotions.
 # ────────────────────────────────────────────────────────────
 
-"""Test the Living Semantic System Twin Phase 0 contract."""
+"""Preserve frozen vocabulary and prove state updates under version-two contracts."""
 
 from __future__ import annotations
 
 import unittest
-from dataclasses import FrozenInstanceError, fields
-from datetime import datetime, timedelta, timezone
+from dataclasses import fields, replace
+from datetime import timedelta
+from itertools import permutations
 
+import libs.semantic_twin as t
 from libs.semantic_twin import (
     AUTHORITY_TIER_NAMES,
-    DESIGN_LAWS,
-    RELATION_PREDICATE_GROUPS,
-    Authority,
     AuthorityTier,
-    CanonicalEventEnvelope,
-    CanonicalObjectEnvelope,
     CausalState,
     CgrfActionState,
     CorpusUseState,
-    Documentation,
-    EventContext,
-    EventEvidence,
-    EventSubject,
+    DESIGN_LAWS,
     EvidenceState,
-    InvalidTransitionError,
-    MerkleBinding,
     MerkleState,
     ObjectState,
-    Ownership,
-    Provenance,
-    Relation,
+    RELATION_PREDICATE_GROUPS,
     RelationPredicate,
-    Runtime,
     SemanticTransactionState,
     ShaclState,
-    Source,
     StateAxis,
-    StateDelta,
     TevvState,
-    ValidTime,
-    allowed_transitions,
-    apply_state_deltas,
-    can_automatically_promote,
-    can_transition,
-    require_transition,
 )
+from tests.upgrade import test_semantic_twin_contracts as f
 
 
 class VocabularyTests(unittest.TestCase):
@@ -280,492 +262,427 @@ class VocabularyTests(unittest.TestCase):
 
 
 class TransitionTests(unittest.TestCase):
-    """Verify valid progressions and reject semantic shortcuts."""
+    """Keep adjacency distinct from receipt-bearing promotion."""
 
     def test_evidence_requires_measurement_and_staged_verification(self) -> None:
         self.assertTrue(
-            can_transition(EvidenceState.UNMEASURED, EvidenceState.OBSERVED)
+            t.can_transition(t.EvidenceState.UNMEASURED, t.EvidenceState.OBSERVED)
         )
         self.assertFalse(
-            can_transition(EvidenceState.UNMEASURED, EvidenceState.VERIFIED)
+            t.can_transition(t.EvidenceState.UNMEASURED, t.EvidenceState.VERIFIED)
         )
-        self.assertFalse(can_transition(EvidenceState.OBSERVED, EvidenceState.VERIFIED))
+        self.assertFalse(
+            t.can_transition(t.EvidenceState.OBSERVED, t.EvidenceState.VERIFIED)
+        )
+        verdict = f.verification(method=t.VerificationMethod.DETERMINISTIC)
+        proof = t.PromotionProof(
+            subject=f.SERVICE, evidence=verdict.result.evidence, verification=verdict
+        )
         self.assertTrue(
-            can_transition(
-                EvidenceState.OBSERVED,
-                EvidenceState.VERIFIED,
-                direct_deterministic_verifier=True,
+            t.can_transition(
+                t.EvidenceState.OBSERVED,
+                t.EvidenceState.VERIFIED,
+                subject=f.SERVICE,
+                proof=proof,
             )
         )
 
     def test_causal_promotion_is_staged(self) -> None:
-        self.assertTrue(
-            can_transition(CausalState.CORRELATED, CausalState.CANDIDATE_CAUSE)
+        self.assertIn(
+            t.CausalState.CANDIDATE_CAUSE,
+            t.allowed_transitions(t.CausalState.CORRELATED),
         )
         self.assertFalse(
-            can_transition(CausalState.CORRELATED, CausalState.VERIFIED_CAUSE)
+            t.can_transition(t.CausalState.CORRELATED, t.CausalState.CANDIDATE_CAUSE)
         )
         self.assertFalse(
-            can_transition(CausalState.TEMPORAL_ONLY, CausalState.CANDIDATE_CAUSE)
+            t.can_transition(t.CausalState.CORRELATED, t.CausalState.VERIFIED_CAUSE)
         )
         self.assertFalse(
-            can_transition(CausalState.TEMPORAL_ONLY, CausalState.VERIFIED_CAUSE)
+            t.can_transition(t.CausalState.TEMPORAL_ONLY, t.CausalState.CANDIDATE_CAUSE)
         )
-        self.assertFalse(can_automatically_promote("correlation", "causation"))
-        self.assertFalse(can_automatically_promote("chronology", "causation"))
+        self.assertFalse(
+            t.can_transition(t.CausalState.TEMPORAL_ONLY, t.CausalState.VERIFIED_CAUSE)
+        )
+        self.assertFalse(t.can_automatically_promote("correlation", "causation"))
+        self.assertFalse(t.can_automatically_promote("chronology", "causation"))
 
     def test_shacl_conformance_is_not_a_cross_axis_transition(self) -> None:
         self.assertNotIn(
-            SemanticTransactionState.EVIDENCE_BOUND,
-            allowed_transitions(ShaclState.CONFORMS),
+            t.SemanticTransactionState.EVIDENCE_BOUND,
+            t.allowed_transitions(t.ShaclState.CONFORMS),
         )
         self.assertFalse(
-            can_transition(
-                ShaclState.CONFORMS,
-                SemanticTransactionState.EVIDENCE_BOUND,
+            t.can_transition(
+                t.ShaclState.CONFORMS, t.SemanticTransactionState.EVIDENCE_BOUND
             )
         )
-        self.assertFalse(can_transition(ShaclState.CONFORMS, EvidenceState.VERIFIED))
+        self.assertFalse(
+            t.can_transition(t.ShaclState.CONFORMS, t.EvidenceState.VERIFIED)
+        )
 
     def test_transaction_cannot_skip_policy_or_verification(self) -> None:
         self.assertFalse(
-            can_transition(
-                SemanticTransactionState.DRAFT,
-                SemanticTransactionState.AUTHORIZED,
+            t.can_transition(
+                t.SemanticTransactionState.DRAFT, t.SemanticTransactionState.AUTHORIZED
             )
         )
         self.assertFalse(
-            can_transition(
-                SemanticTransactionState.MUTATED_UNVERIFIED,
-                SemanticTransactionState.VERIFIED,
+            t.can_transition(
+                t.SemanticTransactionState.MUTATED_UNVERIFIED,
+                t.SemanticTransactionState.VERIFIED,
             )
         )
+        tx = f.transaction(t.SemanticTransactionState.VERIFYING)
+        proof = t.PromotionProof(
+            subject=tx.subject, evidence=tx.evidence, transaction=tx
+        )
         self.assertTrue(
-            can_transition(
-                SemanticTransactionState.MUTATED_UNVERIFIED,
-                SemanticTransactionState.VERIFYING,
+            t.can_transition(
+                t.SemanticTransactionState.MUTATED_UNVERIFIED,
+                t.SemanticTransactionState.VERIFYING,
+                subject=tx.subject,
+                proof=proof,
             )
         )
 
     def test_each_ordered_lifecycle_rejects_direct_final_promotion(self) -> None:
-        self.assertFalse(can_transition(MerkleState.UNHASHED, MerkleState.ROOTED))
-        self.assertFalse(
-            can_transition(CgrfActionState.PROPOSED, CgrfActionState.AUTHORIZED)
-        )
-        self.assertFalse(can_transition(TevvState.NOT_TESTED, TevvState.PASS))
-        self.assertFalse(
-            can_transition(
-                CorpusUseState.DISCOVERY_ONLY,
-                CorpusUseState.VERIFIED_FOR_CITADEL,
-            )
-        )
-        self.assertTrue(can_transition(MerkleState.LEAF_HASHED, MerkleState.ROOTED))
-        self.assertTrue(
-            can_transition(
-                CgrfActionState.POLICY_EVALUATING,
-                CgrfActionState.AUTHORIZED,
-            )
-        )
-        self.assertTrue(can_transition(TevvState.TESTING, TevvState.PASS))
-        self.assertTrue(
-            can_transition(
-                CorpusUseState.TESTED_IN_CITADEL,
-                CorpusUseState.VERIFIED_FOR_CITADEL,
-            )
-        )
+        for first, middle, last in (
+            (t.MerkleState.UNHASHED, t.MerkleState.LEAF_HASHED, t.MerkleState.ROOTED),
+            (
+                t.CgrfActionState.PROPOSED,
+                t.CgrfActionState.POLICY_EVALUATING,
+                t.CgrfActionState.AUTHORIZED,
+            ),
+            (t.TevvState.NOT_TESTED, t.TevvState.TESTING, t.TevvState.PASS),
+            (
+                t.CorpusUseState.DISCOVERY_ONLY,
+                t.CorpusUseState.TESTED_IN_CITADEL,
+                t.CorpusUseState.VERIFIED_FOR_CITADEL,
+            ),
+        ):
+            with self.subTest(state=last):
+                self.assertFalse(t.can_transition(first, last))
+                self.assertIn(last, t.allowed_transitions(middle))
+                self.assertFalse(t.can_transition(middle, last))
 
     def test_hash_authority_and_test_state_remain_distinct(self) -> None:
-        self.assertFalse(can_automatically_promote("hash-valid", "true"))
-        self.assertFalse(can_automatically_promote("authorized", "correct"))
-        self.assertTrue(can_transition(MerkleState.UNHASHED, MerkleState.CANONICALIZED))
-        self.assertFalse(
-            can_transition(CgrfActionState.AUTHORIZED, CgrfActionState.VERIFIED)
+        for left, right in t.FORBIDDEN_AUTOMATIC_PROMOTIONS:
+            self.assertFalse(t.can_automatically_promote(left, right))
+        self.assertIn(
+            t.MerkleState.CANONICALIZED, t.allowed_transitions(t.MerkleState.UNHASHED)
         )
-        self.assertFalse(can_transition(TevvState.NOT_TESTED, TevvState.PASS))
+        self.assertFalse(
+            t.can_transition(t.CgrfActionState.AUTHORIZED, t.CgrfActionState.VERIFIED)
+        )
+        self.assertFalse(t.can_transition(t.TevvState.NOT_TESTED, t.TevvState.PASS))
 
     def test_invalid_transition_raises_typed_error(self) -> None:
-        with self.assertRaises(InvalidTransitionError):
-            require_transition(EvidenceState.UNMEASURED, EvidenceState.VERIFIED)
+        with self.assertRaises(t.InvalidTransitionError):
+            t.require_transition(t.EvidenceState.UNMEASURED, t.EvidenceState.VERIFIED)
+        with self.assertRaises(t.ContractError):
+            t.allowed_transitions("UNMEASURED")
 
 
 class EnvelopeTests(unittest.TestCase):
-    """Verify canonical object and event minimum contracts."""
-
-    def setUp(self) -> None:
-        self.now = datetime(2026, 9, 19, 12, 0, tzinfo=timezone.utc)
-
-    def make_object(self) -> CanonicalObjectEnvelope:
-        """Build a valid minimum object envelope for each test."""
-
-        relation = Relation(
-            predicate=RelationPredicate.DEPENDS_ON,
-            target="cni://service/identity",
-            evidence=("cni://evidence/trace-1",),
-            confidence=0.92,
-            state=EvidenceState.OBSERVED,
-        )
-        return CanonicalObjectEnvelope(
-            semantic_id="cni://service/classroom",
-            object_type="Service",
-            schema_version="1",
-            source=Source(
-                system="git",
-                uri_or_path="apps/web/classroom",
-                repository="buildanddo",
-                commit="abc123",
-            ),
-            valid_time=ValidTime(valid_from=self.now),
-            observed_time=self.now,
-            state=ObjectState(
-                evidence_state=EvidenceState.OBSERVED,
-                shacl_state=ShaclState.CONFORMS,
-                merkle_state=MerkleState.CANONICALIZED,
-                cgrf_action_state=CgrfActionState.PROPOSED,
-                tevv_state=TevvState.NOT_TESTED,
-                semantic_transaction_state=SemanticTransactionState.PARSED,
-                causal_state=CausalState.TEMPORAL_ONLY,
-                corpus_use_state=CorpusUseState.DISCOVERY_ONLY,
-                authority_tier=AuthorityTier.A1,
-                lifecycle_state="ACTIVE",
-            ),
-            claims=({"text": "Classroom depends on identity."},),
-            relations=(relation,),
-            provenance=Provenance(
-                derived_from=("git://buildanddo/commit/abc123",),
-                parser_version="1",
-            ),
-            merkle=MerkleBinding(),
-            ownership=Ownership(owner="Citadel Nexus Inc.", guild="buildanddo"),
-            authority=Authority(required_tier=AuthorityTier.A1, mutability="candidate"),
-            runtime=Runtime(
-                observed_status="unknown",
-                telemetry_refs=("datadog://trace/trace-1",),
-            ),
-            documentation=Documentation(references=("doc://semantic-twin/44",)),
-        )
+    """Retain section 44 and 45 acceptance checks after the explicit schema change."""
 
     def test_canonical_object_carries_every_section_44_group(self) -> None:
-        envelope = self.make_object()
-        self.assertEqual(envelope.semantic_id, "cni://service/classroom")
-        self.assertEqual(envelope.relations[0].state, EvidenceState.OBSERVED)
-        self.assertEqual(envelope.authority.required_tier, AuthorityTier.A1)
-        self.assertEqual(envelope.claims[0]["text"], "Classroom depends on identity.")
-        wire = envelope.to_dict()
-        self.assertEqual(wire["valid_time"]["from"], self.now.isoformat())
-        self.assertEqual(wire["relations"][0]["predicate"], "depends_on")
-        self.assertEqual(wire["state"]["evidence_state"], "OBSERVED")
+        value = f.object_envelope()
+        wire = value.to_dict()
+        self.assertTrue(
+            {
+                "semantic_id",
+                "object_type",
+                "schema_version",
+                "source",
+                "valid_time",
+                "observed_time",
+                "state",
+                "claims",
+                "relations",
+                "provenance",
+                "merkle",
+                "ownership",
+                "authority",
+                "runtime",
+                "documentation",
+            }
+            <= wire.keys()
+        )
         self.assertEqual(len(wire["state"]), 10)
-        self.assertEqual(wire["state"]["merkle_state"], "CANONICALIZED")
-        self.assertEqual(wire["state"]["authority_tier"], "A1")
-        with self.assertRaises(TypeError):
-            envelope.claims[0]["text"] = "changed"
-        with self.assertRaises(FrozenInstanceError):
-            envelope.object_type = "Module"
+        self.assertEqual(wire["schema_version"], "2")
+        self.assertEqual(t.CanonicalObjectEnvelope.from_json(value.to_json()), value)
 
     def test_canonical_event_carries_every_section_45_group(self) -> None:
-        event = CanonicalEventEnvelope(
-            id="evt_1",
-            type="semantic.transaction.verified",
-            version="1",
-            tenant_id="citadel-internal",
-            occurred_at=self.now,
-            subject=EventSubject(type="semantic_transaction", id="stx_9182"),
-            context=EventContext(
-                persona_id="gm:forge",
-                release_sha="abc123",
-                trace_id="trace-1",
-                mission_id="mission-1",
-                context_root="root-1",
-                semantic_epoch="441",
-            ),
-            data={"result": "verified"},
-            evidence=EventEvidence(
-                evidence_id="ev_1",
-                state=EvidenceState.VERIFIED,
-            ),
+        value = f.event_envelope()
+        self.assertEqual(
+            set(value.to_dict()),
+            {
+                "id",
+                "type",
+                "version",
+                "tenant_id",
+                "occurred_at",
+                "subject",
+                "context",
+                "data",
+                "evidence",
+            },
         )
-        self.assertEqual(event.subject.id, "stx_9182")
-        self.assertEqual(event.evidence.state, EvidenceState.VERIFIED)
-        wire = event.to_dict()
-        self.assertEqual(wire["occurred_at"], self.now.isoformat())
-        self.assertEqual(wire["evidence"]["state"], "VERIFIED")
-        with self.assertRaises(TypeError):
-            event.data["result"] = "changed"
+        self.assertEqual(t.CanonicalEventEnvelope.from_json(value.to_json()), value)
 
     def test_object_identity_requires_source_and_provenance(self) -> None:
-        with self.assertRaisesRegex(ValueError, "source"):
-            Source(system="git")
-        with self.assertRaisesRegex(ValueError, "provenance"):
-            Provenance()
+        for changes in (
+            {"semantic_id": "arbitrary"},
+            {"source": None},
+            {"provenance": None},
+        ):
+            with self.subTest(changes=changes), self.assertRaises(t.ContractError):
+                replace(f.object_envelope(), **changes)
 
     def test_temporal_and_confidence_contracts_reject_invalid_values(self) -> None:
-        with self.assertRaisesRegex(ValueError, "must not precede"):
-            ValidTime(
-                valid_from=self.now,
-                valid_until=self.now - timedelta(seconds=1),
-            )
-        with self.assertRaisesRegex(ValueError, "confidence"):
-            Relation(
-                predicate=RelationPredicate.CALLS,
-                target="cni://service/identity",
-                evidence=(),
-                confidence=1.01,
-                state=EvidenceState.INFERRED,
-            )
-        with self.assertRaisesRegex(ValueError, "timezone-aware"):
-            CanonicalEventEnvelope(
-                id="evt_2",
-                type="semantic.transaction.verified",
-                version="1",
-                tenant_id="citadel-internal",
-                occurred_at=datetime(2026, 9, 19, 12, 0),
-                subject=EventSubject(type="semantic_transaction", id="stx_2"),
-                context=EventContext(),
-                data={},
-                evidence=EventEvidence(
-                    evidence_id="ev_2",
-                    state=EvidenceState.OBSERVED,
-                ),
-            )
+        with self.assertRaises(t.ContractError):
+            t.ValidTime(f.NOW, f.NOW - timedelta(seconds=1))
+        with self.assertRaises(t.ContractError):
+            replace(f.relation(), confidence=1.01)
 
 
 class CompositeStateTests(unittest.TestCase):
-    """Prove ten-axis representation and atomic multi-delta behavior."""
+    """Prove ten-axis representation and atomic receipt-bearing multi-delta behavior."""
 
     @staticmethod
-    def initial_state() -> ObjectState:
-        """Return a consistent ten-axis candidate state."""
+    def initial_state() -> t.ObjectState:
+        return f.state()
 
-        return ObjectState(
-            evidence_state=EvidenceState.UNMEASURED,
-            shacl_state=ShaclState.NOT_EVALUATED,
-            merkle_state=MerkleState.UNHASHED,
-            cgrf_action_state=CgrfActionState.OBSERVED,
-            tevv_state=TevvState.NOT_TESTED,
-            semantic_transaction_state=SemanticTransactionState.DRAFT,
-            causal_state=CausalState.TEMPORAL_ONLY,
-            corpus_use_state=CorpusUseState.DISCOVERY_ONLY,
-            authority_tier=AuthorityTier.A1,
-            lifecycle_state="CANDIDATE",
+    @staticmethod
+    def five_discovery_deltas() -> tuple[t.StateDelta, ...]:
+        ref = f.evidence(f.TRANSACTION, t.EvidenceKind.SOURCE, "discovery")
+        parsed = replace(
+            f.transaction(),
+            state=t.SemanticTransactionState.PARSED,
+            authority=None,
+            policy=None,
+            evidence=(ref,),
+            execution=None,
+            verification=None,
+            after=None,
         )
-
-    @staticmethod
-    def five_discovery_deltas() -> tuple[StateDelta, ...]:
-        """Return five independent first-step deltas."""
-
-        return (
-            StateDelta(
-                StateAxis.EVIDENCE,
-                EvidenceState.UNMEASURED,
-                EvidenceState.OBSERVED,
-                "Bind the source observation.",
-                ("cni://evidence/source-1",),
+        proof = t.PromotionProof(
+            subject=f.TRANSACTION,
+            evidence=(ref,),
+            shacl=parsed.shacl,
+            merkle=t.MerkleBinding(serialization=t.CanonicalSerialization()),
+            transaction=parsed,
+        )
+        pairs = (
+            (
+                t.StateAxis.EVIDENCE,
+                t.EvidenceState.UNMEASURED,
+                t.EvidenceState.OBSERVED,
             ),
-            StateDelta(
-                StateAxis.SHACL,
-                ShaclState.NOT_EVALUATED,
-                ShaclState.CONFORMS,
-                "Validate the candidate shape.",
-                ("cni://evidence/shacl-1",),
+            (t.StateAxis.SHACL, t.ShaclState.NOT_EVALUATED, t.ShaclState.CONFORMS),
+            (t.StateAxis.MERKLE, t.MerkleState.UNHASHED, t.MerkleState.CANONICALIZED),
+            (
+                t.StateAxis.CGRF_ACTION,
+                t.CgrfActionState.OBSERVED,
+                t.CgrfActionState.PROPOSED,
             ),
-            StateDelta(
-                StateAxis.MERKLE,
-                MerkleState.UNHASHED,
-                MerkleState.CANONICALIZED,
-                "Produce canonical bytes.",
-                ("cni://evidence/canonical-1",),
+            (
+                t.StateAxis.SEMANTIC_TRANSACTION,
+                t.SemanticTransactionState.DRAFT,
+                t.SemanticTransactionState.PARSED,
             ),
-            StateDelta(
-                StateAxis.CGRF_ACTION,
-                CgrfActionState.OBSERVED,
-                CgrfActionState.PROPOSED,
-                "Propose bounded review.",
-                ("cni://evidence/proposal-1",),
-            ),
-            StateDelta(
-                StateAxis.SEMANTIC_TRANSACTION,
-                SemanticTransactionState.DRAFT,
-                SemanticTransactionState.PARSED,
-                "Parse the transaction contract.",
-                ("cni://evidence/parse-1",),
-            ),
+        )
+        return tuple(
+            t.StateDelta(
+                axis,
+                before,
+                after,
+                "Record the bounded observation.",
+                f.TRANSACTION,
+                (ref,),
+                proof,
+            )
+            for axis, before, after in pairs
         )
 
     def test_five_deltas_apply_atomically_across_ten_axes(self) -> None:
         before = self.initial_state()
-        after = apply_state_deltas(before, self.five_discovery_deltas())
-
-        changed = {
-            axis
-            for axis in StateAxis
-            if before.axis_value(axis) != after.axis_value(axis)
-        }
+        deltas = self.five_discovery_deltas()
+        after = t.apply_state_deltas(before, deltas, subject=f.TRANSACTION)
         self.assertEqual(
-            changed,
             {
-                StateAxis.EVIDENCE,
-                StateAxis.SHACL,
-                StateAxis.MERKLE,
-                StateAxis.CGRF_ACTION,
-                StateAxis.SEMANTIC_TRANSACTION,
+                axis
+                for axis in t.StateAxis
+                if before.axis_value(axis) != after.axis_value(axis)
             },
+            {d.axis for d in deltas},
         )
         self.assertEqual(len(after.to_dict()), 10)
-        self.assertEqual(before.evidence_state, EvidenceState.UNMEASURED)
+        self.assertEqual(before, self.initial_state())
 
     def test_delta_order_does_not_change_atomic_result(self) -> None:
         before = self.initial_state()
-        forward = apply_state_deltas(before, self.five_discovery_deltas())
-        reverse = apply_state_deltas(
-            before,
-            reversed(self.five_discovery_deltas()),
-        )
-        self.assertEqual(forward, reverse)
+        deltas = self.five_discovery_deltas()
+        expected = t.apply_state_deltas(before, deltas, subject=f.TRANSACTION)
+        for order in permutations(deltas):
+            self.assertEqual(
+                t.apply_state_deltas(before, order, subject=f.TRANSACTION), expected
+            )
 
     def test_five_interdependent_verification_deltas_commit_together(self) -> None:
-        before = ObjectState(
-            evidence_state=EvidenceState.TESTING,
-            shacl_state=ShaclState.CONFORMS,
-            merkle_state=MerkleState.ROOTED,
-            cgrf_action_state=CgrfActionState.VERIFYING,
-            tevv_state=TevvState.TESTING,
-            semantic_transaction_state=SemanticTransactionState.VERIFYING,
-            causal_state=CausalState.EXPERIMENTALLY_SUPPORTED,
-            corpus_use_state=CorpusUseState.TESTED_IN_CITADEL,
-            authority_tier=AuthorityTier.A2,
-            lifecycle_state="ACTIVE",
+        tx = f.transaction()
+        support = f.causal()
+        refs = tuple(
+            {e.evidence_id: e for e in (*tx.evidence, *support.evidence)}.values()
         )
-        deltas = (
-            StateDelta(
-                StateAxis.EVIDENCE,
-                EvidenceState.TESTING,
-                EvidenceState.VERIFIED,
-                "Verification evidence passed.",
-                ("cni://evidence/test-1",),
+        verdict = f.verification(
+            f.TRANSACTION,
+            refs=refs,
+            tier=t.AuthorityTier.A2,
+            targets=(f.SERVICE.semantic_id,),
+        )
+        tx = replace(tx, policy=verdict.policy, verification=verdict, evidence=refs)
+        support = replace(support, verification=verdict)
+        proof = t.PromotionProof(
+            subject=f.TRANSACTION,
+            evidence=refs,
+            verification=verdict,
+            tevv=verdict.result,
+            transaction=tx,
+            causal=support,
+        )
+        before = f.state(
+            evidence_state=t.EvidenceState.TESTING,
+            shacl_state=t.ShaclState.CONFORMS,
+            merkle_state=t.MerkleState.ROOTED,
+            cgrf_action_state=t.CgrfActionState.VERIFYING,
+            tevv_state=t.TevvState.TESTING,
+            semantic_transaction_state=t.SemanticTransactionState.VERIFYING,
+            causal_state=t.CausalState.EXPERIMENTALLY_SUPPORTED,
+            corpus_use_state=t.CorpusUseState.TESTED_IN_CITADEL,
+            authority_tier=t.AuthorityTier.A2,
+        )
+        pairs = (
+            (t.StateAxis.EVIDENCE, t.EvidenceState.TESTING, t.EvidenceState.VERIFIED),
+            (
+                t.StateAxis.CGRF_ACTION,
+                t.CgrfActionState.VERIFYING,
+                t.CgrfActionState.VERIFIED,
             ),
-            StateDelta(
-                StateAxis.CGRF_ACTION,
-                CgrfActionState.VERIFYING,
-                CgrfActionState.VERIFIED,
+            (t.StateAxis.TEVV, t.TevvState.TESTING, t.TevvState.PASS),
+            (
+                t.StateAxis.SEMANTIC_TRANSACTION,
+                t.SemanticTransactionState.VERIFYING,
+                t.SemanticTransactionState.VERIFIED,
+            ),
+            (
+                t.StateAxis.CAUSAL,
+                t.CausalState.EXPERIMENTALLY_SUPPORTED,
+                t.CausalState.VERIFIED_CAUSE,
+            ),
+        )
+        deltas = tuple(
+            t.StateDelta(
+                axis,
+                old,
+                new,
                 "Independent postconditions passed.",
-                ("cni://evidence/verifier-1",),
-            ),
-            StateDelta(
-                StateAxis.TEVV,
-                TevvState.TESTING,
-                TevvState.PASS,
-                "Defined TEVV assertions passed.",
-                ("cni://evidence/tevv-1",),
-            ),
-            StateDelta(
-                StateAxis.SEMANTIC_TRANSACTION,
-                SemanticTransactionState.VERIFYING,
-                SemanticTransactionState.VERIFIED,
-                "The semantic transaction met every postcondition.",
-                ("cni://evidence/transaction-1",),
-            ),
-            StateDelta(
-                StateAxis.CAUSAL,
-                CausalState.EXPERIMENTALLY_SUPPORTED,
-                CausalState.VERIFIED_CAUSE,
-                "Independent causal verification passed.",
-                ("cni://evidence/causal-1",),
-            ),
+                f.TRANSACTION,
+                refs,
+                proof,
+            )
+            for axis, old, new in pairs
         )
-
-        after = apply_state_deltas(before, reversed(deltas))
-
-        self.assertEqual(after.evidence_state, EvidenceState.VERIFIED)
-        self.assertEqual(after.cgrf_action_state, CgrfActionState.VERIFIED)
-        self.assertEqual(after.tevv_state, TevvState.PASS)
+        after = t.apply_state_deltas(before, reversed(deltas), subject=f.TRANSACTION)
         self.assertEqual(
-            after.semantic_transaction_state,
-            SemanticTransactionState.VERIFIED,
+            after.semantic_transaction_state, t.SemanticTransactionState.VERIFIED
         )
-        self.assertEqual(after.causal_state, CausalState.VERIFIED_CAUSE)
+        self.assertEqual(after.causal_state, t.CausalState.VERIFIED_CAUSE)
+        for delta in deltas:
+            self.assertEqual(t.StateDelta.from_json(delta.to_json()), delta)
+        with self.assertRaises(t.InvalidTransitionError):
+            t.apply_state_deltas(before, (deltas[0],), subject=f.TRANSACTION)
 
     def test_one_invalid_delta_rejects_the_entire_change_set(self) -> None:
         before = self.initial_state()
-        invalid = (*self.five_discovery_deltas()[:4],)
-        invalid += (
-            StateDelta(
-                StateAxis.SEMANTIC_TRANSACTION,
-                SemanticTransactionState.DRAFT,
-                SemanticTransactionState.AUTHORIZED,
-                "Attempt an unsupported shortcut.",
-                ("cni://evidence/proposal-1",),
-            ),
+        deltas = self.five_discovery_deltas()
+        invalid = (
+            *deltas[:-1],
+            replace(deltas[-1], after=t.SemanticTransactionState.AUTHORIZED),
         )
-        with self.assertRaises(InvalidTransitionError):
-            apply_state_deltas(before, invalid)
+        with self.assertRaises(t.InvalidTransitionError):
+            t.apply_state_deltas(before, invalid, subject=f.TRANSACTION)
         self.assertEqual(before, self.initial_state())
 
     def test_stale_duplicate_and_cross_family_deltas_are_rejected(self) -> None:
         before = self.initial_state()
-        stale = StateDelta(
-            StateAxis.EVIDENCE,
-            EvidenceState.OBSERVED,
-            EvidenceState.INFERRED,
-            "Use a stale observation.",
-            ("cni://evidence/stale-1",),
-        )
-        with self.assertRaisesRegex(InvalidTransitionError, "stale"):
-            apply_state_deltas(before, (stale,))
-        with self.assertRaisesRegex(InvalidTransitionError, "each axis once"):
-            apply_state_deltas(
+        delta = self.five_discovery_deltas()[0]
+        with self.assertRaisesRegex(t.InvalidTransitionError, "stale"):
+            t.apply_state_deltas(
                 before,
                 (
-                    self.five_discovery_deltas()[0],
-                    self.five_discovery_deltas()[0],
+                    replace(
+                        delta,
+                        before=t.EvidenceState.OBSERVED,
+                        after=t.EvidenceState.INFERRED,
+                    ),
                 ),
+                subject=f.TRANSACTION,
             )
-        with self.assertRaisesRegex(TypeError, "EvidenceState"):
-            StateDelta(
-                StateAxis.EVIDENCE,
-                ShaclState.NOT_EVALUATED,
-                ShaclState.CONFORMS,
-                "Mix state families.",
-                ("cni://evidence/invalid-1",),
+        with self.assertRaisesRegex(t.InvalidTransitionError, "each axis once"):
+            t.apply_state_deltas(before, (delta, delta), subject=f.TRANSACTION)
+        with self.assertRaises(t.ContractError):
+            replace(
+                delta, before=t.ShaclState.NOT_EVALUATED, after=t.ShaclState.CONFORMS
             )
+        with self.assertRaises(t.InvalidTransitionError):
+            t.apply_state_deltas(before, (delta,), subject=f.SERVICE)
+        for payload in (
+            {**delta.to_dict(), "axis": "unknown"},
+            {**delta.to_dict(), "after": "CONFORMS"},
+            {**delta.to_dict(), "extra": True},
+        ):
+            with self.assertRaises(t.ContractError):
+                t.StateDelta.from_dict(payload)
+        with self.assertRaises(t.ContractError):
+            t.apply_state_deltas(before, (), subject=f.TRANSACTION)
 
     def test_verified_claims_require_consistent_final_axes(self) -> None:
-        with self.assertRaisesRegex(ValueError, "TEVV PASS"):
-            ObjectState(
-                evidence_state=EvidenceState.VERIFIED,
-                shacl_state=ShaclState.CONFORMS,
-                merkle_state=MerkleState.ROOTED,
-                cgrf_action_state=CgrfActionState.VERIFIED,
-                tevv_state=TevvState.FAIL,
-                semantic_transaction_state=SemanticTransactionState.VERIFIED,
-                causal_state=CausalState.EXPERIMENTALLY_SUPPORTED,
-                corpus_use_state=CorpusUseState.TESTED_IN_CITADEL,
-                authority_tier=AuthorityTier.A2,
-                lifecycle_state="ACTIVE",
+        with self.assertRaises(t.ContractError):
+            f.state(
+                evidence_state=t.EvidenceState.VERIFIED, tevv_state=t.TevvState.FAIL
             )
+        with self.assertRaises(t.ContractError):
+            f.state(semantic_transaction_state=t.SemanticTransactionState.VERIFIED)
 
     def test_authority_and_open_lifecycle_do_not_self_promote(self) -> None:
         before = self.initial_state()
-        authority = StateDelta(
-            StateAxis.AUTHORITY,
-            AuthorityTier.A1,
-            AuthorityTier.A2,
-            "Attempt self-promotion.",
-            ("cni://evidence/request-1",),
-        )
-        lifecycle = StateDelta(
-            StateAxis.LIFECYCLE,
-            "CANDIDATE",
-            "ACTIVE",
-            "Attempt an undefined lifecycle edge.",
-            ("cni://evidence/request-2",),
-        )
-        for delta in (authority, lifecycle):
-            with self.subTest(axis=delta.axis):
-                with self.assertRaisesRegex(
-                    InvalidTransitionError,
-                    "no automatic Phase 0 transition policy",
-                ):
-                    apply_state_deltas(before, (delta,))
+        ref = f.evidence(f.TRANSACTION)
+        for delta in (
+            t.StateDelta(
+                t.StateAxis.AUTHORITY,
+                t.AuthorityTier.A1,
+                t.AuthorityTier.A2,
+                "Request broader scope.",
+                f.TRANSACTION,
+                (ref,),
+            ),
+            t.StateDelta(
+                t.StateAxis.LIFECYCLE,
+                "CANDIDATE",
+                "ACTIVE",
+                "Request undefined lifecycle edge.",
+                f.TRANSACTION,
+                (ref,),
+            ),
+        ):
+            self.assertEqual(t.StateDelta.from_json(delta.to_json()), delta)
+            with self.assertRaisesRegex(
+                t.InvalidTransitionError, "no automatic Phase 0 transition policy"
+            ):
+                t.apply_state_deltas(before, (delta,), subject=f.TRANSACTION)
 
 
 if __name__ == "__main__":
