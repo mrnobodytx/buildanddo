@@ -1,18 +1,18 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/serializer.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
 # Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/models.py
 # EnumType:    Adapter
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/models.py; PRODUCES semantic-twin.graph/v1
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/models.py
 # DAG Node:    semantic-twin.phase-1.serializer
-# Intent:      Produce stable canonical JSON and one self-excluding SHA-256 Merkle leaf digest for every ingested envelope.
+# Intent:      Serialize strict v2 objects unchanged and publish detached digests over their exact canonical bytes.
 # ──────────────────────────────────────────────────────────
 
 """Serialize semantic graphs with deterministic Merkle leaf digests."""
@@ -39,11 +39,8 @@ def _canonical_json(value: Any) -> bytes:
 
 
 def canonical_object_bytes(item: CanonicalObjectEnvelope) -> bytes:
-    """Canonicalize an envelope while excluding its self-referential leaf digest."""
-
-    payload = item.to_dict()
-    payload["merkle"]["leaf_digest"] = None
-    return _canonical_json(payload)
+    """Use the exact P0 serialization profile without modifying the envelope."""
+    return item.to_json().encode("utf-8")
 
 
 def object_leaf_digest(item: CanonicalObjectEnvelope) -> str:
@@ -55,15 +52,18 @@ def object_leaf_digest(item: CanonicalObjectEnvelope) -> str:
 def graph_payload(graph: SemanticGraph) -> dict[str, Any]:
     """Return the deterministic JSON-ready semantic graph payload."""
 
-    objects: list[dict[str, Any]] = []
+    graph.require_resolved()
+    objects: list[dict[str, object]] = []
+    leaf_digests: dict[str, str] = {}
     for item in sorted(graph.objects, key=lambda value: value.semantic_id):
         payload = item.to_dict()
-        payload["merkle"]["leaf_digest"] = object_leaf_digest(item)
+        leaf_digests[str(item.semantic_id)] = object_leaf_digest(item)
         objects.append(payload)
     return {
-        "schema_version": "semantic-twin.graph/v1",
+        "schema_version": "semantic-twin.graph/v2",
         "object_count": len(objects),
         "objects": objects,
+        "leaf_digests": leaf_digests,
     }
 
 

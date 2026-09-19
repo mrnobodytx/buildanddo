@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/context.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/phase1/merkle.py, libs/semantic_twin/ingestion/graph.py
+# Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/models.py, libs/semantic_twin/phase1/merkle.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/phase1/merkle.py; PRODUCES semantic-twin.context-proof/v1
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/models.py; CONSUMES libs/semantic_twin/phase1/merkle.py
 # DAG Node:    semantic-twin.phase-1.context-proof
 # Intent:      Compile query-scoped, inclusion-proven context bundles with explicit historical cutoffs and selection reasons.
 # ───────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ def _selection_score(
         {
             "semantic_id": item.semantic_id,
             "object_type": item.object_type,
-            "claims": [dict(claim) for claim in item.claims],
+            "claims": item.to_dict()["claims"],
             "relations": [relation.predicate.value for relation in item.relations],
         },
         ensure_ascii=False,

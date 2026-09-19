@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/truth.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/release.py, libs/semantic_twin/phase1/release_state.py, libs/semantic_twin/phase1/providers.py
+# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/phase1/compiler.py; PRODUCES release://buildanddo/truth-matrix
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.release-truth
 # Intent:      Reconcile expected release identity with captured SHA, artifact, environment, verification and DORA observations without promoting missing evidence.
 # ───────────────────────────────────────────────────────
@@ -21,17 +21,21 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import re
 from typing import Any
 
 from ..ingestion.graph import SemanticGraph
-from ..models import CanonicalObjectEnvelope
+from ..ingestion.builder import ObjectDraft, canonical_id, object_kind
+from ..ingestion.inputs import SourceSnapshot
 from ..vocabulary import EvidenceState, RelationPredicate
 from .common import relation
 from .compat import make_object
 
 
-TRUTH_MATRIX_ID = "release://buildanddo/truth-matrix"
+TRUTH_MATRIX_ID = canonical_id(
+    "ReleaseTruthMatrix", "release://buildanddo/truth-matrix"
+)
 _COMMIT_SHA = re.compile(r"^[0-9a-fA-F]{40}$")
 
 
@@ -50,7 +54,7 @@ class ReleaseObservation:
 def _strings(value: Any) -> tuple[str, ...]:
     """Normalize scalar or list claim data into non-empty strings."""
 
-    if isinstance(value, list):
+    if isinstance(value, (list, tuple)):
         return tuple(str(item) for item in value if str(item).strip())
     if isinstance(value, (str, int, float)) and str(value).strip():
         return (str(value),)
@@ -100,8 +104,8 @@ def release_observations(graph: SemanticGraph) -> tuple[ReleaseObservation, ...]
         if shas or digests or environment_values or states:
             records.append(
                 ReleaseObservation(
-                    object_id=item.semantic_id,
-                    object_type=item.object_type,
+                    object_id=str(item.semantic_id),
+                    object_type=object_kind(item),
                     commit_shas=shas,
                     artifact_digests=digests,
                     environment=environment_values[0] if environment_values else None,
@@ -150,7 +154,7 @@ def reconcile_release_truth(
     *,
     expected_commit: str | None,
     expected_artifact_digest: str | None = None,
-) -> CanonicalObjectEnvelope:
+) -> ObjectDraft:
     """Build a release-truth matrix without treating captured data as verification."""
 
     observations = release_observations(graph)
@@ -196,14 +200,31 @@ def reconcile_release_truth(
         else "CONSISTENT_CAPTURE"
     )
     evidence_ids = tuple(item.object_id for item in observations)
+    snapshot = SourceSnapshot.derived(
+        "semantic-twin:release-truth",
+        {
+            "expected_commit": expected_commit,
+            "expected_artifact_digest": expected_artifact_digest,
+            "objects": [item.to_dict() for item in graph.objects],
+        },
+        observed_at=max(
+            (
+                item.observed_time
+                for item in graph.objects
+                if item.observed_time is not None
+            ),
+            default=datetime.now(timezone.utc),
+        ),
+    )
     return make_object(
         TRUTH_MATRIX_ID,
         "ReleaseTruthMatrix",
         "semantic-twin:release-truth",
+        snapshot=snapshot,
         claims=({"overall": overall, "rows": rows},),
         relations=tuple(
             relation(
-                RelationPredicate.EVIDENCED_BY,
+                RelationPredicate.DERIVED_FROM,
                 object_id,
                 "semantic-twin:release-truth",
                 state=EvidenceState.INFERRED,

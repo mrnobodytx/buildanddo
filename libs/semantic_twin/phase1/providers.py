@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/providers.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/phase1/common.py
+# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Adapter
-# EnumEdges:   CONSUMES captured GitLab JSON; CONSUMES captured Datadog JSON; PRODUCES libs/semantic_twin/phase1/compiler.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.provider-exports
 # Intent:      Normalize caller-supplied GitLab and Datadog exports while preserving that they are captured observations, not live verification.
 # ────────────────────────────────────────────────────────
@@ -20,13 +20,15 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+import json
 from pathlib import Path
 from typing import Any
 
 from ..ingestion.graph import SemanticGraph
-from ..models import CanonicalObjectEnvelope
+from ..ingestion.builder import ObjectDraft
+from ..ingestion.inputs import SourceSnapshot
 from ..vocabulary import EvidenceState, RelationPredicate
-from .common import as_mapping, read_json, relation, relative_path, stable_id
+from .common import as_mapping, relation, relative_path, stable_id
 from .compat import make_object
 
 
@@ -56,9 +58,10 @@ def _provider_object(
     record: Mapping[str, Any],
     target_id: str,
     *,
+    snapshot: SourceSnapshot,
     commit: str | None,
     predicate: RelationPredicate = RelationPredicate.MEMBER_OF,
-) -> CanonicalObjectEnvelope:
+) -> ObjectDraft:
     """Create one captured provider observation object."""
 
     status = record.get("status") or record.get("state") or record.get("result")
@@ -66,6 +69,7 @@ def _provider_object(
         object_id,
         object_type,
         source_path,
+        snapshot=snapshot,
         claims=(dict(record),),
         relations=(relation(predicate, target_id, source_path),),
         evidence_state=EvidenceState.OBSERVED,
@@ -85,14 +89,16 @@ def ingest_gitlab_export(
 ) -> SemanticGraph:
     """Normalize captured GitLab pipelines, jobs and artifacts from local JSON."""
 
-    payload = as_mapping(read_json(path))
     source = relative_path(path, repository_root)
+    snapshot = SourceSnapshot.capture(path, source_path=source)
+    payload = as_mapping(json.loads(snapshot.content))
     root_id = stable_id("gitlab-export", source)
     objects = [
         make_object(
             root_id,
             "GitLabExport",
             source,
+            snapshot=snapshot,
             claims=({"captured": True, "live_query": False},),
             relations=(relation(RelationPredicate.REFINES, anchor_id, source),),
             evidence_state=EvidenceState.OBSERVED,
@@ -113,6 +119,7 @@ def ingest_gitlab_export(
                 source,
                 record,
                 root_id,
+                snapshot=snapshot,
                 commit=commit,
             )
         )
@@ -130,6 +137,7 @@ def ingest_gitlab_export(
                 source,
                 record,
                 target,
+                snapshot=snapshot,
                 commit=commit,
             )
         )
@@ -144,8 +152,9 @@ def ingest_gitlab_export(
                 source,
                 record,
                 target,
+                snapshot=snapshot,
                 commit=commit,
-                predicate=RelationPredicate.BUILT_FROM,
+                predicate=RelationPredicate.DERIVED_FROM,
             )
         )
     return SemanticGraph(tuple(objects))
@@ -160,14 +169,16 @@ def ingest_datadog_export(
 ) -> SemanticGraph:
     """Normalize captured Datadog DORA, trace, event and verification records."""
 
-    payload = as_mapping(read_json(path))
     source = relative_path(path, repository_root)
+    snapshot = SourceSnapshot.capture(path, source_path=source)
+    payload = as_mapping(json.loads(snapshot.content))
     root_id = stable_id("datadog-export", source)
     objects = [
         make_object(
             root_id,
             "DatadogExport",
             source,
+            snapshot=snapshot,
             claims=({"captured": True, "live_query": False},),
             relations=(relation(RelationPredicate.REFINES, anchor_id, source),),
             evidence_state=EvidenceState.OBSERVED,
@@ -193,6 +204,7 @@ def ingest_datadog_export(
                     source,
                     record,
                     root_id,
+                    snapshot=snapshot,
                     commit=commit,
                 )
             )

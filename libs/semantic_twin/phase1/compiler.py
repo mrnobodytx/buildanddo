@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/compiler.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion, libs/semantic_twin/phase1/release_state.py, libs/semantic_twin/phase1/history.py, libs/semantic_twin/phase1/sbom.py, libs/semantic_twin/phase1/providers.py, libs/semantic_twin/phase1/memory.py, libs/semantic_twin/phase1/claims.py, libs/semantic_twin/phase1/truth.py, libs/semantic_twin/phase1/merkle.py, libs/semantic_twin/phase1/context.py
+# Depends:     libs/semantic_twin/ingestion/__init__.py, libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/phase1/claims.py, libs/semantic_twin/phase1/common.py, libs/semantic_twin/phase1/compat.py, libs/semantic_twin/phase1/context.py, libs/semantic_twin/phase1/history.py, libs/semantic_twin/phase1/memory.py, libs/semantic_twin/phase1/merkle.py, libs/semantic_twin/phase1/providers.py, libs/semantic_twin/phase1/release_state.py, libs/semantic_twin/phase1/sbom.py, libs/semantic_twin/phase1/truth.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion; CONSUMES libs/semantic_twin/phase1/release_state.py; CONSUMES libs/semantic_twin/phase1/history.py; CONSUMES libs/semantic_twin/phase1/sbom.py; CONSUMES libs/semantic_twin/phase1/providers.py; CONSUMES libs/semantic_twin/phase1/memory.py; CONSUMES libs/semantic_twin/phase1/claims.py; CONSUMES libs/semantic_twin/phase1/truth.py; PRODUCES libs/semantic_twin/phase1/merkle.py; PRODUCES libs/semantic_twin/phase1/context.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/__init__.py; CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/phase1/claims.py; CONSUMES libs/semantic_twin/phase1/common.py; CONSUMES libs/semantic_twin/phase1/compat.py; CONSUMES libs/semantic_twin/phase1/context.py; CONSUMES libs/semantic_twin/phase1/history.py; CONSUMES libs/semantic_twin/phase1/memory.py; CONSUMES libs/semantic_twin/phase1/merkle.py; CONSUMES libs/semantic_twin/phase1/providers.py; CONSUMES libs/semantic_twin/phase1/release_state.py; CONSUMES libs/semantic_twin/phase1/sbom.py; CONSUMES libs/semantic_twin/phase1/truth.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.compiler
 # Intent:      Join all ten local Phase 1 capabilities into one connected graph, release-truth matrix, semantic epoch and query proof bundle.
 # ────────────────────────────────────────────────────────
@@ -19,14 +19,16 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from ..ingestion import RELEASE_PATH_IDS, graph_payload
 from ..ingestion.graph import SemanticGraph, combine_graphs
-from ..models import CanonicalObjectEnvelope
+from ..ingestion.builder import ObjectDraft
+from ..ingestion.inputs import SourceSnapshot
 from ..vocabulary import EvidenceState, RelationPredicate
 from .claims import assess_claims
 from .common import relation, stable_id
@@ -76,7 +78,7 @@ class Phase1Compilation:
         """Render graph, reconciliation and proof metadata as one payload."""
 
         return {
-            "schema_version": "semantic-twin.phase1-complete/v1",
+            "schema_version": "semantic-twin.phase1-complete/v2",
             "graph": graph_payload(self.graph),
             "truth_matrix_id": self.truth_matrix_id,
             "epoch": self.epoch.to_dict(),
@@ -84,13 +86,18 @@ class Phase1Compilation:
         }
 
 
-def _gap_object(name: str, *, commit: str | None) -> CanonicalObjectEnvelope:
+def _gap_object(name: str, *, commit: str | None) -> ObjectDraft:
     """Represent a missing optional input as explicit UNMEASURED state."""
 
     return make_object(
         stable_id("phase1-gap", name),
         "UnmeasuredInput",
         f"semantic-twin:missing:{name}",
+        snapshot=SourceSnapshot.derived(
+            f"semantic-twin:missing:{name}",
+            {"input": name, "status": "UNMEASURED"},
+            observed_at=datetime.now(timezone.utc),
+        ),
         claims=({"input": name, "status": "UNMEASURED"},),
         relations=(
             relation(
@@ -112,7 +119,13 @@ def _commit_from_base(graph: SemanticGraph) -> str | None:
     """Read the current source commit carried by the bounded base graph."""
 
     item = graph.by_id().get(RELEASE_PATH_IDS[0])
-    return item.source.commit if item is not None else None
+    if item is None:
+        return None
+    metadata = item.claims[-1].get("ingestion")
+    if isinstance(metadata, Mapping):
+        commit = metadata.get("repository_commit_context")
+        return str(commit) if commit is not None else None
+    return None
 
 
 def _optional_graphs(

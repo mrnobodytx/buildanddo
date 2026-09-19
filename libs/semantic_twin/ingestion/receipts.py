@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/receipts.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/graph.py, .bits/out
+# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES .bits/out; PRODUCES libs/semantic_twin/ingestion/pipeline.py; DEPENDS_ON libs/semantic_twin/ingestion/graph.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.receipt-ingestion
 # Intent:      Normalize local report and memory evidence into receipt records without treating source assertions as deployed truth.
 # ──────────────────────────────────────────────────────────
@@ -27,9 +27,10 @@ from pathlib import Path
 import re
 from typing import Any
 
-from ..models import CanonicalObjectEnvelope, Relation
 from ..vocabulary import EvidenceState, RelationPredicate
+from .builder import ObjectDraft, RelationDraft
 from .graph import make_object
+from .inputs import SourceSnapshot
 
 
 _TIMESTAMP = re.compile(
@@ -58,6 +59,7 @@ class DeploymentReceipt:
     states: tuple[str, ...]
     verification_results: tuple[str, ...]
     evidence_refs: tuple[str, ...]
+    snapshot: SourceSnapshot
 
 
 def _stable(values: Iterable[str]) -> tuple[str, ...]:
@@ -83,7 +85,8 @@ def _json_values(value: Any, prefix: str = "") -> Iterable[tuple[str, Any]]:
 def _markdown_receipt(path: Path, source_path: str) -> DeploymentReceipt:
     """Extract evidence fields from a Markdown dispatch report."""
 
-    text = path.read_text(encoding="utf-8", errors="replace")
+    snapshot = SourceSnapshot.capture(path, source_path=source_path)
+    text = snapshot.content.decode("utf-8", errors="replace")
     timestamps = _stable(_TIMESTAMP.findall(text))
     shas = _stable(value.lower() for value in _SHA.findall(text))
     verification = _stable(value.upper() for value in _VERIFICATION.findall(text))
@@ -108,14 +111,16 @@ def _markdown_receipt(path: Path, source_path: str) -> DeploymentReceipt:
         states=states,
         verification_results=verification,
         evidence_refs=_stable(references),
+        snapshot=snapshot,
     )
 
 
 def _json_receipt(path: Path, source_path: str) -> DeploymentReceipt:
     """Extract evidence fields from a JSON memory payload."""
 
+    snapshot = SourceSnapshot.capture(path, source_path=source_path)
     try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload = json.loads(snapshot.content.decode("utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError):
         payload = {}
     timestamps: list[str] = []
@@ -148,6 +153,7 @@ def _json_receipt(path: Path, source_path: str) -> DeploymentReceipt:
         states=_stable(states),
         verification_results=_stable(verification),
         evidence_refs=_stable(references),
+        snapshot=snapshot,
     )
 
 
@@ -195,17 +201,17 @@ def receipt_objects(
     *,
     release_receipt_id: str,
     commit: str | None = None,
-) -> tuple[CanonicalObjectEnvelope, ...]:
+) -> tuple[ObjectDraft, ...]:
     """Convert normalized receipt files into canonical graph objects."""
 
-    objects: list[CanonicalObjectEnvelope] = []
+    objects: list[ObjectDraft] = []
     for record in records:
         evidence_state = (
             EvidenceState.CONTRADICTED
             if "FAIL" in record.verification_results
             else EvidenceState.OBSERVED
         )
-        relation = Relation(
+        relation = RelationDraft(
             predicate=RelationPredicate.REFINES,
             target=release_receipt_id,
             evidence=(record.source_path,),
@@ -217,6 +223,7 @@ def receipt_objects(
                 _receipt_id(record),
                 "DeploymentReceipt",
                 record.source_path,
+                snapshot=record.snapshot,
                 claims=(
                     {
                         "dispatch_id": record.dispatch_id,

@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/source.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/graph.py, tools/buildanddo_release.py
+# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/receipts.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES tools/buildanddo_release.py; PRODUCES libs/semantic_twin/ingestion/pipeline.py; DEPENDS_ON libs/semantic_twin/ingestion/graph.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/receipts.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.source-ingestion
 # Intent:      Derive code symbols, call edges, configuration reads, receipt writes, publications and external dependencies without importing or executing the release controller.
 # ──────────────────────────────────────────────────────────
@@ -27,9 +27,11 @@ import hashlib
 from pathlib import Path
 from urllib.parse import quote
 
-from ..models import CanonicalObjectEnvelope, Relation
+from ..receipts import EvidenceKind
 from ..vocabulary import EvidenceState, RelationPredicate
+from .builder import ObjectDraft, RelationDraft, object_kind
 from .graph import SemanticGraph, make_object
+from .inputs import SourceSnapshot
 
 
 _DEFINITION_NODES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
@@ -226,15 +228,16 @@ def _relation(
     *,
     state: EvidenceState = EvidenceState.INFERRED,
     confidence: float = 1.0,
-) -> Relation:
+) -> RelationDraft:
     """Create a typed static-analysis relation."""
 
-    return Relation(
+    return RelationDraft(
         predicate=predicate,
         target=target,
         evidence=(evidence,),
         confidence=confidence,
         state=state,
+        kinds=(EvidenceKind.SOURCE, EvidenceKind.STATIC_ANALYSIS),
     )
 
 
@@ -243,6 +246,7 @@ def ingest_release_source(
     *,
     repository_root: Path | None = None,
     commit: str | None = None,
+    snapshot: SourceSnapshot | None = None,
 ) -> SemanticGraph:
     """Parse a release controller into code, configuration and event objects."""
 
@@ -254,7 +258,8 @@ def ingest_release_source(
         relative = controller.relative_to(root).as_posix()
     except ValueError:
         relative = controller.as_posix()
-    source_text = controller.read_text(encoding="utf-8")
+    snapshot = snapshot or SourceSnapshot.capture(controller, source_path=relative)
+    source_text = snapshot.content.decode("utf-8")
     tree = ast.parse(source_text, filename=relative)
     visitor = _DefinitionVisitor()
     visitor.visit(tree)
@@ -269,7 +274,7 @@ def ingest_release_source(
     for symbol in symbols:
         by_short_name[symbol.name].append(symbol)
 
-    symbol_relations: dict[str, list[Relation]] = {
+    symbol_relations: dict[str, list[RelationDraft]] = {
         symbol.qualname: [
             _relation(
                 RelationPredicate.MEMBER_OF,
@@ -354,7 +359,7 @@ def ingest_release_source(
                         (
                             _relation(
                                 RelationPredicate.WRITES,
-                                event_id,
+                                f"receipt-file://{event_id}",
                                 evidence,
                                 state=EvidenceState.OBSERVED,
                             ),
@@ -379,7 +384,7 @@ def ingest_release_source(
                         caller_relations.append(
                             _relation(
                                 RelationPredicate.READS,
-                                f"event://buildanddo/receipt/{_semantic_fragment(receipt)}",
+                                f"receipt-file://event://buildanddo/receipt/{_semantic_fragment(receipt)}",
                                 evidence,
                                 state=EvidenceState.OBSERVED,
                             )
@@ -397,7 +402,7 @@ def ingest_release_source(
                 )
             )
 
-    module_relations: list[Relation] = [
+    module_relations: list[RelationDraft] = [
         _relation(
             RelationPredicate.CONTAINS,
             target,
@@ -440,6 +445,7 @@ def ingest_release_source(
         module_id,
         "CodeModule",
         relative,
+        snapshot=snapshot,
         claims=(
             {
                 "name": controller.name,
@@ -452,13 +458,14 @@ def ingest_release_source(
         documentation=(relative,),
     )
 
-    objects: list[CanonicalObjectEnvelope] = [module]
+    objects: list[ObjectDraft] = [module]
     for symbol in symbols:
         objects.append(
             make_object(
                 symbol_ids[symbol.qualname],
                 "CodeSymbol",
                 relative,
+                snapshot=snapshot,
                 claims=(
                     {
                         "name": symbol.name,
@@ -480,6 +487,7 @@ def ingest_release_source(
                 f"config://buildanddo/{_semantic_fragment(key)}",
                 "ConfigurationKey",
                 relative,
+                snapshot=snapshot,
                 claims=({"key": key, "consumed": True},),
                 relations=(
                     _relation(
@@ -500,6 +508,7 @@ def ingest_release_source(
                 dependency_id,
                 "ExternalDependency",
                 relative,
+                snapshot=snapshot,
                 claims=({"name": dependency_name, "external": True},),
                 relations=(
                     _relation(
@@ -524,6 +533,7 @@ def ingest_release_source(
                 event_id,
                 "PublishedEvent",
                 relative,
+                snapshot=snapshot,
                 claims=(
                     {
                         "name": event_name,
@@ -546,6 +556,24 @@ def ingest_release_source(
             )
         )
 
+        if event_name != "dora_deployment":
+            objects.append(
+                make_object(
+                    f"receipt-file://{event_id}",
+                    "File",
+                    relative,
+                    snapshot=snapshot,
+                    claims=({"receipt_name": event_name, "modeled_file": True},),
+                    relations=(
+                        _relation(
+                            RelationPredicate.ASSOCIATED_WITH,
+                            event_id,
+                            sorted(event_evidence[event_name])[0],
+                        ),
+                    ),
+                    commit=commit,
+                )
+            )
     return SemanticGraph(tuple(objects))
 
 
@@ -554,7 +582,7 @@ def source_symbol_ids(graph: SemanticGraph) -> dict[str, str]:
 
     result: dict[str, str] = {}
     for item in graph.objects:
-        if item.object_type != "CodeSymbol":
+        if object_kind(item) != "CodeSymbol":
             continue
         qualified_name = item.claims[0].get("qualified_name")
         if isinstance(qualified_name, str):
@@ -566,7 +594,7 @@ def source_module_id(graph: SemanticGraph) -> str:
     """Return the single code-module identity from a source ingestion graph."""
 
     modules = [
-        item.semantic_id for item in graph.objects if item.object_type == "CodeModule"
+        item.semantic_id for item in graph.objects if object_kind(item) == "CodeModule"
     ]
     if len(modules) != 1:
         raise ValueError(f"expected exactly one code module, found {len(modules)}")

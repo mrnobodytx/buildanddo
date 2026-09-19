@@ -68,9 +68,21 @@ and `python -m mypy --strict libs/semantic_twin`.
 
 ## Execution exclusions
 
-- Repository ingestion, graph storage, SHACL engines, Merkle hashing or signing.
+- New ingestion features, graph storage, SHACL engines, Merkle algorithms or signing.
 - CGRF policy evaluation, mutation execution, TEVV settlement or canonical promotion.
 - PocketBase schema, UI, network calls, external services, deployment or private-plane work.
+
+## Integration acceptance authorized by the owner
+
+The request to take P0 to completion authorizes migration of the existing local
+ingestion and Phase 1 consumers to the frozen version-two contracts. Bind graph
+endpoints to their actual object revisions, retain captured source evidence, and
+round-trip all emitted objects through the strict decoder. Static diagrams,
+heuristic documentation matches and captured reports must not acquire verification
+or runtime authority. Remove the obsolete factory monkey patch. Keep graph hashes
+outside the canonical object envelope unless a complete Merkle contract exists.
+The combined contract, ingestion and Phase 1 suites are the acceptance boundary;
+passing the contract suite alone is insufficient.
 
 ## Invariants
 
@@ -97,8 +109,12 @@ and `python -m mypy --strict libs/semantic_twin`.
 4. `python scripts/ci/agent_context.py --check` reports a current context lock.
 5. `python -m mypy --strict libs/semantic_twin` and Ruff pass.
 6. `python -m libs.semantic_twin.schema` emits a deterministic Draft 2020-12 schema.
-7. Standard-library trace records at least 80 percent executable-line coverage
+7. Standard-library execution tracing records at least 80 percent executable-line coverage
    in every package module. Broader upgrade tests retain their declared skips.
+8. `python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py'`
+   passes contracts and both existing consumers together, including strict v2
+   round trips, changed-revision rejection, deferred-edge export rejection and
+   separation of observed provider status from verified state.
 
 ## Rollback
 

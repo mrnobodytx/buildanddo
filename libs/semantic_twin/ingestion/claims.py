@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/claims.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/graph.py, .bits/srs, tools/buildanddo_release.py
+# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES .bits/srs; CONSUMES tools/buildanddo_release.py; PRODUCES libs/semantic_twin/ingestion/pipeline.py; DEPENDS_ON libs/semantic_twin/ingestion/graph.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.claim-extraction
 # Intent:      Turn testable SRS statements into sourced claim objects with conservative AST/string entailment, contradiction or unmeasured dispositions.
 # ─────────────────────────────────────────────────────────
@@ -25,9 +25,10 @@ import hashlib
 from pathlib import Path
 import re
 
-from ..models import CanonicalObjectEnvelope, Relation
 from ..vocabulary import EvidenceState, RelationPredicate
+from .builder import ObjectDraft, RelationDraft
 from .graph import make_object
+from .inputs import SourceSnapshot
 
 
 _LIST_ITEM = re.compile(r"^\s*(?:[-*+] |\d+[.)]\s+)(?:\[[ xX]\]\s*)?(.*\S)\s*$")
@@ -71,6 +72,8 @@ class DocumentationClaim:
     section: str
     disposition: ClaimDisposition
     matched_terms: tuple[str, ...]
+    snapshot: SourceSnapshot
+    controller_snapshot: SourceSnapshot
 
 
 def _candidate_terms(claim: str) -> tuple[str, ...]:
@@ -142,6 +145,8 @@ def _documentation_claim(
     section: str,
     text: str,
     controller_source: str,
+    snapshot: SourceSnapshot,
+    controller_snapshot: SourceSnapshot,
 ) -> DocumentationClaim:
     """Create one fully classified documentation claim."""
 
@@ -154,6 +159,8 @@ def _documentation_claim(
         section=section,
         disposition=disposition,
         matched_terms=_matched_terms(text, controller_source),
+        snapshot=snapshot,
+        controller_snapshot=controller_snapshot,
     )
 
 
@@ -162,10 +169,12 @@ def extract_documentation_claims(
     controller_path: Path,
     *,
     repository_root: Path | None = None,
+    controller_snapshot: SourceSnapshot | None = None,
 ) -> tuple[DocumentationClaim, ...]:
     """Extract list claims from testable sections of every BuildAndDo SRS."""
 
-    controller_source = controller_path.read_text(encoding="utf-8")
+    controller_snapshot = controller_snapshot or SourceSnapshot.capture(controller_path)
+    controller_source = controller_snapshot.content.decode("utf-8")
     root = repository_root.resolve() if repository_root is not None else None
     claims: list[DocumentationClaim] = []
     for path in sorted(srs_directory.glob("SRS-BUILDANDDO-*.md")):
@@ -177,6 +186,7 @@ def extract_documentation_claims(
                 source_path = resolved.as_posix()
         else:
             source_path = path.as_posix()
+        snapshot = SourceSnapshot.capture(path, source_path=source_path)
         section = ""
         in_code_fence = False
         pending_line: int | None = None
@@ -196,6 +206,8 @@ def extract_documentation_claims(
                         pending_section,
                         text,
                         controller_source,
+                        snapshot,
+                        controller_snapshot,
                     )
                 )
             pending_line = None
@@ -203,7 +215,7 @@ def extract_documentation_claims(
             pending_parts = []
 
         for line_number, raw_line in enumerate(
-            path.read_text(encoding="utf-8").splitlines(),
+            snapshot.content.decode("utf-8").splitlines(),
             1,
         ):
             stripped = raw_line.strip()
@@ -243,17 +255,17 @@ def claim_objects(
     *,
     code_module_id: str,
     commit: str | None = None,
-) -> tuple[CanonicalObjectEnvelope, ...]:
+) -> tuple[ObjectDraft, ...]:
     """Convert documentation claims into canonical graph objects."""
 
-    objects: list[CanonicalObjectEnvelope] = []
+    objects: list[ObjectDraft] = []
     for claim in claims:
         if claim.disposition is ClaimDisposition.ENTAILED:
-            predicate = RelationPredicate.ENTAILS
+            predicate = RelationPredicate.ABOUT
             evidence_state = EvidenceState.INFERRED
             confidence = 0.9
         elif claim.disposition is ClaimDisposition.CONTRADICTED:
-            predicate = RelationPredicate.CONTRADICTS
+            predicate = RelationPredicate.ABOUT
             evidence_state = EvidenceState.CONTRADICTED
             confidence = 0.9
         else:
@@ -261,7 +273,7 @@ def claim_objects(
             evidence_state = EvidenceState.UNMEASURED
             confidence = 0.0
         reference = f"{claim.source_path}:{claim.line}"
-        relation = Relation(
+        relation = RelationDraft(
             predicate=predicate,
             target=code_module_id,
             evidence=(reference,),
@@ -273,12 +285,18 @@ def claim_objects(
                 claim.claim_id,
                 "DocumentationClaim",
                 claim.source_path,
+                snapshot=claim.snapshot,
                 claims=(
                     {
                         "text": claim.text,
                         "line": claim.line,
                         "section": claim.section,
                         "classification": claim.disposition.value,
+                        "classification_method": "static lexical heuristic; not a proof",
+                        "controller_source_version": claim.controller_snapshot.version,
+                        "controller_source_reference": str(
+                            claim.controller_snapshot.reference()
+                        ),
                         "matched_terms": list(claim.matched_terms),
                     },
                 ),

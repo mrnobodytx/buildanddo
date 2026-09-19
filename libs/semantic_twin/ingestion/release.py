@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/release.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/vocabulary.py
+# Depends:     libs/semantic_twin/identity.py, libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; IMPLEMENTS .bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001.md; DESCRIBES tools/buildanddo_release.py
+# EnumEdges:   CONSUMES libs/semantic_twin/identity.py; CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.release-path
 # Intent:      Express the release truth chain as eight canonical objects whose evidenced relations preserve staging and production verification order.
 # ──────────────────────────────────────────────────────────
@@ -21,12 +21,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ..models import Relation
+from ..identity import SemanticId
 from ..vocabulary import EvidenceState, RelationPredicate
+from .builder import RelationDraft, canonical_id
 from .graph import SemanticGraph, make_object
+from .inputs import SourceSnapshot
 
 
-RELEASE_PATH_IDS = (
+_RELEASE_PATH_KEYS = (
     "release://buildanddo/source-commit",
     "release://buildanddo/build-artifact",
     "release://buildanddo/staging-deploy",
@@ -36,6 +38,20 @@ RELEASE_PATH_IDS = (
     "release://buildanddo/dora-emit",
     "release://buildanddo/evidence-receipt",
 )
+_OBJECT_TYPES = (
+    "SourceCommit",
+    "BuildArtifact",
+    "Deployment",
+    "Verification",
+    "Deployment",
+    "Verification",
+    "PublishedEvent",
+    "EvidenceReceipt",
+)
+RELEASE_PATH_IDS = tuple(
+    canonical_id(kind, key)
+    for kind, key in zip(_OBJECT_TYPES, _RELEASE_PATH_KEYS, strict=True)
+)
 
 
 def _relation(
@@ -43,16 +59,18 @@ def _relation(
     target: str,
     controller: str,
     *,
-    state: EvidenceState = EvidenceState.INFERRED,
-) -> Relation:
+    state: EvidenceState = EvidenceState.UNMEASURED,
+    environment: SemanticId | None = None,
+) -> RelationDraft:
     """Create one source-evidenced release-path edge."""
 
-    return Relation(
+    return RelationDraft(
         predicate=predicate,
         target=target,
         evidence=(controller,),
-        confidence=1.0,
+        confidence=None,
         state=state,
+        environment=environment,
     )
 
 
@@ -61,20 +79,12 @@ def build_release_path_graph(
     *,
     commit: str | None = None,
     source_reference: str | None = None,
+    snapshot: SourceSnapshot | None = None,
 ) -> SemanticGraph:
     """Build the eight-stage release truth graph in execution order."""
 
     source = source_reference or controller_path.as_posix()
-    object_types = (
-        "SourceCommit",
-        "BuildArtifact",
-        "Deployment",
-        "Verification",
-        "Deployment",
-        "Verification",
-        "PublishedEvent",
-        "EvidenceReceipt",
-    )
+    captured = snapshot or SourceSnapshot.capture(controller_path, source_path=source)
     stages = (
         "source commit",
         "build artifact",
@@ -95,23 +105,29 @@ def build_release_path_graph(
         ),
         (
             _relation(RelationPredicate.BUILT_FROM, RELEASE_PATH_IDS[0], source),
-            _relation(RelationPredicate.DEPLOYED_AS, RELEASE_PATH_IDS[2], source),
+            _relation(
+                RelationPredicate.DEPLOYED_AS,
+                RELEASE_PATH_IDS[2],
+                source,
+                environment=SemanticId("cni://environment/buildanddo/staging"),
+            ),
         ),
         (
             _relation(RelationPredicate.VERIFIED_BY, RELEASE_PATH_IDS[3], source),
             _relation(RelationPredicate.SUCCEEDED_BY, RELEASE_PATH_IDS[3], source),
         ),
-        (_relation(RelationPredicate.PROMOTED_TO, RELEASE_PATH_IDS[4], source),),
+        (_relation(RelationPredicate.SUCCEEDED_BY, RELEASE_PATH_IDS[4], source),),
         (_relation(RelationPredicate.VERIFIED_BY, RELEASE_PATH_IDS[5], source),),
-        (_relation(RelationPredicate.PUBLISHES, RELEASE_PATH_IDS[6], source),),
+        (_relation(RelationPredicate.SUCCEEDED_BY, RELEASE_PATH_IDS[6], source),),
         (_relation(RelationPredicate.EVIDENCED_BY, RELEASE_PATH_IDS[7], source),),
         (_relation(RelationPredicate.DERIVED_FROM, RELEASE_PATH_IDS[6], source),),
     )
     objects = tuple(
         make_object(
             RELEASE_PATH_IDS[index],
-            object_types[index],
+            _OBJECT_TYPES[index],
             source,
+            snapshot=captured,
             claims=(
                 {
                     "stage": stage,

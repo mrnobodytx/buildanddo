@@ -1,16 +1,16 @@
 # ─── CGRF Header ─────────────────────────────
 # File:        libs/semantic_twin/ingestion/pipeline.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/source.py, libs/semantic_twin/ingestion/release.py, libs/semantic_twin/ingestion/claims.py, libs/semantic_twin/ingestion/receipts.py
+# Depends:     libs/semantic_twin/ingestion/builder.py, libs/semantic_twin/ingestion/claims.py, libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/inputs.py, libs/semantic_twin/ingestion/receipts.py, libs/semantic_twin/ingestion/release.py, libs/semantic_twin/ingestion/source.py, libs/semantic_twin/models.py, libs/semantic_twin/vocabulary.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/source.py; CONSUMES libs/semantic_twin/ingestion/release.py; CONSUMES libs/semantic_twin/ingestion/claims.py; CONSUMES libs/semantic_twin/ingestion/receipts.py; PRODUCES libs/semantic_twin/ingestion/serializer.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/builder.py; CONSUMES libs/semantic_twin/ingestion/claims.py; CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/inputs.py; CONSUMES libs/semantic_twin/ingestion/receipts.py; CONSUMES libs/semantic_twin/ingestion/release.py; CONSUMES libs/semantic_twin/ingestion/source.py; CONSUMES libs/semantic_twin/models.py; CONSUMES libs/semantic_twin/vocabulary.py
 # DAG Node:    semantic-twin.phase-1.pipeline
 # Intent:      Assemble source, release truth, documentation and receipt ingestion into one fully resolved connected BuildAndDo graph.
 # ──────────────────────────────────────────────────────────
@@ -21,10 +21,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ..models import Relation
 from ..vocabulary import EvidenceState, RelationPredicate
+from ..models import CanonicalObjectEnvelope
+from .builder import ObjectDraft, RelationDraft
 from .claims import claim_objects, extract_documentation_claims
 from .graph import SemanticGraph, add_relations, combine_graphs
+from .inputs import SourceSnapshot
 from .receipts import ingest_deployment_receipts, receipt_objects
 from .release import RELEASE_PATH_IDS, build_release_path_graph
 from .source import ingest_release_source, source_module_id, source_symbol_ids
@@ -76,24 +78,25 @@ def _implemented_release_graph(
     graph: SemanticGraph,
     symbols: dict[str, str],
     controller_path: str,
+    snapshot: SourceSnapshot,
 ) -> SemanticGraph:
     """Bind each modeled stage to the controller function that implements it."""
 
-    objects = []
+    objects: list[CanonicalObjectEnvelope | ObjectDraft] = []
     for index, item in enumerate(graph.objects):
         function_name = _STAGE_IMPLEMENTATIONS[index]
         target = symbols.get(function_name)
         if target is None:
             objects.append(item)
             continue
-        relation = Relation(
-            predicate=RelationPredicate.IMPLEMENTED_BY,
+        relation = RelationDraft(
+            predicate=RelationPredicate.REFERENCES,
             target=target,
             evidence=(controller_path,),
             confidence=1.0,
             state=EvidenceState.OBSERVED,
         )
-        objects.append(add_relations(item, (relation,)))
+        objects.append(add_relations(item, (relation,), snapshot=snapshot))
     return SemanticGraph(tuple(objects))
 
 
@@ -108,26 +111,31 @@ def compile_release_twin(
     root = repository_root.resolve()
     resolved_commit = commit or _repository_commit(root)
     controller = root / controller_relative_path
+    snapshot = SourceSnapshot.capture(controller, source_path=controller_relative_path)
     source_graph = ingest_release_source(
         controller,
         repository_root=root,
         commit=resolved_commit,
+        snapshot=snapshot,
     )
     release_graph = build_release_path_graph(
         controller,
         commit=resolved_commit,
         source_reference=controller_relative_path,
+        snapshot=snapshot,
     )
     release_graph = _implemented_release_graph(
         release_graph,
         source_symbol_ids(source_graph),
         controller_relative_path,
+        snapshot,
     )
     module_id = source_module_id(source_graph)
     claims = extract_documentation_claims(
         root / ".bits" / "srs",
         controller,
         repository_root=root,
+        controller_snapshot=snapshot,
     )
     claim_graph = SemanticGraph(
         claim_objects(claims, code_module_id=module_id, commit=resolved_commit)

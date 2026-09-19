@@ -44,6 +44,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md is unregistered, so no branch may claim it",
+      "severity": "high",
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001 has a spec but is not in the registry"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/srs/SRS-BUILDANDDO-WITNESS-001.md is unregistered, so no branch may claim it",
       "severity": "high",
       "srs": "",
@@ -141,7 +148,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-19T01:43:25.471006+00:00",
+  "generated_at": "2026-09-19T02:15:51.699886+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -308,13 +315,6 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
         "status": "in_progress",
         "title": "Living Semantic System Twin Phase 0 vocabulary and contracts"
-      },
-      {
-        "code": "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
-        "risk": "A1",
-        "spec": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md",
-        "status": "in_progress",
-        "title": "Complete local Phase 1 semantic twin ingestion and proof bundles"
       },
       {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
@@ -488,20 +488,20 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 33,
-    "python_files": 192,
+    "python_files": 220,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 979,
+    "tracked_files": 1017,
     "web_source_files": 289
   },
   "schema_version": 1,
   "summary": {
-    "findings": 7,
-    "findings_high": 7,
+    "findings": 8,
+    "findings_high": 8,
     "pipelines": 7,
-    "srs_open": 24,
-    "srs_total": 27,
+    "srs_open": 23,
+    "srs_total": 26,
     "unwired_gates": 4
   },
   "tests": {

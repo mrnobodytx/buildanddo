@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/merkle.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion/serializer.py, libs/semantic_twin/ingestion/graph.py
+# Depends:     libs/semantic_twin/ingestion/graph.py, libs/semantic_twin/ingestion/serializer.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/serializer.py; PRODUCES libs/semantic_twin/phase1/context.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion/graph.py; CONSUMES libs/semantic_twin/ingestion/serializer.py
 # DAG Node:    semantic-twin.phase-1.merkle-epoch
 # Intent:      Root the deterministic object set into a semantic epoch with independently verifiable inclusion proofs.
 # ───────────────────────────────────────────────────────
@@ -92,6 +92,7 @@ def build_epoch(graph: SemanticGraph) -> SemanticEpoch:
 
     if not graph.objects:
         raise ValueError("cannot build an epoch from an empty graph")
+    graph.require_resolved()
     leaves = tuple(
         (item.semantic_id, object_leaf_digest(item))
         for item in sorted(graph.objects, key=lambda value: value.semantic_id)
