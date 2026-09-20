@@ -20,6 +20,30 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Hostinger sprint closure authorized 2026-09-20
+
+The owner asks for the missing repository implementation and durable mandatory
+governance after the sprint assessment. Use the existing A2 scope; source work
+does not activate the private runtime or lift an operational acceptance hold.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| HS-1 | Bind all eleven milestones to rationale, owners, checks and next actions | `python scripts/ci/hostinger_readiness.py --check` | implemented — current source binding is required; runtime acceptance remains separate |
+| HS-2 | Capture local acceptance and validate scoped replay/milestone evidence | `python -m unittest tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay -v` | source verified — empty/skipped checks, stale or altered evidence, foreign scope and synthetic milestone claims are rejected |
+| HS-3 | Connect signals to replayable proposals and independent mission review | Focused mission/research Node and rendered tests | source verified — atomic proposal, stable recovery and separate review; rendered acceptance requires the frontend toolchain |
+| HS-4 | Add the connected native workspace journey to both runtime gates | `python tests/upgrade/test_workspace_native.py --require-binary` | authored and required in CI — three connected native cases; execution requires installed PocketBase 0.28.4 and 0.39.8 |
+| HS-5 | Enforce rechecks in agent context, CI and contribution flow | Context, readiness and boundary checks | implemented — mandatory recheck and source review; the hosted runner remains billing-blocked |
+| HS-6 | Record observed results, remaining receiving work and preserved memory | Dispatch memory validator and closure report | see .bits/out/VCC-BUILDANDDO-UPGRADE-001/hostinger-report.md for current evidence and retained external gates |
+
+Memory brief: the September 20 assessment found substantial source coverage
+across all eleven milestones but no local verified sprint state. PR 56's
+tutorial work is already merged and must be preserved. Source tests are not
+native or deployed acceptance. The first runtime proof remains one bounded
+BuildAndDo staging loop with separate producer/verifier and outcome readback.
+Candidate check 105834583008 and telemetry check 106077221075 identify an account
+billing lock before runner startup. Do not invent a code repair or successful
+rerun for that condition. Retain the private operator handoff and prior events.
+
 ## PR 40 main integration authorized 2026-09-18
 
 The owner requests merging the latest main into the existing PR branch,

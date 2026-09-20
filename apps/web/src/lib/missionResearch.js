@@ -28,6 +28,18 @@ const itemShape = (item, workspace) => item && id(item.id) && item.workspace ===
     Object.hasOwn(RESEARCH_KINDS, item.kind) && Object.hasOwn(RESEARCH_STATES, item.status) && revision(item.revision, 1) &&
     revision(item.attempt) && ['title', 'input', 'context', 'origin', 'failure', 'created', 'processed_at', 'evidence'].every((key) => typeof item[key] === 'string');
 
+/** Derive a repeatable proposal key from a saved PocketBase signal revision.
+ * @param {{id: string, updated: string}} signal Saved record identity and timestamp.
+ * @returns {string} A key scoped by the server to the current actor and workspace.
+ */
+export function signalProposalKey(signal) {
+    if (!id(signal?.id) || !/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|\+00:00)?$/.test(signal?.updated || ''))
+        throw new Error('Reload the saved signal before proposing a mission.');
+    const key = `signal_${signal.id}_${signal.updated.replace(/\D/g, '')}`;
+    if (key.length > 80) throw new Error('The signal revision cannot be used as a proposal key.');
+    return key;
+}
+
 /** Connect research operations to one authenticated account and workspace.
  * @param {object} options Native PocketBase client, scope and observation callback.
  * @returns {object} Scoped reads, uploads and replayable commands.
@@ -123,7 +135,7 @@ export function createResearchClient({ client, accountId, workspaceId, demo = fa
         },
         async command(action, payload, expectedRevision = 0) {
             if (!current()) return stale();
-            if (!['mission.propose', 'submit', 'retry', 'cancel', 'attach'].includes(action) || !payload || typeof payload !== 'object' || Array.isArray(payload) || !revision(expectedRevision))
+            if (!['mission.propose', 'signal.propose', 'submit', 'retry', 'cancel', 'attach'].includes(action) || !payload || typeof payload !== 'object' || Array.isArray(payload) || !revision(expectedRevision))
                 return { ok: false, reason: 'invalid', error: 'Reload the current submission before continuing.' };
             const signature = JSON.stringify([action, canonical(payload), expectedRevision]);
             if (pending && signature !== pending.signature) return { ok: false, reason: 'uncertain', error: 'Recover the previous request before starting a different change.' };

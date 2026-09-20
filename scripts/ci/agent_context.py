@@ -5,13 +5,14 @@
 # SRS:         SRS-BUILDANDDO-AGENTCTX-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
 # Depends:     AGENTS.md, .bits/context.md, .bits/srs_registry.yml
 # EnumType:    Service
 # EnumEdges:   CONSUMES .bits/srs_registry.yml; PRODUCES .bits/context.lock.json;
-#              GATES bits/SRS-* branches; VALIDATES .github/workflows
+#              GATES bits/SRS-* branches; VALIDATES .github/workflows; CONSUMES scripts/ci/hostinger_readiness.py
 # Intent:      Give every agent turn the same measured view of the repo instead of a
 #              hand-written brief that silently goes stale.
 # ───────────────────────────────────────────────────────────────
@@ -32,6 +33,12 @@ Standard library only, matching the rest of scripts/ci.
 from __future__ import annotations
 import argparse, datetime as dt, json, re, subprocess, sys
 from pathlib import Path
+
+_MODULE_ROOT = Path(__file__).resolve().parents[2]
+if str(_MODULE_ROOT) not in sys.path:
+    sys.path.insert(0, str(_MODULE_ROOT))
+from scripts.ci.hostinger_checks import CHECKS  # noqa: E402
+from scripts.ci.hostinger_readiness import ReadinessError, check_review  # noqa: E402
 
 LOCK_PATH = ".bits/context.lock.json"
 REGISTRY_PATH = ".bits/srs_registry.yml"
@@ -106,6 +113,10 @@ def collect_pipelines(root: Path) -> list[dict]:
     paths = sorted(root.glob(".github/workflows/*.yml")) + sorted(root.glob(".github/actions/*/action.yml"))
     for path in paths:
         text = read(path)
+        scripts = set(SCRIPT_RE.findall(text))
+        for check in re.findall(r"hostinger_readiness\.py --run ([a-z_]+)", text):
+            if check in CHECKS:
+                scripts.update(part for part in CHECKS[check].argv if SCRIPT_RE.fullmatch(part))
         name = ""
         for line in text.splitlines():
             m = re.match(r"^name:\s*(.+)$", line)
@@ -117,7 +128,7 @@ def collect_pipelines(root: Path) -> list[dict]:
             "name": name or path.stem,
             "kind": "action" if path.name == "action.yml" else "workflow",
             "triggers": sorted({t for t in TRIGGERS if re.search(rf"^\s+{t}:", text, re.M)}),
-            "scripts": sorted(set(SCRIPT_RE.findall(text))),
+            "scripts": sorted(scripts),
             "npm_scripts": sorted(set(NPM_RUN_RE.findall(text))),
             "local_actions": sorted(set(USES_LOCAL_RE.findall(text))),
         })
@@ -126,7 +137,10 @@ def collect_pipelines(root: Path) -> list[dict]:
 
 def collect_gates(root: Path, files: list[str], pipelines: list[dict]) -> list[dict]:
     """A gate is a check script. Wired means a workflow or composite action runs it."""
-    candidates = [f for f in files if f.startswith("scripts/ci/") and f.endswith(".py")]
+    # The registry is a library. Replay is an owner-supplied capture reader,
+    # reported separately below; running it in CI cannot establish live proof.
+    support = {"scripts/ci/hostinger_checks.py", "scripts/ci/hostinger_replay.py"}
+    candidates = [f for f in files if f.startswith("scripts/ci/") and f.endswith(".py") and f not in support]
     candidates += [f for f in files if f.endswith("run_all_tests.py")]
 
     workflow_refs: set[str] = set()
@@ -241,6 +255,17 @@ def collect_findings(root: Path, inventory: dict, registry: list[dict]) -> list[
     return sorted(findings, key=lambda f: (order.get(f["severity"], 3), f["area"], f["statement"]))
 
 
+def collect_readiness(root: Path) -> dict:
+    """Expose the current mandatory sprint review in the measured briefing."""
+    try:
+        contract, source = check_review(root)
+        return {"state": "PASS", "source_sha256": source,
+            "pieces": [{key: piece[key] for key in ("id", "why", "owner", "next_step")} for piece in contract["pieces"]],
+            "acceptance": "UNMEASURED; run the receipt assessment separately"}
+    except (ReadinessError, OSError, subprocess.SubprocessError) as error:
+        return {"state": "FAIL", "reason": str(error), "pieces": []}
+
+
 def build_inventory(root: Path) -> dict:
     files = git_files(root)
     pipelines = collect_pipelines(root)
@@ -270,6 +295,8 @@ def build_inventory(root: Path) -> dict:
         "pipelines": pipelines,
         "gates": collect_gates(root, files, pipelines),
         "tests": collect_tests(root, files),
+        "sprint_readiness": collect_readiness(root),
+        "operational_receipt_tools": ["scripts/ci/hostinger_replay.py"],
     }
     inventory["findings"] = collect_findings(root, inventory, registry)
     open_srs = [s for s in inventory["governance"]["srs"] if s.get("status") not in {"delivered", "withdrawn"}]
@@ -308,6 +335,17 @@ def briefing(inventory: dict) -> str:
         state = "wired into CI" if g["wired_into_ci"] else "NOT run by CI"
         extra = f" (used by {', '.join(g['referenced_by'])})" if g["referenced_by"] and not g["wired_into_ci"] else ""
         lines.append(f"- `{g['path']}` - {state}{extra}")
+
+    readiness = inventory["sprint_readiness"]
+    lines += ["", "## Required sprint review", f"- Source binding: {readiness['state']}",
+        "- Recheck before selecting work and before handoff: python scripts/ci/hostinger_readiness.py --check",
+        "- Read docs/hostinger-sprint-closure.md and .bits/hostinger-readiness.json; this binding does not establish acceptance."]
+    lines.append("- Operational replay: scripts/ci/hostinger_replay.py requires captured inputs and explicit expected scope; CI exercises its synthetic regression suite only.")
+    if readiness["state"] == "FAIL":
+        lines.append(f"- {readiness['reason']}")
+    elif readiness["pieces"]:
+        first = readiness["pieces"][0]
+        lines.append(f"- First ({first['owner']}): {first['next_step']}")
 
     t = inventory["tests"]
     lines += [
@@ -349,6 +387,10 @@ def main() -> int:
     root = Path(args.root).resolve()
     inventory = build_inventory(root)
     lock_path = root / LOCK_PATH
+
+    if (args.check or args.write) and inventory["sprint_readiness"]["state"] != "PASS":
+        print(f"FAIL: {inventory['sprint_readiness']['reason']}")
+        return 1
 
     if args.check:
         if not lock_path.is_file():

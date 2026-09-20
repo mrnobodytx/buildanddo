@@ -89,8 +89,9 @@ function draft() {
 }
 function validatePlan(plan, complete) {
     if (
-        !keys(plan, ['version', 'risk'].concat(PLAN_FIELDS)) ||
+        !keys(plan, ['version', 'risk', 'independent_review'].concat(PLAN_FIELDS)) ||
         plan.version !== 1 ||
+        (Object.hasOwn(plan, 'independent_review') && typeof plan.independent_review !== 'boolean') ||
         !['A0', 'A1', 'A2'].includes(plan.risk)
     ) {
         invalid(
@@ -147,7 +148,7 @@ function writableWorkspace(e, workspaceId) {
     if (!members.length)
         throw new ForbiddenError('A workspace owner, admin or editor must record this decision.');
 }
-function evidenceFor(e, id) {
+function evidenceFor(e, id, independent = false) {
     let evidence;
     try {
         evidence = e.app.findRecordById('evidence', id);
@@ -165,8 +166,10 @@ function evidenceFor(e, id) {
             'Choose readable evidence with a source and observation for this mission and workspace.',
         );
     }
+    if (independent && (!evidence.getString('owner') || evidence.getString('owner') === e.auth.id))
+        invalid('An independent reviewer must differ from every selected evidence author.');
 }
-function passingReview(e, review) {
+function passingReview(e, review, independent = false) {
     if (!review || !text(review.reflection, 1200, true))
         invalid('Record what you learned before verification.');
     const checked = new Set();
@@ -175,7 +178,7 @@ function passingReview(e, review) {
         if (item.outcome !== 'pass' || !text(item.observation, 1200, true) || !item.evidence)
             invalid('Verification needs four passing TEVV observations with evidence.');
         if (!checked.has(item.evidence)) {
-            evidenceFor(e, item.evidence);
+            evidenceFor(e, item.evidence, independent);
             checked.add(item.evidence);
         }
     });
@@ -297,7 +300,9 @@ function enforce(e, creating) {
         record.set('mission_approved_at', '');
     }
     if (after === 'verified' && before !== 'verified') {
-        passingReview(e, review);
+        if (plan?.independent_review && record.getString('owner') === e.auth.id)
+            invalid('An independent reviewer must differ from the mission proposer.');
+        passingReview(e, review, plan?.independent_review === true);
         record.set('mission_reviewed_by', e.auth.id);
         record.set('mission_reviewed_at', new Date().toISOString());
         record.set('progress', 100);

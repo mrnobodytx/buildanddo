@@ -31,6 +31,14 @@ receiving service launcher; the read-only worker doctor performs no activation.
 
 ## Use the website
 
+The Signals desk's **Propose mission** action reuses this authenticated command
+service with `action=signal.propose`, `revision=0` and payload
+`{signal, signal_updated}`. Current readable signal revision and write membership
+are required. It atomically stores a proposed mission, source snapshot evidence
+and the ordinary retry receipt. The browser's stable request key allows recovery
+after closing an uncertain dialog. The mission requires separate review;
+approval, signal acknowledgment and execution remain explicit later steps.
+
 1. Sign in and choose the workspace. Open **Missions**, create or select an
    unfinished mission, then open **Mission research**. The workspace navigation
    and Evidence Ledger also link to `/app/research`.

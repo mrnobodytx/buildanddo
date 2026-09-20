@@ -41,6 +41,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
 import ListToolbar from '@/components/workspace/ListToolbar';
+import SignalMissionProposal from '@/components/workspace/SignalMissionProposal';
 import {
     PageHeader,
     SIGNAL_SEVERITY,
@@ -94,6 +95,7 @@ export default function SignalsPage() {
     const [stateFilter, setStateFilter] = useState('new');
     const [severityFilter, setSeverityFilter] = useState('all');
     const [busyId, setBusyId] = useState(null);
+    const [proposalSignal, setProposalSignal] = useState(null);
 
     const setField = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 
@@ -327,6 +329,8 @@ export default function SignalsPage() {
                                     </div>
 
                                     <div className="mt-3 flex flex-wrap gap-2">
+                                        <Button variant="secondary" size="sm" disabled={busy || loading || degraded}
+                                            onClick={() => setProposalSignal(signal)}>Propose mission</Button>
                                         {triaged ? (
                                             <Button
                                                 variant="ghost"
@@ -371,6 +375,7 @@ export default function SignalsPage() {
                 </ul>
             )}
 
+            {proposalSignal && <SignalMissionProposal signal={proposalSignal} onClose={() => setProposalSignal(null)} />}
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-card">
                     <DialogHeader>
