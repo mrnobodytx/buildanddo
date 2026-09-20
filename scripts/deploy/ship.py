@@ -188,8 +188,14 @@ def _rsync(local_dir: Path, remote_dir: str) -> dict:
     old chunk that the new index.html no longer references)."""
     if not VM_HOST:
         return {"ok": False, "stage": "config", "reason": "BUILDANDDO_VM_HOST not set (see secrets/deploy.local.env)"}
+    # `rm -rf dir/*` leaves DOTFILES: the shell glob never matches a leading dot. Measured
+    # 2026-09-20 - that is why /var/www/buildanddo/.well-known/citadel-release.json was still
+    # reporting commit 0b9faeb from 09-11 after deploys on 09-18 and 09-20, while `_version`
+    # (no dot) was deleted by every single one. The environment ended up publishing two
+    # identities that disagreed by nine days, and a capability inventory reading the survivor
+    # concluded production was missing pages it was in fact serving.
     clear = _run(["ssh", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", VM_HOST,
-                  f"rm -rf {remote_dir}/* && mkdir -p {remote_dir}"])
+                  f"mkdir -p {remote_dir} && find {remote_dir} -mindepth 1 -delete"])
     if not clear["ok"]:
         return {"ok": False, "stage": "clear_remote", **clear}
     copy = _run(["scp", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", "-r",
@@ -228,6 +234,66 @@ def _write_web_env() -> None:
 
     if lines:
         (web_dir / ".env").write_text("".join(lines), encoding="utf-8")
+
+
+def _refresh_capability_inventory() -> dict:
+    """Re-measure the capability inventory AFTER the deploy, and push just that file.
+
+    The inventory answers "what can I use", by checking each capability's source against the
+    commit each environment reports serving. Built before the sync, it therefore describes the
+    environments as they were BEFORE the deploy that carries it - measured 2026-09-20, production
+    shipped an inventory reading 18 live / 18 staged when the post-deploy truth was 36 / 2.
+
+    Re-running it here closes that by one deploy: the published file describes the environments as
+    they are once the files have actually moved. Non-fatal - a stale inventory is a worse page, not
+    a worse release, and the release has already been promoted and probed by this point.
+    """
+    built = _run([sys.executable, str(ROOT / "scripts" / "ci" / "capability_inventory.py"), "--write"],
+                 cwd=ROOT, timeout=180)
+    if not built["ok"]:
+        return {"ok": False, "stage": "measure", **built}
+    local = ROOT / "apps" / "web" / "public" / "capabilities.json"
+    if not local.is_file():
+        return {"ok": False, "stage": "measure", "reason": "capabilities.json not produced"}
+    for remote in (STAGING_REMOTE_DIR, PROD_REMOTE_DIR):
+        copy = _run(["scp", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no",
+                     str(local), f"{VM_HOST}:{remote}/capabilities.json"], timeout=60)
+        if not copy["ok"]:
+            return {"ok": False, "stage": "scp", "remote": remote, **copy}
+    return {"ok": True}
+
+
+def _write_deployed_version() -> None:
+    """Write dist/_version: what this build actually is, for external readback.
+
+    The schema matches what the release controller has always published
+    (buildanddo.deployed-version/v1), so tools reading /_version keep working. It is written
+    here because THIS is the step that moves the files - a record of the deploy written by
+    anything else can, and did, drift nine days out of date.
+    """
+    def _git(*args: str) -> str:
+        try:
+            out = subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True,
+                                 text=True, timeout=20, check=False)
+            return (out.stdout or "").strip()
+        except (OSError, subprocess.SubprocessError):
+            return ""
+
+    sha = _git("rev-parse", "HEAD")
+    payload = {
+        "built_at": dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z"),
+        "campaign_id": "citadel-21-day-2026-09",
+        "candidate_sha": sha,
+        "commit_sha": sha,
+        "gitlab_job_id": os.environ.get("CI_JOB_ID"),
+        "gitlab_pipeline_id": os.environ.get("CI_PIPELINE_ID"),
+        "schema": "buildanddo.deployed-version/v1",
+        "source_branch": _git("rev-parse", "--abbrev-ref", "HEAD"),
+    }
+    try:
+        (DIST_DIR / "_version").write_text(json.dumps(payload), encoding="utf-8")
+    except OSError as exc:
+        print(f"WARN could not write dist/_version: {type(exc).__name__}: {exc}")
 
 
 def _write_capability_inventory() -> dict:
@@ -417,6 +483,12 @@ def main() -> int:
         _finish(record)
         return 1
 
+    # LAST thing before the files move, and deliberately not earlier: _gate() runs
+    # integrity_regression_check.py, which runs its own `npm run build` and cleans dist - so a
+    # _version written during _build is deleted before it can ship. Measured 2026-09-20: the
+    # promote landed with no _version at all and /_version fell through to the SPA's 200 HTML.
+    _write_deployed_version()
+
     if not DIST_DIR.is_dir():
         record["stages"]["staging_sync"] = {"ok": False, "reason": "dist dir missing after a passing build"}
         record["stopped_at"] = "staging_sync"
@@ -447,6 +519,16 @@ def main() -> int:
 
     prod_probe = _probe(PROD_URL)
     record["stages"]["prod_probe"] = prod_probe
+
+    # Both environments are now serving the new build, so the inventory can finally measure what
+    # it claims to describe. Deliberately after the probes: re-measuring earlier would just
+    # re-record the pre-deploy state with a newer timestamp on it.
+    if prod_probe["ok"]:
+        refresh = _refresh_capability_inventory()
+        record["stages"]["inventory_refresh"] = refresh
+        if not refresh["ok"]:
+            print(f"WARN capability inventory refresh failed at {refresh.get('stage')}; "
+                  "the published inventory describes the PREVIOUS deploy")
     record["stopped_at"] = None if prod_probe["ok"] else "prod_probe"
 
     if prod_probe["ok"]:
