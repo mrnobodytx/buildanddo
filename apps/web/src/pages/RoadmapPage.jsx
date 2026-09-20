@@ -216,6 +216,47 @@ function mergeLiveStatus(live) {
     });
 }
 
+/**
+ * One milestone's replay verdict, from scripts/ci/sprint_replay.py.
+ *
+ * Day 21's contract, in the words this page already uses for it: every milestone is shown
+ * "with what was actually verified and what wasn't." So a rotted claim is printed with its
+ * reason rather than reduced to a colour, and UNCHECKED — evidence that names nothing any
+ * machine can re-check — is stated outright instead of being left to look like a pass.
+ *
+ * Renders nothing when there is no replay: a page that silently omits the verdict is
+ * honest, whereas one that defaults to HOLDS would be asserting the very thing the replay
+ * exists to stop asserting.
+ *
+ * @param {{entry?: object}} props The replay entry for this day, if any.
+ */
+export function ReplayVerdict({ entry }) {
+    if (!entry || entry.verdict === 'NOT_VERIFIED') return null;
+    const tone = {
+        HOLDS: 'text-success',
+        ROTTED: 'text-destructive',
+        UNCHECKED: 'text-muted-foreground',
+    }[entry.verdict] || 'text-muted-foreground';
+    const claims = entry.claims || {};
+    return (
+        <div className="font-evidence mt-1 pl-0 text-[11px] sm:pl-[calc(8.33%+0.75rem)]">
+            <span className={`uppercase tracking-[0.14em] ${tone}`}>Replay: {entry.verdict}</span>
+            <span className="text-muted-foreground">
+                {' '}· {claims.held ?? 0} held, {claims.rotted ?? 0} rotted,{' '}
+                {claims.external ?? 0} external, {claims.unmeasurable ?? 0} unmeasurable
+            </span>
+            {entry.verdict === 'UNCHECKED' && (
+                <span className="text-muted-foreground"> — evidence names nothing re-checkable</span>
+            )}
+            {(entry.rot || []).map((r) => (
+                <p key={`${r.kind}:${r.ref}`} className="text-destructive">
+                    {r.ref} — {r.reason}
+                </p>
+            ))}
+        </div>
+    );
+}
+
 const CHART_W = 1040;
 const CHART_H = 440;
 const PAD_L = 64;
@@ -417,6 +458,14 @@ export default function RoadmapPage() {
     }, [activity]);
     const progression = live?.progression?.state === 'MEASURED' ? live.progression : null;
 
+    // Only a MEASURED replay populates this. An absent or failed one leaves the map empty,
+    // so every ReplayVerdict renders nothing - absence must not render as health.
+    const replay = live?.replay?.state === 'MEASURED' ? live.replay : null;
+    const replayByDay = useMemo(
+        () => new Map((replay?.milestones || []).map((m) => [m.day, m])),
+        [replay],
+    );
+
     const handleHover = (day) => {
         setActiveDay(day);
         if (day) {
@@ -583,6 +632,7 @@ export default function RoadmapPage() {
                                     {m.verifiedAt ? ` · verified ${m.verifiedAt}` : ''}
                                 </p>
                             )}
+                            <ReplayVerdict entry={replayByDay.get(m.day)} />
                             {m.description && (
                                 <p className="mt-2 pl-0 text-sm leading-relaxed text-muted-foreground sm:pl-[calc(8.33%+0.75rem)]">
                                     {m.description}
@@ -666,6 +716,20 @@ export default function RoadmapPage() {
                         </p>
                     ) : (
                         <p>Estate progression: Unknown — {live?.progression?.reason || 'not carried by this projection'}.</p>
+                    )}
+                    {replay ? (
+                        <p>
+                            Replay (day 21, {replay.context?.shallow_clone ? 'shallow clone' : 'full history'}
+                            {replay.context?.endpoints_probed ? ', endpoints probed' : ', endpoints not probed'}):
+                            the ledger claims {replay.claimed_pct}% and {replay.replayed_pct}% survives re-checking
+                            {replay.overstatement_pct > 0
+                                ? ` — ${replay.overstatement_pct}% is claimed but not shown.`
+                                : ' — every verified milestone still holds.'}{' '}
+                            {replay.counts?.HOLDS ?? 0} hold, {replay.counts?.ROTTED ?? 0} rotted,{' '}
+                            {replay.counts?.UNCHECKED ?? 0} unchecked. A replay may only ever subtract.
+                        </p>
+                    ) : (
+                        <p>Replay: Unknown — {live?.replay?.reason || 'not carried by this projection'}.</p>
                     )}
                     {activity?.generated_at && (
                         <p>

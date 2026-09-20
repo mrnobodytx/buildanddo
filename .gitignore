@@ -55,6 +55,11 @@ scripts/ci/run_sprint_cycle.ps1
 # Generated at build time by scripts/deploy/roadmap_status.py - never hand-edited
 # or committed as source, it's build output like dist/.
 apps/web/public/roadmap-status.json
+# Written by scripts/deploy/ship.py at deploy time and read back off the webroot.
+# The rule d2d5f83 added here was lost in a later edit; without it the repo stops
+# declaring this file as build output, and anything that asks git whether a path is
+# generated - sprint_replay.py does - gets told it is missing source.
+apps/web/public/.well-known/citadel-release.json
 # Generated at build time by scripts/ci/fleet_report.py - build output, same as
 # roadmap-status.json above. The Fleet and Platform Health pages state that the
 # projection is missing rather than drawing stale data when it was not written.
