@@ -31,7 +31,7 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('lazy route entry points', () => {
-    it.each(['/pricing', '/about', '/docs', '/classrooms', '/blog', '/contact'])(
+    it.each(['/hostinger-challenge', '/pricing', '/about', '/docs', '/classrooms', '/blog', '/contact'])(
         'loads %s without an authenticated account',
         async (route) => {
             renderWithProviders(<AppRoutes />, { route, auth: { isAuthed: false, user: null } });

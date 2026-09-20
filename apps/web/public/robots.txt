@@ -8,4 +8,4 @@ Disallow: /forgot-password
 Disallow: /onboarding
 Disallow: /api/
 Disallow: /hcgi/
-Sitemap: https://buildanddo.tech/sitemap.xml
+Sitemap: https://buildanddo.com/sitemap.xml

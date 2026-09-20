@@ -75,3 +75,8 @@ buildanddo_release_candidate:
     paths:
       - .citadel-release/
 # END CITADEL BUILDANDDO VERIFIED RELEASE v1
+
+# BEGIN CITADEL DAY21 SUBMISSION CLOSURE v1
+include:
+  - local: '.gitlab/ci/day21-submission.yml'
+# END CITADEL DAY21 SUBMISSION CLOSURE v1

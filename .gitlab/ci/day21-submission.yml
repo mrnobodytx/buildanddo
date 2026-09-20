@@ -1,0 +1,73 @@
+# # --- CGRF Header ------------------------------------------------
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001
+# Seat:        CLA-INSTALLER
+# Owner:       Citadel Nexus Inc.
+# Intent:      Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.
+# ----------------------------------------------------------------
+# Day-21 self-hosted acceptance lane. No deployment or remote mutation.
+day21_source_acceptance:
+  stage: test
+  tags: [buildanddo]
+  script:
+    - python3 tools/day21/day21_acceptance.py --repo . --source-only --install-deps --evidence-dir reports/day21/acceptance
+    - python3 scripts/ci/day21_submission.py audit --root . --evidence state/day21/evidence --json || true
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - reports/day21/
+      - reports/junit/
+      - reports/coverage/
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+
+# Native acceptance builds the two repository-declared PocketBase runtimes from
+# the existing Dockerfile and then runs the existing five native profiles twice.
+day21_native_acceptance:
+  stage: test
+  tags: [buildanddo]
+  script:
+    - python3 tools/day21/day21_acceptance.py --repo . --native-only --evidence-dir reports/day21/acceptance
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - reports/day21/
+  rules:
+    - if: '$DAY21_NATIVE_ACCEPTANCE == "1"'
+
+# Final gate runs the complete existing 18-profile matrix in one job so the
+# acceptance summary binds one checkout/candidate before browser/replay capture.
+day21_full_acceptance:
+  stage: test
+  tags: [buildanddo]
+  script:
+    - python3 tools/day21/day21_acceptance.py --repo . --install-deps --evidence-dir reports/day21/acceptance --summary-output state/day21/evidence/acceptance-summary.json
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - reports/day21/
+      - reports/junit/
+      - reports/coverage/
+      - state/day21/evidence/acceptance-summary.json
+  rules:
+    - if: '$DAY21_FULL_ACCEPTANCE == "1"'
+
+# Compilation is deliberately manual and refuses incomplete evidence.
+day21_submission_bundle:
+  stage: .post
+  tags: [buildanddo]
+  script:
+    - python3 scripts/ci/day21_submission.py bundle --root . --evidence state/day21/evidence --output state/day21/submission
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - state/day21/submission/
+  rules:
+    - if: '$DAY21_COMPILE_SUBMISSION == "1"'

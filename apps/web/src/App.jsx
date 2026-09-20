@@ -16,6 +16,7 @@ import { workspaceDestination } from '@/lib/navigationIntent';
 import { isMasterSeat } from '@/lib/estateAccess';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
+const HostingerChallengePage = lazy(() => import('./pages/HostingerChallengePage'));
 const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
 const PracticePage = lazy(() => import('./pages/PracticePage'));
 const PlatformPage = lazy(() => import('./pages/PlatformPage'));
@@ -150,6 +151,7 @@ export function AppRoutes() {
             <Routes>
                 {/* Public marketing site */}
                 <Route path="/" element={<HomePage />} />
+                <Route path="/hostinger-challenge" element={<HostingerChallengePage />} />
                 <Route path="/roadmap" element={<RoadmapPage />} />
                 <Route path="/practice" element={<PracticePage />} />
                 <Route path="/platform" element={<PlatformPage />} />

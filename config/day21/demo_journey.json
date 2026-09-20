@@ -1,0 +1,16 @@
+{
+  "schema": "buildanddo.day21-browser-scenario/v1",
+  "steps": [
+    {"kind": "public_entry", "action": "goto", "path": "/hostinger-challenge"},
+    {"kind": "public_entry", "action": "expect", "text": "One business problem"},
+    {"kind": "auth", "action": "goto", "path": "/login"},
+    {"kind": "auth", "action": "fill", "label": "Email", "env": "BUILDANDDO_DEMO_EMAIL"},
+    {"kind": "auth", "action": "fill", "label": "Password", "env": "BUILDANDDO_DEMO_PASSWORD"},
+    {"kind": "auth", "action": "click", "role": "button", "name": "Sign in"},
+    {"kind": "challenge", "action": "goto", "path": "/#challenge-desk"},
+    {"kind": "challenge", "action": "expect", "text": "Describe a real business problem"},
+    {"kind": "mission", "action": "goto", "path": "/app/missions"},
+    {"kind": "evidence", "action": "goto", "path": "/app/evidence"},
+    {"kind": "operator_readback", "action": "goto", "path": "/app/operator"}
+  ]
+}

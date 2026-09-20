@@ -198,3 +198,11 @@ srs:
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-CRAWL-001.md
     notes: Additive local verification reusing the research Firecrawl client and egress policy; CI wiring and live provider execution remain separately authorized concerns
+
+  - code: SRS-BUILDANDDO-DAY21-CLOSURE-001
+    title: Day-21 submission closure - candidate continuity, browser journey, four-product proof
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md
+    owner: C-ONE
+    notes: Additive closure lane over existing acceptance/replay receipts; blocks on one canonical origin because buildanddo.tech has no DNS while README and SITE_ORIGIN disagree

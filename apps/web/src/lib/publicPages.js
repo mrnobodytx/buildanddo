@@ -15,7 +15,14 @@
 // Intent:      Keep public navigation, canonical metadata and crawler output on the same route catalogue.
 // ───────────────────────────────────────────────────────────────
 
-export const SITE_ORIGIN = 'https://buildanddo.tech';
+// Measured 2026-09-20 from a fleet box (rig1 cannot measure TLS - its antivirus terminates and
+// re-signs every connection): buildanddo.com resolves through Cloudflare and answers 200, while
+// buildanddo.tech has NO DNS RECORD AT ALL. This constant feeds the canonical link, the Open
+// Graph image and the JSON-LD WebSite.url in Seo.jsx, so production was telling search engines
+// its canonical home was a host that does not exist and pointing every shared link's preview
+// image at the same nowhere. sitemap.xml, robots.txt and llms.txt are all generated from this
+// one value by tools/generate-seo.mjs, so it is the single point where that was fixable.
+export const SITE_ORIGIN = 'https://buildanddo.com';
 export const PUBLIC_PAGES = [
     {
         path: '/',
@@ -23,6 +30,14 @@ export const PUBLIC_PAGES = [
         title: 'BuildAndDo — learn by doing, together',
         description:
             'Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.',
+        type: 'WebPage',
+    },
+    {
+        path: '/hostinger-challenge',
+        label: 'Challenge',
+        title: 'BuildAndDo — Hostinger 21-Day Challenge',
+        description:
+            'See the focused business problem, verified mission story and Hostinger product roles behind the BuildAndDo challenge entry.',
         type: 'WebPage',
     },
     {
