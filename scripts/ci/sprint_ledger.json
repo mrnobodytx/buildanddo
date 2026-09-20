@@ -2,7 +2,7 @@
   "campaign_id": "citadel-21-day-2026-09",
   "sprint_start": "2026-09-09",
   "sprint_days": 21,
-  "updated_at": "2026-09-20T13:15:01+00:00",
+  "updated_at": "2026-09-20T13:23:55+00:00",
   "milestones": [
     {
       "day": 1,
@@ -23,10 +23,40 @@
       "verified_at": "2026-09-20T00:00:00Z"
     },
     {
+      "day": 7,
+      "status": "verified",
+      "evidence": "commits 8a1c407, 3170e84; apps/web/src/pages/workspace/SignalsPage.jsx (483 lines) reads the signals collection through apps/web/src/hooks/useWorkspaceRecords.js, which calls PocketBase directly - the demo branch fires only in explicit demo mode; collection defined in apps/pocketbase/pb_migrations/1788474000_create_workspace_collections.js and scoped by apps/pocketbase/pb_migrations/1788900000_create_workspace_members_rbac.js; signals feed the knowledge graph via apps/pocketbase/pb_hooks/workspace-knowledge.js and the operator cockpit via apps/pocketbase/pb_hooks/workspace-operator.js. Staging readback 2026-09-20: /hcgi/platform/api/collections/signals/records 200, with the negative control /hcgi/platform/api/collections/erp_not_real/records 404 proving the probe discriminates rather than answering 200 to everything as the SPA shell does. SCOPE: no dedicated signals ingestion hook exists - the MVP is capture plus fan-out to knowledge and cockpit, not autonomous collection. Staging only; production not promoted.",
+      "verified_at": "2026-09-20T00:00:00Z"
+    },
+    {
+      "day": 9,
+      "status": "verified",
+      "evidence": "commits 26f73df, 9bbcbc2; apps/web/src/pages/workspace/MissionsPage.jsx (718 lines) reads the missions and evidence collections; the bounded-action engine is apps/pocketbase/pb_hooks/mission-policy.js (313 lines), apps/pocketbase/pb_hooks/mission-suite.js (252 lines) and apps/pocketbase/pb_hooks/missions.pb.js, with apps/pocketbase/pb_hooks/mission-research.js for the research leg. Staging readback 2026-09-20: /hcgi/platform/api/collections/missions/records 200 and /hcgi/platform/api/collections/evidence/records 200, negative control /hcgi/platform/api/collections/erp_not_real/records 404. Staging only; production not promoted.",
+      "verified_at": "2026-09-20T00:00:00Z"
+    },
+    {
+      "day": 11,
+      "status": "verified",
+      "evidence": "commits af63ab4, 858ccf5; apps/web/src/pages/workspace/WorkflowsPage.jsx (721 lines) is the editor - named steps carrying a kind and detail - and reads the workflows collection; governed execution is apps/pocketbase/pb_hooks/workflow-runs.js (200 lines) and apps/pocketbase/pb_hooks/workflow-policy.js (131 lines), wired by apps/pocketbase/pb_hooks/workflows.pb.js, the subject of commit af63ab4 recording governed workflow runs. Staging readback 2026-09-20: /hcgi/platform/api/collections/workflows/records 200, negative control /hcgi/platform/api/collections/erp_not_real/records 404. Staging only; production not promoted.",
+      "verified_at": "2026-09-20T00:00:00Z"
+    },
+    {
       "day": 13,
       "status": "verified",
       "evidence": "commit abc10c9 (Living Rooms overlay: RoomCanvas, UtilizationPanel, useRoomProjection, routes app/rooms, app/rooms/systems, app/rooms/live; header Rooms-live pill via useRoomsLive); staging readback 2026-09-18: /room-projections/index.json 200 and /room-projections/systems.json 200 state MEASURED generated 2026-09-18T14:26Z; public-record bridge = the projections published to the webroot from the estate",
       "verified_at": "2026-09-18T14:30:00Z"
+    },
+    {
+      "day": 15,
+      "status": "verified",
+      "evidence": "commits 203a08c, 8a1c407, 295725a; delivered on the ERP surface rather than three separate pages - apps/web/src/pages/workspace/ErpPage.jsx reads erp_objectives, erp_tasks and erp_contacts, which is exactly the objectives, tasks and guild contacts this milestone names; collections defined in apps/pocketbase/pb_migrations/1788474000_create_workspace_collections.js and apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js, RBAC-scoped in apps/pocketbase/pb_hooks/administration.pb.js. Staging readback 2026-09-20: /hcgi/platform/api/collections/erp_objectives/records 200, /hcgi/platform/api/collections/erp_tasks/records 200 and /hcgi/platform/api/collections/erp_contacts/records 200, negative control /hcgi/platform/api/collections/erp_not_real/records 404. Staging only; production not promoted.",
+      "verified_at": "2026-09-20T00:00:00Z"
+    },
+    {
+      "day": 17,
+      "status": "verified",
+      "evidence": "commits a155e24, b929a5d, 858ccf5; the ledger is scripts/ci/sprint_ledger.json, TRACKED rather than per-clone state so every checkout and the public page read the same verification; scripts/ci/sprint_cycle.py (353 lines) is the only writer and counts a milestone only when status is verified AND it names evidence; scripts/ci/sprint_replay.py (556 lines) re-checks every claim against git and live endpoints, held down by 27 cases in scripts/ci/selftest_sprint_replay.py covering both directions; the operator surface is apps/web/src/pages/workspace/EvidencePage.jsx (437 lines) over the evidence collection, governed by apps/pocketbase/pb_hooks/evidence-policy.js and apps/pocketbase/pb_hooks/evidence.pb.js with apps/pocketbase/pb_migrations/1788800000_create_praxis_evidence_fabric.js and apps/pocketbase/pb_migrations/1788940000_create_evidence_witness.js. Staging readback 2026-09-20: /hcgi/platform/api/collections/evidence/records 200, negative control /hcgi/platform/api/collections/erp_not_real/records 404. SCOPE: verification is recorded and re-checkable, but recording it is still a human act - CI does not write this ledger. Staging only; production not promoted.",
+      "verified_at": "2026-09-20T00:00:00Z"
     },
     {
       "day": 19,
