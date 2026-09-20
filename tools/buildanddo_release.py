@@ -196,30 +196,44 @@ WORKSPACE_ENV_CANDIDATES = (
 )
 
 
+def repo_root() -> Path:
+    """This file lives at <repo>/tools/, so the repo is its parent's parent."""
+    return Path(__file__).resolve().parents[1]
+
+
+def _read_env_file(path: Path, allowed: Sequence[str]) -> dict[str, str]:
+    """Read ONLY the allowed names out of one env file. Values are never logged.
+
+    The allowlist is the whole safety property. workspace.env holds 500+ credentials for the entire
+    estate; reading all of them into a release tool's environment would hand every subprocess it
+    spawns the keys to everything. A deploy needs two secrets, so exactly two are read."""
+    out: dict[str, str] = {}
+    try:
+        text = path.read_text(encoding="utf-8-sig", errors="replace")
+    except OSError:
+        return out
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, _, v = line.partition("=")
+        k = k.strip()
+        if k not in allowed:
+            continue
+        v = v.strip()
+        if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
+            v = v[1:-1]
+        if v:
+            out[k] = v
+    return out
+
+
 def _read_workspace_env(allowed: Sequence[str]) -> dict[str, str]:
-    """Read ONLY the allowed names out of the estate credential store. Values never logged."""
+    """Allowed names from the estate credential store; first readable candidate wins."""
     for cand in WORKSPACE_ENV_CANDIDATES:
         if cand is None or not cand.is_file():
             continue
-        out: dict[str, str] = {}
-        try:
-            text = cand.read_text(encoding="utf-8-sig", errors="replace")
-        except OSError:
-            return {}
-        for line in text.splitlines():
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            k, _, v = line.partition("=")
-            k = k.strip()
-            if k not in allowed:
-                continue
-            v = v.strip()
-            if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
-                v = v[1:-1]
-            if v:
-                out[k] = v
-        return out
+        return _read_env_file(cand, allowed)
     return {}
 
 
@@ -244,9 +258,18 @@ def bridge_ship_credentials() -> dict[str, Any]:
     # only ever loaded release.env, so with the credentials sitting in workspace.env the bridge
     # was reading an environment nothing had populated and reporting them missing while ship.py
     # -- three directories away, reading the same two names -- resolved them fine.
+    # PRECEDENCE MUST MATCH ship.py EXACTLY, or the two tools resolve different credentials from
+    # the same machine and we are back to two stores disagreeing. ship.py's order is
+    # environment < workspace.env < secrets/deploy.local.env, with the repo-local file most
+    # specific because it is the deliberate per-machine override. Mirrored here.
     shared = _read_workspace_env(SHIP_SHARED_KEYS)
-    vm = (os.environ.get("BUILDANDDO_VM_HOST") or shared.get("BUILDANDDO_VM_HOST") or "").strip()
-    key = (os.environ.get("BUILDANDDO_SSH_KEY") or shared.get("BUILDANDDO_SSH_KEY") or "").strip()
+    local = _read_env_file(repo_root() / "secrets" / "deploy.local.env", SHIP_SHARED_KEYS)
+
+    def _pick(name: str) -> str:
+        return (local.get(name) or os.environ.get(name) or shared.get(name) or "").strip()
+
+    vm = _pick("BUILDANDDO_VM_HOST")
+    key = _pick("BUILDANDDO_SSH_KEY")
     out: dict[str, Any] = {"state": "NOOP", "applied": [],
                            "source": "BUILDANDDO_VM_HOST / BUILDANDDO_SSH_KEY (ship.py names)"}
     if not vm and not key:
@@ -1442,13 +1465,18 @@ def _repository_url(repo: Path) -> str:
     return preferred[1] if preferred else ""
 
 
-def pipeline_stage(root: Path, repo: Path, *, ack: str) -> dict[str, Any]:
+def pipeline_stage(root: Path, repo: Path, *, ack: str,
+                   skip_install: bool = False) -> dict[str, Any]:
     if ack != "A3":
         raise ReleaseError("pipeline-stage requires A3")
     source = p0_state(repo)
     if not (source["identity_pass"] and source["homepage_pass"] and source["onboarding_pass"] and source["flagship"] and source["release_truth_source_pass"]):
         raise ReleaseError("P0 source convergence is not green; refusing staging mutation")
-    build = build_release(repo, root)
+    # --skip-install was parsed and documented but never reached build_release from here, so the
+    # flag worked for the bare `build` verb and silently did nothing for the pipeline verbs. It
+    # matters on a shared machine: `npm ci` fails EPERM while any other process holds a binary in
+    # node_modules open, and node_modules is already installed anyway.
+    build = build_release(repo, root, skip_install=skip_install)
     deploy = deploy_environment(root, repo, "staging", ack=ack)
     verify = verify_environment(
         root, "staging", str(build["commit_sha"]), expected_digest=str(build.get("payload_digest") or "") or None
@@ -2005,7 +2033,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             sha = git_head(repo)
             result = verify_environment(root, "production", sha)
         elif args.command == "pipeline-stage":
-            result = pipeline_stage(root, repo, ack=args.ack_authority)
+            result = pipeline_stage(root, repo, ack=args.ack_authority,
+                                    skip_install=args.skip_install)
         elif args.command in {"pipeline-promote", "promote"}:
             result = pipeline_promote(root, repo, ack=args.ack_authority)
         elif args.command == "rollback-staging":
