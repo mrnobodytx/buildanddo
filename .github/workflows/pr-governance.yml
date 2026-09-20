@@ -14,6 +14,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  readiness:
+    name: governance:readiness
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Require reviewed milestone rationale, ownership and next steps
+        run: python scripts/ci/hostinger_readiness.py --check
+      - name: Require evidence integrity and replay rejection cases
+        run: python -m unittest tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay
+
   govern:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -26,6 +40,13 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Require current sprint governance before acceptance
+        run: python scripts/ci/hostinger_readiness.py --check
 
       - name: Enforce public/private boundary and contributor visibility
         run: python scripts/ci/verify_public_boundary.py --github-event "$GITHUB_EVENT_PATH"
@@ -41,13 +62,16 @@ jobs:
         run: python scripts/ci/changelog_gen.py --check
 
       - name: Verify dependency lock matches every manifest
-        run: python scripts/ci/supply_chain.py --skip-audit --check-lock
+        run: python scripts/ci/hostinger_readiness.py --run dependency_lock --evidence-dir reports/hostinger
 
       - name: Install
         run: npm ci
 
-      - name: Lint if present
-        run: npm run lint --if-present
+      - name: Install declared source-test dependencies
+        run: python -m pip install -r scripts/discordbot/requirements.txt -r apps/research/requirements.txt
+
+      - name: Require frontend lint
+        run: python scripts/ci/hostinger_readiness.py --run web_lint --evidence-dir reports/hostinger
 
       # Required, not `--if-present`: a missing test script must fail the PR
       # rather than pass silently, which is what the old no-op step did.
@@ -71,18 +95,31 @@ jobs:
           DD_TRACE_DISABLED_INSTRUMENTATIONS: fs,fetch,http,undici
         run: npm --prefix apps/web run test:coverage -- --reporter=default --reporter=junit --outputFile.junit=../../reports/junit/web.xml
 
+      # Added on merge: main routes the same suite through the readiness runner to
+      # produce reports/hostinger evidence. Kept alongside the instrumented run above
+      # rather than replacing it, because the next step requires reports/junit/web.xml.
+      - name: Record web test evidence for readiness
+        run: python scripts/ci/hostinger_readiness.py --run web_tests --evidence-dir reports/hostinger
+
       # The suite can pass while producing no report (wrong reporter, wrong
       # path), which would leave Datadog test visibility empty and green.
       - name: Verify JUnit test report was produced
         run: test -s reports/junit/web.xml
 
-      - name: Verify public telemetry and build adapters
-        run: |
-          node --test tests/upgrade/*.test.mjs
-          python -m unittest discover -s tests/upgrade -p 'test_*.py'
+      - name: Verify public JavaScript contracts with retained counts
+        run: python scripts/ci/hostinger_readiness.py --run source_node --evidence-dir reports/hostinger
+
+      - name: Verify public Python contracts without counting native skips as acceptance
+        run: python scripts/ci/hostinger_readiness.py --run source_python --evidence-dir reports/hostinger
+
+      - name: Capture semantic twin acceptance
+        run: python scripts/ci/hostinger_readiness.py --run semantic_twin --evidence-dir reports/hostinger
+
+      - name: Capture source boundary acceptance
+        run: python scripts/ci/hostinger_readiness.py --run boundary --evidence-dir reports/hostinger
 
       - name: Build
-        run: npm run build
+        run: python scripts/ci/hostinger_readiness.py --run web_build --evidence-dir reports/hostinger
 
       - name: Verify expected web artifact
         run: test -d dist/apps/web && test -f dist/apps/web/index.html
@@ -103,6 +140,7 @@ jobs:
           github-token: ${{ github.token }}
 
       - name: Upload governance evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: pr-governance-${{ github.event.pull_request.number }}
@@ -110,6 +148,7 @@ jobs:
             .buildanddo/public/boundary-report.json
             reports/junit
             reports/coverage
+            reports/hostinger
             reports/supply-chain.json
             dist/apps/web
           retention-days: 14
@@ -223,17 +262,36 @@ jobs:
       - name: Require native auth, OAuth model lookup, encryption and concurrent retries
         env:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
-        run: python tests/upgrade/test_dossier_native.py --require-binary
+        run: python scripts/ci/hostinger_readiness.py --run native_dossier --runtime ${{ matrix.runtime }} --evidence-dir reports/hostinger
 
       - name: Require native suite leases, operator visibility, read-only snapshots and rollback
         env:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
-        run: python tests/upgrade/test_suite_native.py --require-binary
+        run: python scripts/ci/hostinger_readiness.py --run native_suite --runtime ${{ matrix.runtime }} --evidence-dir reports/hostinger
 
       - name: Require native classroom auth, attendance, retries and rollback
         env:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
-        run: python tests/upgrade/test_classroom_native.py --require-binary
+        run: python scripts/ci/hostinger_readiness.py --run native_classroom --runtime ${{ matrix.runtime }} --evidence-dir reports/hostinger
+
+      - name: Require native tutorial checkpoints, certificates, concurrent credit and retention
+        env:
+          BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
+        run: python scripts/ci/hostinger_readiness.py --run native_learning --runtime ${{ matrix.runtime }} --evidence-dir reports/hostinger
+
+      - name: Require connected workspace auth, signal proposals, separate review and persistence
+        env:
+          BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
+        run: python scripts/ci/hostinger_readiness.py --run native_workspace --runtime ${{ matrix.runtime }} --evidence-dir reports/hostinger
+
+      - name: Retain native acceptance results and failure logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hostinger-native-${{ matrix.runtime }}
+          path: reports/hostinger
+          if-no-files-found: warn
+          retention-days: 14
 
   federal-foundry:
     name: ci:test / Federal portfolio (Python ${{ matrix.python }})

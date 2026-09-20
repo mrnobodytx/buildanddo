@@ -46,7 +46,7 @@ test('first explicit save creates one personal dossier and stores no entity or n
     const saved = f.create(); assert.equal(saved.owner, 'editor'); assert.equal(saved.revision, 1);
     assert.equal(f.data.user_dossiers.length, 1); assert.equal(f.data.dossier_entities.length, 1);
     const stored = JSON.stringify([f.data.user_dossiers, f.data.dossier_entities, f.data.dossier_events]);
-    for (const text of ['Library project', 'Reading room', 'opening hours', 'My source', 'https://buildanddo.tech/docs']) assert.ok(!stored.includes(text));
+    for (const text of ['Library project', 'Reading room', 'opening hours', 'My source', 'https://buildanddo.com/docs']) assert.ok(!stored.includes(text));
     const entity = detail(f, saved.id); assert.equal(entity.notes[0].origin, 'website');
     assert.equal(entity.notes[0].source_label, 'My source'); assert.ok(Date.parse(entity.notes[0].created));
     assert.equal(f.read().dossier.owner, 'editor'); assert.equal(f.read().entity_count, 1);
@@ -205,7 +205,7 @@ test('tampering, replaying ciphertext at another revision or substituting record
 test('invalid inputs, unsafe source references and excessive notes do not partially save', () => {
     const f = dossierFixture();
     for (const value of [{ label: '' }, { kind: 'administrator' }, { aliases: ['a', 'A'] }, { tags: ['x'.repeat(41)] },
-        { note: 'x'.repeat(2001) }, { source_url: 'https://user:password@buildanddo.tech/docs' }, { source_url: 'http://127.0.0.1' },
+        { note: 'x'.repeat(2001) }, { source_url: 'https://user:password@buildanddo.com/docs' }, { source_url: 'http://127.0.0.1' },
         { aliases: 'alias' }, { tags: Array(11).fill('tag') }]) assert.throws(() => f.create(value), status(400));
     assert.equal(f.data.user_dossiers.length, 0); const saved = f.create();
     assert.throws(() => f.command('note.delete', { id: saved.id, note_id: 'missing' }, { revision: 1 }), status(404));

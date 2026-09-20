@@ -50,7 +50,7 @@ export function dossierFixture() {
         discord_user_id: DISCORD, guild_id: GUILD, channel_id: CHANNEL, link_id: 'discordlink', command, ...overrides,
     }, { workspace })));
     const input = (values = {}) => ({ label: 'Library project', kind: 'project', aliases: ['Reading room'], tags: ['planning'],
-        note: 'Confirm the reading room opening hours.', source_url: 'https://buildanddo.tech/docs', source_label: 'My source', ...values });
+        note: 'Confirm the reading room opening hours.', source_url: 'https://buildanddo.com/docs', source_label: 'My source', ...values });
     return { ...f, get data() { return f.data; }, service, vault, security, keys, privateEnv: env, calls, body, command, read, bridge, input,
         create: (values = {}, options) => command('entity.create', input(values), options) };
 }

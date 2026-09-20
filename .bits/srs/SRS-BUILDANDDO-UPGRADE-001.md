@@ -20,6 +20,51 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Hostinger sprint closure continuation — 2026-09-20
+
+The owner requests implementing the repository gaps identified by the 21-day
+sprint assessment and recording why each piece exists and the next best step
+as governance that every subsequent seat must recheck. This continues the
+existing A2 source dispatch. The merged tutorial implementation is retained.
+
+Acceptance:
+
+1. Keep one machine-readable contract for all eleven canonical sprint
+   milestones, their rationale, source owners, acceptance checks, dependencies
+   and next steps. Bind its review lock to current source bytes. Fail the CI
+   gate when that binding or required governance wiring changes without review.
+2. Execute the existing source, rendered, build and native checks through a
+   bounded local runner. Retain exact results and log hashes; missing runtimes,
+   skipped native cases and stale evidence cannot count as acceptance.
+3. Connect a saved signal to a replayable, server-created mission proposal and
+   source observation. Require an explicit user action and current workspace
+   authority. Support independently reviewed mission plans without rewriting
+   existing manual-learning outcomes or granting execution authority.
+4. Add a connected native workspace acceptance journey across signal, mission,
+   approval, recorded workflow, evidence, independent review, operator readback
+   and business records. Reuse the existing disposable PocketBase fixture and
+   required runtime matrix; no shared database or private executor is created.
+5. Validate captured competition replay and milestone receipts against exact
+   source identity, scope, ordered observations and distinct producer/verifier
+   accounts. Preserve UNMEASURED/HOLD for absent live readback. Reuse the
+   semantic twin's release reconciliation for controller/provider evidence.
+6. Wire the contract into AGENTS.md, the measured briefing, CI and progression
+   tags. Record runnable checks, observed blockers and the receiving next steps
+   in Git, retaining historical memory and acceptance limits.
+
+GitHub check annotations for the inspected candidate and telemetry jobs say
+the jobs were not started because the account is locked for billing. This is
+an account-owner prerequisite, not a source failure this continuation can fix.
+Cloudflare's separate failed build has no inspected diagnostic. Official
+Hostinger judging/submission requirements and private NXC/staging evidence are
+not attached. This dispatch does not authorize deployment, external messages,
+credential access, live connector activation or a fabricated completion claim.
+
+Verify: `python scripts/ci/hostinger_readiness.py --check`, its focused Python
+suite, connected mission/research Node cases, required native workspace entry
+point, existing web tests/lint/build, and context/boundary/memory gates. Any
+unavailable gate remains an explicit next action with an owner and evidence.
+
 ## PR 40 main integration continuation — 2026-09-18
 
 The owner requests updating the existing policy/operator PR branch from main.
@@ -898,6 +943,39 @@ transactional dossier requests preserve non-enumerable event properties.
 An independent native CI matrix requires both declared PocketBase versions;
 the local native SDK/parser/backend and rendered acceptance remain unavailable.
 Verification and the retained event history are in the current dispatch report.
+
+## Authorized continuation — interactive tutorials and persistent learning growth
+
+On 2026-09-19 the owner requested interactive tutorials that award a completion
+certificate and contribute to persistent personal progress and growth. This
+continues the existing A2 learning scope under VCC-BUILDANDDO-UPGRADE-001.
+
+- Reuse the Field Manual's authored lessons, native PocketBase authentication
+  and per-account tutorial history. Add a guided reader with resumable sections,
+  practice checklist, answer feedback and a server-checked final knowledge check.
+- Freeze the enrolled lesson content. Persist checkpoints and completion through
+  authenticated commands and a locked collection with one enrollment per account
+  and tutorial. Retry, concurrent submission and review must not duplicate credit.
+- Complete the existing tutorial-progress record and issue an account-owned
+  BuildAndDo certificate of course completion in one transaction. Certificates
+  retain the learner name, course/version, issue time and stable receipt identity.
+  They do not claim external accreditation, signed credentials or live TEVV.
+- Derive learning points, levels and milestones from retained completions: 100
+  points per tutorial, once. Preserve existing manual lesson completions without
+  inventing certificates. Independently verified contributor reputation is unchanged.
+- Keep preview/demo read-only, isolate account changes and late responses, support
+  keyboard/reduced-motion use, and keep failed saves recoverable. Downloads expose
+  only the certificate the learner explicitly chooses to export.
+- Ship an idempotent migration whose down path disables the new commands while
+  retaining checkpoints and certificates. No shared backend or deployment is changed.
+- Require native learning acceptance in the existing PocketBase CI matrix and
+  update the shared `ci:test` description. Retain unavailable local tooling as a
+  validation gap; configured CI is not a passing hosted result.
+
+Acceptance: `node --test tests/upgrade/tutorial-learning*.test.mjs`, targeted
+TutorialCatalog/InteractiveTutorial component tests, native tutorial-learning
+tests with the existing disposable PocketBase harness, web lint/build, context,
+boundary and dispatch-evidence checks. Missing tooling remains an explicit gap.
 
 ## Authority
 

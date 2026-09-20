@@ -1,0 +1,20 @@
+# ─── CGRF Header ─────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-19
+# Depends:     .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md
+# EnumType:    Schema
+# EnumEdges:   DEPENDS_ON .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/report.md; PRODUCES .bits/out/VCC-BUILDANDDO-SEMANTIC-TWIN-001/memory.json
+# DAG Node:    semantic-twin.phase-0.memory
+# Intent:      Describe the governed memory payload that retains Phase 0 vocabulary, contract and validation evidence.
+# ──────────────────────────────────────────────────────────
+
+artifact: memory.json
+encoding: utf-8
+vector_types: [A, B, C]

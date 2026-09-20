@@ -2,6 +2,20 @@
   "findings": [
     {
       "area": "ci",
+      "evidence": "referenced by: scripts/deploy/ship.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/capability_inventory.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/day21_submission.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
@@ -19,11 +33,67 @@
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
+      "statement": "scripts/ci/ocn_box_exercise.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_mission_lifecycle.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_observation_record.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_rbac_probe.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_room_probe.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_seat_session.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_signal_lifecycle.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_subsystem_probe.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
       "statement": "scripts/ci/selftest_sprint_replay.py is never executed by GitHub Actions"
     },
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/deploy/roadmap_status.py",
+      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tools/day21_closure.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is never executed by GitHub Actions"
@@ -34,6 +104,13 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_replay.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/verify_public_disclosure.py is never executed by GitHub Actions"
     },
     {
       "area": "ci",
@@ -60,13 +137,22 @@
   "gates": [
     {
       "path": "scripts/ci/agent_context.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_hostinger_readiness.py"
+      ],
       "wired_into_ci": true
     },
     {
       "path": "scripts/ci/candidate_manifest.py",
       "referenced_by": [],
       "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/capability_inventory.py",
+      "referenced_by": [
+        "scripts/deploy/ship.py"
+      ],
+      "wired_into_ci": false
     },
     {
       "path": "scripts/ci/changelog_gen.py",
@@ -79,6 +165,11 @@
         "scripts/deploy/ship.py"
       ],
       "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/day21_submission.py",
+      "referenced_by": [],
+      "wired_into_ci": false
     },
     {
       "path": "scripts/ci/emit_datadog_metrics.py",
@@ -105,10 +196,62 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/hostinger_readiness.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py",
+        "scripts/ci/hostinger_replay.py",
+        "tests/upgrade/test_hostinger_readiness.py",
+        "tests/upgrade/test_hostinger_replay.py",
+        "tools/day21/day21_acceptance.py",
+        "tools/day21/day21_architecture_snapshot.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
       "path": "scripts/ci/integrity_regression_check.py",
       "referenced_by": [
         "scripts/deploy/ship.py"
       ],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_box_exercise.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_mission_lifecycle.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_observation_record.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_rbac_probe.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_room_probe.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_seat_session.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_signal_lifecycle.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_subsystem_probe.py",
+      "referenced_by": [],
       "wired_into_ci": false
     },
     {
@@ -119,7 +262,9 @@
     {
       "path": "scripts/ci/sprint_cycle.py",
       "referenced_by": [
-        "scripts/deploy/roadmap_status.py"
+        "scripts/ci/hostinger_replay.py",
+        "scripts/deploy/roadmap_status.py",
+        "tools/day21_closure.py"
       ],
       "wired_into_ci": false
     },
@@ -131,6 +276,8 @@
     {
       "path": "scripts/ci/supply_chain.py",
       "referenced_by": [
+        "scripts/ci/hostinger_checks.py",
+        "tests/upgrade/test_hostinger_readiness.py",
         "tests/upgrade/test_supply_chain.py"
       ],
       "wired_into_ci": true
@@ -148,9 +295,15 @@
     {
       "path": "scripts/ci/verify_public_boundary.py",
       "referenced_by": [
+        "scripts/ci/hostinger_checks.py",
         "scripts/publish/activity_publish.py"
       ],
       "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/verify_public_disclosure.py",
+      "referenced_by": [],
+      "wired_into_ci": false
     },
     {
       "path": "services/praxis_evidence/run_all_tests.py",
@@ -158,7 +311,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-20T13:26:50.804633+00:00",
+  "generated_at": "2026-09-20T23:21:09.568128+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -206,6 +359,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-CRAWL-001.md",
         "status": "in_progress",
         "title": "Firecrawl verification for every canonical public page"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DAY21-CLOSURE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md",
+        "status": "in_progress",
+        "title": "Day-21 submission closure - candidate continuity, browser journey, four-product proof"
       },
       {
         "code": "SRS-BUILDANDDO-DECISION-001",
@@ -320,6 +480,27 @@
         "title": "Workspace actions, per-page error scope and interaction timing"
       },
       {
+        "code": "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-001.md",
+        "status": "in_progress",
+        "title": "Living Semantic System Twin Phase 0 vocabulary and contracts"
+      },
+      {
+        "code": "SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001.md",
+        "status": "delivered",
+        "title": "Living Semantic System Twin bounded release ingestion"
+      },
+      {
+        "code": "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md",
+        "status": "in_progress",
+        "title": "Complete and integrate Phase 1 with the version-two contracts"
+      },
+      {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-SUPPLY-001.md",
@@ -349,6 +530,9 @@
       }
     ]
   },
+  "operational_receipt_tools": [
+    "scripts/ci/hostinger_replay.py"
+  ],
   "pipelines": [
     {
       "file": ".github/workflows/candidate-to-gitlab.yml",
@@ -423,13 +607,11 @@
         ".github/actions/datadog-ci-report"
       ],
       "name": "BuildAndDo PR Governance",
-      "npm_scripts": [
-        "build",
-        "lint"
-      ],
+      "npm_scripts": [],
       "scripts": [
         "scripts/ci/agent_context.py",
         "scripts/ci/changelog_gen.py",
+        "scripts/ci/hostinger_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py"
       ],
@@ -490,28 +672,101 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 34,
-    "python_files": 180,
+    "migrations": 42,
+    "python_files": 251,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 967,
-    "web_source_files": 291
+    "tracked_files": 1138,
+    "web_source_files": 316
   },
   "schema_version": 1,
+  "sprint_readiness": {
+    "acceptance": "UNMEASURED; run the receipt assessment separately",
+    "pieces": [
+      {
+        "id": "HS-01",
+        "next_step": "Restore the GitHub account's Actions access, run the required acceptance checks and inspect the separate Cloudflare build diagnostic.",
+        "owner": "BITS-CODEGEN / repository owner",
+        "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
+      },
+      {
+        "id": "HS-02",
+        "next_step": "Run the native and rendered auth checks, then capture a real-account browser journey on the accepted staging candidate.",
+        "owner": "BITS-CODEGEN / IDE1",
+        "why": "A judge must enter and resume the workspace using real account authority."
+      },
+      {
+        "id": "HS-03",
+        "next_step": "Execute both native runtime profiles and have the release owner validate migration rollout and recovery on staging.",
+        "owner": "BITS-CODEGEN / IDE1",
+        "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
+      },
+      {
+        "id": "HS-04",
+        "next_step": "Select one permitted business observation, capture its source and propose the review mission through the Signals desk.",
+        "owner": "BITS-CODEGEN",
+        "why": "An observed problem must retain its source as it becomes a bounded proposal."
+      },
+      {
+        "id": "HS-05",
+        "next_step": "Bind the receiving dispatch to one staging-safe existing worker capability, then run it with distinct producer and verifier accounts.",
+        "owner": "BITS-CODEGEN / CMAX-B",
+        "why": "Work must have a fixed scope, approval and a review independent of its producer."
+      },
+      {
+        "id": "HS-06",
+        "next_step": "Rehearse approval, step failure and response recovery, then capture the separate authorized executor's actual action receipt.",
+        "owner": "BITS-CODEGEN / IDE1",
+        "why": "Ordered work and atomic observations allow failed or interrupted actions to be explained and replayed."
+      },
+      {
+        "id": "HS-07",
+        "next_step": "Activate only the connector needed by the bounded demo through the private owner and capture its current revision and health/readback.",
+        "owner": "CMAX-B / IDE1",
+        "why": "A saved integration setting must not be mistaken for a working service connection."
+      },
+      {
+        "id": "HS-08",
+        "next_step": "Run the native business-record journey and confirm the same save/reload flow in the deployed browser.",
+        "owner": "BITS-CODEGEN / IDE1",
+        "why": "Objectives, tasks and contacts make the demonstrated outcome actionable for a small organization."
+      },
+      {
+        "id": "HS-09",
+        "next_step": "Capture the real controller, GitLab and Datadog receipts and pass them through the existing semantic-twin compiler and replay validator.",
+        "owner": "BITS-CODEGEN / release owner",
+        "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
+      },
+      {
+        "id": "HS-10",
+        "next_step": "Show the completed mission and its evidence in the operator and edition desks using the same authorized workspace.",
+        "owner": "BITS-CODEGEN / CMAX-B",
+        "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
+      },
+      {
+        "id": "HS-11",
+        "next_step": "Validate the captured replay, have the independent reviewer approve evidenced milestones, and rehearse the official Hostinger submission.",
+        "owner": "Repository owner / independent verifier",
+        "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
+      }
+    ],
+    "source_sha256": "9e3a0c5a6d999aefd031ee939782d78709ad2c5ee8532ac7ee29fbb55b205a24",
+    "state": "PASS"
+  },
   "summary": {
-    "findings": 8,
-    "findings_high": 8,
+    "findings": 19,
+    "findings_high": 19,
     "pipelines": 7,
-    "srs_open": 22,
-    "srs_total": 25,
-    "unwired_gates": 6
+    "srs_open": 25,
+    "srs_total": 29,
+    "unwired_gates": 17
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 48,
+    "js_test_files": 60,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

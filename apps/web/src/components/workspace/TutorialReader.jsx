@@ -25,7 +25,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { lessonLink, validLesson } from '@/lib/tutorialCurriculum';
 
 /** @param {{tutorial: object, completed: boolean, canSave: boolean, busy: boolean, error: string, saved: string, onSave: Function, onClose: Function, opener: HTMLElement|null}} props Reader state. @returns {React.ReactElement} Lesson dialog. */
-export default function TutorialReader({ tutorial, completed, canSave, busy, error, saved, onSave, onClose, opener, origin }) {
+export default function TutorialReader({ tutorial, completed, canSave, busy, error, saved, onSave, onGuided, onClose, opener, origin }) {
     const [answer, setAnswer] = useState(null);
     const [checked, setChecked] = useState(false);
     const [practiced, setPracticed] = useState(false);
@@ -109,7 +109,8 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
                         <Button size="sm" variant="secondary" disabled={!canSave || busy || !available} onClick={() => onSave('in_progress')}>Save reading progress</Button>
                         <Button size="sm" disabled={!canSave || busy || !correct || !practiced} onClick={() => onSave('completed')}>{busy ? 'Saving…' : 'Mark lesson complete'}</Button>
                     </div>}
-                    <p className="text-xs leading-6 text-muted-foreground">Completion records your own learning activity. It does not certify a skill or verify a business outcome.</p>
+                    <p className="text-xs leading-6 text-muted-foreground">Reading completion records your own learning activity. Finish the interactive tutorial to earn a certificate and learning points.</p>
+                    {onGuided && available && <Button size="sm" disabled={busy} onClick={onGuided}>Start interactive tutorial</Button>}
                     <Button size="sm" variant="ghost" disabled={busy} onClick={onClose}>Close lesson</Button>
                 </div>
             </div>

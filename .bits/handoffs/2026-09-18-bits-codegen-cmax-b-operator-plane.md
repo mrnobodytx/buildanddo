@@ -34,6 +34,26 @@ attempt an alternate clone transport or implement the receiving runtime here.
 
 ## Supplied public capability
 
+September 20 sprint closure continuation: the public signal proposal now retains
+the exact saved source observation and enables separate mission review. The
+existing public commands, migrations and operator readback have a connected
+disposable native acceptance entry point, `tests/upgrade/test_workspace_native.py`.
+Both declared runtime profiles remain required before activation.
+
+Use `docs/hostinger-sprint-closure.md` and `.bits/hostinger-readiness.json` when
+continuing OP-00/OP-06. The local capture validator reuses the semantic twin and
+requires actual context, signal/proposal, approved plan, bounded worker result,
+separate verifier, result evidence, reviewed mission and operator readback. Its
+action/review export contract does not create a private executor. Adapt existing
+receiving receipts to that contract only after verifying the actual private
+source, dispatch and resource scope. Keep private originals on the private plane;
+only permitted public summaries may be supplied to the public local validator.
+
+The GitHub account owner must clear the billing lock observed in check annotations
+before hosted CI can execute. That is separate from private deployment approval
+and from the still-unconfirmed Cloudflare build cause. No supplied source test
+or synthetic replay is evidence that OP-00, a live NXC read or a staged job ran.
+
 | Capability | Reuse boundary |
 | --- | --- |
 | Structured PDF extraction | Existing research worker, sandboxed parser, source hash and requirement provenance |
