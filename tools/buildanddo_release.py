@@ -185,6 +185,44 @@ def load_public_config(repo: Path) -> dict[str, Any]:
     return out
 
 
+# The two names this controller may take from the estate store, and no others. workspace.env holds
+# 500+ credentials for the whole estate; reading all of them into a release tool's environment
+# would hand every subprocess it spawns the keys to everything. A deploy needs two secrets.
+SHIP_SHARED_KEYS = ("BUILDANDDO_VM_HOST", "BUILDANDDO_SSH_KEY")
+WORKSPACE_ENV_CANDIDATES = (
+    Path(os.environ["CITADEL_WORKSPACE_ENV"]) if os.environ.get("CITADEL_WORKSPACE_ENV") else None,
+    Path(r"D:\citadel_secrets\CNWB\workspace.env"),
+    Path(r"D:\citadel_websites\Citadel-nexus\projects\guilds\CNWB\tools\workspace.env"),
+)
+
+
+def _read_workspace_env(allowed: Sequence[str]) -> dict[str, str]:
+    """Read ONLY the allowed names out of the estate credential store. Values never logged."""
+    for cand in WORKSPACE_ENV_CANDIDATES:
+        if cand is None or not cand.is_file():
+            continue
+        out: dict[str, str] = {}
+        try:
+            text = cand.read_text(encoding="utf-8-sig", errors="replace")
+        except OSError:
+            return {}
+        for line in text.splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, _, v = line.partition("=")
+            k = k.strip()
+            if k not in allowed:
+                continue
+            v = v.strip()
+            if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
+                v = v[1:-1]
+            if v:
+                out[k] = v
+        return out
+    return {}
+
+
 def bridge_ship_credentials() -> dict[str, Any]:
     """Let ONE credential placement satisfy both deploy tools.
 
@@ -202,8 +240,13 @@ def bridge_ship_credentials() -> dict[str, Any]:
     BUILDANDDO_* names, all forum/PostHog, and NO deploy credential. Its VPS_HOST / VPS_USER /
     VPS_IDENTITY_FILE describe a DIFFERENT machine from the one ship.py deploys to, so binding them
     here would aim a production deploy at the wrong host while every gate turned green."""
-    vm = os.environ.get("BUILDANDDO_VM_HOST", "").strip()
-    key = os.environ.get("BUILDANDDO_SSH_KEY", "").strip()
+    # The names may come from the process environment OR from the estate store. This controller
+    # only ever loaded release.env, so with the credentials sitting in workspace.env the bridge
+    # was reading an environment nothing had populated and reporting them missing while ship.py
+    # -- three directories away, reading the same two names -- resolved them fine.
+    shared = _read_workspace_env(SHIP_SHARED_KEYS)
+    vm = (os.environ.get("BUILDANDDO_VM_HOST") or shared.get("BUILDANDDO_VM_HOST") or "").strip()
+    key = (os.environ.get("BUILDANDDO_SSH_KEY") or shared.get("BUILDANDDO_SSH_KEY") or "").strip()
     out: dict[str, Any] = {"state": "NOOP", "applied": [],
                            "source": "BUILDANDDO_VM_HOST / BUILDANDDO_SSH_KEY (ship.py names)"}
     if not vm and not key:
