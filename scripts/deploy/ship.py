@@ -220,6 +220,11 @@ def _write_web_env() -> None:
         (web_dir / ".env").write_text("".join(lines), encoding="utf-8")
 
 
+def _write_capability_inventory() -> dict:
+    return _run([sys.executable, str(ROOT / "scripts" / "ci" / "capability_inventory.py"), "--write"],
+                cwd=ROOT, timeout=120)
+
+
 def _write_roadmap_status() -> dict:
     return _run([sys.executable, str(ROOT / "scripts" / "deploy" / "roadmap_status.py")], cwd=ROOT, timeout=30)
 
@@ -363,6 +368,13 @@ def _build() -> dict:
         print(f"WARN roadmap projection failed (rc={roadmap.get('returncode')}); "
               "shipping an UNMEASURED status file instead of stale data")
         _write_unmeasured_roadmap_status(roadmap)
+    # public/capabilities.json - what each environment can actually serve, measured against the
+    # commit it reports running. Non-fatal: the page renders the section only when the file says
+    # MEASURED, so a failure here costs a section rather than a release.
+    caps = _write_capability_inventory()
+    if not caps["ok"]:
+        print(f"WARN capability inventory failed (rc={caps.get('returncode')}); "
+              "the roadmap will omit the 'what you can use' section rather than guess")
     return _run([NPM, "run", "build"], cwd=web_dir, timeout=600)
 
 

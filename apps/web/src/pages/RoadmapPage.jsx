@@ -257,6 +257,113 @@ export function ReplayVerdict({ entry }) {
     );
 }
 
+/** How each capability state reads, and what it means for a person trying to use the thing. */
+const CAPABILITY_STATES = {
+    LIVE: { label: 'Ready to use', tone: 'text-success',
+        note: 'in the commit production is serving right now' },
+    STAGED: { label: 'Built, waiting to ship', tone: 'text-primary',
+        note: 'on staging; production has not been promoted to it yet' },
+    BUILT: { label: 'Built, not deployed', tone: 'text-muted-foreground',
+        note: 'in the repository, not yet on either environment' },
+    UNMEASURABLE: { label: 'Unknown', tone: 'text-muted-foreground',
+        note: 'the environments could not be asked which commit they serve' },
+    DECLARED: { label: 'Named only', tone: 'text-muted-foreground',
+        note: 'a route exists but there is no page behind it yet' },
+};
+
+const CAPABILITY_ORDER = ['LIVE', 'STAGED', 'BUILT', 'UNMEASURABLE', 'DECLARED'];
+
+/**
+ * What exists, what is tested, and what you can actually open today.
+ *
+ * The plan curve and the milestone ledger both answer "are we on schedule". Neither answers
+ * "what can I use", and a milestone reading "Signals pipeline MVP — verified" does not tell a
+ * reader whether Signals opens. This does, from scripts/ci/capability_inventory.py.
+ *
+ * READINESS IS NOT A ROUTE PROBE. Controlled against production 2026-09-20: `/app/missions` and
+ * `/__definitely-not-a-real-route-zzz` both return 200 text/html, because a single-page app
+ * answers 200 for everything. So readiness is the presence of each capability's source in the
+ * commit that environment reports serving — an exact question with an exact answer.
+ *
+ * Renders nothing without a measured report: a capability list that appears when nothing was
+ * measured would be the invented progress this page exists to refuse.
+ *
+ * @param {{report?: object}} props The inventory from capabilities.json.
+ */
+export function CapabilityInventory({ report }) {
+    const groups = useMemo(() => {
+        const rows = report?.capabilities || [];
+        return CAPABILITY_ORDER
+            .map((state) => ({ state, rows: rows.filter((r) => r.state === state) }))
+            .filter((g) => g.rows.length > 0);
+    }, [report]);
+
+    if (report?.state !== 'MEASURED' || groups.length === 0) return null;
+    const { counts = {}, deployed = {}, total, with_tests: withTests } = report;
+
+    return (
+        <Section className="border-t border-foreground/80 py-12 sm:py-16">
+            <SectionLabel icon={Activity}>What you can use</SectionLabel>
+            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                Built, verified, and actually reachable are three different things.
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                Every route this application exposes, measured against the commit each environment
+                reports serving. Not a plan — if it says Ready to use, the code is in the build
+                production is running.
+            </p>
+
+            <div className="font-evidence mt-4 flex flex-wrap gap-x-6 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                <span className="text-success">{counts.LIVE || 0} ready to use</span>
+                <span className="text-primary">{counts.STAGED || 0} waiting to ship</span>
+                <span>{withTests}/{total} have tests</span>
+                <span>production {deployed.production || 'unknown'}</span>
+                <span>staging {deployed.staging || 'unknown'}</span>
+            </div>
+
+            {(counts.STAGED || 0) > 0 && (
+                <p className="font-evidence mt-3 text-[11px] text-primary">
+                    {counts.STAGED} capabilities are built and on staging that production cannot
+                    reach. That gap closes on a promote, not on more building.
+                </p>
+            )}
+
+            <Card className="mt-6 divide-y divide-border">
+                {groups.map(({ state, rows }) => (
+                    <div key={state} className="p-4">
+                        <div className="font-evidence flex flex-wrap items-baseline gap-x-3 text-[11px] uppercase tracking-[0.14em]">
+                            <span className={CAPABILITY_STATES[state].tone}>
+                                {CAPABILITY_STATES[state].label}
+                            </span>
+                            <span className="text-muted-foreground">{rows.length}</span>
+                            <span className="normal-case tracking-normal text-muted-foreground">
+                                — {CAPABILITY_STATES[state].note}
+                            </span>
+                        </div>
+                        <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2">
+                            {rows.map((row) => (
+                                <li key={row.path} className="flex items-baseline justify-between gap-3">
+                                    <span className="text-sm">{row.label}</span>
+                                    <span className="font-evidence shrink-0 text-[11px] text-muted-foreground">
+                                        {row.path}
+                                        {row.tests > 0
+                                            ? ` · ${row.tests} test${row.tests > 1 ? 's' : ''}`
+                                            : ' · no tests'}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </Card>
+
+            <p className="font-evidence mt-4 text-[11px] text-muted-foreground">
+                {`${report.readiness_basis}.`}
+            </p>
+        </Section>
+    );
+}
+
 const CHART_W = 1040;
 const CHART_H = 440;
 const PAD_L = 64;
@@ -398,6 +505,7 @@ export default function RoadmapPage() {
     const [live, setLive] = useState(null);
     const [liveError, setLiveError] = useState(false);
     const [activity, setActivity] = useState(null);
+    const [capabilities, setCapabilities] = useState(null);
     const [activityError, setActivityError] = useState(false);
 
     const milestones = useMemo(() => mergeLiveStatus(live?.milestones), [live]);
@@ -439,6 +547,17 @@ export default function RoadmapPage() {
             .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
             .then((data) => { if (!cancelled) setLive(data); })
             .catch(() => { if (!cancelled) setLiveError(true); });
+        return () => { cancelled = true; };
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+        // A failed fetch leaves this null, and CapabilityInventory renders nothing rather than an
+        // empty list — "we could not measure" must not look like "there is nothing".
+        fetch('/capabilities.json', { cache: 'no-store' })
+            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
+            .then((data) => { if (!cancelled) setCapabilities(data); })
+            .catch(() => {});
         return () => { cancelled = true; };
     }, []);
 
@@ -601,6 +720,9 @@ export default function RoadmapPage() {
                     )}
                 </div>
             </Section>
+
+            {/* What you can actually use — measured, not planned */}
+            <CapabilityInventory report={capabilities} />
 
             {/* Milestone ledger */}
             <Section className="border-t border-foreground/80 py-12 sm:py-16">
