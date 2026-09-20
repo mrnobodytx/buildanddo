@@ -4,12 +4,13 @@
 # SRS:         SRS-BUILDANDDO-AGENTCTX-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
 # Depends:     AGENTS.md, .bits/context.md, CONTRIBUTING.md
 # EnumType:    ConfigDoc
-# EnumEdges:   EXTENDS AGENTS.md; VALIDATES .bits/context.md
+# EnumEdges:   EXTENDS AGENTS.md; VALIDATES .bits/context.md; CONSUMES docs/hostinger-sprint-closure.md
 # Intent:      Provide the human-facing companion AGENTS.md declares but the repo never had.
 # ───────────────────────────────────────────────────────────────
 
@@ -28,6 +29,13 @@ That prints the pipelines that exist, which check scripts are actually wired
 into CI, the real test surface, the open SRS codes and every current finding
 with its evidence. It reads the repository, so it cannot be out of date. Then
 read `.bits/context.md` for intent and priorities.
+
+The Hostinger sprint also requires
+`python scripts/ci/hostinger_readiness.py --check` before choosing work and
+before handoff. Read `docs/hostinger-sprint-closure.md` and the tracked readiness
+contract for each piece's rationale, owner, dependencies and next action.
+Review those fields when source changes, then refresh the source binding.
+Refreshing cannot establish native, browser or deployed acceptance.
 
 ## Before you write code
 

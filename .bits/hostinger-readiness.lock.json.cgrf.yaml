@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/hostinger-readiness.lock.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-20
+# Depends:     .bits/hostinger-readiness.lock.json
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES .bits/hostinger-readiness.lock.json
+# Intent:      Distinguish reviewed source fingerprints from execution or deployment evidence.
+# ───────────────────────────────────────────────────────────────
+schema_version: 1
+artifact: .bits/hostinger-readiness.lock.json
+evidence_scope: deterministic source review only
+runtime_acceptance: pending

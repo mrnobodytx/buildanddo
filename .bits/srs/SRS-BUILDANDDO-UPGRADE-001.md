@@ -20,6 +20,51 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Hostinger sprint closure continuation — 2026-09-20
+
+The owner requests implementing the repository gaps identified by the 21-day
+sprint assessment and recording why each piece exists and the next best step
+as governance that every subsequent seat must recheck. This continues the
+existing A2 source dispatch. The merged tutorial implementation is retained.
+
+Acceptance:
+
+1. Keep one machine-readable contract for all eleven canonical sprint
+   milestones, their rationale, source owners, acceptance checks, dependencies
+   and next steps. Bind its review lock to current source bytes. Fail the CI
+   gate when that binding or required governance wiring changes without review.
+2. Execute the existing source, rendered, build and native checks through a
+   bounded local runner. Retain exact results and log hashes; missing runtimes,
+   skipped native cases and stale evidence cannot count as acceptance.
+3. Connect a saved signal to a replayable, server-created mission proposal and
+   source observation. Require an explicit user action and current workspace
+   authority. Support independently reviewed mission plans without rewriting
+   existing manual-learning outcomes or granting execution authority.
+4. Add a connected native workspace acceptance journey across signal, mission,
+   approval, recorded workflow, evidence, independent review, operator readback
+   and business records. Reuse the existing disposable PocketBase fixture and
+   required runtime matrix; no shared database or private executor is created.
+5. Validate captured competition replay and milestone receipts against exact
+   source identity, scope, ordered observations and distinct producer/verifier
+   accounts. Preserve UNMEASURED/HOLD for absent live readback. Reuse the
+   semantic twin's release reconciliation for controller/provider evidence.
+6. Wire the contract into AGENTS.md, the measured briefing, CI and progression
+   tags. Record runnable checks, observed blockers and the receiving next steps
+   in Git, retaining historical memory and acceptance limits.
+
+GitHub check annotations for the inspected candidate and telemetry jobs say
+the jobs were not started because the account is locked for billing. This is
+an account-owner prerequisite, not a source failure this continuation can fix.
+Cloudflare's separate failed build has no inspected diagnostic. Official
+Hostinger judging/submission requirements and private NXC/staging evidence are
+not attached. This dispatch does not authorize deployment, external messages,
+credential access, live connector activation or a fabricated completion claim.
+
+Verify: `python scripts/ci/hostinger_readiness.py --check`, its focused Python
+suite, connected mission/research Node cases, required native workspace entry
+point, existing web tests/lint/build, and context/boundary/memory gates. Any
+unavailable gate remains an explicit next action with an owner and evidence.
+
 ## PR 40 main integration continuation — 2026-09-18
 
 The owner requests updating the existing policy/operator PR branch from main.

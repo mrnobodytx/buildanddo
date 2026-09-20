@@ -134,6 +134,13 @@ export default function MissionBuilder({ mission, onSave, onCancel, disabled = f
                     {STEPS[step].name}
                 </h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">{STEPS[step].why}</p>
+                {step === 2 && <label className="flex items-start gap-3 text-sm">
+                    <input type="checkbox" checked={plan.independent_review === true} disabled={locked}
+                        onChange={(event) => setPlan((current) => ({ ...current, independent_review: event.target.checked }))} />
+                    <span>Require an independent reviewer
+                        <span className="mt-1 block text-xs text-muted-foreground">A different workspace member must review the mission and evidence they did not author. This choice is frozen with the approved plan.</span>
+                    </span>
+                </label>}
                 {step === 0 && (
                     <>
                         <div className="grid gap-2">

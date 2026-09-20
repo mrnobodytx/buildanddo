@@ -4,12 +4,13 @@
 # SRS:         SRS-BUILDANDDO-BOOTSTRAP-001, SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-09
 # Depends:     CONTRIBUTING.md, .buildanddo/public/path-policy.json
 # EnumType:    ConfigDoc
-# EnumEdges:   GATES bits/SRS-* branches; VALIDATES .github/PULL_REQUEST_TEMPLATE.md; CONSUMES docs/federal-foundry.md
+# EnumEdges:   GATES bits/SRS-* branches; VALIDATES .github/PULL_REQUEST_TEMPLATE.md; CONSUMES docs/federal-foundry.md; CONSUMES .bits/hostinger-readiness.json; CONSUMES docs/hostinger-sprint-closure.md
 # Intent:      Define machine-facing governance for agents working in buildanddo.
 # ───────────────────────────────────────────────────────────────
 
@@ -35,6 +36,18 @@ which gate scripts CI actually runs, the real test surface, the open SRS codes
 and every current finding with its evidence — measured from the repository, not
 remembered. Then read `.bits/context.md` for intent, invariants and the current
 plan, and `.bits/srs/<CODE>.md` for the spec your dispatch names.
+
+Before selecting work and before handing it off, run
+`python scripts/ci/hostinger_readiness.py --check` and read
+`docs/hostinger-sprint-closure.md` with `.bits/hostinger-readiness.json`.
+This is mandatory sprint governance. Every milestone records why it exists,
+its source, executable checks, receiving owner and next action. Follow its
+dependencies; prioritize closing the existing demo before widening scope.
+When governed source changes, review those fields, update them where needed,
+then run `python scripts/ci/hostinger_readiness.py --refresh` and recheck.
+Refreshing the binding acknowledges source review only. It cannot mark a test,
+deployment or milestone complete. Missing, stale, skipped and synthetic evidence
+must remain explicit. The CI `governance:readiness` gate enforces this binding.
 
 ## Authorization
 
@@ -165,6 +178,7 @@ component says so rather than implying a check exists.
 | `ci:test`                    | Test             | Lint, web coverage, public adapters, native Discord/research parser and CPU blueprint pipeline, PocketBase dossier/suite/operator/classroom and tutorial certificate checks, portable suite and federal portfolio coverage, foundry execution/replay/export coverage, and manifest/lock integrity |
 | `ci:build`                   | Pull request     | `npm run build` produces `dist/apps/web/index.html`         |
 | `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, one actor label, `agent_context.py --check` |
+| `governance:readiness`       | Sprint readiness | All 11 milestone rationales, dependencies, owners, checks and next steps match reviewed source; acceptance and replay validators reject incomplete evidence |
 | `deploy:staging-probe`       | Staging deploy   | Candidate mirror to the private plane succeeds on `main`    |
 | `deploy:production`          | Production       | Release visible in RUM, no new error signature from the deploy |
 

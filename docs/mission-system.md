@@ -71,6 +71,15 @@ Credentials. No alternate internal framework is defined by this implementation.
 
 ## Persistence and trust boundaries
 
+The Signals desk can save an explicit mission proposal with the selected
+signal's source snapshot. Those proposals enable `mission_plan.independent_review`.
+It is also an option in the builder. For an approved plan with that flag, the
+server rejects verification by the proposer or an author of selected evidence.
+The flag stays frozen with the approved plan. Existing plans without the flag
+retain their manual-review behavior. Separate account IDs do not establish
+worker execution or a real-world identity audit. See
+`docs/hostinger-sprint-closure.md` for connected acceptance and capture requirements.
+
 The additive migration stores `mission_plan`, `mission_learning`, `mission_review`
 and server-attributed approval/review accounts and timestamps on `missions`.
 No collection access rule is relaxed. Existing unstructured missions remain

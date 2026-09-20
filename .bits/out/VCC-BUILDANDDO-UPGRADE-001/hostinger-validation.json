@@ -1,0 +1,779 @@
+{
+  "schema_version": "buildanddo.hostinger-validation/v1",
+  "observed_at": "2026-09-20T15:13:39.039420+00:00",
+  "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs_code": "SRS-BUILDANDDO-UPGRADE-001",
+  "status": "PARTIAL",
+  "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+  "source_implementation": "complete within the public source dispatch",
+  "runtime_acceptance": "UNMEASURED",
+  "acceptance_summary": {
+    "total_profiles": 18,
+    "counts": {
+      "BLOCKED": 10,
+      "FAIL": 3,
+      "HOLD": 1,
+      "PASS": 4
+    },
+    "smoke": "4/18",
+    "no_skipped_acceptance": true
+  },
+  "acceptance": {
+    "boundary": {
+      "argv": [
+        "python",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "artifacts": {},
+      "check": "boundary",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": 0,
+      "finished_at": "2026-09-20T15:12:42.795542+00:00",
+      "level": "source",
+      "log": "boundary-package-1789917161557555576.log",
+      "log_sha256": "c4c0d4f7d04c5c9dee205d87555ec9fd562be96028d178eff10aee3b6e6bd092",
+      "profile": "package",
+      "reason": "",
+      "runtime_expected": "",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:12:41.557546+00:00",
+      "status": "PASS",
+      "receipt": "state/hostinger/acceptance/boundary-package-1789917161557555576.json",
+      "receipt_sha256": "ed2a2c25a9bec04b19e61e52128dd3462f0c7e9db9cb4b41d36cec69b6f3d91d"
+    },
+    "dependency_lock": {
+      "argv": [
+        "python",
+        "scripts/ci/supply_chain.py",
+        "--skip-audit",
+        "--check-lock"
+      ],
+      "artifacts": {},
+      "check": "dependency_lock",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": 0,
+      "finished_at": "2026-09-20T15:08:00.788125+00:00",
+      "level": "source",
+      "log": "dependency_lock-package-1789916880668962193.log",
+      "log_sha256": "8f58cc0dfc76fa603d99afdb5eee8b09208f53b3bacb0a5c3529c88d111b9d98",
+      "profile": "package",
+      "reason": "",
+      "runtime_expected": "",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:00.668950+00:00",
+      "status": "PASS",
+      "receipt": "state/hostinger/acceptance/dependency_lock-package-1789916880668962193.json",
+      "receipt_sha256": "6e0244216e23b501b8a432007f2b25946156d8efc357a81614114c87f116e22f"
+    },
+    "native_classroom:compose": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_classroom_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_classroom",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:10.648118+00:00",
+      "level": "native",
+      "log": "native_classroom-compose-1789916890638648450.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "compose",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.28.4",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:10.638628+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_classroom-compose-1789916890638648450.json",
+      "receipt_sha256": "a60390b2fe2e8aa5ea994a3a990d4877218a77260dfee0a3a6a87ffd2bfbcdde"
+    },
+    "native_classroom:package": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_classroom_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_classroom",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:08.154468+00:00",
+      "level": "native",
+      "log": "native_classroom-package-1789916888147827006.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "package",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.39.8",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:08.147812+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_classroom-package-1789916888147827006.json",
+      "receipt_sha256": "ecf21c20a676778aaad9b7d23de839a6c9806ef0ec0659ca246bb3ac74d9d624"
+    },
+    "native_dossier:compose": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_dossier_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_dossier",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:11.105754+00:00",
+      "level": "native",
+      "log": "native_dossier-compose-1789916891101499326.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "compose",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.28.4",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:11.101484+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_dossier-compose-1789916891101499326.json",
+      "receipt_sha256": "91f3d78c57aa21bb1e129d30abef2dc652322171dcc0a9813fdcbc26916b0fee"
+    },
+    "native_dossier:package": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_dossier_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_dossier",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:08.690299+00:00",
+      "level": "native",
+      "log": "native_dossier-package-1789916888686731720.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "package",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.39.8",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:08.686718+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_dossier-package-1789916888686731720.json",
+      "receipt_sha256": "c32193a0d9afd6415b5f543d83a21fdff37bd939770bfb662c3d2d10b1a3abc6"
+    },
+    "native_learning:compose": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_tutorial_learning_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_learning",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:10.124419+00:00",
+      "level": "native",
+      "log": "native_learning-compose-1789916890120101092.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "compose",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.28.4",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:10.120087+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_learning-compose-1789916890120101092.json",
+      "receipt_sha256": "2a9bf2c31679f0f3bc70af73a7f37bffdd8f9206b743c3088ced5c2102b53088"
+    },
+    "native_learning:package": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_tutorial_learning_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_learning",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:07.616443+00:00",
+      "level": "native",
+      "log": "native_learning-package-1789916887611973704.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "package",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.39.8",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:07.611957+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_learning-package-1789916887611973704.json",
+      "receipt_sha256": "49563d16e09676b9c7c3cb73fe92f0debc93fbee7c70eae382266cf8dba8a6e1"
+    },
+    "native_suite:compose": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_suite_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_suite",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:09.659059+00:00",
+      "level": "native",
+      "log": "native_suite-compose-1789916889656395290.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "compose",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.28.4",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:09.656379+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_suite-compose-1789916889656395290.json",
+      "receipt_sha256": "5e4bf7797af38914ded421f2825ca0eb0655359282651b7e96b613d4892b1306"
+    },
+    "native_suite:package": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_suite_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_suite",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:07.081773+00:00",
+      "level": "native",
+      "log": "native_suite-package-1789916887076679196.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "package",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.39.8",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:07.076665+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_suite-package-1789916887076679196.json",
+      "receipt_sha256": "3df02e7d4fdcdefde976bd4e52385d9b3668dbd561f98b65899517acb3240721"
+    },
+    "native_workspace:compose": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_workspace_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_workspace",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:09.181302+00:00",
+      "level": "native",
+      "log": "native_workspace-compose-1789916889177570622.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "compose",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.28.4",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:09.177558+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_workspace-compose-1789916889177570622.json",
+      "receipt_sha256": "a6bcd08e724919d39c735bb26199e25f5c6bf0209fe7e6b139d3fff5c153c1c2"
+    },
+    "native_workspace:package": {
+      "argv": [
+        "python",
+        "tests/upgrade/test_workspace_native.py",
+        "--require-binary"
+      ],
+      "artifacts": {},
+      "check": "native_workspace",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": -1,
+      "finished_at": "2026-09-20T15:08:06.564613+00:00",
+      "level": "native",
+      "log": "native_workspace-package-1789916886561332264.log",
+      "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+      "profile": "package",
+      "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+      "runtime_expected": "0.39.8",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:06.561317+00:00",
+      "status": "BLOCKED",
+      "receipt": "state/hostinger/acceptance/native_workspace-package-1789916886561332264.json",
+      "receipt_sha256": "48f909f74d8fc2357261f3301a84a0a3a50f27d8dccd9a8ca0adb122e3aabefd"
+    },
+    "semantic_twin": {
+      "argv": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/upgrade",
+        "-p",
+        "test_semantic_twin*.py"
+      ],
+      "artifacts": {},
+      "check": "semantic_twin",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 122
+      },
+      "exit_code": 0,
+      "finished_at": "2026-09-20T15:08:00.254548+00:00",
+      "level": "source",
+      "log": "semantic_twin-package-1789916827635195139.log",
+      "log_sha256": "54e4b7b5645d88c973269c93204f862e608a80be6460245400f8a36c057935a6",
+      "profile": "package",
+      "reason": "",
+      "runtime_expected": "",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:07:07.635133+00:00",
+      "status": "PASS",
+      "receipt": "state/hostinger/acceptance/semantic_twin-package-1789916827635195139.json",
+      "receipt_sha256": "906afe5596f733b333c728872562c7de2052874ca25fa3a649e5e71b74ba06ae"
+    },
+    "source_node": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "tests/upgrade/blueprint-client.test.mjs",
+        "tests/upgrade/blueprint-saved-client.test.mjs",
+        "tests/upgrade/blueprint-system.test.mjs",
+        "tests/upgrade/build.test.mjs",
+        "tests/upgrade/business-learning.test.mjs",
+        "tests/upgrade/classroom-client.test.mjs",
+        "tests/upgrade/classroom-system.test.mjs",
+        "tests/upgrade/decision-runtime.test.mjs",
+        "tests/upgrade/discord-catalogue.test.mjs",
+        "tests/upgrade/dossier-client.test.mjs",
+        "tests/upgrade/dossier-system.test.mjs",
+        "tests/upgrade/editorial-frontpage.test.mjs",
+        "tests/upgrade/government-learning.test.mjs",
+        "tests/upgrade/knowledge-client.test.mjs",
+        "tests/upgrade/knowledge-system.test.mjs",
+        "tests/upgrade/mission-research.test.mjs",
+        "tests/upgrade/mission-system.test.mjs",
+        "tests/upgrade/motion-system.test.mjs",
+        "tests/upgrade/operator-client.test.mjs",
+        "tests/upgrade/operator-system.test.mjs",
+        "tests/upgrade/pocketbase-metrics.test.mjs",
+        "tests/upgrade/policy-intelligence.test.mjs",
+        "tests/upgrade/research-client.test.mjs",
+        "tests/upgrade/signal-mission.test.mjs",
+        "tests/upgrade/source-checker.test.mjs",
+        "tests/upgrade/staging-contract.test.mjs",
+        "tests/upgrade/suite-client.test.mjs",
+        "tests/upgrade/suite-system.test.mjs",
+        "tests/upgrade/tutorial-learning-client.test.mjs",
+        "tests/upgrade/tutorial-learning-system.test.mjs",
+        "tests/upgrade/work-history.test.mjs",
+        "tests/upgrade/workflow-client.test.mjs",
+        "tests/upgrade/workflow-runs.test.mjs",
+        "tests/upgrade/workspace-administration.test.mjs",
+        "tests/upgrade/workspace-community.test.mjs",
+        "tests/upgrade/workspace-control-client.test.mjs",
+        "tests/upgrade/workspace-integration.test.mjs",
+        "tests/upgrade/workspace-summary.test.mjs"
+      ],
+      "artifacts": {},
+      "check": "source_node",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 436
+      },
+      "exit_code": 0,
+      "finished_at": "2026-09-20T15:07:45.907647+00:00",
+      "level": "source",
+      "log": "source_node-package-1789916827691101513.log",
+      "log_sha256": "bf5c495eecc2628910822776b620de652342304271180aa71587e2b883092e26",
+      "profile": "package",
+      "reason": "",
+      "runtime_expected": "",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:07:07.691091+00:00",
+      "status": "PASS",
+      "receipt": "state/hostinger/acceptance/source_node-package-1789916827691101513.json",
+      "receipt_sha256": "3b131671ac467151e65c1122d8ce0f26c9d057cf0c45d2156634c01f69f17c73"
+    },
+    "source_python": {
+      "argv": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.upgrade.test_blueprint_extraction",
+        "tests.upgrade.test_blueprint_pipeline",
+        "tests.upgrade.test_blueprint_service",
+        "tests.upgrade.test_blueprints",
+        "tests.upgrade.test_datadog_metrics",
+        "tests.upgrade.test_decision_runtime",
+        "tests.upgrade.test_discordbot_adapter",
+        "tests.upgrade.test_discordbot_commands",
+        "tests.upgrade.test_discordbot_doctor",
+        "tests.upgrade.test_discordbot_dossier",
+        "tests.upgrade.test_discordbot_public",
+        "tests.upgrade.test_discordbot_research",
+        "tests.upgrade.test_federal_foundry",
+        "tests.upgrade.test_hostinger_readiness",
+        "tests.upgrade.test_hostinger_replay",
+        "tests.upgrade.test_mission_suite",
+        "tests.upgrade.test_operator_compiler",
+        "tests.upgrade.test_policy_intelligence",
+        "tests.upgrade.test_research_runtime",
+        "tests.upgrade.test_semantic_twin",
+        "tests.upgrade.test_semantic_twin_contracts",
+        "tests.upgrade.test_semantic_twin_ingestion",
+        "tests.upgrade.test_semantic_twin_integration",
+        "tests.upgrade.test_semantic_twin_integration_v2",
+        "tests.upgrade.test_semantic_twin_phase1_complete",
+        "tests.upgrade.test_supply_chain",
+        "tests.upgrade.test_theme_contrast"
+      ],
+      "artifacts": {},
+      "check": "source_python",
+      "counts": {
+        "failures": 0,
+        "skipped": 6,
+        "tests": 501
+      },
+      "exit_code": 0,
+      "finished_at": "2026-09-20T15:08:34.572688+00:00",
+      "level": "source",
+      "log": "source_python-package-1789916827380462534.log",
+      "log_sha256": "31c55753bda62b9207401be222d4981fd24e2953debff4a2ea41ade1a414d74f",
+      "profile": "package",
+      "reason": "Tests were empty, failing or skipped; acceptance is incomplete.",
+      "runtime_expected": "",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:07:07.380445+00:00",
+      "status": "HOLD",
+      "receipt": "state/hostinger/acceptance/source_python-package-1789916827380462534.json",
+      "receipt_sha256": "9e6bf92c94f133bb53af99b8518a1e0df6cf8aec6fbdad1a5db0ba188883ebc6"
+    },
+    "web_build": {
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "artifacts": {},
+      "check": "web_build",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": 127,
+      "finished_at": "2026-09-20T15:08:06.120703+00:00",
+      "level": "build",
+      "log": "web_build-package-1789916885649777418.log",
+      "log_sha256": "5ea869f8ced673362379859fa489acad9ddb0b4cacc0736eaa28e4ba11c2f5dc",
+      "profile": "package",
+      "reason": "The required command failed; inspect its retained log.",
+      "runtime_expected": "",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:05.649760+00:00",
+      "status": "FAIL",
+      "receipt": "state/hostinger/acceptance/web_build-package-1789916885649777418.json",
+      "receipt_sha256": "2e06a2aa7ee7e0f7f81a0f28eb9309877447a16e3116ba33dde14f8f8d8cdb3e"
+    },
+    "web_lint": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "lint"
+      ],
+      "artifacts": {},
+      "check": "web_lint",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": 2,
+      "finished_at": "2026-09-20T15:08:03.849427+00:00",
+      "level": "source",
+      "log": "web_lint-package-1789916881352411091.log",
+      "log_sha256": "bd8fa0462c98fb583f0b6e6229329a6a63060b146a7c478f2fe2b471f3a0154f",
+      "profile": "package",
+      "reason": "The required command failed; inspect its retained log.",
+      "runtime_expected": "",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:01.352398+00:00",
+      "status": "FAIL",
+      "receipt": "state/hostinger/acceptance/web_lint-package-1789916881352411091.json",
+      "receipt_sha256": "db07eb5eeb424f89131d288722e7e2adc0ce6e15d9c0a04502d6c40fac174723"
+    },
+    "web_tests": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "test:coverage",
+        "--",
+        "--reporter=default",
+        "--reporter=junit",
+        "--outputFile.junit=../../reports/junit/web.xml"
+      ],
+      "artifacts": {},
+      "check": "web_tests",
+      "counts": {
+        "failures": 0,
+        "skipped": 0,
+        "tests": 0
+      },
+      "exit_code": 127,
+      "finished_at": "2026-09-20T15:08:04.902787+00:00",
+      "level": "rendered",
+      "log": "web_tests-package-1789916884371117375.log",
+      "log_sha256": "39459eea9bbcdd1ab9f11f5cd880b0e03629764f5c05756722c4032f3c3e0404",
+      "profile": "package",
+      "reason": "The required command failed; inspect its retained log.",
+      "runtime_expected": "",
+      "runtime_observed": "",
+      "schema_version": "buildanddo.acceptance/v1",
+      "source_sha256": "b5471691b5d19718fa9f3100fda8d8f9a28dd2d5fd16b82508d1453f07b188ed",
+      "started_at": "2026-09-20T15:08:04.371100+00:00",
+      "status": "FAIL",
+      "receipt": "state/hostinger/acceptance/web_tests-package-1789916884371117375.json",
+      "receipt_sha256": "7bffc8fbae2fb98bd08796f8f64109f270b8084c195ff73ec61f2d08b7fe01f0"
+    }
+  },
+  "source_checks": {
+    "governance_replay": {
+      "tests": 28,
+      "passed": 28,
+      "command": "python -m unittest tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay -v"
+    },
+    "signal_mission_research": {
+      "tests": 60,
+      "passed": 60,
+      "command": "node --test tests/upgrade/signal-mission.test.mjs tests/upgrade/mission-system.test.mjs tests/upgrade/mission-research.test.mjs tests/upgrade/research-client.test.mjs"
+    },
+    "static_web": {
+      "modules": 288,
+      "errors": 0,
+      "command": "node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs"
+    },
+    "mypy": {
+      "state": "PASS",
+      "modules": 3,
+      "command": "python -m mypy --strict --explicit-package-bases --follow-imports=silent scripts/ci/hostinger_checks.py scripts/ci/hostinger_readiness.py scripts/ci/hostinger_replay.py"
+    },
+    "ruff": {
+      "state": "PASS",
+      "scope": "three new production tools and three Python test modules"
+    },
+    "syntax": {
+      "state": "PASS",
+      "scope": "edited Python, hooks, native fixture JavaScript and CI YAML structure"
+    }
+  },
+  "coverage": {
+    "python_stdlib_trace": {
+      "scripts.ci.hostinger_checks": {
+        "statement_percent": 99,
+        "statements": 229
+      },
+      "scripts.ci.hostinger_readiness": {
+        "statement_percent": 93,
+        "statements": 381
+      },
+      "scripts.ci.hostinger_replay": {
+        "statement_percent": 97,
+        "statements": 494
+      }
+    },
+    "node_v8_lines": {
+      "mission-policy.js": 100.0,
+      "mission-research.js": 98.55,
+      "missionLearning.js": 100.0,
+      "missionResearch.js": 100.0
+    },
+    "scope": "Executed source through real local subprocesses and explicit synthetic storage, transport and captured-export fixtures. Excludes rendered React, native PocketBase and private runtime execution."
+  },
+  "corrected_failure": {
+    "initial_python_import_errors": 4,
+    "root_cause": "Explicit unittest module selection lacked the sibling-helper path normally supplied by discovery.",
+    "fix": "Preserve the discovery helper directory for the source Python command while keeping native checks separate.",
+    "red_regression": {
+      "tests": 1,
+      "failures": 1
+    },
+    "green_regression": {
+      "included_in": "28/28 governance/replay cases and final source Python run"
+    },
+    "final_python": {
+      "failures": 0,
+      "skipped": 6,
+      "tests": 501
+    },
+    "remaining_skips": "Five pypdf cases and one discord.py native serialization case require declared dependencies absent in this sandbox."
+  },
+  "unexecuted_new_cases": {
+    "rendered_signal_proposal": 6,
+    "native_workspace": 3,
+    "native_profiles": {
+      "package": "0.39.8",
+      "compose": "0.28.4"
+    }
+  },
+  "external_gaps": {
+    "github_actions": {
+      "state": "BLOCKED",
+      "evidence": [
+        "repos/mrnobodytx/buildanddo/check-runs/105834583008/annotations",
+        "repos/mrnobodytx/buildanddo/check-runs/106077221075/annotations"
+      ],
+      "observation": "Inspected annotations say jobs did not start because the account is locked due to a billing issue.",
+      "owner": "repository/account owner"
+    },
+    "cloudflare_build": {
+      "state": "UNMEASURED",
+      "reason": "Separate failed build diagnostic has not been established."
+    },
+    "private_operator_loop": {
+      "state": "UNMEASURED",
+      "handoff": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md"
+    },
+    "staging_production_connector_actions": {
+      "state": "NOT_PERFORMED"
+    },
+    "official_competition_rules": {
+      "state": "UNMEASURED",
+      "owner": "competition owner"
+    }
+  },
+  "logs": {
+    "tools": {
+      "sha256": "7e971be4998309e7c01e595a136801d888ff74b6f91d1b161b8e26643bd08a50",
+      "session_path": "/tmp/hostinger-tools-final.log"
+    },
+    "tools_coverage": {
+      "sha256": "4321cae148564128a7e05d361edd9e59ba3177f064c6df66d993426a9c0648a8",
+      "session_path": "/tmp/hostinger-tools-coverage.log"
+    },
+    "signal_coverage": {
+      "sha256": "dc369979ac0a2b9d241f54099cb857d566bbe398472ef72876af03c3d01cb747",
+      "session_path": "/tmp/hostinger-signal-coverage.log"
+    },
+    "discovery_red": {
+      "sha256": "5fc99d293c6aa5c3137848acb3449a69d035f5ff98fff1be56459714fe3af7f4",
+      "session_path": "/tmp/hostinger-discovery-red.log"
+    },
+    "mypy": {
+      "sha256": "8228fcc5ce46d42d01caf3cd941f4e9c5f2bcc372bb5b147a2f0572d2dd675a8",
+      "session_path": "/tmp/hostinger-mypy.log"
+    },
+    "ruff": {
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "session_path": "/tmp/hostinger-ruff.log"
+    },
+    "static_source": {
+      "sha256": "be7899c5124fc7c87ce5ca96b82aec19dbd04df928fd60157c97fd2526c656af",
+      "session_path": "/tmp/hostinger-source-static.log"
+    }
+  },
+  "governance": {
+    "required_review": "PASS",
+    "milestones": 11,
+    "source_files_bound": 848,
+    "prior_events_retained": 144,
+    "memory_final_verification": "PASS",
+    "boundary_output": "{\n  \"state\": \"PASS\",\n  \"files_checked\": 1054,\n  \"failures\": [],\n  \"actor\": null\n}",
+    "context": "PASS",
+    "boundary": "PASS",
+    "verified_at": "2026-09-20T15:14:05.274637+00:00",
+    "memory_counts": {
+      "type_a_count": 659,
+      "type_b_count": 1453,
+      "type_c_count": 148
+    },
+    "dkg_orphans": 0,
+    "ioo_compliance": true,
+    "retained_findings": 6,
+    "memory_log_sha256": "57ef56215536418ceee3ffdf9f62187c8142b5309cb0b1a94938326bb096661c",
+    "context_log_sha256": "5917495f092702e7df9dcbcdf0b22d6e4f043ad885a3d84319c3bc4b76dfa38c"
+  }
+}
