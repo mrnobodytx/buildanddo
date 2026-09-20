@@ -893,6 +893,30 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
         (logs / "install.stderr.txt").write_text(install.stderr, encoding="utf-8")
         if install.returncode != 0:
             raise ReleaseError(f"dependency install failed rc={install.returncode}")
+    # REGENERATE THE TRUTH PAYLOAD BEFORE THE BUNDLER RUNS, not after: Vite copies apps/web/public/
+    # into dist as part of the build, so a payload written afterwards would never reach the artifact.
+    #
+    # THE DEFECT THIS CLOSES, and it is why the public roadmap lied for nine days. Two deploy paths
+    # exist and only one of them refreshed this file. scripts/deploy/ship.py calls
+    # _write_roadmap_status() before every deploy; this controller - the VERIFIED path, the one CI
+    # hands its artifact to, the one that promoted production on 2026-09-18 with sha_match true -
+    # never mentioned roadmap_status at all. Its build is plain `npm run build`, and
+    # apps/web/public/roadmap-status.json is GITIGNORED, so what shipped was whatever incidental
+    # copy happened to sit in the tree. Measured 2026-09-20: production served day 9 / 20% dated
+    # 2026-09-11 while the sprint was on day 18 / 42%, and a promotion had run in between.
+    #
+    # A stale number here is worse than an absent one. Absent is visibly broken; stale is a
+    # confident, well-formed lie that every external reader takes as current - which is exactly
+    # the assessment finding D21-3 (not_satisfied_at_live_readback).
+    #
+    # NON-FATAL BY DESIGN, BUT NEVER SILENT. A release must not be blocked because a reporting
+    # script failed, and it must not ship a stale payload while pretending otherwise: the outcome
+    # is written to the logs and carried on the receipt either way.
+    roadmap_gen = run([sys.executable, str(repo / "scripts" / "deploy" / "roadmap_status.py")],
+                      cwd=repo, timeout=300)
+    (logs / "roadmap_status.stdout.txt").write_text(roadmap_gen.stdout, encoding="utf-8")
+    (logs / "roadmap_status.stderr.txt").write_text(roadmap_gen.stderr, encoding="utf-8")
+
     build = run(plan["build_command"], cwd=workdir, timeout=1800)
     (logs / "build.stdout.txt").write_text(build.stdout, encoding="utf-8")
     (logs / "build.stderr.txt").write_text(build.stderr, encoding="utf-8")
@@ -940,6 +964,14 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
     release_doc = {
         "schema": "buildanddo.release-artifact/v1",
         "state": "PASS",
+        # Whether THIS artifact carries a freshly generated truth payload, and if not, why. Without
+        # this the receipt could attest a perfect artifact digest over a roadmap nine days stale.
+        "roadmap_status": {
+            "regenerated": roadmap_gen.returncode == 0,
+            "returncode": roadmap_gen.returncode,
+            "reason": "" if roadmap_gen.returncode == 0 else
+                      (roadmap_gen.stderr or roadmap_gen.stdout or "")[-200:],
+        },
         "commit_sha": sha,
         "artifact_dir": str(artifact),
         "source_artifact_dir": str(source_artifact),
