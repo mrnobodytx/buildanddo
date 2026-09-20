@@ -2,7 +2,7 @@
   "campaign_id": "citadel-21-day-2026-09",
   "sprint_start": "2026-09-09",
   "sprint_days": 21,
-  "updated_at": "2026-09-20T13:23:55+00:00",
+  "updated_at": "2026-09-20T13:29:32+00:00",
   "milestones": [
     {
       "day": 1,
@@ -63,6 +63,12 @@
       "status": "verified",
       "evidence": "PR #40 merge 2c49f00 (newspaper front page d74dcf4, daily edition + specialist desks, read-first operator cockpit 26f73df); staging readback 2026-09-18: front page renders the daily edition (research desk, classroom, mission desk, knowledge room, evidence ledger, practice library desks), /_version sha match; production not yet promoted",
       "verified_at": "2026-09-18T19:19:35Z"
+    },
+    {
+      "day": 21,
+      "status": "verified",
+      "evidence": "commits b929a5d (replay engine, selftest, publication into roadmap-status.json) and de536f3 (pipeline job, public panel test); scripts/ci/sprint_replay.py; scripts/ci/selftest_sprint_replay.py 27 tests pass; .gitlab-ci.yml job sprint_replay runs selftest blocking and replay reporting at GIT_DEPTH 0; scripts/deploy/roadmap_status.py carries replay under its own key, never averaged into actual_pct; apps/web/src/pages/RoadmapPage.jsx renders a verdict per milestone with its rotted claims and reasons; apps/web/src/pages/__tests__/RoadmapPage.replay.test.jsx proves an absent replay renders nothing; CONTROL measured 2026-09-20: sprint_cycle scored the real ledger 38.0 pct and a ledger with every evidence string replaced by the letter x 38.0 pct, identical, and eleven such strings 100 pct - the replay scores all of those 0 pct and reports UNCHECKED; replay probed against production 2026-09-20: 10 hold, 0 rotted, 0 unchecked, claimed 88.0 pct equals replayed 88.0 pct; /.well-known/citadel-release.json 200 on buildanddo.com and on staging.buildanddo.com",
+      "verified_at": "2026-09-20T13:29:32+00:00"
     }
   ]
 }
