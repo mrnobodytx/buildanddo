@@ -285,6 +285,32 @@ def find_repo(root: Path, explicit: str | None = None) -> Path:
     raise ReleaseError(f"persistent BuildAndDo Git checkout not found under {root}")
 
 
+def _resolve_argv(args: Sequence[str]) -> list[str]:
+    """Resolve argv[0] to a real executable path before spawning it.
+
+    THE BUILD COULD NOT RUN ON WINDOWS AT ALL. The plan emits bare command names -- ["npm", "ci"],
+    ["pnpm", "install", ...] -- and on Windows npm/pnpm/npx are `.CMD` shims, not `.exe`.
+    CreateProcess cannot execute a .CMD directly, so every build died with a bare
+    `FileNotFoundError: [WinError 2] The system cannot find the file specified` that named no
+    command. The binary was on PATH the whole time: shutil.which('npm') resolves it fine.
+
+    That is why every deploy has gone through scripts/deploy/ship.py instead -- ship.py already
+    does `shutil.which("npm") or "npm"`. The verified-release controller, which is the thing that
+    produces the immutable artifact carrying artifact_tree_sha256, has been unable to build on the
+    one machine that is allowed to deploy. Two tools, one of them quietly unusable.
+
+    Resolution happens here, in the single place that spawns anything, so a caller cannot forget.
+    An unresolvable name is passed through UNCHANGED rather than raising: the spawn then fails with
+    the OS error naming that command, which is a better diagnostic than a wrapper inventing one."""
+    argv = list(args)
+    if not argv:
+        return argv
+    resolved = shutil.which(argv[0])
+    if resolved:
+        argv[0] = resolved
+    return argv
+
+
 def run(
     args: Sequence[str],
     *,
@@ -293,8 +319,9 @@ def run(
     timeout: float = 120.0,
     check: bool = False,
 ) -> CommandResult:
+    argv = _resolve_argv(args)
     completed = subprocess.run(
-        list(args),
+        argv,
         cwd=str(cwd) if cwd else None,
         env=dict(env) if env else None,
         capture_output=True,
