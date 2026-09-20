@@ -295,6 +295,21 @@ def _write_deployed_version() -> None:
     except OSError as exc:
         print(f"WARN could not write dist/_version: {type(exc).__name__}: {exc}")
 
+    # The release manifest is written HERE, from the same payload, so the two provenance sources
+    # cannot disagree - which is the only thing that makes capability_inventory's conflict check
+    # meaningful. Measured 2026-09-20: it had never existed. apps/web/public/.well-known/ is absent
+    # from the tree and `git ls-files` matches nothing, yet the published roadmap evidence claimed
+    # "/.well-known/citadel-release.json 200 on buildanddo.com and on staging.buildanddo.com".
+    # Staging honestly answered 404; production answered 200 with the SPA's index.html, because the
+    # SPA serves 200 for ANY unmatched path. A probe that only checked the status code read the
+    # fallback as the manifest, and a milestone's evidence rested on it.
+    try:
+        wk = DIST_DIR / ".well-known"
+        wk.mkdir(parents=True, exist_ok=True)
+        (wk / "citadel-release.json").write_text(json.dumps(payload), encoding="utf-8")
+    except OSError as exc:
+        print(f"WARN could not write dist/.well-known/citadel-release.json: {type(exc).__name__}: {exc}")
+
 
 def _write_capability_inventory() -> dict:
     return _run([sys.executable, str(ROOT / "scripts" / "ci" / "capability_inventory.py"), "--write"],
