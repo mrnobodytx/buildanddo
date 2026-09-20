@@ -24,7 +24,7 @@ export const FRAMEWORKS = [
     },
     {
         name: 'OWASP ASVS',
-        href: 'https://owasp.org/www-project-application-security-verification-standard/',
+        href: 'https://owasp.org/ASVS/',
         note: 'Use applicable security verification requirements to design and review controls; this checklist is a teaching aid, not an ASVS assessment.',
     },
     {
