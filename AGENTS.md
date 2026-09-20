@@ -13,10 +13,10 @@
 # Intent:      Define machine-facing governance for agents working in buildanddo.
 # ───────────────────────────────────────────────────────────────
 
-# AGENTS.md — buildanddo.tech
+# AGENTS.md — buildanddo.com
 
 Machine-facing conventions for AI agents working in the React/Vite + PocketBase
-monorepo behind buildanddo.tech, part of the Citadel Nexus estate. Humans should
+monorepo behind buildanddo.com, part of the Citadel Nexus estate. Humans should
 read `CONTRIBUTING.md` first.
 
 ## What this repo is

@@ -49,4 +49,12 @@ Then capture the real staged browser journey with `day21_browser_capture.py`, su
 
 ## Canonical domain gate
 
-The repository currently has two public-origin declarations in the inspected baseline: README names `buildanddo.com`, while `apps/web/src/lib/publicPages.js` names `buildanddo.tech`. This pack intentionally does not choose one. Freeze the actual challenge URL, update the repository declarations to agree, then capture `public-url.json`. The final compiler refuses a mismatched origin.
+RESOLVED 2026-09-20. The two declarations disagreed: README named `buildanddo.com` while
+`apps/web/src/lib/publicPages.js` named `buildanddo.tech`. Measured from a fleet box,
+`buildanddo.com` resolves through Cloudflare and answers 200 while `buildanddo.tech` has **no DNS
+record at all**, and the operator confirmed the estate uses `.com` only. `SITE_ORIGIN` is now
+`https://buildanddo.com`, sitemap/robots/llms were regenerated from it, and every functional
+`.tech` reference was swept from the web app, the Discord bot, the crawl checker and the tests.
+Historical `.bits` receipts keep the old value because they are a record of what was true then.
+Capture `public-url.json` against `https://buildanddo.com`. The final compiler refuses a
+mismatched origin.

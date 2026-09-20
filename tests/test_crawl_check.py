@@ -51,7 +51,7 @@ class CrawlCheckTests(unittest.IsolatedAsyncioTestCase):
     """Verify inventory, request, validation and report behavior."""
 
     def setUp(self) -> None:
-        self.origin = "https://buildanddo.tech"
+        self.origin = "https://buildanddo.com"
         self.home = crawl_check.PublicPage(
             "/", "BuildAndDo test title", "A useful description.", "WebPage"
         )
@@ -66,7 +66,9 @@ class CrawlCheckTests(unittest.IsolatedAsyncioTestCase):
     def test_canonical_inventory_is_read_from_public_pages(self) -> None:
         origin, pages = crawl_check.load_public_pages()
         self.assertEqual(origin, self.origin)
-        self.assertEqual(len(pages), 10)
+        # 11, not 10: the Day-21 closure pack added the public /hostinger-challenge judge page
+        # to PUBLIC_PAGES. This asserts the count of canonical public pages, so it moves with them.
+        self.assertEqual(len(pages), 11)
         self.assertEqual(pages[0].path, "/")
         self.assertEqual(
             next(page for page in pages if page.path == "/classrooms").title,
@@ -77,7 +79,7 @@ class CrawlCheckTests(unittest.IsolatedAsyncioTestCase):
         with tempfile.TemporaryDirectory(prefix="buildanddo-crawl-") as directory:
             path = Path(directory) / "publicPages.js"
             path.write_text(
-                "export const SITE_ORIGIN='https://buildanddo.tech'; export const PUBLIC_PAGES=[{path:'/',title:'One',description:'D',type:'WebPage'},{path:'/',title:'Two',description:'D',type:'WebPage'}]",
+                "export const SITE_ORIGIN='https://buildanddo.com'; export const PUBLIC_PAGES=[{path:'/',title:'One',description:'D',type:'WebPage'},{path:'/',title:'Two',description:'D',type:'WebPage'}]",
                 encoding="utf-8",
             )
             with self.assertRaises(ResearchError):
@@ -251,9 +253,9 @@ class CrawlCheckTests(unittest.IsolatedAsyncioTestCase):
                 code = crawl_check.main(["--output", str(output)])
             report = json.loads(output.read_text(encoding="utf-8"))
             self.assertEqual(code, 1)
-            self.assertEqual(report["summary"]["total"], 10)
-            self.assertEqual(report["summary"]["failed"], 10)
-            self.assertEqual(client.json.await_count, 10)
+            self.assertEqual(report["summary"]["total"], 11)
+            self.assertEqual(report["summary"]["failed"], 11)
+            self.assertEqual(client.json.await_count, 11)
             client.close.assert_awaited_once()
 
 

@@ -381,7 +381,7 @@ class BuildAndDoBot(discord.Client):
                 'conflict': 'The saved request changed. Open BuildAndDo research to review its current state.',
             }
             message = messages.get(error.reason, 'Could not confirm the request. Use /buildanddo recover, or inspect /buildanddo submissions before starting another submission.')
-            await interaction.edit_original_response(embed=render(Page('Research request', message, 'https://buildanddo.tech/app/research')),
+            await interaction.edit_original_response(embed=render(Page('Research request', message, 'https://buildanddo.com/app/research')),
                                                      view=None, allowed_mentions=discord.AllowedMentions.none())
             outcome = error.reason
         finally:
@@ -433,7 +433,7 @@ class BuildAndDoBot(discord.Client):
                 'rate_limited': 'Too many requests are active. Wait briefly before retrying.',
             }
             message = messages.get(error.reason, 'Private storage could not confirm this request. Use /buildanddo dossier recover:true or check your website dossier before saving again.')
-            await interaction.edit_original_response(embed=render(Page('Private dossier', message, 'https://buildanddo.tech/app/dossier')),
+            await interaction.edit_original_response(embed=render(Page('Private dossier', message, 'https://buildanddo.com/app/dossier')),
                                                      view=None, allowed_mentions=discord.AllowedMentions.none())
             outcome = error.reason
         finally:
