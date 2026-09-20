@@ -899,6 +899,39 @@ An independent native CI matrix requires both declared PocketBase versions;
 the local native SDK/parser/backend and rendered acceptance remain unavailable.
 Verification and the retained event history are in the current dispatch report.
 
+## Authorized continuation — interactive tutorials and persistent learning growth
+
+On 2026-09-19 the owner requested interactive tutorials that award a completion
+certificate and contribute to persistent personal progress and growth. This
+continues the existing A2 learning scope under VCC-BUILDANDDO-UPGRADE-001.
+
+- Reuse the Field Manual's authored lessons, native PocketBase authentication
+  and per-account tutorial history. Add a guided reader with resumable sections,
+  practice checklist, answer feedback and a server-checked final knowledge check.
+- Freeze the enrolled lesson content. Persist checkpoints and completion through
+  authenticated commands and a locked collection with one enrollment per account
+  and tutorial. Retry, concurrent submission and review must not duplicate credit.
+- Complete the existing tutorial-progress record and issue an account-owned
+  BuildAndDo certificate of course completion in one transaction. Certificates
+  retain the learner name, course/version, issue time and stable receipt identity.
+  They do not claim external accreditation, signed credentials or live TEVV.
+- Derive learning points, levels and milestones from retained completions: 100
+  points per tutorial, once. Preserve existing manual lesson completions without
+  inventing certificates. Independently verified contributor reputation is unchanged.
+- Keep preview/demo read-only, isolate account changes and late responses, support
+  keyboard/reduced-motion use, and keep failed saves recoverable. Downloads expose
+  only the certificate the learner explicitly chooses to export.
+- Ship an idempotent migration whose down path disables the new commands while
+  retaining checkpoints and certificates. No shared backend or deployment is changed.
+- Require native learning acceptance in the existing PocketBase CI matrix and
+  update the shared `ci:test` description. Retain unavailable local tooling as a
+  validation gap; configured CI is not a passing hosted result.
+
+Acceptance: `node --test tests/upgrade/tutorial-learning*.test.mjs`, targeted
+TutorialCatalog/InteractiveTutorial component tests, native tutorial-learning
+tests with the existing disposable PocketBase harness, web lint/build, context,
+boundary and dispatch-evidence checks. Missing tooling remains an explicit gap.
+
 ## Authority
 
 Dmitry Richard (mr.nobody@citadel-nexus.com) explicitly authorized this dispatch,

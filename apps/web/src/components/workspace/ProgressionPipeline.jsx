@@ -102,6 +102,7 @@ export const PIPELINE_STEPS = [
             'Native Discord commands and research parser checks pass with source coverage',
             'Native CPU blueprint extraction, BDR planning and PDF-to-session provenance pass with source coverage',
             'Native PocketBase dossier, suite, operator and classroom auth, scoped reads, storage, presence, leases and retry checks pass for both declared runtimes',
+            'Native interactive tutorial checkpoints, completion certificates, concurrent credit and migration retention pass for both declared runtimes',
             'Portable mission suite behavior, replay, packaging and source coverage pass on Python 3.11 and 3.12',
             'Federal foundry execution, evidence integrity, replay and portfolio exports pass on Python 3.11 and 3.12',
             'Federal portfolio packets, provider-independent adapters, evidence checks and source coverage pass on Python 3.11 and 3.12',
