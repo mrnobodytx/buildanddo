@@ -18,7 +18,15 @@
 migrate((app) => {
     const research = app.findCollectionByNameOrId('research_submissions');
     const mission = research.fields.getByName('mission');
-    if (!mission || mission.type !== 'relation' || mission.collectionId !== app.findCollectionByNameOrId('missions').id ||
+    // In the PocketBase 0.39.x JSVM a field's `type` is a METHOD, not a property: measured
+    // 2026-09-20 on 0.39.8, typeof mission.type === 'function' (reflect.methodValueCall), so
+    // `mission.type !== 'relation'` was true no matter what the schema said and this guard refused
+    // on every database. The rest of the shape was correct all along - collectionId matched
+    // missions.id, maxSelect was 1, cascadeDelete was false and protocol_version existed - so the
+    // migration was reporting a schema problem that did not exist. Read it through an accessor that
+    // works whether the binding exposes a method or a plain value.
+    const fieldType = (f) => String(typeof f.type === 'function' ? f.type() : f.type);
+    if (!mission || fieldType(mission) !== 'relation' || mission.collectionId !== app.findCollectionByNameOrId('missions').id ||
         mission.maxSelect !== 1 || mission.cascadeDelete || !research.fields.getByName('protocol_version'))
         throw new Error('Review the research mission schema before adding blueprint mode.');
     const mode = { name: 'mode', type: 'select', values: ['blueprint'], maxSelect: 1, required: false };
