@@ -1,0 +1,126 @@
+{
+  "schema": "buildanddo.hostinger-validation/v1",
+  "generated_at": "2026-09-20T17:47:15+00:00",
+  "method": "clean browser (no cookies, no session) against live production, plus repo controls run from a clean checkout",
+  "state": "PASS",
+  "passed": 12,
+  "failed": 0,
+  "total": 12,
+  "checks": [
+    {
+      "id": "FRESH-HOME",
+      "what": "home page loads for an anonymous visitor",
+      "url": "https://buildanddo.com/",
+      "expected": 200,
+      "observed": 200,
+      "state": "PASS",
+      "content_type": "text/html",
+      "note": ""
+    },
+    {
+      "id": "FRESH-ROADMAP",
+      "what": "public roadmap loads",
+      "url": "https://buildanddo.com/roadmap",
+      "expected": 200,
+      "observed": 200,
+      "state": "PASS",
+      "content_type": "text/html",
+      "note": ""
+    },
+    {
+      "id": "FRESH-VERSION",
+      "what": "deployed identity is published",
+      "url": "https://buildanddo.com/_version",
+      "expected": 200,
+      "observed": 200,
+      "state": "PASS",
+      "content_type": "application/octet-stream",
+      "note": ""
+    },
+    {
+      "id": "FRESH-CAPS",
+      "what": "capability inventory is published",
+      "url": "https://buildanddo.com/capabilities.json",
+      "expected": 200,
+      "observed": 200,
+      "state": "PASS",
+      "content_type": "application/json",
+      "note": ""
+    },
+    {
+      "id": "FRESH-ROADMAP-JSON",
+      "what": "roadmap projection is published",
+      "url": "https://buildanddo.com/roadmap-status.json",
+      "expected": 200,
+      "observed": 200,
+      "state": "PASS",
+      "content_type": "application/json",
+      "note": ""
+    },
+    {
+      "id": "FRESH-PRICING",
+      "what": "pricing page route resolves",
+      "url": "https://buildanddo.com/pricing",
+      "expected": 200,
+      "observed": 200,
+      "state": "PASS",
+      "content_type": "text/html",
+      "note": ""
+    },
+    {
+      "id": "STAGING-HEALTH",
+      "what": "staging backend is healthy",
+      "url": "https://staging.buildanddo.com/hcgi/platform/api/health",
+      "expected": 200,
+      "observed": 200,
+      "state": "PASS",
+      "content_type": "application/json",
+      "note": ""
+    },
+    {
+      "id": "STAGING-OCN",
+      "what": "OCN verifier is reachable",
+      "url": "https://staging.buildanddo.com/hcgi/platform/api/ocn/health",
+      "expected": 200,
+      "observed": 200,
+      "state": "PASS",
+      "content_type": "application/json",
+      "note": ""
+    },
+    {
+      "id": "SPA-FALLBACK-CONTROL",
+      "what": "SPA answers 200 for any path - route probing proves nothing",
+      "url": "https://buildanddo.com/__no-such-route-zzz",
+      "expected": 200,
+      "observed": 200,
+      "state": "PASS",
+      "content_type": "text/html",
+      "note": "This is the control. It is why readiness is measured by commit content, not by HTTP status."
+    },
+    {
+      "id": "REPLAY-SELFTEST",
+      "what": "sprint replay controls",
+      "command": "py -3.13 scripts/ci/selftest_sprint_replay.py ...",
+      "exit_code": 0,
+      "state": "PASS",
+      "tail": "OK"
+    },
+    {
+      "id": "DISCLOSURE-SELFTEST",
+      "what": "public disclosure controls",
+      "command": "py -3.13 scripts/ci/verify_public_disclosure.py --selftest ...",
+      "exit_code": 0,
+      "state": "PASS",
+      "tail": "SELFTEST PASSED"
+    },
+    {
+      "id": "DISCLOSURE-SCAN",
+      "what": "no credentials on the public surface",
+      "command": "py -3.13 scripts/ci/verify_public_disclosure.py ...",
+      "exit_code": 0,
+      "state": "PASS",
+      "tail": "              controller-estate path - reveals private control-plane structure"
+    }
+  ],
+  "rule": "Every row carries the URL or command that produced it. A row nobody can re-run is not validation."
+}
