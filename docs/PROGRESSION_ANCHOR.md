@@ -1,13 +1,13 @@
 # BuildAndDo progression anchor
 
-generated 2026-09-20T16:08:14Z  ·  schema buildanddo.progression-anchor/v1
+generated 2026-09-20T18:42:41Z  ·  schema buildanddo.progression-anchor/v1
 
-**Day 18/21** (start 2026-09-03)  ·  planned **84.0%**  ·  local **42.0%**
+**Day 20/21** (start 2026-09-01)  ·  planned **94.0%**  ·  local **42.0%**
 
 Replay: claimed 42.0 = replayed 42.0, overstatement 0.0  ·  {'HOLDS': 5, 'ROTTED': 0, 'UNCHECKED': 0, 'NOT_VERIFIED': 6}
 
-- **production** serves 42.0% (day 18, generated 2026-09-20)
-- **staging** serves 42.0% (day 18, generated 2026-09-20)
+- **production** serves 42.0% (day 20, generated 2026-09-20)
+- **staging** serves 42.0% (day 20, generated 2026-09-20)
 
 ## Criteria: 6 done / 27 open of 33
 
