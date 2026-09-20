@@ -52,12 +52,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 CAMPAIGN_ID = "citadel-21-day-2026-09"
-# Corrected 2026-09-20 from 2026-09-09, on the operator's statement that three calendar days
-# remain. The campaign is 21 days (corroborated independently by config/buildanddo_convergence.json
-# in the estate, roadmap.sprint_days = 21), so an end of 2026-09-23 fixes day 1 at 2026-09-03 and
-# makes today day 18. The wrong start had been projecting day 12 and nine days of runway that do
-# not exist - the plan curve, the day counter and planned_pct all derive from this one date.
-SPRINT_START = dt.date(2026, 9, 3)
+# From the estate blueprint, config/campaign_21_day_progression_v1.yaml, which is the campaign's
+# own definition: days[0].date = 2026-09-01, days[20].date = 2026-09-21, and day_index anchors
+# 2026-09-08 as day 8 - all three agree. Corrected twice on 2026-09-20: 09-09 was the original and
+# put day 21 on 09-29; I then inferred 09-03 from "three days remain", which fit the remaining
+# runway but not the blueprint. Inference that matches one observation is not a source. The
+# blueprint also carries the real deadlines: Hostinger freeze 2026-09-22, submission 2026-09-24.
+SPRINT_START = dt.date(2026, 9, 1)
 SPRINT_DAYS = 21
 
 # The ledger is TRACKED (scripts/ci/sprint_ledger.json), not per-clone state: a verification is a commit that carries

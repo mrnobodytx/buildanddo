@@ -83,7 +83,18 @@ def _estate_progression() -> dict:
     is carried under its own key with its own generated_at and never averaged into actual_pct."""
     path = os.environ.get("BUILDANDDO_PROGRESSION_FILE", "").strip()
     if not path:
-        return {"state": "UNMEASURED", "reason": "BUILDANDDO_PROGRESSION_FILE not set at ship time"}
+        # The env name has never been set anywhere - measured 2026-09-20, the only hits in the
+        # estate are inside 2026-09-17 backups - so this panel has always rendered "Unknown"
+        # while the projection it wants sat on disk, freshly written, carrying exactly the
+        # summary keys read below. A required-config knob nobody configures is a feature that
+        # does not exist, so the estate's own path is the default and the env var is the override.
+        default = (ROOT.parent.parent / "state" / "development_continuity"
+                   / "sprint_progression" / "latest.json")
+        if default.is_file():
+            path = str(default)
+        else:
+            return {"state": "UNMEASURED",
+                    "reason": "BUILDANDDO_PROGRESSION_FILE unset and no estate projection on disk"}
     try:
         doc = json.loads(Path(path).read_text(encoding="utf-8-sig"))
     except Exception as exc:  # noqa: BLE001
