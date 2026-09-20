@@ -153,12 +153,22 @@ def _run(cmd: list[str], cwd: Path | None = None, timeout: int = 600) -> dict:
         return {"ok": False, "returncode": None, "reason": f"{type(exc).__name__}: {exc}"}
 
 
+# Cloudflare fronts both environments and its WAF bans urllib's default User-Agent
+# ("Python-urllib/3.x") outright, answering 403 with error 1010 before the request ever reaches the
+# origin. Measured 2026-09-20 against staging: default UA -> 403/1010, browser UA -> 200 with the
+# real body, same URL, same second. The readback gate therefore FAILED ON EVERY RUN no matter how
+# healthy the deploy was, and because the gate is fail-closed the rail could never promote - which
+# is why production sat 33 commits behind staging. A blocked probe is not a failed deploy.
+_PROBE_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; buildanddo-ship/1.0)"}
+
+
 def _probe(url: str, retries: int = 5, delay: float = 2.0) -> dict:
     """Real HTTP GET, not a ping - a 200 with body is the only acceptable proof of 'serving'."""
     last_err = None
     for attempt in range(1, retries + 1):
         try:
-            with urllib.request.urlopen(url, timeout=10) as resp:  # noqa: S310 - fixed https URL, not user input
+            request = urllib.request.Request(url, headers=_PROBE_HEADERS)
+            with urllib.request.urlopen(request, timeout=10) as resp:  # noqa: S310 - fixed https URL, not user input
                 body = resp.read(200)
                 return {"ok": resp.status == 200, "status": resp.status, "attempt": attempt,
                         "body_prefix": body.decode("utf-8", errors="replace")[:120]}

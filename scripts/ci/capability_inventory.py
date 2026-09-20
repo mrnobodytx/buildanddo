@@ -36,12 +36,19 @@ A single-page app answers 200 for everything, including routes that do not exist
 column built on that would be green for capabilities nobody ever wrote, which is the same vacuous
 pass this repository keeps catching elsewhere.
 
-WHAT IS MEASURED INSTEAD. Production publishes the commit it is serving
-(`/.well-known/citadel-release.json`), so readiness is an exact question with an exact answer:
-is this capability's source present in the commit production is running? That is `git cat-file -e
-<deployed-sha>:<path>` - the same commit-scoped check the sprint replay uses, and for the same
-reason: the working tree answers a different question (which branch is checked out) than the one
-being asked.
+WHAT IS MEASURED INSTEAD. Each environment publishes the commit it is serving, so readiness is an
+exact question with an exact answer: is this capability's source present in that commit? That is
+`git cat-file -e <deployed-sha>:<path>` - the same commit-scoped check the sprint replay uses, and
+for the same reason: the working tree answers a different question (which branch is checked out)
+than the one being asked.
+
+WHICH RECORD TO BELIEVE. An environment publishes its identity TWICE, and on 2026-09-20 both
+environments disagreed with themselves - production said a5bdcad5 in `/_version` and 0b9faeb in
+`/.well-known/citadel-release.json`, nine days apart. The webroot's file mtimes matched `_version`,
+so the manifest was simply left behind by a deploy that never overwrote it. Trusting the manifest
+produced an inventory claiming production lacked Pricing, About, Docs and eleven workspace pages,
+every one of which was deployed and serving. `_version` wins - it is written by the step that
+actually moves the files - and the disagreement is reported, never silently resolved.
 
 THE ROUTE TABLE IS THE SOURCE. Capabilities are parsed out of `App.jsx`, never hand-listed, so the
 inventory cannot quietly drift from what the application actually exposes. A route whose component
@@ -181,22 +188,58 @@ def measure(cap: dict, production_sha: str, staging_sha: str) -> dict:
 
 
 def _deployed_shas(offline: bool) -> dict:
-    """Ask each environment which commit it is serving."""
-    result = {"production": "", "staging": "", "reason": ""}
+    """Ask each environment which commit it is serving — from BOTH records, and say when they
+    disagree.
+
+    An environment publishes its identity twice: `/_version` (written by the deploy) and
+    `/.well-known/citadel-release.json` (written by the build). Measured 2026-09-20, production
+    disagreed with itself:
+
+        _version                        a5bdcad5  built 2026-09-18T14:57
+        .well-known/citadel-release     0b9faeb   built 2026-09-11T22:36
+
+    The webroot's own file mtimes were 2026-09-18T14:59, so `_version` was right and the manifest
+    was nine days stale — left behind by a deploy that never overwrote it. Reading the manifest
+    alone produced an inventory claiming production lacked Pricing, About, Docs and eleven
+    workspace pages, all of which were in fact deployed and serving.
+
+    So `_version` wins, because it is written by the step that actually moved the files, and the
+    disagreement is REPORTED rather than resolved silently — a environment that cannot agree with
+    itself about what it is running is a finding, not a detail to paper over.
+    """
+    result = {"production": "", "staging": "", "source": {}, "conflicts": {}, "reason": ""}
     if offline:
         result["reason"] = "offline: environments not asked"
         return result
     import urllib.request  # noqa: PLC0415
 
-    for env, base in (("production", "https://buildanddo.com"),
-                      ("staging", "https://staging.buildanddo.com")):
-        url = f"{base}/.well-known/citadel-release.json"
+    def fetch(url):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "buildanddo-capability-inventory"})
             with urllib.request.urlopen(req, timeout=20) as resp:  # noqa: S310 - fixed hosts
-                result[env] = str(json.loads(resp.read()).get("commit") or "")
-        except Exception as exc:  # noqa: BLE001 - an unreachable env is UNMEASURABLE, not "not live"
-            result["reason"] = (result["reason"] + f" {env}: {type(exc).__name__};").strip()
+                return json.loads(resp.read())
+        except Exception:  # noqa: BLE001
+            return None
+
+    for env, base in (("production", "https://buildanddo.com"),
+                      ("staging", "https://staging.buildanddo.com")):
+        version = fetch(f"{base}/_version") or {}
+        manifest = fetch(f"{base}/.well-known/citadel-release.json") or {}
+        deployed = str(version.get("commit_sha") or version.get("commit") or "")[:7]
+        built = str(manifest.get("commit") or "")[:7]
+        if deployed:
+            result[env], result["source"][env] = deployed, "_version"
+        elif built:
+            result[env], result["source"][env] = built, "release-manifest"
+        else:
+            result["reason"] = (result["reason"] + f" {env}: no identity published;").strip()
+            continue
+        if deployed and built and deployed != built:
+            result["conflicts"][env] = {
+                "_version": deployed, "release_manifest": built,
+                "using": "_version",
+                "note": "the environment disagrees with itself; the deploy-written record wins",
+            }
     return result
 
 
@@ -219,6 +262,7 @@ def build_report(offline: bool = False) -> dict:
         "readiness_basis": "presence of the source file in the commit each environment reports "
                            "serving; route probing is vacuous because the SPA returns 200 for "
                            "any path, including ones that do not exist",
+        "provenance_conflicts": shas.get("conflicts", {}),
         "counts": counts,
         "total": len(rows),
         "with_tests": sum(1 for r in rows if r["tests"] > 0),
