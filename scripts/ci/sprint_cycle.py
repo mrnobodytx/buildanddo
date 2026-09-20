@@ -52,7 +52,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 CAMPAIGN_ID = "citadel-21-day-2026-09"
-SPRINT_START = dt.date(2026, 9, 9)
+# Corrected 2026-09-20 from 2026-09-09, on the operator's statement that three calendar days
+# remain. The campaign is 21 days (corroborated independently by config/buildanddo_convergence.json
+# in the estate, roadmap.sprint_days = 21), so an end of 2026-09-23 fixes day 1 at 2026-09-03 and
+# makes today day 18. The wrong start had been projecting day 12 and nine days of runway that do
+# not exist - the plan curve, the day counter and planned_pct all derive from this one date.
+SPRINT_START = dt.date(2026, 9, 3)
 SPRINT_DAYS = 21
 
 # The ledger is TRACKED (scripts/ci/sprint_ledger.json), not per-clone state: a verification is a commit that carries
@@ -316,6 +321,61 @@ def _record_verification(day: int, evidence: str, verified_at: str | None) -> di
     return payload
 
 
+def _revert_verification(days: list[int], reason: str) -> dict:
+    """Return one or more milestones to ``planned``.
+
+    A verification that was recorded without a real measurement behind it has to be
+    removable, or the ledger can only ever ratchet upwards and the published number becomes
+    a high-water mark rather than a reading. Measured 2026-09-20: six milestones carried
+    ``2026-09-20T00:00:00Z`` - exact midnight, the value you get from passing a bare date -
+    and one of them had overwritten a genuine 2026-09-11T21:24:00Z stamp.
+
+    The evidence text is KEPT. It is the record of what was claimed, and deleting it would
+    destroy the only thing that makes the reversal reviewable; `_is_verified` already
+    refuses to count it while the status is ``planned``.
+
+    Args:
+        days: Sprint days to return to planned.
+        reason: Why, recorded in the ledger so the reversal is not silent.
+
+    Returns:
+        The full state dict that was written.
+
+    Raises:
+        ValueError: When a day is not in the plan or no reason is given.
+    """
+    known = {m["day"] for m in MILESTONES}
+    unknown = [d for d in days if d not in known]
+    if unknown:
+        raise ValueError(f"not planned milestones: {unknown}")
+    note = reason.strip()
+    if not note:
+        raise ValueError("a reversal must say why")
+    current = _load_state()
+    stamp = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    for milestone in current["milestones"]:
+        if milestone["day"] in days:
+            milestone["status"] = PLANNED
+            milestone["verified_at"] = None
+            milestone["reverted_at"] = stamp
+            milestone["reverted_reason"] = note
+    payload = {
+        "campaign_id": CAMPAIGN_ID,
+        "sprint_start": SPRINT_START.isoformat(),
+        "sprint_days": SPRINT_DAYS,
+        "updated_at": stamp,
+        "milestones": [
+            {k: m[k] for k in ("day", "status", "evidence", "verified_at",
+                               "reverted_at", "reverted_reason") if m.get(k) is not None}
+            for m in current["milestones"]
+            if m["status"] != PLANNED or m["evidence"]
+        ],
+    }
+    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    STATE_PATH.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    return payload
+
+
 def main(argv: list[str] | None = None) -> int:
     """Print the sprint projection, or record a milestone verification.
 
@@ -332,7 +392,21 @@ def main(argv: list[str] | None = None) -> int:
     verify.add_argument("--day", type=int, required=True, help="sprint day of the planned milestone")
     verify.add_argument("--evidence", required=True, help="public evidence reference (commits, paths, receipts)")
     verify.add_argument("--verified-at", default=None, help="ISO-8601 timestamp; default now UTC")
+    unverify = sub.add_parser("unverify", help="return milestones to planned, with a stated reason")
+    unverify.add_argument("--day", type=int, action="append", required=True,
+                          help="sprint day to revert; repeat for several")
+    unverify.add_argument("--reason", required=True, help="why the verification does not stand")
     args = parser.parse_args(argv)
+
+    if args.command == "unverify":
+        try:
+            written = _revert_verification(args.day, args.reason)
+        except ValueError as exc:
+            print(f"FAIL: {exc}")
+            return 2
+        print(json.dumps({"written": str(STATE_PATH.relative_to(ROOT)), "reverted": args.day,
+                          "verified_entries": sum(1 for m in written["milestones"]
+                                                  if m["status"] == VERIFIED)}, indent=2))
 
     if args.command == "verify":
         try:

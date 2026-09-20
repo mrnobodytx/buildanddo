@@ -135,11 +135,15 @@ def _replay() -> dict:
         "replayed_pct": report["replayed_pct"],
         "overstatement_pct": report["overstatement_pct"],
         "counts": report["counts"],
+        # A verification recorded rather than measured is a public fact about the number on
+        # this page, so it travels with it rather than living only in a pipeline log.
+        "synthetic_stamps": report.get("synthetic_stamps", 0),
         "milestones": [
             {
                 "day": m["day"],
                 "verdict": m["verdict"],
                 "claims": m["claims"],
+                "stamp": m.get("stamp"),
                 "rot": [{"kind": c["kind"], "ref": c["ref"], "reason": c["reason"]}
                         for c in m["checked"] if c["outcome"] == sprint_replay.ROTTED],
             }

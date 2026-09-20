@@ -410,6 +410,38 @@ def check_claim(claim: dict, ctx: Context, commits: tuple[str, ...] = ()) -> dic
     return out
 
 
+def _stamp_state(milestone: dict) -> dict:
+    """Judge whether ``verified_at`` looks like a measurement or a backfill.
+
+    The replay checks that cited artifacts exist. It cannot tell whether anyone actually
+    looked at them, and on 2026-09-20 that blind spot let six milestones be certified in a
+    single batch, all stamped ``2026-09-20T00:00:00Z`` - the value a bare ``--verified-at
+    2026-09-20`` yields - while the replay reported a clean 11 HOLD. One of them had
+    overwritten a genuine 2026-09-11T21:24:00Z. A person spotted it; this did not.
+
+    Exact midnight UTC is the signal. A real observation lands on an arbitrary second, so a
+    run of them at 00:00:00 is a date that was typed, not a time that was measured. This
+    REPORTS rather than refutes: midnight is a legitimate instant, just an implausible one
+    to have measured, and the distinction belongs to the reader.
+
+    Args:
+        milestone: One merged milestone dict.
+
+    Returns:
+        ``{state, verified_at, reason}`` with state measured / synthetic / absent.
+    """
+    if milestone.get("status") != sprint_cycle.VERIFIED:
+        return {"state": "absent", "verified_at": None, "reason": "not verified"}
+    raw = str(milestone.get("verified_at") or "").strip()
+    if not raw:
+        return {"state": "absent", "verified_at": None,
+                "reason": "verified with no timestamp at all"}
+    if "T00:00:00" in raw:
+        return {"state": "synthetic", "verified_at": raw,
+                "reason": "exact midnight: a date that was typed, not a time that was measured"}
+    return {"state": "measured", "verified_at": raw, "reason": ""}
+
+
 def _verdict(milestone: dict, checked: list[dict]) -> str:
     """Decide a milestone's replay verdict from its checked claims.
 
@@ -459,6 +491,7 @@ def replay(state: dict, ctx: Context) -> dict:
             "verdict": _verdict(milestone, checked),
             "claims": tally,
             "checked": checked,
+            "stamp": _stamp_state(milestone),
         })
 
     # Recompute the headline number counting ONLY milestones that still hold, using the
@@ -484,6 +517,9 @@ def replay(state: dict, ctx: Context) -> dict:
             verdict: sum(1 for r in results if r["verdict"] == verdict)
             for verdict in (HOLDS, ROTTED_V, UNCHECKED, NOT_VERIFIED)
         },
+        # Carried separately from the verdicts: a synthetic stamp says nothing about whether
+        # the artifacts exist, only about whether anyone is claiming to have looked.
+        "synthetic_stamps": sum(1 for r in results if r["stamp"]["state"] == "synthetic"),
         "milestones": results,
     }
 
@@ -515,6 +551,8 @@ def render(report: dict) -> str:
         for claim in row["checked"]:
             if claim["outcome"] == ROTTED:
                 lines.append(f"          ROT  {claim['kind']} {claim['ref']}: {claim['reason']}")
+        if row["stamp"]["state"] == "synthetic":
+            lines.append(f"          STAMP {row['stamp']['verified_at']}: {row['stamp']['reason']}")
     counts = report["counts"]
     lines += [
         "",
@@ -523,6 +561,9 @@ def render(report: dict) -> str:
         f"  {counts[HOLDS]} hold, {counts[ROTTED_V]} rotted, {counts[UNCHECKED]} unchecked, "
         f"{counts[NOT_VERIFIED]} not yet verified",
     ]
+    if report.get("synthetic_stamps"):
+        lines.append(f"  WARNING: {report['synthetic_stamps']} verification(s) stamped at exact "
+                     f"midnight - recorded, not measured")
     return "\n".join(lines)
 
 
