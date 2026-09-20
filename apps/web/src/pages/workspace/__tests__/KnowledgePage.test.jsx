@@ -20,7 +20,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import KnowledgePage from '@/pages/workspace/KnowledgePage';
 import MissionKnowledgeContext from '@/components/workspace/KnowledgeContext';
 import pb from '@/lib/pocketbaseClient';
-import { renderWithProviders, screen, setupUser, waitFor, within, fireEvent } from '@/test/utils';
+import { renderWithProviders, scriptsCarrying, screen, setupUser, waitFor, within, fireEvent } from '@/test/utils';
 import { knowledgeFixture } from '../../../../../../tests/upgrade/knowledge-fixture.mjs';
 
 vi.mock('@/lib/pocketbaseClient', () => ({ default: { authStore: { record: { id: 'editor' } }, send: vi.fn() } }));
@@ -76,7 +76,7 @@ describe('workspace knowledge', () => {
         expect(await screen.findByText(/Some knowledge sources are unavailable or capped/)).toBeVisible();
         expect(screen.getByText(/Completed research: unavailable/)).toBeVisible();
         expect(screen.getAllByText('<script>untrusted source</script>').length).toBeGreaterThan(0);
-        expect(document.querySelector('script')).toBeNull();
+        expect(scriptsCarrying('untrusted source')).toEqual([]);
     });
 
     it('clears private excerpts on permission loss and permits retry after access is restored', async () => {

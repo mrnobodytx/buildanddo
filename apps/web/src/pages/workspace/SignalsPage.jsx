@@ -156,9 +156,7 @@ export default function SignalsPage() {
             acknowledged_at: next === 'new' ? null : new Date().toISOString(),
         });
         setBusyId(null);
-        if (!result.ok) return; else if (next === 'dismissed') {
-
-        }
+        if (!result.ok) return;
     };
 
     return (
