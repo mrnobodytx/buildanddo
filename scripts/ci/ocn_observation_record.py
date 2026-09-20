@@ -8,7 +8,8 @@
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     apps/pocketbase/pb_migrations/1790800000_signal_mission_link.js (signals.mission)
+# Depends:     apps/pocketbase/pb_migrations/1790800000_signal_mission_link.js (signals.mission);
+#              apps/pocketbase/pb_migrations/1790900000_signal_evidence_link.js (signals.evidence)
 # EnumType:    Verifier
 # EnumEdges:   PRODUCES a mission + evidence + signal chain owned by this seat, citing a public
 #              forum post as the evidence source
@@ -27,7 +28,12 @@ THE CHAIN, and why each link exists:
     forum post (public, has a URL anyone can fetch)
         <- evidence.source names that URL, evidence.content carries the measurement
              <- evidence.mission binds it to a mission in this workspace
-                  <- signal.mission binds the opinion to the same mission
+                  <- signal.evidence CITES that evidence, and signal.mission binds the
+                     opinion to the same mission
+
+The signal cites its grounds by RELATION rather than naming an id in prose. A sentence saying
+"Evidence record: 1f7z..." cannot be resolved, cannot be queried backwards to ask what rests on an
+observation, and reads exactly the same after the evidence is withdrawn.
 
 So a reader who starts at the signal can walk to the mission, to the evidence, to a public post, to
 the measurement - without taking any step on trust. That is the difference between a claim and a
@@ -146,9 +152,13 @@ def main() -> int:
         "title": "%s: %s" % (args.persona or args.seat, args.finding[:110]),
         "workspace": args.workspace, "owner": uid, "type": "inference",
         "severity": args.severity, "state": "new", "confidence": 0.7, "mission": mid,
+        # The grounds are a RELATION, not a sentence. Naming the evidence id in prose cannot be
+        # resolved, cannot be queried backwards ("what rests on this observation?"), and survives
+        # unchanged if the evidence is withdrawn - leaving a claim that its own support exists.
+        "evidence": [eid],
         "source": args.forum_url,
-        "description": "%s\n\nEvidence record: %s\nMission: %s\nPublic comment: %s"
-                       % (args.finding, eid, mid, args.forum_url)}).encode(), headers=auth)
+        "description": "%s\n\nPublic comment: %s"
+                       % (args.finding, args.forum_url)}).encode(), headers=auth)
     if s not in (200, 201):
         out["chain"]["signal"] = {"http": s, "message": str(b.get("message"))[:120]}
         print(json.dumps(out))
@@ -160,6 +170,7 @@ def main() -> int:
     s2, ev = http(C + "/evidence/records/%s" % eid, headers=auth)
     out["provable"] = {
         "signal_names_mission": sig.get("mission") == mid,
+        "signal_cites_evidence": eid in (sig.get("evidence") or []),
         "evidence_names_mission": ev.get("mission") == mid,
         "evidence_source_is_forum_post": ev.get("source") == args.forum_url,
         "signal_readback_http": s1, "evidence_readback_http": s2,

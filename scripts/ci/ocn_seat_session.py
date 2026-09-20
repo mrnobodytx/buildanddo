@@ -65,28 +65,29 @@ PH_HOST = "https://us.i.posthog.com"
 CBF = "/opt/citadel/cbf"
 UA = {"User-Agent": "Mozilla/5.0 (compatible; bnd-ocn-seat/1.0)", "Content-Type": "application/json"}
 
-# Box -> persona/guild from blueprints/FLEET_PLACEMENT.json, embedded so a box needs no repo
-# checkout. NOTE: the guild here is FLEET_PLACEMENT's, which disagrees with
-# services/seats/personas.yaml for some seats (herald: commerce vs intelligence; scholar:
-# intelligence vs research). Five rosters disagree across the estate and reconciling them is not
-# this script's job, so the source is named rather than silently picked.
+# Box -> GUILDMASTER, joined on guild. The box's guild comes from blueprints/FLEET_PLACEMENT.json;
+# the guildmaster for that guild is the canon in cbf/configs/discord_fleet/personas.yaml, where each
+# gm-* entry carries role: guildmaster. Joining on GUILD rather than on FLEET_PLACEMENT's own
+# `persona` label matters: that label is a different vocabulary (Herald, Steward, Archivist, Warden)
+# and five of six of its names are not guildmasters at all. Five rosters disagree across this estate,
+# so the join key is the one thing they agree on.
 SEATS = {
-    "ray-tor1-1":   {"persona": "Scholar",   "guild": "intelligence", "lens": "academic, thorough, evidence-first"},
-    "ray-tor1-2":   {"persona": "Herald",    "guild": "commerce",     "lens": "formal proclamation, governance-minded"},
-    "ray-tor1-3":   {"persona": "Steward",   "guild": "finance",      "lens": "cost-aware, conservative, risk-first"},
-    "ray-tor1-4":   {"persona": "Muse",      "guild": "creator",      "lens": "playful, vivid, image-rich"},
-    "mesh-memory":  {"persona": "Archivist", "guild": "research",     "lens": "provenance-first, citation-minded"},
-    "mesh-control": {"persona": "Warden",    "guild": "builder",      "lens": "operational, safety-first"},
+    "ray-tor1-1":   {"persona": "Oracle",   "guild": "intelligence", "lens": "pattern-first, forecast-minded"},
+    "ray-tor1-2":   {"persona": "Alex",     "guild": "commerce",     "lens": "customer-first, offer-minded"},
+    "ray-tor1-3":   {"persona": "Sterling", "guild": "finance",      "lens": "cost-aware, conservative, risk-first"},
+    "ray-tor1-4":   {"persona": "Muse",     "guild": "creator",      "lens": "playful, vivid, image-rich"},
+    "mesh-memory":  {"persona": "Scholar",  "guild": "research",     "lens": "academic, thorough, evidence-first"},
+    "mesh-control": {"persona": "Forge",    "guild": "builder",      "lens": "operational, safety-first"},
 }
 # What each persona exists to care about. Presence of this vocabulary in what is actually served is
 # the measurable part of "does this page speak to me".
 LEXICON = {
-    "Scholar":   ["evidence", "research", "method", "citation", "verify", "source", "claim"],
-    "Herald":    ["announce", "release", "governance", "policy", "publish", "community", "signal"],
-    "Steward":   ["cost", "price", "budget", "plan", "billing", "risk", "value"],
-    "Muse":      ["create", "build", "design", "story", "studio", "craft", "imagine"],
-    "Archivist": ["history", "record", "provenance", "archive", "version", "lineage", "log"],
-    "Warden":    ["status", "health", "deploy", "operate", "secure", "access", "uptime"],
+    "Oracle":   ["signal", "pattern", "insight", "evidence", "detect", "forecast", "risk"],
+    "Alex":     ["customer", "price", "offer", "market", "revenue", "growth", "sell"],
+    "Sterling": ["cost", "price", "budget", "billing", "value", "risk", "plan"],
+    "Muse":     ["create", "design", "story", "studio", "craft", "imagine", "build"],
+    "Scholar":  ["research", "method", "citation", "evidence", "verify", "source", "claim"],
+    "Forge":    ["build", "deploy", "operate", "status", "health", "secure", "uptime"],
 }
 ROUTES = ["/", "/roadmap", "/app", "/practice", "/login"]
 DATA = ["/roadmap-status.json", "/_version", "/capabilities.json"]
