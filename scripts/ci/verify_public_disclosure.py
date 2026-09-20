@@ -218,8 +218,12 @@ def _selftest() -> int:
     check("RFC1918 is caught", "private_ipv4" in ids("connect 10.100.0.11 now"), True)
     check("loopback port is caught", "loopback_port" in ids("sidecar at 127.0.0.1:8092"), True)
     check("seat mailbox is caught", "seat_mailbox" in ids("forge@ocn.buildanddo.invalid"), True)
-    check("private key is BLOCK",
-          [f["severity"] for f in scan_text("k", "-----BEGIN OPENSSH PRIVATE KEY-----")], ["BLOCK"])
+    # Fixtures are ASSEMBLED, never written literally: a scanner whose own source trips its own
+    # BLOCK rules fails every repo-wide run on itself, which is how a gate gets excluded and then
+    # stops guarding anything. Measured 2026-09-20 - the literal versions did exactly that.
+    fake_key = "-----BEGIN " + "OPENSSH PRIVATE KEY" + "-----"
+    fake_jwt = "ey" + "JhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" + "abcdef"
+    check("private key is BLOCK", [f["severity"] for f in scan_text("k", fake_key)], ["BLOCK"])
 
     # The public repo's own paths must NOT be flagged, or the report gets muted.
     check("public repo path is ignored", ids("apps/web/src/pages/RoadmapPage.jsx"), [])
@@ -228,7 +232,7 @@ def _selftest() -> int:
     check("SDK property access is not a credential",
           ids("headers.Authorization=this.client.authStore.token"), [])
     check("a real bearer literal IS still caught",
-          "bearer_literal" in ids("Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9abcdef"), True)
+          "bearer_literal" in ids("Authorization: " + fake_jwt), True)
     # A scan that looked at nothing must not read as PASS.
     empty = {"state": "UNMEASURED"}
     check("empty scan is UNMEASURED, not PASS", empty["state"] != "PASS", True)
