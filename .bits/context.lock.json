@@ -16,10 +16,24 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/selftest_sprint_replay.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: scripts/deploy/roadmap_status.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/sprint_replay.py is never executed by GitHub Actions"
     },
     {
       "area": "ci",
@@ -98,10 +112,20 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/selftest_sprint_replay.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "path": "scripts/ci/sprint_cycle.py",
       "referenced_by": [
         "scripts/deploy/roadmap_status.py"
       ],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/sprint_replay.py",
+      "referenced_by": [],
       "wired_into_ci": false
     },
     {
@@ -134,7 +158,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-18T19:39:19.738750+00:00",
+  "generated_at": "2026-09-20T13:26:50.804633+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -466,22 +490,22 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 33,
-    "python_files": 178,
+    "migrations": 34,
+    "python_files": 180,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 958,
-    "web_source_files": 290
+    "tracked_files": 967,
+    "web_source_files": 291
   },
   "schema_version": 1,
   "summary": {
-    "findings": 6,
-    "findings_high": 6,
+    "findings": 8,
+    "findings_high": 8,
     "pipelines": 7,
     "srs_open": 22,
     "srs_total": 25,
-    "unwired_gates": 4
+    "unwired_gates": 6
   },
   "tests": {
     "js_runners": [
@@ -493,6 +517,6 @@
     "python_suite_entrypoints": [
       "services/praxis_evidence/run_all_tests.py"
     ],
-    "python_suites": 11
+    "python_suites": 12
   }
 }

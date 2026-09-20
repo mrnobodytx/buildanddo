@@ -18,6 +18,29 @@ integrity_gate:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
 
+# Day 21 of the campaign. sprint_cycle.py scores a milestone on whether a non-empty string
+# was typed into its evidence field and nothing ever reads that string again - measured
+# 2026-09-20, the real ledger and a ledger of eleven "x" characters both scored the same.
+# This job re-checks each milestone against the claims its own evidence makes.
+#
+# It is NOT --strict. Rot on the public roadmap is something a person decides how to
+# correct - by fixing the code or by re-recording the evidence - and a red pipeline on
+# main would push people to do whichever is quicker rather than whichever is true. The
+# selftest IS blocking, because a replay that cannot tell junk from evidence is worse than
+# no replay at all. GIT_DEPTH gives the replay the history it needs to resolve cited
+# commits; without it a shallow clone reports UNMEASURABLE for every one of them.
+sprint_replay:
+  stage: verify
+  tags:
+    - buildanddo
+  variables:
+    GIT_DEPTH: "0"
+  script:
+    - python3 scripts/ci/selftest_sprint_replay.py
+    - python3 scripts/ci/sprint_replay.py
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+
 praxis_evidence_tests:
   stage: test
   tags:
