@@ -53,21 +53,87 @@ ROOT = Path(__file__).resolve().parents[2]  # sites/buildanddo/
 LOCAL_SECRETS = ROOT / "secrets" / "deploy.local.env"
 NPM = shutil.which("npm") or "npm"
 
+# THE ESTATE CREDENTIAL STORE, which is where these belong.
+# Deploy credentials used to live ONLY in secrets/deploy.local.env - a per-repo file that does not
+# exist on this machine, so ship.py has been falling through to its hardcoded default host while
+# the release controller reported the credentials missing. One fact, two stores, neither canonical.
+# workspace.env is the estate's credential store and is now a source here. First readable path
+# wins; CITADEL_WORKSPACE_ENV overrides for a machine that keeps it elsewhere.
+WORKSPACE_ENV_CANDIDATES = (
+    Path(os.environ.get("CITADEL_WORKSPACE_ENV", "")) if os.environ.get("CITADEL_WORKSPACE_ENV")
+    else None,
+    Path(r"D:\citadel_secrets\CNWB\workspace.env"),
+    Path(r"D:\citadel_websites\Citadel-nexus\projects\guilds\CNWB\tools\workspace.env"),
+)
 
-def _load_local_secrets() -> dict:
+# Only these names are taken from the shared store. workspace.env holds 500+ credentials for the
+# whole estate; pulling all of them into a deploy script's environment would hand every subprocess
+# it spawns the keys to everything. A deploy needs two secrets, so it reads two.
+SHARED_KEYS = ("BUILDANDDO_VM_HOST", "BUILDANDDO_SSH_KEY")
+
+
+def _parse_env_file(path: Path) -> dict:
+    out = {}
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return out
+    for line in text.splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, _, v = line.partition("=")
+            v = v.strip()
+            if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
+                v = v[1:-1]
+            out[k.strip()] = v
+    return out
+
+
+def _load_local_secrets() -> tuple[dict, dict]:
+    """Resolve deploy secrets, and record WHICH store answered for each name.
+
+    Precedence, least to most specific: OS environment, then workspace.env (the estate store),
+    then secrets/deploy.local.env (a deliberate per-machine override). Inserting the shared store
+    BELOW the local file means nothing that works today changes behaviour - the local file still
+    wins where it exists - while a name placed in workspace.env now binds.
+
+    The provenance map records the SOURCE of each name and never its value, so a deploy can print
+    where its credentials came from without printing what they are."""
     env = dict(os.environ)
+    src = {k: ("environment" if env.get(k) else None) for k in SHARED_KEYS}
+
+    for cand in WORKSPACE_ENV_CANDIDATES:
+        if cand is None or not cand.is_file():
+            continue
+        shared = _parse_env_file(cand)
+        for k in SHARED_KEYS:
+            if shared.get(k):
+                env[k] = shared[k]
+                src[k] = f"workspace.env ({cand.name})"
+        break                                   # first readable store wins
+
     if LOCAL_SECRETS.is_file():
-        for line in LOCAL_SECRETS.read_text(encoding="utf-8", errors="replace").splitlines():
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                k, _, v = line.partition("=")
-                env[k.strip()] = v.strip()
-    return env
+        for k, v in _parse_env_file(LOCAL_SECRETS).items():
+            env[k] = v
+            if k in src:
+                src[k] = "secrets/deploy.local.env"
+    return env, src
 
 
-_SECRETS = _load_local_secrets()
+_SECRETS, SECRET_SOURCES = _load_local_secrets()
 SSH_KEY = _SECRETS.get("BUILDANDDO_SSH_KEY", "")
-VM_HOST = _SECRETS.get("BUILDANDDO_VM_HOST", "root@45.82.75.40")
+# The default stays as a LAST resort and is recorded as such, so a deploy that silently fell back
+# to a hardcoded host is visible in the receipt rather than indistinguishable from a configured one.
+VM_HOST = _SECRETS.get("BUILDANDDO_VM_HOST") or "root@45.82.75.40"
+if not SECRET_SOURCES.get("BUILDANDDO_VM_HOST"):
+    SECRET_SOURCES["BUILDANDDO_VM_HOST"] = "HARDCODED DEFAULT (no store supplied it)"
+if not SECRET_SOURCES.get("BUILDANDDO_SSH_KEY"):
+    SECRET_SOURCES["BUILDANDDO_SSH_KEY"] = "ABSENT (ssh will use the agent/default identity)"
+
+
+def secret_provenance() -> dict:
+    """Which store supplied each deploy credential. Names and sources only, never values."""
+    return dict(SECRET_SOURCES)
 STAGING_REMOTE_DIR = "/var/www/buildanddo-staging"
 PROD_REMOTE_DIR = "/var/www/buildanddo"
 STAGING_URL = "https://staging.buildanddo.com/"
