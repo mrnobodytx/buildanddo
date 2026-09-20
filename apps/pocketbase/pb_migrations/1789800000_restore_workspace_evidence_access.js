@@ -16,6 +16,14 @@
 // ───────────────────────────────────────────────────────────────
 
 migrate((app) => {
+    // PocketBase 0.39.x binds a collection's rules as *string, which reaches the JSVM as an OBJECT
+    // and not a primitive: measured 2026-09-20 on 0.39.8, `typeof collection.listRule === 'object'`
+    // while String(...) yields the right text. Array.includes and === compare by identity, so every
+    // comparison below against a string literal was false and this preflight threw on ANY database,
+    // including one whose rules were already exactly `previous`. It was not detecting a custom rule,
+    // it could not read the rule at all. Normalise through String(), keeping null distinct because a
+    // null rule means superuser-only and is a real value.
+    const ruleOf = (value) => (value === null || value === undefined ? null : String(value));
     const members = app.findCollectionByNameOrId('workspace_members');
     if (!members.fields.getByName('workspace') || !members.fields.getByName('user'))
         throw new Error('Workspace membership must be installed before sharing evidence.');
@@ -29,17 +37,26 @@ migrate((app) => {
     // owner's review; a source migration must not silently replace them.
     for (const collection of collections) {
         for (const field of ['listRule', 'viewRule']) {
-            if (![previous, rules[collection.name]].includes(collection[field]))
+            const actual = ruleOf(collection[field]);
+            if (actual !== ruleOf(previous) && actual !== ruleOf(rules[collection.name]))
                 throw new Error(`Review the custom ${collection.name} ${field} before applying shared evidence access.`);
         }
     }
     for (const collection of collections) {
-        if (collection.listRule === rules[collection.name] && collection.viewRule === rules[collection.name]) continue;
+        if (ruleOf(collection.listRule) === ruleOf(rules[collection.name]) && ruleOf(collection.viewRule) === ruleOf(rules[collection.name])) continue;
         collection.listRule = rules[collection.name];
         collection.viewRule = rules[collection.name];
         app.save(collection);
     }
 }, (app) => {
+    // PocketBase 0.39.x binds a collection's rules as *string, which reaches the JSVM as an OBJECT
+    // and not a primitive: measured 2026-09-20 on 0.39.8, `typeof collection.listRule === 'object'`
+    // while String(...) yields the right text. Array.includes and === compare by identity, so every
+    // comparison below against a string literal was false and this preflight threw on ANY database,
+    // including one whose rules were already exactly `previous`. It was not detecting a custom rule,
+    // it could not read the rule at all. Normalise through String(), keeping null distinct because a
+    // null rule means superuser-only and is a real value.
+    const ruleOf = (value) => (value === null || value === undefined ? null : String(value));
     const previous = "@request.auth.id != '' && @request.auth.id = owner";
     const rules = {
         workspaces: "@request.auth.id != '' && (owner = @request.auth.id || workspace_members_via_workspace.user ?= @request.auth.id)",
@@ -48,12 +65,13 @@ migrate((app) => {
     const collections = Object.keys(rules).map((name) => app.findCollectionByNameOrId(name));
     for (const collection of collections) {
         for (const field of ['listRule', 'viewRule']) {
-            if (![previous, rules[collection.name]].includes(collection[field]))
+            const actual = ruleOf(collection[field]);
+            if (actual !== ruleOf(previous) && actual !== ruleOf(rules[collection.name]))
                 throw new Error(`Review the custom ${collection.name} ${field} before restoring owner-only reads.`);
         }
     }
     for (const collection of collections) {
-        if (collection.listRule === previous && collection.viewRule === previous) continue;
+        if (ruleOf(collection.listRule) === ruleOf(previous) && ruleOf(collection.viewRule) === ruleOf(previous)) continue;
         collection.listRule = previous;
         collection.viewRule = previous;
         app.save(collection);
