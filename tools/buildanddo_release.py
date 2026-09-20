@@ -135,6 +135,95 @@ def load_env_file(path: Path | None) -> dict[str, str]:
     return loaded
 
 
+# Suffixes this loader will accept from the COMMITTED public config. Everything else is refused
+# and reported, so the file can never become a side door for credentials -- which is the only way
+# a "public config" fallback is safe to have at all.
+PUBLIC_ENV_SUFFIXES = ("_URL", "_DEPLOY_MODE", "_REMOTE_ROOT", "_ROOT")
+PUBLIC_ENV_PREFIXES = ("BUILDANDDO_STAGING", "BUILDANDDO_PRODUCTION")
+
+
+def load_public_config(repo: Path) -> dict[str, Any]:
+    """Public, committed release config: URLs, deploy modes, webroots.
+
+    WHY THIS EXISTS. `doctor` held BOTH environments on four values it would only read from a
+    secrets file outside Git -- and all four are public facts. Two of them
+    (https://staging.buildanddo.com, https://buildanddo.com) were already hardcoded in
+    scripts/deploy/ship.py, which has been deploying both environments for weeks. The controller
+    was blocked on knowing a hostname anyone can resolve, while the tool beside it had it as a
+    literal.
+
+    THE GATE IS NOT WEAKENED. _HOST, _USER and _SSH_KEY_FILE are credentials, are NOT accepted
+    here, and both environments still HOLD without them. What changes is WHICH gap gets named:
+    "missing BUILDANDDO_STAGING_URL" sent people to write a public hostname into a vault, while
+    the real absence was an SSH key. A gate that names the wrong gap is worse than one that names
+    none, because the wrong gap is actionable and the action is useless.
+
+    Precedence is real env var > public config, never the reverse, so an operator can always
+    override a committed default without editing the repo."""
+    path = repo / ".citadel" / "release.public.json"
+    out: dict[str, Any] = {"state": "ABSENT", "path": str(path), "applied": [], "refused": []}
+    if not path.is_file():
+        return out
+    try:
+        doc = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        out["state"] = "UNREADABLE"
+        out["reason"] = f"{type(exc).__name__}: {str(exc)[:90]}"
+        return out
+    for key, value in (doc.get("env") or {}).items():
+        key = str(key).strip()
+        if not (key.startswith(PUBLIC_ENV_PREFIXES) and key.endswith(PUBLIC_ENV_SUFFIXES)):
+            # Refused AND reported. A silently ignored credential in a committed file is worse than
+            # a loud one: it would sit in Git looking effective.
+            out["refused"].append(key)
+            continue
+        if os.environ.get(key, "").strip():
+            continue                       # a real env var always wins
+        os.environ[key] = str(value)
+        out["applied"].append(key)
+    out["state"] = "APPLIED" if out["applied"] else "NOOP"
+    return out
+
+
+def bridge_ship_credentials() -> dict[str, Any]:
+    """Let ONE credential placement satisfy both deploy tools.
+
+    THE SECOND SOURCE OF TRUTH. scripts/deploy/ship.py -- the tool that has actually been shipping
+    both environments -- reads BUILDANDDO_VM_HOST ("user@host") and BUILDANDDO_SSH_KEY from
+    sites/buildanddo/secrets/deploy.local.env. This controller wants BUILDANDDO_{env}_HOST, _USER
+    and _SSH_KEY_FILE. Same three facts, two vocabularies, so placing the credential for one tool
+    leaves the other reporting it missing -- which is how the release controller sat HOLD while
+    deploys were demonstrably working.
+
+    This maps ship.py's names onto the controller's. It INVENTS NOTHING: if ship.py's names are
+    unset, nothing is filled and both environments keep reporting exactly what is absent.
+
+    NOT SOURCED FROM workspace.env, deliberately. Searched 2026-09-20: workspace.env carries 8
+    BUILDANDDO_* names, all forum/PostHog, and NO deploy credential. Its VPS_HOST / VPS_USER /
+    VPS_IDENTITY_FILE describe a DIFFERENT machine from the one ship.py deploys to, so binding them
+    here would aim a production deploy at the wrong host while every gate turned green."""
+    vm = os.environ.get("BUILDANDDO_VM_HOST", "").strip()
+    key = os.environ.get("BUILDANDDO_SSH_KEY", "").strip()
+    out: dict[str, Any] = {"state": "NOOP", "applied": [],
+                           "source": "BUILDANDDO_VM_HOST / BUILDANDDO_SSH_KEY (ship.py names)"}
+    if not vm and not key:
+        out["reason"] = ("ship.py credential names are unset; place them in "
+                         "sites/buildanddo/secrets/deploy.local.env and both tools resolve")
+        return out
+    user, _, host = vm.rpartition("@")      # "root@1.2.3.4" -> ("root", "1.2.3.4")
+    for env_name in ("STAGING", "PRODUCTION"):
+        for suffix, value in (("_HOST", host), ("_USER", user), ("_SSH_KEY_FILE", key)):
+            if not value:
+                continue
+            k = f"BUILDANDDO_{env_name}{suffix}"
+            if os.environ.get(k, "").strip():
+                continue                    # a real env var always wins
+            os.environ[k] = value
+            out["applied"].append(k)
+    out["state"] = "APPLIED" if out["applied"] else "NOOP"
+    return out
+
+
 def root_path(value: str | None) -> Path:
     return Path(value or os.environ.get("CITADEL_ROOT") or DEFAULT_ROOT)
 
@@ -314,13 +403,39 @@ def source_matches(files: Sequence[Path], term: str) -> list[dict[str, Any]]:
     return matches
 
 
+# The legacy-copy gate asks a question about the PRODUCT: does user-facing copy still carry the old
+# business framing? Only these roots can answer it. Everything else in the repo is commentary.
+PRODUCT_SURFACE_PARTS = ("apps", "src", "public")
+
+
+def _is_product_surface(path: Path, repo: Path) -> bool:
+    try:
+        rel = path.resolve().relative_to(repo.resolve()).parts
+    except (ValueError, OSError):
+        return False
+    return bool(rel) and rel[0] in PRODUCT_SURFACE_PARTS
+
+
 def p0_state(repo: Path) -> dict[str, Any]:
     files = find_source_files(repo)
+    # SPLIT, NOT FILTERED -- and this is the whole point. On 2026-09-20 `identity_pass` and
+    # `onboarding_pass` both regressed to HOLD with legacy_matches=4, and all four matches were in
+    # docs/SPRINT_DAY15_MEASURED.md: the sprint sheet QUOTING the four phrases while explaining
+    # they exist only inside this detector. The document about the gate broke the gate. The product
+    # never regressed -- apps/ and src/ carry zero matches.
+    #
+    # Dropping the doc hits silently would be the wrong repair: real legacy copy could then hide in
+    # a file this gate had quietly stopped reading. So commentary hits are RECLASSIFIED and still
+    # reported; they simply cannot decide a verdict about product copy, because they are not
+    # product copy. (Same shape as a source-pattern detector firing on its own fixtures in a string
+    # literal -- a scanner that cannot tell the subject from a description of the subject.)
     legacy: list[dict[str, Any]] = []
+    legacy_commentary: list[dict[str, Any]] = []
     for phrase in LEGACY_PHRASES:
         for hit in source_matches(files, phrase):
             hit["phrase"] = phrase
-            legacy.append(hit)
+            (legacy if _is_product_surface(Path(hit["path"]), repo)
+             else legacy_commentary).append(hit)
     values = {
         "learn_by_doing": source_contains(files, "Learn by doing real work"),
         "homepage_support": source_contains(files, "Learn with people and AI") or source_contains(files, "Prove what you can do"),
@@ -338,6 +453,14 @@ def p0_state(repo: Path) -> dict[str, Any]:
     values["onboarding_pass"] = bool(values["onboarding_question"] and values["learn_choice"] and not any(x["phrase"].startswith("Which business") for x in legacy))
     values["release_truth_source_pass"] = bool(values["has_gitlab_ci"] and (values["version_readback"] or values["verify_production"]))
     values["legacy_matches"] = legacy
+    # Visible, never silently dropped: a reader can see the hits exist and why they do not gate.
+    values["legacy_commentary"] = legacy_commentary
+    values["legacy_scope"] = {
+        "gates_on": list(PRODUCT_SURFACE_PARTS),
+        "product_hits": len(legacy), "commentary_hits": len(legacy_commentary),
+        "note": ("legacy copy is a claim about the PRODUCT, so only product surfaces can refute it; "
+                 "commentary hits are reported and do not gate"),
+    }
     values["state"] = "PASS" if all(values[x] for x in ("identity_pass", "homepage_pass", "onboarding_pass", "flagship", "release_truth_source_pass")) else "HOLD"
     return values
 
@@ -714,8 +837,26 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
     if source_artifact is None:
         raise ReleaseError("no static build artifact found; set BUILDANDDO_ARTIFACT_DIR explicitly")
     copy_tree_clean(source_artifact, artifact)
+    # Digest the PAYLOAD before _version exists. Excluding _version is not a detail - both reasons
+    # are load-bearing:
+    #   - CIRCULARITY: the digest cannot live inside the file being hashed.
+    #   - REPRODUCIBILITY: _version carries built_at (a timestamp) and the CI job id, so a digest
+    #     covering it would differ on every rebuild of byte-identical source. "The same artifact was
+    #     promoted from staging to production" could then never be proven - which is the entire
+    #     property this field exists to establish.
+    # The full manifest below still covers _version, so the receipt remains a complete description
+    # of what shipped; only the externally-asserted digest is payload-scoped.
+    payload_manifest = artifact_manifest(artifact)
+    payload_digest = payload_manifest["tree_sha256"]
     version_doc = {
         "schema": "buildanddo.deployed-version/v1",
+        # NAMED FOR WHAT IT PROVES. This covers the application payload with _version EXCLUDED, so it
+        # proves "the same deterministic payload" -- NOT "the same complete artifact bytes". Calling it
+        # artifact_digest would overclaim: _version itself (built_at, pipeline id, job id) is outside it.
+        # The full-bundle hash lives on the release receipt as artifact_digest, where it can be compared
+        # locally between build and deploy; it deliberately does not appear here, because a hash cannot
+        # be embedded in the file it covers.
+        "payload_digest": payload_digest,
         "commit_sha": sha,
         "candidate_sha": sha,
         "campaign_id": CAMPAIGN,
@@ -733,6 +874,12 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
         "artifact_dir": str(artifact),
         "source_artifact_dir": str(source_artifact),
         "manifest": manifest,
+        "payload_manifest": payload_manifest,
+        # payload_digest  = payload only, externally asserted in /_version, reproducible across rebuilds.
+        # artifact_digest = the COMPLETE bundle including _version; the immutable identity of this exact
+        #                   build. Not reproducible across rebuilds by design, and not externally served.
+        "payload_digest": payload_digest,
+        "artifact_digest": manifest["tree_sha256"],
         "plan": plan,
         "generated_at": utcnow(),
     }
@@ -773,7 +920,18 @@ def sha_matches(expected: str, actual: str) -> bool:
     return expected == actual or (len(actual) >= 7 and expected.startswith(actual)) or (len(expected) >= 7 and actual.startswith(expected))
 
 
-def verify_environment(root: Path, env_name: str, sha: str) -> dict[str, Any]:
+def verify_environment(
+    root: Path,
+    env_name: str,
+    sha: str,
+    expected_digest: str | None = None,
+) -> dict[str, Any]:
+    """External readback. SHA alone cannot prove the SAME ARTIFACT reached both environments:
+    two builds of one commit are different bytes. When expected_digest is supplied the readback
+    additionally requires the served payload digest to match, which is what turns
+    "promoted, not rebuilt" into an externally checkable claim rather than a procedural promise.
+    The digest is always REPORTED when the environment serves one, so a deployment predating this
+    field degrades to SHA-only verification instead of failing closed on absence."""
     prefix = f"BUILDANDDO_{env_name.upper()}"
     url = os.environ.get(prefix + "_URL", "").strip()
     if not url:
@@ -790,8 +948,14 @@ def verify_environment(root: Path, env_name: str, sha: str) -> dict[str, Any]:
     except json.JSONDecodeError:
         version = {}
     deployed_sha = str(version.get("commit_sha") or version.get("candidate_sha") or "")
+    # "artifact_digest" is accepted read-only: it is what a pre-rename build served for this same value.
+    deployed_digest = str(version.get("payload_digest") or version.get("artifact_digest") or "")
     health_pass = 200 <= health_status < 400
     version_pass = version_status == 200 and sha_matches(sha, deployed_sha)
+    # No expected digest -> SHA-only verification (unchanged behaviour, reported as such).
+    # Expected digest -> the environment must serve one AND it must match exactly.
+    want_digest = (expected_digest or "").strip().lower()
+    digest_pass = True if not want_digest else (deployed_digest.strip().lower() == want_digest)
 
     lesson_status = 0
     lesson_pass = False
@@ -808,15 +972,23 @@ def verify_environment(root: Path, env_name: str, sha: str) -> dict[str, Any]:
         "url": base,
         "expected_sha": sha,
         "deployed_sha": deployed_sha,
+        "expected_payload_digest": want_digest or None,
+        "deployed_payload_digest": deployed_digest or None,
+        "digest_match": digest_pass if want_digest else None,
+        "digest_checked": bool(want_digest),
         "health_status": health_status,
         "version_status": version_status,
         "flagship_lesson_status": lesson_status,
         "health_pass": health_pass,
         "sha_match": version_pass,
         "flagship_lesson_readback": lesson_pass,
-        "state": "PASS" if health_pass and version_pass and lesson_pass else "HOLD",
+        "state": "PASS" if health_pass and version_pass and lesson_pass and digest_pass else "HOLD",
         "verified_at": utcnow(),
-        "truth_rule": "external readback + exact SHA required",
+        "truth_rule": (
+            "external readback + exact SHA + exact artifact digest required"
+            if want_digest
+            else "external readback + exact SHA required (no digest asserted)"
+        ),
     }
     write_receipt(root, f"{env_name}_verification", result)
     return result
@@ -1176,7 +1348,9 @@ def pipeline_stage(root: Path, repo: Path, *, ack: str) -> dict[str, Any]:
         raise ReleaseError("P0 source convergence is not green; refusing staging mutation")
     build = build_release(repo, root)
     deploy = deploy_environment(root, repo, "staging", ack=ack)
-    verify = verify_environment(root, "staging", str(build["commit_sha"]))
+    verify = verify_environment(
+        root, "staging", str(build["commit_sha"]), expected_digest=str(build.get("payload_digest") or "") or None
+    )
     result = {
         "state": "PASS" if verify["state"] == "PASS" else "HOLD",
         "phase": "STAGING_VERIFIED" if verify["state"] == "PASS" else "STAGING_UNVERIFIED",
@@ -1200,8 +1374,32 @@ def pipeline_promote(root: Path, repo: Path, *, ack: str) -> dict[str, Any]:
     stage = read_json(receipt_path(root, "staging_verification"))
     if not sha or stage.get("state") != "PASS" or not sha_matches(sha, str(stage.get("deployed_sha") or "")):
         raise ReleaseError("production promotion requires PASS staging external readback of the same artifact SHA")
+    # The artifact we are about to promote, and the bytes staging actually served, must be the same
+    # payload -- not merely the same commit. Two builds of one SHA are different artifacts, so a
+    # SHA-only gate cannot distinguish "promoted" from "rebuilt and hoped".
+    # FAIL CLOSED ON PROMOTION. The earlier form was `if expected and staged and mismatch: refuse`,
+    # which silently permitted promotion when the staging receipt carried NO digest at all -- exactly
+    # the state a receipt written before this field existed is in. A stale receipt could therefore
+    # cross the upgrade boundary and buy a pass. The split that matters: the standalone verifier stays
+    # in SHA-only compatibility mode for inspecting old deployments (read-only), but PRODUCTION
+    # MUTATION requires positive proof, and absence of evidence is not evidence here.
+    expected_digest = str(artifact.get("payload_digest") or "") or None
+    staged_digest = str(stage.get("deployed_payload_digest") or "") or None
+    if expected_digest:
+        if not stage.get("digest_checked"):
+            raise ReleaseError(
+                "staging was not digest-verified (receipt predates digest enforcement); "
+                "re-run pipeline-stage before promoting"
+            )
+        if not staged_digest:
+            raise ReleaseError("staging receipt lacks a payload digest; re-run pipeline-stage before promoting")
+        if expected_digest.lower() != staged_digest.lower():
+            raise ReleaseError(
+                "staging served a DIFFERENT payload than the one being promoted "
+                f"(staging={staged_digest[:16]}... candidate={expected_digest[:16]}...); refusing promotion"
+            )
     deploy = deploy_environment(root, repo, "production", ack=ack)
-    verify = verify_environment(root, "production", sha)
+    verify = verify_environment(root, "production", sha, expected_digest=expected_digest)
     if verify["state"] != "PASS":
         result = {"state": "HOLD", "phase": "PRODUCTION_MUTATED_UNVERIFIED", "candidate_sha": sha, "deployment": deploy, "verification": verify, "dora": {"state": "NOT_RUN"}}
         write_receipt(root, "pipeline_production", result)
@@ -1212,6 +1410,9 @@ def pipeline_promote(root: Path, repo: Path, *, ack: str) -> dict[str, Any]:
         "phase": "VERIFIED_PRODUCTION",
         "candidate_sha": sha,
         "artifact_tree_sha256": (artifact.get("manifest") or {}).get("tree_sha256"),
+        "payload_digest": expected_digest,
+        "artifact_digest": (artifact.get("artifact_digest") or None),
+        "staging_payload_digest": staged_digest,
         "deployment": deploy,
         "verification": verify,
         "dora": dora,
@@ -1677,8 +1878,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     os.environ.setdefault("BUILDANDDO_RELEASE_SECRET_ENV", str(secret))
     try:
         repo = find_repo(root, args.repo or None)
+        # Public config is applied AFTER the secrets file, and only fills keys still unset, so the
+        # precedence chain is: real environment > external secrets > committed public defaults.
+        public_cfg = load_public_config(repo)
+        # ship.py already loads its own secrets file at import; importing it here would run that
+        # side effect, so the bridge reads the same NAMES out of the environment instead.
+        ship_bridge = bridge_ship_credentials()
         if args.command == "doctor":
             result = doctor(root, repo)
+            result["public_config"] = public_cfg
+            result["ship_credential_bridge"] = ship_bridge
         elif args.command == "plan":
             result = {"state": "PASS", "repo": str(repo), "p0": p0_state(repo), "build": build_plan(repo), "authority": "A1", "remote_writes": 0}
         elif args.command == "apply-p0":
