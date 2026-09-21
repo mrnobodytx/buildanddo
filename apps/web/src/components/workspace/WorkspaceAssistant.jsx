@@ -41,6 +41,11 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
     const api = useMemo(() => createAssistantClient({ client: pb, workspaceId, accountId, isCurrent: () => alive.current && !demo }), [workspaceId, accountId, demo]);
     useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
     useEffect(() => { if (turn?.plan?.route !== location.pathname) captured.current = null; }, [location.pathname, turn]);
+    // A successful reload may only clear an error the reload itself reported. Starting a
+    // new session changes `session`, which fires the reload effect; without this the
+    // reload erased the error from a chat that had just failed, leaving the composer
+    // showing "Retry message" with no explanation of what went wrong.
+    const loadFailed = useRef(false);
     const load = async (selected = selectedSession.current, paging = {}) => {
         const ticket = ++historyRequest.current;
         const result = await api.snapshot(selected, paging.sessionPage || 1, paging.turnPage || 1);
@@ -51,14 +56,14 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
             return { ...result.data, sessions: { ...result.data.sessions, items: sessions },
                 turns: paging.append === 'turns' ? { ...result.data.turns, items: [...(before?.turns.items || []), ...result.data.turns.items] } :
                     paging.append === 'sessions' && before ? before.turns : result.data.turns };
-        }); setError(''); }
-        else if (result.error) setError(result.error);
+        }); if (loadFailed.current) { loadFailed.current = false; setError(''); } }
+        else if (result.error) { loadFailed.current = true; setError(result.error); }
     };
     useEffect(() => { if (open && !demo) { void load(); composer.current?.focus(); } }, [open, session]);
     const send = async (event) => {
         event.preventDefault();
         if (lock.current || !current() || !message.trim() || recordPending || closed) return;
-        lock.current = true; setBusy(true); setError(''); setNotice('');
+        lock.current = true; setBusy(true); setError(''); loadFailed.current = false; setNotice('');
         try {
             let activeSession = session;
             if (!activeSession) {
@@ -77,7 +82,9 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
             if (result.ok) {
                 setTurn(result.data);
                 if (result.data.status === 'ready') { pending.current = null; setMessage(''); }
-                else setError(result.data.reply);
+                // A non-ready turn's reply is shown by the history below once the reload
+                // lands, so repeating it as an error would print the same sentence twice.
+                // It only ever looked right before because the reload wiped it immediately.
                 await load(activeSession);
             } else setError(result.error || 'The assistant response is unavailable.');
         } finally { lock.current = false; if (alive.current) setBusy(false); }
