@@ -55,7 +55,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 HARNESS = ROOT / "tests" / "upgrade"
 DEFAULT_BINARY = r"D:\HOSTINGER_COMP\tools-cache\pocketbase\0.39.8\pocketbase.exe"
-ACTIONS = ("room.create", "room.update", "room.start", "room.end", "room.lesson",
+ACTIONS = ("room.create", "room.chat", "room.update", "room.start", "room.end", "room.lesson",
            "room.join", "room.leave", "room.message")
 SCHEMA = "buildanddo.classroom-drive/v1"
 
@@ -242,6 +242,79 @@ def scenario() -> dict[str, Any]:
     return out
 
 
+def chatroom() -> dict[str, Any]:
+    """Open a chatroom and prove it is a room of a DIFFERENT kind, not a class in disguise."""
+    out: dict[str, Any] = {"schema": SCHEMA, "command": "chatroom", "observed_at": utc(),
+                           "binary": binary(), "remote_writes": 0}
+    if not Path(binary()).is_file():
+        out.update({"state": "BLOCKED",
+                    "reason": "Install the declared PocketBase runtime or set BUILDANDDO_TEST_POCKETBASE."})
+        return out
+    native = harness()
+    driver = Driver(native)
+    checks: list[dict[str, Any]] = []
+    try:
+        status, body = driver.command("room.chat", {
+            "title": "Builders' chatroom",
+            "description": "An open conversation, no lesson.",
+        }, 0)
+        if not record(checks, "host opens a chatroom", status, body,
+                      "200 - room.chat takes only a title and a description", status == 200):
+            out.update({"state": "FAIL", "checks": checks, "halted_at": "room.chat"})
+            return out
+        room = body["id"]
+        out["room"] = room
+
+        status, body = driver.detail(room)
+        room_body = body.get("room") or body
+        record(checks, "the chatroom is open immediately", status, body,
+               "kind chat, status live - a chatroom is not scheduled",
+               status == 200 and room_body.get("kind") == "chat"
+               and room_body.get("status") == "live")
+
+        status, body = driver.command("room.join", {"id": room}, driver.room_revision(room),
+                                      actor="bravo")
+        record(checks, "a member joins the chatroom", status, body, "200", status == 200)
+        status, body = driver.command("room.message",
+                                      {"id": room, "body": "Talking, not being taught."},
+                                      driver.room_revision(room), actor="bravo")
+        record(checks, "a member speaks in the chatroom", status, body, "200", status == 200)
+
+        # CONTROL: the two kinds must not be interchangeable.
+        status, body = driver.command("room.lesson",
+                                      {"id": room, "tutorial": driver.lesson_id(), "section": 1},
+                                      driver.room_revision(room))
+        record(checks, "CONTROL a chatroom refuses a lesson", status, body,
+               "not 200 - teaching belongs to a classroom", status != 200)
+
+        status, body = driver.detail(room, actor="guest")
+        record(checks, "CONTROL outsider cannot read the chatroom", status, body,
+               "not 200 - no workspace membership", status != 200)
+
+        # And a classroom must still be a classroom.
+        status, body = driver.command("room.create", {
+            "title": "Still a class", "description": "The other kind.",
+            "tutorial": driver.lesson_id(), "starts_at": "",
+        }, 0)
+        klass = body.get("id") if status == 200 else ""
+        record(checks, "a classroom is still created as a class", status, body,
+               "200 and kind class, scheduled", status == 200)
+        if klass:
+            status, body = driver.detail(klass)
+            room_body = body.get("room") or body
+            record(checks, "the classroom kind is unchanged", status, body,
+                   "kind class, status scheduled",
+                   status == 200 and room_body.get("kind") == "class"
+                   and room_body.get("status") == "scheduled")
+    finally:
+        driver.close()
+    broken = [c for c in checks if c["outcome"] != "AS_EXPECTED"]
+    out["checks"] = checks
+    out["summary"] = {"checks": len(checks), "contract_broken": [c["check"] for c in broken]}
+    out["state"] = "PASS" if not broken else "FAIL"
+    return out
+
+
 def single(action: str, payload: str, revision: int, actor: str) -> dict[str, Any]:
     """Issue one arbitrary command, so an agent can explore the surface rather than a fixed script."""
     out: dict[str, Any] = {"schema": SCHEMA, "command": "command", "action": action,
@@ -306,7 +379,7 @@ def table(result: dict[str, Any]) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["scenario", "command", "actions", "selftest"])
+    ap.add_argument("cmd", choices=["scenario", "chatroom", "command", "actions", "selftest"])
     ap.add_argument("--action", default="")
     ap.add_argument("--payload", default="{}")
     ap.add_argument("--revision", type=int, default=0)
@@ -323,6 +396,8 @@ def main() -> int:
         result = selftest()
     elif args.cmd == "command":
         result = single(args.action, args.payload, args.revision, args.actor)
+    elif args.cmd == "chatroom":
+        result = chatroom()
     else:
         result = scenario()
 

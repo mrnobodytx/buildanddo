@@ -19,9 +19,12 @@ const access = require(`${__hooks}/workspace-access.js`);
 const TTL = 75000;
 const CAPACITY = 100;
 const WRITERS = ['owner', 'admin', 'editor'];
-const ACTIONS = ['room.create', 'room.update', 'room.start', 'room.end', 'room.lesson', 'room.join', 'room.leave', 'room.message'];
+const ACTIONS = ['room.create', 'room.chat', 'room.update', 'room.start', 'room.end', 'room.lesson', 'room.join', 'room.leave', 'room.message'];
+// A chatroom and a classroom are the same governed room with different rules. 'room.chat' is a
+// separate action rather than a `kind` added to room.create because access.exact() requires an
+// EXACT field set, so extending that payload would refuse every existing caller.
 const SHAPES = {
-    classroom_rooms: ['workspace', 'host', 'title', 'description', 'tutorial', 'section', 'status', 'revision', 'protocol_version'],
+    classroom_rooms: ['workspace', 'host', 'title', 'description', 'tutorial', 'section', 'status', 'revision', 'protocol_version', 'kind'],
     classroom_members: ['workspace', 'room', 'owner', 'active', 'last_seen', 'revision'],
     classroom_messages: ['workspace', 'room', 'owner', 'body'],
     classroom_receipts: ['workspace', 'actor', 'request_key', 'command', 'result'],
@@ -59,6 +62,9 @@ function output(room, scope, auth) {
         can_manage: canManage(scope, auth, room) };
     for (const key of ['workspace', 'host', 'host_name', 'title', 'description', 'tutorial', 'status', 'starts_at', 'started_at', 'ended_at', 'created'])
         result[key] = room.getString(key);
+    // Rooms written before the kind existed carry an empty value and are classes, which is what
+    // they have always been; a client must never have to guess that.
+    result.kind = room.getString('kind') || 'class';
     return result;
 }
 function lessonBody(record) {
@@ -141,6 +147,7 @@ function command(e) {
     if (!ACTIONS.includes(body.action)) access.invalid('Choose a supported classroom action.');
     const payloadFields = {
         'room.create': ['title', 'description', 'tutorial', 'starts_at'],
+        'room.chat': ['title', 'description'],
         'room.update': ['id', 'title', 'description', 'tutorial', 'starts_at'],
         'room.lesson': ['id', 'tutorial', 'section'], 'room.message': ['id', 'body'],
         'room.leave': ['id', 'membership_revision'],
@@ -149,17 +156,30 @@ function command(e) {
     let result;
     e.app.runInTransaction((app) => {
         const scope = scopeFor(app, e, workspace);
-        const creating = body.action === 'room.create';
+        const chatting = body.action === 'room.chat';
+        const creating = body.action === 'room.create' || chatting;
         const room = creating ? null : roomFor(app, workspace, body.payload.id);
         const participation = ['room.join', 'room.leave'].includes(body.action);
+        // The two kinds are not interchangeable: a chatroom carries no lesson, so teaching
+        // commands are refused there rather than quietly writing a section nobody can see.
+        if (room && room.getString('kind') === 'chat' && body.action === 'room.lesson')
+            access.invalid('A chatroom has no lesson. Open a classroom to teach one.');
         if (!participation && !WRITERS.includes(scope.role)) throw new ForbiddenError('An editor or host must make this change.');
         if (room && !participation && body.action !== 'room.message' && !canManage(scope, e.auth, room))
             throw new ForbiddenError('Only this room\'s host or a workspace administrator may manage the class.');
         result = receipt(app, e, workspace, body, () => {
             if (creating) {
-                if (body.revision !== 0) access.invalid('A new classroom starts at revision zero.');
+                if (body.revision !== 0) access.invalid('A new room starts at revision zero.');
+                // A chatroom has no lesson to schedule, so it is open the moment it exists.
+                // A class is scheduled first and started by its host.
+                const shape = chatting
+                    ? { title: access.bounded(body.payload.title, 160),
+                        description: access.bounded(body.payload.description, 2000, false),
+                        tutorial: '', section: 0, starts_at: '',
+                        status: 'live', started_at: new Date().toISOString(), kind: 'chat' }
+                    : { ...draft(app, body, e), status: 'scheduled', kind: 'class' };
                 const record = assign(new Record(app.findCollectionByNameOrId('classroom_rooms')), {
-                    ...draft(app, body, e), workspace, host: e.auth.id, host_name: nameOf(e.auth), status: 'scheduled', revision: 1, protocol_version: 1,
+                    ...shape, workspace, host: e.auth.id, host_name: nameOf(e.auth), revision: 1, protocol_version: 1,
                 });
                 app.save(record);
                 return { id: record.id, workspace, revision: 1, action: body.action };

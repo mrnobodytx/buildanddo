@@ -38,7 +38,10 @@ from tests.upgrade.test_dossier_native import NativeServer  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
-MIGRATION = "1790400000_classroom_rooms.js"
+# Every migration the classroom surface depends on, in order. The room-kind migration is not
+# optional: classrooms.js requires `kind` in its schema guard, so a fixture without it answers
+# 503 "the classroom backend needs an operator review" - which is the guard working.
+MIGRATIONS = ("1790400000_classroom_rooms.js", "1791100000_room_kind.js")
 SEED = r"""
 migrate((app) => {
     let users;
@@ -120,10 +123,11 @@ class ClassroomServer(NativeServer):
             (migrations / "0000000001_fixture.js").write_text(
                 SEED.replace("__LESSON__", json.dumps(json.dumps(self.lesson)))
             )
-            shutil.copyfile(
-                ROOT / "apps/pocketbase/pb_migrations" / MIGRATION,
-                migrations / MIGRATION,
-            )
+            for migration in MIGRATIONS:
+                shutil.copyfile(
+                    ROOT / "apps/pocketbase/pb_migrations" / migration,
+                    migrations / migration,
+                )
             with socket.socket() as reservation:
                 reservation.bind(("127.0.0.1", 0))
                 self.port = reservation.getsockname()[1]
