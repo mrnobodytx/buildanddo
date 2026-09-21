@@ -22,7 +22,7 @@ import MissionGuide from '@/components/workspace/missions/MissionGuide';
 import MissionLearning from '@/components/workspace/missions/MissionLearning';
 import MissionReview from '@/components/workspace/missions/MissionReview';
 import { LESSONS, PLAN_FIELDS, TEVV, emptyPlan, emptyReview } from '@/lib/missionLearning';
-import { act, fireEvent, renderWithProviders, screen, setupUser, waitFor } from '@/test/utils';
+import { act, fireEvent, renderWithProviders, screen, setupUser, waitFor, within } from '@/test/utils';
 
 const fullPlan = () => ({
     ...emptyPlan(),
@@ -375,32 +375,36 @@ describe('educational rewards', () => {
             .mockResolvedValueOnce({ ok: false, error: 'Save unavailable' })
             .mockResolvedValue({ ok: true });
         renderWithProviders(<LearningHarness save={save} />);
-        await user.click(
-            screen.getByText(/Start with a falsifiable goal/, { selector: 'summary' }),
-        );
+        const summary = screen.getByText(/Start with a falsifiable goal/, { selector: 'summary' });
+        await user.click(summary);
+        // Each of the four lessons renders its own save button, and jsdom does not hide
+        // the contents of a closed <details>, so an unscoped query matches all four.
+        const lesson = within(summary.closest('details'));
         await user.click(screen.getByRole('radio', { name: LESSONS[0].choices[1].text }));
-        await user.click(screen.getByRole('button', { name: 'Check and save answer' }));
+        await user.click(lesson.getByRole('button', { name: 'Check and save answer' }));
         expect(screen.getByText('Save unavailable')).toBeInTheDocument();
         expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
         expect(screen.queryByText(/Unlocked: a reminder/)).not.toBeInTheDocument();
-        await user.click(screen.getByRole('button', { name: 'Check and save answer' }));
+        await user.click(lesson.getByRole('button', { name: 'Check and save answer' }));
         expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '15');
-        expect(screen.getByRole('button', { name: 'Check and save answer' })).toBeDisabled();
+        expect(lesson.getByRole('button', { name: 'Check and save answer' })).toBeDisabled();
         expect(save).toHaveBeenCalledTimes(2);
     });
     it('explains an incorrect answer and lets the learner retry without losing access to guidance', async () => {
         const user = setupUser();
         const save = vi.fn().mockResolvedValue({ ok: true });
         renderWithProviders(<LearningHarness save={save} />);
-        await user.click(
-            screen.getByText(/Start with a falsifiable goal/, { selector: 'summary' }),
-        );
+        const summary = screen.getByText(/Start with a falsifiable goal/, { selector: 'summary' });
+        await user.click(summary);
+        // Each of the four lessons renders its own save button, and jsdom does not hide
+        // the contents of a closed <details>, so an unscoped query matches all four.
+        const lesson = within(summary.closest('details'));
         await user.click(screen.getByRole('radio', { name: LESSONS[0].choices[0].text }));
-        await user.click(screen.getByRole('button', { name: 'Check and save answer' }));
+        await user.click(lesson.getByRole('button', { name: 'Check and save answer' }));
         expect(screen.getByText(/Try another answer/)).toHaveTextContent(LESSONS[0].explanation);
         expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
         await user.click(screen.getByRole('radio', { name: LESSONS[0].choices[1].text }));
-        await user.click(screen.getByRole('button', { name: 'Check and save answer' }));
+        await user.click(lesson.getByRole('button', { name: 'Check and save answer' }));
         expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '15');
     });
     it('unlocks useful examples and a review coach from saved progress', async () => {
