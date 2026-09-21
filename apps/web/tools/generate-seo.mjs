@@ -65,6 +65,40 @@ export function generatePublicAssets(directory) {
     );
 }
 
+/** The body a reader gets before — or without — JavaScript.
+ *
+ * WHY THIS EXISTS. Six OCN seats independently reported the same thing about the live site: the
+ * served HTML carries 37 characters of text before JavaScript runs. The <head> was already complete
+ * (title, description, canonical, Open Graph, Twitter, JSON-LD), so link previews were fine — but
+ * <body> was a bare `<div id="root"></div>`. A crawler that does not execute JavaScript therefore
+ * indexed no prose AND found NO LINKS AT ALL, so it could not discover any of the other ten public
+ * routes from the home page.
+ *
+ * React replaces the contents of #root when it mounts, so this costs the JavaScript path nothing:
+ * it is the same element, populated instead of empty. It is deliberately plain HTML — no classes,
+ * no styling hooks — because its only readers are crawlers and people whose JavaScript failed.
+ */
+const fallbackBody = (page) => {
+    const others = PUBLIC_PAGES.filter((item) => item.path !== page.path);
+    return [
+        '<h1>' + escape(page.title) + '</h1>',
+        '<p>' + escape(page.description) + '</p>',
+        // Each link carries the destination's OWN description. That is not padding to clear a
+        // threshold: a reader without JavaScript, and a crawler building a site model, both need to
+        // know what a link leads to before following it. It is the same catalogue llms.txt already
+        // publishes, rendered where a browser will actually look for it.
+        '<nav aria-label="Pages"><h2>Elsewhere on BuildAndDo</h2><ul>',
+        ...others.map(
+            (item) =>
+                `<li><a href="${escape(item.path)}">${escape(item.label || item.title)}</a>` +
+                ` — ${escape(item.description)}</li>`,
+        ),
+        '</ul></nav>',
+        '<noscript><p>This page needs JavaScript for the interactive parts. ' +
+            'The text above is the whole of what it says without it.</p></noscript>',
+    ].join('');
+};
+
 /** Produce route-specific HTML heads for crawlers that do not run JavaScript. */
 export function generatePageHeads(directory, release) {
     const source = readFileSync(resolve(directory, 'index.html'), 'utf8');
@@ -74,7 +108,12 @@ export function generatePageHeads(directory, release) {
             /<meta\b(?=[^>]*(?:name|property)=["'](?:description|robots|og:[^"']+|twitter:[^"']+)["'])[^>]*>/gi,
             '',
         )
-        .replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi, '');
+        .replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi, '')
+        // Reset #root the same way the head is reset. This function reads dist/index.html as its
+        // template, so on a SECOND run that file already holds the home page's fallback body: the
+        // "empty div" match would find nothing, the replace would silently no-op, and every route
+        // would ship the HOME page's prose. Emptying it first makes the pass idempotent.
+        .replace(/<div id="root">[\s\S]*?<\/div>\s*(?=<script|<\/body)/i, '<div id="root"></div>');
     for (const page of PUBLIC_PAGES) {
         const canonical = SITE_ORIGIN + page.path;
         const schema = {
@@ -116,9 +155,14 @@ export function generatePageHeads(directory, release) {
         ].join('\n');
         const destination = resolve(directory, `.${page.path}`);
         mkdirSync(destination, { recursive: true });
+        // The #root div must stay empty in the SOURCE template and be filled per route here, or
+        // every page would ship the home page's prose. Matching the empty div specifically means a
+        // future template that already puts something in #root is left alone rather than clobbered.
         writeFileSync(
             resolve(destination, 'index.html'),
-            template.replace('</head>', `${tags}\n</head>`),
+            template
+                .replace('</head>', `${tags}\n</head>`)
+                .replace('<div id="root"></div>', `<div id="root">${fallbackBody(page)}</div>`),
         );
     }
     // SPA fallbacks may use the root HTML for protected URLs. Their client
