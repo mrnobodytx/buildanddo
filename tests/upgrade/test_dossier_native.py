@@ -176,6 +176,64 @@ class NativeServer:
             f"--hooksDir={self.root / 'hooks'}",
         ]
 
+    def revert(self, count: str = "1") -> list[str]:
+        """Roll migrations back and keep them rolled back across the next start.
+
+        MEASURED ON POCKETBASE 0.39.8, not assumed: `serve` re-applies pending JS migrations
+        whatever --automigrate says. A migration reverted by `migrate down` came back on the
+        next serve under `--automigrate=0`, under `--automigrate=false` and under a bare
+        `--automigrate`. The flag cannot make a rollback observable, so every test that
+        reverted, restarted and asserted a degraded 503 was asserting against a schema the
+        restart had already healed - and passed or failed for reasons unrelated to rollback.
+
+        A reverted file therefore has to LEAVE the migrations directory. Exactly the files
+        PocketBase says it reverted are moved aside, so nothing is guessed about which ran.
+        """
+        result = subprocess.run(
+            [self.binary, "migrate", "down", *([count] if count else []), *self.paths()],
+            input="y\n",
+            text=True,
+            cwd=self.root,
+            env=self.environment,
+            capture_output=True,
+            timeout=30,
+            check=False,
+        )
+        self.log.write(result.stdout or "")
+        self.log.write(result.stderr or "")
+        self.log.flush()
+        if result.returncode:
+            raise AssertionError(
+                "Native rollback failed, so the degraded state under test was never reached."
+            )
+        reverted = [
+            line.split("Reverted ", 1)[1].strip()
+            for line in (result.stdout or "").splitlines()
+            if "Reverted " in line
+        ]
+        if not reverted:
+            raise AssertionError(
+                "Nothing was reverted, so there is no rollback under test."
+            )
+        quarantine = self.root / "reverted"
+        quarantine.mkdir(exist_ok=True)
+        for name in reverted:
+            source = self.root / "migrations" / name
+            if source.is_file():
+                shutil.move(str(source), str(quarantine / name))
+        self.reverted = reverted
+        return reverted
+
+    def restore(self) -> None:
+        """Return the quarantined migrations and re-apply them."""
+        quarantine = self.root / "reverted"
+        for name in getattr(self, "reverted", []):
+            source = quarantine / name
+            if source.is_file():
+                shutil.move(str(source), str(self.root / "migrations" / name))
+        self.reverted = []
+        self.migrate("up")
+
     def start(self) -> None:
         """Start only the disposable loopback instance and wait for native health."""
         self.process = subprocess.Popen(
@@ -185,11 +243,11 @@ class NativeServer:
                 f"--http=127.0.0.1:{self.port}",
                 *self.paths(),
                 "--hooksWatch=false",
-                # PocketBase auto-applies pending migrations on serve (--automigrate
-                # defaults to true). Every rollback test reverted a migration, restarted,
-                # and startup silently re-applied it - so the degraded 503 they assert
-                # could never be observed. __init__ migrates explicitly, so nothing here
-                # depends on the implicit pass.
+                # This flag DOES NOT WORK on 0.39.8 and is kept only to declare the intent.
+                # Measured: a migration reverted by `migrate down` is re-applied by the next
+                # serve under --automigrate=0, --automigrate=false and a bare --automigrate
+                # alike. Rollback is made observable by revert(), which moves the reverted
+                # file out of the migrations directory; see NativeServer.revert.
                 "--automigrate=0",
             ],
             cwd=self.root,

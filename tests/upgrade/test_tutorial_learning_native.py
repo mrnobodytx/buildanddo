@@ -298,13 +298,13 @@ class NativeLearningTests(unittest.TestCase):
             "answer", {"choice": self.server.lesson["lesson"]["check"]["answer"]}
         )[1]["enrollment"]["certificate"]
         self.server.stop()
-        self.server.migrate("down", "1")
+        self.server.revert("1")
         self.server.start()
         self.assertEqual(
             self.server.request("GET", self.path, token=self.owner)[0], 503
         )
         self.server.stop()
-        self.server.migrate("up")
+        self.server.restore()
         self.server.start()
         self.assertEqual(
             self.server.request("GET", self.path, token=self.owner)[1]["enrollment"][

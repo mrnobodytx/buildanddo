@@ -181,7 +181,15 @@ function list(e) {
     const user = account(e.app, e);
     const filter = 'owner = {:owner} && completed_at != ""';
     const params = { owner: user.id };
-    const completed = e.app.countRecords('tutorial_learning', filter, params);
+    // TWO DIALECTS MEET ON THIS LINE AND THEY ARE NOT THE SAME LANGUAGE.
+    // findRecordsByFilter speaks PocketBase filter syntax - `&&`, and `""` for an empty value.
+    // countRecords speaks dbx, which is SQL - `AND`, and `''`, because in SQLite `""` quotes an
+    // IDENTIFIER. Handing countRecords the (filter, params) pair throws
+    //   TypeError: could not convert ... to dbx.Expression
+    // which PocketBase reports as a bare 400, so this single line made the whole catalogue
+    // unreadable for every signed-in account. Each call now gets the dialect it actually parses.
+    const completed = e.app.countRecords('tutorial_learning',
+        $dbx.exp("owner = {:owner} AND completed_at != ''", params));
     const number = access.page(e);
     const rows = e.app.findRecordsByFilter('tutorial_learning', filter, '-completed_at,-id', 6, (number - 1) * 5, params);
     const active = e.app.findRecordsByFilter('tutorial_learning', 'owner = {:owner} && completed_at = ""', '-updated,-id', 1, 0, params)[0];

@@ -351,11 +351,11 @@ class NativeClassroomTests(unittest.TestCase):
             200,
         )
         self.server.stop()
-        self.server.migrate("down", "1")
+        self.server.revert("1")
         self.server.start()
         self.assertEqual(self.detail(room)[0], 503)
         self.server.stop()
-        self.server.migrate("up")
+        self.server.restore()
         self.server.start()
         status, view = self.detail(room)
         self.assertEqual(status, 200)

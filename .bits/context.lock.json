@@ -9,6 +9,20 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: scripts/ci/hostinger_checks.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/classroom_drive.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/curriculum_link_gate.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
@@ -33,7 +47,28 @@
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
+      "statement": "scripts/ci/migration_preflight.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
       "statement": "scripts/ci/ocn_box_exercise.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_classroom_fleet.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_classroom_live.py is never executed by GitHub Actions"
     },
     {
       "area": "ci",
@@ -62,6 +97,13 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_mission_lifecycle.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_mission_work.py is never executed by GitHub Actions"
     },
     {
       "area": "ci",
@@ -131,6 +173,13 @@
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
+      "statement": "scripts/ci/verifier_control_gate.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
       "statement": "scripts/ci/verify_public_disclosure.py is never executed by GitHub Actions"
     },
     {
@@ -179,6 +228,18 @@
       "path": "scripts/ci/changelog_gen.py",
       "referenced_by": [],
       "wired_into_ci": true
+    },
+    {
+      "path": "scripts/ci/classroom_drive.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py"
+      ],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/curriculum_link_gate.py",
+      "referenced_by": [],
+      "wired_into_ci": false
     },
     {
       "path": "scripts/ci/datadog_publish.py",
@@ -236,7 +297,22 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/migration_preflight.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "path": "scripts/ci/ocn_box_exercise.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_classroom_fleet.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_classroom_live.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
@@ -257,6 +333,11 @@
     },
     {
       "path": "scripts/ci/ocn_mission_lifecycle.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_mission_work.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
@@ -337,6 +418,11 @@
       "wired_into_ci": true
     },
     {
+      "path": "scripts/ci/verifier_control_gate.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "path": "scripts/ci/verify_public_boundary.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
@@ -355,7 +441,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-21T04:07:13.609734+00:00",
+  "generated_at": "2026-09-21T16:25:14.768460+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -724,12 +810,12 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 46,
-    "python_files": 282,
+    "migrations": 54,
+    "python_files": 289,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1225,
+    "tracked_files": 1240,
     "web_source_files": 333
   },
   "schema_version": 1,
@@ -738,7 +824,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "Restore the GitHub account's Actions access, run the required acceptance checks and inspect the separate Cloudflare build diagnostic.",
+        "next_step": "Run the local acceptance gate against the pinned backend build. GitHub Actions is not the gate here - the operator has confirmed this estate's CI is GitLab, and the stored GitHub credential returns 401, so its check state cannot be measured from this seat and should not be read as signal. On project 104, restore the GitLab instance's write path before reading any pipeline as a code verdict: measured 2026-09-21, its reads answered in 8-12s while a pipeline retry returned 500, a second timed out and pipeline creation returned 502.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -750,7 +836,7 @@
       },
       {
         "id": "HS-03",
-        "next_step": "Execute both native runtime profiles and have the release owner validate migration rollout and recovery on staging.",
+        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -803,16 +889,16 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "bdb89173f39c42cf957d43617ad07f345e3b64ae8d82e63396d660defc2fc3ae",
+    "source_sha256": "3d000cfec490224023b10b9fa2581dfa0c34b2b4f24c2fc8d14105b9904dfd41",
     "state": "PASS"
   },
   "summary": {
-    "findings": 22,
-    "findings_high": 22,
+    "findings": 29,
+    "findings_high": 29,
     "pipelines": 7,
     "srs_open": 26,
     "srs_total": 30,
-    "unwired_gates": 20
+    "unwired_gates": 27
   },
   "tests": {
     "js_runners": [

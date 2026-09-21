@@ -559,11 +559,11 @@ class NativeSuiteTests(unittest.TestCase):
     def test_native_rollback_retains_runs_and_reup_restores_protocol(self) -> None:
         queued = self.enqueue()
         self.server.stop()
-        self.server.migrate("down")
+        self.server.revert("")
         self.server.start()
         self.call("snapshot", {"page": 1}, expected=503)
         self.server.stop()
-        self.server.migrate("up")
+        self.server.restore()
         self.server.start()
         self.assertEqual(
             self.call("snapshot", {"page": 1})["items"][0]["id"], queued["id"]
