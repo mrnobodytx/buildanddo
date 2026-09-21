@@ -119,7 +119,12 @@ it('requires practice and the right answer, then displays a persistent certifica
     const reopened = (await openTutorial(user)).reader;
     expect(await reopened.findByRole('heading', { name: 'Certificate of completion' })).toBeVisible();
     expect(backend.list('user_test').points).toBe(100);
-});
+// This one walks a whole lesson - every section, then the practice checklist, then the knowledge
+// check - so its runtime tracks the curriculum's length. Deepening added a failure section to every
+// lesson, which pushed it past the default 5s under full-suite parallel load while it still ran in
+// about 2.2s on its own. The budget is raised because the test legitimately does more work; the
+// assertions are untouched.
+}, 20000);
 
 it('recovers a saved checkpoint after a lost response without awarding or starting twice', async () => {
     const user = setupUser();
