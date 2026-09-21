@@ -155,15 +155,15 @@ class TransportTests(unittest.IsolatedAsyncioTestCase):
 
 class ContractTests(unittest.TestCase):
     def test_public_targets_reject_private_addresses_credentials_ports_and_dns_rebinding_inputs(self):
-        for url in ['http://buildanddo.tech', 'https://127.0.0.1/', 'https://localhost/', 'https://host.internal/',
-                    'https://user:pass@buildanddo.tech/', 'https://buildanddo.tech:3000/', 'https://buildanddo.tech/#fragment', 'https://[::1]/']:
+        for url in ['http://buildanddo.com', 'https://127.0.0.1/', 'https://localhost/', 'https://host.internal/',
+                    'https://user:pass@buildanddo.com/', 'https://buildanddo.com:3000/', 'https://buildanddo.com/#fragment', 'https://[::1]/']:
             with self.subTest(url=url), self.assertRaises(ResearchError):
                 public_url(url)
         with patch('socket.getaddrinfo', return_value=[(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('127.0.0.1', 443))]):
             with self.assertRaises(ResearchError):
-                public_url('https://buildanddo.tech/', resolve=True)
+                public_url('https://buildanddo.com/', resolve=True)
         with patch('socket.getaddrinfo', return_value=[(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('1.1.1.1', 443))]):
-            self.assertEqual(public_url('https://buildanddo.tech/', resolve=True), 'https://buildanddo.tech/')
+            self.assertEqual(public_url('https://buildanddo.com/', resolve=True), 'https://buildanddo.com/')
 
     def test_fixed_endpoint_and_value_validation_rejects_unbounded_or_secret_bearing_inputs(self):
         for url in ['', 'ftp://host/', 'https://user:pass@service/', 'https://service/?query=1', 'http://public.example.com/']:
@@ -278,15 +278,15 @@ class DocumentTests(unittest.TestCase):
 class ProcessorTests(unittest.IsolatedAsyncioTestCase):
     async def test_firecrawl_v1_v2_search_and_scrape_use_expected_http_contracts(self):
         for version in ['v1', 'v2']:
-            rows = [{'title': 'Source', 'url': 'https://buildanddo.tech/docs', 'description': 'Retrieved description.'}]
+            rows = [{'title': 'Source', 'url': 'https://buildanddo.com/docs', 'description': 'Retrieved description.'}]
             client = SimpleNamespace(json=AsyncMock(return_value={'success': True, 'data': rows if version == 'v1' else {'web': rows}}), close=AsyncMock())
             processor = Processor(ProcessorSettings(Endpoint('http://firecrawl:3002'), version), firecrawl=client, guard=lambda value: value)
             value = await processor.process({'kind': 'search', 'input': 'research'})
             self.assertEqual(value['version'], version)
             self.assertEqual(client.json.call_args.args[0], '/' + version + '/search')
             self.assertEqual(value['input_sha256'], hashlib.sha256(b'research').hexdigest())
-            client.json.return_value = {'success': True, 'data': {'markdown': 'Extracted page.', 'metadata': {'title': 'Docs', 'sourceURL': 'https://buildanddo.tech/docs'}}}
-            value = await processor.process({'kind': 'url', 'input': 'https://buildanddo.tech/docs'})
+            client.json.return_value = {'success': True, 'data': {'markdown': 'Extracted page.', 'metadata': {'title': 'Docs', 'sourceURL': 'https://buildanddo.com/docs'}}}
+            value = await processor.process({'kind': 'url', 'input': 'https://buildanddo.com/docs'})
             self.assertEqual(value['text'], 'Extracted page.')
             self.assertEqual(client.json.call_args.args[0], '/' + version + '/scrape')
             await processor.close()

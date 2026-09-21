@@ -16,7 +16,13 @@
 // ───────────────────────────────────────────────────────────────
 
 migrate((app) => {
-    const curriculum = JSON.parse(toString($os.readFile(`${__migrations}/data/government-submissions.json`)));
+    // PocketBase 0.39.x defines __hooks but never __migrations. Measured 2026-09-20 against the
+    // staging binary (0.39.8): __hooks=string, __migrations=undefined, $filepath=object. This line
+    // therefore threw ReferenceError and PocketBase ABORTS STARTUP on a failed migration, so this
+    // file took staging down until it was quarantined. pb_hooks and pb_migrations are siblings by
+    // convention, so derive the path instead of depending on a global that does not exist.
+    const dataDir = $filepath.join(__hooks, '..', 'pb_migrations', 'data');
+    const curriculum = JSON.parse(toString($os.readFile($filepath.join(dataDir, 'government-submissions.json'))));
     if (curriculum.version !== '2026.09.gov.1' || curriculum.lessons.length !== 8 ||
         new Set(curriculum.lessons.map((row) => row.id)).size !== 8 || new Set(curriculum.lessons.map((row) => row.slug)).size !== 8)
         throw new Error('The expected government-submission curriculum is missing or invalid.');

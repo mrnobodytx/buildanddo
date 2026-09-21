@@ -89,7 +89,30 @@ jobs:
 
       # Required, not `--if-present`: a missing test script must fail the PR
       # rather than pass silently, which is what the old no-op step did.
+      # Datadog Test Optimization: dd-trace instruments vitest in-process via
+      # NODE_OPTIONS. Agentless is required because this runner has no Datadog
+      # agent sidecar. DD_SITE must stay us5 to match the org; a mismatched site
+      # still authenticates but reports into another org's inventory.
       - name: Test with coverage
+        env:
+          NODE_OPTIONS: -r dd-trace/ci/init
+          DD_ENV: ci
+          DD_SERVICE: buildanddo-web
+          DD_API_KEY: ${{ secrets.DD_API_KEY }}
+          DD_SITE: ${{ secrets.DD_SITE || 'us5.datadoghq.com' }}
+          DD_CIVISIBILITY_AGENTLESS_ENABLED: 'true'
+          # Test Optimization needs test events, not fs/fetch spans. Measured on
+          # this suite: fs instrumentation breaks readFileSync-based tests, and
+          # fetch/http instrumentation cannot parse the relative URLs jsdom uses
+          # (24 failures from /room-projections/utilization.json alone). Disabling
+          # both returns the suite to its baseline failure set exactly.
+          DD_TRACE_DISABLED_INSTRUMENTATIONS: fs,fetch,http,undici
+        run: npm --prefix apps/web run test:coverage -- --reporter=default --reporter=junit --outputFile.junit=../../reports/junit/web.xml
+
+      # Added on merge: main routes the same suite through the readiness runner to
+      # produce reports/hostinger evidence. Kept alongside the instrumented run above
+      # rather than replacing it, because the next step requires reports/junit/web.xml.
+      - name: Record web test evidence for readiness
         run: python scripts/ci/hostinger_readiness.py --run web_tests --evidence-dir reports/hostinger
 
       # The suite can pass while producing no report (wrong reporter, wrong

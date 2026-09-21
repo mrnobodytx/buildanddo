@@ -1,3 +1,7 @@
+// BUILDANDDO_P0_PORTABLE_ROOT: Vite may rewrite import.meta.url to a non-file scheme.
+import * as __bndFs from 'node:fs';
+import * as __bndPath from 'node:path';
+import * as __bndUrl from 'node:url';
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/admin-fixture.mjs
 // Stage:       08_TEST
@@ -18,10 +22,55 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { fileURLToPath } from 'node:url';
+import { spawnSync as __bndSpawn } from 'node:child_process';
+const requireChildProcess = () => ({ spawnSync: __bndSpawn });
 
-export const root = new URL('../../', import.meta.url);
-export const source = (path) => readFileSync(new URL(path, root), 'utf8');
+// BUILDANDDO_P0_PORTABLE_ROOT: resolve repository bytes from cwd, not transformed import.meta.url.
+const __bndRootCandidates = [
+  process.cwd(),
+  __bndPath.resolve(process.cwd(), '..'),
+  __bndPath.resolve(process.cwd(), '../..'),
+  __bndPath.resolve(process.cwd(), '../../..'),
+];
+const __bndRootPath = __bndRootCandidates.find((candidate) =>
+  __bndFs.existsSync(__bndPath.resolve(candidate, 'tests/upgrade/admin-fixture.mjs'))
+);
+if (!__bndRootPath) {
+  throw new Error(`Unable to locate BuildAndDo repository root from ${process.cwd()}`);
+}
+export const root = __bndUrl.pathToFileURL(__bndRootPath + __bndPath.sep);
+// BUILDANDDO_P0_PORTABLE_ROOT (2): resolve repository bytes by PATH, never through a URL.
+// `root` stays exported because tests/upgrade/classroom-presence.test.mjs imports it, but nothing
+// in this module reads a file through it any more. Under the CI runner these tests died 11/11 in
+// 46ms with "The URL must be of scheme file" thrown from `source` - the fixture is imported from
+// jsdom specs that live under apps/web, so Vite transforms it and `root` is not guaranteed to
+// survive as a file: URL. The same specs pass on rig1, which is what made this look like a test
+// failure rather than an environment one. A path needs no scheme, so this cannot recur.
+export const repoPath = (path) => __bndPath.resolve(__bndRootPath, path);
+export const source = (path) => readFileSync(repoPath(path), 'utf8');
+
+// BUILDANDDO_P0_PORTABLE_PYTHON. Two faults hid behind one opaque message.
+//   1. The interpreter is `python3` on the CI runner (Debian ships no bare `python`; the
+//      praxis_evidence job proves python3 is what exists there) and `python` on Windows.
+//   2. vitest runs with cwd=apps/web, so `import apps.mission_suite...` cannot resolve unless
+//      cwd is the repo root.
+// A spawn that cannot find its binary returns status null and EMPTY stderr, so
+// `run.stderr || 'Python source check failed.'` printed the generic message and told nobody
+// which of the two had happened. This resolves the binary, pins cwd, and reports the real reason.
+export const pythonBin = () => (process.platform === 'win32' ? 'python' : 'python3');
+
+export function runPython(args, opts = {}) {
+    const { spawnSync } = requireChildProcess();
+    const run = spawnSync(pythonBin(), args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024,
+                                               cwd: repoPath('.'), ...opts });
+    if (run.error) throw new Error(`python spawn failed (${pythonBin()}): ${run.error.message}`);
+    if (run.status !== 0) {
+        throw new Error(run.stderr?.trim()
+            || `python exited ${run.status} with no stderr (binary=${pythonBin()}, cwd=${repoPath('.')})`);
+    }
+    return run.stdout;
+}
+
 export const plain = (value) => JSON.parse(JSON.stringify(value));
 export const RBAC = 'apps/pocketbase/pb_migrations/1789900000_secure_workspace_rbac.js';
 export const ADMIN_SCHEMA = 'apps/pocketbase/pb_migrations/1790000000_workspace_administration.js';
@@ -113,12 +162,12 @@ export function fixture({ migrated = true, runtime = {} } = {}) {
     const load = (name) => {
         if (cache[name]) return cache[name]; const module = { exports: {} };
         const path = `apps/pocketbase/pb_hooks/${name}`;
-        vm.runInNewContext(source(path), { ...globals, module, require: (target) => load(target.replace('/hooks/', '')) }, { filename: fileURLToPath(new URL(path, root)) });
+        vm.runInNewContext(source(path), { ...globals, module, require: (target) => load(target.replace('/hooks/', '')) }, { filename: repoPath(path) });
         cache[name] = module.exports; return module.exports;
     };
     const migration = (path) => {
         let up, down;
-        vm.runInNewContext(source(path), { ...globals, migrate: (yes, no) => { up = yes; down = no; } }, { filename: fileURLToPath(new URL(path, root)) });
+        vm.runInNewContext(source(path), { ...globals, migrate: (yes, no) => { up = yes; down = no; } }, { filename: repoPath(path) });
         return { up: () => app.runInTransaction(() => up(app)), down: () => app.runInTransaction(() => down(app)) };
     };
     app.save(new Collection({ name: 'users', id: '_pb_users_auth_', fields: [{ name: 'name', type: 'text' }] }));

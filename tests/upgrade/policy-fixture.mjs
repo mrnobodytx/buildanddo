@@ -20,9 +20,10 @@ import { createHash, webcrypto } from 'node:crypto';
 import { canonicalPolicy, createPolicyClient, importPolicy } from '../../apps/web/src/lib/policyIntelligence.js';
 import { researchFixture } from './research-fixture.mjs';
 import { plain } from './admin-fixture.mjs';
+import { repoPath } from './admin-fixture.mjs';
 
 export const hash = (value) => createHash('sha256').update(value).digest('hex');
-export const demo = () => JSON.parse(readFileSync(new URL('../../apps/web/src/data/policy-demo.json', import.meta.url), 'utf8'));
+export const demo = () => JSON.parse(readFileSync(repoPath('apps/web/src/data/policy-demo.json'), 'utf8'));
 export function seal(value) {
     for (const item of value.observations) {
         item.provenance.excerpt_sha256 = hash(item.excerpt);

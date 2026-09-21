@@ -119,7 +119,7 @@ test('invalid commands, cyclic input, unavailable request IDs and demonstration 
 
 test('browser rejects unsafe source links and incomplete private result shapes', async () => {
     const { f, api, client } = connected(); const saved = await api.command('entity.create', f.input()); const send = client.send;
-    for (const source_url of ['javascript:alert(1)', 'https://user:password@buildanddo.tech/', 'invalid']) {
+    for (const source_url of ['javascript:alert(1)', 'https://user:password@buildanddo.com/', 'invalid']) {
         client.send = async (...args) => { const data = await send(...args); data.entity.notes[0].source_url = source_url; return data; };
         assert.equal((await api.detail(saved.result.id)).ok, false);
     }

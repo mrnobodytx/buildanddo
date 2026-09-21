@@ -1,13 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { PUBLIC_NAV } from '@/lib/publicPages';
-import { Activity, Mail, MessageCircle, BookOpen, Users, Github } from 'lucide-react';
+import { Activity, Mail, MessageCircle, BookOpen, Users, Github, Newspaper, ShoppingBag } from 'lucide-react';
 
 const DISCORD_INVITE_URL = 'https://discord.gg/vTDZxmpHHC';
 const WIKI_URL = 'https://wiki.buildanddo.com';
 const FORUM_URL = 'https://forum.buildanddo.com';
 const GITHUB_URL = 'https://github.com/mrnobodytx/buildanddo';
 const CONTRIBUTING_URL = 'https://github.com/mrnobodytx/buildanddo/blob/main/CONTRIBUTING.md';
+// Community and store surfaces (names from the workspace env: REDDIT_SUBREDDIT, the Gumroad seller profile).
+const REDDIT_URL = 'https://www.reddit.com/r/buildanddo';
+const GUMROAD_URL = 'https://citadelnexus.gumroad.com';
 
 const PRODUCT_LINKS = PUBLIC_NAV.map((page) => ({ label: page.label, href: page.path }));
 
@@ -114,6 +117,28 @@ export default function Footer({
                                 >
                                     <Github className="h-4 w-4 shrink-0" />
                                     GitHub
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={REDDIT_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    <Newspaper className="h-4 w-4 shrink-0" />
+                                    r/buildanddo on Reddit
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={GUMROAD_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                    <ShoppingBag className="h-4 w-4 shrink-0" />
+                                    Playbooks and courses on Gumroad
                                 </a>
                             </li>
                             <li>

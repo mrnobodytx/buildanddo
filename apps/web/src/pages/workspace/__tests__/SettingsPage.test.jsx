@@ -27,6 +27,12 @@ vi.mock('@/lib/pocketbaseClient', async () => {
 beforeEach(() => pb.__reset());
 
 describe('SettingsPage', () => {
+// Settings is tabbed - Appearance, Motion & interaction, Workspace, Account - and opens on
+// Appearance. The domain controls live on Workspace and the sign-out on Account, so a query that
+// does not first open the tab is asking about markup the user has not navigated to yet. These
+// tests predate the tabs and reached straight for the controls.
+const openTab = (user, name) => user.click(screen.getByRole('tab', { name }));
+
     it('updates the shared theme without a backend write', async () => {
         const user = setupUser();
         renderWithProviders(<SettingsPage />);
@@ -39,6 +45,13 @@ describe('SettingsPage', () => {
     it('refreshes the workspace after a confirmed domain update', async () => {
         const user = setupUser();
         const view = renderWithProviders(<SettingsPage />);
+        // The workspace CONTEXT carries the domain, but the PocketBase mock is a separate store
+        // and nothing had put the record in it — so update() rejected on a record that did not
+        // exist, the page showed "Could not update the domain status", and refresh was never
+        // reached. These two tests could not have passed; the Select hang was failing first and
+        // hiding it.
+        pb.__setRecords('domains', [view.workspace.active.expand.domain]);
+        await openTab(user, 'Workspace');
         await user.click(screen.getByRole('combobox', { name: 'Domain status' }));
         await user.click(screen.getByRole('option', { name: 'Verified', exact: true }));
         await waitFor(() => expect(view.workspace.refresh).toHaveBeenCalledTimes(1));
@@ -52,6 +65,10 @@ describe('SettingsPage', () => {
         const user = setupUser();
         pb.collection('domains').update.mockRejectedValueOnce(new Error('write rejected'));
         const view = renderWithProviders(<SettingsPage />);
+        // Seeded so the RETRY can succeed — mockRejectedValueOnce only fails the first call, and
+        // without the record the second would fail too, for a different reason than the test means.
+        pb.__setRecords('domains', [view.workspace.active.expand.domain]);
+        await openTab(user, 'Workspace');
         await user.click(screen.getByRole('combobox', { name: 'Domain status' }));
         await user.click(screen.getByRole('option', { name: 'Verified', exact: true }));
         expect(await screen.findByRole('alert')).toHaveTextContent(
@@ -69,8 +86,10 @@ describe('SettingsPage', () => {
         const view = renderWithProviders(<SettingsPage />, {
             workspace: { active: { id: 'workspace', name: 'Workspace', expand: {} } },
         });
+        await openTab(user, 'Workspace');
         expect(screen.getByText('No website connected')).toBeVisible();
         expect(screen.queryByRole('combobox', { name: 'Domain status' })).not.toBeInTheDocument();
+        await openTab(user, 'Account');
         await user.click(screen.getByRole('button', { name: 'Sign out' }));
         expect(view.auth.logout).toHaveBeenCalledTimes(1);
     });

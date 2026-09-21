@@ -21,7 +21,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Link } from 'react-router-dom';
 import DossierPage from '@/pages/workspace/DossierPage';
 import AuthContext from '@/contexts/AuthContext';
-import { renderWithProviders, screen, setupUser } from '@/test/utils';
+import { renderWithProviders, scriptsCarrying, screen, setupUser } from '@/test/utils';
 import { setDemoMode } from '@/lib/demoWorkspace';
 import pb from '@/lib/pocketbaseClient';
 import { dossierFixture } from '../../../../../../tests/upgrade/dossier-fixture.mjs';
@@ -60,12 +60,12 @@ describe('personal dossier flows', () => {
         await user.type(dialog.getByLabelText(/Aliases/), 'Library room');
         await user.type(dialog.getByLabelText(/Tags/), 'Learning, Schedule');
         await user.type(dialog.getByLabelText('Source label (optional)'), 'My interview');
-        await user.type(dialog.getByLabelText('Public HTTPS source (optional)'), 'https://buildanddo.tech/docs');
+        await user.type(dialog.getByLabelText('Public HTTPS source (optional)'), 'https://buildanddo.com/docs');
         await user.click(dialog.getByRole('button', { name: 'Save entity', exact: true }));
         expect(await screen.findByText('Saved notes (1/20)')).toBeVisible();
         expect(backend.data.dossier_entities).toHaveLength(1);
         expect(JSON.stringify(backend.data.dossier_entities)).not.toContain('Reading project');
-        expect(screen.getByRole('link', { name: 'My interview' })).toHaveAttribute('href', 'https://buildanddo.tech/docs');
+        expect(screen.getByRole('link', { name: 'My interview' })).toHaveAttribute('href', 'https://buildanddo.com/docs');
         expect(screen.getByRole('link', { name: 'My interview' })).toHaveAttribute('data-dd-action-name', 'Open dossier source');
         expect(screen.getByText('Also known as: Library room')).toBeVisible();
         await user.type(screen.getByLabelText(/Search names/), 'Library Tuesday');
@@ -144,7 +144,7 @@ describe('personal dossier flows', () => {
             auth: { user: { id: 'editor' }, isAuthed: true }, route: `/app/dossier?entity=${a.id}`,
         });
         expect((await screen.findAllByText('<script>untrusted text</script>')).length).toBeGreaterThan(0);
-        expect(document.querySelector('script')).toBeNull();
+        expect(scriptsCarrying('untrusted text')).toEqual([]);
         await user.click(screen.getByRole('link', { name: 'Read the other entity' }));
         expect(await screen.findByRole('heading', { level: 2, name: 'Other entity' })).toBeVisible();
         await user.click(screen.getByRole('button', { name: 'Close entity' }));

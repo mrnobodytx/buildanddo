@@ -10,7 +10,7 @@
 # Created:     2026-09-17
 # Depends:     apps/web/src/lib/publicPages.js, apps/research/contracts.py, apps/research/transport.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES apps/web/src/lib/publicPages.js; CONSUMES apps/research/transport.py; VALIDATES https://buildanddo.tech
+# EnumEdges:   CONSUMES apps/web/src/lib/publicPages.js; CONSUMES apps/research/transport.py; VALIDATES https://buildanddo.com
 # DAG Node:    public.crawl.check
 # Intent:      Produce bounded Firecrawl evidence that every canonical public page renders its required metadata and content.
 # ───────────────────────────────

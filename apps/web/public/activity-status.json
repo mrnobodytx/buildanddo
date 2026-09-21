@@ -1,0 +1,206 @@
+{
+ "schema": "buildanddo.activity-status/v1",
+ "srs": "SRS-BUILDANDDO-ROADMAP-001",
+ "generated_at": "2026-09-18T20:19:44Z",
+ "stale_after_seconds": 21600,
+ "authority_effect": "NONE",
+ "remote_writes": 0,
+ "credentials_present": {
+  "GITLAB_ADMIN_TOKEN": true,
+  "DD_API_KEY": true,
+  "DD_APP_KEY": true,
+  "DD_SITE": true,
+  "POSTHOG_PERSONAL_API_KEY": true,
+  "POSTHOG_API_KEY": true,
+  "POSTHOG_HOST": true,
+  "CLOUDFLARE_API_TOKEN": true,
+  "CLOUDFLARE_ACCOUNT_ID": true
+ },
+ "window": {
+  "h24_from": "2026-09-17T20:19:44Z",
+  "d7_from": "2026-09-11T20:19:44Z"
+ },
+ "summary": {
+  "entries": 15,
+  "measured": 14,
+  "unmeasured": 1,
+  "active_24h": 14,
+  "duration_ms": 13248
+ },
+ "entries": [
+  {
+   "id": "gitlab.pipelines",
+   "kind": "sink",
+   "provider": "gitlab",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T19:51:17Z",
+   "count_24h": 131,
+   "count_7d": 151,
+   "evidence": "https://gitlab.citadel-nexus.com/groups/guilds/-/pipelines",
+   "reason": null
+  },
+  {
+   "id": "gitlab.merge_requests",
+   "kind": "sink",
+   "provider": "gitlab",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T19:45:37Z",
+   "count_24h": 23,
+   "count_7d": 36,
+   "evidence": "https://gitlab.citadel-nexus.com/groups/guilds/-/merge_requests",
+   "reason": null
+  },
+  {
+   "id": "guild_auditor.verdicts",
+   "kind": "sink",
+   "provider": "cloudflare-worker",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T19:45:37Z",
+   "count_24h": 29,
+   "count_7d": 29,
+   "evidence": "https://gitlab.citadel-nexus.com/groups/guilds/-/merge_requests",
+   "reason": null,
+   "note": "verdict notes posted by the guildmaster identities on merge requests (last 15 MRs per repo)"
+  },
+  {
+   "id": "datadog.ci_visibility",
+   "kind": "sink",
+   "provider": "datadog",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T19:43:25Z",
+   "count_24h": 61,
+   "count_7d": 61,
+   "evidence": "https://us5.datadoghq.com/ci/pipeline-executions",
+   "reason": null
+  },
+  {
+   "id": "datadog.monitors",
+   "kind": "sink",
+   "provider": "datadog",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-17T22:42:03Z",
+   "count_24h": null,
+   "count_7d": 95,
+   "evidence": "https://us5.datadoghq.com/monitors/manage",
+   "reason": null,
+   "note": "monitors by state: {'OK': 45, 'Alert': 18, 'No Data': 32}"
+  },
+  {
+   "id": "posthog.events",
+   "kind": "sink",
+   "provider": "posthog",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T20:10:55Z",
+   "count_24h": 406,
+   "count_7d": 1560,
+   "evidence": "https://app.posthog.com/project/597897/activity/explore",
+   "reason": null
+  },
+  {
+   "id": "cloudflare.workers",
+   "kind": "sink",
+   "provider": "cloudflare",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T18:37:05Z",
+   "count_24h": 1,
+   "count_7d": 3,
+   "evidence": "https://dash.cloudflare.com/?to=/:account/workers",
+   "reason": null,
+   "note": "23 workers; counts are deploys (modified_on)"
+  },
+  {
+   "id": "staging.web",
+   "kind": "resource",
+   "provider": "buildanddo-web",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T19:53:57.860205Z",
+   "count_24h": null,
+   "count_7d": null,
+   "evidence": "https://staging.buildanddo.com/_version",
+   "reason": null,
+   "note": "sha 6ac59447dae9 \u00b7 163 ms"
+  },
+  {
+   "id": "production.web",
+   "kind": "resource",
+   "provider": "buildanddo-web",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T14:57:48.620305Z",
+   "count_24h": null,
+   "count_7d": null,
+   "evidence": "https://buildanddo.com/_version",
+   "reason": null,
+   "note": "sha a5bdcad54973 \u00b7 165 ms"
+  },
+  {
+   "id": "staging.backend",
+   "kind": "resource",
+   "provider": "pocketbase",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T20:19:55Z",
+   "count_24h": null,
+   "count_7d": null,
+   "evidence": "https://staging.buildanddo.com/hcgi/platform/api/health",
+   "reason": null,
+   "note": "health 200 \u00b7 80 ms"
+  },
+  {
+   "id": "production.backend",
+   "kind": "resource",
+   "provider": "pocketbase",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T20:19:56Z",
+   "count_24h": null,
+   "count_7d": null,
+   "evidence": "https://buildanddo.com/hcgi/platform/api/health",
+   "reason": null,
+   "note": "health 200 \u00b7 82 ms"
+  },
+  {
+   "id": "staging.rooms",
+   "kind": "resource",
+   "provider": "living-rooms",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T14:26:30Z",
+   "count_24h": 2,
+   "count_7d": 2,
+   "evidence": "https://staging.buildanddo.com/room-projections/systems.json",
+   "reason": null,
+   "note": "projections: systems, utilization (counts = files regenerated)"
+  },
+  {
+   "id": "production.rooms",
+   "kind": "resource",
+   "provider": "living-rooms",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T14:26:30Z",
+   "count_24h": 2,
+   "count_7d": 2,
+   "evidence": "https://buildanddo.com/room-projections/systems.json",
+   "reason": null,
+   "note": "projections: systems, utilization (counts = files regenerated)"
+  },
+  {
+   "id": "github.buildanddo",
+   "kind": "resource",
+   "provider": "github",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-18T18:10:16Z",
+   "count_24h": 35,
+   "count_7d": 93,
+   "evidence": "https://github.com/mrnobodytx/buildanddo/commits/main",
+   "reason": null
+  },
+  {
+   "id": "memory.substrate",
+   "kind": "resource",
+   "provider": "citadel-mcp",
+   "state": "UNMEASURED",
+   "last_activity_at": null,
+   "count_24h": null,
+   "count_7d": null,
+   "evidence": "https://mcp.citadel-nexus.com/mcp",
+   "reason": "not probed by this producer (use tools/cbf/_mcp_conn_probe.py)"
+  }
+ ]
+}

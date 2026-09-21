@@ -257,7 +257,7 @@ class InteractionTests(unittest.TestCase):
 
     def test_reply_budget_and_complete_pagination(self) -> None:
         content = "A complete lesson.\n" * 500
-        pages = paginate("Lesson", content, "https://buildanddo.tech/docs")
+        pages = paginate("Lesson", content, "https://buildanddo.com/docs")
         self.assertGreater(len(pages), 1)
         self.assertTrue(all(len(page.body) <= 1800 for page in pages))
         self.assertEqual(
@@ -270,7 +270,7 @@ class InteractionTests(unittest.TestCase):
             Page("Title", "Text", "https://untrusted.invalid/")
         with self.assertRaises(ValueError):
             Reply(())
-        self.assertEqual(len(paginate("Empty", "", "https://buildanddo.tech/docs")), 1)
+        self.assertEqual(len(paginate("Empty", "", "https://buildanddo.com/docs")), 1)
 
     def test_sessions_reject_foreign_expired_and_repeated_answers(self) -> None:
         reply = Reply(

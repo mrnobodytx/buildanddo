@@ -74,8 +74,8 @@ test('submission retries preserve identity across reordered JSON and reject chan
 
 test('source input rejects unsafe URLs, forged fields and malformed file references before work', () => {
     const f = researchFixture();
-    for (const input of ['http://buildanddo.tech', 'https://127.0.0.1/x', 'https://[::1]/', 'https://host.local/',
-        'https://user:pass@buildanddo.tech', 'https://buildanddo.tech:8443/', 'https://buildanddo.tech/#hidden'])
+    for (const input of ['http://buildanddo.com', 'https://127.0.0.1/x', 'https://[::1]/', 'https://host.local/',
+        'https://user:pass@buildanddo.com', 'https://buildanddo.com:8443/', 'https://buildanddo.com/#hidden'])
         fails(() => f.submit({ kind: 'url', input }), 400);
     fails(() => f.submit({ result: f.result }), 400);
     fails(() => f.submit({ kind: 'document', input: '', upload: 'missing' }), 404);

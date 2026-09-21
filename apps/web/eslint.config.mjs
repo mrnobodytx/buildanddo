@@ -5,7 +5,19 @@ import globals from 'globals';
 import unicodeEscapePlugin from './eslint.unicode-escapes-plugin.mjs';
 
 export default [
-	{ ignores: ['node_modules/**', 'dist/**', 'build/**', 'vite.config.js'] },
+	// vitest.config.js joins vite.config.js here for the same reason: eslint-import-resolver-alias
+	// resolves its `@vitejs/plugin-react` import through vite's package exports, hits
+	// ERR_PACKAGE_PATH_NOT_EXPORTED for './internal', and THROWS - aborting the entire run with
+	// "Oops! Something went wrong" and zero reported violations. Disabling one rule does not help;
+	// import/namespace and import/default each crash in turn on the same export-map walk.
+	{ ignores: ['node_modules/**', 'dist/**', 'build/**', 'vite.config.js', 'vitest.config.js',
+		// VENDORED HORIZONS EDITOR, and it is genuinely broken rather than merely unresolvable:
+		// 29 files import '../state/*.js' and plugins/visual-editor/state/ HAS NEVER EXISTED in
+		// this repo (0 files tracked, no deletion commit). The build is unaffected because
+		// vite.config.js loads only the two entry plugins, neither of which reaches state/.
+		// Linting third-party editor code we do not author cannot fix it; the missing tree is
+		// recorded as a defect instead of being masked by a per-rule 'off'.
+		'plugins/visual-editor/**'] },
 	{
 		files: ['**/*.js', '**/*.jsx'],
 		plugins: { react, 'react-hooks': reactHooks, 'import': importPlugin },
@@ -73,6 +85,9 @@ export default [
 		],
 		languageOptions: {
 			globals: {
+				// Specs read fixture bytes, so Node globals (Buffer) are in scope here as well as
+				// the vitest API. Without this, no-undef fires on Buffer in BlueprintSavedPage.
+				...globals.node,
 				afterAll: 'readonly',
 				afterEach: 'readonly',
 				beforeAll: 'readonly',
