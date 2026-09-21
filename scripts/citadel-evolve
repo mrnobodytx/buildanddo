@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        scripts/citadel-evolve
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-EVOLUTION-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-EVOLUTION-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-21
+# Depends:     libs/evolution/cli.py
+# EnumType:    Service
+# EnumEdges:   CONSUMES libs/evolution/cli.py
+# Intent:      Expose citadel-evolve as a repository-local executable without modifying existing configuration.
+# ───────────────────────────────────────────────────────────────
+
+"""Run the repository-local evolution CLI without changing package configuration."""
+
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from libs.evolution.cli import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())

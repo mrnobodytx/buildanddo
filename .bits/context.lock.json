@@ -403,6 +403,13 @@
         "title": "Run the Praxis evidence suite in public CI"
       },
       {
+        "code": "SRS-BUILDANDDO-EVOLUTION-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+        "status": "in_progress",
+        "title": "Citadel Verified Evolution Fabric v1"
+      },
+      {
         "code": "SRS-BUILDANDDO-FEDERAL-INFLUENCE-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-FEDERAL-INFLUENCE-001.md",
