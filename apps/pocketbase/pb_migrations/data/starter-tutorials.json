@@ -41,7 +41,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A clinic notices missed appointments and someone proposes an SMS reminder. Walk the loop with real numbers rather than describing it.",
        "OBSERVE: the booking export for March lists 240 appointments, 31 marked 'no-show'. The source is the export, dated 1 April. That is the observation - 31 rows with a flag, not 'we have a no-show problem'.",
@@ -127,7 +127,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A trades business wants buildandco.example for its booking page. Follow what each step does and does not establish.",
        "They type the name into the workspace. State: SELECTED. What this establishes: one person's intent, stored. What it does not establish: anything at all about the registrar.",
@@ -214,7 +214,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A signal reads: 'Sign-ups have collapsed since the new pricing page shipped.' Severity high. Work through it rather than reacting to it.",
        "What is the observation underneath? Following the evidence: daily sign-ups were 40-50 for three weeks, then 12, 9 and 11 for the three days after the deploy. That part is checkable and appears to hold.",
@@ -302,7 +302,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A workshop wants to stop losing quotes. Watch a vague mission become a reviewable one.",
        "First draft: 'Improve the quoting process.' A reviewer cannot accept or decline this. There is nothing to disagree with, which feels like agreement and is not.",
@@ -390,7 +390,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A mission claims a customer newsletter went out. Three records exist. They are not equally strong and the difference is the lesson.",
        "Record one: a screenshot of the composer showing 'Sent successfully', timestamped 10:02. This establishes that the application believed it had handed the message off. It is produced by the system that was hoping.",
@@ -482,7 +482,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A workspace needs to read one team's repository activity. Follow what each check establishes.",
        "The environment has a token name set, so it is PRESENT. The whoami call returns an identity, so it is USABLE - at this point most connection tests declare success.",
@@ -569,7 +569,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A curriculum team wants lessons that are worth a reader's time. Watch it become checkable.",
        "First attempt: 'make the lessons better'. No source, no threshold, no window. Nobody could disagree with it, which feels like agreement and is not.",
@@ -655,7 +655,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "Objective: the five first-path lessons clear the depth floor. Decompose it.",
        "Piece one, and it goes first because it could invalidate everything: can depth be measured at all? If instructional words cannot be extracted from the lesson structure, there is no objective here. Done means a script prints a number for every lesson.",
@@ -741,7 +741,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "Three days before a submission deadline, a team holds eight open items. Work the ranking.",
        "The deadline is a CONSTRAINT: it is set by somebody else and missing it means not being considered. Everything else on the list carries estimates.",
@@ -827,7 +827,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A list of 1,240 addresses is used for a monthly update. Work the numbers.",
        "Last send: 1,240 attempted, 1,112 accepted, 128 hard bounces. That is 10.3% - high enough that mailbox providers begin treating the sender with suspicion, which affects the 1,112 as well.",
@@ -914,7 +914,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "Twelve database migrations need to reach a live backend. Walk the risk.",
        "What it touches: the schema, and therefore the whole service. On this backend a failed migration does not fail the migration - it aborts startup, so the blast radius is the entire API, not the one table.",
@@ -1005,7 +1005,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A content checker reports that all 33 lessons are broken. Work it as TEVV rather than reacting.",
        "TEST: does it behave as specified? It runs, it produces findings in the right shape, it exits cleanly. It passes this and the finding is still false.",
@@ -1102,7 +1102,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A workspace collection carried this create rule: the caller is authenticated, and the owner field in the request equals the caller's id. Work out what it permits.",
        "It reads as careful. It names the caller, it checks a field matches them, and it refuses anonymous writes. Every part of it is doing something.",
@@ -1197,7 +1197,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "Eight pieces of work are proposed, one per team, each with the evidence for why it matters. Watch the checkpoint do its job.",
        "Each team is asked to accept or decline its own item, and told explicitly that declining is a legitimate answer. Seven accept with reasons that cite the evidence they were given.",
@@ -1289,7 +1289,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A step in a run is recorded twice - once because a connection dropped mid-request. Follow what the key does.",
        "The first attempt carries a key derived from the intent: the run, the step, and the day. It succeeds, and the receiver stores the key with the result.",
@@ -1377,7 +1377,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A trades-services platform wants a piece about quoting. Watch the brief get narrower and more useful at each step.",
        "Draft one: 'A guide to quoting for tradespeople.' Audience unbounded, outcome unstated, scope infinite. Every reviewer approves it because there is nothing to object to.",
@@ -1466,7 +1466,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "The electrician quoting brief becomes a draft. Watch what gets cut.",
        "The writer knows a lot about pricing psychology and it is genuinely good material. The brief excluded pricing strategy. It goes - not because it is weak, but because a sole trader standing in a customer's hallway is not choosing a pricing philosophy, they are trying to leave with a quote sent.",
@@ -1559,7 +1559,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "This curriculum is the example, because it failed the test and the repair is measurable.",
        "Thirty-three lessons, every structural field filled: outcomes, preparation, an exercise with a checklist, a knowledge check with a legal answer. A structural checker passed all thirty-three.",
@@ -1649,7 +1649,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "The quoting article becomes three posts. Watch the claim stay constant.",
        "Source claim: 'Among the 40 electricians in this sample, quotes sent before leaving the property were accepted 31% more often than quotes sent later.' The sample size and the population are part of the claim, not decoration.",
@@ -1738,7 +1738,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A review of an automated content assessment report. The report was confident, well structured, and wrong.",
        "It reported that all 33 lessons were broken: 29 broken references and 28 dangling prerequisites. Everything about the format invited belief - specific counts, named lessons, a consistent shape.",
@@ -1828,7 +1828,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A newsletter and a post, worked to the level the evidence supports.",
        "The composer shows 'Sent successfully' at 10:02. That is SUBMITTED - the application believed it handed the message off. It is produced by the system that was hoping.",
@@ -1917,7 +1917,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A fleet review that started with a roll call and found the problem was the question.",
        "The report said four of eight guild agents were ABSENT. That reads as a serious operational failure: half the estate unreachable.",
@@ -2011,7 +2011,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "A visual audit of two environments, and the thing an automated pass missed.",
        "The automated checks were clean: contrast passed, images had alt attributes, headings were present and in order. By every machine measure the pages were fine.",
@@ -2106,7 +2106,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "Evaluating a curriculum rewrite, where the measure was built before the work started.",
        "The capability: lessons that return a reader's time. The measurement, defined in advance: instructional words divided by the minutes each lesson claims. The threshold: 60 per claimed minute, stated openly as a declared floor rather than an industry standard, so it could be argued with separately from the result.",
@@ -2200,7 +2200,7 @@
       ]
      },
      {
-      "heading": "Worked example",
+      "heading": "Worked example — illustrative data",
       "paragraphs": [
        "Ten curriculum changes shipped to a live backend, with the full chain.",
        "WHAT: a named migration file, and the data file it reads. Not 'the curriculum update' - the specific artifacts, identified.",

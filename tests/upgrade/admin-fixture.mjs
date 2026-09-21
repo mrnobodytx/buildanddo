@@ -21,6 +21,7 @@ import * as __bndUrl from 'node:url';
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import vm from 'node:vm';
 import { spawnSync as __bndSpawn } from 'node:child_process';
 const requireChildProcess = () => ({ spawnSync: __bndSpawn });
@@ -157,7 +158,26 @@ export function fixture({ migrated = true, runtime = {} } = {}) {
             try { callback(this); } catch (error) { data = before; for (const key of Object.keys(collections)) delete collections[key]; Object.assign(collections, beforeCollections); throw error; }
         },
     };
-    const globals = { Collection, Field, Record, ApiError, BadRequestError, ForbiddenError, NotFoundError, __hooks: '/hooks', ...runtime };
+    // PocketBase binds $filepath and routerUse; this fixture did not. Every migration that
+    // resolves its curriculum through $filepath.join(__hooks, '..', ...) therefore threw on an
+    // undefined global and fell through to "Starter data not found", and metrics.pb.js failed to
+    // load at all on routerUse. Measured 2026-09-21: that was 44 of the 46 failures in the node
+    // acceptance check, and not one of them was a product defect - the harness was missing two
+    // globals the runtime has always provided.
+    //
+    // $filepath.join is POSIX, matching the runtime and keeping fixture paths stable on Windows.
+    // Both sit BEFORE ...runtime so a test can still substitute its own.
+    const routerHandlers = [];
+    const globals = {
+        Collection, Field, Record, ApiError, BadRequestError, ForbiddenError, NotFoundError,
+        __hooks: '/hooks',
+        $filepath: {
+            join: (...parts) => path.posix.join(...parts.map(String)),
+            dir: (value) => path.posix.dirname(String(value)),
+        },
+        routerUse: (handler) => { routerHandlers.push(handler); },
+        ...runtime,
+    };
     const cache = {};
     const load = (name) => {
         if (cache[name]) return cache[name]; const module = { exports: {} };

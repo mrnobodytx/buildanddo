@@ -18,6 +18,23 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+
+// $filepath is POSIX in the PocketBase runtime; these keep fixture paths identical on Windows.
+const posixJoin = (parts) => {
+    const out = [];
+    for (const raw of parts.flatMap((part) => String(part).split('/'))) {
+        if (!raw || raw === '.') continue;
+        if (raw === '..') { out.pop(); continue; }
+        out.push(raw);
+    }
+    return `/${out.join('/')}`;
+};
+const posixDir = (value) => {
+    const parts = String(value).split('/').filter(Boolean);
+    parts.pop();
+    return `/${parts.join('/')}`;
+};
+
 import vm from 'node:vm';
 import { dateInput, localDay, overdue, selectTasks, contentOutline, draftBlocks, publicationUrl, retainedFields } from '../../apps/web/src/lib/businessPlanning.js';
 import { validLesson, lessonLink, mergeTutorials, lessonProgress, selectTutorials } from '../../apps/web/src/lib/tutorialCurriculum.js';
@@ -41,7 +58,13 @@ test('all 25 tutorials have complete renderable instruction, distinct exercises 
         assert.ok(validLesson(tutorial.lesson), tutorial.title);
         assert.ok(tutorial.effort_minutes >= 8 && tutorial.effort_minutes <= 20);
         assert.ok(JSON.stringify(tutorial.lesson).split(/\s+/).length >= 200, tutorial.title);
-        assert.equal(tutorial.lesson.sections.find((section) => section.steps).steps.length, 4);
+        // A FLOOR, not a fixed count. This asserted exactly 4 and was true only of the
+        // shallow curriculum; deepening every lesson to clear the words-per-claimed-minute
+        // floor took the hands-on sections to 5 and 6 steps, and the test failed for the
+        // content getting better. The property worth holding is that the section gives a
+        // reader several concrete steps and does not sprawl into an unreadable list.
+        const steps = tutorial.lesson.sections.find((section) => section.steps).steps;
+        assert.ok(steps.length >= 4 && steps.length <= 8, `${tutorial.title}: ${steps.length} steps`);
         assert.ok(tutorial.lesson.sections.some((section) => section.heading.includes('illustrative')));
         assert.ok(JSON.stringify(tutorial.lesson).length < 65536);
     }
@@ -214,8 +237,21 @@ function fixture({ seedLegacy = false, seedCustom = false } = {}) {
         records.tutorials.push({ id: `legacy${index}`, title: seed.title, summary: seed.legacy_summary, order: seed.order });
     if (seedCustom) records.tutorials.push({ id: 'custom1', title: 'Edited administrator lesson', summary: 'Keep this summary', order: 200 });
     let up, down;
-    vm.runInNewContext(source(migrationPath), { Field, Record, __migrations: '/migrations',
-        toString: String, $os: { readFile: (path) => { assert.equal(path, '/migrations/data/starter-tutorials.json'); return source(dataPath); } },
+    // The migrations resolve their curriculum with $filepath.join(__hooks, '..', <dir>, 'data', f)
+    // and try both 'pb_migrations' (the deployed layout) and 'migrations' (this fixture's). Neither
+    // __hooks nor $filepath was provided here, so every one of them threw on an undefined global
+    // and reported "Starter data not found beside the hooks directory" - a harness gap reported as
+    // missing content. Accept either layout instead of asserting one, so the stub does not depend
+    // on which directory name the loop happens to try first.
+    const dataFile = '/data/starter-tutorials.json';
+    vm.runInNewContext(source(migrationPath), { Field, Record,
+        __hooks: '/hooks', __migrations: '/migrations', toString: String,
+        $filepath: { join: (...parts) => posixJoin(parts), dir: (value) => posixDir(value) },
+        $os: { readFile: (path) => {
+            assert.ok(path === `/pb_migrations${dataFile}` || path === `/migrations${dataFile}`,
+                `unexpected curriculum path: ${path}`);
+            return source(dataPath);
+        } },
         migrate: (a, b) => { up = a; down = b; } }, { filename: new URL(migrationPath, root).href });
     up(app);
     records.workspaces.push({ id: 'ws1', owner: 'owner1' }, { id: 'ws2', owner: 'other' });

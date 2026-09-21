@@ -32,6 +32,7 @@ const hookSource = readFileSync(hookPath, 'utf8');
 function runtime(env = { BUILDANDDO_TELEMETRY_TRANSPORT: 'stdout', NODE_ENV: 'production' }) {
     const records = [];
     const hooks = {};
+    const registrations = {};
     const scope = {
         module: { exports: {} },
         $os: { getenv: (key) => env[key] || '' },
@@ -46,14 +47,19 @@ function runtime(env = { BUILDANDDO_TELEMETRY_TRANSPORT: 'stdout', NODE_ENV: 'pr
         'onRecordAfterCreateError',
         'onRecordAfterUpdateError',
         'onRecordAfterDeleteError',
-        'onServe',
+        // 0.39.8 binds no onServe - global middleware registers through routerUse, which receives
+        // the request directly rather than handing back a router to bind. Stubbing the old name
+        // left routerUse undefined, so metrics.pb.js threw at load and every test in this file
+        // failed on "routerUse is not defined" rather than on anything it asserts.
+        'routerUse',
     ]) {
         hookScope[hook] = (callback) => {
             hooks[hook] = callback;
+            registrations[hook] = (registrations[hook] || 0) + 1;
         };
     }
     vm.runInNewContext(hookSource, hookScope, { filename: pathToFileURL(resolve(hookPath)).href });
-    return { records, hooks, scope, hookScope, telemetry: scope.module.exports };
+    return { records, hooks, registrations, scope, hookScope, telemetry: scope.module.exports };
 }
 
 function recordEvent(collection = 'missions') {
@@ -214,26 +220,14 @@ test('auth, system collections, arbitrary paths, query values and invalid trace 
     assert.equal(records[0].data.tags.endpoint, '/api/collections/missions/records');
 });
 
-test('serve binding delegates one time and registers request timing', () => {
-    const { hooks, records } = runtime();
-    let handler,
-        calls = 0;
-    assert.equal(
-        hooks.onServe({
-            router: {
-                bind: (callback) => {
-                    handler = callback;
-                },
-            },
-            next: () => {
-                calls++;
-                return 'serving';
-            },
-        }),
-        'serving',
-    );
-    assert.equal(calls, 1);
-    assert.equal(handler(requestEvent()), 'saved');
+test('middleware registers exactly once and times the request it receives', () => {
+    const { hooks, registrations, records } = runtime();
+    // Under routerUse there is no router to bind and nothing to delegate at registration time:
+    // the callback IS the middleware and receives each request. What is still worth asserting is
+    // that the hook registers one and only one of them, and that the one it registers observes.
+    assert.equal(registrations.routerUse, 1);
+    assert.equal(typeof hooks.routerUse, 'function');
+    assert.equal(hooks.routerUse(requestEvent()), 'saved');
     assert.equal(records.length, 1);
 });
 
@@ -243,21 +237,14 @@ test('missing helpers cannot stop record hooks or middleware', () => {
         throw new Error('helper unavailable');
     };
     for (const [name, callback] of Object.entries(hooks)) {
-        if (name === 'onServe') continue;
+        if (name === 'routerUse') continue;
         const event = recordEvent();
         callback(event);
         assert.equal(event.calls, 1);
     }
-    let handler;
-    hooks.onServe({
-        router: {
-            bind: (callback) => {
-                handler = callback;
-            },
-        },
-        next: () => null,
-    });
-    assert.equal(handler(requestEvent()), 'saved');
+    // With the helper unavailable the middleware must still pass the request through rather than
+    // failing the request to protect a metric.
+    assert.equal(hooks.routerUse(requestEvent()), 'saved');
     assert.equal(records.length, 0);
 });
 
