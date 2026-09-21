@@ -62,7 +62,7 @@ export const pythonBin = () => (process.platform === 'win32' ? 'python' : 'pytho
 export function runPython(args, opts = {}) {
     const { spawnSync } = requireChildProcess();
     const run = spawnSync(pythonBin(), args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024,
-                                               cwd: repoPath('.'), ...opts });
+                                               cwd: repoPath('.'), env: { ...process.env, PYTHONPATH: repoPath('.') }, ...opts });
     if (run.error) throw new Error(`python spawn failed (${pythonBin()}): ${run.error.message}`);
     if (run.status !== 0) {
         throw new Error(run.stderr?.trim()
