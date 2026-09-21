@@ -464,23 +464,40 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Operations records the services relevant to the workspace. A pending connection indicates requested work; it does not install software or configure a host.",
-       "Connection and health are separate claims. An endpoint may accept authentication but fail its useful operation. Prefer a timestamped, minimal read or test receipt to a label with no backing observation."
+       "Connecting a service means three separate things that people report as one: a credential exists, the credential is accepted, and the credential can do the thing you need. Each can be true without the next, and each fails differently.",
+       "PRESENT means a name is set somewhere. USABLE means the far side accepted it and told you who you are. PERMITTED means it may perform the specific operation you want, on the specific object you want. A token that lists your account and cannot read the one project you care about is present, usable and not permitted - and a connection test that stops at the second step will call it healthy.",
+       "Read the failure codes rather than the word 'error'. 401 means the credential was rejected: wrong, expired, or revoked. 403 means it was accepted and the action was refused - a different repair entirely. 404 can mean the object does not exist OR that you may not see it, which is why a 404 on something you believe exists is a permission question. And a failure at the edge - a proxy or CDN refusing before your request ever reaches the service - looks like the service saying no and is not.",
+       "Scope narrowly on purpose. A credential that can do everything makes every connection succeed and every incident larger. The narrower token that fails loudly on day one is the cheaper one.",
+       "One more distinction: a connection that works from your machine and fails from the service is not intermittent. Egress rules, proxies and IP allowlists differ per host, so 'it works locally' and 'it works where it runs' are separate claims and both need testing where the code lives."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Open Operations and inspect the service catalogue and any saved state.",
-       "Identify the operator who owns the actual private setup.",
-       "Write the smallest authorized acceptance check and its expected response.",
-       "Keep the state pending until the operator returns the check’s result."
+       "For one connected service, find the NAME of the credential in use. Never copy the value - the name is the thing you reason about.",
+       "Ask the service who you are (most have a 'current user' or 'whoami' call). Record the identity it returns.",
+       "Now ask it to do the narrowest real thing you need, against the actual object. This is the step that distinguishes usable from permitted.",
+       "Record the failure code if it fails, not the word 'failed'. Note whether it came from the service or from something in front of it.",
+       "Write down what this credential can do that you do NOT need. That list is your blast radius."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: a CRM connection is requested. A later authorized list request returns one synthetic test contact and a timestamp. That receipt supports the read path, not every CRM feature."
+       "A workspace needs to read one team's repository activity. Follow what each check establishes.",
+       "The environment has a token name set, so it is PRESENT. The whoami call returns an identity, so it is USABLE - at this point most connection tests declare success.",
+       "The real request - list commits on project 98 - returns 401. The token was fine a moment ago, so this is not 'the token is broken'. It is a project-scoped token belonging to a different project, and it can authenticate perfectly while being permitted nothing here.",
+       "The fix is not a bigger token. Each team has its own scoped credential; using the right one returns 20 commits. The narrow token that failed loudly is what made the mistake visible in a minute rather than a week.",
+       "Separately, the same request once returned 403 from a CDN rather than the service, because the client sent a default user agent that the edge blocks. Same URL, same credential, different layer. A 403 that arrives without ever reaching the service is not an authorisation problem."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure that costs the most is a connection test that stops at 'usable'.",
+       "A green tick appears, the integration is declared live, and the first real operation happens days later inside something that matters. By then the 401 arrives in the middle of other work, and because the tick was green nobody suspects the credential.",
+       "There is a second, quieter version: the test passes because the credential is enormous. It works on day one and works on everything, so no scope problem is ever discovered - until an incident, when the answer to 'what could this have touched' is 'all of it'.",
+       "Test the narrow thing you actually need, against the real object, and record the code you got. 'It connected' is not a result you can act on later."
       ]
      }
     ],
@@ -535,23 +552,40 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "An objective describes a desired result. A task describes an action that may help produce it. Keep them separate so task completion does not automatically imply business success.",
-       "A useful success measure identifies the quantity, population, period and source. If you have no baseline, the first task should gather it; inventing a number makes later evaluation meaningless."
+       "An objective is measurable when somebody who disagrees with you could still check it. That is a higher bar than having a number in the sentence, and a much more useful one.",
+       "Three things make the difference. A SOURCE somebody else can read. A THRESHOLD stated before the measurement, not chosen afterwards. And a WINDOW, so the same question asked twice gets a comparable answer. Remove any one and you have a direction of travel rather than an objective.",
+       "The most common failure is an objective whose measurement does not exist yet. 'Improve onboarding completion' assumes something records completion. If it does not, the first piece of work is building the measurement, and pretending otherwise means the objective will be assessed on impressions at the end.",
+       "State what would falsify it. An objective that cannot come out false is a statement of intent wearing a number."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Open ERP, choose Objectives and add an objective.",
-       "Write a short result-oriented title and a description of the affected process.",
-       "Enter a success measure with baseline, target, period and source.",
-       "Set a review due date, save, then reopen the record to confirm the stored fields."
+       "Take one objective you are carrying and write down the source that would measure it, by name.",
+       "If no source exists, stop - the real first task is creating one. Write that down as the objective instead.",
+       "Write the threshold and the window explicitly: what value, measured over what period.",
+       "Take the measurement NOW and record it as the baseline, before any work starts.",
+       "Write the sentence that would be true if the objective failed. If you cannot, it is not yet measurable."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: “Reduce test appointment no-shows from 5 of 40 to at most 3 of 40 over the next four weeks, using the booking export.” These numbers are educational examples, not live results."
+       "A curriculum team wants lessons that are worth a reader's time. Watch it become checkable.",
+       "First attempt: 'make the lessons better'. No source, no threshold, no window. Nobody could disagree with it, which feels like agreement and is not.",
+       "The measurement is invented deliberately: instructional words divided by the minutes each lesson claims from a reader. It is crude, and crucially it is stated so it can be argued with. The threshold is 60 words per claimed minute; below that a lesson is asking for more time than it gives back.",
+       "Baseline, taken before any writing: 33 lessons, 9,619 instructional words against 467 declared minutes - 20.6 per claimed minute, and zero lessons above the floor.",
+       "After the first five lessons were rewritten: 12,292 words, 26.3 per claimed minute, five lessons above the floor. Both numbers come from the same source and the same script, so the comparison means something. Note the objective could have failed: if the rewrite had added words without clearing 60, the measurement would have said so."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The characteristic failure is choosing the threshold after seeing the result.",
+       "Suppose the rewrite had reached 45 words per claimed minute, and somebody had then said 'well, 45 is really fine for a short lesson'. Everything about the process looks identical - a source, a number, a comparison - and nothing is being tested. The threshold has become a description of whatever happened.",
+       "A related version: quietly reducing the claim instead of doing the work. One lesson here measured 53.9 against the 60 floor. Editing its declared minutes from 14 down to 12 would have cleared the floor instantly, satisfied the check, and cheated the reader, who is still getting the same thin lesson.",
+       "Write the threshold down before you measure, and when you miss it, say you missed it. The number is only worth having because it can embarrass you.",
+       "There is a third version worth naming because it is the most respectable-looking. The measurement is real, the threshold was fixed in advance, and the source quietly changes underneath - a filter is added, a date range shifts, a field is renamed and back-filled. The before and after are then two different questions with one label, and the comparison is meaningless in a way no one can see from the numbers. Pin the source: same script, same parameters, and record them beside the result."
       ]
      }
     ],
@@ -605,23 +639,39 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "A good task names an action and the observable artifact it should produce. “Investigate” needs a boundary, such as producing a one-page comparison of two options.",
-       "A linked contact is a point of coordination, not an account permission or an assignment notification. The server requires related records to be readable in the same workspace."
+       "Decomposition is not chopping an objective into smaller descriptions of the same objective. It is finding the pieces that can be finished, checked, and handed to someone else independently.",
+       "A good task has an owner, an end state somebody else can confirm, and no hidden dependency on a task nobody has written down. The last one causes most of the trouble: work stalls not because a task was hard but because it was waiting on something that existed only in somebody's head.",
+       "Sequence by what unblocks the most, not by what is easiest. And put the task that could invalidate the whole objective FIRST - if the measurement turns out to be unbuildable, you want to know in week one, not after four weeks of work that assumed it."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Open ERP Tasks and add a task.",
-       "Describe the action and expected result in the task details.",
-       "Choose the saved objective and an optional point of contact.",
-       "Save, reopen and confirm that the links and details survived the write."
+       "Write the objective's end state as one sentence somebody else could verify.",
+       "List every piece of work that has to be true for that sentence to hold.",
+       "For each piece, name an owner and what 'done' looks like to a person who did not do it.",
+       "Mark which pieces depend on which. Any dependency you cannot name a task for is a missing task.",
+       "Identify the piece that could prove the objective impossible, and put it first."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: objective “Reduce no-shows”; task “Compare two reminder templates using ten synthetic bookings”; contact “Test coordinator.” The task produces a comparison, not an automatic customer campaign."
+       "Objective: the five first-path lessons clear the depth floor. Decompose it.",
+       "Piece one, and it goes first because it could invalidate everything: can depth be measured at all? If instructional words cannot be extracted from the lesson structure, there is no objective here. Done means a script prints a number for every lesson.",
+       "Piece two: baseline every lesson and identify which are below the floor. Done means a list with five slugs and their current figures.",
+       "Piece three: rewrite each lesson. Done means a worked example with real numbers and a failure case exist in the content.",
+       "Piece four: get the rewrite onto the live service without taking it down. This depends on piece three and on a preflight existing - which was a task in a different guild's work, and naming that dependency is what stopped it being a surprise.",
+       "Piece five: re-measure with the same script from piece one. Done means the comparison is against the same source, which is the only reason it means anything."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The usual failure is a task list that is really one task written five times.",
+       "'Review lessons, improve lessons, polish lessons, check lessons, finalise lessons' has five rows and one piece of work. Nothing can be handed over, nothing can be finished, and progress can only be reported as a feeling.",
+       "The other failure is discovering the invalidating piece last. If depth had turned out to be unmeasurable from the lesson structure, finding that out after writing five lessons would have wasted the writing - not because the writing was bad, but because nobody could have shown it helped.",
+       "Ask of each task: could a colleague finish this and tell me it is done, without me explaining what I meant? If not, it is a heading rather than a task."
       ]
      }
     ],
@@ -675,23 +725,38 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Priority describes relative attention; a due date describes a commitment or review point. An overdue task is unfinished work with a valid past date. A completed task should not keep inflating the overdue count.",
-       "Status changes record human-reported progress. Moving a task to Done does not verify its linked objective. Review the objective’s measure separately."
+       "Priority is a statement about what you will NOT do. A list where everything is high has not prioritised anything; it has recorded that everything felt important on the day it was written.",
+       "Dates carry a claim too, and it is worth being explicit about which kind. A date can be a CONSTRAINT that exists outside you - a submission deadline, a certificate expiry, a contract date. Or it can be an ESTIMATE, which is a guess with a confidence attached. Writing both in the same field means nobody can tell which are real.",
+       "When a constraint is close, priority stops being about value and becomes about what is reachable. The right question shifts from 'what is most important' to 'what can be finished and proved before the date', and those have different answers."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Edit one task to set priority and a due date.",
-       "Search for a phrase in its title or details.",
-       "Compare the All, In progress and Overdue filters.",
-       "Set an explicit task state and confirm that the saved list updates."
+       "Take your current list and mark each date as CONSTRAINT or ESTIMATE. Note how many you cannot classify.",
+       "For each constraint, write what actually happens if it is missed. Some turn out to have no consequence at all.",
+       "Force a ranking with no ties. If two items are equal, ask which you would drop first under pressure.",
+       "Write down what the bottom three items are NOT getting done in favour of.",
+       "For anything before a near constraint, ask whether it can be finished AND demonstrated in time, not just started."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: an overdue, high-priority consent review should be resolved before a low-priority formatting task. A task with no due date is unscheduled, not secretly overdue since 1970."
+       "Three days before a submission deadline, a team holds eight open items. Work the ranking.",
+       "The deadline is a CONSTRAINT: it is set by somebody else and missing it means not being considered. Everything else on the list carries estimates.",
+       "Two items are half-built features. Both are valuable and neither can be finished and demonstrated in three days. Under a near constraint they drop, not because they stopped mattering but because an unfinished feature demonstrates nothing.",
+       "One item is a broken link on the page a reviewer opens first. It is small, dull, and it is now top of the list - its value is not its size, it is its position relative to the constraint.",
+       "The ranking that results is not the ranking anyone would have written a month earlier, and that is correct. The list did not change; the distance to the constraint did."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is a list where every item is high priority and every date is 'this sprint'.",
+       "It feels rigorous - there are dates, there are priorities - and it makes no decision. When the week runs short, what actually gets dropped is whatever was least fresh in someone's mind, and nobody agreed to that.",
+       "The second failure is mistaking an estimate for a constraint. A team treats an internal target as immovable, ships something unfinished to hit it, and discovers the date had no consequence attached. The cost was real and the deadline was not.",
+       "Before defending a date, answer plainly: who set it, and what happens if it slips? If the answer is 'we did' and 'nothing', it is an estimate, and it should not be costing you scope."
       ]
      }
     ],
@@ -745,23 +810,39 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "A name, role, work email and short operational note are usually enough for a small coordination task. Do not paste credentials, identity documents or sensitive customer histories into notes.",
-       "A saved contact does not establish consent for marketing, provide account access or send a message. Any outreach needs its own authorized workflow and evidence."
+       "Contact data decays whether or not anyone touches it. People change jobs, domains lapse, numbers get reassigned. A record that was correct when captured is not a record that is correct now, and nothing about storing it more neatly changes that.",
+       "Keep three facts about every contact: where it came from, when it was last CONFIRMED, and whether the person agreed to be contacted. Confirmed is not the same as captured - captured is when it entered your system, confirmed is the last time something outside your system agreed it was still true.",
+       "Bounces and complaints are measurements, not annoyances. A rising bounce rate is your list telling you its age. Sending harder into a decaying list damages the delivery of messages to the addresses that still work, so the cost is not limited to the bad rows.",
+       "Deleting a stale record is usually the right answer and usually feels like a loss. A list of 1,000 addresses where 400 are dead is not bigger than a list of 600; it is a list of 600 with worse deliverability and a misleading number on it."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Open ERP Contacts and create a permitted test record.",
-       "Use Role to explain the person’s operational context.",
-       "Write a short note describing the reason for contact and a review point.",
-       "Edit the record to correct a detail and confirm that the saved view reflects it."
+       "Pick 20 contacts at random and find, for each, the source and the date it was last confirmed.",
+       "Count how many you cannot answer for. That proportion is your real data quality figure.",
+       "Find your bounce and complaint rates for the last send. If you cannot, that is the finding.",
+       "Identify records with no confirmation in over a year and decide explicitly: re-confirm or remove. Leaving them is also a decision, so make it deliberately.",
+       "Write down the one habit that would have kept these current, and whether anything enforces it."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: “Jordan, training coordinator, jordan@example.com; coordinates the synthetic-data workshop.” The example email is for illustration and must not be used for actual outreach."
+       "A list of 1,240 addresses is used for a monthly update. Work the numbers.",
+       "Last send: 1,240 attempted, 1,112 accepted, 128 hard bounces. That is 10.3% - high enough that mailbox providers begin treating the sender with suspicion, which affects the 1,112 as well.",
+       "Sampling 20 records for provenance: 6 have a source and a confirmation date, 9 have a source only, 5 have neither. So roughly a quarter of the list cannot be accounted for at all.",
+       "The 128 bouncing addresses are removed - the list is now 1,112 and is honestly larger than it was, because the number now describes reachable people.",
+       "The 5-in-20 with no provenance are a different problem and cannot be fixed by cleaning. They get a re-confirmation message; those who do not respond are removed. A contact you cannot say you acquired lawfully is a liability, not an asset."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is treating list size as the metric.",
+       "A team reports 1,240 contacts and next month 1,300. The number goes up, everyone is pleased, and the bounce rate is not in the report. Six months later delivery has degraded for everyone, including the customers who do want to hear from them.",
+       "The compounding version: because the bad addresses were never removed, the sender reputation drops, which reduces delivery to good addresses, which reduces engagement, which reduces delivery further. Nothing in the contact list looks wrong at any point.",
+       "Report reachable contacts and bounce rate together, always. A contact count on its own is a measure of how long you have been collecting, not of how many people you can reach."
       ]
      }
     ],
@@ -815,23 +896,43 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Risk depends on impact and reversibility, not only on how many lines changed. A one-line shared database change can matter more than a large local documentation update.",
-       "Rollback is not always deletion. Restoring compatible application code while retaining additive data can preserve audit history. Destructive migrations need a separate retention decision and a tested backup path."
+       "A rollback plan is not a promise that you can undo something. It is a written answer to three questions asked before you start: what does this touch, how would I know it went wrong, and what is the fastest way back to a known state.",
+       "The most important of those is the middle one. Plenty of changes are reversible and still cause damage, because nobody noticed for a week. A rollback you cannot trigger is not a rollback.",
+       "Know which changes are genuinely irreversible: deleted data with no backup, messages sent to real people, money moved, credentials published. For those, the rollback plan is really a REHEARSAL plan - you prove it on a copy, because there is no second chance on the original.",
+       "'Restore from backup' is only a plan if the backup exists, is recent, and has been restored at least once. An untested backup is a belief.",
+       "Distinguish the rollback from the recovery. A rollback returns the system to its previous state; a recovery returns the BUSINESS to a working position, and those are not always the same action. If a bad export sent wrong figures to a customer, reverting the export changes nothing about what they received, and the recovery is a correction they can see."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "In a mission draft, list the systems and people the change can affect.",
-       "Describe one plausible failure and a signal that would reveal it.",
-       "Set a stop condition and name who can authorize recovery.",
-       "Write a post-recovery check that confirms the intended state."
+       "Write down every system this change touches, including the ones you touch only by restarting them.",
+       "Write the signal you would see within minutes if it went wrong, and say who would see it.",
+       "Write the path back: the exact command or action, and how long it takes.",
+       "Take the backup BEFORE the change and note its name. A backup taken after is a copy of the problem.",
+       "For anything irreversible, rehearse on a copy first and record what the rehearsal showed."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: a content preview change can be reverted while retaining drafts. Removing the collection to undo the UI change would unnecessarily destroy editorial history."
+       "Twelve database migrations need to reach a live backend. Walk the risk.",
+       "What it touches: the schema, and therefore the whole service. On this backend a failed migration does not fail the migration - it aborts startup, so the blast radius is the entire API, not the one table.",
+       "How you would know: the service does not come up. That is a fast, unambiguous signal, which is the good case - the dangerous changes are the ones with no signal.",
+       "Path back: restore the database file and restart. Time: about two minutes, IF a copy exists.",
+       "The copy was taken first, named data.db.pre-migration with the date. When the set did take the service down, recovery was two minutes of a known procedure rather than an incident.",
+       "The rehearsal step came later and is the real lesson: applying the same set to a COPY first would have shown the failure without any downtime at all. A rollback that works is good; not needing it is better.",
+       "One detail from that incident is worth keeping. The service came back in two minutes, and the team's first instinct was to call the rollback plan a success. It was, and it was also the second-best outcome available: the same set applied to a copy beforehand would have produced the same information with no downtime at all. A rollback you had to use is a lesson about the step before it."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is a rollback plan written as a sentence in a ticket: 'revert if there are issues'.",
+       "It names no backup, no signal and no command. In the moment, with the service down, somebody is improvising under pressure - and the first thing they reach for is often the thing that makes recovery harder, like restarting repeatedly or re-running the change.",
+       "The specific trap worth naming: taking the backup as part of the deploy, after the change has begun. It feels like diligence. It captures the broken state.",
+       "If the plan does not name a file, a command and a time, it is not a plan. Write it while calm, because you will read it while not.",
+       "One more pattern, and it is the one that turns a small problem into an outage: rolling back under pressure without recording what state you were in. Half the change is reverted, a service is restarted twice, and afterwards nobody can say which version is running or which migrations applied. The incident is over and the system is now in a state nobody designed. Write down what you did as you do it, even in the middle - especially in the middle."
       ]
      }
     ],
@@ -885,23 +986,46 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Testing exercises behavior under specified conditions. Evaluation assesses results against a measure or rubric. Verification checks conformance to stated requirements. Validation asks whether the result serves the intended use and users.",
-       "These categories can overlap, but copying the same assertion into four fields adds no evidence. BuildAndDo records your methods and review; it does not issue NIST certification."
+       "TEVV is test, evaluate, verify and validate, and the four words are not synonyms for checking. TEST asks whether it behaves as specified. EVALUATE asks how well, against a threshold set beforehand. VERIFY asks whether we built the thing correctly. VALIDATE asks the harder question: whether the thing we built was the right thing at all.",
+       "A check that has only ever passed has not been tested. This is the single most useful idea in the practice: a checker that agrees with you every time might be measuring the system, or it might be reflecting you, and from the output those look identical.",
+       "So every check needs a case it REFUSES, demonstrated. Not described - demonstrated, with the refusal recorded next to the pass. The red is what gives the green meaning.",
+       "Design the evaluation before you run it. A threshold chosen after seeing the result is a description of the result, and an evaluation that cannot come out negative is not measuring anything.",
+       "Sequence matters. Run the negative control BEFORE the real measurement, not after it. Once you have a green result in hand, every instinct pushes toward accepting it, and a control run afterwards is answering a question you have already decided.",
+       "Separate the four activities across people where you can. The person who built a thing is the worst-placed to verify it and the best-placed to test it, because they know where it is fragile. Validation in particular benefits from somebody who does not know how it works and does know what it was for."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Choose one acceptance criterion in a mission.",
-       "Define an input and expected behavior for Testing.",
-       "Define a measurement for Evaluation and a requirement check for Verification.",
-       "Describe a realistic user exercise for Validation and the evidence each activity should produce."
+       "For one check you rely on, write what it would look like if the check itself were broken.",
+       "Construct an input it must refuse. Run it. Record the refusal.",
+       "If it does not refuse, you have learned something more valuable than a pass - the check was not testing what you thought.",
+       "Write the evaluation threshold down before the next run.",
+       "Ask the validate question once: if this check passes forever, is the underlying thing actually good? Note what it does not cover."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: test a draft save failure; evaluate task completion rate in a workshop; verify that approved text cannot silently change; validate that an editor can recover an interrupted review."
+       "A content checker reports that all 33 lessons are broken. Work it as TEVV rather than reacting.",
+       "TEST: does it behave as specified? It runs, it produces findings in the right shape, it exits cleanly. It passes this and the finding is still false.",
+       "VERIFY - did we build it correctly? Three defects, each of which produced a finding rather than an error: a fetch truncated to 4,000 bytes, so a 761KB bundle was searched over its first 4KB and no routes were found; a patched pattern carried an invisible control byte, so a filter that read as correct never matched; and prerequisites were compared against a graph the curriculum does not have.",
+       "The negative control is what settled it. Feed the checker a link that is genuinely broken and a link that is genuinely fine: if both come back broken, the checker is the problem. That single run would have caught all three defects on day one.",
+       "VALIDATE: even once correct, the checker says every lesson passes structurally. Is that the right thing to measure? No - it says nothing about whether a lesson teaches, which is why a second measure of depth was needed. A perfect score on the wrong question is still a wrong answer.",
+       "It is worth noticing how the three defects were alike. Each was in the measuring apparatus, each produced output in the shape of a real finding, and none raised an error. That is the signature of instrument failure, and it is why TEVV puts verify and validate as separate questions - the tool was correct by its own specification and wrong about the world.",
+       "The cost of not running a control is not the bad finding. It is the remediation work that follows: had the first report been believed, somebody would have spent a week repairing 33 lessons that were not broken, and the repair would have looked successful, because the checker would have gone on reporting whatever it reported."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is treating a green result as evidence when the checker has never been seen to go red.",
+       "It is worse than no check, because it is a receipt. Somebody later reads 'verified' and does not re-examine, and the unexamined assumption travels further than it would have without the ceremony.",
+       "The version that costs most is a check that passes because it could not look - an empty match, an unreachable path, a permission error swallowed. Zero problems found and zero things examined produce the same output, and only one of them is good news.",
+       "Make every check answer two questions: what did you examine, and what would you have refused? A check that cannot answer the second is decoration with a exit code.",
+       "A quieter failure: evaluating against a threshold that was never written down, so the evaluation becomes a conversation about whether the number feels acceptable. Everybody argues in good faith and the answer depends on who is in the room and how the week has gone. Writing the threshold down is not bureaucracy - it is the only thing that makes the result independent of the mood.",
+       "And the failure that looks most like diligence: running many checks, none of which has a control. Ten green results are not ten pieces of evidence if none of the ten has ever been shown to go red. They are one unexamined assumption, repeated.",
+       "Finally, be wary of the word 'verified' in a status field. It records that somebody ran something, not that the something could have failed. When you read it on work you did not do, the useful question is never whether it passed - it is what the check would have refused, and whether anyone ever saw it refuse anything."
       ]
      }
     ],
@@ -959,23 +1083,44 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "For a linked task, test that a record from another workspace cannot be selected through a direct request. Also test that a viewer cannot write and that membership removal takes effect.",
-       "For content preview, treat draft text as data. Strings that look like HTML or scripts should remain text. OWASP ASVS provides a structured verification reference; these examples are a starting point, not a complete assessment."
+       "Most workspace security failures are not exotic. They are authorisation mistakes: the system correctly works out WHO you are and then fails to check WHAT you may touch. Authentication is usually solid because it is visible; authorisation fails quietly because it only shows up when someone crosses a boundary nobody tested.",
+       "The pattern to look for is a rule that checks a user is logged in and then trusts a field in the request to decide scope. If the request says which workspace to write into, and the rule only confirms you are somebody, then anybody can write anywhere.",
+       "Rules are code and can be wrong in ways that read as correct. A guard comparing a rule to a string can be comparing two different types and silently never match - so the guard is present, looks careful, and never fires.",
+       "Test authorisation from the other side. The question is not 'can the owner do this', it is 'can a member of a different workspace do this', and the only way to know is to try it as them.",
+       "The same shape appears in reads. A list endpoint that filters by a field the caller supplies will happily list another workspace's records if asked nicely, and it does not feel like a breach because nothing was written. Data leaving is as serious as data arriving.",
+       "Anonymous access needs its own test, and the result is easy to misread. A collection that returns an empty list to a stranger may be correctly refusing, or it may be returning everything a stranger is allowed to see, which happens to be nothing today and something tomorrow. An empty result is not the same as a refusal, and only one of them is a boundary."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Write one allowed and one denied request scenario for an ERP task link.",
-       "Include a viewer account and a removed-member scenario.",
-       "Enter harmless markup-looking text in a local draft preview.",
-       "Record the observed behavior and any test that could not be executed."
+       "Pick one collection users can write to. Read its create rule out loud in plain language.",
+       "Ask: does anything in that rule tie the new record to a workspace the caller belongs to?",
+       "Try the write as a user from a DIFFERENT workspace. Expect a refusal; treat a success as a finding.",
+       "Check any guard that compares values, and confirm the two sides are the same type.",
+       "Write down which collections you have tested from the outside, and which you have only assumed."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: a task in workspace A must reject an objective ID from workspace B even if the browser form normally hides that choice. A server rejection is stronger evidence than a hidden option."
+       "A workspace collection carried this create rule: the caller is authenticated, and the owner field in the request equals the caller's id. Work out what it permits.",
+       "It reads as careful. It names the caller, it checks a field matches them, and it refuses anonymous writes. Every part of it is doing something.",
+       "What it never does is check the WORKSPACE. Any authenticated user, setting owner to their own id, could create a record inside any workspace at all - by naming it in the request. The rule confirms who you are and takes your word for where.",
+       "Two migrations existed to replace that rule with one that checks membership. Neither had ever applied, because each guarded itself by comparing the stored rule to a string - and on this runtime rules are objects, so the comparison was always false and the guard always skipped. The hole stayed open for five days behind two fixes that looked applied.",
+       "It was found by trying the write as a member of another workspace, which took under a minute. Nothing in reading the rule would have revealed the type problem.",
+       "The cheap habit that catches this class of defect: keep a second account in a second workspace, and make every authorisation change end with one attempt from it. It takes a minute, it needs no tooling, and it tests the thing the rule text cannot tell you - what the system does when somebody who should be refused actually asks."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is auditing authorisation by reading rules instead of exercising them.",
+       "Reading tells you what somebody intended. Exercising tells you what the system does. In this case the intention was correct and present in the repository twice, and the behaviour was wide open.",
+       "A related failure is testing only the happy path - the owner can write to their own workspace, so authorisation works. That test passes identically whether or not the boundary exists.",
+       "For every rule you care about, have one recorded attempt from the wrong side that was refused. That refusal is the evidence the boundary is real; the rule text is only the claim.",
+       "The aftermath is worth understanding too. When a boundary is found open, the first question is not how to close it but what went through it. Without records of who wrote what into which workspace, the honest answer is that you cannot tell - so the fix is urgent and the investigation is impossible, which is the worst combination. Authorisation logging is what makes an open boundary a bounded incident rather than an unbounded one.",
+       "Treat every authorisation rule as unproven until a refusal from the wrong side has been recorded against it. The rule text is a claim; the refusal is the evidence."
       ]
      }
     ],
@@ -1033,23 +1178,45 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Workflow definitions describe steps; runs preserve a snapshot of the definition at start. Editing a definition later should not rewrite history.",
-       "The current workflow system records operator-performed work. A notify step does not itself deliver a message. Approval checkpoints require the current owner/admin role and an explicit recorded decision."
+       "An approval checkpoint exists so that a decision has a place to happen and a record of having happened. Its value is entirely in the possibility of NO. A checkpoint that always approves has the cost of a gate and the effect of a comment.",
+       "Put the checkpoint before the irreversible step, not after the work. Approving something that is already done is a formality; approving something about to send messages, spend money, or change a live system is a decision.",
+       "The approver needs enough to decide and not so much that they cannot. That means the claim, the evidence behind it, and what happens if it is wrong - not the full history. If your approval request cannot be read in two minutes it will be approved without being read.",
+       "Record who approved, when, and what they saw. The last part matters most: an approval of a changed scope is not an approval of the current one, so a material change re-opens the gate.",
+       "An approver needs standing as well as information. Asking someone to approve work they cannot refuse - because of seniority, or because the work is already done, or because the deadline passed this morning - produces a signature and no decision. If the answer can only be yes, move the checkpoint earlier rather than pretending.",
+       "Distinguish approving the DECISION from approving the EXECUTION. Agreeing that a thing should be done is not agreeing that this particular attempt, with this scope and this blast radius, should run now. Many workflows need both, and collapsing them means the second never happens."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Create a draft workflow with read, approval and record steps.",
-       "Write a concrete expected observation for each step, then activate the saved definition.",
-       "Start a real test run and record the first outcome.",
-       "Have the authorized approver decide the checkpoint and inspect the resulting evidence receipt."
+       "Find one workflow you run and mark the first genuinely irreversible step.",
+       "Check whether an approval exists before it. If it is after, the gate is decorative.",
+       "Write what the approver sees. Include the evidence and the failure case, not just the request.",
+       "Ask when someone last declined at this checkpoint. If never, ask whether it could happen.",
+       "Confirm that changing the scope after approval re-opens the gate rather than inheriting it."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: inspect a synthetic draft, approve its use in training, then record the training artifact. Activating the definition alone should not add a run or invent a last-run timestamp."
+       "Eight pieces of work are proposed, one per team, each with the evidence for why it matters. Watch the checkpoint do its job.",
+       "Each team is asked to accept or decline its own item, and told explicitly that declining is a legitimate answer. Seven accept with reasons that cite the evidence they were given.",
+       "All accepting is exactly the pattern that should not be trusted, so a control is run: one team is offered an item that plainly belongs to another team. It declines, correctly naming the owner. The checkpoint discriminates, and only now do the seven acceptances mean something.",
+       "The mechanism also refuses on silence. When a team could not be reached, its item stayed proposed rather than defaulting to approved - because an approval that happens when nobody answers is not an approval.",
+       "One item was moved between teams and put to the new owner as a fresh decision rather than inheriting the previous acceptance. The work did not change; the person answering for it did.",
+       "Notice what made the control meaningful: it was run BEFORE the acceptances were acted on, not afterwards as reassurance. A gate validated after its decisions have been implemented is collecting comfort rather than evidence.",
+       "The wider point is that unanimity is information. Seven acceptances told us very little on their own; the same seven, alongside one demonstrated refusal, told us the gate distinguishes. Treat a 100% approval rate as a question rather than a result."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is the checkpoint that cannot say no.",
+       "The commonest form is self-approval at the moment of writing: propose, approve, start, all in one action. Every field is filled and the audit trail is complete. No scope was ever accepted, because none was offered to anyone.",
+       "The subtler form is approval by timeout - if nobody objects in two days it proceeds. That is not consent, it is absence, and it will eventually record an approval from someone who was on holiday.",
+       "Two tests. Has anyone ever declined here? And what happens if the approver simply does not answer - does the work stop, or does it proceed with a receipt saying it was approved?",
+       "There is also the checkpoint that is technically refusable and practically not, because declining costs the approver more than approving. If saying no means a week of argument and saying yes means moving on, the gate will trend toward yes regardless of the merits - and it will look like consensus. Notice when your approval rate is 100% and ask whether that reflects the work or the cost of objecting.",
+       "A last check worth running on your own process: pick the most consequential gate you have and find the last time it changed an outcome. If the answer is that it never has, you are paying the cost of a gate - the delay, the ceremony, the coordination - and receiving none of its benefit, and it would be more honest to remove it than to keep signing."
       ]
      }
     ],
@@ -1103,23 +1270,43 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "A lost response does not prove that the server did nothing. The workflow client retains a request key so an identical retry can return the saved result instead of appending a second receipt.",
-       "Expected revisions protect against stale tabs. If another operator advances the run, reload its state before making a new decision. A terminal failed or cancelled run is historical; new work needs a new attempt."
+       "A retry is safe when repeating the operation produces the same result as doing it once. That property is called idempotency, and without it a retry is a second attempt at a thing that may already have happened.",
+       "The dangerous case is not a failure - it is an UNKNOWN. The request timed out. You do not know whether the far side processed it. Retrying might duplicate a payment or a message; not retrying might drop it. The only way out is to make the question answerable in advance, with a key the far side remembers.",
+       "Send an idempotency key with the operation and have the receiver record it. A repeat carrying the same key returns the original result rather than acting again. The key must describe the INTENT - same key for the same intended operation - or a retry becomes a new operation wearing the same name.",
+       "Distinguish the failures. A 4xx usually means retrying will fail identically; fix the request. A 5xx or a timeout may be transient. Retrying a 4xx forever is how a queue fills with work that can never succeed.",
+       "Bound your retries and back off between them. Immediate, unlimited retries turn a brief wobble on the far side into a sustained load that prevents it recovering - your client becomes the reason the outage continues. Exponential spacing with a ceiling, and a limit after which the work goes somewhere a human will see it.",
+       "Decide what happens to work that exhausts its retries. Dropping it silently is a decision, just not a recorded one. A dead-letter destination turns an invisible loss into a visible queue, and the queue is the honest state."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Inspect a failed test run and read its reason and recorded observations.",
-       "Compare the last accepted revision with the current step.",
-       "Use the documented retry for an uncertain response without changing the request’s meaning.",
-       "Write a reflection and a bounded next attempt instead of rewriting the failed outcome."
+       "For one operation you retry, decide whether repeating it twice would be harmless. Write the answer down.",
+       "If it would not, find or add an idempotency key, and make it a function of the intent rather than the attempt.",
+       "Deliberately send the same operation twice and confirm the second returns the first result rather than acting again.",
+       "Now change one field and send it with the same key. A good receiver refuses this - the key promised the same intent.",
+       "Separate your retryable failures from your permanent ones and check what your system does with each."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: the server commits one evidence receipt, but the browser loses the response. Reusing the same request identity should reveal that receipt; creating a new identity may request a new operation."
+       "A step in a run is recorded twice - once because a connection dropped mid-request. Follow what the key does.",
+       "The first attempt carries a key derived from the intent: the run, the step, and the day. It succeeds, and the receiver stores the key with the result.",
+       "The connection drops before the response arrives. The caller does not know whether it worked, which is the genuinely hard case - both retrying and not retrying can be wrong.",
+       "It retries with the same key. The receiver recognises the key and returns the original receipt without recording a second step. The uncertainty is resolved without a duplicate.",
+       "Later the same key is sent with different content, and the receiver refuses: 'this request key already belongs to a different decision.' That refusal is the mechanism working. The key means 'this exact intent'; reusing it for another one would let a retry silently overwrite a decision, and a 409 there is more useful than a success.",
+       "The 409 is worth sitting with, because it feels like a failure and is the system protecting you. The alternative - accepting a reused key with different content - would let a retry silently replace a recorded decision with a different one, and nothing downstream would ever know which had been kept. An error you can read beats a success you cannot trust."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is a retry loop with a fresh key on every attempt.",
+       "It looks like a retry and behaves like a queue of new work. Three timeouts produce three operations, each believing it is the first. For a message that is three sends; for a payment it is worse.",
+       "The other failure is retrying what cannot succeed. A request rejected for a malformed field will be rejected identically forever, and a loop that treats every failure as transient turns one bad request into unbounded load - and hides the real error inside thousands of copies of itself.",
+       "Before writing a retry, answer two questions: is this operation safe to repeat, and which failures am I retrying? A retry without both answers is an amplifier.",
+       "The short version to carry: a retry without an idempotency key is a second attempt, not a retry, and the difference only becomes visible after it has already cost something."
       ]
      }
     ],
