@@ -226,8 +226,11 @@ retains the organizer's actual confirmation; the validator never fabricates one.
 ## Receiving owners and remaining acceptance
 
 The public source dispatch has no shared runtime credentials or activation grant.
-The repository account owner resolves hosted Actions access (the last observed
-failure reported a billing lock) and obtains the separate Cloudflare diagnostic.
+The GitLab runner owner executes the complete Day-21 acceptance lane with the
+declared dependencies and retains its full candidate-bound export. GitHub's
+historical billing failure is not evidence about GitLab availability. The separate
+Cloudflare diagnostic still requires the hosting owner; it does not gate local
+source checks or establish their failure.
 IDE1 executes native/browser acceptance and migration recovery. CMAX-B binds the
 existing Firecrawl, n8n, assistant and private operator adapters under the receiving
 dispatch. The private release owner deploys and captures source/artifact/health

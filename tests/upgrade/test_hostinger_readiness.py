@@ -65,6 +65,8 @@ def fixture(root: Path) -> dict[str, Any]:
         "AGENTS.md": "python scripts/ci/hostinger_readiness.py --check\ngovernance:readiness\n",
         ".bits/context.md": "python scripts/ci/hostinger_readiness.py --check\n",
         ".github/workflows/pr-governance.yml": "jobs:\n  review:\n    steps:\n      - run: python scripts/ci/hostinger_readiness.py --check\n",
+        ".gitlab-ci.yml": "include:\n  - local: '.gitlab/ci/day21-submission.yml'\n",
+        ".gitlab/ci/day21-submission.yml": "review:\n  script:\n    - python3 scripts/ci/hostinger_readiness.py --check\n",
         "apps/web/src/components/workspace/ProgressionPipeline.jsx": "governance:readiness\n",
     }
     for name, contents in files.items():
@@ -123,7 +125,7 @@ class ReadinessTests(unittest.TestCase):
         self.assertFalse((self.root / "state/roadmap/sprint.json").exists())
 
     def test_source_change_new_helper_and_deleted_file_invalidate_review(self) -> None:
-        for name in ("apps/web/example.js", "libs/new_helper.py"):
+        for name in ("apps/web/example.js", "libs/new_helper.py", ".gitlab/ci/new_check.yml"):
             with self.subTest(name=name):
                 (self.root / name).write_text("changed reviewed dependency\n")
                 with self.assertRaisesRegex(readiness.ReadinessError, "stale"):
@@ -166,7 +168,7 @@ class ReadinessTests(unittest.TestCase):
         for name in (
             "AGENTS.md",
             ".bits/context.md",
-            ".github/workflows/pr-governance.yml",
+            ".gitlab/ci/day21-submission.yml",
             "apps/web/src/components/workspace/ProgressionPipeline.jsx",
         ):
             path = self.root / name

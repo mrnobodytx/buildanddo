@@ -20,6 +20,43 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## GitLab acceptance correction authorized 2026-09-21
+
+Owner request: GitLab powers execution; revise the system accordingly and clear
+the other actionable blockers. This continues local A2 work on the session branch.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| GL-1 | Inventory reachable GitLab CI and enforce its governance checks | GitLab inventory and readiness regressions | source PASS: 14 GitLab cases; 74 combined regressions |
+| GL-2 | Repair complete acceptance, isolated dependency setup and evidence artifacts | GitLab job/runner regressions and local acceptance | source PASS: complete artifact download revalidates; missing runtime prerequisites remain explicit |
+| GL-3 | Correct receiving actions and retain observed results | Context, readiness, boundary and memory checks | source corrected; exact local results retained in gitlab-report.md; hosted execution UNMEASURED |
+
+Memory brief: the root GitLab pipeline includes the public Day-21 acceptance
+fragment. Its default source-only job cannot satisfy the runner's full-matrix
+success requirement; the opt-in full job archives only the summary, omitting
+referenced export files. Agent context inventories only GitHub, and both
+readiness wiring validators inspect only GitHub. The last actual local result
+is 4 PASS, 3 FAIL, 1 HOLD and 10 BLOCKED. GitLab execution is not observed here;
+the recorded GitHub billing failure says nothing about GitLab runner health.
+No authenticated workspace seat is available, so no seat event is fabricated.
+
+## Acceptance-only continuation authorized 2026-09-21
+
+Owner request: focus on the failing acceptance profiles. The last retained run
+is 4/18 PASS, three FAIL, one HOLD and ten BLOCKED after the Node fixture repair.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| AC-1 | Repair empty-run success, preserve failed runtime attempts and accept preinstalled versioned binaries | `python -m unittest tests.upgrade.test_day21_acceptance -v` | PASS: 13 runner regressions; 41 combined acceptance/export tests |
+| AC-2 | Execute available acceptance, retain exact remaining prerequisites and update source bindings | Eighteen-profile receipts, readiness/context and memory checks | runtime BLOCKED on missing packages and binaries; current results retained in acceptance-report.md |
+
+Memory brief: PR 63 contains the prior fixture and evidence integration.
+Governance run 35654152630 has eleven failed jobs with zero steps; annotation
+106513509603 states that billing locked the account before execution. The local
+wheel cache has neither pypdf nor Discord.py; the locked frontend packages,
+PocketBase binaries and Docker images are absent. No network download, billing
+change, CI retrigger or external effect is authorized by this local continuation.
+
 ## Four-gap completion authorized 2026-09-21
 
 Owner request: build all four remaining gaps identified after the merged

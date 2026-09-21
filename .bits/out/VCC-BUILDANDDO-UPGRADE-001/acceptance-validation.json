@@ -1,0 +1,677 @@
+{
+  "schema_version": "buildanddo.acceptance-repair-validation/v1",
+  "recorded_at": "2026-09-21T21:24:15.041166+00:00",
+  "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs_code": "SRS-BUILDANDDO-UPGRADE-001",
+  "status": "PARTIAL",
+  "source_candidate_sha": "42f5a375795299aeb8ac0e2e6c1f0a1691b3b81b",
+  "source_sha256": "0516516fcc3dc0b8f75ddbb9f69ba51ed6dcd841c6a7e7a04b4963173bf5f4fa",
+  "source_files": [
+    {
+      "path": ".bits/context.lock.json",
+      "sha256": "939cbd88522e3c36802157e60b277ce5db3596bb5c8ce67e55c8fdf32b4d74b0"
+    },
+    {
+      "path": ".bits/hostinger-readiness.json",
+      "sha256": "43743933cbbe034293e3732ebec1f2ecfa2f877478d4cc054750822712126727"
+    },
+    {
+      "path": ".bits/hostinger-readiness.lock.json",
+      "sha256": "5f52a5f800a85313c3a67841d9aae88041443b40162ac701fa7251b4ea0e58c8"
+    },
+    {
+      "path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "sha256": "2ba63d6573564d1e71eb713b6f54fedf2c17bac90edac1da40d0215a8a36dcb0"
+    },
+    {
+      "path": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+      "sha256": "85396721286c303b96b0cf655b43c31714548871638b08440430d900c452cd8b"
+    },
+    {
+      "path": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "sha256": "6dc7ff990a6b11fc565b8d86484f127ce4cd47a639b9bdd570c09ef64d785793"
+    },
+    {
+      "path": "docs/hostinger-sprint-closure.md",
+      "sha256": "d61f553cb6f2c6ba25ee827d5c951af04fc47f3f22db8549aa347f169dd75211"
+    },
+    {
+      "path": "tests/upgrade/test_day21_acceptance.py",
+      "sha256": "5e9647644804f454a578382be656f65bf6c67e22b97526061e81a34221ac644f"
+    },
+    {
+      "path": "tools/day21/day21_acceptance.py",
+      "sha256": "3aca17e82f4721b6aa8827a38c4840225f6f8705441b77d61b9f5cdf15e6bf11"
+    }
+  ],
+  "regression": {
+    "observed_before": "Both --source-only and --native-only executed zero profiles but returned zero and printed PASS; summary was HOLD.",
+    "observed_after": "The same invocation rejects contradictory flags with exit 2 before execution.",
+    "before_log": {
+      "path": "/tmp/buildanddo-acceptance-empty-reproduction.log",
+      "sha256": "64d1731d78729d69f8fd66e4b77d31f1cf16a43eddb0b5d4e45dba86b1386e24",
+      "retention": "session-local"
+    },
+    "after_log": {
+      "path": "/tmp/buildanddo-acceptance-empty-regression.log",
+      "sha256": "c4f01ad97b394bbc05e99b209da3f750117e47fbd1a3688b58f37c06e81170ae",
+      "retention": "session-local"
+    }
+  },
+  "focused_tests": {
+    "tests": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": {
+      "path": "/tmp/buildanddo-acceptance-runner-focused-final.log",
+      "sha256": "5445eab795ea179d4431c4282512da58e491400ac28d376a34f79691f7cfc975",
+      "retention": "session-local"
+    }
+  },
+  "coverage": {
+    "method": "stdlib trace including module import and test execution; executable lines, not branches; compiler line 0 is not a source line",
+    "tests": 13,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "path": "tools/day21/day21_acceptance.py",
+    "sha256": "3aca17e82f4721b6aa8827a38c4840225f6f8705441b77d61b9f5cdf15e6bf11",
+    "source_unchanged": true,
+    "covered": 178,
+    "statements": 183,
+    "percent": 97.27,
+    "missing": [
+      36,
+      175,
+      180,
+      184,
+      254
+    ]
+  },
+  "static_checks": {
+    "ruff": {
+      "path": "/tmp/buildanddo-acceptance-ruff-final.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "retention": "session-local"
+    },
+    "mypy": {
+      "path": "/tmp/buildanddo-acceptance-mypy-final.log",
+      "sha256": "5d4b6d285b77932e3d08212c3b4974d0a803f98ec60408ac6ccf6a063fa6c19e",
+      "retention": "session-local"
+    },
+    "scope": "Ruff checks the changed Python source and tests. Strict mypy checks the runner with --follow-imports=silent --explicit-package-bases; transitive legacy modules are not claimed."
+  },
+  "acceptance": {
+    "state": "HOLD",
+    "expected_profiles": 18,
+    "counts": {
+      "PASS": 4,
+      "BLOCKED": 10,
+      "HOLD": 1,
+      "FAIL": 3
+    },
+    "profiles": {
+      "boundary": "PASS",
+      "dependency_lock": "PASS",
+      "native_classroom:compose": "BLOCKED",
+      "native_classroom:package": "BLOCKED",
+      "native_dossier:compose": "BLOCKED",
+      "native_dossier:package": "BLOCKED",
+      "native_learning:compose": "BLOCKED",
+      "native_learning:package": "BLOCKED",
+      "native_suite:compose": "BLOCKED",
+      "native_suite:package": "BLOCKED",
+      "native_workspace:compose": "BLOCKED",
+      "native_workspace:package": "BLOCKED",
+      "semantic_twin": "PASS",
+      "source_node": "PASS",
+      "source_python": "HOLD",
+      "web_build": "FAIL",
+      "web_lint": "FAIL",
+      "web_tests": "FAIL"
+    },
+    "receipts": [
+      {
+        "check": "boundary",
+        "profile": "package",
+        "status": "PASS",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "",
+        "exit_code": 0,
+        "started_at": "2026-09-21T21:18:12.827796+00:00",
+        "finished_at": "2026-09-21T21:18:14.337209+00:00",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/boundary-package-1790025492827815806.json",
+          "sha256": "b26c030c6fa1f3ef55795ba7d2aaa679a166b5559bdf32a1ee32aa455a28d753",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/boundary-package-1790025492827815806.log",
+          "sha256": "92e94368944e048d8583f7def2ce8172d302c1e303fe448a100b083d99aba65c",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "dependency_lock",
+        "profile": "package",
+        "status": "PASS",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "",
+        "exit_code": 0,
+        "started_at": "2026-09-21T21:18:14.895689+00:00",
+        "finished_at": "2026-09-21T21:18:15.122409+00:00",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/dependency_lock-package-1790025494895708954.json",
+          "sha256": "7f3d3f8b1ed8f20853b96d0a8286a889b27f62aec445d6fa6c26c0c5b409920a",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/dependency_lock-package-1790025494895708954.log",
+          "sha256": "8f58cc0dfc76fa603d99afdb5eee8b09208f53b3bacb0a5c3529c88d111b9d98",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_classroom",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:48.973521+00:00",
+        "finished_at": "2026-09-21T21:21:49.034854+00:00",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_classroom-compose-1790025708973541306.json",
+          "sha256": "6384423fc1149b56377fe6161270b6ca24af785bc41b1b52a7b10d51b8822e42",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_classroom-compose-1790025708973541306.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_classroom",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:45.785243+00:00",
+        "finished_at": "2026-09-21T21:21:45.848645+00:00",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_classroom-package-1790025705785261618.json",
+          "sha256": "5709af9151e48fa0299af90ac5233e5a4aa82b442c6becc19756531e8bea7f69",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_classroom-package-1790025705785261618.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_dossier",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:49.600719+00:00",
+        "finished_at": "2026-09-21T21:21:49.671910+00:00",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_dossier-compose-1790025709600741999.json",
+          "sha256": "c5f4bfa9c3c9b91f9723ebe767af8d36788dcfd94fde52ac9370f2240bac6674",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_dossier-compose-1790025709600741999.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_dossier",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:46.432365+00:00",
+        "finished_at": "2026-09-21T21:21:46.493074+00:00",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_dossier-package-1790025706432380816.json",
+          "sha256": "48912d2bad230bbb50983fa38263ef8c3b9512e8ad30b673c64ececc5844e521",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_dossier-package-1790025706432380816.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_learning",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:48.375805+00:00",
+        "finished_at": "2026-09-21T21:21:48.430283+00:00",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_learning-compose-1790025708375824628.json",
+          "sha256": "e5ff06cfac75d7e8b0509b153e531a60f130a093a93e4f275994d7316d1a86d5",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_learning-compose-1790025708375824628.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_learning",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:45.120349+00:00",
+        "finished_at": "2026-09-21T21:21:45.187358+00:00",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_learning-package-1790025705120370831.json",
+          "sha256": "43154dbcaa8bad15efd0b04b0280356bebc7f75241aa03746f6900ca45503a4a",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_learning-package-1790025705120370831.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_suite",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:47.721957+00:00",
+        "finished_at": "2026-09-21T21:21:47.788648+00:00",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_suite-compose-1790025707721977336.json",
+          "sha256": "949e137fad0ce5c754a54a7fafbb9087d877b6ae61777dbed579f353d1b60a88",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_suite-compose-1790025707721977336.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_suite",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:44.488759+00:00",
+        "finished_at": "2026-09-21T21:21:44.552701+00:00",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_suite-package-1790025704488780905.json",
+          "sha256": "e29a3a8373cffca206a7b99065c96f880ffab321ab328146eae382135deeb9e8",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_suite-package-1790025704488780905.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_workspace",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:47.067684+00:00",
+        "finished_at": "2026-09-21T21:21:47.132363+00:00",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_workspace-compose-1790025707067705602.json",
+          "sha256": "2acc6a5240c99a5a8b6122264feda9211cc771aee5458125adcf8c3dc48b3564",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_workspace-compose-1790025707067705602.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "native_workspace",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T21:21:43.877514+00:00",
+        "finished_at": "2026-09-21T21:21:43.935776+00:00",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_workspace-package-1790025703877531967.json",
+          "sha256": "cbc48ac97588377825a8fddc267fa02cf0eff91bd347f9c7d652d35cdd7c4f31",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/native_workspace-package-1790025703877531967.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "semantic_twin",
+        "profile": "package",
+        "status": "PASS",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 122
+        },
+        "reason": "",
+        "exit_code": 0,
+        "started_at": "2026-09-21T21:20:54.493599+00:00",
+        "finished_at": "2026-09-21T21:21:38.575951+00:00",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/semantic_twin-package-1790025654493620060.json",
+          "sha256": "a6d889934162ccd3d32f8c6bc24fc637f06b45b06624c3b89488ff5a8b90e273",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/semantic_twin-package-1790025654493620060.log",
+          "sha256": "2dd85949bbc410a5c82ee092311a18ca0236b61272d11d604b8b85bb942ad607",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "source_node",
+        "profile": "package",
+        "status": "PASS",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 510
+        },
+        "reason": "",
+        "exit_code": 0,
+        "started_at": "2026-09-21T21:18:15.711231+00:00",
+        "finished_at": "2026-09-21T21:18:43.324387+00:00",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/source_node-package-1790025495711251135.json",
+          "sha256": "2c62febe9edf2a81cf0658be70558be112a051fef43513aa5234de9cd9881247",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/source_node-package-1790025495711251135.log",
+          "sha256": "e3639a7fe86b85352b27fd16a7271f3d5cfa3d384e92db75e9552a0b88e796ef",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "source_python",
+        "profile": "package",
+        "status": "HOLD",
+        "counts": {
+          "failures": 0,
+          "skipped": 6,
+          "tests": 725
+        },
+        "reason": "Tests were empty, failing or skipped; acceptance is incomplete.",
+        "exit_code": 0,
+        "started_at": "2026-09-21T21:18:44.013147+00:00",
+        "finished_at": "2026-09-21T21:20:53.936992+00:00",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/source_python-package-1790025524013168953.json",
+          "sha256": "f08b4d7c2040dd8413ca8c4a8b0cfc136cedd698e714347c4a3c6b96b85a745f",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/source_python-package-1790025524013168953.log",
+          "sha256": "dfe939c3d84335e6b88a4c0fa5749cca6614ed765ef99f1d53ad0330e296aeb6",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "web_build",
+        "profile": "package",
+        "status": "FAIL",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "The required command failed; inspect its retained log.",
+        "exit_code": 127,
+        "started_at": "2026-09-21T21:21:42.795062+00:00",
+        "finished_at": "2026-09-21T21:21:43.319860+00:00",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/web_build-package-1790025702795080051.json",
+          "sha256": "a125d47ce34cf714925636469b2a5fab2bee1fa8b8281b66ebd0361280c2f246",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/web_build-package-1790025702795080051.log",
+          "sha256": "5ea869f8ced673362379859fa489acad9ddb0b4cacc0736eaa28e4ba11c2f5dc",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "web_lint",
+        "profile": "package",
+        "status": "FAIL",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "The required command failed; inspect its retained log.",
+        "exit_code": 2,
+        "started_at": "2026-09-21T21:21:39.167024+00:00",
+        "finished_at": "2026-09-21T21:21:41.086897+00:00",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/web_lint-package-1790025699167044285.json",
+          "sha256": "b37b635c495f7e0dd16af55da87fc3823a628e5220c09e1c3307ff22acfb51b4",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/web_lint-package-1790025699167044285.log",
+          "sha256": "bd8fa0462c98fb583f0b6e6229329a6a63060b146a7c478f2fe2b471f3a0154f",
+          "retention": "session-local"
+        }
+      },
+      {
+        "check": "web_tests",
+        "profile": "package",
+        "status": "FAIL",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "The required command failed; inspect its retained log.",
+        "exit_code": 127,
+        "started_at": "2026-09-21T21:21:41.682999+00:00",
+        "finished_at": "2026-09-21T21:21:42.218140+00:00",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "receipt": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/web_tests-package-1790025701683019047.json",
+          "sha256": "6dac96d8fc9a42c73e2cc2bb292f3b0451777333492f5eb1b38c69bc36237aee",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-acceptance-repair-run/receipts/web_tests-package-1790025701683019047.log",
+          "sha256": "39459eea9bbcdd1ab9f11f5cd880b0e03629764f5c05756722c4032f3c3e0404",
+          "retention": "session-local"
+        }
+      }
+    ],
+    "export": {
+      "path": "/tmp/buildanddo-acceptance-repair-run/evidence/acceptance-summary.json",
+      "sha256": "a76677445cfe9ded57961d1d9e74bf68ec1066d6397215b641cffcd783e4515f",
+      "retention": "session-local"
+    },
+    "runner_log": {
+      "path": "/tmp/buildanddo-acceptance-repair-run.log",
+      "sha256": "776b46a07160ec80f8f4245718d444c277d7baeb08b821d3ee721ebd968c2bea",
+      "retention": "session-local"
+    }
+  },
+  "hosted_ci": {
+    "repository": "mrnobodytx/buildanddo",
+    "pull_request": 63,
+    "run_id": 35654152630,
+    "check_run_id": 106513509603,
+    "jobs": 11,
+    "steps_per_job": 0,
+    "annotation": "The job was not started because your account is locked due to a billing issue.",
+    "scope": "Read-only GitHub observation in this continuation. No job was retriggered; this is not execution of the new source candidate."
+  },
+  "prerequisites": {
+    "frontend": "Restore package-lock.json dependencies through npm ci on a provisioned runner.",
+    "python": "Install scripts/discordbot/requirements.txt and apps/research/requirements.txt in the test interpreter; pypdf and Discord.py are absent.",
+    "pocketbase": {
+      "package": "0.39.8",
+      "compose": "0.28.4",
+      "availability": "Neither executable nor a cached Docker image is present."
+    },
+    "local_cache": "The 191 cached Python wheel bodies contain neither pypdf nor Discord.py. Available adapter zod is 4.6.5 rather than the locked 4.4.3, and the frontend toolchain is absent. No dependency version or lock was substituted.",
+    "hosted_runner": "The account owner must restore GitHub Actions billing access."
+  },
+  "retention": "Public result summaries and original candidate/source hashes are retained here. Raw logs, all 18 receipts and the canonical export are session-local at the pinned paths. Regression fixtures are synthetic and cannot replace native or rendered acceptance. Test totals overlap and must not be summed.",
+  "evidence_packaging": "Later report, cumulative-memory and tracked-file inventory edits are separate from acceptance of the recorded source candidate. Executable source and readiness fingerprint remain unchanged.",
+  "ck": "pending",
+  "caps": "pending",
+  "cks": "pending"
+}

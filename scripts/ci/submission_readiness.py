@@ -8,9 +8,9 @@
 # Seat:         BITS-CODEGEN
 # Owner:        Citadel Nexus Inc.
 # Created:      2026-09-20
-# Depends:      .bits/submission-policy.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py
+# Depends:      .bits/submission-policy.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, scripts/ci/gitlab_ci.py
 # EnumType:     Service
-# EnumEdges:    DEPENDS_ON .bits/submission-policy.json; DEPENDS_ON scripts/ci/hostinger_readiness.py; DEPENDS_ON scripts/ci/hostinger_replay.py
+# EnumEdges:    DEPENDS_ON .bits/submission-policy.json; DEPENDS_ON scripts/ci/hostinger_readiness.py; DEPENDS_ON scripts/ci/hostinger_replay.py; CONSUMES scripts/ci/gitlab_ci.py
 # DAG Node:     none
 # Intent:       Keep all eleven submission milestones gated by current acceptance, captured replay and reviewed official requirements.
 # ───────────────────────────────────────────────────────────────
@@ -46,6 +46,7 @@ from scripts.ci.hostinger_readiness import (  # noqa: E402
 from scripts.ci.hostinger_checks import candidate_binding  # noqa: E402
 from scripts.ci.hostinger_replay import project_milestones, reference, validate_capture  # noqa: E402
 from scripts.ci.sprint_cycle import MILESTONES  # noqa: E402
+from scripts.ci.gitlab_ci import require_command  # noqa: E402
 
 POLICY = ".bits/submission-policy.json"
 MATERIALS = (
@@ -108,17 +109,10 @@ def check_wiring(root: Path) -> None:
             command in (root / name).read_text(),
             "Submission governance is missing from " + name + ".",
         )
-    workflow = (root / ".github/workflows/pr-governance.yml").read_text()
-    require(
-        bool(
-            re.search(
-                r"^[ \t]+(?:-[ \t]+)?run: python scripts/ci/submission_readiness\.py --check[ \t]*$",
-                workflow,
-                re.MULTILINE,
-            )
-        ),
-        "The required submission policy check is missing from CI.",
-    )
+    try:
+        require_command(root, "scripts/ci/submission_readiness.py", "--check")
+    except ValueError as error:
+        raise ReadinessError(str(error)) from error
 
 
 def public_url(value: object) -> str:

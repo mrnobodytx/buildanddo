@@ -1,144 +1,160 @@
 {
+  "execution_provider": "gitlab",
+  "execution_state": "UNMEASURED; source inventory is not a pipeline result",
   "findings": [
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/deploy/ship.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/capability_inventory.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_day21_submission.py, tests/upgrade/test_day21_support.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/day21_submission.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/fleet_report.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/candidate_manifest.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: scripts/deploy/ship.py",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/integrity_regression_check.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/capability_inventory.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_box_exercise.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/changelog_gen.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: scripts/deploy/ship.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/datadog_publish.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/emit_datadog_metrics.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: apps/federal_foundry/evidence.py, apps/federal_foundry/protocol.py, apps/mission_suite/bundle.py, apps/mission_suite/engine.py, scripts/deploy/ship.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/evidence_epoch.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_content_assessment.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/fleet_report.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_guild_dogfood.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_box_exercise.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_guild_forum.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_content_assessment.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_mission_lifecycle.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_guild_dogfood.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_observation_record.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_guild_forum.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_rbac_probe.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_mission_lifecycle.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_room_probe.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_observation_record.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_seat_session.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_rbac_probe.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_signal_lifecycle.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_room_probe.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_subsystem_probe.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_seat_session.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/selftest_sprint_replay.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_signal_lifecycle.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_subsystem_probe.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tools/day21_closure.py",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/sprint_cycle.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/sprint_cycle.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/sprint_replay.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/telemetry_delta.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/verify_public_disclosure.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/telemetry_snapshot.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
-      "srs": "SRS-BUILDANDDO-EVIDENCE-CI-001",
-      "statement": "services/praxis_evidence/run_all_tests.py is never executed by GitHub Actions"
+      "srs": "",
+      "statement": "scripts/ci/verify_public_disclosure.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "governance",
@@ -157,18 +173,27 @@
   ],
   "gates": [
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/agent_context.py",
       "referenced_by": [
+        "tests/upgrade/test_gitlab_acceptance.py",
         "tests/upgrade/test_hostinger_readiness.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/candidate_manifest.py",
       "referenced_by": [],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/capability_inventory.py",
       "referenced_by": [
         "scripts/deploy/ship.py"
@@ -176,34 +201,50 @@
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/changelog_gen.py",
       "referenced_by": [],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/datadog_publish.py",
       "referenced_by": [
         "scripts/deploy/ship.py"
       ],
-      "wired_into_ci": true
-    },
-    {
-      "path": "scripts/ci/day21_submission.py",
-      "referenced_by": [
-        "tests/upgrade/test_day21_submission.py",
-        "tests/upgrade/test_day21_support.py"
-      ],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "scripts/ci/day21_submission.py",
+      "referenced_by": [
+        "tests/upgrade/test_day21_submission.py",
+        "tests/upgrade/test_day21_support.py",
+        "tests/upgrade/test_gitlab_acceptance.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/emit_datadog_metrics.py",
       "referenced_by": [
         "apps/federal_foundry/operator.py",
         "tests/upgrade/test_datadog_metrics.py"
       ],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/evidence_epoch.py",
       "referenced_by": [
         "apps/federal_foundry/evidence.py",
@@ -212,93 +253,116 @@
         "apps/mission_suite/engine.py",
         "scripts/deploy/ship.py"
       ],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/fleet_report.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/hostinger_readiness.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
         "scripts/ci/hostinger_replay.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
         "tests/upgrade/test_hostinger_readiness.py",
         "tests/upgrade/test_hostinger_replay.py",
-        "tools/day21/day21_acceptance.py",
         "tools/day21/day21_architecture_snapshot.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
       "path": "scripts/ci/integrity_regression_check.py",
       "referenced_by": [
         "scripts/deploy/ship.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_box_exercise.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_content_assessment.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_guild_dogfood.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_guild_forum.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_mission_lifecycle.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_observation_record.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_rbac_probe.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_room_probe.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_seat_session.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_signal_lifecycle.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_subsystem_probe.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
       "path": "scripts/ci/selftest_sprint_replay.py",
       "referenced_by": [],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/sprint_cycle.py",
       "referenced_by": [
         "scripts/ci/hostinger_replay.py",
@@ -308,57 +372,96 @@
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
       "path": "scripts/ci/sprint_replay.py",
       "referenced_by": [],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/submission_readiness.py",
       "referenced_by": [
         "tests/upgrade/check_sprint_execution.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
         "tests/upgrade/test_submission_readiness.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/supply_chain.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
         "tests/upgrade/test_hostinger_readiness.py",
         "tests/upgrade/test_supply_chain.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/telemetry_delta.py",
       "referenced_by": [],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/telemetry_snapshot.py",
       "referenced_by": [],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/verify_public_boundary.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
-        "scripts/publish/activity_publish.py"
+        "scripts/publish/activity_publish.py",
+        "tests/upgrade/test_gitlab_acceptance.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/verify_public_disclosure.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
       "path": "services/praxis_evidence/run_all_tests.py",
       "referenced_by": [],
-      "wired_into_ci": false
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "tools/day21/day21_acceptance.py",
+      "referenced_by": [
+        "tests/upgrade/test_day21_acceptance.py",
+        "tests/upgrade/test_gitlab_acceptance.py"
+      ],
+      "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-21T20:46:50.664823+00:00",
+  "generated_at": "2026-09-21T22:25:34.958383+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -613,6 +716,7 @@
         "build",
         "lint"
       ],
+      "provider": "github",
       "scripts": [
         "scripts/ci/candidate_manifest.py",
         "scripts/ci/supply_chain.py",
@@ -629,6 +733,7 @@
       "local_actions": [],
       "name": "BuildAndDo Citadel Stack Telemetry",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/emit_datadog_metrics.py"
       ],
@@ -643,6 +748,7 @@
       "local_actions": [],
       "name": "Datadog DORA Deployment",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/datadog_publish.py"
       ],
@@ -658,6 +764,7 @@
       "npm_scripts": [
         "build"
       ],
+      "provider": "github",
       "scripts": [
         "scripts/ci/datadog_publish.py",
         "scripts/ci/evidence_epoch.py",
@@ -676,6 +783,7 @@
       ],
       "name": "BuildAndDo PR Governance",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/agent_context.py",
         "scripts/ci/changelog_gen.py",
@@ -696,6 +804,7 @@
       ],
       "name": "BuildAndDo Weekly Supply Chain",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/supply_chain.py"
       ],
@@ -710,6 +819,7 @@
       "local_actions": [],
       "name": "Datadog CI report",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/datadog_publish.py",
         "scripts/ci/supply_chain.py",
@@ -717,6 +827,75 @@
         "scripts/ci/telemetry_snapshot.py"
       ],
       "triggers": []
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab-ci.yml",
+      "jobs": [
+        "integrity_gate",
+        "sprint_replay",
+        "praxis_evidence_tests",
+        "buildanddo_release_candidate"
+      ],
+      "kind": "pipeline",
+      "local_actions": [],
+      "name": ".gitlab-ci",
+      "npm_scripts": [],
+      "provider": "gitlab",
+      "required_scripts": [
+        "scripts/ci/integrity_regression_check.py",
+        "scripts/ci/selftest_sprint_replay.py",
+        "scripts/ci/sprint_replay.py",
+        "scripts/ci/verify_public_boundary.py",
+        "services/praxis_evidence/run_all_tests.py",
+        "tools/buildanddo_release.py"
+      ],
+      "scripts": [
+        "scripts/ci/integrity_regression_check.py",
+        "scripts/ci/selftest_sprint_replay.py",
+        "scripts/ci/sprint_replay.py",
+        "scripts/ci/verify_public_boundary.py",
+        "services/praxis_evidence/run_all_tests.py",
+        "tools/buildanddo_release.py"
+      ],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab/ci/day21-submission.yml",
+      "jobs": [
+        "day21_governance",
+        "day21_full_acceptance",
+        "day21_submission_bundle"
+      ],
+      "kind": "include",
+      "local_actions": [],
+      "name": "day21-submission",
+      "npm_scripts": [],
+      "provider": "gitlab",
+      "required_scripts": [
+        "scripts/ci/agent_context.py",
+        "scripts/ci/day21_submission.py",
+        "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/submission_readiness.py",
+        "scripts/ci/supply_chain.py",
+        "scripts/ci/verify_public_boundary.py",
+        "tools/day21/day21_acceptance.py"
+      ],
+      "scripts": [
+        "scripts/ci/agent_context.py",
+        "scripts/ci/day21_submission.py",
+        "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/submission_readiness.py",
+        "scripts/ci/supply_chain.py",
+        "scripts/ci/verify_public_boundary.py",
+        "tools/day21/day21_acceptance.py"
+      ],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
     }
   ],
   "repo": {
@@ -742,11 +921,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 46,
-    "python_files": 313,
+    "python_files": 316,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1286,
+    "tracked_files": 1295,
     "web_source_files": 333
   },
   "schema_version": 1,
@@ -755,7 +934,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "Restore the GitHub account's Actions access, run the required acceptance checks and inspect the separate Cloudflare build diagnostic.",
+        "next_step": "Execute day21_full_acceptance on the GitLab buildanddo runner for one clean candidate; retain all eighteen profiles and the complete artifact export. Missing local dependencies remain prerequisites, and the separate Cloudflare diagnostic belongs to the hosting owner.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -820,16 +999,16 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+    "source_sha256": "c123fe9cf39db9b0d001a5c9db9629b54802cbadd8564c4a23496cfd22fa4db4",
     "state": "PASS"
   },
   "summary": {
-    "findings": 22,
-    "findings_high": 22,
-    "pipelines": 7,
+    "findings": 24,
+    "findings_high": 24,
+    "pipelines": 9,
     "srs_open": 28,
     "srs_total": 32,
-    "unwired_gates": 20
+    "unwired_gates": 22
   },
   "tests": {
     "js_runners": [

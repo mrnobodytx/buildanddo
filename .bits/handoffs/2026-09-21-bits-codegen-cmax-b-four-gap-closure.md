@@ -25,13 +25,17 @@ receiving work; they do not record assignment, notification or runtime activatio
 | Receiving owner | Required input or action | Executable consumer |
 |---|---|---|
 | Acceptance operator / IDE1 | Locked npm dependencies, apps/research/requirements.txt and scripts/discordbot/requirements.txt dependencies, and both declared disposable PocketBase versions | hostinger_readiness.py --run all, followed by every native check in the other runtime profile |
-| Repository account owner | Resolve the last-reported Actions billing block and retain actually executed jobs for the chosen revision | Existing repository CI and development source capture |
+| GitLab runner owner | Execute the full Day-21 acceptance job on the chosen revision and retain its complete export, JUnit and original build artifact | .gitlab/ci/day21-submission.yml and the shared acceptance validator |
 | Independent reviewer / COPILOT | Inspect the frozen source, actual change and process evidence; author OutcomeLabels and an exact VerificationReceipt | review_packets inspect and admit, with independently distributed ReviewPolicy pins |
 | Capability runtime / CMAX-B | Sufficient real discovery, disjoint replay/shadow cases, teacher observations, compatibility and independent promotion proof | Existing libs.evolution CLI and unchanged qualification thresholds |
 | Private release owner | Deploy the accepted candidate through the existing authorized lane and export sanitized release/provider readback | Existing hostinger_replay.validate_capture |
 | Browser acceptance operator | Candidate/source/artifact-bound response body, six ordered browser steps, screenshots, console log and actual walkthrough | Day-21 evidence audit and final submission audit |
 | Hostinger product owners | Four separate observed uses of Agent, AI Builder, Web Hosting and VPS | Day-21 product proof validation |
 | Competition owner | Actual organizer rules and deadline/time zone, eleven milestone decisions, approved materials and external submission confirmation | submission_readiness.py; the external submission remains an owner action |
+
+The owner's GitLab correction supersedes the previous Actions-billing receiving
+action. The historical GitHub failure is provider-specific and is not a GitLab
+blocker. Pipeline execution and runner health still require actual GitLab evidence.
 
 Dependency installation could not be completed from the available offline cache:
 the npm cache lacks a required locked zod tarball, Python has neither pypdf nor
