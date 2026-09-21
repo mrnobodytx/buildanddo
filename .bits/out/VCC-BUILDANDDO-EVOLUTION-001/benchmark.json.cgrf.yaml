@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-EVOLUTION-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-EVOLUTION-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-21
+# Depends:     .bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json, libs/evolution/benchmark.py
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json; CONSUMES libs/evolution/benchmark.py
+# Intent:      Retain actual historical predictions and explicit missing grading evidence for chronological comparison.
+# ───────────────────────────────────────────────────────────────
+schema_version: 1
+artifact: .bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json
+evidence_scope: local source implementation and public historical observations
+runtime_acceptance: UNMEASURED
