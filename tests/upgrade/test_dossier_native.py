@@ -134,7 +134,10 @@ class NativeServer:
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             migrations = self.root / "migrations"
             migrations.mkdir()
-            (migrations / "1_fixture.js").write_text(SEED)
+            # PocketBase applies migrations in byte-wise filename order, so "1_fixture.js"
+            # sorted AFTER every timestamped product migration ("_" 0x5F > "7" 0x37) and
+            # they aborted looking up collections this fixture creates. Sort it first.
+            (migrations / "0000000001_fixture.js").write_text(SEED)
             for name in [
                 "1790100000_mission_research.js",
                 "1790200000_private_dossiers.js",

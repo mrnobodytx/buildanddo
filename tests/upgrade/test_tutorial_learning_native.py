@@ -121,7 +121,10 @@ class LearningServer(NativeServer):
                 **curriculum["lessons"][0],
                 "curriculum_version": curriculum["version"],
             }
-            (migrations / "1_fixture.js").write_text(
+            # PocketBase applies migrations in byte-wise filename order, so "1_fixture.js"
+            # sorted AFTER every timestamped product migration ("_" 0x5F > "7" 0x37) and
+            # they aborted looking up collections this fixture creates. Sort it first.
+            (migrations / "0000000001_fixture.js").write_text(
                 SEED.replace("__LESSON__", json.dumps(json.dumps(self.lesson)))
             )
             shutil.copyfile(
