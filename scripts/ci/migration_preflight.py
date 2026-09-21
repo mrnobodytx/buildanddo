@@ -56,6 +56,7 @@ import shutil
 import sqlite3
 import subprocess
 import tempfile
+import threading
 import time
 
 BROKEN = """/// preflight selftest - deliberately invalid, MUST abort startup.
@@ -78,8 +79,22 @@ def applied_set(db_path):
         return None, "%s: %s" % (type(exc).__name__, str(exc)[:120])
 
 
+SERVING = "Server started at"
+
+
 def start_once(binary, data_dir, hooks, migrations, seconds=25):
-    """Start PocketBase against a scratch data dir and see whether it survives startup."""
+    """Start PocketBase against a scratch data dir and see whether it REACHES SERVING.
+
+    MEASURED 2026-09-21, and the reason this no longer reports mere survival. Preflighting the
+    promotion of staging to production meant 33 pending migrations instead of one. They were still
+    applying when the deadline expired, and the old check - has the process exited yet - called
+    that STAYED_UP and returned PASS. It returned PASS on the SELFTEST too, where a deliberately
+    broken migration sits at 9999999999 and the run had simply not got that far.
+
+    A gate that passes its own negative control is measuring nothing, and this one would have
+    cleared a production deploy on the strength of it. Startup now means the serving line appeared;
+    running out of time before that is TIMEOUT, which is not a pass.
+    """
     port = 8099
     cmd = [binary, "serve", "--http", "127.0.0.1:%d" % port, "--dir", data_dir]
     if hooks:
@@ -90,19 +105,37 @@ def start_once(binary, data_dir, hooks, migrations, seconds=25):
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     except Exception as exc:  # noqa: BLE001
         return {"state": "UNMEASURED", "reason": "could not exec: %s" % type(exc).__name__}
+
+    # Drain the pipe on a thread. A long migration batch writes more than the pipe buffer holds,
+    # and a full pipe would block the very process we are timing.
+    lines = []
+    pump = threading.Thread(target=lambda: lines.extend(iter(proc.stdout.readline, "")),
+                            daemon=True)
+    pump.start()
+
+    def stop():
+        proc.terminate()
+        try:
+            proc.wait(timeout=10)
+        except Exception:  # noqa: BLE001
+            proc.kill()
+        pump.join(timeout=5)
+
     deadline = time.time() + seconds
     while time.time() < deadline:
+        if any(SERVING in line for line in list(lines)):
+            stop()
+            return {"state": "STARTED", "output": "".join(lines)[-900:]}
         if proc.poll() is not None:
-            out = (proc.stdout.read() if proc.stdout else "") or ""
-            return {"state": "DIED", "exit_code": proc.returncode, "output": out[-1200:]}
+            pump.join(timeout=5)
+            return {"state": "DIED", "exit_code": proc.returncode,
+                    "output": "".join(lines)[-1200:]}
         time.sleep(0.5)
-    proc.terminate()
-    try:
-        proc.wait(timeout=10)
-    except Exception:  # noqa: BLE001
-        proc.kill()
-    out = (proc.stdout.read() if proc.stdout else "") or ""
-    return {"state": "STAYED_UP", "output": out[-600:]}
+    stop()
+    return {"state": "TIMEOUT", "seconds": seconds,
+            "reason": "still running after %ds and never reached %r - it may still be applying "
+                      "migrations, which is NOT a pass" % (seconds, SERVING),
+            "output": "".join(lines)[-900:]}
 
 
 def preflight(root, plant_broken=False, seconds=25):
@@ -149,12 +182,17 @@ def preflight(root, plant_broken=False, seconds=25):
         result = start_once(str(binary), str(data_dir),
                             str(hooks) if hooks.exists() else "", str(mig_copy), seconds)
         out["startup"] = result
-        if result["state"] == "STAYED_UP":
+        if result["state"] == "STARTED":
             out["state"] = "PASS"
-            out["verdict"] = "the pending set starts a service on a copy of live data"
+            out["verdict"] = "the pending set reaches a serving backend on a copy of live data"
         elif result["state"] == "DIED":
             out["state"] = "FAIL"
             out["verdict"] = "the pending set ABORTS startup - do not deploy it"
+        elif result["state"] == "TIMEOUT":
+            out["state"] = "UNMEASURED"
+            out["verdict"] = ("the run never reached a serving backend inside the window - raise "
+                              "--seconds until it either serves or dies, but do NOT read this as "
+                              "a pass")
         else:
             out["state"] = "UNMEASURED"
             out["verdict"] = result.get("reason", "could not run the binary")
