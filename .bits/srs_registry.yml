@@ -32,6 +32,13 @@
 schema_version: 1
 
 srs:
+  - code: SRS-BUILDANDDO-EVOLUTION-001
+    title: Citadel Verified Evolution Fabric v1
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md
+    notes: Owner-requested additive local observation, episode, replay, typed competence promotion and proposal fabric; authority changes, remote effects and existing runtime mutation excluded
+
   - code: SRS-BUILDANDDO-ESTATE-001
     title: Citadel Estate Intelligence deterministic repository compiler
     status: in_progress

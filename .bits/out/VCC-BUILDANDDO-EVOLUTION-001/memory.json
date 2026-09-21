@@ -1,0 +1,2286 @@
+{
+  "vectors": [
+    {
+      "type": "A",
+      "file_path": ".bits/context.lock.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [],
+      "lines": 625,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Refresh the measured repository inventory for the new governed evolution source without claiming runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": false
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-evolution-runtime.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/verified-evolution.md",
+        ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md"
+      ],
+      "lines": 62,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep authenticated capture, model binding and governed execution with the receiving runtime owner.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/hostinger-readiness.lock.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/hostinger-readiness.lock.json"
+      ],
+      "lines": 918,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": false
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json",
+        "libs/evolution/benchmark.py"
+      ],
+      "lines": 14139,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain actual historical predictions and explicit missing grading evidence for chronological comparison.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json",
+        "libs/evolution/benchmark.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain actual historical predictions and explicit missing grading evidence for chronological comparison.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json",
+        ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md"
+      ],
+      "lines": 2286,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve file intent, declared relationships and observed validation events for this source dispatch.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json",
+        ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve file intent, declared relationships and observed validation events for this source dispatch.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json",
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json",
+        "docs/verified-evolution.md"
+      ],
+      "lines": 173,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the measured source implementation and remaining runtime evidence without promoting unsupported claims.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+        "libs/evolution/cli.py"
+      ],
+      "lines": 545,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact source-test output, measured coverage and source binding without asserting runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+        "libs/evolution/cli.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact source-test output, measured coverage and source binding without asserting runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "header",
+        "file_at",
+        "check_prefixes",
+        "main"
+      ],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json",
+        ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json",
+        ".bits/context.lock.json",
+        ".bits/hostinger-readiness.lock.json"
+      ],
+      "lines": 233,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Recheck exact source and log bindings, historical denominators and dispatch memory integrity.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-EVOLUTION-001.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 65,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound and verify the additive evolution loop before any receiving runtime integration.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "AGENTS.md",
+        "libs/semantic_twin/promotions.py",
+        "libs/semantic_twin/transactions.py"
+      ],
+      "lines": 80,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect captured experience to measured proposal competence without increasing execution authority.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs_registry.yml",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/context.md",
+        "scripts/ci/agent_context.py"
+      ],
+      "lines": 228,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": false
+    },
+    {
+      "type": "A",
+      "file_path": "docs/verified-evolution.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "libs/evolution/cli.py",
+        "libs/evolution/promotion.py",
+        "libs/evolution/compiler.py",
+        "libs/semantic_twin/phase1/compiler.py",
+        "libs/semantic_twin/transactions.py"
+      ],
+      "lines": 266,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the executable learning lifecycle, evidence denominators and receiving authority boundary.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/__init__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "libs/semantic_twin"
+      ],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose the additive local evolution fabric without activating a runtime.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/__main__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "libs/evolution/cli.py"
+      ],
+      "lines": 22,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the governed local lifecycle runnable without installation or third-party dependencies.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/adapters.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "CapturedRecord",
+        "Capture",
+        "Adaptation",
+        "normalize_capture",
+        "ingest_local",
+        "observe_git"
+      ],
+      "dependencies": [
+        "libs/evolution/event.py",
+        "libs/semantic_twin/models.py",
+        "libs/semantic_twin/phase1/history.py"
+      ],
+      "lines": 343,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Normalize captured provider, mission, memory, telemetry and twin evidence without live access or implied verification.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/benchmark.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "HistoricalReadError",
+        "_git",
+        "_available_blobs",
+        "_tree",
+        "_blobs",
+        "_module_name",
+        "_first_parent_changes",
+        "_imports",
+        "_subsystem",
+        "HistoricalPrediction",
+        "HistoricalModelCapture",
+        "HistoricalCase",
+        "_prediction",
+        "_scores",
+        "BenchmarkReport",
+        "benchmark",
+        "compare_epochs"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/phase1/history.py",
+        "libs/evolution/episode.py",
+        "libs/evolution/scorer.py"
+      ],
+      "lines": 678,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Measure BuildAndDo history from exact parent trees while leaving absent outcome and model evidence ungraded.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/candidate.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Compatibility",
+        "GraphCondition",
+        "GraphLookup",
+        "Decision",
+        "ResponseTemplate",
+        "Rule",
+        "TrainingIdentity",
+        "Candidate",
+        "discover_candidates"
+      ],
+      "dependencies": [
+        "libs/evolution/episode.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 340,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Discover repeatable response hypotheses with exact corpus and authority boundaries.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/cli.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "parser",
+        "_array",
+        "_record",
+        "_evaluation",
+        "_promote",
+        "execute",
+        "_human_status",
+        "main"
+      ],
+      "dependencies": [
+        "libs/evolution/adapters.py",
+        "libs/evolution/benchmark.py",
+        "libs/evolution/loop.py",
+        "libs/evolution/promotion.py"
+      ],
+      "lines": 482,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose the complete local feedback lifecycle with retained evidence and explicit HOLD outcomes.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/common.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "json_value",
+        "digest",
+        "identity",
+        "timestamp",
+        "mapping",
+        "string_tuple",
+        "decode_json",
+        "read_json",
+        "unique"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/ingestion/drafts.py"
+      ],
+      "lines": 128,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep evolution identities and wire data on the semantic twin serialization contract.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/compiler.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_require_as_of",
+        "GraphSnapshot",
+        "usable",
+        "DecisionInput",
+        "_bind",
+        "evaluate_rule",
+        "ActionProposal",
+        "propose"
+      ],
+      "dependencies": [
+        "libs/evolution/candidate.py",
+        "libs/semantic_twin/ingestion/graph.py",
+        "libs/semantic_twin/transactions.py"
+      ],
+      "lines": 420,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compile exact graph rules into bounded proposals that enter the existing change-contract boundary.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/episode.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Attempt",
+        "Episode",
+        "event_order",
+        "build_episodes"
+      ],
+      "dependencies": [
+        "libs/evolution/event.py",
+        "libs/semantic_twin/promotions.py"
+      ],
+      "lines": 282,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain complete attempt histories and require independent result-bound receipts for verified episodes.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/event.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Phase",
+        "SourceKind",
+        "CitadelEvent"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/promotions.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/evolution/common.py"
+      ],
+      "lines": 166,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve provenance and authority while normalizing local observations into immutable events.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/loop.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "EvolutionEpoch",
+        "refresh_episodes",
+        "capture_epoch",
+        "next_actions",
+        "observe_compatibility"
+      ],
+      "dependencies": [
+        "libs/evolution/store.py",
+        "libs/evolution/episode.py",
+        "libs/evolution/registry.py"
+      ],
+      "lines": 266,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Close local observation and proposal feedback with retained episode revisions and honest chronological metrics.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/promotion.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "CompetenceState",
+        "PromotionPolicy",
+        "qualification_issues",
+        "HealthObservation",
+        "PromotionStep",
+        "demotion_target",
+        "_verified_gate",
+        "CapabilityRecord",
+        "register",
+        "advance",
+        "demote"
+      ],
+      "dependencies": [
+        "libs/evolution/replay.py",
+        "libs/semantic_twin/promotions.py"
+      ],
+      "lines": 511,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require exact independent TEVV proofs for competence and preserve authority through promotion and demotion.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/registry.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "InferenceMode",
+        "TokenlessProgram",
+        "compile_capability",
+        "ModelAttempt",
+        "Selection",
+        "require_bounded",
+        "select"
+      ],
+      "dependencies": [
+        "libs/evolution/promotion.py",
+        "libs/evolution/compiler.py",
+        "libs/evolution/event.py"
+      ],
+      "lines": 259,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Select compiled proposals or configured fallbacks at unchanged authority and feed their actual use back into observations.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/replay.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "EvaluationMode",
+        "ReplayCase",
+        "TeacherPrediction",
+        "CaseEvaluation",
+        "require_holdout",
+        "EvaluationReport",
+        "evaluate"
+      ],
+      "dependencies": [
+        "libs/evolution/compiler.py",
+        "libs/evolution/episode.py",
+        "libs/evolution/scorer.py"
+      ],
+      "lines": 314,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Measure disjoint historical and captured shadow predictions while refusing future context and unverified grading labels.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/scorer.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "OutcomeLabels",
+        "Rate",
+        "Resources",
+        "ScoredDecision",
+        "score",
+        "resource_summary"
+      ],
+      "dependencies": [
+        "libs/evolution/candidate.py",
+        "libs/semantic_twin/contracts.py"
+      ],
+      "lines": 228,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make outcome accuracy and resource differences measurable without inventing missing grading answers.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/store.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Journal"
+      ],
+      "dependencies": [
+        "libs/evolution/event.py",
+        "libs/evolution/promotion.py"
+      ],
+      "lines": 310,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain scoped local evidence and irreversible audit history while rejecting concurrent or rewritten registry updates.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/citadel-evolve",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "libs/evolution/cli.py"
+      ],
+      "lines": 28,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose citadel-evolve as a repository-local executable without modifying existing configuration.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_evolution_cli.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "JournalTests",
+        "HistoricalBenchmarkTests",
+        "CliTests"
+      ],
+      "dependencies": [
+        "libs/evolution/cli.py",
+        "libs/evolution/store.py",
+        "libs/evolution/benchmark.py",
+        "libs/evolution/loop.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 753,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Validate durable lifecycle execution, scoped retries, historical boundaries and unknown scoring denominators.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_evolution_events.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "EventTests",
+        "EpisodeTests",
+        "CandidateTests",
+        "AdapterTests"
+      ],
+      "dependencies": [
+        "libs/evolution/adapters.py",
+        "libs/evolution/candidate.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 390,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Test provenance, tenant scope, typed result verification and discovery cutoffs before learning can proceed.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_evolution_learning.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "live_input",
+        "CompilerTests",
+        "ReplayTests",
+        "PromotionTests",
+        "RegistryTests"
+      ],
+      "dependencies": [
+        "libs/evolution/replay.py",
+        "libs/evolution/promotion.py",
+        "libs/evolution/registry.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 699,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove evidence gates, replay isolation, deterministic compilation and authority preservation under negative cases.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_evolution_support.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-EVOLUTION-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "at",
+        "compatibility",
+        "verification",
+        "event",
+        "episode",
+        "graph",
+        "candidate",
+        "replay_case",
+        "evaluations",
+        "preferred"
+      ],
+      "dependencies": [
+        "libs/evolution/event.py",
+        "libs/evolution/candidate.py"
+      ],
+      "lines": 439,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep synthetic learning receipts and timelines distinct from real deployment evidence.",
+      "objective_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-EVOLUTION-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "verified-evolution"
+      ],
+      "tenant_id": null,
+      "authored_in_dispatch": true
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-evolution-runtime.md",
+      "target": "docs/verified-evolution.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-evolution-runtime.md declares CONSUMES docs/verified-evolution.md.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-evolution-runtime.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-evolution-runtime.md declares DEPENDS_ON .bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json.cgrf.yaml",
+      "target": "libs/evolution/benchmark.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json.cgrf.yaml declares CONSUMES libs/evolution/benchmark.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json.cgrf.yaml",
+      "target": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json.cgrf.yaml declares CONSUMES .bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/report.md",
+      "target": "docs/verified-evolution.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/report.md declares CONSUMES docs/verified-evolution.md.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json.cgrf.yaml",
+      "target": "libs/evolution/cli.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json.cgrf.yaml declares CONSUMES libs/evolution/cli.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py",
+      "target": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py declares VALIDATES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py",
+      "target": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py declares VALIDATES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py",
+      "target": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py declares VALIDATES .bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py",
+      "target": ".bits/context.lock.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py declares CONSUMES .bits/context.lock.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py",
+      "target": ".bits/hostinger-readiness.lock.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py declares CONSUMES .bits/hostinger-readiness.lock.json.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-EVOLUTION-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/queue/VCC-BUILDANDDO-EVOLUTION-001.md declares DEPENDS_ON .bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-EVOLUTION-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/queue/VCC-BUILDANDDO-EVOLUTION-001.md declares DEPENDS_ON .bits/srs_registry.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+      "target": "AGENTS.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md declares CONSUMES AGENTS.md.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md declares CONSUMES libs/semantic_twin/promotions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+      "target": "libs/semantic_twin/transactions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md declares CONSUMES libs/semantic_twin/transactions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": "bits/SRS-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": ".bits/srs_registry.yml declares GATES bits/SRS-* branches.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": ".bits/srs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/srs_registry.yml declares VALIDATES .bits/srs.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/verified-evolution.md",
+      "target": "libs/evolution/cli.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/verified-evolution.md declares CONSUMES libs/evolution/cli.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/verified-evolution.md",
+      "target": "libs/evolution/promotion.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/verified-evolution.md declares CONSUMES libs/evolution/promotion.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/verified-evolution.md",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/verified-evolution.md declares CONSUMES libs/evolution/compiler.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/verified-evolution.md",
+      "target": "libs/semantic_twin/phase1/compiler.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/verified-evolution.md declares CONSUMES libs/semantic_twin/phase1/compiler.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/verified-evolution.md",
+      "target": "libs/semantic_twin/transactions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/verified-evolution.md declares CONSUMES libs/semantic_twin/transactions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/__init__.py",
+      "target": "libs/semantic_twin",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/__init__.py declares CONSUMES libs/semantic_twin.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/__main__.py",
+      "target": "libs/evolution/cli.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/__main__.py declares CONSUMES libs/evolution/cli.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/adapters.py",
+      "target": "libs/evolution/event.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/adapters.py declares CONSUMES libs/evolution/event.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/adapters.py",
+      "target": "libs/semantic_twin/models.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/adapters.py declares CONSUMES libs/semantic_twin/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/adapters.py",
+      "target": "libs/semantic_twin/phase1/history.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/adapters.py declares CONSUMES libs/semantic_twin/phase1/history.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/benchmark.py",
+      "target": "libs/semantic_twin/phase1/history.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/benchmark.py declares CONSUMES libs/semantic_twin/phase1/history.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/benchmark.py",
+      "target": "libs/evolution/episode.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/benchmark.py declares CONSUMES libs/evolution/episode.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/benchmark.py",
+      "target": "libs/evolution/scorer.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/benchmark.py declares CONSUMES libs/evolution/scorer.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/candidate.py",
+      "target": "libs/evolution/episode.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/candidate.py declares CONSUMES libs/evolution/episode.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/candidate.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/candidate.py declares CONSUMES libs/semantic_twin/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/candidate.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/candidate.py declares CONSUMES libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/cli.py",
+      "target": "libs/evolution/adapters.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/cli.py declares CONSUMES libs/evolution/adapters.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/cli.py",
+      "target": "libs/evolution/benchmark.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/cli.py declares CONSUMES libs/evolution/benchmark.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/cli.py",
+      "target": "libs/evolution/loop.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/cli.py declares CONSUMES libs/evolution/loop.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/cli.py",
+      "target": "libs/evolution/promotion.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/cli.py declares CONSUMES libs/evolution/promotion.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/common.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/common.py declares CONSUMES libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/common.py",
+      "target": "libs/semantic_twin/ingestion/drafts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/common.py declares CONSUMES libs/semantic_twin/ingestion/drafts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/compiler.py",
+      "target": "libs/evolution/candidate.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/compiler.py declares CONSUMES libs/evolution/candidate.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/compiler.py",
+      "target": "libs/semantic_twin/ingestion/graph.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/compiler.py declares CONSUMES libs/semantic_twin/ingestion/graph.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/compiler.py",
+      "target": "libs/semantic_twin/transactions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/compiler.py declares CONSUMES libs/semantic_twin/transactions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/episode.py",
+      "target": "libs/evolution/event.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/episode.py declares CONSUMES libs/evolution/event.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/episode.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/episode.py declares CONSUMES libs/semantic_twin/promotions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/event.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/event.py declares CONSUMES libs/semantic_twin/promotions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/event.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/event.py declares CONSUMES libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/event.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/event.py declares CONSUMES libs/evolution/common.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/loop.py",
+      "target": "libs/evolution/store.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/loop.py declares CONSUMES libs/evolution/store.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/loop.py",
+      "target": "libs/evolution/episode.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/loop.py declares CONSUMES libs/evolution/episode.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/loop.py",
+      "target": "libs/evolution/registry.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/loop.py declares CONSUMES libs/evolution/registry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/promotion.py",
+      "target": "libs/evolution/replay.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/promotion.py declares CONSUMES libs/evolution/replay.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/promotion.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/promotion.py declares CONSUMES libs/semantic_twin/promotions.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/registry.py",
+      "target": "libs/evolution/promotion.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/registry.py declares CONSUMES libs/evolution/promotion.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/registry.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/registry.py declares CONSUMES libs/evolution/compiler.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/registry.py",
+      "target": "libs/evolution/event.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/registry.py declares CONSUMES libs/evolution/event.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/replay.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/replay.py declares CONSUMES libs/evolution/compiler.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/replay.py",
+      "target": "libs/evolution/episode.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/replay.py declares CONSUMES libs/evolution/episode.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/replay.py",
+      "target": "libs/evolution/scorer.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/replay.py declares CONSUMES libs/evolution/scorer.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/scorer.py",
+      "target": "libs/evolution/candidate.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/scorer.py declares CONSUMES libs/evolution/candidate.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/scorer.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/scorer.py declares CONSUMES libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/store.py",
+      "target": "libs/evolution/event.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/store.py declares CONSUMES libs/evolution/event.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/store.py",
+      "target": "libs/evolution/promotion.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/store.py declares CONSUMES libs/evolution/promotion.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/citadel-evolve",
+      "target": "libs/evolution/cli.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/citadel-evolve declares CONSUMES libs/evolution/cli.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_cli.py",
+      "target": "libs/evolution/cli.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_cli.py declares VALIDATES libs/evolution/cli.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_cli.py",
+      "target": "libs/evolution/store.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_cli.py declares VALIDATES libs/evolution/store.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_cli.py",
+      "target": "libs/evolution/benchmark.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_cli.py declares VALIDATES libs/evolution/benchmark.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_cli.py",
+      "target": "libs/evolution/loop.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_cli.py declares VALIDATES libs/evolution/loop.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_cli.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_cli.py declares VALIDATES tests/upgrade/test_evolution_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_events.py",
+      "target": "libs/evolution/adapters.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_events.py declares VALIDATES libs/evolution/adapters.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_events.py",
+      "target": "libs/evolution/candidate.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_events.py declares VALIDATES libs/evolution/candidate.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_events.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_events.py declares VALIDATES tests/upgrade/test_evolution_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_learning.py",
+      "target": "libs/evolution/replay.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_learning.py declares VALIDATES libs/evolution/replay.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_learning.py",
+      "target": "libs/evolution/promotion.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_learning.py declares VALIDATES libs/evolution/promotion.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_learning.py",
+      "target": "libs/evolution/registry.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_learning.py declares VALIDATES libs/evolution/registry.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_learning.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_learning.py declares VALIDATES tests/upgrade/test_evolution_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_support.py",
+      "target": "libs/evolution/event.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_support.py declares VALIDATES libs/evolution/event.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_evolution_support.py",
+      "target": "libs/evolution/candidate.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_evolution_support.py declares VALIDATES libs/evolution/candidate.py.",
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "description": "63 source lifecycle and negative tests pass; fixture TEVV/model evidence is synthetic.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "timestamp": "2026-09-21T02:12:56.065553+00:00",
+      "commit_sha": null,
+      "smoke_result": "63/63"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "description": "122 existing semantic twin contract and ingestion tests pass.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "timestamp": "2026-09-21T02:14:00.944049+00:00",
+      "commit_sha": null,
+      "smoke_result": "122/122"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "description": "Unfiltered stdlib trace covers all 16 production modules and wrapper above 80 percent.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "timestamp": "2026-09-21T02:18:19.011023+00:00",
+      "commit_sha": null,
+      "smoke_result": "63/63"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "description": "Two actual 100-commit historical epochs compare on the same corpus; missing independent outcome/model evidence leaves accuracy unknown.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "timestamp": "2026-09-21T02:15:06.255548+00:00",
+      "commit_sha": null,
+      "smoke_result": "2/2"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "description": "Local Git and public Type C exports retain 252 observations without granting independent verification.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "timestamp": "2026-09-21T02:14:08.109104+00:00",
+      "commit_sha": null,
+      "smoke_result": "2/2"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/validation.json",
+      "description": "Reviewed existing sprint rationale and owner actions; refreshed source binding without milestone acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+      "timestamp": "2026-09-21T02:23:52.523574+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/1"
+    }
+  ],
+  "summary": {
+    "type_a_count": 36,
+    "type_b_count": 84,
+    "type_c_count": 6,
+    "ioo_compliance": true,
+    "dkg_orphans": 0,
+    "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+    "srs_codes": [
+      "SRS-BUILDANDDO-EVOLUTION-001"
+    ],
+    "seat": "BITS-CODEGEN"
+  }
+}

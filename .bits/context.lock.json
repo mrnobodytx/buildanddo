@@ -158,7 +158,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-21T00:53:59.868245+00:00",
+  "generated_at": "2026-09-21T02:23:28.042628+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -241,6 +241,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-EVIDENCE-CI-001.md",
         "status": "proposed",
         "title": "Run the Praxis evidence suite in public CI"
+      },
+      {
+        "code": "SRS-BUILDANDDO-EVOLUTION-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md",
+        "status": "in_progress",
+        "title": "Citadel Verified Evolution Fabric v1"
       },
       {
         "code": "SRS-BUILDANDDO-FEDERAL-INFLUENCE-001",
@@ -514,11 +521,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 37,
-    "python_files": 234,
+    "python_files": 255,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1102,
+    "tracked_files": 1135,
     "web_source_files": 312
   },
   "schema_version": 1,
@@ -592,15 +599,15 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+    "source_sha256": "d0d18d914f33698ef324cd70f3174c313e182315bd36832566ff29aa6ca9aaa8",
     "state": "PASS"
   },
   "summary": {
     "findings": 6,
     "findings_high": 6,
     "pipelines": 7,
-    "srs_open": 24,
-    "srs_total": 28,
+    "srs_open": 25,
+    "srs_total": 29,
     "unwired_gates": 4
   },
   "tests": {
