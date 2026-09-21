@@ -73,10 +73,10 @@ def http(url, data=None, headers=None, method=None, timeout=25):
             # NOT truncated. An earlier version capped this at 4000 bytes, which silently
             # reduced the 760KB app bundle to its first 4KB, found 0 routes, and graded all 33
             # lessons NEEDS_WORK for "broken references". The instrument produced the finding.
-            return resp.status, (json.loads(raw) if raw[:1] in b"{[" else raw)
+            return resp.status, (json.loads(raw) if raw[:1] in (b"{", b"[") else raw)
     except urllib.error.HTTPError as exc:
         raw = exc.read()
-        return exc.code, (json.loads(raw) if raw[:1] in b"{[" else raw[:600])
+        return exc.code, (json.loads(raw) if raw[:1] in (b"{", b"[") else raw[:600])
     except Exception as exc:  # noqa: BLE001
         return 0, {"err": type(exc).__name__}
 
