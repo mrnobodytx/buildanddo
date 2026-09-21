@@ -22,6 +22,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import signal
 import subprocess
 import sys
@@ -262,9 +263,18 @@ def run_check(
             stream.write((reason + "\n").encode())
         else:
             try:
-                executable = (
-                    [sys.executable, *argv[1:]] if argv[0] == "python" else argv
-                )
+                # "python" already resolves to this interpreter. Everything else is resolved
+                # through PATH, because on Windows npm is npm.cmd and cannot be spawned by bare
+                # name: Popen raises FileNotFoundError, which this function catches as OSError and
+                # reports as BLOCKED. That is indistinguishable in the receipt from a genuinely
+                # unavailable runtime, so web_lint, web_build and web_tests recorded "cannot be
+                # started" on every Windows run and the gate quietly had no web coverage there.
+                # ship.py resolves npm the same way; this keeps the two consistent.
+                if argv[0] == "python":
+                    executable = [sys.executable, *argv[1:]]
+                else:
+                    resolved = shutil.which(argv[0])
+                    executable = [resolved, *argv[1:]] if resolved else list(argv)
                 with subprocess.Popen(
                     executable,
                     cwd=root,
