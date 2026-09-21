@@ -358,7 +358,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-21T20:22:19.019067+00:00",
+  "generated_at": "2026-09-21T20:46:50.664823+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -746,7 +746,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1283,
+    "tracked_files": 1286,
     "web_source_files": 333
   },
   "schema_version": 1,
