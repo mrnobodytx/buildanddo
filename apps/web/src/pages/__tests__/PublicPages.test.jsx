@@ -19,7 +19,7 @@ import { describe, expect, it } from 'vitest';
 import { PUBLIC_PAGES, SITE_ORIGIN } from '@/lib/publicPages';
 import PricingPage from '@/pages/PricingPage';
 import AboutPage from '@/pages/AboutPage';
-import DocsPage from '@/pages/DocsPage';
+import DocsPage, { GUIDES } from '@/pages/DocsPage';
 import BlogPage from '@/pages/BlogPage';
 import ContactPage from '@/pages/ContactPage';
 import ClassroomLandingPage from '@/pages/ClassroomLandingPage';
@@ -109,7 +109,9 @@ describe('public pages', () => {
         expect(screen.getByRole('status')).toHaveTextContent('0 guides found');
         expect(screen.getByText(/No matching guides/)).toBeVisible();
         await user.clear(search);
-        expect(screen.getByRole('status')).toHaveTextContent('7 guides found');
+        // Counted from the page's own list: a hardcoded number silently rots every
+        // time a guide is added, which is how this broke when the new docs landed.
+        expect(screen.getByRole('status')).toHaveTextContent(`${GUIDES.length} guides found`);
     });
 
     it('lets a reader open and close a complete journal entry with the native disclosure', async () => {
