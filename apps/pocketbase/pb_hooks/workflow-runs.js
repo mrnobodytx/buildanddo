@@ -111,6 +111,12 @@ function start(e) {
         if (workflow.getString('status') !== 'active') conflict('Activate the saved workflow before starting a run.');
         const mission = missionFor(app, info, input.mission, input.workspace);
         const snapshot = snapshotOf(workflow, mission);
+        if (snapshot.steps.some((step) => step.kind === 'execute')) {
+            if (!mission || policy.json(mission, 'mission_plan')?.independent_review !== true)
+                policy.invalid('Executable workflows require a running mission with independent review enabled.');
+            if (snapshot.steps[0].kind !== 'approval')
+                policy.invalid('Begin an executable workflow with an explicit approval of its frozen steps.');
+        }
         const now = new Date().toISOString();
         const run = new Record(collection);
         const values = { workspace: input.workspace, workflow: input.workflow, mission: input.mission,
@@ -160,6 +166,7 @@ function advance(e) {
             throw new ApiError(503, 'This run has an invalid saved step.');
         const step = steps[index];
         if (input.action === 'step') {
+            if (step.kind === 'execute') policy.invalid('Execute this step through its bounded action command; a manual observation cannot substitute for its result.');
             if (input.step_id !== step.id) conflict('Record the current step before a later step.');
             if (snapshot.mission_id !== run.getString('mission'))
                 conflict('The linked mission changed. Cancel this run and start a new one.');
@@ -173,6 +180,8 @@ function advance(e) {
             }
         }
         const now = new Date().toISOString();
+        if (input.action === 'cancel' && steps.some((item) => item.kind === 'execute'))
+            require(`${__hooks}/business-actions.js`).cancelForRun(app, run);
         const evidence = new Record(policy.schema(app, 'evidence', ['content', 'source', 'type', 'mission', 'workspace', 'owner']));
         const decision = input.action === 'cancel' || step.kind === 'approval';
         const succeeded = ['passed', 'approved'].includes(input.outcome);
@@ -197,4 +206,4 @@ function advance(e) {
     return response;
 }
 
-module.exports = { start, advance };
+module.exports = { start, advance, output, statusAt, missionFor };

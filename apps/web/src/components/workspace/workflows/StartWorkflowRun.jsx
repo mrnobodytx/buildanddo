@@ -19,7 +19,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/site/ui';
 import { Label } from '@/components/ui/label';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
-import { createRetryIntent } from '@/lib/workflowRuns';
+import { createRetryIntent, readWorkflowSteps } from '@/lib/workflowRuns';
 
 export const runSelectClass = 'h-10 w-full min-w-0 rounded-md border border-input bg-background px-3 text-sm text-foreground';
 
@@ -34,11 +34,13 @@ export default function StartWorkflowRun({ workflows, api, onSaved, onBusy, disa
     const busy = useRef(false);
     const intent = useRef(createRetryIntent());
     useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+    const executable = readWorkflowSteps(workflows.find((item) => item.id === workflow)?.steps).some((item) => item.kind === 'execute');
+    const independent = (record) => { try { const plan = typeof record.mission_plan === 'string' ? JSON.parse(record.mission_plan) : record.mission_plan; return plan?.independent_review === true; } catch { return false; } };
     const eligible = missions.records.filter((record) => record.status === 'running' &&
-        record.mission_approved_by && record.mission_approved_at);
+        record.mission_approved_by && record.mission_approved_at && (!executable || independent(record)));
     const submit = async (event) => {
         event.preventDefault();
-        if (busy.current || disabled || !workflow) return;
+        if (busy.current || disabled || !workflow || executable && !mission) return;
         if (mission && (missions.loading || missions.degraded)) return;
         busy.current = true; setSaving(true); onBusy(true); setError('');
         const result = await api.start(intent.current({ workflow, mission }));
@@ -60,11 +62,11 @@ export default function StartWorkflowRun({ workflows, api, onSaved, onBusy, disa
                 </select>
             </div>
             <div className="space-y-1.5">
-                <Label htmlFor="run-mission">Mission for evidence (optional)</Label>
+                <Label htmlFor="run-mission">{executable ? 'Approved mission with independent review (required)' : 'Mission for evidence (optional)'}</Label>
                 <select id="run-mission" className={runSelectClass} value={mission}
                     disabled={saving || disabled || missions.loading || missions.degraded}
                     onChange={(event) => setMission(event.target.value)}>
-                    <option value="">No mission</option>
+                    <option value="">{executable ? 'Choose an approved running mission' : 'No mission'}</option>
                     {eligible.map((record) => <option key={record.id} value={record.id}>{record.title}</option>)}
                 </select>
                 <p className="text-xs text-muted-foreground">Linked missions must be running with a saved approval. Workflow completion leaves their TEVV review to the Mission Desk.</p>
@@ -72,12 +74,12 @@ export default function StartWorkflowRun({ workflows, api, onSaved, onBusy, disa
                 {missions.degraded && <div className="space-y-2">
                     <p role="alert" className="text-sm">Could not load missions. Retry to link a mission.</p>
                     <Button type="button" size="sm" variant="secondary" onClick={missions.refresh}>Retry missions</Button>
-                    {mission && <Button type="button" size="sm" variant="ghost" onClick={() => setMission('')}>Continue without a mission</Button>}
+                    {mission && !executable && <Button type="button" size="sm" variant="ghost" onClick={() => setMission('')}>Continue without a mission</Button>}
                 </div>}
             </div>
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" size="sm" disabled={saving || disabled || !workflow || Boolean(mission && (missions.loading || missions.degraded))}>
-                {saving ? 'Saving run…' : 'Start recorded run'}
+            <Button type="submit" size="sm" disabled={saving || disabled || !workflow || (executable && !mission) || Boolean(mission && (missions.loading || missions.degraded))}>
+                {saving ? 'Saving run…' : executable ? 'Start approved execution workflow' : 'Start recorded run'}
             </Button>
         </form>
     );

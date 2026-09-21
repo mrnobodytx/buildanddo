@@ -26,7 +26,7 @@ import {
     Radar,
     Target,
 } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Button, Card, ProvenanceTag, Rule } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
@@ -44,7 +44,6 @@ import {
     EDITION_STATUS,
     MISSION_PRIORITY,
     PageHeader,
-    SIGNAL_SEVERITY,
     StatusBadge,
 } from '@/components/workspace/workspaceHelpers';
 import {
@@ -55,11 +54,11 @@ import {
 } from '@/components/workspace/WorkspaceNotices';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
+import { dailyDigest } from '@/lib/dailyDigest';
+import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 
 const EMPTY_FORM = { title: '', summary: '', body: '', edition_date: '', status: 'draft' };
-
-const PRIORITY_RANK = Object.keys(MISSION_PRIORITY);
-const SEVERITY_RANK = Object.keys(SIGNAL_SEVERITY);
 
 function fmtDate(iso) {
     if (!iso) return '—';
@@ -67,18 +66,6 @@ function fmtDate(iso) {
     if (Number.isNaN(parsed.getTime())) return String(iso);
     return parsed.toLocaleDateString();
 }
-
-const isToday = (iso) => {
-    if (!iso) return false;
-    const parsed = new Date(iso);
-    if (Number.isNaN(parsed.getTime())) return false;
-    const now = new Date();
-    return (
-        parsed.getFullYear() === now.getFullYear() &&
-        parsed.getMonth() === now.getMonth() &&
-        parsed.getDate() === now.getDate()
-    );
-};
 
 function DigestColumn({ icon: Icon, title, emptyLabel, children, count }) {
     return (
@@ -101,7 +88,7 @@ function DigestColumn({ icon: Icon, title, emptyLabel, children, count }) {
     );
 }
 
-export default function DailyEditionPage() {
+function DailyEditionDesk() {
     const {
         records,
         loading,
@@ -120,57 +107,20 @@ export default function DailyEditionPage() {
     const [show, setShow] = useState(false);
     const [form, setForm] = useState(EMPTY_FORM);
     const [validation, setValidation] = useState('');
+    const [day, setDay] = useState(() => new Date().toDateString());
+    useEffect(() => {
+        const currentDay = () => setDay(new Date().toDateString());
+        const timer = setInterval(currentDay, 60000);
+        document.addEventListener('visibilitychange', currentDay);
+        return () => { clearInterval(timer); document.removeEventListener('visibilitychange', currentDay); };
+    }, []);
 
     const set = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 
     // The digest is derived, never stored. Storing it would create a second
     // copy of the truth that starts drifting the moment a mission changes.
-    const digest = useMemo(() => {
-        const open = missions.records.filter(
-            (mission) => !['verified', 'failed'].includes(mission.status),
-        );
-        const priorities = [...open]
-            .sort((a, b) => {
-                const rank = (mission) => {
-                    const index = PRIORITY_RANK.indexOf(mission.priority || 'normal');
-                    return index === -1 ? PRIORITY_RANK.indexOf('normal') : index;
-                };
-                const overdue = (mission) =>
-                    mission.due_date && new Date(mission.due_date).getTime() < Date.now() ? 0 : 1;
-                return overdue(a) - overdue(b) || rank(a) - rank(b);
-            })
-            .slice(0, 5);
-
-        const completed = missions.records.filter(
-            (mission) => mission.status === 'verified' && isToday(mission.updated || mission.created),
-        );
-
-        const blockedMissions = missions.records
-            .filter((mission) => mission.status === 'needs_attention' || mission.status === 'failed')
-            .map((mission) => ({
-                id: mission.id,
-                label: mission.title,
-                detail: mission.status === 'failed' ? 'Mission failed' : 'Mission needs attention',
-            }));
-
-        const urgentSignals = signals.records
-            .filter(
-                (signal) =>
-                    (signal.state || 'new') === 'new' &&
-                    ['critical', 'high'].includes(signal.severity || ''),
-            )
-            .sort(
-                (a, b) =>
-                    SEVERITY_RANK.indexOf(a.severity) - SEVERITY_RANK.indexOf(b.severity),
-            )
-            .map((signal) => ({
-                id: signal.id,
-                label: signal.title,
-                detail: `Untriaged ${SIGNAL_SEVERITY[signal.severity].label.toLowerCase()} signal`,
-            }));
-
-        return { priorities, completed, blockers: [...blockedMissions, ...urgentSignals] };
-    }, [missions.records, signals.records]);
+    const digest = useMemo(() => dailyDigest(missions, signals),
+        [missions.records, missions.loading, missions.degraded, signals.records, signals.loading, signals.degraded, day]);
 
     const submit = async (event) => {
         event.preventDefault();
@@ -197,7 +147,7 @@ export default function DailyEditionPage() {
 
     };
 
-    const digestLoading = missions.loading || signals.loading;
+    const digestLoading = digest.loading;
 
     return (
         <div className="space-y-8">
@@ -219,7 +169,10 @@ export default function DailyEditionPage() {
             />
 
 
-            {digestLoading ? (
+            {digest.unavailable.length > 0 ? (
+                <DegradedNotice message={`Daily summary unavailable: ${digest.unavailable.join(' and ')} could not be read.`}
+                    onRetry={() => { missions.refresh(); signals.refresh(); }} />
+            ) : digestLoading ? (
                 <ListSkeleton rows={1} />
             ) : (
                 <Card className="p-5">
@@ -260,7 +213,7 @@ export default function DailyEditionPage() {
                                 >
                                     <span>{mission.title}</span>
                                     <span className="ml-2 text-xs text-muted-foreground">
-                                        {timeAgo(mission.updated || mission.created)}
+                                        {timeAgo(mission.mission_reviewed_at)}
                                     </span>
                                 </li>
                             ))}
@@ -285,6 +238,7 @@ export default function DailyEditionPage() {
                             ))}
                         </DigestColumn>
                     </div>
+                    {digest.undated > 0 && <p role="status" className="mt-3 text-sm text-muted-foreground">{digest.undated} verified mission(s) have no usable review date and are excluded from today’s total.</p>}
                     <Rule className="my-4" />
                     <p className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Radar className="h-3.5 w-3.5" />
@@ -438,4 +392,9 @@ export default function DailyEditionPage() {
             </p>
         </div>
     );
+}
+
+export default function DailyEditionPage() {
+    const { user } = useAuth(), { active } = useWorkspace();
+    return <DailyEditionDesk key={`${user?.id}:${active?.id}`} />;
 }

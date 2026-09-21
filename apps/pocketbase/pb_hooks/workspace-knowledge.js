@@ -47,8 +47,8 @@ function document(workspace, definition, record) {
     const provenance = { collection: definition.collection, record_id: record.id,
         created_at: record.getString('created'), updated_at: record.getString('updated') };
     let upstreamTruncated = false;
-    if (definition.kind === 'mission' && record.getString('plan')) {
-        const plan = access.json(record, 'plan');
+    if (definition.kind === 'mission' && record.getString('mission_plan')) {
+        const plan = access.json(record, 'mission_plan');
         if (plan && typeof plan === 'object' && !Array.isArray(plan)) {
             for (const field of ['purpose', 'beneficiary', 'in_scope', 'out_of_scope', 'baseline', 'target', 'rollback'])
                 if (typeof plan[field] === 'string') text += '\n' + field + ': ' + graph.clip(plan[field], 1000);
@@ -195,10 +195,15 @@ function snapshot(e) {
 
 /** Assemble context without persisting a copy or invoking an inference provider. */
 function assemble(e) {
+    return assembleFor(e, e.requestInfo().body);
+}
+
+/** Reuse native source visibility when an authenticated assistant requests context. */
+function assembleFor(e, values) {
     const workspace = scope(e);
-    const options = input(e.requestInfo().body, true);
+    const options = input(values, true);
     const result = collect(e, workspace, options);
     return { ...result, context: graph.assembleContext(result, options) };
 }
 
-module.exports = { snapshot, assemble };
+module.exports = { snapshot, assemble, assembleFor };

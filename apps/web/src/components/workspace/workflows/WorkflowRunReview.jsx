@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { StatusBadge } from '@/components/workspace/workspaceHelpers';
+import BusinessActionReview from './BusinessActionReview';
 import { createRetryIntent, readRunEvents, readRunSnapshot, RUN_STATUS, STEP_KINDS } from '@/lib/workflowRuns';
 
 /** Render one saved run and the next authorized operator decision. */
@@ -92,9 +93,11 @@ export default function WorkflowRunReview({ run, api, onSaved, onBusy, disabled 
                 <Link className="underline" to="/app/missions">Open the Mission Desk</Link>.</p>}
 
             {open && step ? (
-                <section className="space-y-3 border border-border p-4" aria-label="Current step">
+                <section className="space-y-3 border border-border p-4" aria-label="Current step" data-assistant-authority={approval ? 'human' : undefined}>
                     <h3 ref={heading} tabIndex={-1} className="font-semibold">Step {run.next_step + 1}: {step.name}</h3>
                     <p className="text-sm text-muted-foreground">{STEP_KINDS[step.kind]}{step.detail ? ` · ${step.detail}` : ''}</p>
+                    {step.kind === 'execute' ? <BusinessActionReview key={`${run.id}:${run.revision}`} run={run} step={step}
+                        runApi={api} onSaved={onSaved} disabled={disabled} /> : <>
                     <p className="text-sm text-muted-foreground">{approval ?
                         'A workspace owner or admin must approve or reject this checkpoint before work continues.' :
                         'Perform the step, then record what you observed. This record does not send a message or run an external tool.'}</p>
@@ -123,6 +126,7 @@ export default function WorkflowRunReview({ run, api, onSaved, onBusy, disabled 
                             {approval ? 'Record rejection' : 'Record failure'}
                         </Button>
                     </div>
+                    </>}
                 </section>
             ) : <p ref={heading} tabIndex={-1} className="text-sm">This run is finished. Its receipts remain available below. Mission verification is a separate review.</p>}
 

@@ -52,7 +52,7 @@ test('workflow display helpers tolerate malformed legacy JSON without rendering 
     assert.deepEqual(readRunEvents({ events: null }), []);
     const receipt = { command: { observation: 'Observed' }, actor: 'account1', at: '2026-09-15' };
     assert.deepEqual(readRunEvents({ events: JSON.stringify([receipt]) }), [receipt]);
-    assert.equal(Object.keys(STEP_KINDS).length, 5); assert.equal(Object.keys(RUN_STATUS).length, 5);
+    assert.equal(Object.keys(STEP_KINDS).length, 6); assert.equal(Object.keys(RUN_STATUS).length, 5);
 });
 
 test('retry intent survives failures and changes only when the proposed decision changes', () => {

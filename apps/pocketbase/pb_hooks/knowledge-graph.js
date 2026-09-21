@@ -30,7 +30,7 @@ const STOP_WORDS = new Set(['a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'fo
 const TERM_ALIASES = { appointments: 'appointment', bookings: 'booking', customers: 'customer', reminders: 'reminder',
     workflows: 'workflow', costs: 'cost', invoices: 'invoice', payments: 'payment', permissions: 'permission',
     tests: 'test', lessons: 'lesson', tutorials: 'tutorial', experiments: 'experiment' };
-const RELATED = new Set(['EVIDENCE_FOR', 'RESEARCH_FOR', 'DERIVED_FROM']);
+const RELATED = new Set(['EVIDENCE_FOR', 'RESEARCH_FOR', 'DERIVED_FROM', 'OBSERVED_IN']);
 const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 const key = (workspace, collection, id) => `${workspace}/${collection}/${encodeURIComponent(id)}`;
 

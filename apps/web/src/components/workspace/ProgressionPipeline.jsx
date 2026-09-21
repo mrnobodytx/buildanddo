@@ -151,6 +151,7 @@ export const PIPELINE_STEPS = [
             'All eleven milestone definitions match the canonical sprint plan',
             'Changed source requires another governance review',
             'Skipped, stale or synthetic evidence cannot establish completed acceptance',
+            'Internal submission standards remain separate from official eligibility and deadlines',
         ],
         tag: 'governance:readiness',
     },

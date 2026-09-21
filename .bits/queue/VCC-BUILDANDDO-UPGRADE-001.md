@@ -20,6 +20,67 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Workspace assistant continuation authorized 2026-09-20
+
+The owner extends the eleven-checkpoint submission build with a persistent
+workspace assistant. Use the existing application shell, native PocketBase user
+authentication, current workspace roles and collection record rules. Preserve
+per-account, per-workspace session and knowledge isolation. The assistant may
+navigate registered platform routes, propose and fill visible nonsensitive form
+fields, and invoke existing governed commands with the current user identity.
+Reviewed effects retain the existing approval and independent verification gates.
+Model text, retrieved records and learned patterns never grant authority.
+
+Persist each session and its observed action patterns as user-owned knowledge;
+keep proposed, applied, failed and independently verified states distinct. Do not
+capture passwords, authentication material, hidden fields or arbitrary page text
+as patterns. Account/workspace changes cancel outstanding proposals and responses.
+Use an explicitly configured server-side inference binding; a missing binding
+must be visible, never replaced by fabricated model responses. Provide source,
+connected-client and native/browser tests with unexecuted runtime gates reported.
+This source continuation does not activate providers, read deployed credentials,
+launch a private agent, or authorize external effects outside approved missions.
+
+## Eleven-checkpoint completion authorized 2026-09-20
+
+Owner request: devise safe internal submission rules and build all eleven
+remaining day 1–21 checkpoints exhaustively. This continues the registered A2
+source dispatch and retains separate receiving authority for external effects.
+
+| Phase | Day | Task | Gate | Status |
+|---|---|---|---|---|
+| SC-01 | 1 | Reproducible acceptance and internal submission policy | Submission and readiness suites | source implemented — policy, strict receipt admission and required coverage gate; hosted/deployed acceptance pending |
+| SC-02 | 3 | Atomic, recoverable onboarding | Onboarding backend/client/rendered cases | source verified — atomic setup, stable retry and account-scoped form; rendered/native cases authored |
+| SC-03 | 5 | Retained schema, isolation and restart | Both native workspace profiles | schema and six native cases authored — both required runtimes unavailable locally |
+| SC-04 | 7 | Public-source ingestion and signal provenance | Connector and signal regressions | source verified — current binding, source bytes, deduplication and durable proposal; live source pending |
+| SC-05 | 9 | Bounded approved business actions | Action lifecycle and authority cases | source verified — native ERP effect and bounded external jobs with uncertainty HOLD; deployed loop pending |
+| SC-06 | 11 | Executable workflow steps and durable recovery | Workflow/action integration cases | source verified — frozen executable steps, approval, cancellation and receipt recovery |
+| SC-07 | 13 | Firecrawl/n8n request, health and result adapters | Portable adapter negative controls | source verified — Firecrawl/n8n transport, health and receipt adapters; live bindings remain receiving work |
+| SC-08 | 15 | ERP action outcomes and scoped links | Business and connected native cases | source implemented — executed task links its mission and evidence; native/browser acceptance pending |
+| SC-09 | 17 | Immutable reviewed evidence and release truth | Evidence tamper/review regressions | source verified — reviewed/executed evidence immutable, exact snapshot retained and release context bound |
+| SC-10 | 19 | Correct editions and specialist desks | Digest, desk and rendered cases | source implemented — review-time digest, unavailable states, eight desk links, personal assistant and working room modes |
+| SC-11 | 21 | Inspectable replay and submission dossier | Replay/submission admission suites | source verified — replay/submission validators reject missing native receipts, official terms and acceptance; entry remains HOLD |
+
+Memory brief: the audit reproduced onboarding's browser-connected service
+rejection, duplicate partial setup, mutation of verified evidence and false
+edition digest conclusions. PRs 56 and 57 are the retained merged baseline.
+Existing source tests use explicit doubles; frontend dependencies and both
+PocketBase binaries are absent. Previous hosted failures report an account
+billing lock, with a separate unresolved Cloudflare failure. Never replace these
+gaps with simulated acceptance or invented competition requirements.
+
+Observed continuation: all eleven checkpoints have concrete public source and
+reviewable receiving steps in `docs/submission-guide.md`. The assistant uses
+native account/workspace roles and locked personal stores; plans remain inferred
+until the user applies them, and observed patterns confer no authority. Source
+and Chromium DOM fixtures passed after correcting wrapping-select label capture.
+The required worker/submission gate runs 32 cases and measures more than 93%
+statement coverage in both new Python modules. Full React, both native versions,
+provider bindings, deployment and official-rule acceptance remain separate gates.
+Current exact results and retained failures are recorded in
+`.bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md` and
+`sprint-validation.json`. No live seat event or runtime activation was performed.
+
 ## Hostinger sprint closure authorized 2026-09-20
 
 The owner asks for the missing repository implementation and durable mandatory

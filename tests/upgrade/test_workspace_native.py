@@ -19,6 +19,7 @@
 from __future__ import annotations
 
 import os
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import shutil
 import socket
@@ -55,6 +56,9 @@ MIGRATIONS = (
     "1790000000_workspace_administration",
     "1790100000_mission_research",
     "1790300000_mission_suite",
+    "1790700000_workspace_onboarding",
+    "1790800000_business_execution",
+    "1790900000_workspace_assistant",
 )
 AUTH = r"""
 migrate((app) => {
@@ -100,6 +104,15 @@ class WorkspaceServer(NativeServer):
             hooks = self.root / "hooks"
             hooks.mkdir()
             for name in (
+                "workspace-onboarding.js",
+                "business-action-policy.js",
+                "business-actions.js",
+                "business-execution.pb.js",
+                "assistant-policy.js",
+                "workspace-assistant.js",
+                "assistant.pb.js",
+                "knowledge-graph.js",
+                "workspace-knowledge.js",
                 "mission-policy.js",
                 "missions.pb.js",
                 "workflow-policy.js",
@@ -359,6 +372,15 @@ class NativeWorkspaceTests(unittest.TestCase):
         )
         self.assertEqual(status, 200)
         self.assertEqual(verified["mission_reviewed_by"], BRAVO)
+        self.assertEqual(
+            verified["mission_review"]["evidence_snapshot"][0]["id"], evidence
+        )
+        self.assertEqual(
+            self.patch(
+                "evidence", evidence, {"content": "Rewrite the reviewed observation"}
+            )[0],
+            400,
+        )
         self.assertEqual(self.patch("missions", mission, {"status": "running"})[0], 400)
         status, cockpit = self.server.request(
             "GET", f"/api/buildanddo/workspaces/{WORKSPACE}/operator", token=self.bravo
@@ -383,6 +405,266 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(recovered["id"], mission)
         self.assertTrue(recovered["replayed"])
+
+    def test_atomic_onboarding_concurrent_retries_and_restart(self) -> None:
+        body = {"name": "Native new business", "domain": "shop.fixture"}
+
+        def create() -> tuple[int, dict]:
+            return self.server.request(
+                "POST", "/api/buildanddo/onboarding", body, self.alice
+            )
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            results = list(pool.map(lambda _: create(), range(2)))
+        self.assertEqual([result[0] for result in results], [200, 200])
+        self.assertEqual(results[0][1]["workspace"], results[1][1]["workspace"])
+        self.assertEqual(len(set(results[0][1]["services"])), 7)
+        identity = results[0][1]["workspace"]
+        self.server.stop()
+        self.server.migrate()
+        self.server.start()
+        self.alice = self.server.login("alice")
+        self.assertEqual(create()[1]["workspace"], identity)
+        self.assertIn(
+            self.server.request("POST", "/api/buildanddo/onboarding", body)[0],
+            (401, 403),
+        )
+
+    def test_business_execution_atomic_erp_receipt_and_independent_review(self) -> None:
+        _, proposal = self.propose(self.signal())
+        mission = proposal["id"]
+        keys = (
+            "purpose",
+            "beneficiary",
+            "in_scope",
+            "out_of_scope",
+            "baseline",
+            "target",
+            "authorization",
+            "input_validation",
+            "data_handling",
+            "rollback",
+            "test",
+            "evaluate",
+            "verify",
+            "validate",
+        )
+        plan = {
+            "version": 1,
+            "risk": "A1",
+            "independent_review": True,
+            **{key: "Inspect synthetic native " + key for key in keys},
+        }
+        self.assertEqual(
+            self.patch("missions", mission, {"mission_plan": plan})[0], 200
+        )
+        self.assertEqual(
+            self.patch("missions", mission, {"status": "approved"}, self.bravo)[0], 200
+        )
+        self.assertEqual(self.patch("missions", mission, {"status": "running"})[0], 200)
+        action = {
+            "provider": "erp",
+            "binding": "",
+            "max_seconds": 5,
+            "parameters": {
+                "title": "Native bounded task",
+                "description": "Synthetic only",
+                "objective": "",
+                "contact": "",
+                "priority": "normal",
+                "due_date": "",
+            },
+        }
+        workflow = self.record(
+            "workflows",
+            {
+                "name": "Native business action",
+                "status": "active",
+                "steps": [
+                    {
+                        "id": "review",
+                        "name": "Review frozen input",
+                        "kind": "approval",
+                        "detail": "",
+                    },
+                    {
+                        "id": "execute",
+                        "name": "Create task",
+                        "kind": "execute",
+                        "detail": "",
+                        "action": action,
+                    },
+                ],
+            },
+        )
+        code, started = self.server.request(
+            "POST",
+            "/api/buildanddo/workflow-runs",
+            {
+                "workspace": WORKSPACE,
+                "workflow": workflow["id"],
+                "mission": mission,
+                "request_key": "native_business_start_001",
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 201)
+        run = started["record"]
+        code, approved = self.server.request(
+            "POST",
+            f"/api/buildanddo/workflow-runs/{run['id']}/decisions",
+            {
+                "workspace": WORKSPACE,
+                "revision": run["revision"],
+                "request_key": "native_business_review_001",
+                "action": "step",
+                "step_id": "review",
+                "outcome": "approved",
+                "observation": "Reviewed synthetic task inputs and mission scope",
+                "source": "",
+            },
+            self.bravo,
+        )
+        self.assertEqual(code, 200)
+        command = {
+            "action": "action.enqueue",
+            "revision": approved["record"]["revision"],
+            "request_key": "native_business_effect_001",
+            "payload": {"run": run["id"], "step_id": "execute"},
+        }
+        endpoint = f"/api/buildanddo/workspaces/{WORKSPACE}/business"
+        code, receipt = self.server.request("POST", endpoint, command, self.alice)
+        self.assertEqual(code, 200)
+        self.assertEqual(receipt["status"], "succeeded")
+        self.assertEqual(
+            self.server.request("POST", endpoint, command, self.alice)[1]["id"],
+            receipt["id"],
+        )
+        task = receipt["result"]["reported"]["output"]["task"]
+        code, saved = self.server.request(
+            "GET", f"/api/collections/erp_tasks/records/{task}", token=self.alice
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(saved["execution"], receipt["id"])
+        self.assertEqual(saved["mission"], mission)
+        self.assertEqual(saved["evidence"], receipt["evidence"])
+        self.assertEqual(
+            self.patch(
+                "evidence",
+                receipt["evidence"],
+                {"content": "Alter retained observation"},
+            )[0],
+            400,
+        )
+        review = {
+            "reflection": "Independent native review",
+            **{
+                key: {
+                    "outcome": "pass",
+                    "observation": "Observed native task and receipt",
+                    "evidence": receipt["evidence"],
+                }
+                for key in ("test", "evaluate", "verify", "validate")
+            },
+        }
+        self.assertEqual(
+            self.patch(
+                "missions", mission, {"status": "verified", "mission_review": review}
+            )[0],
+            400,
+        )
+        code, verified = self.patch(
+            "missions",
+            mission,
+            {"status": "verified", "mission_review": review},
+            self.bravo,
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(
+            verified["mission_review"]["evidence_snapshot"][0]["id"],
+            receipt["evidence"],
+        )
+        self.assertIn(
+            self.server.request("GET", endpoint, token=self.other)[0], (403, 404)
+        )
+        self.assertIn(
+            self.server.request(
+                "GET", "/api/collections/business_jobs/records", token=self.alice
+            )[0],
+            (403, 404),
+        )
+
+    def test_assistant_isolates_personal_history_and_reports_unconfigured_inference(
+        self,
+    ) -> None:
+        endpoint = f"/api/buildanddo/workspaces/{WORKSPACE}/assistant"
+        code, session = self.server.request(
+            "POST",
+            endpoint,
+            {
+                "action": "session.start",
+                "request_key": "native_assistant_start_001",
+                "payload": {"title": "Personal native fixture session"},
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 200)
+        code, turn = self.server.request(
+            "POST",
+            endpoint + "/chat",
+            {
+                "session": session["id"],
+                "request_key": "native_assistant_chat_001",
+                "message": "Help me navigate to ERP",
+                "surface": {
+                    "id": "native-surface",
+                    "route": "/app/erp",
+                    "controls": [],
+                },
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(turn["status"], "unavailable")
+        self.assertIsNone(turn["plan"])
+        for token in (self.bravo, self.viewer, self.other):
+            self.assertIn(
+                self.server.request(
+                    "GET", endpoint + "?session=" + session["id"], token=token
+                )[0],
+                (403, 404),
+            )
+        self.assertIn(
+            self.server.request(
+                "GET", "/api/collections/assistant_turns/records", token=self.alice
+            )[0],
+            (403, 404),
+        )
+        self.server.stop()
+        self.server.start()
+        self.alice = self.server.login("alice")
+        code, recovered = self.server.request(
+            "GET", endpoint + "?session=" + session["id"], token=self.alice
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(recovered["turns"]["items"][0]["id"], turn["id"])
+        code, _ = self.server.request(
+            "POST",
+            endpoint,
+            {
+                "action": "session.forget",
+                "request_key": "native_assistant_forget_001",
+                "payload": {"session": session["id"]},
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(
+            self.server.request(
+                "GET", endpoint + "?session=" + session["id"], token=self.alice
+            )[0],
+            404,
+        )
 
     def test_source_auth_revocation_staleness_and_foreign_denial(self) -> None:
         signal = self.signal()

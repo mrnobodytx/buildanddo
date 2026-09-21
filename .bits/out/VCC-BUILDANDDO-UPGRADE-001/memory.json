@@ -10,12 +10,12 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 609,
+      "lines": 618,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -37,7 +37,9 @@
         "living-newspaper",
         "capability-repair-handoff",
         "interactive-learning",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -55,7 +57,7 @@
         ".bits/srs_registry.yml",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 118,
+      "lines": 126,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "The durable brief an agent reads first; measured facts live in the lock beside it.",
@@ -71,7 +73,9 @@
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
         "governance-telemetry",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -528,7 +532,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 39694,
+      "lines": 42640,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -554,7 +558,9 @@
         "living-newspaper",
         "capability-repair-handoff",
         "interactive-learning",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -673,12 +679,12 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1299,
+      "lines": 1360,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -701,7 +707,9 @@
         "living-newspaper",
         "capability-repair-handoff",
         "interactive-learning",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -1005,12 +1013,12 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1701,
+      "lines": 1772,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1033,7 +1041,9 @@
         "living-newspaper",
         "capability-repair-handoff",
         "interactive-learning",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -1266,7 +1276,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 336,
+      "lines": 350,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate contribution review on manifest integrity, component coverage and public adapter tests.",
@@ -1284,7 +1294,9 @@
         "buildanddo-upgrade",
         "operator-acceptance",
         "interactive-learning",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -1332,12 +1344,12 @@
         "CONTRIBUTING.md",
         ".buildanddo/public/path-policy.json"
       ],
-      "lines": 213,
+      "lines": 219,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define machine-facing governance for agents working in buildanddo.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1350,7 +1362,9 @@
         "buildanddo-upgrade",
         "operator-acceptance",
         "interactive-learning",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -1368,7 +1382,7 @@
         ".bits/context.md",
         "CONTRIBUTING.md"
       ],
-      "lines": 75,
+      "lines": 76,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide the human-facing companion AGENTS.md declares but the repo never had.",
@@ -1384,7 +1398,9 @@
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
         "governance-telemetry",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -2240,7 +2256,7 @@
         "apps/pocketbase/pb_hooks/workspace-administration.js",
         "apps/pocketbase/pb_hooks/workspace-community.js"
       ],
-      "lines": 57,
+      "lines": 62,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose authenticated administration and community commands while protecting native workspace record writes.",
@@ -2255,7 +2271,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -2310,7 +2328,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/workflow-policy.js"
       ],
-      "lines": 159,
+      "lines": 163,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve workspace relations and require attributed review before recording content publication.",
@@ -2325,7 +2343,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "business-learning"
+        "business-learning",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -2598,18 +2618,19 @@
       "enum_type": "Service",
       "functions": [
         "author",
+        "retainReviewed",
         "enforce",
         "remove"
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workflow-policy.js"
       ],
-      "lines": 53,
+      "lines": 70,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep evidence writes with their author and current workspace authority while permitting readable same-workspace mission links.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -2619,7 +2640,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-integration"
+        "workspace-integration",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -2712,7 +2735,7 @@
       "dependencies": [
         "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js"
       ],
-      "lines": 318,
+      "lines": 329,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Enforce persisted mission boundaries, lifecycle transitions and evidence requirements independently of the browser.",
@@ -2728,7 +2751,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "mission-learning",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -3141,7 +3166,7 @@
       "dependencies": [
         "apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js"
       ],
-      "lines": 131,
+      "lines": 134,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Enforce workspace roles and bounded saved workflow definitions before a run can record evidence.",
@@ -3156,7 +3181,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workflow-runs"
+        "workflow-runs",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -3185,7 +3212,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/workflow-policy.js"
       ],
-      "lines": 200,
+      "lines": 209,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Commit ordered workflow decisions and mission-linked evidence atomically with safe retries and stale-update rejection.",
@@ -3200,7 +3227,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workflow-runs"
+        "workflow-runs",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -3438,7 +3467,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js"
       ],
-      "lines": 73,
+      "lines": 86,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject stale membership, reassigned records and foreign relations at the native workspace write boundary.",
@@ -3453,7 +3482,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -4675,12 +4706,12 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 242,
+      "lines": 245,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve route loading and offer retry when the workspace list cannot be read instead of treating an outage as a new account.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -4694,7 +4725,9 @@
         "blueprint",
         "policy-intelligence",
         "operator-plane",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -6618,12 +6651,12 @@
         "apps/web/src/components/site/ui.jsx",
         ".github/workflows/pr-governance.yml"
       ],
-      "lines": 311,
+      "lines": 312,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -6636,7 +6669,9 @@
         "buildanddo-upgrade",
         "operator-acceptance",
         "interactive-learning",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -6776,12 +6811,12 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 278,
+      "lines": 283,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -6795,7 +6830,9 @@
         "blueprint",
         "policy-intelligence",
         "operator-plane",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -7077,7 +7114,7 @@
       "dependencies": [
         "apps/web/src/lib/missionLearning.js"
       ],
-      "lines": 446,
+      "lines": 456,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Record TEVV observations and mission-scoped evidence with explicit review, retry handling and honest failure outcomes.",
@@ -7092,7 +7129,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "mission-learning"
+        "mission-learning",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -7254,7 +7293,7 @@
         "apps/web/src/lib/workflowRuns.js",
         "apps/web/src/hooks/useWorkspaceRecords.js"
       ],
-      "lines": 84,
+      "lines": 86,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Start a saved workflow with an optional approved mission while retaining retry identity after uncertain responses.",
@@ -7269,7 +7308,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workflow-runs"
+        "workflow-runs",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -7287,7 +7328,7 @@
       "dependencies": [
         "apps/web/src/lib/workflowRuns.js"
       ],
-      "lines": 166,
+      "lines": 170,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let operators record source-backed step outcomes and explicit approvals while preserving rejected observations for safe retries.",
@@ -7302,7 +7343,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workflow-runs"
+        "workflow-runs",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -8840,7 +8883,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Keep workflow command retries, paginated reads and late responses bound to the initiating account and workspace.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -8850,7 +8893,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workflow-runs"
+        "workflow-runs",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -9323,24 +9368,17 @@
       ],
       "enum_type": "Widget",
       "functions": [
+        "OnboardingDesk",
         "OnboardingPage"
       ],
       "dependencies": [
-        "@/components/motion/MotionPrimitives",
-        "@/components/site/ui",
-        "@/components/ui/input",
-        "@/components/ui/label",
-        "@/contexts/WorkspaceContext",
-        "@/lib/pocketbaseClient",
-        "lucide-react",
-        "react",
-        "react-helmet",
-        "react-router-dom"
+        "apps/web/src/lib/onboarding.js",
+        "apps/web/src/contexts/AuthContext.jsx"
       ],
-      "lines": 425,
+      "lines": 372,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Apply consistent setup transitions while preserving keyboard landing, current input and existing account setup behavior.",
+      "intent_statement": "Create a recoverable workspace while keeping selected domain input scoped to the current account.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9352,7 +9390,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
+        "editorial-motion",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -9866,13 +9906,14 @@
       "functions": [
         "fmtDate",
         "DigestColumn",
+        "DailyEditionDesk",
         "DailyEditionPage"
       ],
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/workspaceActions.js"
       ],
-      "lines": 441,
+      "lines": 400,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the day the edition is about — today's priorities, what was completed, what is blocked — beside the editions themselves.",
@@ -9887,7 +9928,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -9961,7 +10004,7 @@
         "@/lib/pocketbaseClient",
         "react"
       ],
-      "lines": 154,
+      "lines": 156,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect measurable objectives, editable tasks and contacts while retaining failed edits and exposing unavailable workspace data.",
@@ -9976,7 +10019,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -10126,7 +10171,9 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "operator-plane",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -10336,7 +10383,7 @@
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/workspaceActions.js"
       ],
-      "lines": 490,
+      "lines": 493,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Turn an append-only feed into something triageable: severity, acknowledge and dismiss, and a default view of what is still open.",
@@ -10352,7 +10399,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -10523,7 +10572,7 @@
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/workspaceActions.js"
       ],
-      "lines": 721,
+      "lines": 733,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Give a workflow the sequence that makes it one — ordered, editable steps — so activating it says what would run.",
@@ -10539,7 +10588,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "workflow-runs"
+        "workflow-runs",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -19556,7 +19607,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workflow-runs"
+        "workflow-runs",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -19616,12 +19669,12 @@
         "apps/pocketbase/pb_hooks/workspace-record-policy.js",
         "apps/pocketbase/pb_hooks/administration.pb.js"
       ],
-      "lines": 251,
+      "lines": 253,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify real admin commands against privilege escalation, native bypass, revoked membership, stale writes and uncertain integration state.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -19631,7 +19684,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -19710,6 +19765,10 @@
       ],
       "enum_type": "Test",
       "functions": [
+        "ApiError",
+        "BadRequestError",
+        "ForbiddenError",
+        "NotFoundError",
         "record",
         "policyFixture",
         "migrationFixture"
@@ -19719,12 +19778,12 @@
         "apps/pocketbase/pb_hooks/evidence.pb.js",
         "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js"
       ],
-      "lines": 219,
+      "lines": 220,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise actual evidence authority and migration retention with workspace, account, custom-rule and missing-source failures.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -19734,7 +19793,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-integration"
+        "workspace-integration",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -19867,7 +19928,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -19917,13 +19980,14 @@
         "collect",
         "scope",
         "snapshot",
-        "assemble"
+        "assemble",
+        "assembleFor"
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js",
         "apps/pocketbase/pb_hooks/knowledge-graph.js"
       ],
-      "lines": 204,
+      "lines": 209,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Rebuild workspace knowledge from current readable records while retaining permission, source-availability and scan boundaries.",
@@ -19938,7 +20002,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -20075,7 +20141,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -20098,7 +20166,7 @@
         "apps/web/src/components/workspace/KnowledgeContext.jsx",
         "apps/web/src/lib/workspaceKnowledge.js"
       ],
-      "lines": 164,
+      "lines": 166,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make workspace knowledge discoverable through an accessible graph, source categories and automatic cited context assembly.",
@@ -20113,7 +20181,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -20279,7 +20349,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-knowledge"
+        "workspace-knowledge",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -38615,12 +38687,12 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 439,
+      "lines": 502,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -38630,7 +38702,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -38677,12 +38751,12 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 854,
+      "lines": 897,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -38692,7 +38766,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -38904,12 +38980,12 @@
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/hostinger_replay.py"
       ],
-      "lines": 238,
+      "lines": 247,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -38919,7 +38995,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -39037,7 +39115,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Reconcile captured demo and release evidence before preparing explicitly reviewed milestone state, without running or approving an action.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -39047,7 +39125,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -39177,7 +39257,7 @@
         "apps/pocketbase/pb_hooks/mission-policy.js",
         "apps/pocketbase/pb_hooks/workflow-runs.js"
       ],
-      "lines": 483,
+      "lines": 765,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.",
@@ -39192,7 +39272,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "sprint-completion",
+        "workspace-assistant"
       ],
       "tenant_id": null
     },
@@ -39677,12 +39759,2876 @@
       "timestamp": "2026-09-20T15:13:39.039420+00:00",
       "commit_sha": null,
       "smoke_result": "4/18"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-submission-runtime.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/submission-guide.md",
+        "docs/business-execution.md",
+        "docs/workspace-assistant.md",
+        ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md"
+      ],
+      "lines": 59,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Request the exact runtime, provider, release and independent submission evidence required to close the public implementation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json",
+        "docs/submission-guide.md",
+        "docs/workspace-assistant.md",
+        "docs/business-execution.md",
+        "tests/upgrade/check_sprint_execution.py",
+        "tests/upgrade/assistant-browser.mjs"
+      ],
+      "lines": 203,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the concrete eleven-checkpoint source changes, tenant assistant results and remaining submission acceptance without promoting fixtures to deployed proof.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json",
+        "tests/upgrade/check_sprint_execution.py",
+        "tests/upgrade/assistant-browser.mjs"
+      ],
+      "lines": 939,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact source acceptance receipts and logs, the real browser regression and unexecuted runtime limits for this continuation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json",
+        "tests/upgrade/check_sprint_execution.py",
+        "tests/upgrade/assistant-browser.mjs"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact source acceptance receipts and logs, the real browser regression and unexecuted runtime limits for this continuation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/submission-policy.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/sprint_cycle.py",
+        ".bits/hostinger-readiness.json"
+      ],
+      "lines": 150,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define conservative internal submission standards while retaining unknown official eligibility and deadlines.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/submission-policy.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/sprint_cycle.py",
+        ".bits/hostinger-readiness.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define conservative internal submission standards while retaining unknown official eligibility and deadlines.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/mission_suite/business_worker.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Transport",
+        "Extraction",
+        "stamp",
+        "fingerprint",
+        "relative",
+        "Binding",
+        "BusinessWorker",
+        "serve",
+        "main"
+      ],
+      "dependencies": [
+        "apps/research/processing.py",
+        "apps/research/transport.py",
+        "apps/pocketbase/pb_hooks/business-actions.js"
+      ],
+      "lines": 518,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Execute approved business effects using existing bounded transport and retain uncertain outcomes for read-only reconciliation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/assistant-policy.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "route",
+        "surface",
+        "plan"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js"
+      ],
+      "lines": 87,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Constrain inferred assistant plans to known routes and current nonsensitive controls while preserving human authority decisions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/assistant.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-assistant.js"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Mount native authenticated personal assistant routes with no shared tenant or superuser credential.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/business-action-policy.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "invalid",
+        "exact",
+        "text",
+        "id",
+        "publicUrl",
+        "action"
+      ],
+      "dependencies": [
+        "AGENTS.md"
+      ],
+      "lines": 67,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Freeze narrowly scoped action inputs before workflow approval and reject arbitrary commands or callback targets.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/business-actions.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "set",
+        "digest",
+        "schema",
+        "output",
+        "releaseContext",
+        "binding",
+        "integration",
+        "scopedJob",
+        "readableJob",
+        "currentRun",
+        "ready",
+        "worker",
+        "enqueue",
+        "report",
+        "settle",
+        "lease",
+        "updateJob",
+        "observe",
+        "command",
+        "list",
+        "cancelForRun"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_hooks/business-action-policy.js",
+        "apps/pocketbase/pb_hooks/workflow-runs.js",
+        "apps/pocketbase/pb_migrations/1790800000_business_execution.js"
+      ],
+      "lines": 379,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect approved business actions, provider observations and immutable effect receipts without blind external retries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/business-execution.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/business-actions.js"
+      ],
+      "lines": 25,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose workspace-bound business reads and commands through the existing native authentication boundary.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "set",
+        "schema",
+        "scope",
+        "owned",
+        "sessionOut",
+        "turnOut",
+        "key",
+        "snapshot",
+        "command",
+        "infer",
+        "chat",
+        "knowledge"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/assistant-policy.js",
+        "apps/pocketbase/pb_hooks/knowledge-graph.js",
+        "apps/pocketbase/pb_migrations/1790900000_workspace_assistant.js",
+        "apps/pocketbase/pb_hooks/workspace-knowledge.js"
+      ],
+      "lines": 247,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep conversation, inferred plans and personal action knowledge isolated while using configured inference and current native authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "create"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js"
+      ],
+      "lines": 76,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Complete onboarding in one transaction so failed seeds and lost responses cannot create duplicate workspaces.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js"
+      ],
+      "lines": 51,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain atomic workspace setup and its stable retry identity without exposing receipts to direct writes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1790800000_business_execution.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js",
+        "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js"
+      ],
+      "lines": 73,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Persist bounded business effects and provenance with retained rollback and durable effect identity.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1790900000_workspace_assistant.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js"
+      ],
+      "lines": 64,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Isolate assistant sessions, plans and learned patterns by account and workspace behind native authenticated routes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/rooms/RoomCanvas.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "nodeTone",
+        "RoomCanvas"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/roomGraph.js"
+      ],
+      "lines": 64,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Render source-derived room projections without clipping measured nodes or hiding their interactive semantics.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/PersonalAssistantKnowledge.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "PersonalKnowledge",
+        "PersonalAssistantKnowledge"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceAssistant.js"
+      ],
+      "lines": 61,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose current-account assistant pattern graphs, bounded export and session forgetting without sharing personal knowledge with tenant administrators.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/SourceCapture.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "SourceCapture"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/businessExecution.js"
+      ],
+      "lines": 60,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect a real public-source request to the worker-backed signal inbox and retained capture receipt.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "AssistantDesk",
+        "WorkspaceAssistant"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceAssistant.js",
+        "apps/web/src/contexts/WorkspaceAccessContext.jsx"
+      ],
+      "lines": 187,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Offer a persistent account-scoped assistant with visible plans, form assistance, retryable outcomes and personal session history.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/__tests__/AssistantSurface.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Editor",
+        "apply"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceAssistant.js"
+      ],
+      "lines": 85,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise reviewed assistance against rendered React controls, stale user input and human-authority dialog boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/__tests__/WorkspaceAssistant.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Page",
+        "compose"
+      ],
+      "dependencies": [
+        "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+        "tests/upgrade/assistant-fixture.mjs"
+      ],
+      "lines": 98,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require rendered conversation recovery, reviewed form effects, current-account isolation and honest unavailable-provider states.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/workflows/BusinessActionEditor.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "BusinessActionEditor"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/businessExecution.js"
+      ],
+      "lines": 57,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let operators define reviewable ERP, source-capture and registered workflow effects without client-side endpoints.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/workflows/BusinessActionReview.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "BusinessActionReview"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/businessExecution.js",
+        "apps/web/src/lib/workflowRuns.js"
+      ],
+      "lines": 58,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose actual bounded execution and uncertain outcomes in the existing workflow review.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/useBusinessExecution.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "useBusinessExecution"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/businessExecution.js"
+      ],
+      "lines": 33,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Discard execution responses after an account, workspace or demonstration-mode change.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/businessExecution.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "createBusinessClient",
+        "defaultBusinessAction",
+        "businessReplay"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/business-actions.js"
+      ],
+      "lines": 56,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose scope-bound business commands and replay facts without inventing external outcomes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/dailyDigest.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "dailyDigest"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useWorkspaceRecords.js"
+      ],
+      "lines": 45,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep failed observations and unknown review dates from becoming false daily operational conclusions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/onboarding.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "createWorkspace"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-onboarding.js"
+      ],
+      "lines": 36,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Recover complete onboarding receipts while discarding late responses from a previous account.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/workspaceAssistant.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "createAssistantClient",
+        "labelOf",
+        "kindOf",
+        "visible",
+        "humanContext",
+        "describe",
+        "localValue",
+        "captureAssistantSurface",
+        "applyAssistantPlan"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/assistant-policy.js",
+        "apps/pocketbase/pb_hooks/workspace-assistant.js"
+      ],
+      "lines": 146,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Constrain assistant form assistance to current visible controls and account-bound native conversations.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/workspaceRooms.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "workspaceRoom",
+        "publishedRoom"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceKnowledge.js"
+      ],
+      "lines": 57,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Render existing workspace provenance in Living Rooms without converting recorded states into independent verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/__tests__/OnboardingPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Page",
+        "select"
+      ],
+      "dependencies": [
+        "apps/web/src/pages/OnboardingPage.jsx",
+        "apps/pocketbase/pb_hooks/workspace-onboarding.js"
+      ],
+      "lines": 92,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise the actual onboarding page with native command fixtures, lost responses, rollback and account changes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/ExecutionReplayPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "Replay",
+        "ExecutionReplayPage"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/businessExecution.js"
+      ],
+      "lines": 64,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Replay and export actual bounded-action receipts without treating recorded results as independent verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/RoomsPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "RoomsPage"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceRooms.js",
+        "apps/web/src/hooks/useWorkspaceKnowledge.js",
+        "apps/web/src/pages/workspace/ExecutionReplayPage.jsx"
+      ],
+      "lines": 80,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make room modes act on current workspace evidence and retained execution replay while preserving separate estate publication.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/SpecialistWorkPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "WorkDesks",
+        "SpecialistWorkPage"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useWorkspaceRecords.js"
+      ],
+      "lines": 76,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Restore scoped specialist work desks while retaining the separate Capability Passport and existing work tools.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/DailyEditionPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Page"
+      ],
+      "dependencies": [
+        "apps/web/src/pages/workspace/DailyEditionPage.jsx",
+        "apps/web/src/lib/dailyDigest.js"
+      ],
+      "lines": 54,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Check rendered edition error states, true review dates and midnight rollover rather than trusting an empty or stale digest.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/business-execution.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/business-actions.js",
+        "apps/mission_suite/business_worker.py",
+        "scripts/ci/submission_readiness.py"
+      ],
+      "lines": 158,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define the end-to-end business action protocol, native authorization and evidence needed to activate and verify it.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/submission-guide.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/submission-policy.json",
+        ".bits/hostinger-readiness.json",
+        "scripts/ci/submission_readiness.py",
+        "docs/business-execution.md",
+        "docs/workspace-assistant.md"
+      ],
+      "lines": 188,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define provisional submission rules, exhaustive checkpoint acceptance and a verifiable owner-reviewed entry package.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/workspace-assistant.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-assistant.js",
+        "apps/web/src/lib/workspaceAssistant.js",
+        "apps/web/src/components/workspace/WorkspaceAssistant.jsx"
+      ],
+      "lines": 137,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain personal assistant isolation, inferred browser actions, scoped context and receiving acceptance without granting model authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/ci/submission_readiness.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "require",
+        "load_policy",
+        "check_wiring",
+        "public_url",
+        "material_reference",
+        "prepare",
+        "execution_receipt",
+        "audit",
+        "main"
+      ],
+      "dependencies": [
+        ".bits/submission-policy.json",
+        "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/hostinger_replay.py"
+      ],
+      "lines": 493,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep all eleven submission milestones gated by current acceptance, captured replay and reviewed official requirements.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/assistant-browser.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "runAssistantBrowserChecks"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceAssistant.js"
+      ],
+      "lines": 131,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise real DOM boundaries, reviewed form values, navigation and partial outcomes independently of unavailable React test dependencies.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/assistant-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "assistantFixture"
+      ],
+      "dependencies": [
+        "tests/upgrade/admin-fixture.mjs",
+        "apps/pocketbase/pb_hooks/workspace-assistant.js"
+      ],
+      "lines": 37,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise real assistant policies through explicit storage and inference doubles, without live model or database claims.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/business-client.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "fixture"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/businessExecution.js",
+        "apps/web/src/lib/workflowRuns.js"
+      ],
+      "lines": 73,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify scoped native business receipt transport, uncertain retries and honest replay projections.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/business-execution.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "setup",
+        "workflow",
+        "enqueue",
+        "dispatched"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/business-actions.js",
+        "tests/upgrade/admin-fixture.mjs"
+      ],
+      "lines": 235,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise approved effects, source provenance, leases, uncertain outcomes and retained rollback with production hooks.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/check_sprint_execution.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ObservedResult",
+        "main"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_business_worker.py",
+        "tests/upgrade/test_submission_readiness.py",
+        "apps/mission_suite/business_worker.py",
+        "scripts/ci/submission_readiness.py"
+      ],
+      "lines": 131,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep worker uncertainty handling and submission admission above measured coverage requirements in the required readiness gate.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/sprint-integrity.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "reviewed"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+        "apps/pocketbase/pb_hooks/evidence-policy.js",
+        "apps/web/src/lib/dailyDigest.js"
+      ],
+      "lines": 121,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reproduce setup rollback/retry failures and protect the meaning of reviewed evidence and daily outcomes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_business_worker.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Transport",
+        "WorkerTests",
+        "OperatorLoopTests",
+        "EntrypointTests"
+      ],
+      "dependencies": [
+        "apps/mission_suite/business_worker.py"
+      ],
+      "lines": 429,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise provider ordering, timeout ambiguity, source provenance and read-only reconciliation without contacting an external service.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_submission_readiness.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "SubmissionTests"
+      ],
+      "dependencies": [
+        "scripts/ci/submission_readiness.py",
+        "tests/upgrade/test_hostinger_replay.py"
+      ],
+      "lines": 462,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject unsupported submission claims, missing checkpoints, stale captures and invented official acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/workspace-assistant.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-assistant.js",
+        "apps/web/src/lib/workspaceAssistant.js",
+        "tests/upgrade/admin-fixture.mjs"
+      ],
+      "lines": 153,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Test tenant and account isolation, bounded inferred plans, revocation, retained personal patterns and unavailable inference.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/workspace-rooms.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/lib/workspaceRooms.js",
+        "apps/web/src/lib/roomGraph.js"
+      ],
+      "lines": 57,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require source-scoped room projections to retain partial coverage and inferred relations without fabricating verified capabilities.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-completion",
+        "workspace-assistant"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/OnboardingPage.jsx",
+      "target": "apps/web/src/lib/onboarding.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/onboarding.js as declared by apps/web/src/pages/OnboardingPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/OnboardingPage.jsx",
+      "target": "apps/web/src/contexts/AuthContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/contexts/AuthContext.jsx as declared by apps/web/src/pages/OnboardingPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-submission-runtime.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON docs/submission-guide.md as declared by .bits/handoffs/2026-09-21-bits-codegen-cmax-b-submission-runtime.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-submission-runtime.md",
+      "target": "docs/business-execution.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON docs/business-execution.md as declared by .bits/handoffs/2026-09-21-bits-codegen-cmax-b-submission-runtime.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-submission-runtime.md",
+      "target": "docs/workspace-assistant.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON docs/workspace-assistant.md as declared by .bits/handoffs/2026-09-21-bits-codegen-cmax-b-submission-runtime.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-submission-runtime.md",
+      "target": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md as declared by .bits/handoffs/2026-09-21-bits-codegen-cmax-b-submission-runtime.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON docs/submission-guide.md as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md",
+      "target": "docs/workspace-assistant.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON docs/workspace-assistant.md as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md",
+      "target": "docs/business-execution.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON docs/business-execution.md as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md",
+      "target": "tests/upgrade/check_sprint_execution.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/check_sprint_execution.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md",
+      "target": "tests/upgrade/assistant-browser.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/assistant-browser.mjs as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json.cgrf.yaml",
+      "target": "tests/upgrade/check_sprint_execution.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/check_sprint_execution.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json.cgrf.yaml",
+      "target": "tests/upgrade/assistant-browser.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/assistant-browser.mjs as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/submission-policy.json.cgrf.yaml",
+      "target": "scripts/ci/sprint_cycle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON scripts/ci/sprint_cycle.py as declared by .bits/submission-policy.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/submission-policy.json.cgrf.yaml",
+      "target": ".bits/hostinger-readiness.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON .bits/hostinger-readiness.json as declared by .bits/submission-policy.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/mission_suite/business_worker.py",
+      "target": "apps/research/processing.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/research/processing.py as declared by apps/mission_suite/business_worker.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/mission_suite/business_worker.py",
+      "target": "apps/research/transport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/research/transport.py as declared by apps/mission_suite/business_worker.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/mission_suite/business_worker.py",
+      "target": "apps/pocketbase/pb_hooks/business-actions.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/business-actions.js as declared by apps/mission_suite/business_worker.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/assistant-policy.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js as declared by apps/pocketbase/pb_hooks/assistant-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/assistant.pb.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-assistant.js as declared by apps/pocketbase/pb_hooks/assistant.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/business-action-policy.js",
+      "target": "AGENTS.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON AGENTS.md as declared by apps/pocketbase/pb_hooks/business-action-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/business-actions.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js as declared by apps/pocketbase/pb_hooks/business-actions.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/business-actions.js",
+      "target": "apps/pocketbase/pb_hooks/business-action-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/business-action-policy.js as declared by apps/pocketbase/pb_hooks/business-actions.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/business-actions.js",
+      "target": "apps/pocketbase/pb_hooks/workflow-runs.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workflow-runs.js as declared by apps/pocketbase/pb_hooks/business-actions.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/business-actions.js",
+      "target": "apps/pocketbase/pb_migrations/1790800000_business_execution.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_migrations/1790800000_business_execution.js as declared by apps/pocketbase/pb_hooks/business-actions.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/business-execution.pb.js",
+      "target": "apps/pocketbase/pb_hooks/business-actions.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/business-actions.js as declared by apps/pocketbase/pb_hooks/business-execution.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "target": "apps/pocketbase/pb_hooks/assistant-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/assistant-policy.js as declared by apps/pocketbase/pb_hooks/workspace-assistant.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "target": "apps/pocketbase/pb_hooks/knowledge-graph.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/knowledge-graph.js as declared by apps/pocketbase/pb_hooks/workspace-assistant.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "target": "apps/pocketbase/pb_migrations/1790900000_workspace_assistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_migrations/1790900000_workspace_assistant.js as declared by apps/pocketbase/pb_hooks/workspace-assistant.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-knowledge.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-knowledge.js as declared by apps/pocketbase/pb_hooks/workspace-assistant.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js as declared by apps/pocketbase/pb_hooks/workspace-onboarding.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+      "target": "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js as declared by apps/pocketbase/pb_hooks/workspace-onboarding.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js",
+      "target": "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_migrations/1790000000_workspace_administration.js as declared by apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1790800000_business_execution.js",
+      "target": "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_migrations/1790000000_workspace_administration.js as declared by apps/pocketbase/pb_migrations/1790800000_business_execution.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1790800000_business_execution.js",
+      "target": "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js as declared by apps/pocketbase/pb_migrations/1790800000_business_execution.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1790900000_workspace_assistant.js",
+      "target": "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_migrations/1790000000_workspace_administration.js as declared by apps/pocketbase/pb_migrations/1790900000_workspace_assistant.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/rooms/RoomCanvas.jsx",
+      "target": "apps/web/src/lib/roomGraph.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/roomGraph.js as declared by apps/web/src/components/rooms/RoomCanvas.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/PersonalAssistantKnowledge.jsx",
+      "target": "apps/web/src/lib/workspaceAssistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workspaceAssistant.js as declared by apps/web/src/components/workspace/PersonalAssistantKnowledge.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/SourceCapture.jsx",
+      "target": "apps/web/src/lib/businessExecution.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/businessExecution.js as declared by apps/web/src/components/workspace/SourceCapture.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+      "target": "apps/web/src/lib/workspaceAssistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workspaceAssistant.js as declared by apps/web/src/components/workspace/WorkspaceAssistant.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+      "target": "apps/web/src/contexts/WorkspaceAccessContext.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/contexts/WorkspaceAccessContext.jsx as declared by apps/web/src/components/workspace/WorkspaceAssistant.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/AssistantSurface.test.jsx",
+      "target": "apps/web/src/lib/workspaceAssistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workspaceAssistant.js as declared by apps/web/src/components/workspace/__tests__/AssistantSurface.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/WorkspaceAssistant.test.jsx",
+      "target": "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/components/workspace/WorkspaceAssistant.jsx as declared by apps/web/src/components/workspace/__tests__/WorkspaceAssistant.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/WorkspaceAssistant.test.jsx",
+      "target": "tests/upgrade/assistant-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/assistant-fixture.mjs as declared by apps/web/src/components/workspace/__tests__/WorkspaceAssistant.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/workflows/BusinessActionEditor.jsx",
+      "target": "apps/web/src/lib/businessExecution.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/businessExecution.js as declared by apps/web/src/components/workspace/workflows/BusinessActionEditor.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/workflows/BusinessActionReview.jsx",
+      "target": "apps/web/src/lib/businessExecution.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/businessExecution.js as declared by apps/web/src/components/workspace/workflows/BusinessActionReview.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/workflows/BusinessActionReview.jsx",
+      "target": "apps/web/src/lib/workflowRuns.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workflowRuns.js as declared by apps/web/src/components/workspace/workflows/BusinessActionReview.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useBusinessExecution.js",
+      "target": "apps/web/src/lib/businessExecution.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/businessExecution.js as declared by apps/web/src/hooks/useBusinessExecution.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/businessExecution.js",
+      "target": "apps/pocketbase/pb_hooks/business-actions.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/business-actions.js as declared by apps/web/src/lib/businessExecution.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/dailyDigest.js",
+      "target": "apps/web/src/hooks/useWorkspaceRecords.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/hooks/useWorkspaceRecords.js as declared by apps/web/src/lib/dailyDigest.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/onboarding.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-onboarding.js as declared by apps/web/src/lib/onboarding.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workspaceAssistant.js",
+      "target": "apps/pocketbase/pb_hooks/assistant-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/assistant-policy.js as declared by apps/web/src/lib/workspaceAssistant.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workspaceAssistant.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-assistant.js as declared by apps/web/src/lib/workspaceAssistant.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workspaceRooms.js",
+      "target": "apps/web/src/lib/workspaceKnowledge.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workspaceKnowledge.js as declared by apps/web/src/lib/workspaceRooms.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/__tests__/OnboardingPage.test.jsx",
+      "target": "apps/web/src/pages/OnboardingPage.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/pages/OnboardingPage.jsx as declared by apps/web/src/pages/__tests__/OnboardingPage.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/__tests__/OnboardingPage.test.jsx",
+      "target": "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-onboarding.js as declared by apps/web/src/pages/__tests__/OnboardingPage.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/ExecutionReplayPage.jsx",
+      "target": "apps/web/src/lib/businessExecution.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/businessExecution.js as declared by apps/web/src/pages/workspace/ExecutionReplayPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/RoomsPage.jsx",
+      "target": "apps/web/src/lib/workspaceRooms.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workspaceRooms.js as declared by apps/web/src/pages/workspace/RoomsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/RoomsPage.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceKnowledge.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/hooks/useWorkspaceKnowledge.js as declared by apps/web/src/pages/workspace/RoomsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/RoomsPage.jsx",
+      "target": "apps/web/src/pages/workspace/ExecutionReplayPage.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/pages/workspace/ExecutionReplayPage.jsx as declared by apps/web/src/pages/workspace/RoomsPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/SpecialistWorkPage.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceRecords.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/hooks/useWorkspaceRecords.js as declared by apps/web/src/pages/workspace/SpecialistWorkPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/DailyEditionPage.test.jsx",
+      "target": "apps/web/src/pages/workspace/DailyEditionPage.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/pages/workspace/DailyEditionPage.jsx as declared by apps/web/src/pages/workspace/__tests__/DailyEditionPage.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/DailyEditionPage.test.jsx",
+      "target": "apps/web/src/lib/dailyDigest.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/dailyDigest.js as declared by apps/web/src/pages/workspace/__tests__/DailyEditionPage.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/business-execution.md",
+      "target": "apps/pocketbase/pb_hooks/business-actions.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/business-actions.js as declared by docs/business-execution.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/business-execution.md",
+      "target": "apps/mission_suite/business_worker.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/mission_suite/business_worker.py as declared by docs/business-execution.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/business-execution.md",
+      "target": "scripts/ci/submission_readiness.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON scripts/ci/submission_readiness.py as declared by docs/business-execution.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/submission-guide.md",
+      "target": ".bits/submission-policy.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON .bits/submission-policy.json as declared by docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/submission-guide.md",
+      "target": ".bits/hostinger-readiness.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON .bits/hostinger-readiness.json as declared by docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/submission-guide.md",
+      "target": "scripts/ci/submission_readiness.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON scripts/ci/submission_readiness.py as declared by docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/submission-guide.md",
+      "target": "docs/business-execution.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON docs/business-execution.md as declared by docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/submission-guide.md",
+      "target": "docs/workspace-assistant.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON docs/workspace-assistant.md as declared by docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/workspace-assistant.md",
+      "target": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-assistant.js as declared by docs/workspace-assistant.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/workspace-assistant.md",
+      "target": "apps/web/src/lib/workspaceAssistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workspaceAssistant.js as declared by docs/workspace-assistant.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/workspace-assistant.md",
+      "target": "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/components/workspace/WorkspaceAssistant.jsx as declared by docs/workspace-assistant.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/submission_readiness.py",
+      "target": ".bits/submission-policy.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON .bits/submission-policy.json as declared by scripts/ci/submission_readiness.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/submission_readiness.py",
+      "target": "scripts/ci/hostinger_readiness.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON scripts/ci/hostinger_readiness.py as declared by scripts/ci/submission_readiness.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/submission_readiness.py",
+      "target": "scripts/ci/hostinger_replay.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON scripts/ci/hostinger_replay.py as declared by scripts/ci/submission_readiness.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/assistant-browser.mjs",
+      "target": "apps/web/src/lib/workspaceAssistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workspaceAssistant.js as declared by tests/upgrade/assistant-browser.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/assistant-fixture.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/admin-fixture.mjs as declared by tests/upgrade/assistant-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/assistant-fixture.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-assistant.js as declared by tests/upgrade/assistant-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-client.test.mjs",
+      "target": "apps/web/src/lib/businessExecution.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/businessExecution.js as declared by tests/upgrade/business-client.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-client.test.mjs",
+      "target": "apps/web/src/lib/workflowRuns.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workflowRuns.js as declared by tests/upgrade/business-client.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-execution.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/business-actions.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/business-actions.js as declared by tests/upgrade/business-execution.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/business-execution.test.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/admin-fixture.mjs as declared by tests/upgrade/business-execution.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_sprint_execution.py",
+      "target": "tests/upgrade/test_business_worker.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/test_business_worker.py as declared by tests/upgrade/check_sprint_execution.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_sprint_execution.py",
+      "target": "tests/upgrade/test_submission_readiness.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/test_submission_readiness.py as declared by tests/upgrade/check_sprint_execution.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_sprint_execution.py",
+      "target": "apps/mission_suite/business_worker.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/mission_suite/business_worker.py as declared by tests/upgrade/check_sprint_execution.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_sprint_execution.py",
+      "target": "scripts/ci/submission_readiness.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON scripts/ci/submission_readiness.py as declared by tests/upgrade/check_sprint_execution.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/sprint-integrity.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-onboarding.js as declared by tests/upgrade/sprint-integrity.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/sprint-integrity.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/evidence-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/evidence-policy.js as declared by tests/upgrade/sprint-integrity.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/sprint-integrity.test.mjs",
+      "target": "apps/web/src/lib/dailyDigest.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/dailyDigest.js as declared by tests/upgrade/sprint-integrity.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_business_worker.py",
+      "target": "apps/mission_suite/business_worker.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/mission_suite/business_worker.py as declared by tests/upgrade/test_business_worker.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_submission_readiness.py",
+      "target": "scripts/ci/submission_readiness.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON scripts/ci/submission_readiness.py as declared by tests/upgrade/test_submission_readiness.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_submission_readiness.py",
+      "target": "tests/upgrade/test_hostinger_replay.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/test_hostinger_replay.py as declared by tests/upgrade/test_submission_readiness.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-assistant.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_hooks/workspace-assistant.js as declared by tests/upgrade/workspace-assistant.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-assistant.test.mjs",
+      "target": "apps/web/src/lib/workspaceAssistant.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workspaceAssistant.js as declared by tests/upgrade/workspace-assistant.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-assistant.test.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON tests/upgrade/admin-fixture.mjs as declared by tests/upgrade/workspace-assistant.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-rooms.test.mjs",
+      "target": "apps/web/src/lib/workspaceRooms.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/workspaceRooms.js as declared by tests/upgrade/workspace-rooms.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-rooms.test.mjs",
+      "target": "apps/web/src/lib/roomGraph.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/web/src/lib/roomGraph.js as declared by tests/upgrade/workspace-rooms.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json",
+      "description": "Current-source regression: 488 JavaScript cases pass; Python runs 533 with 527 passing and six dependency skips; 122 semantic-twin cases pass within the broader Python surface. Explicit fixtures do not establish native or deployed acceptance.",
+      "smoke_result": "488/488 JS; 527/533 Python with 6 skips",
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T00:49:23.333724+00:00",
+      "commit_sha": null
+    },
+    {
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_sprint_execution.py",
+      "description": "Required worker/submission gate passes 32 cases and measures 93.75% and 99.18% statement coverage. Polling selects expired leases, preserves live claims and permits uncertain-result reconciliation only with explicit selection.",
+      "smoke_result": "32/32",
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T00:49:23.333724+00:00",
+      "commit_sha": null
+    },
+    {
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/assistant-browser.mjs",
+      "description": "Chromium production-DOM checks first reproduce wrapping-select label contamination (20/21), then pass 21/21 after excluding descendant controls from labels while retaining authority-option denial. React execution remains unverified.",
+      "smoke_result": "21/21",
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T00:49:23.333724+00:00",
+      "commit_sha": null
+    },
+    {
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json",
+      "description": "All eighteen required source/rendered/build/native profiles were retained: four PASS, one HOLD for source dependency skips, three frontend dependency failures and ten missing-PocketBase BLOCKED profiles. No provider activation, deployment, official-rule approval or operational milestone completion was asserted.",
+      "smoke_result": "4/18 required profiles PASS",
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T00:49:23.333724+00:00",
+      "commit_sha": null
     }
   ],
   "summary": {
-    "type_a_count": 659,
-    "type_b_count": 1453,
-    "type_c_count": 148,
+    "type_a_count": 709,
+    "type_b_count": 1554,
+    "type_c_count": 152,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

@@ -75,6 +75,8 @@ function json(record, name) {
 }
 function same(a, b) {
     if (a === b) return true;
+    if (Array.isArray(a) || Array.isArray(b))
+        return Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((value, i) => same(value, b[i]));
     if (!object(a) || !object(b)) return false;
     const ak = Object.keys(a).sort();
     const bk = Object.keys(b).sort();
@@ -117,7 +119,7 @@ function validateLearning(learning) {
     }
 }
 function validateReview(review) {
-    if (!keys(review, TEVV.concat(['reflection'])) || !text(review.reflection, 1200, false))
+    if (!keys(review, TEVV.concat(['reflection', 'evidence_snapshot'])) || !text(review.reflection, 1200, false))
         invalid('Use the four TEVV review sections and a reflection.');
     TEVV.forEach((id) => {
         const item = review[id];
@@ -168,20 +170,24 @@ function evidenceFor(e, id, independent = false) {
     }
     if (independent && (!evidence.getString('owner') || evidence.getString('owner') === e.auth.id))
         invalid('An independent reviewer must differ from every selected evidence author.');
+    return Object.fromEntries(['workspace', 'mission', 'owner', 'type', 'title', 'source', 'content', 'url', 'created', 'updated']
+        .map((field) => [field, evidence.getString(field)]).concat([['id', evidence.id]]));
 }
 function passingReview(e, review, independent = false) {
     if (!review || !text(review.reflection, 1200, true))
         invalid('Record what you learned before verification.');
     const checked = new Set();
+    const snapshots = [];
     TEVV.forEach((id) => {
         const item = review[id];
         if (item.outcome !== 'pass' || !text(item.observation, 1200, true) || !item.evidence)
             invalid('Verification needs four passing TEVV observations with evidence.');
         if (!checked.has(item.evidence)) {
-            evidenceFor(e, item.evidence, independent);
+            snapshots.push(evidenceFor(e, item.evidence, independent));
             checked.add(item.evidence);
         }
     });
+    return snapshots;
 }
 
 /** Enforce native authenticated mission request invariants before persistence. */
@@ -265,6 +271,8 @@ function enforce(e, creating) {
     if (learning !== null) validateLearning(learning);
     const review = json(record, 'mission_review');
     if (review !== null) validateReview(review);
+    if (review && Object.hasOwn(review, 'evidence_snapshot') && before !== 'verified')
+        invalid('Reviewed evidence snapshots are supplied by the server at verification.');
     const changedReview = !same(creating ? null : json(original, 'mission_review'), review);
     if (changedReview && !['running', 'needs_attention', 'verified', 'failed'].includes(after))
         invalid('Record work before adding a TEVV review.');
@@ -302,7 +310,10 @@ function enforce(e, creating) {
     if (after === 'verified' && before !== 'verified') {
         if (plan?.independent_review && record.getString('owner') === e.auth.id)
             invalid('An independent reviewer must differ from the mission proposer.');
-        passingReview(e, review, plan?.independent_review === true);
+        const snapshots = passingReview(e, review, plan?.independent_review === true);
+        // Freeze the exact observations reviewed; later record changes cannot
+        // silently change what this decision actually evaluated.
+        record.set('mission_review', { ...review, evidence_snapshot: snapshots });
         record.set('mission_reviewed_by', e.auth.id);
         record.set('mission_reviewed_at', new Date().toISOString());
         record.set('progress', 100);
