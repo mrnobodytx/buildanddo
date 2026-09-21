@@ -107,6 +107,12 @@ CHECKS = {
         "native",
         "unittest",
     ),
+    # An agent can drive a whole class headlessly: no browser, no fleet box, no CitadelKey.
+    # The scenario carries controls that must be REFUSED, so a green run cannot mean an open room.
+    "classroom_drive": Check(
+        ("python", "scripts/ci/classroom_drive.py", "scenario"),
+        "native",
+    ),
     "native_classroom": Check(
         ("python", "tests/upgrade/test_classroom_native.py", "--require-binary"),
         "native",
