@@ -377,6 +377,51 @@ class AcceptanceTests(unittest.TestCase):
         )
         self.assertEqual(fresh["status"], "PASS")
 
+    def test_final_candidate_binding_requires_unchanged_committed_source(self) -> None:
+        definition = checks.Check(
+            ("python", "-c", "print('# tests 1\\n# fail 0\\n# skipped 0')"),
+            "source",
+            "tap",
+        )
+        sha = "a" * 40
+        with patch.dict(checks.CHECKS, {"fixture": definition}):
+            for final, expected in (
+                ((sha, True), "PASS"),
+                ((sha, False), "INVALID"),
+                (("b" * 40, True), "INVALID"),
+            ):
+                with patch.object(
+                    checks, "candidate_binding", side_effect=[(sha, True), final]
+                ):
+                    path = checks.run_check(
+                        self.root, self.output, "fixture", self.source
+                    )
+                states = readiness.acceptance_state(
+                    self.root, self.output, self.source, datetime.now(timezone.utc), sha
+                )
+                self.assertEqual(states["fixture"], expected)
+                receipt = readiness.read_json(path)
+                self.assertEqual(receipt["candidate_sha"], sha)
+                path.unlink()
+
+    def test_equal_time_conflicting_receipts_cannot_select_a_passing_filename(
+        self,
+    ) -> None:
+        program = "print('# tests 1\\n# fail 0\\n# skipped 0')"
+        path, original = self.run_fixture(program)
+        definition = checks.Check(("python", "-c", program), "source", "tap")
+        write_json(
+            self.output / "000-failure.json",
+            {**original, "status": "FAIL", "exit_code": 1},
+        )
+        with patch.dict(checks.CHECKS, {"fixture": definition}):
+            self.assertEqual(
+                readiness.acceptance_state(
+                    self.root, self.output, self.source, datetime.now(timezone.utc)
+                )["fixture"],
+                "INVALID",
+            )
+
     def test_counts_cover_cancelled_unittest_and_junit_failures(self) -> None:
         self.assertEqual(
             checks.test_counts(

@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 618,
+      "lines": 846,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -532,7 +532,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 42640,
+      "lines": 43385,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -547,20 +547,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade",
-        "blueprint",
-        "policy-intelligence",
-        "operator-plane",
-        "workspace-knowledge",
-        "editorial-auth",
-        "editorial-frontpage",
-        "editorial-artwork",
-        "living-newspaper",
-        "capability-repair-handoff",
-        "interactive-learning",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -679,7 +666,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1360,
+      "lines": 1380,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -694,22 +681,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade",
-        "workflow-runs",
-        "blueprint",
-        "policy-intelligence",
-        "operator-plane",
-        "operator-acceptance",
-        "workspace-knowledge",
-        "editorial-auth",
-        "editorial-frontpage",
-        "editorial-artwork",
-        "living-newspaper",
-        "capability-repair-handoff",
-        "interactive-learning",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -1013,7 +985,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1772,
+      "lines": 1796,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1028,22 +1000,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade",
-        "workflow-runs",
-        "blueprint",
-        "policy-intelligence",
-        "operator-plane",
-        "operator-acceptance",
-        "workspace-knowledge",
-        "editorial-auth",
-        "editorial-frontpage",
-        "editorial-artwork",
-        "living-newspaper",
-        "capability-repair-handoff",
-        "interactive-learning",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -1060,7 +1017,7 @@
         ".bits/context.md",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 221,
+      "lines": 250,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
@@ -1123,7 +1080,7 @@
       "dependencies": [
         "tests/fixtures/sample-blueprint.pdf"
       ],
-      "lines": 18,
+      "lines": 21,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve the PDF fixture bytes and format-required xref padding across Git checkouts.",
@@ -1185,7 +1142,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 103,
+      "lines": 132,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject manifest drift before the existing candidate build reaches its mirror step.",
@@ -1276,7 +1233,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 350,
+      "lines": 373,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Gate contribution review on manifest integrity, component coverage and public adapter tests.",
@@ -3563,7 +3520,7 @@
         "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
         "apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js"
       ],
-      "lines": 123,
+      "lines": 129,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Add business planning fields and reviewed content receipts while hydrating 25 lessons without replacing edited content or progress identities.",
@@ -3595,7 +3552,7 @@
         "apps/pocketbase/pb_migrations/1788900000_create_workspace_members_rbac.js",
         "apps/pocketbase/pb_hooks/evidence.pb.js"
       ],
-      "lines": 61,
+      "lines": 79,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let current members discover their workspace and read shared evidence without granting workspace management or evidence authorship to another account.",
@@ -3627,7 +3584,7 @@
         "apps/pocketbase/pb_migrations/1789800000_restore_workspace_evidence_access.js",
         "apps/pocketbase/pb_hooks/workspace-record-policy.js"
       ],
-      "lines": 85,
+      "lines": 105,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Remove record-owner membership bypasses and close native administration writes while preserving all existing records.",
@@ -3815,7 +3772,7 @@
         "apps/pocketbase/pb_migrations/data/government-submissions.json",
         "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js"
       ],
-      "lines": 39,
+      "lines": 45,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Install eight government-submission lessons under stable progress identities while preserving operator edits.",
@@ -3847,7 +3804,7 @@
       "dependencies": [
         "apps/pocketbase/pb_migrations/1790100000_mission_research.js"
       ],
-      "lines": 81,
+      "lines": 89,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Retain workspace blueprint observations on the existing protected research queue without opening native collection access.",
@@ -4506,7 +4463,7 @@
       "dependencies": [
         "apps/web/src/lib/publicPages.js"
       ],
-      "lines": 34,
+      "lines": 40,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Publish the same public route catalogue for text-based discovery.",
@@ -4564,7 +4521,7 @@
       "enum_type": "Widget",
       "functions": [],
       "dependencies": [],
-      "lines": 14,
+      "lines": 15,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "List only canonical public routes from the shared navigation catalogue.",
@@ -4706,7 +4663,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 245,
+      "lines": 258,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve route loading and offer retry when the workspace list cannot be read instead of treating an outage as a new account.",
@@ -5689,7 +5646,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 150,
+      "lines": 175,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep public page and support links reachable from every public section.",
@@ -6811,7 +6768,7 @@
         "react-helmet",
         "react-router-dom"
       ],
-      "lines": 283,
+      "lines": 287,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
@@ -8731,7 +8688,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 107,
+      "lines": 122,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep public navigation, canonical metadata and crawler output on the same route catalogue.",
@@ -9522,7 +9479,7 @@
         "scripts/ci/sprint_cycle.py",
         "scripts/deploy/roadmap_status.py"
       ],
-      "lines": 639,
+      "lines": 967,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Draw the sprint plan and, separately, whatever the projection actually measured - including saying it measured nothing.",
@@ -9916,7 +9873,7 @@
       "lines": 400,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Show the day the edition is about — today's priorities, what was completed, what is blocked — beside the editions themselves.",
+      "intent_statement": "Show the day the edition is about \u2014 today's priorities, what was completed, what is blocked \u2014 beside the editions themselves.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10157,7 +10114,7 @@
       "lines": 718,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
+      "intent_statement": "Make a list of missions triageable \u2014 priority, progress, due dates, editing and deletion \u2014 instead of an append-only stack.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10198,7 +10155,7 @@
       "lines": 617,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give the operations surface the two things it was missing — the runbook text and the record of each time a human ran it.",
+      "intent_statement": "Give the operations surface the two things it was missing \u2014 the runbook text and the record of each time a human ran it.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10232,7 +10189,7 @@
       "lines": 504,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Answer \"what is happening in this workspace\" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
+      "intent_statement": "Answer \"what is happening in this workspace\" in one screen \u2014 one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10307,7 +10264,7 @@
       "lines": 625,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" — a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
+      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" \u2014 a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10383,7 +10340,7 @@
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/workspaceActions.js"
       ],
-      "lines": 493,
+      "lines": 491,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Turn an append-only feed into something triageable: severity, acknowledge and dismiss, and a default view of what is still open.",
@@ -10575,7 +10532,7 @@
       "lines": 733,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give a workflow the sequence that makes it one — ordered, editable steps — so activating it says what would run.",
+      "intent_statement": "Give a workflow the sequence that makes it one \u2014 ordered, editable steps \u2014 so activating it says what would run.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10974,7 +10931,7 @@
       "dependencies": [
         "apps/web/src/pages/workspace/SettingsPage.jsx"
       ],
-      "lines": 77,
+      "lines": 96,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Test appearance, account sign-out and recoverable domain-authorization writes.",
@@ -11117,7 +11074,7 @@
         "apps/web/src/contexts/WorkspaceContext.jsx",
         "apps/web/src/test/pocketbaseMock.js"
       ],
-      "lines": 290,
+      "lines": 312,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Render workspace UI under the real Auth and Workspace contexts so tests exercise production components, not test-only replicas.",
@@ -11254,7 +11211,7 @@
         "apps/web/vite.config.js",
         "apps/web/src/test/setup.js"
       ],
-      "lines": 100,
+      "lines": 108,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the web test suite on the existing Vite transform, resolving the same \"@\" alias the app builds with.",
@@ -17335,6 +17292,21 @@
       ],
       "enum_type": "Test",
       "functions": [
+        "requireChildProcess",
+        "repoPath",
+        "source",
+        "pythonBin",
+        "runPython",
+        "plain",
+        "ApiError",
+        "BadRequestError",
+        "ForbiddenError",
+        "NotFoundError",
+        "missing",
+        "Fields",
+        "Collection",
+        "Field",
+        "Record",
         "predicate",
         "fixture"
       ],
@@ -17342,12 +17314,12 @@
         "apps/pocketbase/pb_hooks/workspace-access.js",
         "apps/pocketbase/pb_migrations/1790000000_workspace_administration.js"
       ],
-      "lines": 153,
+      "lines": 203,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Execute production commands and migration sources with transactional storage doubles while retaining the native-runtime verification boundary.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -17357,7 +17329,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -17637,7 +17609,17 @@
       ],
       "enum_type": "Test",
       "functions": [
+        "source",
+        "plain",
+        "ApiError",
+        "BadRequestError",
+        "ForbiddenError",
+        "NotFoundError",
+        "Field",
+        "Collection",
+        "Record",
         "fixture",
+        "reject",
         "approve"
       ],
       "dependencies": [
@@ -17648,7 +17630,7 @@
         "apps/web/src/lib/businessPlanning.js",
         "apps/web/src/lib/tutorialCurriculum.js"
       ],
-      "lines": 413,
+      "lines": 414,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise authored lesson structure, migration retention and replay, ERP isolation and content approval against the production source contracts.",
@@ -17663,7 +17645,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "business-learning"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -18002,7 +17984,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/decision-runtime.js"
       ],
-      "lines": 133,
+      "lines": 136,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Execute native application policy and real Python decisions with an explicit PocketBase storage double.",
@@ -18344,12 +18326,12 @@
         "apps/web/src/lib/missionLearning.js",
         "apps/web/src/lib/tutorialCurriculum.js"
       ],
-      "lines": 67,
+      "lines": 81,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Validate the usable mission starter, substantive exercises and persistent lesson identities across upgrades and rollback.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -18359,8 +18341,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "mission-suite",
-        "government-learning"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -18758,7 +18739,7 @@
         "apps/pocketbase/pb_hooks/mission-suite.js",
         "apps/mission_suite/engine.py"
       ],
-      "lines": 56,
+      "lines": 53,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect the real mission API and Python engine while identifying storage and native-auth doubles explicitly.",
@@ -20747,7 +20728,7 @@
         "react-router-dom",
         "vitest"
       ],
-      "lines": 252,
+      "lines": 264,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise independent story navigation, accessible pauses, changing sources and interactive phone content using the actual components.",
@@ -34890,7 +34871,7 @@
       "type": "C",
       "event_type": "smoke_run",
       "file_path": "apps/mission_suite/bundle.py",
-      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96–99.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
+      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96\u201399.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -35046,7 +35027,7 @@
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/check_blueprint_pipeline.py",
-      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17–100% statement coverage per new Python module. Strict source typing and Ruff pass.",
+      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17\u2013100% statement coverage per new Python module. Strict source typing and Ruff pass.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -35965,7 +35946,7 @@
         "apps/web/src/data/policy-demo.json",
         "tests/upgrade/research-fixture.mjs"
       ],
-      "lines": 60,
+      "lines": 61,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise policy proposals against actual research and mission handlers with explicitly synthetic transport and transactional storage.",
@@ -36409,7 +36390,7 @@
         "apps/pocketbase/pb_hooks/workspace-operator.js",
         "apps/federal_foundry/operator.py"
       ],
-      "lines": 65,
+      "lines": 66,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise the operator route and native proposal handlers with the existing explicit storage and transport doubles.",
@@ -38751,7 +38732,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 897,
+      "lines": 1009,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38766,9 +38747,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -39014,17 +38993,18 @@
         "command",
         "runtime_version",
         "test_counts",
+        "candidate_binding",
         "run_check"
       ],
       "dependencies": [
         "scripts/ci/hostinger_readiness.py"
       ],
-      "lines": 331,
+      "lines": 367,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Execute only reviewed local acceptance commands and retain observed failures, skips, runtime identity and exact log digests.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -39034,7 +39014,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -39070,12 +39050,12 @@
         "scripts/ci/sprint_cycle.py",
         "scripts/ci/hostinger_checks.py"
       ],
-      "lines": 534,
+      "lines": 547,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep milestone rationale and next actions current while preventing missing, stale or skipped acceptance from becoming sprint completion.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -39085,7 +39065,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -39125,9 +39105,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -39184,12 +39162,12 @@
         "scripts/ci/hostinger_checks.py",
         "scripts/ci/hostinger_readiness.py"
       ],
-      "lines": 481,
+      "lines": 526,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject stale governance, tampered receipts, skipped acceptance and misleading runtime versions using real local subprocess outcomes.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -39199,7 +39177,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -41106,10 +41084,11 @@
         ".bits/submission-policy.json",
         ".bits/hostinger-readiness.json",
         "scripts/ci/submission_readiness.py",
+        "scripts/ci/day21_submission.py",
         "docs/business-execution.md",
         "docs/workspace-assistant.md"
       ],
-      "lines": 188,
+      "lines": 239,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define provisional submission rules, exhaustive checkpoint acceptance and a verifiable owner-reviewed entry package.",
@@ -41124,8 +41103,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-completion",
-        "workspace-assistant"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -41187,7 +41165,7 @@
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/hostinger_replay.py"
       ],
-      "lines": 493,
+      "lines": 524,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep all eleven submission milestones gated by current acceptance, captured replay and reviewed official requirements.",
@@ -41202,8 +41180,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-completion",
-        "workspace-assistant"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -41320,16 +41297,18 @@
       ],
       "enum_type": "Test",
       "functions": [
+        "sha",
         "setup",
         "workflow",
         "enqueue",
-        "dispatched"
+        "dispatched",
+        "n8nResult"
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/business-actions.js",
         "tests/upgrade/admin-fixture.mjs"
       ],
-      "lines": 235,
+      "lines": 236,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise approved effects, source provenance, leases, uncertain outcomes and retained rollback with production hooks.",
@@ -41344,8 +41323,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-completion",
-        "workspace-assistant"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -41473,9 +41451,10 @@
       ],
       "dependencies": [
         "scripts/ci/submission_readiness.py",
-        "tests/upgrade/test_hostinger_replay.py"
+        "tests/upgrade/test_hostinger_replay.py",
+        "tests/upgrade/test_day21_support.py"
       ],
-      "lines": 462,
+      "lines": 511,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject unsupported submission claims, missing checkpoints, stale captures and invented official acceptance.",
@@ -41490,8 +41469,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-completion",
-        "workspace-assistant"
+        "four-gap-closure"
       ],
       "tenant_id": null
     },
@@ -42623,12 +42601,779 @@
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "timestamp": "2026-09-21T00:49:23.333724+00:00",
       "commit_sha": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/development-loop.md",
+        "docs/submission-guide.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md"
+      ],
+      "lines": 62,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Assign the exact external inputs still needed after acceptance repair and source completion of the four closure paths.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+        ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md"
+      ],
+      "lines": 285,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Distinguish completed local closure mechanisms from the independent reviews, runtime acceptance and owner evidence still needed to complete the four requested outcomes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json",
+        "libs/evolution/review_packets.py",
+        "scripts/ci/day21_submission.py",
+        "scripts/ci/submission_readiness.py"
+      ],
+      "lines": 1334,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the tested source identity, actual acceptance failures and ungraded local evidence without asserting external qualification or submission.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json",
+        "libs/evolution/review_packets.py",
+        "scripts/ci/day21_submission.py",
+        "scripts/ci/submission_readiness.py"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the tested source identity, actual acceptance failures and ungraded local evidence without asserting external qualification or submission.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/development-loop.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "libs/evolution/development.py",
+        "libs/evolution/development_sources.py",
+        "libs/evolution/intelligence.py",
+        "libs/evolution/review_packets.py",
+        "docs/verified-evolution.md",
+        "docs/capability-tokens.md",
+        "docs/submission-guide.md"
+      ],
+      "lines": 216,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make development observations, proposed work and independent grading operable without confusing source tests with competence or competition acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/review_packets.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "_json",
+        "_sha",
+        "_file",
+        "write_packet",
+        "read_packet",
+        "admit_packet",
+        "main"
+      ],
+      "dependencies": [
+        "libs/evolution/development.py",
+        "libs/capability_tokens/verification.py"
+      ],
+      "lines": 335,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the actual source and process bytes an independent reviewer needs to admit a development outcome through the existing trust gate.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/ci/day21_submission.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Day21Error",
+        "canonical",
+        "digest",
+        "file_digest",
+        "utc",
+        "strict_json",
+        "contained",
+        "validate_ref",
+        "required_profiles",
+        "candidate_fields",
+        "export_acceptance",
+        "index_evidence",
+        "validate_index",
+        "_require_text",
+        "_https_url",
+        "validate_acceptance",
+        "validate_public_url",
+        "validate_products",
+        "validate_browser",
+        "validate_demo_replay",
+        "validate_simple_artifact",
+        "repository_audit",
+        "evidence_audit",
+        "rubric_coverage",
+        "_copy_ref_files",
+        "compile_bundle",
+        "write_templates",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/hostinger_replay.py",
+        "scripts/ci/hostinger_checks.py"
+      ],
+      "lines": 1360,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_day21_submission.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "CandidateEvidenceTests"
+      ],
+      "dependencies": [
+        "scripts/ci/day21_submission.py",
+        "tests/upgrade/test_day21_support.py"
+      ],
+      "lines": 294,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject summary-only, stale, mismatched and tampered submission evidence before candidate packaging.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_day21_support.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "candidate_fixture"
+      ],
+      "dependencies": [
+        "scripts/ci/day21_submission.py",
+        "tests/upgrade/test_hostinger_replay.py"
+      ],
+      "lines": 224,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Isolate synthetic candidate evidence used to exercise closure contracts from operational acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_development_review_packets.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ReviewPacketTests"
+      ],
+      "dependencies": [
+        "libs/evolution/review_packets.py",
+        "tests/upgrade/test_development_support.py"
+      ],
+      "lines": 247,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove that portable development evidence preserves actual bytes while labels and trust remain independent inputs.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "four-gap-closure"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md",
+      "target": "docs/development-loop.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/development-loop.md as declared by .bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/submission-guide.md as declared by .bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md as declared by .bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md",
+      "target": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "PRODUCES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "PRODUCES .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml",
+      "target": "libs/evolution/review_packets.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES libs/evolution/review_packets.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml",
+      "target": "scripts/ci/day21_submission.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/day21_submission.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml",
+      "target": "scripts/ci/submission_readiness.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/submission_readiness.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "libs/evolution/development.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES libs/evolution/development.py as declared by docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "libs/evolution/development_sources.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES libs/evolution/development_sources.py as declared by docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "libs/evolution/intelligence.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES libs/evolution/intelligence.py as declared by docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "libs/evolution/review_packets.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES libs/evolution/review_packets.py as declared by docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "docs/verified-evolution.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "EXTENDS docs/verified-evolution.md as declared by docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "docs/capability-tokens.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "EXTENDS docs/capability-tokens.md as declared by docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/submission-guide.md as declared by docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/submission-guide.md",
+      "target": "scripts/ci/day21_submission.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON scripts/ci/day21_submission.py as declared by docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/review_packets.py",
+      "target": "libs/evolution/development.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES libs/evolution/development.py as declared by libs/evolution/review_packets.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/review_packets.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES libs/capability_tokens/verification.py as declared by libs/evolution/review_packets.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/day21_submission.py",
+      "target": "scripts/ci/hostinger_readiness.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/hostinger_readiness.py as declared by scripts/ci/day21_submission.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/day21_submission.py",
+      "target": "scripts/ci/hostinger_replay.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/hostinger_replay.py as declared by scripts/ci/day21_submission.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/day21_submission.py",
+      "target": "scripts/ci/hostinger_checks.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/hostinger_checks.py as declared by scripts/ci/day21_submission.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_day21_submission.py",
+      "target": "scripts/ci/day21_submission.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES scripts/ci/day21_submission.py as declared by tests/upgrade/test_day21_submission.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_day21_submission.py",
+      "target": "tests/upgrade/test_day21_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tests/upgrade/test_day21_support.py as declared by tests/upgrade/test_day21_submission.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_day21_support.py",
+      "target": "scripts/ci/day21_submission.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES scripts/ci/day21_submission.py as declared by tests/upgrade/test_day21_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_day21_support.py",
+      "target": "tests/upgrade/test_hostinger_replay.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tests/upgrade/test_hostinger_replay.py as declared by tests/upgrade/test_day21_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_review_packets.py",
+      "target": "libs/evolution/review_packets.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES libs/evolution/review_packets.py as declared by tests/upgrade/test_development_review_packets.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_review_packets.py",
+      "target": "tests/upgrade/test_development_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tests/upgrade/test_development_support.py as declared by tests/upgrade/test_development_review_packets.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_submission_readiness.py",
+      "target": "tests/upgrade/test_day21_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tests/upgrade/test_day21_support.py as declared by tests/upgrade/test_submission_readiness.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "commit",
+      "file_path": "libs/evolution/review_packets.py",
+      "description": "Committed the local four-gap continuation: repair PocketBase host fixtures, transfer ungraded source/run evidence and revalidate same-candidate submission proof without granting external authority.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T20:23:27Z",
+      "commit_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/government-learning.test.mjs",
+      "description": "Observed fixture red/green closure: 32 of 43 original cases failed; the corrected host and seeded-ID regression pass all 44 cases. The full Node suite passes 510 cases.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T20:40:40.375921+00:00",
+      "commit_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+      "smoke_result": "44/44 targeted; 510/510 Node"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_day21_submission.py",
+      "description": "Observed 67 focused tests passing with no skips; stdlib trace covers 2576/2750 executable lines across six changed modules. Every measured module exceeds 80%; branch coverage is not measured.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T20:40:40.375921+00:00",
+      "commit_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+      "smoke_result": "67/67"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "libs/evolution/review_packets.py",
+      "description": "Exported and inspected the actual 91-source-file, 108-object change-impact packet. Eight selected tests pass, source is unchanged, zero real pairs are independently graded and zero capabilities are qualified.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T20:24:49.073307+00:00",
+      "commit_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+      "smoke_result": "8/8 local; qualification HOLD"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json",
+      "description": "Retained all eighteen receipts for the exact committed candidate: four PASS, three missing-frontend-dependency FAIL, one Python dependency-skip HOLD and ten absent-PocketBase BLOCKED. Every receipt observes a clean, unchanged candidate.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T20:27:50.262107+00:00",
+      "commit_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+      "smoke_result": "4/18 required profiles PASS"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "scripts/ci/submission_readiness.py",
+      "description": "Audited the actual partial entry with five owner-review written drafts and retained HOLD acceptance. Walkthrough, deployed/browser/product proof, independent milestone review and reviewed organizer requirements remain missing.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T20:40:40.375921+00:00",
+      "commit_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+      "smoke_result": "HOLD; 0/11 verified milestones"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "description": "Refreshed current source metadata and exact CGRF relationships while preserving all 152 historical dispatch events. This local evidence record does not attest runtime deployment or independent approval.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-21T20:40:40.375921+00:00",
+      "commit_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+      "smoke_result": null
     }
   ],
   "summary": {
-    "type_a_count": 709,
-    "type_b_count": 1554,
-    "type_c_count": 152,
+    "type_a_count": 719,
+    "type_b_count": 1584,
+    "type_c_count": 159,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

@@ -8,9 +8,9 @@
 # Seat:         BITS-CODEGEN
 # Owner:        Citadel Nexus Inc.
 # Created:      2026-09-20
-# Depends:      scripts/ci/submission_readiness.py, tests/upgrade/test_hostinger_replay.py
+# Depends:      scripts/ci/submission_readiness.py, tests/upgrade/test_hostinger_replay.py, tests/upgrade/test_day21_support.py
 # EnumType:     Service
-# EnumEdges:    DEPENDS_ON scripts/ci/submission_readiness.py; DEPENDS_ON tests/upgrade/test_hostinger_replay.py
+# EnumEdges:    DEPENDS_ON scripts/ci/submission_readiness.py; DEPENDS_ON tests/upgrade/test_hostinger_replay.py; CONSUMES tests/upgrade/test_day21_support.py
 # DAG Node:     none
 # Intent:       Reject unsupported submission claims, missing checkpoints, stale captures and invented official acceptance.
 # ───────────────────────────────────────────────────────────────
@@ -30,7 +30,12 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from scripts.ci import submission_readiness as submission, hostinger_replay as replay
+from scripts.ci import (
+    submission_readiness as submission,
+    hostinger_replay as replay,
+    day21_submission as day21,
+)
+from tests.upgrade.test_day21_support import candidate_fixture
 from scripts.ci.hostinger_readiness import ReadinessError
 from tests.upgrade.test_hostinger_readiness import ROOT, write_json
 from tests.upgrade.test_hostinger_replay import (
@@ -64,7 +69,12 @@ class SubmissionTests(unittest.TestCase):
         self.contract = json.loads(
             (ROOT / ".bits/hostinger-readiness.json").read_text()
         )
-        for module in (submission, replay):
+        binding = patch.object(
+            submission, "candidate_binding", return_value=(SHA, True)
+        )
+        binding.start()
+        self.addCleanup(binding.stop)
+        for module in (submission, replay, day21):
             handle = patch.object(
                 module, "check_review", return_value=(self.contract, SOURCE)
             )
@@ -200,6 +210,13 @@ class SubmissionTests(unittest.TestCase):
         self.document.update(
             replay=self.ref("capture.json"), owner_review=self.ref("owner.json")
         )
+        index = self.root / "candidate-proof/candidate-evidence.json"
+        if index.exists():
+            index.unlink()
+        candidate_fixture(self.root, index.parent, self.capture)
+        self.document["candidate_evidence"] = self.ref(
+            "candidate-proof/candidate-evidence.json"
+        )
 
     def official(self) -> None:
         (self.root / "rules-source.txt").write_text(
@@ -274,7 +291,29 @@ class SubmissionTests(unittest.TestCase):
         result = self.audit()
         self.assertEqual(result["status"], "HOLD")
         self.assertEqual(result["verified_milestones"], 0)
-        self.assertEqual(len(result["blockers"]), 4)
+        self.assertEqual(len(result["blockers"]), 5)
+
+    def test_owner_review_without_browser_and_product_proof_remains_hold(self) -> None:
+        self.reviewed()
+        self.official()
+        self.document["candidate_evidence"] = None
+        result = self.audit()
+        self.assertEqual(result["status"], "HOLD")
+        self.assertIn("four separately observed", " ".join(result["blockers"]))
+
+    def test_final_entry_rejects_an_unobserved_url_or_rewritten_product_proof(
+        self,
+    ) -> None:
+        self.reviewed()
+        self.official()
+        self.document["demo_url"] = "https://another.example.org"
+        with self.assertRaisesRegex(ReadinessError, "observed candidate URL"):
+            self.audit()
+        self.document["demo_url"] = "https://demo.example.org"
+        path = self.root / "candidate-proof/hostinger-products.json"
+        path.write_text(path.read_text() + " ")
+        with self.assertRaisesRegex(ReadinessError, "hash mismatch"):
+            self.audit()
 
     def test_all_eleven_owner_decisions_still_cannot_replace_official_rules(
         self,
@@ -359,6 +398,16 @@ class SubmissionTests(unittest.TestCase):
             with self.subTest(name=name), self.assertRaises(ReadinessError):
                 self.audit()
             self.document[name] = old
+
+    def test_candidate_claim_requires_the_matching_unchanged_checkout(self) -> None:
+        with patch.object(
+            submission, "candidate_binding", return_value=("0" * 40, True)
+        ):
+            with self.assertRaisesRegex(ReadinessError, "checked out unchanged"):
+                self.audit()
+        with patch.object(submission, "candidate_binding", return_value=(SHA, False)):
+            with self.assertRaises(ReadinessError):
+                self.audit()
 
     def test_material_tampering_path_escape_and_future_dates_fail_closed(self) -> None:
         original = self.document["materials"]["walkthrough"]

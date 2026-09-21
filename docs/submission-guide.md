@@ -8,9 +8,9 @@
 # Seat:         BITS-CODEGEN
 # Owner:        Citadel Nexus Inc.
 # Created:      2026-09-21
-# Depends:      .bits/submission-policy.json, .bits/hostinger-readiness.json, scripts/ci/submission_readiness.py, docs/business-execution.md, docs/workspace-assistant.md
+# Depends:      .bits/submission-policy.json, .bits/hostinger-readiness.json, scripts/ci/submission_readiness.py, scripts/ci/day21_submission.py, docs/business-execution.md, docs/workspace-assistant.md
 # EnumType:     Doc
-# EnumEdges:    DEPENDS_ON .bits/submission-policy.json; DEPENDS_ON .bits/hostinger-readiness.json; DEPENDS_ON scripts/ci/submission_readiness.py; DEPENDS_ON docs/business-execution.md; DEPENDS_ON docs/workspace-assistant.md
+# EnumEdges:    DEPENDS_ON .bits/submission-policy.json; DEPENDS_ON .bits/hostinger-readiness.json; DEPENDS_ON scripts/ci/submission_readiness.py; DEPENDS_ON scripts/ci/day21_submission.py; DEPENDS_ON docs/business-execution.md; DEPENDS_ON docs/workspace-assistant.md
 # DAG Node:     none
 # Intent:       Define provisional submission rules, exhaustive checkpoint acceptance and a verifiable owner-reviewed entry package.
 # ───────────────────────────────────────────────────────────────
@@ -134,6 +134,57 @@ nonempty file with `{path, sha256, observed_at}`; the validator hashes exact byt
 in bounded chunks, including videos up to 1 GB. Keep private originals private.
 A sanitized export must identify that it is a redacted derivative and must not
 invent a provider attestation.
+
+The manifest also requires `candidate_evidence`, a content reference to the
+Day-21 `candidate-evidence.json` index. This joins the existing packaging and
+final readiness paths: owner milestone decisions alone cannot replace browser
+observations or the four separately observed product proofs.
+
+Run acceptance on the selected committed revision. New check receipts retain
+the revision and whether source remained unchanged; local dirty-tree results
+remain useful diagnostics but cannot establish candidate acceptance. Older
+receipts without that binding must be rerun for final submission.
+
+```bash
+python scripts/ci/day21_submission.py acceptance --root . \
+  --acceptance state/hostinger/acceptance --candidate <full-candidate-sha> \
+  --evidence state/submission/new-candidate/day21
+python scripts/ci/day21_submission.py templates \
+  --evidence state/submission/new-candidate/day21
+```
+
+The exporter preserves all observed check history, including later failures,
+and copies the actual JUnit/build artifacts. Missing or failed profiles produce
+a HOLD summary. Templates are unmeasured input descriptions; they do not fill
+any proof requirement. Populate them with authorized captures:
+
+- Every public URL, browser and product document carries the exact candidate,
+  reviewed source fingerprint and artifact-tree digest from the release capture.
+- Public URL evidence retains its response body as `body: {path, sha256,
+  observed_at}`. Browser evidence retains its URL, console log reference and six
+  ordered steps: public entry, auth, challenge, mission, evidence, operator readback.
+  Screenshots must be captured during that journey; console errors remain HOLD.
+- Each Hostinger product needs its own observed evidence. One repeated proof
+  cannot stand in for four product uses.
+- `demo-replay.json` retains the existing replay result and a `capture` reference
+  to its raw capture manifest. The auditor revalidates the full release and
+  execution chain; a written `CONSISTENT_CAPTURE` label cannot replace it.
+- Architecture and build-journey documents reference actual dated source evidence.
+  Official dates come from the separately reviewed organizer capture.
+
+```bash
+python scripts/ci/day21_submission.py audit --root . \
+  --evidence state/submission/new-candidate/day21 --json
+python scripts/ci/day21_submission.py index \
+  --evidence state/submission/new-candidate/day21
+```
+
+Reference that new index in `submission.json` using the same content-reference
+format as the materials. The final audit checks every pinned document and its
+underlying bytes, the actual named acceptance profiles, the shared candidate
+and artifact identities, the observed demo URL and the exact replay used by
+the owner review. A Day-21 bundle remains `READY_FOR_OWNER_REVIEW`; only the
+separate final audit can return `READY_FOR_OWNER_SUBMISSION`.
 
 Add the actual HTTPS `demo_url`, selected workspace/mission/dispatch,
 `replay` (the existing hostinger capture), `execution_receipts` (the native

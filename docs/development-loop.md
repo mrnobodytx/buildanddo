@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/development-loop.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-DEVELOPMENT-LOOP-001
+# SRS:         SRS-BUILDANDDO-DEVELOPMENT-LOOP-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-DEVELOPMENT-LOOP-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     libs/evolution/development.py, libs/evolution/development_sources.py, libs/evolution/intelligence.py, docs/verified-evolution.md, docs/capability-tokens.md, docs/submission-guide.md
+# Depends:     libs/evolution/development.py, libs/evolution/development_sources.py, libs/evolution/intelligence.py, libs/evolution/review_packets.py, docs/verified-evolution.md, docs/capability-tokens.md, docs/submission-guide.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES libs/evolution/development.py; CONSUMES libs/evolution/development_sources.py; CONSUMES libs/evolution/intelligence.py; EXTENDS docs/verified-evolution.md; EXTENDS docs/capability-tokens.md; CONSUMES docs/submission-guide.md
+# EnumEdges:   CONSUMES libs/evolution/development.py; CONSUMES libs/evolution/development_sources.py; CONSUMES libs/evolution/intelligence.py; CONSUMES libs/evolution/review_packets.py; EXTENDS docs/verified-evolution.md; EXTENDS docs/capability-tokens.md; CONSUMES docs/submission-guide.md
 # Intent:      Make development observations, proposed work and independent grading operable without confusing source tests with competence or competition acceptance.
 # ───────────────────────────────────────────────────────────────
 
@@ -134,6 +134,47 @@ ten disjoint replay cases and five shadow cases, measured quality/safety,
 known source/schema/SBOM compatibility and independent TEVV/`PromotionProof`.
 Teacher agreement cannot replace truth. See `docs/verified-evolution.md` and
 `docs/capability-tokens.md` for the unchanged qualification and certification flow.
+
+### Move actual evidence to the independent reviewer
+
+`libs.evolution.review_packets` exports the frozen prediction, actual test run,
+process log and every captured source file together. Export while the source
+bytes still match the prediction. The packet refuses overwrites and stays
+`UNMEASURED`, including when its process passed. Failed and held runs can also
+be transported; they cannot qualify as successful outcomes.
+
+```bash
+python -m libs.evolution.review_packets export --root . \
+  --prediction state/development-loop/prediction.json \
+  --run state/development-loop/test-run.json \
+  --output state/development-loop/reviewer-packet
+
+python -m libs.evolution.review_packets inspect \
+  state/development-loop/reviewer-packet/packet.json \
+  --scope buildanddo/public-development
+```
+
+The receiving seat inspects source, the actual change and broader test evidence,
+then authors the labels and exact `OutcomeReviewRequest` as above. Distribute
+its trusted `ReviewPolicy` separately from the producer's packet. The receiver
+can use a fresh scoped journal; the importer retains the original prediction
+and process events before invoking the same existing admission gate:
+
+```bash
+python -m libs.evolution.review_packets admit \
+  state/development-loop/reviewer-packet/packet.json \
+  --scope buildanddo/public-development --state state/development-loop/receiver.sqlite \
+  --labels state/development-loop/reviewer-labels.json \
+  --receipt state/development-loop/verification-receipt.json \
+  --review-policy state/development-loop/receiving-review-policy.json \
+  --output state/development-loop/reviewed-case.json
+```
+
+Packet hashes establish byte consistency; the receiving identity and receipt
+pins establish the review boundary. A producer cannot supply its own labels as
+independent evidence. Re-importing an identical review is idempotent, and a
+reviewed case alone does not promote a capability. Keep real discovery, replay
+and shadow cases disjoint and retain the existing promotion proof requirements.
 
 ## Keep information useful and bounded
 

@@ -17,6 +17,7 @@
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { posix } from 'node:path';
 import test from 'node:test';
 import vm from 'node:vm';
 import { dateInput, localDay, overdue, selectTasks, contentOutline, draftBlocks, publicationUrl, retainedFields } from '../../apps/web/src/lib/businessPlanning.js';
@@ -214,8 +215,8 @@ function fixture({ seedLegacy = false, seedCustom = false } = {}) {
         records.tutorials.push({ id: `legacy${index}`, title: seed.title, summary: seed.legacy_summary, order: seed.order });
     if (seedCustom) records.tutorials.push({ id: 'custom1', title: 'Edited administrator lesson', summary: 'Keep this summary', order: 200 });
     let up, down;
-    vm.runInNewContext(source(migrationPath), { Field, Record, __migrations: '/migrations',
-        toString: String, $os: { readFile: (path) => { assert.equal(path, '/migrations/data/starter-tutorials.json'); return source(dataPath); } },
+    vm.runInNewContext(source(migrationPath), { Field, Record, __hooks: '/fixture/pb_hooks', $filepath: { join: posix.join },
+        toString: String, $os: { readFile: (path) => { assert.equal(path, '/fixture/pb_migrations/data/starter-tutorials.json'); return source(dataPath); } },
         migrate: (a, b) => { up = a; down = b; } }, { filename: new URL(migrationPath, root).href });
     up(app);
     records.workspaces.push({ id: 'ws1', owner: 'owner1' }, { id: 'ws2', owner: 'other' });

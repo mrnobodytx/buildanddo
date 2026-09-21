@@ -339,10 +339,14 @@ def check_review(root: Path) -> tuple[dict[str, object], str]:
 
 
 def acceptance_state(
-    root: Path, evidence: Path, source: str, now: datetime
+    root: Path,
+    evidence: Path,
+    source: str,
+    now: datetime,
+    candidate: str | None = None,
 ) -> dict[str, str]:
     """Validate locally captured check receipts and prefer later failures to old passes."""
-    selected: dict[str, tuple[datetime, str]] = {}
+    selected: dict[str, tuple[datetime, str, str]] = {}
     for path in sorted(evidence.glob("*.json")):
         receipt = read_json(path)
         name, profile = receipt.get("check"), receipt.get("profile")
@@ -377,6 +381,12 @@ def acceptance_state(
             state = "STALE"
         elif receipt.get("argv") != command(root, check):
             state = "STALE"
+        elif candidate is not None and (
+            receipt.get("candidate_sha") != candidate
+            or receipt.get("candidate_clean") is not True
+            or receipt.get("candidate_unchanged") is not True
+        ):
+            state = "INVALID"
         elif state == "PASS":
             counts = object_value(receipt.get("counts"))
             if set(counts) != {"tests", "failures", "skipped"} or any(
@@ -412,8 +422,11 @@ def acceptance_state(
                     or hashlib.sha256(artifact.read_bytes()).hexdigest() != expected
                 ):
                     state = "STALE"
-        if key not in selected or finished >= selected[key][0]:
-            selected[key] = (finished, state)
+        fingerprint = digest(receipt)
+        if key not in selected or finished > selected[key][0]:
+            selected[key] = (finished, state, fingerprint)
+        elif finished == selected[key][0] and fingerprint != selected[key][2]:
+            selected[key] = (finished, "INVALID", selected[key][2])
     return {name: result[1] for name, result in selected.items()}
 
 

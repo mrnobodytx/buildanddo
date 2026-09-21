@@ -20,6 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Four-gap completion authorized 2026-09-21
+
+Owner request: build all four remaining gaps identified after the merged
+development-loop integration. Continue local A2 source work on the session
+branch; preserve external authority and independent verification requirements.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| FC-1 | Repair acceptance failures and use available locked dependencies | Actual source/web/native acceptance receipts | source PASS: 510 Node tests; final acceptance and unavailable dependencies recorded in four-gap-report.md |
+| FC-2 | Make real prediction/run evidence portable for independent qualification | Review admission, source/log tamper and promotion regressions | source PASS: portable evidence, separate trust inputs; real independent grading remains a receiving gate |
+| FC-3 | Connect same-candidate acceptance, deployment, browser and product inputs | Candidate continuity and evidence rejection tests | source PASS: raw receipts, all profiles, ordered browser observations and separate product proofs are revalidated |
+| FC-4 | Assemble and audit submission materials through existing validators | Closure tests, readiness contracts and retained report | source PASS: 67 focused tests; runtime submission HOLD, detailed in .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md |
+
+Memory brief: PR 62 provides working adapters but zero independently graded
+pairs. The prior acceptance result was 3/18 PASS, four FAIL, one HOLD and ten
+BLOCKED; Node migration fixtures omitted the PocketBase `$filepath` host API.
+The source checkout was fast-forwarded to locally available merged main before
+this continuation. Do not recycle old evidence as a new candidate's acceptance
+or substitute local producer checks for independent reviewer or owner decisions.
+
 ## Workspace assistant continuation authorized 2026-09-20
 
 The owner extends the eleven-checkpoint submission build with a persistent

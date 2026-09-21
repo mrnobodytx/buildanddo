@@ -9,7 +9,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_day21_submission.py, tests/upgrade/test_day21_support.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/day21_submission.py is never executed by GitHub Actions"
@@ -189,7 +189,10 @@
     },
     {
       "path": "scripts/ci/day21_submission.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_day21_submission.py",
+        "tests/upgrade/test_day21_support.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -355,7 +358,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-21T18:26:24.031614+00:00",
+  "generated_at": "2026-09-21T20:46:50.664823+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -739,11 +742,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 46,
-    "python_files": 309,
+    "python_files": 313,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1278,
+    "tracked_files": 1286,
     "web_source_files": 333
   },
   "schema_version": 1,
@@ -817,7 +820,7 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "cdd6b47bb09a769afbc7d2acf122157cf665478f0543b950df48f6388ff50f26",
+    "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
     "state": "PASS"
   },
   "summary": {

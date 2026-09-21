@@ -97,7 +97,7 @@ class Record {
     get(name) { return this.data[name] ?? null; }
     getString(name) { const value = this.get(name); return value === null ? '' : typeof value === 'object' ? JSON.stringify(value) : String(value); }
     getBool(name) { return this.get(name) === true; }
-    set(name, value) { this.data[name] = plain(value); }
+    set(name, value) { this.data[name] = plain(value); if (name === 'id') this.id = value; }
     original() { return new Record(this._collection, this.before); }
 }
 
@@ -157,7 +157,8 @@ export function fixture({ migrated = true, runtime = {} } = {}) {
             try { callback(this); } catch (error) { data = before; for (const key of Object.keys(collections)) delete collections[key]; Object.assign(collections, beforeCollections); throw error; }
         },
     };
-    const globals = { Collection, Field, Record, ApiError, BadRequestError, ForbiddenError, NotFoundError, __hooks: '/hooks', ...runtime };
+    const globals = { Collection, Field, Record, ApiError, BadRequestError, ForbiddenError, NotFoundError,
+        __hooks: '/hooks', $filepath: { join: __bndPath.posix.join }, ...runtime };
     const cache = {};
     const load = (name) => {
         if (cache[name]) return cache[name]; const module = { exports: {} };

@@ -24,10 +24,24 @@ const path = 'apps/pocketbase/pb_migrations/data/government-submissions.json';
 const data = JSON.parse(source(path));
 const migration = 'apps/pocketbase/pb_migrations/1790400000_government_submission_learning.js';
 function installed() {
-    const f = fixture({ runtime: { __migrations: '/migrations', toString: String, $os: { readFile: (value) => source(value.replace('/migrations/', 'apps/pocketbase/pb_migrations/')) } } });
+    const f = fixture({ runtime: { toString: String, $os: { readFile: (value) => {
+        assert.ok(['/pb_migrations/data/starter-tutorials.json', '/pb_migrations/data/government-submissions.json'].includes(value));
+        return source(value.replace('/pb_migrations/', 'apps/pocketbase/pb_migrations/'));
+    } } } });
     f.migration('apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js').up();
     return f;
 }
+
+test('business seed migration assigns canonical IDs to new lessons and preserves authored content', () => {
+    const f = installed(), starter = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
+    assert.equal(f.data.tutorials.length, starter.lessons.length);
+    for (const seed of starter.lessons) {
+        const row = f.data.tutorials.find((row) => row.slug === seed.slug);
+        assert.ok(row, seed.slug);
+        if (!seed.legacy_summary) assert.equal(row.id, seed.id);
+        assert.deepEqual(row.lesson, seed.lesson);
+    }
+});
 
 test('government starter fills a reviewable plan without granting approval or inventing a baseline', () => {
     assert.deepEqual(planIssues(readPlan(data.mission.mission_plan)), []);
