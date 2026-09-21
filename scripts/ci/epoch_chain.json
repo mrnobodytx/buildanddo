@@ -35,20 +35,38 @@
       "previous_root": "efa2039e053f5842dc845d1b6375b4b8165d11ffab57840837dba301e57a2ba9",
       "root_digest": "63dc20fcd776f16f2d13bab4e278f516f3c3bc408dd5367578d873e6f57150f1",
       "trigger": "production_deploy"
+    },
+    {
+      "artifact_count": 208,
+      "created_at": "2026-09-21T13:23:38Z",
+      "epoch_id": "EPOCH-20260921-01",
+      "git_sha": "04c911a621974eb1b466fdf61bce8b31fa7cb238",
+      "previous_root": "63dc20fcd776f16f2d13bab4e278f516f3c3bc408dd5367578d873e6f57150f1",
+      "root_digest": "4de0b979719b3a06a13dfc2da8a998e1fa0d85d71f90a72dd997fc4dc9a67867",
+      "trigger": "production_deploy"
+    },
+    {
+      "artifact_count": 208,
+      "created_at": "2026-09-21T13:29:28Z",
+      "epoch_id": "EPOCH-20260921-02",
+      "git_sha": "a04fe4893d9979d2f5b6c4ae8057a26643fa2994",
+      "previous_root": "4de0b979719b3a06a13dfc2da8a998e1fa0d85d71f90a72dd997fc4dc9a67867",
+      "root_digest": "c2934978decf41936b89046ec47f581cd0a156febbd534cf1baeaee74815c49a",
+      "trigger": "production_deploy"
     }
   ],
   "history_note": "last 50 epochs; earlier entries are in this file's git history",
   "latest": {
-    "artifact_count": 198,
-    "created_at": "2026-09-20T16:26:49Z",
-    "epoch_id": "EPOCH-20260920-04",
-    "git_sha": "75e77f74ab1c750b668a0d18f36df14c38a95b14",
-    "previous_root": "efa2039e053f5842dc845d1b6375b4b8165d11ffab57840837dba301e57a2ba9",
-    "root_digest": "63dc20fcd776f16f2d13bab4e278f516f3c3bc408dd5367578d873e6f57150f1",
+    "artifact_count": 208,
+    "created_at": "2026-09-21T13:29:28Z",
+    "epoch_id": "EPOCH-20260921-02",
+    "git_sha": "a04fe4893d9979d2f5b6c4ae8057a26643fa2994",
+    "previous_root": "4de0b979719b3a06a13dfc2da8a998e1fa0d85d71f90a72dd997fc4dc9a67867",
+    "root_digest": "c2934978decf41936b89046ec47f581cd0a156febbd534cf1baeaee74815c49a",
     "trigger": "production_deploy"
   },
-  "length": 4,
+  "length": 6,
   "root_algorithm": "sha256-merkle-v1",
   "schema": "buildanddo.epoch-chain/v1",
-  "updated_at": "2026-09-20T16:26:49Z"
+  "updated_at": "2026-09-21T13:29:28Z"
 }
