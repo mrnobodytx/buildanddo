@@ -20,6 +20,30 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Four-gap completion continuation authorized 2026-09-21
+
+The owner requests implementation of the remaining development-loop,
+acceptance, candidate evidence and submission closure work after PR 62. Continue
+this pre-existing A2 dispatch for local shared-source repairs and integration.
+Reuse the merged evolution review/promotion contracts and the Hostinger/Day-21
+validators. Repair executable acceptance failures, prepare portable actual
+prediction/run evidence for an independently selected reviewer, and connect
+candidate-bound acceptance, deployment, browser, product and submission inputs.
+Run every available gate and retain its real result and missing prerequisites.
+
+The local integration must never create reviewer identity, receipt trust pins,
+deployment observations, product-use proof, organizer requirements or owner
+approval. Missing external inputs remain explicit HOLD requirements. Provision
+dependencies only from available authorized local caches in this environment.
+Keep historical evidence intact and bind new runs to the exact tested bytes.
+Billing changes, private release activation, external messages and final
+competition submission retain their receiving human authority.
+
+Acceptance: reproduce and fix the PocketBase host-API fixture failures; exercise
+the existing independent review and promotion boundaries; validate candidate
+continuity and missing/tampered evidence; execute available acceptance profiles;
+produce a reviewable entry package with runnable next steps for external inputs.
+
 ## Workspace assistant continuation authorized 2026-09-20
 
 The owner extends the eleven-checkpoint submission build with a persistent

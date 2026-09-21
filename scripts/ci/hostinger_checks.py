@@ -196,6 +196,34 @@ def test_counts(text: str, kind: str, root: Path) -> dict[str, int]:
     return counts
 
 
+def candidate_binding(root: Path) -> tuple[str | None, bool]:
+    """Observe the local revision and whether its source has uncommitted changes."""
+    try:
+        revision = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=True,
+        ).stdout.strip()
+        status = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=normal"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=True,
+        ).stdout
+    except (OSError, subprocess.SubprocessError):
+        return None, False
+    return (
+        (revision, not status)
+        if re.fullmatch(r"[a-f0-9]{40}", revision)
+        else (None, False)
+    )
+
+
 def run_check(
     root: Path,
     output: Path,
@@ -206,6 +234,7 @@ def run_check(
 ) -> Path:
     """Capture one real process outcome with source binding and bounded runtime."""
     check = CHECKS[name]
+    candidate, candidate_clean = candidate_binding(root)
     argv = command(root, check)
     environment = os.environ.copy()
     if name == "source_python":
@@ -305,6 +334,7 @@ def run_check(
             "HOLD",
             "Tests were empty, failing or skipped; acceptance is incomplete.",
         )
+    final_candidate, final_clean = candidate_binding(root)
     receipt = {
         "schema_version": "buildanddo.acceptance/v1",
         "check": name,
@@ -313,6 +343,12 @@ def run_check(
         "runtime_expected": expected,
         "runtime_observed": observed,
         "source_sha256": source_digest,
+        "candidate_sha": candidate,
+        "candidate_clean": candidate_clean,
+        "candidate_unchanged": candidate is not None
+        and candidate == final_candidate
+        and candidate_clean
+        and final_clean,
         "started_at": started.isoformat(),
         "finished_at": datetime.now(timezone.utc).isoformat(),
         "status": status,

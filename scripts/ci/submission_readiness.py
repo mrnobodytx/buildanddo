@@ -43,6 +43,7 @@ from scripts.ci.hostinger_readiness import (  # noqa: E402
     safe_path,
     strings,
 )
+from scripts.ci.hostinger_checks import candidate_binding  # noqa: E402
 from scripts.ci.hostinger_replay import project_milestones, reference, validate_capture  # noqa: E402
 from scripts.ci.sprint_cycle import MILESTONES  # noqa: E402
 
@@ -208,6 +209,7 @@ def prepare(root: Path, directory: Path, candidate: str) -> Path:
         "execution_receipts": None,
         "owner_review": None,
         "official_review": None,
+        "candidate_evidence": None,
         "materials": dict.fromkeys(MATERIALS),
         "authority": "internal-preparation-only",
     }
@@ -326,6 +328,10 @@ def audit(
     load_policy(root)
     check_wiring(root)
     at = now or datetime.now(timezone.utc)
+    require(
+        candidate_binding(root) == (candidate, True),
+        "Final audit requires the selected committed candidate checked out unchanged.",
+    )
     document = read_json(manifest_path)
     _, source = check_review(root)
     blockers: list[str] = []
@@ -369,6 +375,19 @@ def audit(
             blockers.append("Missing material: " + name)
         else:
             material_reference(package, materials[name], at)
+    candidate_proof = None
+    if document.get("candidate_evidence") is None:
+        blockers.append(
+            "Retain candidate-bound acceptance, public URL, browser journey and four separately observed Hostinger product proofs."
+        )
+    else:
+        from scripts.ci.day21_submission import Day21Error, validate_index
+
+        proof_path, _, _ = reference(package, document["candidate_evidence"], at)
+        try:
+            candidate_proof = validate_index(root, proof_path, candidate, source, at)
+        except Day21Error as error:
+            raise ReadinessError(str(error)) from error
     if document.get("replay") is None or document.get("owner_review") is None:
         blockers.append(
             "A real deployed replay and its independent owner review are required for all eleven checkpoints."
@@ -384,6 +403,18 @@ def audit(
             dispatch=str(document.get("dispatch", "")),
             now=at,
         )
+        if candidate_proof is not None:
+            items = candidate_proof["items"]
+            require(
+                items["demo-replay.json"]["value"]["capture_sha256"]
+                == replay["capture_sha256"],
+                "Submission and candidate proof must retain the same actual replay.",
+            )
+            require(
+                public_url(items["public-url.json"]["value"]["url"])
+                == public_url(document.get("demo_url")),
+                "The submitted URL must be the observed candidate URL.",
+            )
         if document.get("execution_receipts") is None:
             blockers.append(
                 "Retain the native business execution export that binds the demonstrated action to this release."
