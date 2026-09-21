@@ -53,6 +53,10 @@ describe('workspace administration', () => {
         pb.authStore.record = { id: 'admin' };
         renderWithProviders(<Routes><Route path="/app" element={<WorkspaceLayout />}><Route path="settings" element={<SettingsPage />} /></Route></Routes>,
             { route: '/app/settings', auth: { user: { id: 'admin' }, isAuthed: true }, workspace: { active: { id: 'ws1', owner: 'owner', name: 'Workspace one' } } });
+        // Settings opens on Appearance and Radix renders only the active tab, so the
+        // permissions panel this test asserts on is not mounted until Workspace is chosen.
+        const user = setupUser();
+        await user.click(await screen.findByRole('tab', { name: 'Workspace' }));
         expect(await screen.findByRole('link', { name: 'Open administration' })).toHaveAttribute('href', '/app/admin');
         const nav = within(screen.getByRole('navigation', { name: 'Workspace' }));
         expect(nav.getByRole('link', { name: 'Administration' })).toBeVisible();
