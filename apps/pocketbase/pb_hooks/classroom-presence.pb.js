@@ -49,11 +49,12 @@
 //   (the unique (room, session_id) index plus the publisher check mean no seat can
 //   rewrite another seat's advertisement and redirect the class), and that the row
 //   is bounded by a short TTL. An authorised publisher can still advertise a track
-//   name it never pushed; the subscriber's pull then fails at the SFU rather than
-//   being served silence. Because the check is missing rather than merely weak,
-//   every row this route returns carries verified:false and
-//   verification:"NOT_ECHOED_BY_SFU", so no consumer can read an advertisement as
-//   evidence that a track exists. Closing the gap needs a GET
+//   name it never pushed. That gap is now CLOSED on the read path: GET
+//   /api/classroom/presence asks the SFU, once per session, which tracks it is actually
+//   holding, and a row is verified:true / "ECHOED_BY_SFU" only when the SFU holds every
+//   advertised track. Anything else carries a named reason instead - "NOT_HELD_BY_SFU:<names>",
+//   "NO_TRACKS_ADVERTISED" or "SFU_UNREACHABLE:<why>" - so an unreachable SFU can never be
+//   mistaken for a verified track. The write path still answers "NOT_YET_ECHOED". Previously a GET
 //   /apps/{app}/sessions/{id} echo, which is a change to classroom-realtime-lib.js
 //   and belongs to that file's owner.
 //
@@ -277,9 +278,11 @@ routerAdd('POST', '/api/classroom/presence', (e) => {
         session_id: sessionId,
         state: state,
         access_basis: basis,
-        // This route did not and cannot confirm the claim; see HONEST LIMIT.
+        // A just-written advertisement has not been echoed yet, and this route does not block
+        // on the SFU to find out. GET /api/classroom/presence performs the echo and is the
+        // only place a track is ever reported verified.
         verified: false,
-        verification: 'NOT_ECHOED_BY_SFU',
+        verification: 'NOT_YET_ECHOED',
         swept: swept,
         expires_at: new Date(expiresAt).toISOString(),
         ttl_ms: expiresAt - now,
@@ -315,9 +318,15 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
     // returned with tracks:[] and tracks_error set, so the page can say "this
     // advertisement is unreadable" instead of the row silently disappearing.
     const tracksOf = (record) => {
+        // A JSON field read with .get() comes back as a Go-bound value whose entries do NOT
+        // expose plain string properties, so every entry failed the typeof check below and the
+        // list read back empty with error 'partial'. getString hands over the serialized JSON,
+        // which parses into ordinary objects - the same reason mission-policy.js reads JSON that
+        // way. Measured on staging 0.39.8: an advertised track round-trips only via getString.
         let raw = null;
-        try { raw = record.get('tracks'); } catch (readError) { return { tracks: [], error: 'unreadable' }; }
+        try { raw = record.getString('tracks'); } catch (readError) { return { tracks: [], error: 'unreadable' }; }
         if (typeof raw === 'string') {
+            if (!raw.trim() || raw === 'null') return { tracks: [], error: 'absent' };
             try { raw = JSON.parse(raw); } catch (jsonError) { return { tracks: [], error: 'unparseable' }; }
         }
         if (raw === null || raw === undefined) return { tracks: [], error: 'absent' };
@@ -345,6 +354,15 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
         '-updated', MAX_ROWS, 0, { room: room.id });
     const now = Date.now();
     const items = [];
+    // One SFU read per SESSION, not per row: several rows can share a session and the echo is a
+    // network call. Bounded by MAX_ROWS, and a failure is carried as its own state so an
+    // unreachable SFU can never read as a verified track.
+    const L = require(`${__hooks}/classroom-realtime-lib.js`);
+    const echoed = {};
+    const echoFor = (sessionId) => {
+        if (!Object.hasOwn(echoed, sessionId)) echoed[sessionId] = L.echoSession(sessionId);
+        return echoed[sessionId];
+    };
     for (const row of rows) {
         const expires = parseWhen(row.getString('expires_at'));
         if (!Number.isFinite(expires) || expires <= now) continue;
@@ -364,9 +382,19 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
             manifest_id: row.getString('manifest_id'),
             capsule_digest: row.getString('capsule_digest'),
             state: row.getString('state'),
-            // Nothing here was confirmed against the SFU; see HONEST LIMIT.
-            verified: false,
-            verification: 'NOT_ECHOED_BY_SFU',
+            // Confirmed against the SFU's own session read. An advertisement is only evidence
+            // when the SFU says it is holding every track that was advertised; anything else -
+            // including an unreachable SFU - stays unverified with a named reason.
+            ...(() => {
+                const advertised = Array.isArray(read.tracks) ? read.tracks.map(String) : [];
+                const echo = echoFor(row.getString('session_id'));
+                if (!echo.ok) return { verified: false, verification: 'SFU_UNREACHABLE:' + echo.reason };
+                if (!advertised.length) return { verified: false, verification: 'NO_TRACKS_ADVERTISED' };
+                const missing = advertised.filter((name) => echo.tracks.indexOf(name) === -1);
+                return missing.length
+                    ? { verified: false, verification: 'NOT_HELD_BY_SFU:' + missing.slice(0, 3).join(',') }
+                    : { verified: true, verification: 'ECHOED_BY_SFU' };
+            })(),
             expires_at: new Date(expires).toISOString(),
         });
     }
@@ -407,7 +435,7 @@ routerAdd('GET', '/api/classroom/presence/health', (e) => {
         publishers_configured: publishers.length,
         max_ttl_ms: MAX_TTL_MS,
         max_rows: MAX_ROWS,
-        verification: 'NOT_ECHOED_BY_SFU',
+        verification: 'ECHO_ON_READ',
         reason: reason || null,
     });
 });

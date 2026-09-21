@@ -30,7 +30,8 @@ function callRealtime(path, secret, payload, method) {
                 "Content-Type": "application/json",
                 Accept: "application/json",
             },
-            body: JSON.stringify(payload || {}),
+            // A GET carries no body; Cloudflare rejects one on the session read.
+            body: (method || "POST") === "GET" ? undefined : JSON.stringify(payload || {}),
             timeout: 15,
         });
         return { status: res.statusCode, body: res.json || {} };
@@ -47,4 +48,33 @@ function callerSeat(e) {
     return auth.get("seat_id") || auth.get("email") || auth.id;
 }
 
-module.exports = { realtimeConfig, mayPublish, callRealtime, callerSeat };
+
+/**
+ * Ask the SFU which tracks it is actually holding for one session.
+ *
+ * This is the check whose absence made every presence row carry
+ * verification:"NOT_ECHOED_BY_SFU". An authorised publisher can advertise a track name it never
+ * pushed, so an advertisement alone is not evidence a track exists. Returns the SFU's own list, or
+ * a named reason - never an empty list that could be mistaken for "no tracks".
+ *
+ * @param {string} sessionId The SFU session to read.
+ * @returns {{ok: boolean, tracks: string[], reason: string, status: number}}
+ */
+function echoSession(sessionId) {
+    const config = realtimeConfig();
+    if (config.reason) return { ok: false, tracks: [], reason: config.reason, status: 0 };
+    if (!sessionId) return { ok: false, tracks: [], reason: "no_session_id", status: 0 };
+    const answer = callRealtime("/" + config.appId + "/sessions/" + encodeURIComponent(sessionId),
+                                config.secret, null, "GET");
+    if (answer.status !== 200)
+        return { ok: false, tracks: [], reason: "sfu_http_" + answer.status, status: answer.status };
+    const held = Array.isArray(answer.body && answer.body.tracks) ? answer.body.tracks : [];
+    const names = [];
+    for (const track of held) {
+        // A track the SFU is no longer serving must not count as present.
+        if (track && track.trackName && track.status !== "inactive") names.push(String(track.trackName));
+    }
+    return { ok: true, tracks: names, reason: "", status: 200 };
+}
+
+module.exports = { realtimeConfig, mayPublish, callRealtime, callerSeat, echoSession };
