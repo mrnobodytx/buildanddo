@@ -81,7 +81,13 @@ it('saves checkpoints, resumes after remount and returns focus when closed', asy
     await user.click(await reader.findByRole('button', { name: 'Start and save my progress' }));
     await user.click(await reader.findByRole('button', { name: 'Save checkpoint and continue' }));
     expect(await reader.findByRole('heading', { name: lesson.lesson.sections[1].heading })).toHaveFocus();
-    expect(reader.getByRole('progressbar', { name: 'Saved tutorial progress' })).toHaveAttribute('aria-valuenow', '20');
+    // Derived, not pinned. Saved progress is floor((next_section + practiced) * 100 /
+    // (sections + 2)), so one checkpoint into a 3-section lesson reads 20 and into a
+    // 4-section lesson reads 16. The literal 20 broke when the curriculum gained a failure
+    // section - the formula is the contract, the number was an artifact of the old content.
+    const afterOneCheckpoint = String(Math.floor(100 / (lesson.lesson.sections.length + 2)));
+    expect(reader.getByRole('progressbar', { name: 'Saved tutorial progress' }))
+        .toHaveAttribute('aria-valuenow', afterOneCheckpoint);
     await user.click(reader.getByRole('button', { name: 'Close and continue later' }));
     await waitFor(() => expect(opener).toHaveFocus());
     view.unmount(); renderWithProviders(<TutorialCatalog />);
