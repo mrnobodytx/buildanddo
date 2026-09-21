@@ -939,7 +939,7 @@
     "tests/upgrade/test_discordbot_dossier.py": "4166756fae96aa963a84af6cd37b7414edd76d0229ccd7178904e96edd7c026c",
     "tests/upgrade/test_discordbot_public.py": "7a469324ec76ea355fe3cfc4e67cdf6b7da3063c29c3b985011d1f8e89774b77",
     "tests/upgrade/test_discordbot_research.py": "1187156ec0da9edea9d50915aab1253a886915714fe8f345758e9d2eb0549589",
-    "tests/upgrade/test_dossier_native.py": "fbab5f414915ad7e1384f43bc88c1739d92a3035c71b5cd753c777ed46e08ba2",
+    "tests/upgrade/test_dossier_native.py": "2aa3ca9b25558bb9e27f7475725af6c08703fdcfc5bb197820541b76ad1d6d4c",
     "tests/upgrade/test_evolution_cli.py": "3c319905cee093e90fc5b82ce5e50dd1ae4d9218adb001b6af0ebad402ccf220",
     "tests/upgrade/test_evolution_events.py": "0e6be77da50d7354d066247fa0eafd79e2ba50c389ba1054fff6898d6629cc49",
     "tests/upgrade/test_evolution_learning.py": "e726fb48dc076578d27e246ac272ca132976800046ad2741d2d287748a07c1b8",

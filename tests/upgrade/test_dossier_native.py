@@ -185,6 +185,12 @@ class NativeServer:
                 f"--http=127.0.0.1:{self.port}",
                 *self.paths(),
                 "--hooksWatch=false",
+                # PocketBase auto-applies pending migrations on serve (--automigrate
+                # defaults to true). Every rollback test reverted a migration, restarted,
+                # and startup silently re-applied it - so the degraded 503 they assert
+                # could never be observed. __init__ migrates explicitly, so nothing here
+                # depends on the implicit pass.
+                "--automigrate=0",
             ],
             cwd=self.root,
             env=self.environment,
