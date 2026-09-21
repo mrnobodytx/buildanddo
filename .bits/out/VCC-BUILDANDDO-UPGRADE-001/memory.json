@@ -530,7 +530,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 44590,
+      "lines": 44770,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -44573,12 +44573,192 @@
       "file_path": "tests/upgrade/test_gitlab_acceptance.py",
       "description": "All 103 focused governance regressions passed, covering GitLab routing, mandatory actor attribution, exact GitHub revision/review bindings, full acceptance and submission evidence. Synthetic provider context does not establish hosted execution.",
       "timestamp": "2026-09-21T23:05:58.315204+00:00"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json"
+      ],
+      "lines": 161,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the governance routing repair and real local failures so receiving owners can distinguish source verification from provider execution.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "governance-repair"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json"
+      ],
+      "lines": 935,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind the governance repair to real provider observations, exact source bytes and retained local check outcomes without claiming hosted acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "governance-repair"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json"
+      ],
+      "lines": 16,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind the governance repair to real provider observations, exact source bytes and retained local check outcomes without claiming hosted acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "governance-repair"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-report.md",
+      "target": "tests/upgrade/test_gitlab_acceptance.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "VERIFIED_BY tests/upgrade/test_gitlab_acceptance.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "PRODUCES .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json.cgrf.yaml",
+      "target": ".gitlab/ci/day21-submission.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES .gitlab/ci/day21-submission.yml as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json.cgrf.yaml",
+      "target": "tests/upgrade/check_mission_suite.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES tests/upgrade/check_mission_suite.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "25083e57208df367a1ef437e76be8e6b45ae42c9",
+      "smoke_result": null,
+      "event_type": "commit",
+      "file_path": ".gitlab/ci/source-validation.yml",
+      "description": "Recorded the governance routing, actor attribution and mission coverage repair. Automatic validation is configured in GitLab; the manual GitHub fallback freezes one reviewed head. No hosted run or remote status change is claimed.",
+      "timestamp": "2026-09-21T23:14:46Z"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "25083e57208df367a1ef437e76be8e6b45ae42c9",
+      "smoke_result": "9/11",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json",
+      "description": "Local source verification passed 103 governance cases, 35 worker/submission cases, 40 mission cases on each Python version, 66 portfolio cases on each, 70 foundry cases on each and 30 Node 22 cases. Nine of eleven selected test commands pass; required Discord/PDF checks still fail with missing packages. Suites overlap; zero hosted or native acceptance is inferred.",
+      "timestamp": "2026-09-21T23:19:02.117493+00:00"
     }
   ],
   "summary": {
-    "type_a_count": 735,
-    "type_b_count": 1637,
-    "type_c_count": 169,
+    "type_a_count": 738,
+    "type_b_count": 1643,
+    "type_c_count": 171,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
