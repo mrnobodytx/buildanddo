@@ -133,6 +133,15 @@ CHECKS = {
         ("python", "scripts/ci/ocn_feature_sweep.py", "selftest"),
         "source",
     ),
+    # The journey's offline half. `walk` needs ssh keys to a fleet box, so what is gated is the
+    # GRADER: that PocketBase's generic 400 reads as BROKEN rather than a polite refusal, that a
+    # refusal naming its contract reads as REFUSED, and that a control is judged on its status
+    # rather than its prose. Those rules are the whole difference between "the route answered"
+    # and "a person could finish", and a walk is only worth reading while they hold.
+    "ocn_journey_report": Check(
+        ("python", "scripts/ci/ocn_journey_report.py", "selftest"),
+        "source",
+    ),
 }
 
 

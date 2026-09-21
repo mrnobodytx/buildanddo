@@ -79,6 +79,13 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: scripts/ci/hostinger_checks.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_feature_sweep.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
@@ -322,6 +329,13 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/ocn_feature_sweep.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py"
+      ],
+      "wired_into_ci": false
+    },
+    {
       "path": "scripts/ci/ocn_guild_dogfood.py",
       "referenced_by": [],
       "wired_into_ci": false
@@ -441,7 +455,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-21T16:25:14.768460+00:00",
+  "generated_at": "2026-09-21T19:04:51.567314+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -811,11 +825,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 54,
-    "python_files": 289,
+    "python_files": 290,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1240,
+    "tracked_files": 1241,
     "web_source_files": 333
   },
   "schema_version": 1,
@@ -889,16 +903,16 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "3d000cfec490224023b10b9fa2581dfa0c34b2b4f24c2fc8d14105b9904dfd41",
+    "source_sha256": "7a8813ddfb99e25ce5346563d5836334b7c0fdc319d835ca5a93461aca898353",
     "state": "PASS"
   },
   "summary": {
-    "findings": 29,
-    "findings_high": 29,
+    "findings": 30,
+    "findings_high": 30,
     "pipelines": 7,
     "srs_open": 26,
     "srs_total": 30,
-    "unwired_gates": 27
+    "unwired_gates": 28
   },
   "tests": {
     "js_runners": [
