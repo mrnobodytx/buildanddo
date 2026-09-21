@@ -65,15 +65,15 @@ onRecordAfterDeleteError((event) => {
         /* Fail open. */
     }
 });
-onServe((event) => {
-    event.router.bind((request) => {
-        let telemetry;
-        try {
-            telemetry = require(`${__hooks}/telemetry.js`);
-        } catch (_) {
-            return request.next();
-        }
-        return telemetry.observeRequest(request);
-    });
-    return event.next();
+// PocketBase 0.39.8 binds no onServe; global middleware registers through
+// routerUse. Measured against the 0.39.8 binary: onServe=undefined,
+// routerUse=function. onServe here aborted startup at jsvm registerHooks.
+routerUse((request) => {
+    let telemetry;
+    try {
+        telemetry = require(`${__hooks}/telemetry.js`);
+    } catch (_) {
+        return request.next();
+    }
+    return telemetry.observeRequest(request);
 });
