@@ -16,14 +16,14 @@
  Intent:      Supply a local broadsheet social preview without third-party image dependencies.
  ───────────────────────────────────────────────────────────────
 -->
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="BuildAndDo — your business, in evidence">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="BuildAndDo — learn by doing, together">
   <rect width="1200" height="630" fill="hsl(42,30%,94%)"/>
   <g fill="hsl(220,16%,12%)">
-    <text x="64" y="76" font-family="monospace" font-size="18" letter-spacing="3">THE BUSINESS NEWSPAPER FOR YOUR OWN OPERATIONS</text>
+    <text x="64" y="76" font-family="monospace" font-size="18" letter-spacing="3">THE DAILY LEARNING EDITION FOR PEOPLE WHO BUILD TOGETHER</text>
     <path d="M64 107H1136 M64 114H1136" stroke="hsl(220,16%,12%)" stroke-width="2"/>
     <text x="60" y="241" font-family="Georgia,serif" font-weight="700" font-size="106" letter-spacing="-4">BUILDANDDO</text>
     <path d="M64 277H1136" stroke="hsl(220,16%,12%)" stroke-width="2"/>
-    <text x="64" y="360" font-family="Georgia,serif" font-size="54">Your business, in evidence.</text>
+    <text x="64" y="360" font-family="Georgia,serif" font-size="54">Learn by doing. Together.</text>
     <text x="66" y="421" font-family="Arial,sans-serif" font-size="25" fill="hsl(220,10%,38%)">Notice the change. Scope the work. Verify the outcome.</text>
     <path d="M64 492H1136" stroke="hsl(220,12%,74%)"/>
     <text x="64" y="553" font-family="monospace" font-size="20">BUILDANDDO.TECH</text>

@@ -20,7 +20,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Link } from 'react-router-dom';
 import ResearchPage from '@/pages/workspace/ResearchPage';
 import pb from '@/lib/pocketbaseClient';
-import { renderWithProviders, screen, setupUser, waitFor, within } from '@/test/utils';
+import { renderWithProviders, scriptsCarrying, screen, setupUser, waitFor, within } from '@/test/utils';
 import { researchFixture } from '../../../../../../tests/upgrade/research-fixture.mjs';
 import { plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
 
@@ -75,7 +75,7 @@ describe('mission research', () => {
         backend.work('complete', { id: submission.id, attempt: claim.job.attempt, result: { ...backend.result, text: '<script>untrusted source</script>' }, failure: '' }, { revision: claim.revision });
         await user.click(await screen.findByRole('button', { name: 'Refresh status' }));
         expect(await screen.findByText('<script>untrusted source</script>')).toBeVisible();
-        expect(document.querySelector('script')).toBeNull();
+        expect(scriptsCarrying('untrusted source')).toEqual([]);
         await user.click(screen.getByRole('button', { name: 'Attach reviewed source to evidence' }));
         expect(await screen.findByRole('alert')).toHaveTextContent(/Record what you checked/);
         await user.type(screen.getByLabelText('Review note'), 'Compared the original; this excerpt supports the research question with stated limits.');

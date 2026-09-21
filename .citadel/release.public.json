@@ -1,0 +1,40 @@
+{
+  "schema": "buildanddo.release-public-config/v1",
+  "srs": "SRS-BUILDANDDO-WORKSPACE-001",
+  "_why": [
+    "PUBLIC CONFIGURATION, DELIBERATELY COMMITTED. Every value here is a fact anyone can read off",
+    "the open internet or off a deploy script already in this repo. None of it is a secret, and",
+    "treating it as one is what stalled the release controller.",
+    "",
+    "THE DEFECT THIS CLOSES. `doctor` held BOTH environments on four values --",
+    "BUILDANDDO_{STAGING,PRODUCTION}_{URL,DEPLOY_MODE} -- which it would only read from a secrets",
+    "file at D:\\citadel_secrets\\BuildAndDo\\release.env that has never existed. Meanwhile",
+    "scripts/deploy/ship.py has been deploying both environments for weeks with the same URLs",
+    "hardcoded at lines 73-74. The controller was blocked on knowing its own public hostname while",
+    "the shipping tool beside it had that hostname as a literal.",
+    "",
+    "So the blocker was never a missing credential. It was public config filed under secrets, and a",
+    "second source of truth for a fact the repo already stated.",
+    "",
+    "WHAT STILL BELONGS IN THE SECRETS FILE: BUILDANDDO_{env}_HOST, _USER and _SSH_KEY_FILE. Those",
+    "are real credentials and they are NOT here. With this file in place `doctor` still HOLDs both",
+    "environments -- but it now names those three as missing instead of the URL, which is the",
+    "accurate statement of what is actually absent. Naming the wrong gap is worse than naming none:",
+    "it sent people to write a URL into a vault instead of placing a key."
+  ],
+  "_provenance": {
+    "urls": "scripts/deploy/ship.py:73-74 (STAGING_URL, PROD_URL)",
+    "remote_roots": "scripts/deploy/ship.py:71-72 (STAGING_REMOTE_DIR, PROD_REMOTE_DIR)",
+    "deploy_mode": "ship.py rsyncs a built dist to a remote VM over SSH, which is ssh_webroot",
+    "measured_at": "2026-09-20",
+    "measured_by": "C-ONE"
+  },
+  "env": {
+    "BUILDANDDO_STAGING_URL": "https://staging.buildanddo.com/",
+    "BUILDANDDO_STAGING_DEPLOY_MODE": "ssh_webroot",
+    "BUILDANDDO_STAGING_REMOTE_ROOT": "/var/www/buildanddo-staging",
+    "BUILDANDDO_PRODUCTION_URL": "https://buildanddo.com/",
+    "BUILDANDDO_PRODUCTION_DEPLOY_MODE": "ssh_webroot",
+    "BUILDANDDO_PRODUCTION_REMOTE_ROOT": "/var/www/buildanddo"
+  }
+}

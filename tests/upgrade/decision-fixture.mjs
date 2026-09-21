@@ -20,8 +20,11 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
+import { repoPath, pythonBin } from './admin-fixture.mjs';
 
-const root = new URL('../../', import.meta.url);
+// BUILDANDDO_P0_PORTABLE_ROOT: a URL root does not survive Vite's transform when this fixture
+// is pulled into a jsdom spec - readFileSync then throws "The URL must be of scheme file".
+// repoPath resolves from cwd instead; see tests/upgrade/admin-fixture.mjs.
 const clone = (value) => JSON.parse(JSON.stringify(value));
 const record = (name, values = {}) => ({
     ...values,
@@ -31,8 +34,8 @@ const record = (name, values = {}) => ({
 });
 
 export function python(operation, payload) {
-    const result = spawnSync('python', ['-m', 'apps.decision.adapters.service'], {
-        cwd: root, input: JSON.stringify({ operation, payload }), encoding: 'utf8',
+    const result = spawnSync(pythonBin(), ['-m', 'apps.decision.adapters.service'], {
+        cwd: repoPath('.'), input: JSON.stringify({ operation, payload }), encoding: 'utf8',
         timeout: 35000, maxBuffer: 13 * 1024 * 1024,
     });
     assert.equal(result.status, 0, result.stderr);
@@ -51,7 +54,7 @@ export function layoutBlueprintResult() {
         '    result=asyncio.run(service.dispatch("blueprint", {"name":"sample.pdf","pdf_base64":base64.b64encode(FIXTURE.read_bytes()).decode(),"include_prompts":True}))',
         'print(json.dumps(result))',
     ].join('\n');
-    const result = spawnSync('python', ['-c', script], { cwd: root, encoding: 'utf8', maxBuffer: 13 * 1024 * 1024 });
+    const result = spawnSync(pythonBin(), ['-c', script], { cwd: repoPath('.'), encoding: 'utf8', maxBuffer: 13 * 1024 * 1024 });
     assert.equal(result.status, 0, result.stderr);
     planned = JSON.parse(result.stdout);
     return clone(planned);
@@ -107,13 +110,13 @@ export function decisionFixture() {
     function load(name) {
         if (modules.has(name)) return modules.get(name);
         const module = { exports: {} };
-        const source = readFileSync(new URL('apps/pocketbase/pb_hooks/' + name, root), 'utf8');
+        const source = readFileSync(repoPath('apps/pocketbase/pb_hooks/' + name), 'utf8');
         vm.runInNewContext(source, { ...context, module, require: (path) => load(path.split('/').at(-1)) }, { filename: name });
         modules.set(name, module.exports);
         return module.exports;
     }
     context.require = (path) => load(path.split('/').at(-1));
-    vm.runInNewContext(readFileSync(new URL('apps/pocketbase/pb_hooks/decision.pb.js', root), 'utf8'), context);
+    vm.runInNewContext(readFileSync(repoPath('apps/pocketbase/pb_hooks/decision.pb.js'), 'utf8'), context);
     const headers = new Map();
     function request(body, { actor = 'member', workspace = 'ws1', operation = 'decide', decision = '' } = {}) {
         const method = operation === 'decisions' ? 'GET' : 'POST';

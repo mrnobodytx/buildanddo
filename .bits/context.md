@@ -14,7 +14,7 @@
 # Intent:      The durable brief an agent reads first; measured facts live in the lock beside it.
 # ───────────────────────────────────────────────────────────────
 
-# Agent context — buildanddo.tech
+# Agent context — buildanddo.com
 
 This file is the **durable** half of agent context: intent, invariants and
 priorities that change rarely. The **measured** half is `.bits/context.lock.json`,

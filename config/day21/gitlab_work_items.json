@@ -1,0 +1,71 @@
+{
+  "schema": "buildanddo.day21-gitlab-plan/v1",
+  "milestone": {
+    "title": "Hostinger Day 21 Submission - 2026-09-24",
+    "due_date": "2026-09-24",
+    "description": "Close runtime acceptance and compile the evidence-bound BuildAndDo entry. Source completion is not submission completion."
+  },
+  "issues": [
+    {
+      "key": "D21-ACCEPTANCE",
+      "title": "Day 21 - close self-hosted source and native acceptance",
+      "labels": ["day21", "acceptance", "tevv", "risk:R2"],
+      "owner_role": "release owner / verifier",
+      "depends_on": [],
+      "acceptance": [
+        "The existing Hostinger readiness checks execute on the self-hosted GitLab runner.",
+        "Both declared PocketBase profiles execute all five native acceptance surfaces.",
+        "Failures, skips and unavailable dependencies remain explicit."
+      ]
+    },
+    {
+      "key": "D21-BROWSER",
+      "title": "Day 21 - capture the real browser challenge journey",
+      "labels": ["day21", "browser", "tevv", "risk:R1"],
+      "owner_role": "acceptance operator",
+      "depends_on": ["D21-ACCEPTANCE"],
+      "acceptance": [
+        "Public entry, auth, challenge, mission, evidence and operator readback execute on the selected candidate.",
+        "Every accepted browser step has a content hash and observation time.",
+        "No synthetic screenshot is accepted as deployed-browser evidence."
+      ]
+    },
+    {
+      "key": "D21-HOSTINGER-PROOF",
+      "title": "Day 21 - bind evidence for all four Hostinger products",
+      "labels": ["day21", "hostinger", "provenance", "risk:R1"],
+      "owner_role": "competition owner",
+      "depends_on": [],
+      "acceptance": [
+        "Hostinger Agent, AI Builder, Web Hosting and VPS each have a distinct meaningful-use statement.",
+        "Each product statement is backed by at least one hashed observed artifact.",
+        "Product proof contains no credentials or private customer data."
+      ]
+    },
+    {
+      "key": "D21-REPLAY",
+      "title": "Day 21 - validate one nonsynthetic signal-to-verification replay",
+      "labels": ["day21", "replay", "tevv", "risk:R2"],
+      "owner_role": "independent verifier",
+      "depends_on": ["D21-ACCEPTANCE", "D21-BROWSER"],
+      "acceptance": [
+        "Replay binds one candidate SHA, workspace, mission and dispatch.",
+        "Producer and verifier identities are distinct.",
+        "The replay status is CONSISTENT_CAPTURE and synthetic=false."
+      ]
+    },
+    {
+      "key": "D21-SUBMISSION",
+      "title": "Day 21 - compile and owner-review the Hostinger submission bundle",
+      "labels": ["day21", "submission", "cgrf", "risk:R3"],
+      "owner_role": "competition owner / human approver",
+      "depends_on": ["D21-ACCEPTANCE", "D21-BROWSER", "D21-HOSTINGER-PROOF", "D21-REPLAY"],
+      "acceptance": [
+        "The final public URL is frozen and resolves successfully.",
+        "The submission compiler reports READY_FOR_OWNER_REVIEW.",
+        "The owner reviews the current official Hostinger form/rules before the external submission action.",
+        "External submission is performed only under explicit human authorization."
+      ]
+    }
+  ]
+}

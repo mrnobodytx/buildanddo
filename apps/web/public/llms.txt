@@ -18,17 +18,23 @@
 -->
 # BuildAndDo
 
-A business newspaper built around sources, scoped missions and evidence.
+A daily learning edition built around sources, scoped missions and evidence.
+
+## Community and store
+
+- [r/buildanddo on Reddit](https://www.reddit.com/r/buildanddo): the public community.
+- [Playbooks and courses on Gumroad](https://citadelnexus.gumroad.com): the Citadel Nexus store.
 
 ## Public pages
 
-- [BuildAndDo — Your business, in evidence](https://buildanddo.tech/): Notice what changed, approve a bounded mission, and verify the outcome. A business newspaper built from the sources you connect.
-- [MetaFunction Fabric Platform | BuildAndDo](https://buildanddo.tech/platform): Explore the governed execution flow, capability mesh and illustrative monitoring of the MetaFunction Fabric.
-- [BuildAndDo — Practice library](https://buildanddo.tech/practice): Community-audited methods for real objectives, with evidence, knowledge states and lessons from each attempt.
-- [BuildAndDo — Public roadmap](https://buildanddo.tech/roadmap): Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.
-- [Pricing & early access | BuildAndDo](https://buildanddo.tech/pricing): Explore BuildAndDo early access and discuss a team rollout. Public subscription pricing has not been announced.
-- [About & team | BuildAndDo](https://buildanddo.tech/about): Meet the people and principles behind BuildAndDo, a Citadel Nexus Inc. product built around accountable work.
-- [Classrooms & shared lessons | BuildAndDo](https://buildanddo.tech/classrooms): Learn together in workspace classrooms with host-led Field Manual lessons, attendance and saved discussion.
-- [Documentation | BuildAndDo](https://buildanddo.tech/docs): Get started with workspaces, signals, missions, workflows and the evidence ledger. Learn what each state means.
-- [The BuildAndDo journal](https://buildanddo.tech/blog): Field notes on evidence, bounded work and running a business with a traceable record of decisions.
-- [Contact | BuildAndDo](https://buildanddo.tech/contact): Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.
+- [BuildAndDo — learn by doing, together](https://buildanddo.com/): Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.
+- [BuildAndDo — Hostinger 21-Day Challenge](https://buildanddo.com/hostinger-challenge): See the focused business problem, verified mission story and Hostinger product roles behind the BuildAndDo challenge entry.
+- [MetaFunction Fabric Platform | BuildAndDo](https://buildanddo.com/platform): Explore the governed execution flow, capability mesh and illustrative monitoring of the MetaFunction Fabric.
+- [BuildAndDo — Practice library](https://buildanddo.com/practice): Community-audited methods for real objectives, with evidence, knowledge states and lessons from each attempt.
+- [BuildAndDo — Public roadmap](https://buildanddo.com/roadmap): Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.
+- [Pricing & early access | BuildAndDo](https://buildanddo.com/pricing): Explore BuildAndDo early access and discuss a team rollout. Public subscription pricing has not been announced.
+- [About & team | BuildAndDo](https://buildanddo.com/about): Meet the people and principles behind BuildAndDo, a Citadel Nexus Inc. product built around accountable work.
+- [Classrooms & shared lessons | BuildAndDo](https://buildanddo.com/classrooms): Learn together in workspace classrooms with host-led Field Manual lessons, attendance and saved discussion.
+- [Documentation | BuildAndDo](https://buildanddo.com/docs): Get started with workspaces, signals, missions, workflows and the evidence ledger. Learn what each state means.
+- [The BuildAndDo journal](https://buildanddo.com/blog): Field notes on learning by doing, bounded work and keeping a traceable record of what you built.
+- [Contact | BuildAndDo](https://buildanddo.com/contact): Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.

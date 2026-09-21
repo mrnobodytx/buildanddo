@@ -80,7 +80,7 @@ configured group now contains 25 commands, Discord's limit for this group.
 
 ## Sources and behavior
 
-The canonical origin is `https://buildanddo.tech`, taken from the public site's
+The canonical origin is `https://buildanddo.com`, taken from the public site's
 existing route catalogue and checked for parity by the generated-feed tests.
 The public command service reads exactly four resources:
 

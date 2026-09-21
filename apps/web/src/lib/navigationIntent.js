@@ -19,8 +19,8 @@
 export function workspaceDestination(value) {
     if (typeof value !== 'string' || value.length > 2000 || /[\\\s\u0000-\u001f\u007f]/.test(value) || !/^\/app(?:\/|[?#]|$)/.test(value)) return '/app';
     try {
-        const parsed = new URL(value, 'https://buildanddo.tech');
-        if (parsed.origin !== 'https://buildanddo.tech' || !/^\/app(?:\/[a-zA-Z0-9_-]+)*\/?$/.test(parsed.pathname)) return '/app';
+        const parsed = new URL(value, 'https://buildanddo.com');
+        if (parsed.origin !== 'https://buildanddo.com' || !/^\/app(?:\/[a-zA-Z0-9_-]+)*\/?$/.test(parsed.pathname)) return '/app';
         return `${parsed.pathname}${parsed.search}${parsed.hash}`;
     } catch { return '/app'; }
 }
@@ -29,7 +29,7 @@ export function workspaceDestination(value) {
 export function classroomTelemetryLocation(value) {
     if (typeof value !== 'string' || !value) return value;
     try {
-        const url = new URL(value, 'https://buildanddo.tech');
+        const url = new URL(value, 'https://buildanddo.com');
         const path = url.pathname;
         const room = /^\/app\/classrooms(?:\/|$)/.test(path);
         const api = /\/api\/buildanddo\/workspaces\/[^/]+\/classrooms(?:\/|$)/.test(path);

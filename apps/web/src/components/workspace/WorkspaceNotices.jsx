@@ -163,22 +163,31 @@ export function WriteErrorNotice({ message, onDismiss }) {
  * Placeholder rows shown while a list loads. Sized like the content it
  * replaces so the page does not jump when records arrive.
  *
- * @param {{rows?: number, className?: string}} props Row count and styling.
+ * The shimmer is decorative and stays aria-hidden, so on its own it announces
+ * nothing - a screen reader hears silence where a sighted user sees loading.
+ * `label` supplies the announcement. It was previously accepted at six call
+ * sites and dropped on the floor, because the prop did not exist here.
+ *
+ * @param {{rows?: number, className?: string, label?: string}} props Row count,
+ *   styling, and the text announced while the rows are in place.
  * @returns {React.ReactElement} The skeleton.
  */
-export function ListSkeleton({ rows = 3, className }) {
+export function ListSkeleton({ rows = 3, className, label }) {
     return (
-        <div className={cn('space-y-3', className)} aria-hidden="true">
-            {Array.from({ length: rows }).map((_, index) => (
-                <div
-                    key={index}
-                    className="animate-pulse border border-border bg-card p-5"
-                >
-                    <div className="h-4 w-1/3 rounded bg-secondary" />
-                    <div className="mt-3 h-3 w-2/3 rounded bg-secondary/70" />
-                    <div className="mt-2 h-3 w-1/2 rounded bg-secondary/50" />
-                </div>
-            ))}
+        <div className={cn('space-y-3', className)}>
+            {label ? <p className="sr-only" role="status" aria-live="polite">{label}</p> : null}
+            <div className="space-y-3" aria-hidden="true">
+                {Array.from({ length: rows }).map((_, index) => (
+                    <div
+                        key={index}
+                        className="animate-pulse border border-border bg-card p-5"
+                    >
+                        <div className="h-4 w-1/3 rounded bg-secondary" />
+                        <div className="mt-3 h-3 w-2/3 rounded bg-secondary/70" />
+                        <div className="mt-2 h-3 w-1/2 rounded bg-secondary/50" />
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

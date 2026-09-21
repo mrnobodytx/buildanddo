@@ -1,0 +1,80 @@
+{
+  "campaign_id": "citadel-21-day-2026-09",
+  "sprint_start": "2026-09-01",
+  "sprint_days": 21,
+  "updated_at": "2026-09-20T13:46:31+00:00",
+  "milestones": [
+    {
+      "day": 1,
+      "status": "verified",
+      "evidence": "commit d2d5f83 (ship.py build->gate->staging sync->staging probe->promote, release manifest apps/web/public/.well-known/citadel-release.json); estate receipt state/tenant_rail/stage.latest.json (controller estate, outside this repo) state PASS observed 2026-09-11T20:18Z: gate PASS, staging probe 200, live PASS",
+      "verified_at": "2026-09-11T20:18:14Z"
+    },
+    {
+      "day": 3,
+      "status": "verified",
+      "evidence": "commits d964260, 86e84e5, 9e1f136; apps/pocketbase/pb_hooks/ocn-login.pb.js; apps/pocketbase/pb_migrations/1789100000_ocn_seat_users.js; apps/web/src/lib/ocnLogin.js; docs/architecture/BUILDANDDO_OCN_LOGIN.md; estate receipt state/ocn_login/audit.latest.json state PASS 2026-09-11T21:24Z: seat c-one signed in on staging via /api/ocn/login (200), collections readable 23/24, public routes 7/7",
+      "verified_at": "2026-09-11T21:24:00Z"
+    },
+    {
+      "day": 5,
+      "status": "planned",
+      "evidence": "commit 2510ac6; docs/architecture/POCKETBASE_MIGRATION_DRIFT_2026-09-11.md (35 migrations reconciled, 0 problems); apps/pocketbase/tools/check_migration_order.mjs re-run 2026-09-11: 36 migrations, 0 problems; scripts/ci/verify_public_boundary.py wired in .github/workflows/pr-governance.yml; estate receipts state/staging_backend/kvm1_install.latest.json PASS and sync_backend.latest.json PASS 2026-09-11; staging backend health re-probed 2026-09-20: /hcgi/platform/api/health 200 - the 2026-09-11 entry cited the bare mount prefix instead, which 301s to a directory index that answers 404 on staging and production alike, so it named a path that never carried the claim",
+      "reverted_at": "2026-09-20T13:46:31+00:00",
+      "reverted_reason": "verified_at was 2026-09-20T00:00:00Z on all six - exact midnight, the value a bare date yields, recorded in one batch rather than measured; day 5 also overwrote a genuine 2026-09-11T21:24:00Z. Evidence retained: re-verify each with a real timestamp and a claim that proves delivery, not file existence."
+    },
+    {
+      "day": 7,
+      "status": "planned",
+      "evidence": "commits 8a1c407, 3170e84; apps/web/src/pages/workspace/SignalsPage.jsx (483 lines) reads the signals collection through apps/web/src/hooks/useWorkspaceRecords.js, which calls PocketBase directly - the demo branch fires only in explicit demo mode; collection defined in apps/pocketbase/pb_migrations/1788474000_create_workspace_collections.js and scoped by apps/pocketbase/pb_migrations/1788900000_create_workspace_members_rbac.js; signals feed the knowledge graph via apps/pocketbase/pb_hooks/workspace-knowledge.js and the operator cockpit via apps/pocketbase/pb_hooks/workspace-operator.js. Staging readback 2026-09-20: /hcgi/platform/api/collections/signals/records 200, with the negative control /hcgi/platform/api/collections/erp_not_real/records 404 proving the probe discriminates rather than answering 200 to everything as the SPA shell does. SCOPE: no dedicated signals ingestion hook exists - the MVP is capture plus fan-out to knowledge and cockpit, not autonomous collection. Staging only; production not promoted.",
+      "reverted_at": "2026-09-20T13:46:31+00:00",
+      "reverted_reason": "verified_at was 2026-09-20T00:00:00Z on all six - exact midnight, the value a bare date yields, recorded in one batch rather than measured; day 5 also overwrote a genuine 2026-09-11T21:24:00Z. Evidence retained: re-verify each with a real timestamp and a claim that proves delivery, not file existence."
+    },
+    {
+      "day": 9,
+      "status": "planned",
+      "evidence": "commits 26f73df, 9bbcbc2; apps/web/src/pages/workspace/MissionsPage.jsx (718 lines) reads the missions and evidence collections; the bounded-action engine is apps/pocketbase/pb_hooks/mission-policy.js (313 lines), apps/pocketbase/pb_hooks/mission-suite.js (252 lines) and apps/pocketbase/pb_hooks/missions.pb.js, with apps/pocketbase/pb_hooks/mission-research.js for the research leg. Staging readback 2026-09-20: /hcgi/platform/api/collections/missions/records 200 and /hcgi/platform/api/collections/evidence/records 200, negative control /hcgi/platform/api/collections/erp_not_real/records 404. Staging only; production not promoted.",
+      "reverted_at": "2026-09-20T13:46:31+00:00",
+      "reverted_reason": "verified_at was 2026-09-20T00:00:00Z on all six - exact midnight, the value a bare date yields, recorded in one batch rather than measured; day 5 also overwrote a genuine 2026-09-11T21:24:00Z. Evidence retained: re-verify each with a real timestamp and a claim that proves delivery, not file existence."
+    },
+    {
+      "day": 11,
+      "status": "planned",
+      "evidence": "commits af63ab4, 858ccf5; apps/web/src/pages/workspace/WorkflowsPage.jsx (721 lines) is the editor - named steps carrying a kind and detail - and reads the workflows collection; governed execution is apps/pocketbase/pb_hooks/workflow-runs.js (200 lines) and apps/pocketbase/pb_hooks/workflow-policy.js (131 lines), wired by apps/pocketbase/pb_hooks/workflows.pb.js, the subject of commit af63ab4 recording governed workflow runs. Staging readback 2026-09-20: /hcgi/platform/api/collections/workflows/records 200, negative control /hcgi/platform/api/collections/erp_not_real/records 404. Staging only; production not promoted.",
+      "reverted_at": "2026-09-20T13:46:31+00:00",
+      "reverted_reason": "verified_at was 2026-09-20T00:00:00Z on all six - exact midnight, the value a bare date yields, recorded in one batch rather than measured; day 5 also overwrote a genuine 2026-09-11T21:24:00Z. Evidence retained: re-verify each with a real timestamp and a claim that proves delivery, not file existence."
+    },
+    {
+      "day": 13,
+      "status": "verified",
+      "evidence": "commit abc10c9 (Living Rooms overlay: RoomCanvas, UtilizationPanel, useRoomProjection, routes app/rooms, app/rooms/systems, app/rooms/live; header Rooms-live pill via useRoomsLive); staging readback 2026-09-18: /room-projections/index.json 200 and /room-projections/systems.json 200 state MEASURED generated 2026-09-18T14:26Z; public-record bridge = the projections published to the webroot from the estate",
+      "verified_at": "2026-09-18T14:30:00Z"
+    },
+    {
+      "day": 15,
+      "status": "planned",
+      "evidence": "commits 203a08c, 8a1c407, 295725a; delivered on the ERP surface rather than three separate pages - apps/web/src/pages/workspace/ErpPage.jsx reads erp_objectives, erp_tasks and erp_contacts, which is exactly the objectives, tasks and guild contacts this milestone names; collections defined in apps/pocketbase/pb_migrations/1788474000_create_workspace_collections.js and apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js, RBAC-scoped in apps/pocketbase/pb_hooks/administration.pb.js. Staging readback 2026-09-20: /hcgi/platform/api/collections/erp_objectives/records 200, /hcgi/platform/api/collections/erp_tasks/records 200 and /hcgi/platform/api/collections/erp_contacts/records 200, negative control /hcgi/platform/api/collections/erp_not_real/records 404. Staging only; production not promoted.",
+      "reverted_at": "2026-09-20T13:46:31+00:00",
+      "reverted_reason": "verified_at was 2026-09-20T00:00:00Z on all six - exact midnight, the value a bare date yields, recorded in one batch rather than measured; day 5 also overwrote a genuine 2026-09-11T21:24:00Z. Evidence retained: re-verify each with a real timestamp and a claim that proves delivery, not file existence."
+    },
+    {
+      "day": 17,
+      "status": "planned",
+      "evidence": "commits a155e24, b929a5d, 858ccf5; the ledger is scripts/ci/sprint_ledger.json, TRACKED rather than per-clone state so every checkout and the public page read the same verification; scripts/ci/sprint_cycle.py (353 lines) is the only writer and counts a milestone only when status is verified AND it names evidence; scripts/ci/sprint_replay.py (556 lines) re-checks every claim against git and live endpoints, held down by 27 cases in scripts/ci/selftest_sprint_replay.py covering both directions; the operator surface is apps/web/src/pages/workspace/EvidencePage.jsx (437 lines) over the evidence collection, governed by apps/pocketbase/pb_hooks/evidence-policy.js and apps/pocketbase/pb_hooks/evidence.pb.js with apps/pocketbase/pb_migrations/1788800000_create_praxis_evidence_fabric.js and apps/pocketbase/pb_migrations/1788940000_create_evidence_witness.js. Staging readback 2026-09-20: /hcgi/platform/api/collections/evidence/records 200, negative control /hcgi/platform/api/collections/erp_not_real/records 404. SCOPE: verification is recorded and re-checkable, but recording it is still a human act - CI does not write this ledger. Staging only; production not promoted.",
+      "reverted_at": "2026-09-20T13:46:31+00:00",
+      "reverted_reason": "verified_at was 2026-09-20T00:00:00Z on all six - exact midnight, the value a bare date yields, recorded in one batch rather than measured; day 5 also overwrote a genuine 2026-09-11T21:24:00Z. Evidence retained: re-verify each with a real timestamp and a claim that proves delivery, not file existence."
+    },
+    {
+      "day": 19,
+      "status": "verified",
+      "evidence": "PR #40 merge 2c49f00 (newspaper front page d74dcf4, daily edition + specialist desks, read-first operator cockpit 26f73df); staging readback 2026-09-18: front page renders the daily edition (research desk, classroom, mission desk, knowledge room, evidence ledger, practice library desks), /_version sha match; production not yet promoted",
+      "verified_at": "2026-09-18T19:19:35Z"
+    },
+    {
+      "day": 21,
+      "status": "verified",
+      "evidence": "commits b929a5d (replay engine, selftest, publication into roadmap-status.json) and de536f3 (pipeline job, public panel test); scripts/ci/sprint_replay.py; scripts/ci/selftest_sprint_replay.py 27 tests pass; .gitlab-ci.yml job sprint_replay runs selftest blocking and replay reporting at GIT_DEPTH 0; scripts/deploy/roadmap_status.py carries replay under its own key, never averaged into actual_pct; apps/web/src/pages/RoadmapPage.jsx renders a verdict per milestone with its rotted claims and reasons; apps/web/src/pages/__tests__/RoadmapPage.replay.test.jsx proves an absent replay renders nothing; CONTROL measured 2026-09-20: sprint_cycle scored the real ledger 38.0 pct and a ledger with every evidence string replaced by the letter x 38.0 pct, identical, and eleven such strings 100 pct - the replay scores all of those 0 pct and reports UNCHECKED; replay probed against production 2026-09-20: 10 hold, 0 rotted, 0 unchecked, claimed 88.0 pct equals replayed 88.0 pct; /.well-known/citadel-release.json 200 on buildanddo.com and on staging.buildanddo.com",
+      "verified_at": "2026-09-20T13:29:32+00:00"
+    }
+  ]
+}

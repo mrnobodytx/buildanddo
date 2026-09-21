@@ -30,6 +30,7 @@ import { cn } from '@/lib/utils';
 import { Helmet } from 'react-helmet';
 import { ThemeToggle } from '@/components/ThemeControls';
 import { useAuth } from '@/contexts/AuthContext';
+import { isMasterSeat } from '@/lib/estateAccess';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { WorkspaceAccessProvider, useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
@@ -67,7 +68,7 @@ const NAV = [
     { to: '/app/forums', label: 'Workspace forum', icon: Users },
     { to: '/app/roadmap', label: 'Roadmap', icon: Gauge },
     { to: '/app/operations', label: 'Operations Desk', icon: Server },
-    { to: '/app/fleet', label: 'Fleet', icon: Network },
+    { to: '/app/fleet', label: 'Fleet', icon: Network, estate: true },
     { to: '/app/platforms', label: 'Platform Health', icon: Plug },
     { to: '/app/integrations', label: 'Sinks & extensions', icon: Plug },
     { to: '/app/admin', label: 'Administration', icon: ShieldCheck, admin: true },
@@ -76,9 +77,12 @@ const NAV = [
 
 function NavList({ onNavigate }) {
     const access = useWorkspaceAccess();
+    const { user } = useAuth();
+    // Estate entries (Fleet) are for master-level CNWB seats only; the level is backend-owned (estate.pb.js).
+    const masterSeat = isMasterSeat(user);
     return (
         <nav className="flex flex-col gap-1" aria-label="Workspace">
-            {NAV.filter((item) => !item.admin || access.data?.can_admin).map((item) => (
+            {NAV.filter((item) => (!item.admin || access.data?.can_admin) && (!item.estate || masterSeat)).map((item) => (
                 <NavLink
                     key={item.to}
                     to={item.to}
