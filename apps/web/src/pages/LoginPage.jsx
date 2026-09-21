@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { workspaceDestination } from '@/lib/navigationIntent';
+import { OCN_MESSAGES, ocnLogin, ocnRequested, readOcnHeader } from '@/lib/ocnLogin';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -22,6 +23,25 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+    // A seat affordance, not a person's: it renders only when the runtime injected
+    // a CitadelKey envelope or the page was opened with ?ocn=1, and the envelope is
+    // never persisted anywhere a later reader could find it.
+    const ocnHeader = readOcnHeader();
+    const ocnVisible = ocnRequested(location.search);
+    const [ocnBusy, setOcnBusy] = useState(false);
+    const [ocnError, setOcnError] = useState('');
+    const handleOcnLogin = async () => {
+        setOcnError('');
+        setOcnBusy(true);
+        try {
+            await ocnLogin();
+            navigate('/app', { replace: true });
+        } catch (error) {
+            setOcnError(error?.message || 'Seat sign-in failed. Nothing was signed in.');
+        } finally {
+            setOcnBusy(false);
+        }
+    };
     const busy = status === 'submitting';
 
     const setField = (field, value) => {
@@ -177,6 +197,28 @@ export default function LoginPage() {
                     )}
                 </Button>
             </form>
+            {ocnVisible ? (
+                <section data-testid="ocn-login" aria-labelledby="ocn-login-title" className="mt-6 border-t border-border pt-5">
+                    <h2 id="ocn-login-title" className="font-display text-sm font-semibold">Citadel seat sign-in</h2>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                        For an agent seat whose runtime supplies a signed CitadelKey envelope. People sign in above.
+                    </p>
+                    <Button
+                        type="button"
+                        className="mt-3 w-full"
+                        onClick={handleOcnLogin}
+                        disabled={!ocnHeader || ocnBusy}
+                    >
+                        {ocnBusy ? 'Verifying the seat key…' : 'Sign in with CitadelKey'}
+                    </Button>
+                    {!ocnHeader ? (
+                        <p role="status" className="mt-2 text-xs text-muted-foreground">{OCN_MESSAGES.no_header}</p>
+                    ) : null}
+                    {ocnError ? (
+                        <p role="alert" className="mt-2 text-xs text-destructive">{ocnError}</p>
+                    ) : null}
+                </section>
+            ) : null}
         </AuthLayout>
     );
 }
