@@ -1,17 +1,18 @@
-#!/usr/bin/env python3
+# CGRF: SRS=SRS-BUILDANDDO-ROADMAP-001 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/sprint_cycle.py
 # Stage:       11_COMMIT
 # SRS:         SRS-BUILDANDDO-ROADMAP-001
 # CAPS:        pending
 # CK:          pending
-# Seat:        BITS-CODEGEN
+# Seat:        BITS-CODEGEN, C-ONE (verify CLI, 2026-09-11 reframe)
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
 # Depends:     none
 # EnumType:    Service
 # EnumEdges:   PRODUCES sprint milestone state;
-#              CONSUMES state/roadmap/sprint.json
+#              CONSUMES state/roadmap/sprint.json;
+#              MIRRORED_BY apps/web/src/pages/RoadmapPage.jsx (PLANNED_MILESTONES)
 # Intent:      Hold the 21-day sprint plan and its verified state in one place,
 #              so the projection, the public page and the README cannot drift.
 # ───────────────────────────────────────────────────────────────
@@ -30,10 +31,20 @@ carries a non-empty ``evidence`` reference. There is no free-text progress
 number anywhere in this module, so "we are 60% done" cannot be asserted - it
 has to be earned one milestone at a time.
 
+Recording verification goes through this module too::
+
+    py -3.13 scripts/ci/sprint_cycle.py verify --day 1 --evidence "commit d2d5f83; ..."
+
+which writes state/roadmap/sprint.json in the one shape `_merge_state` reads.
+The file is git-ignored (state/ is local operational state), so the projection
+records it in the tracked ledger scripts/ci/sprint_ledger.json, so every
+checkout and the public roadmap read the same verification. The evidence string is public: it is rendered on /roadmap.
+
 Standard library only, matching the rest of scripts/ci/.
 """
 from __future__ import annotations
 
+import argparse
 import datetime as dt
 import json
 from pathlib import Path
@@ -41,10 +52,20 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 CAMPAIGN_ID = "citadel-21-day-2026-09"
-SPRINT_START = dt.date(2026, 9, 9)
+# From the estate blueprint, config/campaign_21_day_progression_v1.yaml, which is the campaign's
+# own definition: days[0].date = 2026-09-01, days[20].date = 2026-09-21, and day_index anchors
+# 2026-09-08 as day 8 - all three agree. Corrected twice on 2026-09-20: 09-09 was the original and
+# put day 21 on 09-29; I then inferred 09-03 from "three days remain", which fit the remaining
+# runway but not the blueprint. Inference that matches one observation is not a source. The
+# blueprint also carries the real deadlines: Hostinger freeze 2026-09-22, submission 2026-09-24.
+SPRINT_START = dt.date(2026, 9, 1)
 SPRINT_DAYS = 21
 
-STATE_PATH = ROOT / "state" / "roadmap" / "sprint.json"
+# The ledger is TRACKED (scripts/ci/sprint_ledger.json), not per-clone state: a verification is a commit that carries
+# its public evidence, reviewable like any other change, and the public roadmap reads the same ledger from any
+# checkout. Measured 2026-09-18: the gitignored state/roadmap/sprint.json existed only in the ship rail's clone, so
+# main could never show more than the three milestones recorded there.
+STATE_PATH = ROOT / "scripts" / "ci" / "sprint_ledger.json"
 
 VERIFIED = "verified"
 PLANNED = "planned"
@@ -231,29 +252,175 @@ def sprint_day(today: dt.date | None = None) -> int:
     return max(1, min((day - SPRINT_START).days + 1, SPRINT_DAYS))
 
 
-def main() -> int:
-    """Print the current sprint projection as JSON.
+def _projection(state: dict, day: int) -> dict:
+    """Summarise the sprint as the JSON `main` prints.
+
+    Args:
+        state: A state dict as returned by `_load_state`.
+        day: 1-based sprint day.
+
+    Returns:
+        The projection dict.
+    """
+    return {
+        "campaign_id": CAMPAIGN_ID,
+        "sprint_start": SPRINT_START.isoformat(),
+        "sprint_day": day,
+        "planned_pct": round(_planned_pct(day), 1),
+        "actual_pct": _actual_pct(state),
+        "verified_milestones": sum(1 for m in state["milestones"] if _is_verified(m)),
+        "total_milestones": len(MILESTONES),
+        "state_source": state["source"],
+    }
+
+
+def _record_verification(day: int, evidence: str, verified_at: str | None) -> dict:
+    """Mark one planned milestone verified in the state file.
+
+    Only a day that exists in `MILESTONES` can be recorded, and the evidence
+    reference must be non-empty - the same two rules `_merge_state` and
+    `_is_verified` apply on the way back out, enforced on the way in so a
+    hollow entry is never written.
+
+    Args:
+        day: Sprint day of the milestone.
+        evidence: Public evidence reference (commit shas, repo paths, receipt
+            paths). Never a secret.
+        verified_at: ISO-8601 timestamp; defaults to now (UTC).
+
+    Returns:
+        The full state dict that was written.
+
+    Raises:
+        ValueError: When the day is not in the plan or evidence is blank.
+    """
+    if day not in {m["day"] for m in MILESTONES}:
+        raise ValueError(f"day {day} is not a planned milestone")
+    reference = evidence.strip()
+    if not reference:
+        raise ValueError("evidence reference must not be empty")
+    current = _load_state()
+    stamp = verified_at or dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    for milestone in current["milestones"]:
+        if milestone["day"] == day:
+            milestone["status"] = VERIFIED
+            milestone["evidence"] = reference
+            milestone["verified_at"] = stamp
+    payload = {
+        "campaign_id": CAMPAIGN_ID,
+        "sprint_start": current["sprint_start"],
+        "sprint_days": SPRINT_DAYS,
+        "updated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        "milestones": [
+            {k: m[k] for k in ("day", "status", "evidence", "verified_at")}
+            for m in current["milestones"]
+            if m["status"] != PLANNED or m["evidence"]
+        ],
+    }
+    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    STATE_PATH.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    return payload
+
+
+def _revert_verification(days: list[int], reason: str) -> dict:
+    """Return one or more milestones to ``planned``.
+
+    A verification that was recorded without a real measurement behind it has to be
+    removable, or the ledger can only ever ratchet upwards and the published number becomes
+    a high-water mark rather than a reading. Measured 2026-09-20: six milestones carried
+    ``2026-09-20T00:00:00Z`` - exact midnight, the value you get from passing a bare date -
+    and one of them had overwritten a genuine 2026-09-11T21:24:00Z stamp.
+
+    The evidence text is KEPT. It is the record of what was claimed, and deleting it would
+    destroy the only thing that makes the reversal reviewable; `_is_verified` already
+    refuses to count it while the status is ``planned``.
+
+    Args:
+        days: Sprint days to return to planned.
+        reason: Why, recorded in the ledger so the reversal is not silent.
+
+    Returns:
+        The full state dict that was written.
+
+    Raises:
+        ValueError: When a day is not in the plan or no reason is given.
+    """
+    known = {m["day"] for m in MILESTONES}
+    unknown = [d for d in days if d not in known]
+    if unknown:
+        raise ValueError(f"not planned milestones: {unknown}")
+    note = reason.strip()
+    if not note:
+        raise ValueError("a reversal must say why")
+    current = _load_state()
+    stamp = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    for milestone in current["milestones"]:
+        if milestone["day"] in days:
+            milestone["status"] = PLANNED
+            milestone["verified_at"] = None
+            milestone["reverted_at"] = stamp
+            milestone["reverted_reason"] = note
+    payload = {
+        "campaign_id": CAMPAIGN_ID,
+        "sprint_start": SPRINT_START.isoformat(),
+        "sprint_days": SPRINT_DAYS,
+        "updated_at": stamp,
+        "milestones": [
+            {k: m[k] for k in ("day", "status", "evidence", "verified_at",
+                               "reverted_at", "reverted_reason") if m.get(k) is not None}
+            for m in current["milestones"]
+            if m["status"] != PLANNED or m["evidence"]
+        ],
+    }
+    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    STATE_PATH.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    return payload
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Print the sprint projection, or record a milestone verification.
+
+    Args:
+        argv: Command-line arguments; defaults to sys.argv.
 
     Returns:
         Process exit code.
     """
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    sub = parser.add_subparsers(dest="command")
+    sub.add_parser("status", help="print the projection (default)")
+    verify = sub.add_parser("verify", help="record one milestone as verified with evidence")
+    verify.add_argument("--day", type=int, required=True, help="sprint day of the planned milestone")
+    verify.add_argument("--evidence", required=True, help="public evidence reference (commits, paths, receipts)")
+    verify.add_argument("--verified-at", default=None, help="ISO-8601 timestamp; default now UTC")
+    unverify = sub.add_parser("unverify", help="return milestones to planned, with a stated reason")
+    unverify.add_argument("--day", type=int, action="append", required=True,
+                          help="sprint day to revert; repeat for several")
+    unverify.add_argument("--reason", required=True, help="why the verification does not stand")
+    args = parser.parse_args(argv)
+
+    if args.command == "unverify":
+        try:
+            written = _revert_verification(args.day, args.reason)
+        except ValueError as exc:
+            print(f"FAIL: {exc}")
+            return 2
+        print(json.dumps({"written": str(STATE_PATH.relative_to(ROOT)), "reverted": args.day,
+                          "verified_entries": sum(1 for m in written["milestones"]
+                                                  if m["status"] == VERIFIED)}, indent=2))
+
+    if args.command == "verify":
+        try:
+            written = _record_verification(args.day, args.evidence, args.verified_at)
+        except ValueError as exc:
+            print(f"FAIL: {exc}")
+            return 2
+        print(json.dumps({"written": str(STATE_PATH.relative_to(ROOT)), "day": args.day,
+                          "verified_entries": sum(1 for m in written["milestones"] if m["status"] == VERIFIED)},
+                         indent=2))
+
     state = _load_state()
-    day = sprint_day()
-    print(
-        json.dumps(
-            {
-                "campaign_id": CAMPAIGN_ID,
-                "sprint_start": SPRINT_START.isoformat(),
-                "sprint_day": day,
-                "planned_pct": round(_planned_pct(day), 1),
-                "actual_pct": _actual_pct(state),
-                "verified_milestones": sum(1 for m in state["milestones"] if _is_verified(m)),
-                "total_milestones": len(MILESTONES),
-                "state_source": state["source"],
-            },
-            indent=2,
-        )
-    )
+    print(json.dumps(_projection(state, sprint_day()), indent=2))
     return 0
 
 

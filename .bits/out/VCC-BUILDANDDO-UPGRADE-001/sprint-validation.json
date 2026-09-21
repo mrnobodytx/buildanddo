@@ -1,0 +1,939 @@
+{
+  "schema_version": "buildanddo.sprint-implementation-validation/v1",
+  "recorded_at": "2026-09-21T00:49:23.333724+00:00",
+  "dispatch": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs": "SRS-BUILDANDDO-UPGRADE-001",
+  "status": "PARTIAL",
+  "source_scope": "All eleven public source checkpoints plus the owner-requested tenant-scoped workspace assistant",
+  "runtime_acceptance": "UNMEASURED",
+  "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+  "acceptance_summary": {
+    "PASS": 4,
+    "HOLD": 1,
+    "FAIL": 3,
+    "BLOCKED": 10
+  },
+  "checks": [
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "scripts/ci/verify_public_boundary.py"
+        ],
+        "artifacts": {},
+        "check": "boundary",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": 0,
+        "finished_at": "2026-09-21T00:54:02.913024+00:00",
+        "level": "source",
+        "log": "boundary-package-1789952041888071296.log",
+        "log_sha256": "090b0c56ce557b2895cecc4fdc49132c8190e2dad890b3fabac25e277efa839f",
+        "profile": "package",
+        "reason": "",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:54:01.888056+00:00",
+        "status": "PASS"
+      },
+      "log_utf8": "{\n  \"state\": \"PASS\",\n  \"files_checked\": 1102,\n  \"failures\": [],\n  \"actor\": null\n}\n",
+      "receipt_sha256": "eac8a224302d7b535f062e82140a35fe0bc889e8ea7f722d84f597a0d8aab48e"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "scripts/ci/supply_chain.py",
+          "--skip-audit",
+          "--check-lock"
+        ],
+        "artifacts": {},
+        "check": "dependency_lock",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": 0,
+        "finished_at": "2026-09-21T00:45:58.532640+00:00",
+        "level": "source",
+        "log": "dependency_lock-package-1789951558358189012.log",
+        "log_sha256": "8f58cc0dfc76fa603d99afdb5eee8b09208f53b3bacb0a5c3529c88d111b9d98",
+        "profile": "package",
+        "reason": "",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:45:58.358183+00:00",
+        "status": "PASS"
+      },
+      "log_utf8": "### Dependency supply chain\n\nAudit: unavailable.\nLockfile: PASS.\n- critical: unknown\n- high: unknown\n- moderate: unknown\n- low: unknown\n\n",
+      "receipt_sha256": "a25bdd9f3faf6626f680b6016c8d9c7766bde52036e1370fb84c9a3b7d9e52b6"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_classroom_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_classroom",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:45:57.147334+00:00",
+        "level": "native",
+        "log": "native_classroom-compose-1789951557143828468.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "compose",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:45:57.143825+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "0e154f70eac9e382a865f01ae8b8b054237b6c492a7aeb173dc1b5b0bfe99669"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_classroom_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_classroom",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:48:00.498197+00:00",
+        "level": "native",
+        "log": "native_classroom-package-1789951680495975558.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "package",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:48:00.495973+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "2fea43e2415976c6702f0f029039b5683927c3a371a2153d409d9ddd3410f7ad"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_dossier_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_dossier",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:45:57.155148+00:00",
+        "level": "native",
+        "log": "native_dossier-compose-1789951557147949899.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "compose",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:45:57.147947+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "efbd49db957de7edf46017cfc7a34168c0f6573210951be2fa4a2449214ecda8"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_dossier_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_dossier",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:48:00.501168+00:00",
+        "level": "native",
+        "log": "native_dossier-package-1789951680498665161.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "package",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:48:00.498662+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "452736ac096306afc5ab86b45e1156e1dec2c8552b44d2dd91b780da1185579b"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_tutorial_learning_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_learning",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:45:57.143283+00:00",
+        "level": "native",
+        "log": "native_learning-compose-1789951557133476826.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "compose",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:45:57.133473+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "274a6677995e888b92d2abe6a43cb7283cfc5b2701a16cf307c3e649b100c3dd"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_tutorial_learning_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_learning",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:48:00.495456+00:00",
+        "level": "native",
+        "log": "native_learning-package-1789951680493031636.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "package",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:48:00.493028+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "33fe18395dd588e7d74a16faa6dbac2b9fb1e9a6451eaeff12c56eb132cbe3e1"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_suite_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_suite",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:45:57.132564+00:00",
+        "level": "native",
+        "log": "native_suite-compose-1789951557129582173.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "compose",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:45:57.129576+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "18b90728885602d351a4adf2f30e87d41de69b601208de48abb9253307c3f440"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_suite_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_suite",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:48:00.492534+00:00",
+        "level": "native",
+        "log": "native_suite-package-1789951680489652607.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "package",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:48:00.489649+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "9199575367eff3d3669d959c7182309e945c6bbf3e6acb23ad0fe8cb5e807cfe"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_workspace_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_workspace",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:45:57.125114+00:00",
+        "level": "native",
+        "log": "native_workspace-compose-1789951557109661871.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "compose",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:45:57.109640+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "15445396be185452937ae60ae974dfd64830f85204156de3b2be93acea183746"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "tests/upgrade/test_workspace_native.py",
+          "--require-binary"
+        ],
+        "artifacts": {},
+        "check": "native_workspace",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": -1,
+        "finished_at": "2026-09-21T00:48:00.489182+00:00",
+        "level": "native",
+        "log": "native_workspace-package-1789951680486256863.log",
+        "log_sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+        "profile": "package",
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:48:00.486253+00:00",
+        "status": "BLOCKED"
+      },
+      "log_utf8": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.\n",
+      "receipt_sha256": "3fd0fead25c3cf1f7e37088bbff8254091eb5918d4531c848443b56d67c457b1"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/upgrade",
+          "-p",
+          "test_semantic_twin*.py"
+        ],
+        "artifacts": {},
+        "check": "semantic_twin",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 122
+        },
+        "exit_code": 0,
+        "finished_at": "2026-09-21T00:47:56.351581+00:00",
+        "level": "source",
+        "log": "semantic_twin-package-1789951646283477248.log",
+        "log_sha256": "42bcdf398e16132d32b6a18032339a2d1cf115a82ae9a1297fb8f712fd2011ff",
+        "profile": "package",
+        "reason": "",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:47:26.283473+00:00",
+        "status": "PASS"
+      },
+      "log_utf8": "..........................................................................................................................\n----------------------------------------------------------------------\nRan 122 tests in 29.619s\n\nOK\n",
+      "receipt_sha256": "1038d19c50dab0caf8e1202456d1336ccf52969fea7dbf0d561175583f3da90e"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "node",
+          "--test",
+          "--test-reporter=tap",
+          "tests/upgrade/blueprint-client.test.mjs",
+          "tests/upgrade/blueprint-saved-client.test.mjs",
+          "tests/upgrade/blueprint-system.test.mjs",
+          "tests/upgrade/build.test.mjs",
+          "tests/upgrade/business-client.test.mjs",
+          "tests/upgrade/business-execution.test.mjs",
+          "tests/upgrade/business-learning.test.mjs",
+          "tests/upgrade/classroom-client.test.mjs",
+          "tests/upgrade/classroom-system.test.mjs",
+          "tests/upgrade/decision-runtime.test.mjs",
+          "tests/upgrade/discord-catalogue.test.mjs",
+          "tests/upgrade/dossier-client.test.mjs",
+          "tests/upgrade/dossier-system.test.mjs",
+          "tests/upgrade/editorial-frontpage.test.mjs",
+          "tests/upgrade/government-learning.test.mjs",
+          "tests/upgrade/knowledge-client.test.mjs",
+          "tests/upgrade/knowledge-system.test.mjs",
+          "tests/upgrade/mission-research.test.mjs",
+          "tests/upgrade/mission-system.test.mjs",
+          "tests/upgrade/motion-system.test.mjs",
+          "tests/upgrade/operator-client.test.mjs",
+          "tests/upgrade/operator-system.test.mjs",
+          "tests/upgrade/pocketbase-metrics.test.mjs",
+          "tests/upgrade/policy-intelligence.test.mjs",
+          "tests/upgrade/research-client.test.mjs",
+          "tests/upgrade/signal-mission.test.mjs",
+          "tests/upgrade/source-checker.test.mjs",
+          "tests/upgrade/sprint-integrity.test.mjs",
+          "tests/upgrade/staging-contract.test.mjs",
+          "tests/upgrade/suite-client.test.mjs",
+          "tests/upgrade/suite-system.test.mjs",
+          "tests/upgrade/tutorial-learning-client.test.mjs",
+          "tests/upgrade/tutorial-learning-system.test.mjs",
+          "tests/upgrade/work-history.test.mjs",
+          "tests/upgrade/workflow-client.test.mjs",
+          "tests/upgrade/workflow-runs.test.mjs",
+          "tests/upgrade/workspace-administration.test.mjs",
+          "tests/upgrade/workspace-assistant.test.mjs",
+          "tests/upgrade/workspace-community.test.mjs",
+          "tests/upgrade/workspace-control-client.test.mjs",
+          "tests/upgrade/workspace-integration.test.mjs",
+          "tests/upgrade/workspace-rooms.test.mjs",
+          "tests/upgrade/workspace-summary.test.mjs"
+        ],
+        "artifacts": {},
+        "check": "source_node",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 488
+        },
+        "exit_code": 0,
+        "finished_at": "2026-09-21T00:46:20.241693+00:00",
+        "level": "source",
+        "log": "source_node-package-1789951558536268416.log",
+        "log_sha256": "11519fb761429193e0b62f6caa40bfa1de4b8d56f54de74034aad7a5438a5579",
+        "profile": "package",
+        "reason": "",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:45:58.536263+00:00",
+        "status": "PASS"
+      },
+      "log_utf8": "TAP version 13\n# Subtest: PDF client reaches authenticated pipeline and retains review plan and decision provenance\nok 1 - PDF client reaches authenticated pipeline and retains review plan and decision provenance\n  ---\n  duration_ms: 943.89575\n  type: 'test'\n  ...\n# Subtest: client declines demo, account changes and workspace changes without exposing results\nok 2 - client declines demo, account changes and workspace changes without exposing results\n  ---\n  duration_ms: 2.973194\n  type: 'test'\n  ...\n# Subtest: late file reads and late analysis responses are discarded after scope changes\nok 3 - late file reads and late analysis responses are discarded after scope changes\n  ---\n  duration_ms: 3.802163\n  type: 'test'\n  ...\n# Subtest: duplicate in-flight analysis is prevented and malformed or oversized files do not send\nok 4 - duplicate in-flight analysis is prevented and malformed or oversized files do not send\n  ---\n  duration_ms: 16.676143\n  type: 'test'\n  ...\n# Subtest: truncated files and processor failures remain visible failures\nok 5 - truncated files and processor failures remain visible failures\n  ---\n  duration_ms: 4.98143\n  type: 'test'\n  ...\n# Subtest: malformed or foreign responses cannot become a review plan\nok 6 - malformed or foreign responses cannot become a review plan\n  ---\n  duration_ms: 26.632706\n  type: 'test'\n  ...\n# Subtest: JSON export retains provenance and revokes its temporary object URL\nok 7 - JSON export retains provenance and revokes its temporary object URL\n  ---\n  duration_ms: 14.576202\n  type: 'test'\n  ...\n# Subtest: client uploads one PDF, lists scoped summaries and retrieves structured requirements\nok 8 - client uploads one PDF, lists scoped summaries and retrieves structured requirements\n  ---\n  duration_ms: 106.748835\n  type: 'test'\n  ...\n# Subtest: lost upload responses retry the same hash, bytes and key without duplicate storage\nok 9 - lost upload responses retry the same hash, bytes and key without duplicate storage\n  ---\n  duration_ms: 32.459791\n  type: 'test'\n  ...\n# Subtest: account and workspace changes invalidate reads, uploads and delayed receipts\nok 10 - account and workspace changes invalidate reads, uploads and delayed receipts\n  ---\n  duration_ms: 83.181779\n  type: 'test'\n  ...\n# Subtest: unsafe input, missing secure hashing and concurrent uploads never issue extra writes\nok 11 - unsafe input, missing secure hashing and concurrent uploads never issue extra writes\n  ---\n  duration_ms: 103.41294\n  type: 'test'\n  ...\n# Subtest: retry and cancellation reuse research commands and reject stale state\nok 12 - retry and cancellation reuse research commands and reject stale state\n  ---\n  duration_ms: 35.973072\n  type: 'test'\n  ...\n# Subtest: malformed, foreign and authority-forged responses are rejected\nok 13 - malformed, foreign and authority-forged responses are rejected\n  ---\n  duration_ms: 342.10702\n  type: 'test'\n  ...\n# Subtest: proposals preserve requirements and provenance without creating missions or approval fields\nok 14 - proposals preserve requirements and provenance without creating missions or approval fields\n  ---\n  duration_ms: 45.831544\n  type: 'test'\n  ...\n# Subtest: original PDF download uses the existing protected research file client\nok 15 - original PDF download uses the existing protected research file client\n  ---\n  duration_ms: 39.399675\n  type: 'test'\n  ...\n# Subtest: extractor export preserves the compiler input without mutating saved observations\nok 16 - extractor export preserves the compiler input without mutating saved observations\n  ---\n  duration_ms: 62.675434\n  type: 'test'\n  ...\n# Subtest: migration is replayable, native APIs stay locked and rollback retains PDFs and results\nok 17 - migration is replayable, native APIs stay locked and rollback retains PDFs and results\n  ---\n  duration_ms: 78.94993\n  type: 'test'\n  ...\n# Subtest: blueprint rollback does not stall ordinary mission research queue work\nok 18 - blueprint rollback does not stall ordinary mission research queue work\n  ---\n  duration_ms: 41.875195\n  type: 'test'\n  ...\n# Subtest: upload rejects unauthenticated viewers, foreign workspaces, bad names, multiple and oversized files\nok 19 - upload rejects unauthenticated viewers, foreign workspaces, bad names, multiple and oversized files\n  ---\n  duration_ms: 31.364984\n  type: 'test'\n  ...\n# Subtest: multipart retries retain one upload and submission and reject a changed source\nok 20 - multipart retries retain one upload and submission and reject a changed source\n  ---\n  duration_ms: 52.504573\n  type: 'test'\n  ...\n# Subtest: missing capabilities retain input and retry uses the current configured worker\nok 21 - missing capabilities retain input and retry uses the current configured worker\n  ---\n  duration_ms: 36.707097\n  type: 'test'\n  ...\n# Subtest: queued blueprint uses the shared worker lease and persists structured results atomically\nok 22 - queued blueprint uses the shared worker lease and persists structured results atomically\n  ---\n  duration_ms: 37.955158\n  type: 'test'\n  ...\n# Subtest: source hashes, known references, score bounds and A0 non-verification are enforced at storage\nok 23 - source hashes, known references, score bounds and A0 non-verification are enforced at storage\n  ---\n  duration_ms: 368.092603\n  type: 'test'\n  ...\n# Subtest: revoked owners, stale leases, disabled bindings and cancelled jobs cannot save results\nok 24 - revoked owners, stale leases, disabled bindings and cancelled jobs cannot save results\n  ---\n  duration_ms: 186.110433\n  type: 'test'\n  ...\n# Subtest: protected PDFs require current workspace membership or the existing active worker lease\nok 25 - protected PDFs require current workspace membership or the existing active worker lease\n  ---\n  duration_ms: 105.652667\n  type: 'test'\n  ...\n# Subtest: flat fallback remains available without invented blueprint or evaluation\nok 26 - flat fallback remains available without invented blueprint or evaluation\n  ---\n  duration_ms: 105.876721\n  type: 'test'\n  ...\n# Subtest: ordinary research keeps mission requirements, small results and its own list\nok 27 - ordinary research keeps mission requirements, small results and its own list\n  ---\n  duration_ms: 41.29238\n  type: 'test'\n  ...\n# Subtest: routes bind native auth, bounded multipart, no-store and asynchronous receipts\nok 28 - routes bind native auth, bounded multipart, no-store and asynchronous receipts\n  ---\n  duration_ms: 1.198301\n  type: 'test'\n  ...\n# Subtest: one release is stable across build and CLI consumers\nok 29 - one release is stable across build and CLI consumers\n  ---\n  duration_ms: 580.585785\n  type: 'test'\n  ...\n# Subtest: release reads the source version and rejects missing or malformed identity\nok 30 - release reads the source version and rejects missing or malformed identity\n  ---\n  duration_ms: 7.191504\n  type: 'test'\n  ...\n# Subtest: crawler resources contain every public route and exclude private pages\nok 31 - crawler resources contain every public route and exclude private pages\n  ---\n  duration_ms: 4.644346\n  type: 'test'\n  ...\n# Subtest: social crawlers get route-specific metadata without executing the app\nok 32 - social crawlers get route-specific metadata without executing the app\n  ---\n  duration_ms: 30.181391\n  type: 'test'\n  ...\n# Subtest: GitHub export appends the same release without replacing other environment fields\nok 33 - GitHub export appends the same release without replacing other environment fields\n  ---\n  duration_ms: 876.042921\n  type: 'test'\n  ...\n# Subtest: native business reads retain explicit pagination and commands retain retry identity\nok 34 - native business reads retain explicit pagination and commands retain retry identity\n  ---\n  duration_ms: 2.222983\n  type: 'test'\n  ...\n# Subtest: business clients suppress results and failures after account or workspace changes\nok 35 - business clients suppress results and failures after account or workspace changes\n  ---\n  duration_ms: 0.597307\n  type: 'test'\n  ...\n# Subtest: foreign or malformed receipt pages cannot be rendered as current workspace history\nok 36 - foreign or malformed receipt pages cannot be rendered as current workspace history\n  ---\n  duration_ms: 0.435391\n  type: 'test'\n  ...\n# Subtest: replay preserves uncertain work and actual timestamps without claiming independent verification\nok 37 - replay preserves uncertain work and actual timestamps without claiming independent verification\n  ---\n  duration_ms: 36.666821\n  type: 'test'\n  ...\n# Subtest: ERP action writes one task, evidence and run event under the frozen approval\nok 38 - ERP action writes one task, evidence and run event under the frozen approval\n  ---\n  duration_ms: 211.321201\n  type: 'test'\n  ...\n# Subtest: business effects roll back when their command receipt cannot be stored\nok 39 - business effects roll back when their command receipt cannot be stored\n  ---\n  duration_ms: 51.887613\n  type: 'test'\n  ...\n# Subtest: native receipts freeze the declared release and changed deployments cannot dispatch old approvals\nok 40 - native receipts freeze the declared release and changed deployments cannot dispatch old approvals\n  ---\n  duration_ms: 149.6953\n  type: 'test'\n  ...\n# Subtest: absent release identity stays unmeasured and malformed declarations stop effects\nok 41 - absent release identity stays unmeasured and malformed declarations stop effects\n  ---\n  duration_ms: 352.089732\n  type: 'test'\n  ...\n# Subtest: foreign ERP links and manual substitutes for executable steps are denied\nok 42 - foreign ERP links and manual substitutes for executable steps are denied\n  ---\n  duration_ms: 84.041794\n  type: 'test'\n  ...\n# Subtest: worker registration, current roles, approval and connector revision bind dispatch\nok 43 - worker registration, current roles, approval and connector revision bind dispatch\n  ---\n  duration_ms: 95.921723\n  type: 'test'\n  ...\n# Subtest: external result binds exact effect and cannot be replaced or delivered twice\nok 44 - external result binds exact effect and cannot be replaced or delivered twice\n  ---\n  duration_ms: 111.101293\n  type: 'test'\n  ...\n# Subtest: timeouts retain HOLD and never make dispatched work claimable again\nok 45 - timeouts retain HOLD and never make dispatched work claimable again\n  ---\n  duration_ms: 63.287477\n  type: 'test'\n  ...\n# Subtest: late results after cancellation retain evidence without advancing the cancelled run\nok 46 - late results after cancellation retain evidence without advancing the cancelled run\n  ---\n  duration_ms: 56.185365\n  type: 'test'\n  ...\n# Subtest: expired claims can recover before dispatch with a bounded attempt count\nok 47 - expired claims can recover before dispatch with a bounded attempt count\n  ---\n  duration_ms: 111.066267\n  type: 'test'\n  ...\n# Subtest: revoked submitters, viewers, foreign accounts and stale health cannot dispatch\nok 48 - revoked submitters, viewers, foreign accounts and stale health cannot dispatch\n  ---\n  duration_ms: 70.078625\n  type: 'test'\n  ...\n# Subtest: source captures retain provenance, reject altered bytes and deduplicate identical observations\nok 49 - source captures retain provenance, reject altered bytes and deduplicate identical observations\n  ---\n  duration_ms: 115.754573\n  type: 'test'\n  ...\n# Subtest: connector observations need matching worker, revision, state, freshness and receipt\nok 50 - connector observations need matching worker, revision, state, freshness and receipt\n  ---\n  duration_ms: 48.806158\n  type: 'test'\n  ...\n# Subtest: worker polling excludes terminal history and other bindings before bounded pagination\nok 51 - worker polling excludes terminal history and other bindings before bounded pagination\n  ---\n  duration_ms: 35.2143\n  type: 'test'\n  ...\n# Subtest: retained rollback disables execution without removing receipts or task links\nok 52 - retained rollback disables execution without removing receipts or task links\n  ---\n  duration_ms: 46.32267\n  type: 'test'\n  ...\n# Subtest: imported executable actions cannot contain arbitrary endpoints or unsupported fields\nok 53 - imported executable actions cannot contain arbitrary endpoints or unsupported fields\n  ---\n  duration_ms: 39.181651\n  type: 'test'\n  ...\n# Subtest: execution receipts respect stricter native record visibility including retry responses\nok 54 - execution receipts respect stricter native record visibility including retry responses\n  ---\n  duration_ms: 48.383982\n  type: 'test'\n  ...\n# Subtest: provider evidence and linked verified missions cannot be deleted or rewritten behind a receipt\nok 55 - provider evidence and linked verified missions cannot be deleted or rewritten behind a receipt\n  ---\n  duration_ms: 52.696313\n  type: 'test'\n  ...\n# Subtest: provenance migrations reject incompatible existing relation targets and field limits\nok 56 - provenance migrations reject incompatible existing relation targets and field limits\n  ---\n  duration_ms: 93.161952\n  type: 'test'\n  ...\n# Subtest: all 25 tutorials have complete renderable instruction, distinct exercises and answer explanations\nok 57 - all 25 tutorials have complete renderable instruction, distinct exercises and answer explanations\n  ---\n  duration_ms: 8.186335\n  type: 'test'\n  ...\n# Subtest: reader validation rejects malformed, mixed-type, future and unsafe-reference lesson bodies\nok 58 - reader validation rejects malformed, mixed-type, future and unsafe-reference lesson bodies\n  ---\n  duration_ms: 0.48597\n  type: 'test'\n  ...\n# Subtest: catalogue previews never invent persistence IDs and retain legacy progress identities\nok 59 - catalogue previews never invent persistence IDs and retain legacy progress identities\n  ---\n  duration_ms: 1.112762\n  type: 'test'\n  ...\n# Subtest: saved lessons are authoritative and malformed edited bodies are not silently replaced\nok 60 - saved lessons are authoritative and malformed edited bodies are not silently replaced\n  ---\n  duration_ms: 0.840555\n  type: 'test'\n  ...\n# Subtest: progress selection keeps completion even when a newer duplicate row is incomplete\nok 61 - progress selection keeps completion even when a newer duplicate row is incomplete\n  ---\n  duration_ms: 30.275614\n  type: 'test'\n  ...\n# Subtest: ERP dates and task views distinguish overdue work from missing, malformed and completed dates\nok 62 - ERP dates and task views distinguish overdue work from missing, malformed and completed dates\n  ---\n  duration_ms: 3.030956\n  type: 'test'\n  ...\n# Subtest: content outlines use explicit inputs and previews keep markup as non-executable text\nok 63 - content outlines use explicit inputs and previews keep markup as non-executable text\n  ---\n  duration_ms: 3.487017\n  type: 'test'\n  ...\n# Subtest: form success requires returned fields, including fields an older backend might silently drop\nok 64 - form success requires returned fields, including fields an older backend might silently drop\n  ---\n  duration_ms: 0.345313\n  type: 'test'\n  ...\n# Subtest: migration hydrates six legacy identities and adds nineteen lessons without changing access rules\nok 65 - migration hydrates six legacy identities and adds nineteen lessons without changing access rules\n  ---\n  duration_ms: 12.089082\n  type: 'test'\n  ...\n# Subtest: migration replay preserves edited bodies; down retains tutorial IDs and all learning progress\nok 66 - migration replay preserves edited bodies; down retains tutorial IDs and all learning progress\n  ---\n  duration_ms: 23.504726\n  type: 'test'\n  ...\n# Subtest: migration stops on ambiguous or colliding seed identities instead of overwriting content\nok 67 - migration stops on ambiguous or colliding seed identities instead of overwriting content\n  ---\n  duration_ms: 37.019022\n  type: 'test'\n  ...\n# Subtest: ERP writes validate same-workspace readable relations and current roles\nok 68 - ERP writes validate same-workspace readable relations and current roles\n  ---\n  duration_ms: 60.529679\n  type: 'test'\n  ...\n# Subtest: ERP objectives and contacts preserve original ownership and reject invalid objective states\nok 69 - ERP objectives and contacts preserve original ownership and reject invalid objective states\n  ---\n  duration_ms: 5.845084\n  type: 'test'\n  ...\n# Subtest: content must begin as a draft and requires an audience and body before review\nok 70 - content must begin as a draft and requires an audience and body before review\n  ---\n  duration_ms: 7.527144\n  type: 'test'\n  ...\n# Subtest: content approval requires the current approver role, four real checks and a note; receipt is server-attributed\nok 71 - content approval requires the current approver role, four real checks and a note; receipt is server-attributed\n  ---\n  duration_ms: 10.51328\n  type: 'test'\n  ...\n# Subtest: approved copy cannot change silently and returning to draft clears approval and publication fields\nok 72 - approved copy cannot change silently and returning to draft clears approval and publication fields\n  ---\n  duration_ms: 6.528006\n  type: 'test'\n  ...\n# Subtest: a planned date is not publication; a checked HTTPS URL and current authority are required for a receipt\nok 73 - a planned date is not publication; a checked HTTPS URL and current authority are required for a receipt\n  ---\n  duration_ms: 11.673404\n  type: 'test'\n  ...\n# Subtest: legacy planned records cannot forge a review and only drafts can be deleted\nok 74 - legacy planned records cannot forge a review and only drafts can be deleted\n  ---\n  duration_ms: 7.351095\n  type: 'test'\n  ...\n# Subtest: progress remains with its account and lesson, and review cannot downgrade completion\nok 75 - progress remains with its account and lesson, and review cannot downgrade completion\n  ---\n  duration_ms: 10.169139\n  type: 'test'\n  ...\n# Subtest: native request registrations resolve their policy inside each isolated callback\nok 76 - native request registrations resolve their policy inside each isolated callback\n  ---\n  duration_ms: 2.04225\n  type: 'test'\n  ...\n# Subtest: actual browser and backend sources agree on scheduling, attendance, lessons, discussion and ended history\nok 77 - actual browser and backend sources agree on scheduling, attendance, lessons, discussion and ended history\n  ---\n  duration_ms: 214.723629\n  type: 'test'\n  ...\n# Subtest: lost replies keep immutable intent and recover a single create, start and message\nok 78 - lost replies keep immutable intent and recover a single create, start and message\n  ---\n  duration_ms: 41.060711\n  type: 'test'\n  ...\n# Subtest: a malformed or foreign receipt remains uncertain and a valid replay resolves it\nok 79 - a malformed or foreign receipt remains uncertain and a valid replay resolves it\n  ---\n  duration_ms: 300.960402\n  type: 'test'\n  ...\n# Subtest: current revisions and revoked permissions reject a save without trapping later corrected work\nok 80 - current revisions and revoked permissions reject a save without trapping later corrected work\n  ---\n  duration_ms: 32.612889\n  type: 'test'\n  ...\n# Subtest: account, workspace and unmount changes discard late reads, writes and failures\nok 81 - account, workspace and unmount changes discard late reads, writes and failures\n  ---\n  duration_ms: 611.489922\n  type: 'test'\n  ...\n# Subtest: incomplete, foreign and inconsistent room reads never become successful empty views\nok 82 - incomplete, foreign and inconsistent room reads never become successful empty views\n  ---\n  duration_ms: 111.45056\n  type: 'test'\n  ...\n# Subtest: overlapping commands and heartbeats are bounded and cannot duplicate accepted work\nok 83 - overlapping commands and heartbeats are bounded and cannot duplicate accepted work\n  ---\n  duration_ms: 62.407283\n  type: 'test'\n  ...\n# Subtest: invalid actions, missing secure retry IDs and demo mode make no requests\nok 84 - invalid actions, missing secure retry IDs and demo mode make no requests\n  ---\n  duration_ms: 220.153155\n  type: 'test'\n  ...\n# Subtest: classroom links survive local authentication while external, encoded and malformed redirects are rejected\nok 85 - classroom links survive local authentication while external, encoded and malformed redirects are rejected\n  ---\n  duration_ms: 0.938396\n  type: 'test'\n  ...\n# Subtest: room, workspace and personal lesson identifiers stay out of classroom telemetry locations\nok 86 - room, workspace and personal lesson identifiers stay out of classroom telemetry locations\n  ---\n  duration_ms: 2.403612\n  type: 'test'\n  ...\n# Subtest: host and learner share the selected lesson, discussion and terminal session history\nok 87 - host and learner share the selected lesson, discussion and terminal session history\n  ---\n  duration_ms: 223.500257\n  type: 'test'\n  ...\n# Subtest: current membership and host ownership govern reads, writes and saved receipt recovery\nok 88 - current membership and host ownership govern reads, writes and saved receipt recovery\n  ---\n  duration_ms: 43.872561\n  type: 'test'\n  ...\n# Subtest: lost create, start and message responses replay once without reviving ended rooms\nok 89 - lost create, start and message responses replay once without reviving ended rooms\n  ---\n  duration_ms: 35.243168\n  type: 'test'\n  ...\n# Subtest: receipt failure rolls room, attendance and discussion writes back together\nok 90 - receipt failure rolls room, attendance and discussion writes back together\n  ---\n  duration_ms: 25.531638\n  type: 'test'\n  ...\n# Subtest: attendance expires and stale heartbeat or leave cannot overwrite a later join\nok 91 - attendance expires and stale heartbeat or leave cannot overwrite a later join\n  ---\n  duration_ms: 55.683714\n  type: 'test'\n  ...\n# Subtest: bad inputs and stale hosts cannot fabricate schedules, sections or participant authority\nok 92 - bad inputs and stale hosts cannot fabricate schedules, sections or participant authority\n  ---\n  duration_ms: 79.427566\n  type: 'test'\n  ...\n# Subtest: list and discussion pagination are bounded and filter state without claiming unread pages are empty\nok 93 - list and discussion pagination are bounded and filter state without claiming unread pages are empty\n  ---\n  duration_ms: 172.880979\n  type: 'test'\n  ...\n# Subtest: capacity counts only recent joined accounts and rejects foreign presence claims\nok 94 - capacity counts only recent joined accounts and rejects foreign presence claims\n  ---\n  duration_ms: 96.040936\n  type: 'test'\n  ...\n# Subtest: migration replays and down retains history while disabling every classroom route\nok 95 - migration replays and down retains history while disabling every classroom route\n  ---\n  duration_ms: 55.521186\n  type: 'test'\n  ...\n# Subtest: native route callbacks load policy in isolation and require bounded authenticated private requests\nok 96 - native route callbacks load policy in isolation and require bounded authenticated private requests\n  ---\n  duration_ms: 8.339662\n  type: 'test'\n  ...\n# Subtest: saved uploads and immediate analysis register distinct authenticated routes together\nok 97 - saved uploads and immediate analysis register distinct authenticated routes together\n  ---\n  duration_ms: 3.877417\n  type: 'test'\n  ...\n# Subtest: native account and current workspace membership precede local processing\nok 98 - native account and current workspace membership precede local processing\n  ---\n  duration_ms: 6.04991\n  type: 'test'\n  ...\n# Subtest: route invokes real Python BDR and stores state, questions, scores and a stable decision receipt\nok 99 - route invokes real Python BDR and stores state, questions, scores and a stable decision receipt\n  ---\n  duration_ms: 654.864857\n  type: 'test'\n  ...\n# Subtest: same trace retry reuses the persisted receipt and conflicting input is rejected\nok 100 - same trace retry reuses the persisted receipt and conflicting input is rejected\n  ---\n  duration_ms: 572.362372\n  type: 'test'\n  ...\n# Subtest: decisions cannot be read across workspaces or by a different account\nok 101 - decisions cannot be read across workspaces or by a different account\n  ---\n  duration_ms: 458.590792\n  type: 'test'\n  ...\n# Subtest: membership is rechecked after Python returns and failed storage does not report success\nok 102 - membership is rechecked after Python returns and failed storage does not report success\n  ---\n  duration_ms: 899.007064\n  type: 'test'\n  ...\n# Subtest: Python routing respects caller authority and never mints verification\nok 103 - Python routing respects caller authority and never mints verification\n  ---\n  duration_ms: 1135.955246\n  type: 'test'\n  ...\n# Subtest: invalid input fails at the application or Python boundary without a receipt\nok 104 - invalid input fails at the application or Python boundary without a receipt\n  ---\n  duration_ms: 1589.664093\n  type: 'test'\n  ...\n# Subtest: processor errors, unsafe local ports and missing migration fail closed\nok 105 - processor errors, unsafe local ports and missing migration fail closed\n  ---\n  duration_ms: 24.074624\n  type: 'test'\n  ...\n# Subtest: forged verification, authority, trace and confidence from a processor are rejected\nok 106 - forged verification, authority, trace and confidence from a processor are rejected\n  ---\n  duration_ms: 567.737862\n  type: 'test'\n  ...\n# Subtest: layout-double blueprint results persist real BDR evaluations and preserve prompt provenance\nok 107 - layout-double blueprint results persist real BDR evaluations and preserve prompt provenance\n  ---\n  duration_ms: 474.840552\n  type: 'test'\n  ...\n# Subtest: blueprint input, result authority and per-requirement confidence are fenced\nok 108 - blueprint input, result authority and per-requirement confidence are fenced\n  ---\n  duration_ms: 11.029904\n  type: 'test'\n  ...\n# Subtest: decision migration is locked and idempotent; rollback retains receipts and disables commands\nok 109 - decision migration is locked and idempotent; rollback retains receipts and disables commands\n  ---\n  duration_ms: 4.558916\n  type: 'test'\n  ...\n# Subtest: migration never overwrites custom rules, schema or indexes\nok 110 - migration never overwrites custom rules, schema or indexes\n  ---\n  duration_ms: 6.284486\n  type: 'test'\n  ...\n# Subtest: community projection shares all 33 lessons and the exact public page/release identity\nok 111 - community projection shares all 33 lessons and the exact public page/release identity\n  ---\n  duration_ms: 57.742759\n  type: 'test'\n  ...\n# Subtest: public projection drops added migration, user and internal nested metadata\nok 112 - public projection drops added migration, user and internal nested metadata\n  ---\n  duration_ms: 4.858711\n  type: 'test'\n  ...\n# Subtest: malformed and duplicate lesson data cannot be published as a working catalogue\nok 113 - malformed and duplicate lesson data cannot be published as a working catalogue\n  ---\n  duration_ms: 7.431517\n  type: 'test'\n  ...\n# Subtest: private and malformed page routes and mismatched release identity are rejected\nok 114 - private and malformed page routes and mismatched release identity are rejected\n  ---\n  duration_ms: 0.59158\n  type: 'test'\n  ...\n# Subtest: the real generator writes a consumable artifact into the build directory\nok 115 - the real generator writes a consumable artifact into the build directory\n  ---\n  duration_ms: 11.752836\n  type: 'test'\n  ...\n# Subtest: source-connected browser flow creates, searches, corrects and forgets one personal entity\nok 116 - source-connected browser flow creates, searches, corrects and forgets one personal entity\n  ---\n  duration_ms: 111.440811\n  type: 'test'\n  ...\n# Subtest: lost accepted reply preserves immutable retry intent and does not duplicate data\nok 117 - lost accepted reply preserves immutable retry intent and does not duplicate data\n  ---\n  duration_ms: 35.642697\n  type: 'test'\n  ...\n# Subtest: accepted writes and reads finishing after account changes never reach the next account\nok 118 - accepted writes and reads finishing after account changes never reach the next account\n  ---\n  duration_ms: 168.894125\n  type: 'test'\n  ...\n# Subtest: scope disposal fences in-flight responses and clears old intent while allowing a new mount\nok 119 - scope disposal fences in-flight responses and clears old intent while allowing a new mount\n  ---\n  duration_ms: 57.709654\n  type: 'test'\n  ...\n# Subtest: malformed receipt remains recoverable while forged cross-account reads are rejected\nok 120 - malformed receipt remains recoverable while forged cross-account reads are rejected\n  ---\n  duration_ms: 27.489441\n  type: 'test'\n  ...\n# Subtest: current revision failures keep the saved record and do not trap the client in recovery\nok 121 - current revision failures keep the saved record and do not trap the client in recovery\n  ---\n  duration_ms: 29.865614\n  type: 'test'\n  ...\n# Subtest: unavailable encryption fails visibly and does not become an empty successful dossier\nok 122 - unavailable encryption fails visibly and does not become an empty successful dossier\n  ---\n  duration_ms: 25.220924\n  type: 'test'\n  ...\n# Subtest: invalid commands, cyclic input, unavailable request IDs and demonstration mode cannot write\nok 123 - invalid commands, cyclic input, unavailable request IDs and demonstration mode cannot write\n  ---\n  duration_ms: 135.286367\n  type: 'test'\n  ...\n# Subtest: browser rejects unsafe source links and incomplete private result shapes\nok 124 - browser rejects unsafe source links and incomplete private result shapes\n  ---\n  duration_ms: 30.913746\n  type: 'test'\n  ...\n# Subtest: Discord identity lookup uses native ExternalAuth models without querying a synthetic record collection\nok 125 - Discord identity lookup uses native ExternalAuth models without querying a synthetic record collection\n  ---\n  duration_ms: 61.609333\n  type: 'test'\n  ...\n# Subtest: first explicit save creates one personal dossier and stores no entity or note plaintext\nok 126 - first explicit save creates one personal dossier and stores no entity or note plaintext\n  ---\n  duration_ms: 43.965458\n  type: 'test'\n  ...\n# Subtest: admins, viewers and unrelated members cannot read or mutate another personal dossier\nok 127 - admins, viewers and unrelated members cannot read or mutate another personal dossier\n  ---\n  duration_ms: 54.538781\n  type: 'test'\n  ...\n# Subtest: personal content survives workspace changes while Discord checks current membership and OAuth on every read\nok 128 - personal content survives workspace changes while Discord checks current membership and OAuth on every read\n  ---\n  duration_ms: 52.806965\n  type: 'test'\n  ...\n# Subtest: disabled integrations and relinked Discord identities cannot recall the previous account\nok 129 - disabled integrations and relinked Discord identities cannot recall the previous account\n  ---\n  duration_ms: 46.366297\n  type: 'test'\n  ...\n# Subtest: one shared record supports Discord additions, website corrections and preserved provenance\nok 130 - one shared record supports Discord additions, website corrections and preserved provenance\n  ---\n  duration_ms: 57.534283\n  type: 'test'\n  ...\n# Subtest: bounded recall searches aliases, tags and notes with explicit pagination and matching excerpts\nok 131 - bounded recall searches aliases, tags and notes with explicit pagination and matching excerpts\n  ---\n  duration_ms: 90.61246\n  type: 'test'\n  ...\n# Subtest: same-name entities remain distinct and label corrections retain the entity identity\nok 132 - same-name entities remain distinct and label corrections retain the entity identity\n  ---\n  duration_ms: 37.235761\n  type: 'test'\n  ...\n# Subtest: lost accepted writes replay once and stale edits conflict without replacing content\nok 133 - lost accepted writes replay once and stale edits conflict without replacing content\n  ---\n  duration_ms: 35.142914\n  type: 'test'\n  ...\n# Subtest: forgetting removes content and an old accepted create or note retry cannot resurrect it\nok 134 - forgetting removes content and an old accepted create or note retry cannot resurrect it\n  ---\n  duration_ms: 47.082898\n  type: 'test'\n  ...\n# Subtest: receipt storage failure rolls back both first saves and deletions atomically\nok 135 - receipt storage failure rolls back both first saves and deletions atomically\n  ---\n  duration_ms: 39.324459\n  type: 'test'\n  ...\n# Subtest: profile changes use the same canonical dossier and revision fences\nok 136 - profile changes use the same canonical dossier and revision fences\n  ---\n  duration_ms: 133.985052\n  type: 'test'\n  ...\n# Subtest: missing, malformed or removed encryption bindings fail closed before any write\nok 137 - missing, malformed or removed encryption bindings fail closed before any write\n  ---\n  duration_ms: 96.23663\n  type: 'test'\n  ...\n# Subtest: historical configured keys read prior records and new saves use the active key\nok 138 - historical configured keys read prior records and new saves use the active key\n  ---\n  duration_ms: 44.25473\n  type: 'test'\n  ...\n# Subtest: tampering, replaying ciphertext at another revision or substituting records is rejected\nok 139 - tampering, replaying ciphertext at another revision or substituting records is rejected\n  ---\n  duration_ms: 244.477137\n  type: 'test'\n  ...\n# Subtest: invalid inputs, unsafe source references and excessive notes do not partially save\nok 140 - invalid inputs, unsafe source references and excessive notes do not partially save\n  ---\n  duration_ms: 84.431427\n  type: 'test'\n  ...\n# Subtest: additive migration replay and rollback retain ciphertext while keeping raw APIs locked\nok 141 - additive migration replay and rollback retain ciphertext while keeping raw APIs locked\n  ---\n  duration_ms: 133.978196\n  type: 'test'\n  ...\n# Subtest: migration refuses incompatible encryption schema or retry indexes before changing other collections\nok 142 - migration refuses incompatible encryption schema or retry indexes before changing other collections\n  ---\n  duration_ms: 81.82763\n  type: 'test'\n  ...\n# Subtest: native route registrations require users auth, bounded POST bodies and no-store responses\nok 143 - native route registrations require users auth, bounded POST bodies and no-store responses\n  ---\n  duration_ms: 1.617494\n  type: 'test'\n  ...\n# Subtest: public reading cites identifiable dated sources and platform choices use real local areas\nok 144 - public reading cites identifiable dated sources and platform choices use real local areas\n  ---\n  duration_ms: 2.122402\n  type: 'test'\n  ...\n# Subtest: completed research stays scoped, preserves review state and links to its internal source desk\nok 145 - completed research stays scoped, preserves review state and links to its internal source desk\n  ---\n  duration_ms: 0.97147\n  type: 'test'\n  ...\n# Subtest: stale research is absent while a read fails, reloads, or switches to demonstration mode\nok 146 - stale research is absent while a read fails, reloads, or switches to demonstration mode\n  ---\n  duration_ms: 0.380569\n  type: 'test'\n  ...\n# Subtest: invalid, missing and future processing dates are never presented as completed news\nok 147 - invalid, missing and future processing dates are never presented as completed news\n  ---\n  duration_ms: 0.242795\n  type: 'test'\n  ...\n# Subtest: duplicate and invalid research IDs, blank titles and unfinished states are excluded\nok 148 - duplicate and invalid research IDs, blank titles and unfinished states are excluded\n  ---\n  duration_ms: 0.268866\n  type: 'test'\n  ...\n# Subtest: research excerpts are bounded plain text and date ties have deterministic order\nok 149 - research excerpts are bounded plain text and date ties have deterministic order\n  ---\n  duration_ms: 15.218096\n  type: 'test'\n  ...\n# Subtest: daily highlights select today only and retain recorded verification distinctions\nok 150 - daily highlights select today only and retain recorded verification distinctions\n  ---\n  duration_ms: 1.192801\n  type: 'test'\n  ...\n# Subtest: old editions and missing or future record times do not turn into today’s highlights\nok 151 - old editions and missing or future record times do not turn into today’s highlights\n  ---\n  duration_ms: 0.305378\n  type: 'test'\n  ...\n# Subtest: partial reads never expose cached unavailable highlights or suppress the readable desks\nok 152 - partial reads never expose cached unavailable highlights or suppress the readable desks\n  ---\n  duration_ms: 0.417816\n  type: 'test'\n  ...\n# Subtest: the newest eligible records lead and publication dates remain local-calendar dates\nok 153 - the newest eligible records lead and publication dates remain local-calendar dates\n  ---\n  duration_ms: 13.331118\n  type: 'test'\n  ...\n# Subtest: reels wrap by stable ID and recover if the selected story disappears\nok 154 - reels wrap by stable ID and recover if the selected story disappears\n  ---\n  duration_ms: 0.328753\n  type: 'test'\n  ...\n# Subtest: empty and short reels contain no buffer duplicates or automatic rotation\nok 155 - empty and short reels contain no buffer duplicates or automatic rotation\n  ---\n  duration_ms: 0.26935\n  type: 'test'\n  ...\n# Subtest: every rotated window exposes exactly its visible cards and hides both transition buffers\nok 156 - every rotated window exposes exactly its visible cards and hides both transition buffers\n  ---\n  duration_ms: 8.014519\n  type: 'test'\n  ...\n# Subtest: invalid or excessive visible counts cannot create unbounded story windows\nok 157 - invalid or excessive visible counts cannot create unbounded story windows\n  ---\n  duration_ms: 0.212987\n  type: 'test'\n  ...\n# Subtest: left and right clocks advance independently and stopping one leaves the other intact\nok 158 - left and right clocks advance independently and stopping one leaves the other intact\n  ---\n  duration_ms: 0.553299\n  type: 'test'\n  ...\n# Subtest: reel timing has a slow minimum and bounded fallback rather than a hot loop\nok 159 - reel timing has a slow minimum and bounded fallback rather than a hot loop\n  ---\n  duration_ms: 0.19926\n  type: 'test'\n  ...\n# Subtest: government starter fills a reviewable plan without granting approval or inventing a baseline\nok 160 - government starter fills a reviewable plan without granting approval or inventing a baseline\n  ---\n  duration_ms: 2.471435\n  type: 'test'\n  ...\n# Subtest: eight substantive government lessons render through the existing curriculum contract\nok 161 - eight substantive government lessons render through the existing curriculum contract\n  ---\n  duration_ms: 1.447883\n  type: 'test'\n  ...\n# Subtest: seed is idempotent, retains edited lessons and preserves progress under down/re-up\nok 162 - seed is idempotent, retains edited lessons and preserves progress under down/re-up\n  ---\n  duration_ms: 63.126345\n  type: 'test'\n  ...\n# Subtest: identity collisions fail the entire seed without replacing existing records\nok 163 - identity collisions fail the entire seed without replacing existing records\n  ---\n  duration_ms: 28.032929\n  type: 'test'\n  ...\n# Subtest: browser assembly uses the authenticated backend with private query bodies and cache-disabled independent requests\nok 164 - browser assembly uses the authenticated backend with private query bodies and cache-disabled independent requests\n  ---\n  duration_ms: 73.803596\n  type: 'test'\n  ...\n# Subtest: scope changes, unauthenticated accounts and demo mode perform no private read\nok 165 - scope changes, unauthenticated accounts and demo mode perform no private read\n  ---\n  duration_ms: 248.466572\n  type: 'test'\n  ...\n# Subtest: out-of-order context responses discard the previous query and late errors\nok 166 - out-of-order context responses discard the previous query and late errors\n  ---\n  duration_ms: 39.394614\n  type: 'test'\n  ...\n# Subtest: account changes during a response suppress the prior account content\nok 167 - account changes during a response suppress the prior account content\n  ---\n  duration_ms: 23.23443\n  type: 'test'\n  ...\n# Subtest: permission loss and missing APIs produce no graph or source content\nok 168 - permission loss and missing APIs produce no graph or source content\n  ---\n  duration_ms: 26.706926\n  type: 'test'\n  ...\n# Subtest: unsupported query budgets and identifiers are rejected before requests\nok 169 - unsupported query budgets and identifiers are rejected before requests\n  ---\n  duration_ms: 26.945163\n  type: 'test'\n  ...\n# Subtest: malformed graphs, foreign scopes, dangling relationships and forged packets never become valid context\nok 170 - malformed graphs, foreign scopes, dangling relationships and forged packets never become valid context\n  ---\n  duration_ms: 31.332384\n  type: 'test'\n  ...\n# Subtest: partial source coverage stays visible and request cancellation is passed to the actual transport\nok 171 - partial source coverage stays visible and request cancellation is passed to the actual transport\n  ---\n  duration_ms: 24.638545\n  type: 'test'\n  ...\n# Subtest: source navigation is restricted to known internal desks and graph neighborhoods retain every displayed endpoint\nok 172 - source navigation is restricted to known internal desks and graph neighborhoods retain every displayed endpoint\n  ---\n  duration_ms: 35.824852\n  type: 'test'\n  ...\n# Subtest: workspace navigation and mission/research entry points reach the lazy knowledge route\nok 173 - workspace navigation and mission/research entry points reach the lazy knowledge route\n  ---\n  duration_ms: 0.976791\n  type: 'test'\n  ...\n# Subtest: automatically categorizes all five source kinds and preserves recorded relationships and provenance\nok 174 - automatically categorizes all five source kinds and preserves recorded relationships and provenance\n  ---\n  duration_ms: 80.022838\n  type: 'test'\n  ...\n# Subtest: anonymous, non-user, foreign and revoked accounts cannot obtain any graph or assembled context\nok 175 - anonymous, non-user, foreign and revoked accounts cannot obtain any graph or assembled context\n  ---\n  duration_ms: 35.025977\n  type: 'test'\n  ...\n# Subtest: native record visibility also protects research and evidence through their parent mission\nok 176 - native record visibility also protects research and evidence through their parent mission\n  ---\n  duration_ms: 33.099494\n  type: 'test'\n  ...\n# Subtest: unpublished, cross-workspace, blueprint and unfinished records never enter the projection\nok 177 - unpublished, cross-workspace, blueprint and unfinished records never enter the projection\n  ---\n  duration_ms: 73.643758\n  type: 'test'\n  ...\n# Subtest: explicit mission selection excludes other mission sources and remains anchored beyond the scan window\nok 178 - explicit mission selection excludes other mission sources and remains anchored beyond the scan window\n  ---\n  duration_ms: 42.770879\n  type: 'test'\n  ...\n# Subtest: edits, deletion, unpublishing and evidence visibility changes take effect on the next read without indexing jobs\nok 179 - edits, deletion, unpublishing and evidence visibility changes take effect on the next read without indexing jobs\n  ---\n  duration_ms: 138.366232\n  type: 'test'\n  ...\n# Subtest: read-only assembly does not change source or history rows and does not invoke any provider\nok 180 - read-only assembly does not change source or history rows and does not invoke any provider\n  ---\n  duration_ms: 38.168654\n  type: 'test'\n  ...\n# Subtest: missing schema, malformed results and database failures are partial availability rather than empty success\nok 181 - missing schema, malformed results and database failures are partial availability rather than empty success\n  ---\n  duration_ms: 73.243122\n  type: 'test'\n  ...\n# Subtest: bounded source reads expose limits and still discover readable rows after denied rows\nok 182 - bounded source reads expose limits and still discover readable rows after denied rows\n  ---\n  duration_ms: 49.649581\n  type: 'test'\n  ...\n# Subtest: permission revoked during a source read invalidates the entire response\nok 183 - permission revoked during a source read invalidates the entire response\n  ---\n  duration_ms: 36.468478\n  type: 'test'\n  ...\n# Subtest: context uses lexical relevance, one-hop relationships and stable citations without claiming verification\nok 184 - context uses lexical relevance, one-hop relationships and stable citations without claiming verification\n  ---\n  duration_ms: 98.709528\n  type: 'test'\n  ...\n# Subtest: JSON-escaped quotes, Unicode and source instructions remain data within every context budget\nok 185 - JSON-escaped quotes, Unicode and source instructions remain data within every context budget\n  ---\n  duration_ms: 43.609007\n  type: 'test'\n  ...\n# Subtest: mission context includes bounded plan criteria, category matches and equivalent common word forms\nok 186 - mission context includes bounded plan criteria, category matches and equivalent common word forms\n  ---\n  duration_ms: 40.555453\n  type: 'test'\n  ...\n# Subtest: invalid filters, injected identifiers and excessive budgets fail before collecting source data\nok 187 - invalid filters, injected identifiers and excessive budgets fail before collecting source data\n  ---\n  duration_ms: 30.073397\n  type: 'test'\n  ...\n# Subtest: native route registration requires users auth, limits request bodies and disables caching\nok 188 - native route registration requires users auth, limits request bodies and disables caching\n  ---\n  duration_ms: 1.464098\n  type: 'test'\n  ...\n# Subtest: research migration replays, preserves protected files/history on down and rejects custom access\nok 189 - research migration replays, preserves protected files/history on down and rejects custom access\n  ---\n  duration_ms: 56.975882\n  type: 'test'\n  ...\n# Subtest: intake requires current writable membership and same-workspace readable missions\nok 190 - intake requires current writable membership and same-workspace readable missions\n  ---\n  duration_ms: 23.830201\n  type: 'test'\n  ...\n# Subtest: disabled or missing capabilities are durable blocked submissions, never successful parses\nok 191 - disabled or missing capabilities are durable blocked submissions, never successful parses\n  ---\n  duration_ms: 25.267856\n  type: 'test'\n  ...\n# Subtest: submission retries preserve identity across reordered JSON and reject changed intent\nok 192 - submission retries preserve identity across reordered JSON and reject changed intent\n  ---\n  duration_ms: 43.845546\n  type: 'test'\n  ...\n# Subtest: source input rejects unsafe URLs, forged fields and malformed file references before work\nok 193 - source input rejects unsafe URLs, forged fields and malformed file references before work\n  ---\n  duration_ms: 109.179454\n  type: 'test'\n  ...\n# Subtest: both entry points propose normal missions without advancing approval or verification\nok 194 - both entry points propose normal missions without advancing approval or verification\n  ---\n  duration_ms: 28.877658\n  type: 'test'\n  ...\n# Subtest: Discord uses the authenticated bot binding and existing OAuth account link, never submitted account roles\nok 195 - Discord uses the authenticated bot binding and existing OAuth account link, never submitted account roles\n  ---\n  duration_ms: 39.38185\n  type: 'test'\n  ...\n# Subtest: foreign OAuth collections, revoked users and changed Discord integration bindings cannot submit\nok 196 - foreign OAuth collections, revoked users and changed Discord integration bindings cannot submit\n  ---\n  duration_ms: 24.396971\n  type: 'test'\n  ...\n# Subtest: one processing lease wins and retries do not create extra attempts\nok 197 - one processing lease wins and retries do not create extra attempts\n  ---\n  duration_ms: 29.687171\n  type: 'test'\n  ...\n# Subtest: cancelled or replaced leases reject delayed processor results\nok 198 - cancelled or replaced leases reject delayed processor results\n  ---\n  duration_ms: 34.182585\n  type: 'test'\n  ...\n# Subtest: revoked submitters and changed or disabled processor bindings cannot finalize work\nok 199 - revoked submitters and changed or disabled processor bindings cannot finalize work\n  ---\n  duration_ms: 122.039426\n  type: 'test'\n  ...\n# Subtest: completion persists the actual extraction, and explicit review creates exactly one observed evidence record\nok 200 - completion persists the actual extraction, and explicit review creates exactly one observed evidence record\n  ---\n  duration_ms: 36.073446\n  type: 'test'\n  ...\n# Subtest: audit persistence failure rolls back evidence promotion and its submission state together\nok 201 - audit persistence failure rolls back evidence promotion and its submission state together\n  ---\n  duration_ms: 33.963065\n  type: 'test'\n  ...\n# Subtest: malformed parser results and fabricated failure payloads leave the lease unchanged\nok 202 - malformed parser results and fabricated failure payloads leave the lease unchanged\n  ---\n  duration_ms: 36.081495\n  type: 'test'\n  ...\n# Subtest: native upload hooks derive scope, file type and size and reject forged metadata and retained deletion\nok 203 - native upload hooks derive scope, file type and size and reject forged metadata and retained deletion\n  ---\n  duration_ms: 28.87035\n  type: 'test'\n  ...\n# Subtest: file downloads require current membership or a matching current worker lease\nok 204 - file downloads require current membership or a matching current worker lease\n  ---\n  duration_ms: 28.025959\n  type: 'test'\n  ...\n# Subtest: research lists and detail respect foreign scope, and unavailable capabilities remain explicit\nok 205 - research lists and detail respect foreign scope, and unavailable capabilities remain explicit\n  ---\n  duration_ms: 26.496523\n  type: 'test'\n  ...\n# Subtest: bot preflight, attachment recovery and current account links prevent duplicate or reattributed uploads\nok 206 - bot preflight, attachment recovery and current account links prevent duplicate or reattributed uploads\n  ---\n  duration_ms: 26.369988\n  type: 'test'\n  ...\n# Subtest: research routes use native user auth, bounded body sizes and protected download hooks\nok 207 - research routes use native user auth, bounded body sizes and protected download hooks\n  ---\n  duration_ms: 1.511541\n  type: 'test'\n  ...\n# Subtest: TEVV and framework references distinguish evidence, security and credential integrity\nok 208 - TEVV and framework references distinguish evidence, security and credential integrity\n  ---\n  duration_ms: 2.776952\n  type: 'test'\n  ...\n# Subtest: drafts can be incomplete and shared plan and server contracts agree\nok 209 - drafts can be incomplete and shared plan and server contracts agree\n  ---\n  duration_ms: 4.908939\n  type: 'test'\n  ...\n# Subtest: learning points are bounded, repeatable and cannot confer a mission outcome\nok 210 - learning points are bounded, repeatable and cannot confer a mission outcome\n  ---\n  duration_ms: 0.90875\n  type: 'test'\n  ...\n# Subtest: honest failed experiments earn the same review learning credit as passing ones\nok 211 - honest failed experiments earn the same review learning credit as passing ones\n  ---\n  duration_ms: 0.581058\n  type: 'test'\n  ...\n# Subtest: foreign, missing and unsourced evidence cannot earn review credit\nok 212 - foreign, missing and unsourced evidence cannot earn review credit\n  ---\n  duration_ms: 0.259454\n  type: 'test'\n  ...\n# Subtest: downloaded learning records explicitly remain unsigned and omit private content\nok 213 - downloaded learning records explicitly remain unsigned and omit private content\n  ---\n  duration_ms: 0.415075\n  type: 'test'\n  ...\n# Subtest: a legacy client can create a proposed draft without invented measurements\nok 214 - a legacy client can create a proposed draft without invented measurements\n  ---\n  duration_ms: 2.96985\n  type: 'test'\n  ...\n# Subtest: mission writes require authentication and the correct writable workspace\nok 215 - mission writes require authentication and the correct writable workspace\n  ---\n  duration_ms: 14.345754\n  type: 'test'\n  ...\n# Subtest: missing schema and malformed JSON fail closed without a partial save\nok 216 - missing schema and malformed JSON fail closed without a partial save\n  ---\n  duration_ms: 3.280941\n  type: 'test'\n  ...\n# Subtest: unknown or oversized JSON input and client point counters are rejected\nok 217 - unknown or oversized JSON input and client point counters are rejected\n  ---\n  duration_ms: 29.610913\n  type: 'test'\n  ...\n# Subtest: approval requires a saved complete plan and stamps the authenticated decision maker\nok 218 - approval requires a saved complete plan and stamps the authenticated decision maker\n  ---\n  duration_ms: 14.341492\n  type: 'test'\n  ...\n# Subtest: clients cannot jump stages, alter a running target or reopen finished work\nok 219 - clients cannot jump stages, alter a running target or reopen finished work\n  ---\n  duration_ms: 79.263827\n  type: 'test'\n  ...\n# Subtest: replanning an approved or paused mission clears approval and prior review\nok 220 - replanning an approved or paused mission clears approval and prior review\n  ---\n  duration_ms: 13.374032\n  type: 'test'\n  ...\n# Subtest: legacy missions stay readable but need plan and approval before advancing\nok 221 - legacy missions stay readable but need plan and approval before advancing\n  ---\n  duration_ms: 14.236536\n  type: 'test'\n  ...\n# Subtest: review drafts and honest failures preserve observations without declaring verification\nok 222 - review drafts and honest failures preserve observations without declaring verification\n  ---\n  duration_ms: 33.741928\n  type: 'test'\n  ...\n# Subtest: verification rejects missing, failing, foreign or unreadable evidence\nok 223 - verification rejects missing, failing, foreign or unreadable evidence\n  ---\n  duration_ms: 57.306436\n  type: 'test'\n  ...\n# Subtest: prototype property names cannot bypass evidence lookup\nok 224 - prototype property names cannot bypass evidence lookup\n  ---\n  duration_ms: 5.953794\n  type: 'test'\n  ...\n# Subtest: a complete passing review stamps the reviewer once and preserves terminal evidence\nok 225 - a complete passing review stamps the reviewer once and preserves terminal evidence\n  ---\n  duration_ms: 5.066484\n  type: 'test'\n  ...\n# Subtest: persistence failures propagate without a success result or retrying the write\nok 226 - persistence failures propagate without a success result or retrying the write\n  ---\n  duration_ms: 1.858461\n  type: 'test'\n  ...\n# Subtest: the optional-field migration is repeatable and its down migration preserves existing fields and rules\nok 227 - the optional-field migration is repeatable and its down migration preserves existing fields and rules\n  ---\n  duration_ms: 1.560752\n  type: 'test'\n  ...\n# Subtest: motion defaults are editorial and optional costs are disabled\nok 228 - motion defaults are editorial and optional costs are disabled\n  ---\n  duration_ms: 2.228123\n  type: 'test'\n  ...\n# Subtest: preference parser rejects old versions, invalid types and unknown keys\nok 229 - preference parser rejects old versions, invalid types and unknown keys\n  ---\n  duration_ms: 1.818631\n  type: 'test'\n  ...\n# Subtest: device reduction wins over every full-motion category and expressive choice\nok 230 - device reduction wins over every full-motion category and expressive choice\n  ---\n  duration_ms: 0.791331\n  type: 'test'\n  ...\n# Subtest: off and reduced are immediate, while speed and distance remain bounded\nok 231 - off and reduced are immediate, while speed and distance remain bounded\n  ---\n  duration_ms: 1.516946\n  type: 'test'\n  ...\n# Subtest: hidden, paused and constrained devices suspend optional work without removing control feedback\nok 232 - hidden, paused and constrained devices suspend optional work without removing control feedback\n  ---\n  duration_ms: 4.768617\n  type: 'test'\n  ...\n# Subtest: browser environment reads have a server fallback and reflect live media flags\nok 233 - browser environment reads have a server fallback and reflect live media flags\n  ---\n  duration_ms: 0.314355\n  type: 'test'\n  ...\n# Subtest: storage updates merge only category patches and survive a reload\nok 234 - storage updates merge only category patches and survive a reload\n  ---\n  duration_ms: 0.945783\n  type: 'test'\n  ...\n# Subtest: an earlier disabled mission effect survives migration and the new preference becomes authoritative\nok 235 - an earlier disabled mission effect survives migration and the new preference becomes authoritative\n  ---\n  duration_ms: 0.545668\n  type: 'test'\n  ...\n# Subtest: storage failure keeps current choices in memory and reset restores defaults\nok 236 - storage failure keeps current choices in memory and reset restores defaults\n  ---\n  duration_ms: 0.727558\n  type: 'test'\n  ...\n# Subtest: malformed stored data recovers and cross-tab removal resets subscribed views\nok 237 - malformed stored data recovers and cross-tab removal resets subscribed views\n  ---\n  duration_ms: 0.795148\n  type: 'test'\n  ...\n# Subtest: animation interruption cancels the previous effect and reduced mode starts none\nok 238 - animation interruption cancels the previous effect and reduced mode starts none\n  ---\n  duration_ms: 0.772594\n  type: 'test'\n  ...\n# Subtest: finished and unsupported animations leave the content untouched\nok 239 - finished and unsupported animations leave the content untouched\n  ---\n  duration_ms: 1.051099\n  type: 'test'\n  ...\n# Subtest: activity observers suspend at document and viewport boundaries and remove listeners\nok 240 - activity observers suspend at document and viewport boundaries and remove listeners\n  ---\n  duration_ms: 1.045581\n  type: 'test'\n  ...\n# Subtest: missing observers fall back to visibility without hiding content\nok 241 - missing observers fall back to visibility without hiding content\n  ---\n  duration_ms: 0.152778\n  type: 'test'\n  ...\n# Subtest: frame loop schedules one frame, stops immediately, resumes and cannot restart after disposal\nok 242 - frame loop schedules one frame, stops immediately, resumes and cannot restart after disposal\n  ---\n  duration_ms: 0.63602\n  type: 'test'\n  ...\n# Subtest: a finite frame effect can stop itself and tolerates an absent frame API\nok 243 - a finite frame effect can stop itself and tolerates an absent frame API\n  ---\n  duration_ms: 0.294372\n  type: 'test'\n  ...\n# Subtest: measured progress and geometry remain finite and bounded\nok 244 - measured progress and geometry remain finite and bounded\n  ---\n  duration_ms: 0.370976\n  type: 'test'\n  ...\n# Subtest: reordering clamps bounds, preserves records and leaves invalid commands unchanged\nok 245 - reordering clamps bounds, preserves records and leaves invalid commands unchanged\n  ---\n  duration_ms: 0.442989\n  type: 'test'\n  ...\n# Subtest: all 50 requested areas map to actual categories and bounded preview collections\nok 246 - all 50 requested areas map to actual categories and bounded preview collections\n  ---\n  duration_ms: 0.484071\n  type: 'test'\n  ...\n# Subtest: snapshot client reads one scoped no-store page without a mutation\nok 247 - snapshot client reads one scoped no-store page without a mutation\n  ---\n  duration_ms: 120.283618\n  type: 'test'\n  ...\n# Subtest: the projection separates actual approvals from ordinary research and missing plan work\nok 248 - the projection separates actual approvals from ordinary research and missing plan work\n  ---\n  duration_ms: 85.173006\n  type: 'test'\n  ...\n# Subtest: provider receipts expire independently of refreshes, configuration and future timestamps\nok 249 - provider receipts expire independently of refreshes, configuration and future timestamps\n  ---\n  duration_ms: 43.343483\n  type: 'test'\n  ...\n# Subtest: failed sources and page samples cannot become complete empty totals\nok 250 - failed sources and page samples cannot become complete empty totals\n  ---\n  duration_ms: 36.438776\n  type: 'test'\n  ...\n# Subtest: routine queue explains failed attempts and expired leases without silently retrying\nok 251 - routine queue explains failed attempts and expired leases without silently retrying\n  ---\n  duration_ms: 35.051305\n  type: 'test'\n  ...\n# Subtest: seat completion remains terminal and old or future activity never establishes available GPU capacity\nok 252 - seat completion remains terminal and old or future activity never establishes available GPU capacity\n  ---\n  duration_ms: 27.83288\n  type: 'test'\n  ...\n# Subtest: delayed account/workspace responses, demo reads and out-of-order pages are discarded\nok 253 - delayed account/workspace responses, demo reads and out-of-order pages are discarded\n  ---\n  duration_ms: 201.206641\n  type: 'test'\n  ...\n# Subtest: malformed, duplicate or foreign snapshot rows cannot be exposed or reused for writing\nok 254 - malformed, duplicate or foreign snapshot rows cannot be exposed or reused for writing\n  ---\n  duration_ms: 245.355603\n  type: 'test'\n  ...\n# Subtest: compiler plans import with unchanged Phase A provenance and do not execute document instructions\nok 255 - compiler plans import with unchanged Phase A provenance and do not execute document instructions\n  ---\n  duration_ms: 627.822233\n  type: 'test'\n  ...\n# Subtest: tampered text and rehashed fabricated authority, health, deadlines or dependency cycles are rejected\nok 256 - tampered text and rehashed fabricated authority, health, deadlines or dependency cycles are rejected\n  ---\n  duration_ms: 8268.349219\n  type: 'test'\n  ...\n# Subtest: bounded import rejects duplicate keys, unsafe values and missing crypto\nok 257 - bounded import rejects duplicate keys, unsafe values and missing crypto\n  ---\n  duration_ms: 13.686815\n  type: 'test'\n  ...\n# Subtest: portable fingerprints agree on fractions, integral floats and multilingual source text\nok 258 - portable fingerprints agree on fractions, integral floats and multilingual source text\n  ---\n  duration_ms: 2605.513372\n  type: 'test'\n  ...\n# Subtest: explicit review proposal retains native authority and recovers an uncertain response across reload and refresh\nok 259 - explicit review proposal retains native authority and recovers an uncertain response across reload and refresh\n  ---\n  duration_ms: 53.000308\n  type: 'test'\n  ...\n# Subtest: viewer access, revocation, failed reads and unadmitted objects cannot propose work\nok 260 - viewer access, revocation, failed reads and unadmitted objects cannot propose work\n  ---\n  duration_ms: 109.987383\n  type: 'test'\n  ...\n# Subtest: identity change while hashing and overlapping proposals cannot create stale or duplicate work\nok 261 - identity change while hashing and overlapping proposals cannot create stale or duplicate work\n  ---\n  duration_ms: 37.065229\n  type: 'test'\n  ...\n# Subtest: an authority-forged proposal response is never accepted as a successful approval\nok 262 - an authority-forged proposal response is never accepted as a successful approval\n  ---\n  duration_ms: 40.575701\n  type: 'test'\n  ...\n# Subtest: snapshot reads existing stores without writes or private bodies and preserves state\nok 263 - snapshot reads existing stores without writes or private bodies and preserves state\n  ---\n  duration_ms: 97.067274\n  type: 'test'\n  ...\n# Subtest: current members can inspect but anonymous, foreign and revoked accounts cannot\nok 264 - current members can inspect but anonymous, foreign and revoked accounts cannot\n  ---\n  duration_ms: 40.528683\n  type: 'test'\n  ...\n# Subtest: native record denial also hides linked research, evidence, suite and seat work\nok 265 - native record denial also hides linked research, evidence, suite and seat work\n  ---\n  duration_ms: 28.806265\n  type: 'test'\n  ...\n# Subtest: foreign linked records never enter a workspace snapshot\nok 266 - foreign linked records never enter a workspace snapshot\n  ---\n  duration_ms: 27.564424\n  type: 'test'\n  ...\n# Subtest: standalone and mission-linked workflow approvals remain visible together\nok 267 - standalone and mission-linked workflow approvals remain visible together\n  ---\n  duration_ms: 55.318555\n  type: 'test'\n  ...\n# Subtest: each collection is paged and never represented as an all-work total\nok 268 - each collection is paged and never represented as an all-work total\n  ---\n  duration_ms: 28.156625\n  type: 'test'\n  ...\n# Subtest: missing schema and malformed source fail independently without fabricated zero health\nok 269 - missing schema and malformed source fail independently without fabricated zero health\n  ---\n  duration_ms: 26.328871\n  type: 'test'\n  ...\n# Subtest: a source query with inconsistent workspace rows fails closed\nok 270 - a source query with inconsistent workspace rows fails closed\n  ---\n  duration_ms: 28.569324\n  type: 'test'\n  ...\n# Subtest: a mid-read membership loss cannot become a partially successful snapshot\nok 271 - a mid-read membership loss cannot become a partially successful snapshot\n  ---\n  duration_ms: 25.203213\n  type: 'test'\n  ...\n# Subtest: a mid-read role downgrade returns current viewer authority\nok 272 - a mid-read role downgrade returns current viewer authority\n  ---\n  duration_ms: 27.342136\n  type: 'test'\n  ...\n# Subtest: the route registers only a no-store authenticated GET\nok 273 - the route registers only a no-store authenticated GET\n  ---\n  duration_ms: 1.033802\n  type: 'test'\n  ...\n# Subtest: committed creates, updates and deletes emit one bounded counter each\nok 274 - committed creates, updates and deletes emit one bounded counter each\n  ---\n  duration_ms: 5.496574\n  type: 'test'\n  ...\n# Subtest: failed writes are counted as errors and never as successful writes\nok 275 - failed writes are counted as errors and never as successful writes\n  ---\n  duration_ms: 1.568066\n  type: 'test'\n  ...\n# Subtest: workflow run counters omit stored observations and receipt identifiers\nok 276 - workflow run counters omit stored observations and receipt identifiers\n  ---\n  duration_ms: 2.099973\n  type: 'test'\n  ...\n# Subtest: workflow command latency uses bounded endpoint names and preserves failed outcomes\nok 277 - workflow command latency uses bounded endpoint names and preserves failed outcomes\n  ---\n  duration_ms: 2.66516\n  type: 'test'\n  ...\n# Subtest: unset configuration silently disables counters and middleware\nok 278 - unset configuration silently disables counters and middleware\n  ---\n  duration_ms: 1.526017\n  type: 'test'\n  ...\n# Subtest: logging failures and helper load failures preserve the write result\nok 279 - logging failures and helper load failures preserve the write result\n  ---\n  duration_ms: 1.666169\n  type: 'test'\n  ...\n# Subtest: request timing normalizes record paths, with trace IDs outside metric tags\nok 280 - request timing normalizes record paths, with trace IDs outside metric tags\n  ---\n  duration_ms: 2.958058\n  type: 'test'\n  ...\n# Subtest: downstream errors are rethrown exactly once and timed as failures\nok 281 - downstream errors are rethrown exactly once and timed as failures\n  ---\n  duration_ms: 1.981122\n  type: 'test'\n  ...\n# Subtest: auth, system collections, arbitrary paths, query values and invalid trace headers do not become tags\nok 282 - auth, system collections, arbitrary paths, query values and invalid trace headers do not become tags\n  ---\n  duration_ms: 2.481196\n  type: 'test'\n  ...\n# Subtest: serve binding delegates one time and registers request timing\nok 283 - serve binding delegates one time and registers request timing\n  ---\n  duration_ms: 5.857617\n  type: 'test'\n  ...\n# Subtest: missing helpers cannot stop record hooks or middleware\nok 284 - missing helpers cannot stop record hooks or middleware\n  ---\n  duration_ms: 1.427697\n  type: 'test'\n  ...\n# Subtest: bad event shapes, methods and environments stay bounded\nok 285 - bad event shapes, methods and environments stay bounded\n  ---\n  duration_ms: 1.796351\n  type: 'test'\n  ...\n# Subtest: browser derives the same source-linked graph, watches and daily brief as Python\nok 286 - browser derives the same source-linked graph, watches and daily brief as Python\n  ---\n  duration_ms: 724.358087\n  type: 'test'\n  ...\n# Subtest: global imported search covers titles, excerpts, entities, kind and mission area\nok 287 - global imported search covers titles, excerpts, entities, kind and mission area\n  ---\n  duration_ms: 13.272163\n  type: 'test'\n  ...\n# Subtest: edited bytes, nested verification and foreign tenants fail closed\nok 288 - edited bytes, nested verification and foreign tenants fail closed\n  ---\n  duration_ms: 21.223633\n  type: 'test'\n  ...\n# Subtest: canonical import rejects duplicate keys even when JSON.parse would choose the signed value\nok 289 - canonical import rejects duplicate keys even when JSON.parse would choose the signed value\n  ---\n  duration_ms: 1.250686\n  type: 'test'\n  ...\n# Subtest: source allowlists reject spoofed registries, unsafe URLs and changing document locators\nok 290 - source allowlists reject spoofed registries, unsafe URLs and changing document locators\n  ---\n  duration_ms: 20.902056\n  type: 'test'\n  ...\n# Subtest: conflicting captures remain unresolved until a later capture, with both predecessors retained\nok 291 - conflicting captures remain unresolved until a later capture, with both predecessors retained\n  ---\n  duration_ms: 11.509377\n  type: 'test'\n  ...\n# Subtest: literal watch configuration is portable, bounded and does not send or create work\nok 292 - literal watch configuration is portable, bounded and does not send or create work\n  ---\n  duration_ms: 18.613515\n  type: 'test'\n  ...\n# Subtest: daily briefs expire by capture window and exclude event-only watches\nok 293 - daily briefs expire by capture window and exclude event-only watches\n  ---\n  duration_ms: 23.544352\n  type: 'test'\n  ...\n# Subtest: instructions and markup in sources remain inert data in review-only exports\nok 294 - instructions and markup in sources remain inert data in review-only exports\n  ---\n  duration_ms: 33.243568\n  type: 'test'\n  ...\n# Subtest: explicit source-review proposals use existing authenticated handlers and never mint evidence or VERIFIED\nok 295 - explicit source-review proposals use existing authenticated handlers and never mint evidence or VERIFIED\n  ---\n  duration_ms: 99.036062\n  type: 'test'\n  ...\n# Subtest: lost proposal responses recover the same command after reconnect without duplicates\nok 296 - lost proposal responses recover the same command after reconnect without duplicates\n  ---\n  duration_ms: 106.776586\n  type: 'test'\n  ...\n# Subtest: current role revocation and cross-workspace access are enforced by existing server policy\nok 297 - current role revocation and cross-workspace access are enforced by existing server policy\n  ---\n  duration_ms: 247.235574\n  type: 'test'\n  ...\n# Subtest: account/workspace changes fence delayed responses, demo imports and unavailable transport\nok 298 - account/workspace changes fence delayed responses, demo imports and unavailable transport\n  ---\n  duration_ms: 255.740875\n  type: 'test'\n  ...\n# Subtest: future times, duplicate node identities and malformed rule fields cannot enter the browser projection\nok 299 - future times, duplicate node identities and malformed rule fields cannot enter the browser projection\n  ---\n  duration_ms: 26.584762\n  type: 'test'\n  ...\n# Subtest: unchanged recrawls retain proposal retry identity across new capture timestamps and receipts\nok 300 - unchanged recrawls retain proposal retry identity across new capture timestamps and receipts\n  ---\n  duration_ms: 49.027134\n  type: 'test'\n  ...\n# Subtest: browser commands survive a lost accepted response and replay exactly once through real backend source\nok 301 - browser commands survive a lost accepted response and replay exactly once through real backend source\n  ---\n  duration_ms: 69.068925\n  type: 'test'\n  ...\n# Subtest: malformed save responses retain retry keys and stale scopes discard private results\nok 302 - malformed save responses retain retry keys and stale scopes discard private results\n  ---\n  duration_ms: 84.860391\n  type: 'test'\n  ...\n# Subtest: an account change during a save suppresses both its accepted receipt and any late error\nok 303 - an account change during a save suppresses both its accepted receipt and any late error\n  ---\n  duration_ms: 117.717299\n  type: 'test'\n  ...\n# Subtest: viewer writes, revoked membership and foreign research never bypass server authorization\nok 304 - viewer writes, revoked membership and foreign research never bypass server authorization\n  ---\n  duration_ms: 49.232202\n  type: 'test'\n  ...\n# Subtest: incomplete lists, details and unsupported commands are rejected instead of becoming empty successes\nok 305 - incomplete lists, details and unsupported commands are rejected instead of becoming empty successes\n  ---\n  duration_ms: 99.940518\n  type: 'test'\n  ...\n# Subtest: one active command blocks overlapping saves and recovered command payloads stay immutable\nok 306 - one active command blocks overlapping saves and recovered command payloads stay immutable\n  ---\n  duration_ms: 42.668542\n  type: 'test'\n  ...\n# Subtest: file upload responses are scoped, bounded and recoverable without blind upload retries\nok 307 - file upload responses are scoped, bounded and recoverable without blind upload retries\n  ---\n  duration_ms: 94.163641\n  type: 'test'\n  ...\n# Subtest: original file links use native file tokens and disappear on scope change or foreign data\nok 308 - original file links use native file tokens and disappear on scope change or foreign data\n  ---\n  duration_ms: 28.154047\n  type: 'test'\n  ...\n# Subtest: uploads and lists reject stale accounts and failed native operations without leaving the client busy\nok 309 - uploads and lists reject stale accounts and failed native operations without leaving the client busy\n  ---\n  duration_ms: 39.152616\n  type: 'test'\n  ...\n# Subtest: Discord linking uses the authenticated native OAuth client while preserving the shared sign-in\nok 310 - Discord linking uses the authenticated native OAuth client while preserving the shared sign-in\n  ---\n  duration_ms: 2.465315\n  type: 'test'\n  ...\n# Subtest: a different OAuth result, cancellation or missing provider cannot switch website accounts\nok 311 - a different OAuth result, cancellation or missing provider cannot switch website accounts\n  ---\n  duration_ms: 2.406346\n  type: 'test'\n  ...\n# Subtest: OAuth overlap and failed unlinking preserve the current account and permit a later status check\nok 312 - OAuth overlap and failed unlinking preserve the current account and permit a later status check\n  ---\n  duration_ms: 0.490867\n  type: 'test'\n  ...\n# Subtest: a proposal captures the saved signal, independent review and one source observation\nok 313 - a proposal captures the saved signal, independent review and one source observation\n  ---\n  duration_ms: 50.248591\n  type: 'test'\n  ...\n# Subtest: an uncertain response replays the same proposal and observation even after source changes\nok 314 - an uncertain response replays the same proposal and observation even after source changes\n  ---\n  duration_ms: 28.051533\n  type: 'test'\n  ...\n# Subtest: foreign, unreadable, anonymous and viewer signals cannot create proposals\nok 315 - foreign, unreadable, anonymous and viewer signals cannot create proposals\n  ---\n  duration_ms: 98.558762\n  type: 'test'\n  ...\n# Subtest: stale revisions and injected fields fail before any writes\nok 316 - stale revisions and injected fields fail before any writes\n  ---\n  duration_ms: 43.316082\n  type: 'test'\n  ...\n# Subtest: a failed evidence or audit write rolls the whole proposal back\nok 317 - a failed evidence or audit write rolls the whole proposal back\n  ---\n  duration_ms: 73.092462\n  type: 'test'\n  ...\n# Subtest: independent review rejects the proposer and evidence author but accepts another current writer\nok 318 - independent review rejects the proposer and evidence author but accepts another current writer\n  ---\n  duration_ms: 23.667405\n  type: 'test'\n  ...\n# Subtest: proposal retry identity survives a closed dialog and recovers the original saved mission\nok 319 - proposal retry identity survives a closed dialog and recovers the original saved mission\n  ---\n  duration_ms: 25.056355\n  type: 'test'\n  ...\n# Subtest: proposal keys name saved revisions and reject invalid input without guessing\nok 320 - proposal keys name saved revisions and reject invalid input without guessing\n  ---\n  duration_ms: 0.286601\n  type: 'test'\n  ...\n# Subtest: independent-review choices are typed and cannot change an approved plan in place\nok 321 - independent-review choices are typed and cannot change an approved plan in place\n  ---\n  duration_ms: 43.845999\n  type: 'test'\n  ...\n# Subtest: the diagnostic detects missing JSX components and object roots as well as ordinary undefined names\nok 322 - the diagnostic detects missing JSX components and object roots as well as ordinary undefined names\n  ---\n  duration_ms: 97.404056\n  type: 'test'\n  ...\n# Subtest: the diagnostic respects imports, lexical component scope, intrinsic elements and fragments\nok 323 - the diagnostic respects imports, lexical component scope, intrinsic elements and fragments\n  ---\n  duration_ms: 33.19\n  type: 'test'\n  ...\n# Subtest: the actual workspace layout passes and removing its icon import reproduces the runtime blocker\nok 324 - the actual workspace layout passes and removing its icon import reproduces the runtime blocker\n  ---\n  duration_ms: 121.790516\n  type: 'test'\n  ...\n# Subtest: onboarding is atomic, canonical, account-scoped and recoverable across retries\nok 325 - onboarding is atomic, canonical, account-scoped and recoverable across retries\n  ---\n  duration_ms: 110.518125\n  type: 'test'\n  ...\n# Subtest: a rejected service seed rolls back domain, workspace and every service\nok 326 - a rejected service seed rolls back domain, workspace and every service\n  ---\n  duration_ms: 73.757038\n  type: 'test'\n  ...\n# Subtest: onboarding down/up retains receipt and disables commands while down\nok 327 - onboarding down/up retains receipt and disables commands while down\n  ---\n  duration_ms: 43.120346\n  type: 'test'\n  ...\n# Subtest: onboarding migrations fail closed on incompatible retained authority and identity fields\nok 328 - onboarding migrations fail closed on incompatible retained authority and identity fields\n  ---\n  duration_ms: 91.095206\n  type: 'test'\n  ...\n# Subtest: browser retries the identical setup and suppresses a late account response\nok 329 - browser retries the identical setup and suppresses a late account response\n  ---\n  duration_ms: 30.85557\n  type: 'test'\n  ...\n# Subtest: verification captures exact evidence and ordinary edits/deletes are rejected\nok 330 - verification captures exact evidence and ordinary edits/deletes are rejected\n  ---\n  duration_ms: 28.34639\n  type: 'test'\n  ...\n# Subtest: legacy completed reviews also protect their selected evidence\nok 331 - legacy completed reviews also protect their selected evidence\n  ---\n  duration_ms: 22.355143\n  type: 'test'\n  ...\n# Subtest: edition distinguishes unavailable sources from an observed empty day\nok 332 - edition distinguishes unavailable sources from an observed empty day\n  ---\n  duration_ms: 0.521947\n  type: 'test'\n  ...\n# Subtest: edition uses review time, excludes unknown/future dates and ignores later learning edits\nok 333 - edition uses review time, excludes unknown/future dates and ignores later learning edits\n  ---\n  duration_ms: 0.40723\n  type: 'test'\n  ...\n# Subtest: staging images use the locked Node 22 production build and same-origin API\nok 334 - staging images use the locked Node 22 production build and same-origin API\n  ---\n  duration_ms: 6.404539\n  type: 'test'\n  ...\n# Subtest: staging readback accepts the application, built asset and API together\nok 335 - staging readback accepts the application, built asset and API together\n  ---\n  duration_ms: 578.845174\n  type: 'test'\n  ...\n# Subtest: staging readback rejects a backend that does not report healthy\nok 336 - staging readback rejects a backend that does not report healthy\n  ---\n  duration_ms: 586.81409\n  type: 'test'\n  ...\n# Subtest: browser uses one POST surface for real policy reads, enqueue and reviewed results\nok 337 - browser uses one POST surface for real policy reads, enqueue and reviewed results\n  ---\n  duration_ms: 555.181841\n  type: 'test'\n  ...\n# Subtest: nested pending input is immutable and a different nested edit cannot reuse an uncertain command\nok 338 - nested pending input is immutable and a different nested edit cannot reuse an uncertain command\n  ---\n  duration_ms: 32.30854\n  type: 'test'\n  ...\n# Subtest: in-flight account change discards results, errors and retry payloads\nok 339 - in-flight account change discards results, errors and retry payloads\n  ---\n  duration_ms: 105.107315\n  type: 'test'\n  ...\n# Subtest: malformed receipts stay uncertain; malformed or foreign reads never become successful empty state\nok 340 - malformed receipts stay uncertain; malformed or foreign reads never become successful empty state\n  ---\n  duration_ms: 34.342358\n  type: 'test'\n  ...\n# Subtest: server revocation and conflicts clear definitive failures while scope and demo never send\nok 341 - server revocation and conflicts clear definitive failures while scope and demo never send\n  ---\n  duration_ms: 75.745055\n  type: 'test'\n  ...\n# Subtest: concurrent sends share the original command rather than creating duplicates\nok 342 - concurrent sends share the original command rather than creating duplicates\n  ---\n  duration_ms: 29.421237\n  type: 'test'\n  ...\n# Subtest: PDF fingerprint describes selected bytes and rejects wrong headers and oversized files\nok 343 - PDF fingerprint describes selected bytes and rejects wrong headers and oversized files\n  ---\n  duration_ms: 19.311308\n  type: 'test'\n  ...\n# Subtest: suite storage works independently of research collections and paginates its own state\nok 344 - suite storage works independently of research collections and paginates its own state\n  ---\n  duration_ms: 346.796807\n  type: 'test'\n  ...\n# Subtest: source observation identity uses a tuple so colon-containing keys do not collide\nok 345 - source observation identity uses a tuple so colon-containing keys do not collide\n  ---\n  duration_ms: 45.833708\n  type: 'test'\n  ...\n# Subtest: missing configuration denies historical observation access with a typed failure\nok 346 - missing configuration denies historical observation access with a typed failure\n  ---\n  duration_ms: 29.329635\n  type: 'test'\n  ...\n# Subtest: one API persists real Python analysis, preserves its input and requires human evidence review\nok 347 - one API persists real Python analysis, preserves its input and requires human evidence review\n  ---\n  duration_ms: 441.853335\n  type: 'test'\n  ...\n# Subtest: lost enqueue and completion replies recover without duplicate runs, state advancement or evidence\nok 348 - lost enqueue and completion replies recover without duplicate runs, state advancement or evidence\n  ---\n  duration_ms: 436.941195\n  type: 'test'\n  ...\n# Subtest: current roles and native mission readability guard every read and write\nok 349 - current roles and native mission readability guard every read and write\n  ---\n  duration_ms: 26.152913\n  type: 'test'\n  ...\n# Subtest: owner membership revocation fences an already-issued worker lease\nok 350 - owner membership revocation fences an already-issued worker lease\n  ---\n  duration_ms: 344.983014\n  type: 'test'\n  ...\n# Subtest: worker rotation, disabled rights and changed settings invalidate in-flight work\nok 351 - worker rotation, disabled rights and changed settings invalidate in-flight work\n  ---\n  duration_ms: 1211.198379\n  type: 'test'\n  ...\n# Subtest: readiness cannot bypass mission approval, source rights or a blocked worker configuration\nok 352 - readiness cannot bypass mission approval, source rights or a blocked worker configuration\n  ---\n  duration_ms: 42.470056\n  type: 'test'\n  ...\n# Subtest: expired and cancelled leases cannot complete; another claim fences the original attempt\nok 353 - expired and cancelled leases cannot complete; another claim fences the original attempt\n  ---\n  duration_ms: 915.742851\n  type: 'test'\n  ...\n# Subtest: native PocketBase date-field serialization preserves a valid worker lease\nok 354 - native PocketBase date-field serialization preserves a valid worker lease\n  ---\n  duration_ms: 469.678454\n  type: 'test'\n  ...\n# Subtest: late observations preserve history and cannot replace a newer vessel position\nok 355 - late observations preserve history and cannot replace a newer vessel position\n  ---\n  duration_ms: 785.312083\n  type: 'test'\n  ...\n# Subtest: state and retry receipts roll back together when durable receipt storage fails\nok 356 - state and retry receipts roll back together when durable receipt storage fails\n  ---\n  duration_ms: 29.693808\n  type: 'test'\n  ...\n# Subtest: result identity, source lineage and admission restrictions reject worker output tampering\nok 357 - result identity, source lineage and admission restrictions reject worker output tampering\n  ---\n  duration_ms: 500.510009\n  type: 'test'\n  ...\n# Subtest: up, re-up, down and re-up preserve inputs and keep raw collection APIs locked\nok 358 - up, re-up, down and re-up preserve inputs and keep raw collection APIs locked\n  ---\n  duration_ms: 31.991898\n  type: 'test'\n  ...\n# Subtest: configuration denies controlled data, malformed times, missing rights and duplicate sources\nok 359 - configuration denies controlled data, malformed times, missing rights and duplicate sources\n  ---\n  duration_ms: 32.209535\n  type: 'test'\n  ...\n# Subtest: submission review uses evidence from this mission and cannot assert portal submission\nok 360 - submission review uses evidence from this mission and cannot assert portal submission\n  ---\n  duration_ms: 437.108537\n  type: 'test'\n  ...\n# Subtest: changed submission evidence fences worker completion and polling\nok 361 - changed submission evidence fences worker completion and polling\n  ---\n  duration_ms: 363.807599\n  type: 'test'\n  ...\n# Subtest: client accepts real saved responses, resumes after remount, and exports a complete certificate\nok 362 - client accepts real saved responses, resumes after remount, and exports a complete certificate\n  ---\n  duration_ms: 83.28016\n  type: 'test'\n  ...\n# Subtest: a dropped committed response keeps the exact retry and refuses a new change until recovery\nok 363 - a dropped committed response keeps the exact retry and refuses a new change until recovery\n  ---\n  duration_ms: 42.866234\n  type: 'test'\n  ...\n# Subtest: anonymous, demo, unmounted and changed-account clients perform no requests\nok 364 - anonymous, demo, unmounted and changed-account clients perform no requests\n  ---\n  duration_ms: 85.027598\n  type: 'test'\n  ...\n# Subtest: late responses after account change or unmount are discarded\nok 365 - late responses after account change or unmount are discarded\n  ---\n  duration_ms: 31.765958\n  type: 'test'\n  ...\n# Subtest: incomplete or cross-account responses never mint browser progress or credit\nok 366 - incomplete or cross-account responses never mint browser progress or credit\n  ---\n  duration_ms: 37.450639\n  type: 'test'\n  ...\n# Subtest: wrong answers retain their feedback and cannot claim completion\nok 367 - wrong answers retain their feedback and cannot claim completion\n  ---\n  duration_ms: 31.993363\n  type: 'test'\n  ...\n# Subtest: storage errors remain recoverable; rejected commands clear pending state\nok 368 - storage errors remain recoverable; rejected commands clear pending state\n  ---\n  duration_ms: 27.79651\n  type: 'test'\n  ...\n# Subtest: duplicate in-flight saves are serialized and invalid routes are never sent\nok 369 - duplicate in-flight saves are serialized and invalid routes are never sent\n  ---\n  duration_ms: 24.661021\n  type: 'test'\n  ...\n# Subtest: certificate export escapes personal text and carries no scripts, external assets or account email\nok 370 - certificate export escapes personal text and carries no scripts, external assets or account email\n  ---\n  duration_ms: 45.903868\n  type: 'test'\n  ...\n# Subtest: learning API identities and query values are removed from browser telemetry\nok 371 - learning API identities and query values are removed from browser telemetry\n  ---\n  duration_ms: 1.065167\n  type: 'test'\n  ...\n# Subtest: reading does not enroll; checkpoints, practice and correct answer award one durable completion\nok 372 - reading does not enroll; checkpoints, practice and correct answer award one durable completion\n  ---\n  duration_ms: 67.701552\n  type: 'test'\n  ...\n# Subtest: cannot skip sections, practice, or the server-checked answer\nok 373 - cannot skip sections, practice, or the server-checked answer\n  ---\n  duration_ms: 72.205119\n  type: 'test'\n  ...\n# Subtest: retries, replay after completion and repeated enrollment cannot farm points or replace a certificate\nok 374 - retries, replay after completion and repeated enrollment cannot farm points or replace a certificate\n  ---\n  duration_ms: 72.788076\n  type: 'test'\n  ...\n# Subtest: enrollment freezes content and records the original version even if the catalogue changes\nok 375 - enrollment freezes content and records the original version even if the catalogue changes\n  ---\n  duration_ms: 53.597677\n  type: 'test'\n  ...\n# Subtest: starting stale or unsupported catalogue content fails before creating learning records\nok 376 - starting stale or unsupported catalogue content fails before creating learning records\n  ---\n  duration_ms: 25.313361\n  type: 'test'\n  ...\n# Subtest: native authentication, current account and lesson visibility are checked on every operation\nok 377 - native authentication, current account and lesson visibility are checked on every operation\n  ---\n  duration_ms: 58.719811\n  type: 'test'\n  ...\n# Subtest: no supplied owner, point, certificate, unknown action or malformed checkpoint can be trusted\nok 378 - no supplied owner, point, certificate, unknown action or malformed checkpoint can be trusted\n  ---\n  duration_ms: 47.729765\n  type: 'test'\n  ...\n# Subtest: completion and its legacy progress projection roll back together on storage failure\nok 379 - completion and its legacy progress projection roll back together on storage failure\n  ---\n  duration_ms: 65.215141\n  type: 'test'\n  ...\n# Subtest: legacy completed progress is retained without creating retroactive credit\nok 380 - legacy completed progress is retained without creating retroactive credit\n  ---\n  duration_ms: 79.523377\n  type: 'test'\n  ...\n# Subtest: growth milestones derive from distinct completions and certificate pages do not truncate totals\nok 381 - growth milestones derive from distinct completions and certificate pages do not truncate totals\n  ---\n  duration_ms: 136.398522\n  type: 'test'\n  ...\n# Subtest: migration replays, keeps API writes locked and disables commands on down without deleting history\nok 382 - migration replays, keeps API writes locked and disables commands on down without deleting history\n  ---\n  duration_ms: 62.571355\n  type: 'test'\n  ...\n# Subtest: missing installation, identity constraints and corrupt checkpoints fail closed\nok 383 - missing installation, identity constraints and corrupt checkpoints fail closed\n  ---\n  duration_ms: 31.528026\n  type: 'test'\n  ...\n# Subtest: routes require native users auth and keep responses uncached with bounded command bodies\nok 384 - routes require native users auth and keep responses uncached with bounded command bodies\n  ---\n  duration_ms: 4.386556\n  type: 'test'\n  ...\n# Subtest: mission list history includes saved evidence without requiring a seat event\nok 385 - mission list history includes saved evidence without requiring a seat event\n  ---\n  duration_ms: 14.908271\n  type: 'test'\n  ...\n# Subtest: workflow history includes recorded runs and preserves their own outcome instead of inventing a seat event\nok 386 - workflow history includes recorded runs and preserves their own outcome instead of inventing a seat event\n  ---\n  duration_ms: 4.798426\n  type: 'test'\n  ...\n# Subtest: single and batch history use the same sources and preserve terminal seat semantics\nok 387 - single and batch history use the same sources and preserve terminal seat semantics\n  ---\n  duration_ms: 3.917523\n  type: 'test'\n  ...\n# Subtest: a failed evidence read retains available events and reports incomplete history\nok 388 - a failed evidence read retains available events and reports incomplete history\n  ---\n  duration_ms: 2.210126\n  type: 'test'\n  ...\n# Subtest: empty successful history stays distinct from failed or truncated sources\nok 389 - empty successful history stays distinct from failed or truncated sources\n  ---\n  duration_ms: 3.387036\n  type: 'test'\n  ...\n# Subtest: independent concurrent history readers do not cancel each other\nok 390 - independent concurrent history readers do not cancel each other\n  ---\n  duration_ms: 2.398362\n  type: 'test'\n  ...\n# Subtest: an account change during the read discards the previous account history\nok 391 - an account change during the read discards the previous account history\n  ---\n  duration_ms: 2.217463\n  type: 'test'\n  ...\n# Subtest: no identity or no subjects makes no request; arbitrary subject text stays in bound parameters\nok 392 - no identity or no subjects makes no request; arbitrary subject text stays in bound parameters\n  ---\n  duration_ms: 2.272995\n  type: 'test'\n  ...\n# Subtest: large mission lists use bounded groups without losing later subjects\nok 393 - large mission lists use bounded groups without losing later subjects\n  ---\n  duration_ms: 7.274975\n  type: 'test'\n  ...\n# Subtest: malformed or foreign responses are unavailable sources, never successful empty histories\nok 394 - malformed or foreign responses are unavailable sources, never successful empty histories\n  ---\n  duration_ms: 16.265258\n  type: 'test'\n  ...\n# Subtest: seat coordination remains separate from recorded execution and tolerates incomplete timestamps\nok 395 - seat coordination remains separate from recorded execution and tolerates incomplete timestamps\n  ---\n  duration_ms: 12.330616\n  type: 'test'\n  ...\n# Subtest: workflow display helpers tolerate malformed legacy JSON without rendering arbitrary objects\nok 396 - workflow display helpers tolerate malformed legacy JSON without rendering arbitrary objects\n  ---\n  duration_ms: 3.126317\n  type: 'test'\n  ...\n# Subtest: retry intent survives failures and changes only when the proposed decision changes\nok 397 - retry intent survives failures and changes only when the proposed decision changes\n  ---\n  duration_ms: 5.160268\n  type: 'test'\n  ...\n# Subtest: commands pin workspace, use separate POST requests and measure actual mutations\nok 398 - commands pin workspace, use separate POST requests and measure actual mutations\n  ---\n  duration_ms: 0.790887\n  type: 'test'\n  ...\n# Subtest: lost response can retry the same key and structured conflicts retain their meaning\nok 399 - lost response can retry the same key and structured conflicts retain their meaning\n  ---\n  duration_ms: 0.629134\n  type: 'test'\n  ...\n# Subtest: duplicate clicks and responses after account changes cannot affect the active workspace\nok 400 - duplicate clicks and responses after account changes cannot affect the active workspace\n  ---\n  duration_ms: 0.518475\n  type: 'test'\n  ...\n# Subtest: history uses bounded pages and parameterized workflow/status filters\nok 401 - history uses bounded pages and parameterized workflow/status filters\n  ---\n  duration_ms: 0.485337\n  type: 'test'\n  ...\n# Subtest: reads suppress private results and errors after scope changes, and surface genuine outages\nok 402 - reads suppress private results and errors after scope changes, and surface genuine outages\n  ---\n  duration_ms: 0.709231\n  type: 'test'\n  ...\n# Subtest: browser commands, server transactions and history readers agree after lost responses without duplicating evidence\nok 403 - browser commands, server transactions and history readers agree after lost responses without duplicating evidence\n  ---\n  duration_ms: 27.144939\n  type: 'test'\n  ...\n# Subtest: run migration is idempotent, locks direct writes and explicitly reverses its own collection\nok 404 - run migration is idempotent, locks direct writes and explicitly reverses its own collection\n  ---\n  duration_ms: 4.293487\n  type: 'test'\n  ...\n# Subtest: saved definitions validate bounded steps and never accept a browser last-run timestamp\nok 405 - saved definitions validate bounded steps and never accept a browser last-run timestamp\n  ---\n  duration_ms: 7.542212\n  type: 'test'\n  ...\n# Subtest: start captures the saved definition, approval receipt and server attribution\nok 406 - start captures the saved definition, approval receipt and server attribution\n  ---\n  duration_ms: 3.581613\n  type: 'test'\n  ...\n# Subtest: idempotency compares JSON objects semantically after database key reordering\nok 407 - idempotency compares JSON objects semantically after database key reordering\n  ---\n  duration_ms: 3.800673\n  type: 'test'\n  ...\n# Subtest: start rejects foreign context, unreadable records and malformed requests before persistence\nok 408 - start rejects foreign context, unreadable records and malformed requests before persistence\n  ---\n  duration_ms: 4.705476\n  type: 'test'\n  ...\n# Subtest: workspace role lookup cannot combine an editor role from another user or workspace\nok 409 - workspace role lookup cannot combine an editor role from another user or workspace\n  ---\n  duration_ms: 4.944501\n  type: 'test'\n  ...\n# Subtest: step progression creates atomic source-backed evidence and a terminal run, without verifying its mission\nok 410 - step progression creates atomic source-backed evidence and a terminal run, without verifying its mission\n  ---\n  duration_ms: 5.926529\n  type: 'test'\n  ...\n# Subtest: approval pauses the sequence and only an owner or admin can explicitly decide it\nok 411 - approval pauses the sequence and only an owner or admin can explicitly decide it\n  ---\n  duration_ms: 8.713698\n  type: 'test'\n  ...\n# Subtest: failed work and cancellation retain an honest terminal observation\nok 412 - failed work and cancellation retain an honest terminal observation\n  ---\n  duration_ms: 8.114137\n  type: 'test'\n  ...\n# Subtest: stale tabs, skipped steps and request-key conflicts cannot append evidence\nok 413 - stale tabs, skipped steps and request-key conflicts cannot append evidence\n  ---\n  duration_ms: 4.049954\n  type: 'test'\n  ...\n# Subtest: mission binding rejects foreign, unreadable, unapproved, paused or reapproved work\nok 414 - mission binding rejects foreign, unreadable, unapproved, paused or reapproved work\n  ---\n  duration_ms: 4.615045\n  type: 'test'\n  ...\n# Subtest: command validation and schema failures occur without any partial save\nok 415 - command validation and schema failures occur without any partial save\n  ---\n  duration_ms: 5.997627\n  type: 'test'\n  ...\n# Subtest: transactions roll back receipt and run together when a save or commit fails\nok 416 - transactions roll back receipt and run together when a save or commit fails\n  ---\n  duration_ms: 21.441728\n  type: 'test'\n  ...\n# Subtest: workflow deletion preserves existing history and delegates only when no run references it\nok 417 - workflow deletion preserves existing history and delegates only when no run references it\n  ---\n  duration_ms: 3.78\n  type: 'test'\n  ...\n# Subtest: route registrations use native authentication and load each helper inside the callback\nok 418 - route registrations use native authentication and load each helper inside the callback\n  ---\n  duration_ms: 8.031709\n  type: 'test'\n  ...\n# Subtest: workspace access uses current bound membership, distinguishes the canonical owner, and fails closed\nok 419 - workspace access uses current bound membership, distinguishes the canonical owner, and fails closed\n  ---\n  duration_ms: 40.900842\n  type: 'test'\n  ...\n# Subtest: only administrators save settings and every saved profile has an attributed audit receipt\nok 420 - only administrators save settings and every saved profile has an attributed audit receipt\n  ---\n  duration_ms: 42.888029\n  type: 'test'\n  ...\n# Subtest: owners grant administrators, administrators manage lower roles, and nobody self-promotes or changes the owner\nok 421 - owners grant administrators, administrators manage lower roles, and nobody self-promotes or changes the owner\n  ---\n  duration_ms: 55.978197\n  type: 'test'\n  ...\n# Subtest: lost admin responses replay once, changed retry content and stale tabs conflict, and revoked retries are denied\nok 422 - lost admin responses replay once, changed retry content and stale tabs conflict, and revoked retries are denied\n  ---\n  duration_ms: 30.237421\n  type: 'test'\n  ...\n# Subtest: failure to store an audit rolls back settings, member and integration changes\nok 423 - failure to store an audit rolls back settings, member and integration changes\n  ---\n  duration_ms: 26.773316\n  type: 'test'\n  ...\n# Subtest: integration requests permit only supported non-secret fields and never claim a connection\nok 424 - integration requests permit only supported non-secret fields and never claim a connection\n  ---\n  duration_ms: 42.522602\n  type: 'test'\n  ...\n# Subtest: runtime observations require a receipt, matching revision and fresh nonfuture timestamps\nok 425 - runtime observations require a receipt, matching revision and fresh nonfuture timestamps\n  ---\n  duration_ms: 21.372563\n  type: 'test'\n  ...\n# Subtest: member and audit reads are bounded, scoped, paginated and omit raw command contents\nok 426 - member and audit reads are bounded, scoped, paginated and omit raw command contents\n  ---\n  duration_ms: 26.915974\n  type: 'test'\n  ...\n# Subtest: native workspace writes reject owner shortcuts, viewers and reassignment across accounts/workspaces\nok 427 - native workspace writes reject owner shortcuts, viewers and reassignment across accounts/workspaces\n  ---\n  duration_ms: 14.115504\n  type: 'test'\n  ...\n# Subtest: native service records require administrators and cannot fabricate runtime health\nok 428 - native service records require administrators and cannot fabricate runtime health\n  ---\n  duration_ms: 25.195777\n  type: 'test'\n  ...\n# Subtest: native relations and onboarding validate the actual workspace/account of the referenced record\nok 429 - native relations and onboarding validate the actual workspace/account of the referenced record\n  ---\n  duration_ms: 28.869432\n  type: 'test'\n  ...\n# Subtest: rule migration applies to real prior schema, preserves records, replays and restores exact previous rules\nok 430 - rule migration applies to real prior schema, preserves records, replays and restores exact previous rules\n  ---\n  duration_ms: 15.521439\n  type: 'test'\n  ...\n# Subtest: both migration directions reject custom policy before changing any collection\nok 431 - both migration directions reject custom policy before changing any collection\n  ---\n  duration_ms: 15.736213\n  type: 'test'\n  ...\n# Subtest: administration down retains all community/audit data and disables commands until replayed up\nok 432 - administration down retains all community/audit data and disables commands until replayed up\n  ---\n  duration_ms: 21.950919\n  type: 'test'\n  ...\n# Subtest: custom reply relations, types and indexes block schema replay before the protocol is reenabled\nok 433 - custom reply relations, types and indexes block schema replay before the protocol is reenabled\n  ---\n  duration_ms: 79.21286\n  type: 'test'\n  ...\n# Subtest: routes bind users auth, per-callback module loading, no-store responses and all native write operations\nok 434 - routes bind users auth, per-callback module loading, no-store responses and all native write operations\n  ---\n  duration_ms: 4.568417\n  type: 'test'\n  ...\n# Subtest: assistant sessions and messages are isolated from every other account including workspace admins\nok 435 - assistant sessions and messages are isolated from every other account including workspace admins\n  ---\n  duration_ms: 49.63651\n  type: 'test'\n  ...\n# Subtest: inference receives only current account history and patterns, never foreign conversations\nok 436 - inference receives only current account history and patterns, never foreign conversations\n  ---\n  duration_ms: 26.004593\n  type: 'test'\n  ...\n# Subtest: duplicate messages recover the same inferred plan without another model call\nok 437 - duplicate messages recover the same inferred plan without another model call\n  ---\n  duration_ms: 21.548829\n  type: 'test'\n  ...\n# Subtest: missing provider binding is visible and never produces invented plans\nok 438 - missing provider binding is visible and never produces invented plans\n  ---\n  duration_ms: 20.265616\n  type: 'test'\n  ...\n# Subtest: invalid inferred controls and authority actions fail closed without application effects\nok 439 - invalid inferred controls and authority actions fail closed without application effects\n  ---\n  duration_ms: 82.603801\n  type: 'test'\n  ...\n# Subtest: sensitive fields and human authority decisions cannot become model controls\nok 440 - sensitive fields and human authority decisions cannot become model controls\n  ---\n  duration_ms: 24.86923\n  type: 'test'\n  ...\n# Subtest: viewers can navigate but cannot receive form-write plans or administration routes\nok 441 - viewers can navigate but cannot receive form-write plans or administration routes\n  ---\n  duration_ms: 31.17597\n  type: 'test'\n  ...\n# Subtest: revocation or role change while inference runs prevents returning the retained plan\nok 442 - revocation or role change while inference runs prevents returning the retained plan\n  ---\n  duration_ms: 33.058661\n  type: 'test'\n  ...\n# Subtest: personal knowledge retains observed patterns per session without storing filled values\nok 443 - personal knowledge retains observed patterns per session without storing filled values\n  ---\n  duration_ms: 32.657589\n  type: 'test'\n  ...\n# Subtest: impossible outcomes and false verification are rejected\nok 444 - impossible outcomes and false verification are rejected\n  ---\n  duration_ms: 38.020079\n  type: 'test'\n  ...\n# Subtest: closing a session stops new inference; forgetting removes only the current user history\nok 445 - closing a session stops new inference; forgetting removes only the current user history\n  ---\n  duration_ms: 53.014114\n  type: 'test'\n  ...\n# Subtest: rollback retains personal history while disabling assistant reads and writes\nok 446 - rollback retains personal history while disabling assistant reads and writes\n  ---\n  duration_ms: 36.669007\n  type: 'test'\n  ...\n# Subtest: connected assistant client rejects late and foreign scope responses\nok 447 - connected assistant client rejects late and foreign scope responses\n  ---\n  duration_ms: 0.799082\n  type: 'test'\n  ...\n# Subtest: assistant context cites only readable current-workspace records and the actual mission plan\nok 448 - assistant context cites only readable current-workspace records and the actual mission plan\n  ---\n  duration_ms: 38.642128\n  type: 'test'\n  ...\n# Subtest: recorded partial outcomes cannot be rewritten with a different completed-step count\nok 449 - recorded partial outcomes cannot be rewritten with a different completed-step count\n  ---\n  duration_ms: 27.090191\n  type: 'test'\n  ...\n# Subtest: missing identity indices or field contracts stop assistant reads before inference\nok 450 - missing identity indices or field contracts stop assistant reads before inference\n  ---\n  duration_ms: 65.356897\n  type: 'test'\n  ...\n# Subtest: wiki drafts become readable to the workspace only after an administrator publishes\nok 451 - wiki drafts become readable to the workspace only after an administrator publishes\n  ---\n  duration_ms: 56.854778\n  type: 'test'\n  ...\n# Subtest: wiki saves preserve authorship, reject foreign/missing records, and validate page addresses and body limits\nok 452 - wiki saves preserve authorship, reject foreign/missing records, and validate page addresses and body limits\n  ---\n  duration_ms: 34.639262\n  type: 'test'\n  ...\n# Subtest: wiki retry after persistence returns the same page and rejects stale or altered requests\nok 453 - wiki retry after persistence returns the same page and rejects stale or altered requests\n  ---\n  duration_ms: 29.539086\n  type: 'test'\n  ...\n# Subtest: disabled community settings and viewer roles are enforced on reads and writes independently of the UI\nok 454 - disabled community settings and viewer roles are enforced on reads and writes independently of the UI\n  ---\n  duration_ms: 38.95661\n  type: 'test'\n  ...\n# Subtest: forum moderation keeps pending topics private, attributes approval and preserves locked discussion reads\nok 455 - forum moderation keeps pending topics private, attributes approval and preserves locked discussion reads\n  ---\n  duration_ms: 35.052632\n  type: 'test'\n  ...\n# Subtest: moderation-off settings permit immediate editor discussion while cross-workspace replies and stale locks fail\nok 456 - moderation-off settings permit immediate editor discussion while cross-workspace replies and stale locks fail\n  ---\n  duration_ms: 39.597478\n  type: 'test'\n  ...\n# Subtest: forum and reply retries have one receipt each and rollback leaves no unlogged content\nok 457 - forum and reply retries have one receipt each and rollback leaves no unlogged content\n  ---\n  duration_ms: 28.731093\n  type: 'test'\n  ...\n# Subtest: community reads paginate and omit foreign, hidden and teammate-pending contributions\nok 458 - community reads paginate and omit foreign, hidden and teammate-pending contributions\n  ---\n  duration_ms: 42.895713\n  type: 'test'\n  ...\n# Subtest: malformed moderation, huge bodies and command envelopes fail without any write\nok 459 - malformed moderation, huge bodies and command envelopes fail without any write\n  ---\n  duration_ms: 37.018699\n  type: 'test'\n  ...\n# Subtest: demo, anonymous and changed scopes make no private control requests\nok 460 - demo, anonymous and changed scopes make no private control requests\n  ---\n  duration_ms: 2.442063\n  type: 'test'\n  ...\n# Subtest: independent readers have no shared cancellation key and reject mismatched backend data\nok 461 - independent readers have no shared cancellation key and reject mismatched backend data\n  ---\n  duration_ms: 0.768527\n  type: 'test'\n  ...\n# Subtest: late reads and writes disappear after account or workspace changes\nok 462 - late reads and writes disappear after account or workspace changes\n  ---\n  duration_ms: 0.839862\n  type: 'test'\n  ...\n# Subtest: partial admin, community and integration responses fail explicitly before controls render\nok 463 - partial admin, community and integration responses fail explicitly before controls render\n  ---\n  duration_ms: 60.642507\n  type: 'test'\n  ...\n# Subtest: failure to create a secure retry identifier sends no mutation and leaves no pending request\nok 464 - failure to create a secure retry identifier sends no mutation and leaves no pending request\n  ---\n  duration_ms: 0.569206\n  type: 'test'\n  ...\n# Subtest: unconfirmed saves freeze command identity until their original response is recovered\nok 465 - unconfirmed saves freeze command identity until their original response is recovered\n  ---\n  duration_ms: 6.667298\n  type: 'test'\n  ...\n# Subtest: concurrent submission is bounded and malformed success remains an uncertain save\nok 466 - concurrent submission is bounded and malformed success remains an uncertain save\n  ---\n  duration_ms: 0.576042\n  type: 'test'\n  ...\n# Subtest: explicit permission and revision rejections allow corrected commands without claiming a save\nok 467 - explicit permission and revision rejections allow corrected commands without claiming a save\n  ---\n  duration_ms: 4.077869\n  type: 'test'\n  ...\n# Subtest: the real browser adapter recovers one member grant, wiki page and topic after server persistence loses each response\nok 468 - the real browser adapter recovers one member grant, wiki page and topic after server persistence loses each response\n  ---\n  duration_ms: 24.297483\n  type: 'test'\n  ...\n# Subtest: a current editor can attach authored evidence to a readable teammate mission\nok 469 - a current editor can attach authored evidence to a readable teammate mission\n  ---\n  duration_ms: 9.050366\n  type: 'test'\n  ...\n# Subtest: evidence stays with its author and original workspace on update\nok 470 - evidence stays with its author and original workspace on update\n  ---\n  duration_ms: 7.436657\n  type: 'test'\n  ...\n# Subtest: foreign, missing or unreadable missions cannot receive an evidence link\nok 471 - foreign, missing or unreadable missions cannot receive an evidence link\n  ---\n  duration_ms: 2.996719\n  type: 'test'\n  ...\n# Subtest: viewers, removed members and other-workspace membership cannot write or delete evidence\nok 472 - viewers, removed members and other-workspace membership cannot write or delete evidence\n  ---\n  duration_ms: 7.262211\n  type: 'test'\n  ...\n# Subtest: the workspace owner retains authored evidence writes without a membership row\nok 473 - the workspace owner retains authored evidence writes without a membership row\n  ---\n  duration_ms: 4.285447\n  type: 'test'\n  ...\n# Subtest: native request hooks enforce create, update and delete through the evidence policy\nok 474 - native request hooks enforce create, update and delete through the evidence policy\n  ---\n  duration_ms: 2.295373\n  type: 'test'\n  ...\n# Subtest: the migration shares workspace and evidence reads without changing writes, fields or records; replay and down retain data\nok 475 - the migration shares workspace and evidence reads without changing writes, fields or records; replay and down retain data\n  ---\n  duration_ms: 2.384265\n  type: 'test'\n  ...\n# Subtest: migration refuses custom read rules before changing any collection in either direction\nok 476 - migration refuses custom read rules before changing any collection in either direction\n  ---\n  duration_ms: 1.330923\n  type: 'test'\n  ...\n# Subtest: missing membership schema stops the read migration\nok 477 - missing membership schema stops the read migration\n  ---\n  duration_ms: 0.948617\n  type: 'test'\n  ...\n# Subtest: workspace room preserves provenance without promoting recorded verification or inferred ownership\nok 478 - workspace room preserves provenance without promoting recorded verification or inferred ownership\n  ---\n  duration_ms: 26.393969\n  type: 'test'\n  ...\n# Subtest: capability and development projections contain only existing records and source relations\nok 479 - capability and development projections contain only existing records and source relations\n  ---\n  duration_ms: 0.570055\n  type: 'test'\n  ...\n# Subtest: bounded and unavailable source coverage remains partial rather than a complete inventory\nok 480 - bounded and unavailable source coverage remains partial rather than a complete inventory\n  ---\n  duration_ms: 0.201864\n  type: 'test'\n  ...\n# Subtest: published graph parsing rejects wrong rooms, duplicate identities and dangling relationships\nok 481 - published graph parsing rejects wrong rooms, duplicate identities and dangling relationships\n  ---\n  duration_ms: 7.497199\n  type: 'test'\n  ...\n# Subtest: home and workspace agree on active mission and verified evidence states\nok 482 - home and workspace agree on active mission and verified evidence states\n  ---\n  duration_ms: 2.457916\n  type: 'test'\n  ...\n# Subtest: today uses the local calendar and excludes unknown and future timestamps\nok 483 - today uses the local calendar and excludes unknown and future timestamps\n  ---\n  duration_ms: 0.252449\n  type: 'test'\n  ...\n# Subtest: editions show the latest publication, excluding drafts, future and invalid dates\nok 484 - editions show the latest publication, excluding drafts, future and invalid dates\n  ---\n  duration_ms: 0.31291\n  type: 'test'\n  ...\n# Subtest: correction previews require both halves of a verified comparison\nok 485 - correction previews require both halves of a verified comparison\n  ---\n  duration_ms: 1.310717\n  type: 'test'\n  ...\n# Subtest: a reported amount requires a real sync and currency, not just a connection state\nok 486 - a reported amount requires a real sync and currency, not just a connection state\n  ---\n  duration_ms: 0.41396\n  type: 'test'\n  ...\n# Subtest: amounts preserve currency and missing fees never become zero\nok 487 - amounts preserve currency and missing fees never become zero\n  ---\n  duration_ms: 45.758748\n  type: 'test'\n  ...\n# Subtest: timestamps never turn missing provenance into an epoch or Invalid Date\nok 488 - timestamps never turn missing provenance into an epoch or Invalid Date\n  ---\n  duration_ms: 6.856671\n  type: 'test'\n  ...\n1..488\n# tests 488\n# suites 0\n# pass 488\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 21537.7038\n",
+      "receipt_sha256": "239900b34c07ce7bb54677670c1bd9a929e5562544a47ab175a8dab2a9ef5a4e"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "python",
+          "-m",
+          "unittest",
+          "tests.upgrade.test_blueprint_extraction",
+          "tests.upgrade.test_blueprint_pipeline",
+          "tests.upgrade.test_blueprint_service",
+          "tests.upgrade.test_blueprints",
+          "tests.upgrade.test_business_worker",
+          "tests.upgrade.test_datadog_metrics",
+          "tests.upgrade.test_decision_runtime",
+          "tests.upgrade.test_discordbot_adapter",
+          "tests.upgrade.test_discordbot_commands",
+          "tests.upgrade.test_discordbot_doctor",
+          "tests.upgrade.test_discordbot_dossier",
+          "tests.upgrade.test_discordbot_public",
+          "tests.upgrade.test_discordbot_research",
+          "tests.upgrade.test_federal_foundry",
+          "tests.upgrade.test_hostinger_readiness",
+          "tests.upgrade.test_hostinger_replay",
+          "tests.upgrade.test_mission_suite",
+          "tests.upgrade.test_operator_compiler",
+          "tests.upgrade.test_policy_intelligence",
+          "tests.upgrade.test_research_runtime",
+          "tests.upgrade.test_semantic_twin",
+          "tests.upgrade.test_semantic_twin_contracts",
+          "tests.upgrade.test_semantic_twin_ingestion",
+          "tests.upgrade.test_semantic_twin_integration",
+          "tests.upgrade.test_semantic_twin_integration_v2",
+          "tests.upgrade.test_semantic_twin_phase1_complete",
+          "tests.upgrade.test_submission_readiness",
+          "tests.upgrade.test_supply_chain",
+          "tests.upgrade.test_theme_contrast"
+        ],
+        "artifacts": {},
+        "check": "source_python",
+        "counts": {
+          "failures": 0,
+          "skipped": 6,
+          "tests": 533
+        },
+        "exit_code": 0,
+        "finished_at": "2026-09-21T00:47:26.282473+00:00",
+        "level": "source",
+        "log": "source_python-package-1789951580243797617.log",
+        "log_sha256": "a487efa763cb42bc8c43aeb6d7318f3af604d307d814ada0a5e86751e0b29650",
+        "profile": "package",
+        "reason": "Tests were empty, failing or skipped; acceptance is incomplete.",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:46:20.243793+00:00",
+        "status": "HOLD"
+      },
+      "log_utf8": ".......s..............s.................................s.s..............business_worker_stopped\n.business_action_unavailable\n...........................................................s.............................................................................................................................................................{\"event\": \"suite.worker.unavailable\", \"outcome\": \"\", \"reason\": \"unavailable\", \"duration_ms\": null, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"\", \"tenant_id\": \"\", \"mission_id\": \"\", \"correlation_id\": \"\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n..{\"event\": \"suite.operation.blocked\", \"outcome\": \"\", \"reason\": \"configuration_or_input\", \"duration_ms\": null, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"\", \"tenant_id\": \"\", \"mission_id\": \"\", \"correlation_id\": \"\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n...{\"event\": \"suite.run.recorded\", \"outcome\": \"failed\", \"reason\": \"invalid_data\", \"duration_ms\": 3, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"9b65935efc70b208d680b03ba4dd56718856bdd5125d02b30b3e00dd7d4cc6fd\", \"tenant_id\": \"ws1\", \"mission_id\": \"mission1\", \"correlation_id\": \"record000000009\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n.{\"event\": \"suite.run.recorded\", \"outcome\": \"ready\", \"reason\": \"\", \"duration_ms\": 10, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"9b65935efc70b208d680b03ba4dd56718856bdd5125d02b30b3e00dd7d4cc6fd\", \"tenant_id\": \"ws1\", \"mission_id\": \"mission1\", \"correlation_id\": \"record000000009\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n.{\"event\": \"suite.run.recorded\", \"outcome\": \"ready\", \"reason\": \"\", \"duration_ms\": 9, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"9b65935efc70b208d680b03ba4dd56718856bdd5125d02b30b3e00dd7d4cc6fd\", \"tenant_id\": \"ws1\", \"mission_id\": \"mission1\", \"correlation_id\": \"record000000009\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n..............................................................s.....{\"event\": \"research.startup.blocked\", \"outcome\": \"\", \"reason\": \"configuration\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\"}\n.......{\"event\": \"research.processing.recorded\", \"outcome\": \"failed\", \"reason\": \"capability_unavailable\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\"}\n..{\"event\": \"research.processing.recorded\", \"outcome\": \"failed\", \"reason\": \"capability_unavailable\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\"}\n..............................................................................................................................................................\n----------------------------------------------------------------------\nRan 533 tests in 64.156s\n\nOK (skipped=6)\nDiscord adapter backend: explicit transport double; native acceptance pending\n",
+      "receipt_sha256": "0620911dbaffd03cbb02250519c364aa3d2cef3bf3118ca5fba13b84cb6d0a68"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "artifacts": {},
+        "check": "web_build",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": 127,
+        "finished_at": "2026-09-21T00:48:00.485556+00:00",
+        "level": "build",
+        "log": "web_build-package-1789951680065053593.log",
+        "log_sha256": "5ea869f8ced673362379859fa489acad9ddb0b4cacc0736eaa28e4ba11c2f5dc",
+        "profile": "package",
+        "reason": "The required command failed; inspect its retained log.",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:48:00.065049+00:00",
+        "status": "FAIL"
+      },
+      "log_utf8": "\n> monorepo@0.0.0 build\n> concurrently --raw \"npm run build --prefix apps/web\"\n\nsh: 1: concurrently: not found\nThe required command failed; inspect its retained log.\n",
+      "receipt_sha256": "178768de0daf503dfa4b420cbbf4532f33641d41ccb79c3cdc12363c518a1df1"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "npm",
+          "--prefix",
+          "apps/web",
+          "run",
+          "lint"
+        ],
+        "artifacts": {},
+        "check": "web_lint",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": 2,
+        "finished_at": "2026-09-21T00:47:59.586573+00:00",
+        "level": "source",
+        "log": "web_lint-package-1789951676352606848.log",
+        "log_sha256": "f7ddcd036c6cd0cf8264c8ad353578b5228c6bda84b265a5ba4aa95f0ef6c4be",
+        "profile": "package",
+        "reason": "The required command failed; inspect its retained log.",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:47:56.352602+00:00",
+        "status": "FAIL"
+      },
+      "log_utf8": "\n> web@0.0.0 lint\n> node tools/lint.mjs\n\n\nOops! Something went wrong! :(\n\nESLint: 9.16.0\n\nError [ERR_MODULE_NOT_FOUND]: Cannot find package 'eslint-plugin-import' imported from /workspace/repo/apps/web/eslint.config.mjs\n    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:316:9)\n    at packageResolve (node:internal/modules/esm/resolve:768:81)\n    at moduleResolve (node:internal/modules/esm/resolve:858:18)\n    at defaultResolve (node:internal/modules/esm/resolve:990:11)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:718:20)\n    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:735:38)\n    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:764:52)\n    at #resolve (node:internal/modules/esm/loader:700:17)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:35)\n    at ModuleJob.syncLink (node:internal/modules/esm/module_job:143:33)\n\nOops! Something went wrong! :(\n\nESLint: 9.16.0\n\nError [ERR_MODULE_NOT_FOUND]: Cannot find package 'eslint-plugin-import' imported from /workspace/repo/apps/web/eslint.config.mjs\n    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:316:9)\n    at packageResolve (node:internal/modules/esm/resolve:768:81)\n    at moduleResolve (node:internal/modules/esm/resolve:858:18)\n    at defaultResolve (node:internal/modules/esm/resolve:990:11)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:718:20)\n    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:735:38)\n    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:764:52)\n    at #resolve (node:internal/modules/esm/loader:700:17)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:35)\n    at ModuleJob.syncLink (node:internal/modules/esm/module_job:143:33)\nnpm notice\nnpm notice New minor version of npm available! 11.6.2 -> 11.19.1\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.1\nnpm notice To update run: npm install -g npm@11.19.1\nnpm notice\nThe required command failed; inspect its retained log.\n",
+      "receipt_sha256": "e8c386f8ddd16bca60fdfc302f7fab37ec364e754dd380fe8bc7881f49e272af"
+    },
+    {
+      "receipt": {
+        "argv": [
+          "npm",
+          "--prefix",
+          "apps/web",
+          "run",
+          "test:coverage",
+          "--",
+          "--reporter=default",
+          "--reporter=junit",
+          "--outputFile.junit=../../reports/junit/web.xml"
+        ],
+        "artifacts": {},
+        "check": "web_tests",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "exit_code": 127,
+        "finished_at": "2026-09-21T00:48:00.064222+00:00",
+        "level": "rendered",
+        "log": "web_tests-package-1789951679587325554.log",
+        "log_sha256": "39459eea9bbcdd1ab9f11f5cd880b0e03629764f5c05756722c4032f3c3e0404",
+        "profile": "package",
+        "reason": "The required command failed; inspect its retained log.",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "schema_version": "buildanddo.acceptance/v1",
+        "source_sha256": "566a86f14558123360945a0fa9cb24c700814a20839eaf7b1c374ccb4f9381ab",
+        "started_at": "2026-09-21T00:47:59.587321+00:00",
+        "status": "FAIL"
+      },
+      "log_utf8": "\n> web@0.0.0 test:coverage\n> vitest run --coverage --reporter=default --reporter=junit --outputFile.junit=../../reports/junit/web.xml\n\nsh: 1: vitest: not found\nThe required command failed; inspect its retained log.\n",
+      "receipt_sha256": "7625d5557290d642a2f6cfae704922e08bd633ed284318a63258eea00409be02"
+    }
+  ],
+  "worker_submission_source_gate": {
+    "status": "PASS",
+    "tests": 32,
+    "failures": 0,
+    "skipped": 0,
+    "coverage_kind": "Python trace statement lines; no branch-coverage claim",
+    "fixture_scope": "Synthetic provider, runtime-loop and captured-evidence fixtures; zero external effects",
+    "coverage": {
+      "apps/mission_suite/business_worker.py": {
+        "covered": 345,
+        "statements": 368,
+        "percent": 93.75
+      },
+      "scripts/ci/submission_readiness.py": {
+        "covered": 361,
+        "statements": 364,
+        "percent": 99.18
+      }
+    }
+  },
+  "assistant_browser": {
+    "schema_version": "buildanddo.assistant-browser-check/v1",
+    "observed_at": "2026-09-21T00:42:47.665Z",
+    "scope": "Production DOM helper in Chromium with synthetic controls; no rendered React, model, native backend or deployment claim",
+    "tests": 21,
+    "passed": 21,
+    "failed": 0,
+    "results": [
+      {
+        "name": "metadata excludes values, hidden/disabled/readonly inputs, private controls and authority actions",
+        "status": "PASS"
+      },
+      {
+        "name": "native input setter emits input and change events",
+        "status": "PASS"
+      },
+      {
+        "name": "native textarea setter emits input and change events",
+        "status": "PASS"
+      },
+      {
+        "name": "current select options exclude human-authority values",
+        "status": "PASS"
+      },
+      {
+        "name": "checkbox updates through one native click and skips unchanged values",
+        "status": "PASS"
+      },
+      {
+        "name": "field length and unknown option limits are enforced at application",
+        "status": "PASS"
+      },
+      {
+        "name": "activation stops before later controls and reports a partial plan",
+        "status": "PASS"
+      },
+      {
+        "name": "navigation is local and stops before destination interactions",
+        "status": "PASS"
+      },
+      {
+        "name": "stale routes, surfaces and account authority prevent changes",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening user edit invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening disabled invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening removed invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening label changed invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening hidden invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "changed select options invalidate the original surface",
+        "status": "PASS"
+      },
+      {
+        "name": "human boundary role=\"dialog\" aria-label=\"Mission approval\" excludes generic confirmation and background",
+        "status": "PASS"
+      },
+      {
+        "name": "human boundary role=\"alertdialog\" excludes generic confirmation and background",
+        "status": "PASS"
+      },
+      {
+        "name": "human boundary role=\"dialog\" data-assistant-authority=\"human\" excludes generic confirmation and background",
+        "status": "PASS"
+      },
+      {
+        "name": "ordinary modal and menu control scopes exclude the background",
+        "status": "PASS"
+      },
+      {
+        "name": "a changed later control retains only the completed steps",
+        "status": "PASS"
+      },
+      {
+        "name": "control count is bounded for a large real form",
+        "status": "PASS"
+      }
+    ]
+  },
+  "assistant_browser_red": {
+    "schema_version": "buildanddo.assistant-browser-check/v1",
+    "observed_at": "2026-09-21T00:41:27.901Z",
+    "scope": "Production DOM helper in Chromium with synthetic controls; no rendered React, model, native backend or deployment claim",
+    "tests": 21,
+    "passed": 20,
+    "failed": 1,
+    "results": [
+      {
+        "name": "metadata excludes values, hidden/disabled/readonly inputs, private controls and authority actions",
+        "status": "PASS"
+      },
+      {
+        "name": "native input setter emits input and change events",
+        "status": "PASS"
+      },
+      {
+        "name": "native textarea setter emits input and change events",
+        "status": "PASS"
+      },
+      {
+        "name": "current select options exclude human-authority values",
+        "status": "FAIL",
+        "observation": "Cannot read properties of undefined (reading 'options')"
+      },
+      {
+        "name": "checkbox updates through one native click and skips unchanged values",
+        "status": "PASS"
+      },
+      {
+        "name": "field length and unknown option limits are enforced at application",
+        "status": "PASS"
+      },
+      {
+        "name": "activation stops before later controls and reports a partial plan",
+        "status": "PASS"
+      },
+      {
+        "name": "navigation is local and stops before destination interactions",
+        "status": "PASS"
+      },
+      {
+        "name": "stale routes, surfaces and account authority prevent changes",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening user edit invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening disabled invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening removed invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening label changed invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "intervening hidden invalidates the captured control",
+        "status": "PASS"
+      },
+      {
+        "name": "changed select options invalidate the original surface",
+        "status": "PASS"
+      },
+      {
+        "name": "human boundary role=\"dialog\" aria-label=\"Mission approval\" excludes generic confirmation and background",
+        "status": "PASS"
+      },
+      {
+        "name": "human boundary role=\"alertdialog\" excludes generic confirmation and background",
+        "status": "PASS"
+      },
+      {
+        "name": "human boundary role=\"dialog\" data-assistant-authority=\"human\" excludes generic confirmation and background",
+        "status": "PASS"
+      },
+      {
+        "name": "ordinary modal and menu control scopes exclude the background",
+        "status": "PASS"
+      },
+      {
+        "name": "a changed later control retains only the completed steps",
+        "status": "PASS"
+      },
+      {
+        "name": "control count is bounded for a large real form",
+        "status": "PASS"
+      }
+    ]
+  },
+  "browser_fix": "Read associated labels without descendant controls so option text cannot suppress an ordinary select; privileged options remain excluded.",
+  "selected_javascript_coverage": {
+    "kind": "Node V8 line coverage with explicit storage/transport fixtures; measured earlier in this run on unchanged selected backend bytes",
+    "modules": {
+      "apps/pocketbase/pb_hooks/workspace-onboarding.js": 100.0,
+      "apps/pocketbase/pb_hooks/business-action-policy.js": 100.0,
+      "apps/pocketbase/pb_hooks/business-actions.js": 97.89,
+      "apps/pocketbase/pb_hooks/assistant-policy.js": 100.0,
+      "apps/pocketbase/pb_hooks/workspace-assistant.js": 99.6
+    },
+    "browser_client_coverage_limit": "DOM helper functions are exercised by the separate Chromium fixture, not counted as React coverage."
+  },
+  "other_checks": [
+    {
+      "command": "python -m mypy --strict --follow-imports=silent scripts/ci/submission_readiness.py apps/mission_suite/business_worker.py",
+      "status": "PASS",
+      "observed": "Success: no issues found in 2 source files"
+    },
+    {
+      "command": "python -m ruff check scripts/ci/submission_readiness.py apps/mission_suite/business_worker.py tests/upgrade/check_sprint_execution.py tests/upgrade/test_business_worker.py tests/upgrade/test_submission_readiness.py tests/upgrade/test_workspace_native.py",
+      "status": "PASS",
+      "observed": "All checks passed"
+    },
+    {
+      "command": "node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs",
+      "status": "PASS",
+      "observed": "305 modules parsed; 0 static errors; not repository lint or UI execution"
+    },
+    {
+      "command": "python scripts/ci/submission_readiness.py --check",
+      "status": "PASS",
+      "observed": "Eleven internal checkpoints; official rules remain unknown"
+    },
+    {
+      "command": "python scripts/ci/agent_context.py --check",
+      "status": "PASS",
+      "observed": "Context lock matches; 6 findings and 4 unwired gates remain"
+    },
+    {
+      "command": "python scripts/ci/hostinger_readiness.py --check",
+      "status": "PASS",
+      "observed": "Reviewed source binding matches all eleven milestone requirements"
+    }
+  ],
+  "native_fixture_syntax": {
+    "status": "PASS",
+    "embedded_javascript": [
+      "AUTH",
+      "SEED"
+    ],
+    "migration_files_found": 16,
+    "native_runtime_executed": false
+  },
+  "new_unexecuted_cases": {
+    "rendered_react": 23,
+    "native_workspace_added": 3,
+    "native_workspace_total": 6,
+    "runtime_profiles": [
+      "package:0.39.8",
+      "compose:0.28.4"
+    ]
+  },
+  "limits": [
+    "No full React application, deployed browser, native PocketBase, live model, Firecrawl/n8n, staging or production acceptance was executed.",
+    "Five pypdf and one discord.py source dependency skips retain HOLD; runtime native cases are separated, never counted as passes.",
+    "No actual official competition terms, eligibility, deadline or submission confirmation have been verified.",
+    "Earlier account billing and separate hosting failures are historical observations; no new hosted job result is asserted.",
+    "Record exports and source/receipt hashes do not authenticate an external reviewer or establish business truth."
+  ]
+}

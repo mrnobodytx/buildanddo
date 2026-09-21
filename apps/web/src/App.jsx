@@ -13,8 +13,10 @@ import { WorkspaceProvider, useWorkspace } from '@/contexts/WorkspaceContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageBoundary from '@/components/workspace/PageBoundary';
 import { workspaceDestination } from '@/lib/navigationIntent';
+import { isMasterSeat } from '@/lib/estateAccess';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
+const HostingerChallengePage = lazy(() => import('./pages/HostingerChallengePage'));
 const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
 const PracticePage = lazy(() => import('./pages/PracticePage'));
 const PlatformPage = lazy(() => import('./pages/PlatformPage'));
@@ -45,6 +47,8 @@ const DossierPage = lazy(() => import('./pages/workspace/DossierPage'));
 const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
 // Capability Passport viewer; file path retained from the former desks page so
 // existing /app/desks bookmarks keep resolving (SRS-BUILDANDDO-WITNESS-001).
+const SpecialistWorkPage = lazy(() => import('./pages/workspace/SpecialistWorkPage'));
+const ExecutionReplayPage = lazy(() => import('./pages/workspace/ExecutionReplayPage'));
 const CapabilityPassportPage = lazy(() => import('./pages/workspace/SpecialistDeskPage'));
 const CorrectionsPage = lazy(() => import('./pages/workspace/CorrectionsPage'));
 const SupportRevenuePage = lazy(() => import('./pages/workspace/SupportRevenuePage'));
@@ -68,6 +72,14 @@ const LiveExperimentRoomPage = lazy(() => import('./pages/workspace/LiveExperime
 // TelemetryBoundary still catches everything, but a root catch replaces the
 // whole screen — one broken page would take the navigation with it and leave
 // the operator with nothing but a reload.
+// Estate surfaces (Fleet) exist only for a signed-in master-level CNWB seat. Anyone else is sent to the workspace front
+// page: not a 403 page, because the surface should not exist for them at all. The level is backend-owned.
+function EstateOnly({ enabled, children }) {
+    const { user } = useAuth();
+    if (enabled && !isMasterSeat(user)) return <Navigate to="/app" replace />;
+    return children;
+}
+
 const WORKSPACE_ROUTES = [
     { index: true, label: 'Front Page', element: OverviewPage },
     { path: 'operator', label: 'Operator cockpit', element: OperatorPage },
@@ -79,7 +91,7 @@ const WORKSPACE_ROUTES = [
     { path: 'classrooms/:roomId', label: 'Classroom', element: ClassroomsPage },
     { path: 'erp', label: 'ERP', element: ErpPage },
     { path: 'operations', label: 'Operations', element: OperationsPage },
-    { path: 'fleet', label: 'Fleet', element: FleetPage },
+    { path: 'fleet', label: 'Fleet', element: FleetPage, estate: true },
     { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'research', label: 'Mission research', element: ResearchPage },
@@ -89,7 +101,8 @@ const WORKSPACE_ROUTES = [
     { path: 'suite', label: 'Mission suite', element: SuitePage },
     { path: 'dossier', label: 'My dossier', element: DossierPage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
-    { path: 'desks', label: 'Capability Passport', element: CapabilityPassportPage },
+    { path: 'desks', label: 'Specialist desks', element: SpecialistWorkPage },
+    { path: 'replay', label: 'Execution replay', element: ExecutionReplayPage },
     { path: 'passport', label: 'Capability Passport', element: CapabilityPassportPage },
     { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
     { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },
@@ -141,6 +154,7 @@ export function AppRoutes() {
             <Routes>
                 {/* Public marketing site */}
                 <Route path="/" element={<HomePage />} />
+                <Route path="/hostinger-challenge" element={<HostingerChallengePage />} />
                 <Route path="/roadmap" element={<RoadmapPage />} />
                 <Route path="/practice" element={<PracticePage />} />
                 <Route path="/platform" element={<PlatformPage />} />
@@ -191,7 +205,7 @@ export function AppRoutes() {
                         </ProtectedRoute>
                     }
                 >
-                    {WORKSPACE_ROUTES.map(({ path, index, label, element: Element }) => (
+                    {WORKSPACE_ROUTES.map(({ path, index, label, element: Element, estate }) => (
                         <Route
                             key={path || 'index'}
                             index={index}
@@ -199,7 +213,9 @@ export function AppRoutes() {
                             element={
                                 <PageBoundary key={path || 'index'} name={label}>
                                     <Suspense fallback={<RouteLoading />}>
-                                        <MotionEntrance><Element /></MotionEntrance>
+                                        <EstateOnly enabled={estate}>
+                                            <MotionEntrance><Element /></MotionEntrance>
+                                        </EstateOnly>
                                     </Suspense>
                                 </PageBoundary>
                             }

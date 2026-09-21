@@ -301,7 +301,7 @@ class NativeDossierTests(unittest.TestCase):
             "aliases": ["Native alias"],
             "tags": ["native"],
             "note": "Native private source note.",
-            "source_url": "https://buildanddo.tech/docs",
+            "source_url": "https://buildanddo.com/docs",
             "source_label": "Fixture source",
         }
 

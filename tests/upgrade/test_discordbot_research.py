@@ -53,7 +53,7 @@ class ResearchFlow(unittest.IsolatedAsyncioTestCase):
         source = reply.page.url.split('source=')[1]
         self.bridge.delivered(CALLER, reply.request_key)
         crawler = SimpleNamespace(json=AsyncMock(return_value={'success': True, 'data': {'web': [
-            {'title': 'Methodology', 'url': 'https://buildanddo.tech/docs', 'description': 'A retrieved source excerpt.'}]} }), close=AsyncMock())
+            {'title': 'Methodology', 'url': 'https://buildanddo.com/docs', 'description': 'A retrieved source excerpt.'}]} }), close=AsyncMock())
         worker = Worker(self.backend.client('worker'), 'ws1', Processor(ProcessorSettings(Endpoint('http://firecrawl:3002')), firecrawl=crawler))
         self.assertTrue(await worker.once())
         editor = self.backend.client('editor')
@@ -201,7 +201,7 @@ class ResearchFlow(unittest.IsolatedAsyncioTestCase):
         await bot.close()
 
     async def test_attachment_download_rejects_external_hosts_and_enforces_actual_bytes(self) -> None:
-        for url in ['https://buildanddo.tech/file', 'http://cdn.discordapp.com/attachments/a', 'https://cdn.discordapp.com/not-an-attachment']:
+        for url in ['https://buildanddo.com/file', 'http://cdn.discordapp.com/attachments/a', 'https://cdn.discordapp.com/not-an-attachment']:
             with self.assertRaises(ResearchError):
                 await self.bridge.download(Attachment(RID, 'a.txt', 3, url))
         with patch('scripts.discordbot.research.HttpClient.raw', new=AsyncMock(return_value=b'too long')):

@@ -1,5 +1,22 @@
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:         apps/web/src/pages/OnboardingPage.jsx
+// Stage:        07_BUILD
+// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// CAPS:         pending
+// CK:           pending
+// Dispatch:     VCC-BUILDANDDO-UPGRADE-001
+// Seat:         BITS-CODEGEN
+// Owner:        Citadel Nexus Inc.
+// Created:      2026-09-21
+// Depends:      apps/web/src/lib/onboarding.js, apps/web/src/contexts/AuthContext.jsx
+// EnumType:     Widget
+// EnumEdges:    DEPENDS_ON apps/web/src/lib/onboarding.js; DEPENDS_ON apps/web/src/contexts/AuthContext.jsx
+// DAG Node:     none
+// Intent:       Create a recoverable workspace while keeping selected domain input scoped to the current account.
+// ───────────────────────────────────────────────────────────────
+
 import { MotionEntrance } from '@/components/motion/MotionPrimitives';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import {
@@ -19,7 +36,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import pb from '@/lib/pocketbaseClient';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { workspaceDestination } from '@/lib/navigationIntent';
+import { createWorkspace as saveWorkspace } from '@/lib/onboarding';
 
 const DOMAIN_RE = /^(?!-)[a-z0-9-]{1,63}(?<!-)(\.[a-z0-9-]{2,63})+$/i;
 
@@ -44,52 +63,7 @@ const DEMO_RESULTS = [
     },
 ];
 
-const PLANNED_SERVICES = [
-    {
-        name: 'Firecrawl',
-        purpose: 'Controlled website and web-content extraction for domain discovery and research.',
-        data_boundary: 'Only fetches public web pages you target. No credentials stored.',
-        next_action: 'Add API key in Operations to enable live domain research.',
-    },
-    {
-        name: 'n8n',
-        purpose: 'Workflow orchestration for repeatable business automations.',
-        data_boundary: 'Runs workflows you define. Credentials live in your n8n instance.',
-        next_action: 'Connect your self-hosted n8n URL in Operations.',
-    },
-    {
-        name: 'Supabase',
-        purpose: 'Self-hosted authentication, database, storage, and workspace data layer.',
-        data_boundary: 'Holds workspace data you own. Keys stay in your instance.',
-        next_action: 'Point BuildAndDo at your Supabase project in Operations.',
-    },
-    {
-        name: 'Mautic',
-        purpose: 'Self-hosted marketing automation and campaign workflows.',
-        data_boundary: 'Sends campaigns to your audiences. Contacts stay in Mautic.',
-        next_action: 'Connect your Mautic base URL in Operations.',
-    },
-    {
-        name: 'Twenty',
-        purpose: 'Self-hosted CRM and customer relationship records.',
-        data_boundary: 'Customer records live in your Twenty instance.',
-        next_action: 'Connect your Twenty instance in Operations.',
-    },
-    {
-        name: 'Tutorial system',
-        purpose: 'Guided onboarding, product education, and task-based learning.',
-        data_boundary: 'Read-only lessons and your per-user progress.',
-        next_action: 'Already available — browse Tutorials any time.',
-    },
-    {
-        name: 'ERP system',
-        purpose: 'Operational records, processes, and business resource workflows.',
-        data_boundary: 'Objectives, tasks, and contacts for this workspace.',
-        next_action: 'Start recording objectives in the ERP workspace.',
-    },
-];
-
-export default function OnboardingPage() {
+function OnboardingDesk() {
     const navigate = useNavigate();
     const location = useLocation();
     const { refresh } = useWorkspace();
@@ -98,6 +72,9 @@ export default function OnboardingPage() {
     const [selected, setSelected] = useState(null);
     const [creating, setCreating] = useState(false);
     const [createError, setCreateError] = useState('');
+    const alive = useRef(true);
+    const pending = useRef(false);
+    useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
 
     const runSearch = (e) => {
         e?.preventDefault();
@@ -146,58 +123,23 @@ export default function OnboardingPage() {
     };
 
     const createWorkspace = async () => {
-        if (creating) return;
+        if (pending.current || !selected) return;
+        const account = pb.authStore.record?.id;
+        pending.current = true;
         setCreating(true);
         setCreateError('');
-        try {
-            const ownerId = pb.authStore.record.id;
-            // 1. Domain record (or skip if no website).
-            let domainId = null;
-            if (selected.domain) {
-                const domainRec = await pb.collection('domains').create({
-                    domain: selected.domain,
-                    status: 'selected',
-                    has_website: true,
-                    owner: ownerId,
-                });
-                domainId = domainRec.id;
-            }
-            // 2. Workspace around the domain.
-            const wsName = selected.domain
-                ? selected.domain.split('.')[0].replace(/-/g, ' ')
-                : 'My business';
-            const ws = await pb.collection('workspaces').create({
-                name: wsName.charAt(0).toUpperCase() + wsName.slice(1),
-                domain: domainId,
-                owner: ownerId,
-            });
-            // 3. Seed the 7 planned service cards for this workspace.
-            await Promise.all(
-                PLANNED_SERVICES.map((s, i) =>
-                    pb.collection('services').create(
-                        {
-                            name: s.name,
-                            purpose: s.purpose,
-                            data_boundary: s.data_boundary,
-                            status: s.name === 'Tutorial system' ? 'connected' : 'planned',
-                            next_action: s.next_action,
-                            workspace: ws.id,
-                            owner: ownerId,
-                        },
-                        { requestKey: `seed-service-${i}` },
-                    ),
-                ),
-            );
+        const label = selected.domain ? selected.domain.split('.')[0].replace(/-/g, ' ') : 'My business';
+        const result = await saveWorkspace(pb, account, {
+            name: label.charAt(0).toUpperCase() + label.slice(1), domain: selected.domain || '',
+        });
+        if (!alive.current || pb.authStore.record?.id !== account) { pending.current = false; return; }
+        if (result.ok) {
             await refresh();
-            navigate(workspaceDestination(location.state?.returnTo), { replace: true });
-        } catch (err) {
-            console.error('onboarding create failed', err);
-            setCreateError(
-                err?.response?.message ||
-                    'We couldn\u2019t create your workspace. Please try again.',
-            );
-            setCreating(false);
-        }
+            if (alive.current && pb.authStore.record?.id === account)
+                navigate(workspaceDestination(location.state?.returnTo), { replace: true });
+        } else setCreateError(result.error || 'Workspace setup could not be confirmed. Retry the same details.');
+        pending.current = false;
+        if (alive.current) setCreating(false);
     };
 
     return (
@@ -422,4 +364,9 @@ export default function OnboardingPage() {
             </main>
         </div>
     );
+}
+
+export default function OnboardingPage() {
+    const { user } = useAuth();
+    return <OnboardingDesk key={user?.id || 'anonymous'} />;
 }

@@ -1,0 +1,28 @@
+{
+  "schema": "buildanddo.day21-official-rules/v1",
+  "source": "https://www.hostinger.com/blog/21-day-startup-challenge/",
+  "observed_at": "2026-09-20T18:00:00+00:00",
+  "build_start": "2026-09-03",
+  "submission_deadline": "2026-09-24",
+  "winner_announcement": "2026-09-29",
+  "required_submission": [
+    "publicly accessible project or landing-page URL",
+    "short description of problem and solution",
+    "concise pitch and target audience",
+    "explanation of meaningful use of all four Hostinger products",
+    "screenshots, prompts, links, or other proof of the 21-day build journey"
+  ],
+  "rubric": {
+    "product_and_user_experience": 25,
+    "business_idea": 20,
+    "business_potential": 20,
+    "hostinger_product_usage": 20,
+    "creativity_and_innovation": 15
+  },
+  "products": [
+    "Unlimited Web Hosting",
+    "Hostinger Agents",
+    "Hostinger AI Builder",
+    "VPS KVM 1"
+  ]
+}

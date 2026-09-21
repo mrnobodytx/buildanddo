@@ -48,7 +48,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_DIR = ROOT / "apps" / "web" / "public"
-FLEET_OUT = PUBLIC_DIR / "fleet-status.json"
+# The fleet snapshot is estate-only since 2026-09-18: it is written under state/ (gitignored, never copied into dist)
+# and published to the backend host by the estate rail, where estate.pb.js serves it to master seats only.
+FLEET_OUT = ROOT / "state" / "estate" / "fleet-status.json"
 PLATFORM_OUT = PUBLIC_DIR / "platform-health.json"
 
 SCHEMA_VERSION = 1

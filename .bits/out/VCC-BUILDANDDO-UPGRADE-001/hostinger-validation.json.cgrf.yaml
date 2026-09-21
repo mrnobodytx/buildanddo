@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/hostinger-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-20
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/hostinger-validation.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/hostinger-validation.json
+# Intent:      Bind the recorded sprint source checks to measured counts and receipt digests while retaining unperformed runtime acceptance.
+# ───────────────────────────────────────────────────────────────
+schema_version: 1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/hostinger-validation.json
+evidence_scope: local source checks, explicit fixture coverage and unavailable acceptance
+runtime_acceptance: pending

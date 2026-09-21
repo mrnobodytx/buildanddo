@@ -1,15 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/ProgressionPipeline.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-COMMUNITY-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/components/site/ui.jsx, .github/workflows/pr-governance.yml
+// Depends:     apps/web/src/components/site/ui.jsx, .gitlab/ci/day21-submission.yml
 // EnumType:    Widget
-// EnumEdges:   VALIDATES .github/workflows/pr-governance.yml; USES_TEMPLATE apps/web/src/components/site/ui.jsx
+// EnumEdges:   VALIDATES .gitlab/ci/day21-submission.yml; USES_TEMPLATE apps/web/src/components/site/ui.jsx
 // Intent:      Show the contribution flow the repository actually enforces, one step at a time.
 // ───────────────────────────────────────────────────────────────
 
@@ -98,13 +99,13 @@ export const PIPELINE_STEPS = [
             'The claim gets evidence. "It builds" is not proof a feature works, so the verification is a command someone else can run.',
         checks: [
             'Lint passes',
-            'Web coverage and public telemetry adapter suites pass',
-            'Native Discord commands and research parser checks pass with source coverage',
-            'Native CPU blueprint extraction, BDR planning and PDF-to-session provenance pass with source coverage',
+            'GitLab runs source Node/Python, semantic-twin and web coverage suites',
+            'Skipped or unavailable dependencies keep acceptance incomplete',
             'Native PocketBase dossier, suite, operator and classroom auth, scoped reads, storage, presence, leases and retry checks pass for both declared runtimes',
-            'Portable mission suite behavior, replay, packaging and source coverage pass on Python 3.11 and 3.12',
-            'Federal foundry execution, evidence integrity, replay and portfolio exports pass on Python 3.11 and 3.12',
-            'Federal portfolio packets, provider-independent adapters, evidence checks and source coverage pass on Python 3.11 and 3.12',
+            'Native interactive tutorial checkpoints, completion certificates, concurrent credit and migration retention pass for both declared runtimes',
+            'Native signal proposals, ordered workflow receipts, separate mission review and operator readback pass for both declared runtimes',
+            'All eighteen acceptance profiles pass for the same candidate',
+            'Receipts, logs, JUnit and the build artifact remain available for revalidation',
             'Every manifest matches the dependency lockfile',
             'Verification commands from the issue produce their stated output',
         ],
@@ -136,6 +137,21 @@ export const PIPELINE_STEPS = [
             'agent_context.py --check finds the lock current',
         ],
         tag: 'governance:boundary-scan',
+    },
+    {
+        id: 'readiness',
+        label: 'Sprint readiness',
+        icon: ShieldCheck,
+        actor: 'ci',
+        description:
+            'Every milestone keeps a reason, owner, acceptance requirement and next step bound to the reviewed source.',
+        checks: [
+            'All eleven milestone definitions match the canonical sprint plan',
+            'Changed source requires another governance review',
+            'Skipped, stale or synthetic evidence cannot establish completed acceptance',
+            'Internal submission standards remain separate from official eligibility and deadlines',
+        ],
+        tag: 'governance:readiness',
     },
     {
         id: 'review',

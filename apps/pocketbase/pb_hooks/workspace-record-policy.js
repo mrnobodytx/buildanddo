@@ -17,7 +17,7 @@
 
 const access = require(`${__hooks}/workspace-access.js`);
 const ADMIN_ONLY = ['services', 'social_channels'];
-const RELATIONS = { evidence: { mission: 'missions' }, erp_tasks: { objective: 'erp_objectives', contact: 'erp_contacts' },
+const RELATIONS = { evidence: { mission: 'missions' }, erp_tasks: { objective: 'erp_objectives', contact: 'erp_contacts', mission: 'missions' },
     social_content: { objective: 'erp_objectives' }, operation_runs: { operation: 'operations' } };
 
 /** Enforce the same account/workspace boundary for native CRUD and custom commands. */
@@ -37,7 +37,20 @@ function enforce(e, operation) {
     } else if (record.getString('owner') !== e.auth.id) {
         throw new ForbiddenError('Only the author with current write access may delete this record.');
     }
+    if (operation === 'delete' && name === 'missions') {
+        const runs = e.app.findRecordsByFilter('workflow_runs', 'mission = {:mission}', '', 1, 0, { mission: record.id });
+        if (record.getString('status') === 'verified' || runs.length)
+            access.invalid('Retain reviewed missions and their execution history. Record a new mission or correction.');
+    }
     if (operation !== 'delete') {
+        const protectedFields = name === 'signals' ? ['ingest_digest', 'ingest_url', 'ingest_provider', 'ingested_at'] :
+            name === 'erp_tasks' ? ['execution', 'evidence'] : [];
+        if (protectedFields.some((field) => operation === 'create' ? record.getString(field) :
+            record.getString(field) !== record.original().getString(field)))
+            access.invalid('Execution and source provenance are written only by their retained receipts.');
+        if (name === 'signals' && operation === 'update' && record.original().getString('ingest_digest') &&
+            ['title', 'description', 'source', 'type'].some((field) => record.getString(field) !== record.original().getString(field)))
+            access.invalid('Retain captured source text; record a separate correction or a new capture.');
         for (const [field, target] of Object.entries(RELATIONS[name] || {})) {
             const id = record.getString(field);
             if (!id) continue;

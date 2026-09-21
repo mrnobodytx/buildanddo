@@ -193,17 +193,17 @@ export default function EditorialFrontPage({ sources = {}, workspaceControls, wo
                         <div className="frontpage-masthead__top">
                             <span className="frontpage-edition-stamp">Learn<br />Build<br />Verify</span>
                             <span className="frontpage-monogram" aria-hidden="true">B<span>&amp;</span>D</span>
-                            <span className="frontpage-edition-stamp">The daily<br />working<br />edition</span>
+                            <span className="frontpage-edition-stamp">The daily<br />learning<br />edition</span>
                         </div>
                         <h1>BUILDANDDO</h1>
                         <p><span aria-hidden="true">◆</span> Learn by doing real work. <span aria-hidden="true">◆</span></p>
                     </header>
                     <div className="frontpage-running-line">
                         <span className="editorial-eyebrow">{edition ? 'From your workspace' : 'The front page'}</span>
-                        <span>{edition ? `Published ${editorialDate(edition.edition_date || edition.created)}` : 'People, ideas, and the work that connects them.'}</span>
+                        <span>{edition ? `Published ${editorialDate(edition.edition_date || edition.created)}` : 'Learn with people and AI. Build together. Keep the evidence.'}</span>
                     </div>
                     <section className="frontpage-lead">
-                        <h2>{edition ? edition.title : <>Your business.<br />In its own words<br /><em>and records.</em></>}</h2>
+                        <h2>{edition ? edition.title : <>Learn by doing.<br />Build something<br /><em>real. Together.</em></>}</h2>
                         <p className="frontpage-lead__summary">{edition
                             ? edition.summary || 'Read the published edition and inspect its supporting records in your workspace.'
                             : 'See what changed, choose a next step, and inspect the evidence. Learn with people and AI. Build something real. Keep a record of what you discover.'}</p>

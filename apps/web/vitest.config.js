@@ -32,6 +32,14 @@ export default defineConfig({
         // differently from the build is not testing the shipped module graph.
         extensions: ['.jsx', '.js', '.json'],
         alias: {
+            // Order matters: the specific entry must precede the '@' prefix rule.
+            // SelectContent's default position="popper" never settles under jsdom — the
+            // measurements and the six ruled-out causes are in src/test/select-testable.jsx.
+            // The real Radix component still runs; only the positioning strategy is pinned to the
+            // one that terminates, and pixel placement is what a DOM without layout cannot check
+            // either way.
+            '@/components/ui/select': fileURLToPath(
+                new URL('./src/test/select-testable.jsx', import.meta.url)),
             '@': srcDir,
         },
     },

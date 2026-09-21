@@ -53,6 +53,10 @@ function erp(e, creating) {
     if (name === 'erp_tasks') {
         relation(e, 'objective', 'erp_objectives');
         relation(e, 'contact', 'erp_contacts');
+        relation(e, 'mission', 'missions');
+        if (!creating && record.original().getString('execution') &&
+            record.getString('mission') !== record.original().getString('mission'))
+            access.invalid('Keep an executed task linked to its approved mission.');
         if (!record.getString('priority')) record.set('priority', 'normal');
         if (!['todo', 'in_progress', 'done'].includes(record.getString('status')) ||
             !['low', 'normal', 'high'].includes(record.getString('priority')))

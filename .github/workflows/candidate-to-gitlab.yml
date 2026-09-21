@@ -81,10 +81,18 @@ jobs:
             exit 1
           fi
 
-          git config user.name "BuildAndDo Candidate Bot"
-          git config user.email "buildanddo-candidate@users.noreply.github.com"
-          git add -f BUILDANDDO_CANDIDATE_PROVENANCE.json
-          git commit -m "ci: candidate provenance for ${GITHUB_SHA}" || true
+          # SAME-SHA INVARIANT.
+          # Provenance describes the candidate; it must never become a new candidate.
+          # The previous revision committed BUILDANDDO_CANDIDATE_PROVENANCE.json here,
+          # which moved HEAD and propagated a DIFFERENT commit to GitLab than
+          # ${GITHUB_SHA}. That file is already uploaded as a workflow artifact above,
+          # so the commit was redundant as well as unsound. Evidence is transported as
+          # evidence, never as history.
+          ACTUAL="$(git rev-parse HEAD)"
+          if [ "$ACTUAL" != "$GITHUB_SHA" ]; then
+            echo "HOLD: candidate SHA mutated expected=$GITHUB_SHA actual=$ACTUAL"
+            exit 1
+          fi
 
           cat > "$RUNNER_TEMP/git-askpass.sh" <<'EOF'
           #!/usr/bin/env sh
@@ -100,4 +108,25 @@ jobs:
 
           git remote remove gitlab-intake 2>/dev/null || true
           git remote add gitlab-intake "$GITLAB_REPO_URL"
-          git push --force-with-lease gitlab-intake HEAD:refs/heads/buildanddo-source
+          # Push the exact candidate object rather than HEAD, so that if anything ever
+          # moves HEAD again the guard above fails the job instead of silently
+          # shipping a different lineage to GitLab.
+          git push --force-with-lease gitlab-intake "${GITHUB_SHA}:refs/heads/buildanddo-source"
+
+      - name: Verify GitLab received the EXACT candidate SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          # A successful push does not prove propagation. Ask GitLab whether the commit
+          # object exists, by SHA. A 200 here IS the same-SHA invariant; anything else
+          # holds the release at this boundary rather than downstream.
+          API="${GITLAB_API_URL:-https://gitlab.citadel-nexus.com/api/v4}"
+          PROJ="${GITLAB_PROJECT_ID:-104}"
+          CODE="$(curl -sS -o /tmp/glcommit.json -w "%{http_code}" \
+            -H "PRIVATE-TOKEN: ${GITLAB_INGEST_TOKEN}" \
+            "${API}/projects/${PROJ}/repository/commits/${GITHUB_SHA}")"
+          if [ "$CODE" != "200" ]; then
+            echo "HOLD: GitLab has no commit object ${GITHUB_SHA} (http=${CODE})"
+            exit 1
+          fi
+          echo "PROPAGATION VERIFIED: GitLab holds ${GITHUB_SHA}"

@@ -1,0 +1,508 @@
+{
+  "schema_version": "buildanddo.hostinger-readiness/v1",
+  "campaign_id": "citadel-21-day-2026-09",
+  "srs": "SRS-BUILDANDDO-UPGRADE-001",
+  "dispatch": "VCC-BUILDANDDO-UPGRADE-001",
+  "pieces": [
+    {
+      "id": "HS-01",
+      "day": 1,
+      "title": "Sprint kickoff - foundations",
+      "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim.",
+      "owner": "BITS-CODEGEN / repository owner",
+      "sources": [
+        "AGENTS.md",
+        ".bits/context.md",
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+        ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+        ".github/workflows/pr-governance.yml",
+        "scripts/ci",
+        "package.json",
+        "package-lock.json",
+        ".nvmrc",
+        ".bits/submission-policy.json",
+        "scripts/ci/submission_readiness.py",
+        "tools/day21/day21_acceptance.py",
+        "docs/submission-guide.md",
+        ".gitlab-ci.yml",
+        ".gitlab/ci/day21-submission.yml",
+        "tools/day21/day21_architecture_snapshot.py"
+      ],
+      "checks": [
+        "boundary",
+        "dependency_lock",
+        "source_node",
+        "source_python",
+        "web_lint",
+        "web_tests",
+        "web_build"
+      ],
+      "requires": [],
+      "runtime_requirements": [
+        "ci_execution",
+        "release"
+      ],
+      "acceptance": [
+        "Required GitLab jobs execute the declared Node runtime, isolated Python requirements and locked web toolchain.",
+        "The local acceptance runner revalidates all eighteen profiles and retains current BLOCKED receipts when runtime provisioning fails.",
+        "The tested candidate and deployed readback share an exact source identity.",
+        "Internal submission standards stay distinct from captured official requirements.",
+        "The GitLab artifact download retains every referenced receipt, log and artifact plus the original JUnit/build paths; the shared validator rechecks their bytes."
+      ],
+      "next_step": "Execute day21_full_acceptance on the GitLab buildanddo runner for one clean candidate; retain all eighteen profiles and the complete artifact export. Missing local dependencies remain prerequisites, and the separate Cloudflare diagnostic belongs to the hosting owner."
+    },
+    {
+      "id": "HS-02",
+      "day": 3,
+      "title": "Auth and onboarding hardening",
+      "why": "A judge must enter and resume the workspace using real account authority.",
+      "owner": "BITS-CODEGEN / IDE1",
+      "sources": [
+        "apps/web/src/components/auth",
+        "apps/web/src/pages/LoginPage.jsx",
+        "apps/web/src/pages/SignupPage.jsx",
+        "apps/web/src/pages/OnboardingPage.jsx",
+        "apps/web/src/contexts",
+        "apps/web/src/components/ProtectedRoute.jsx",
+        "apps/web/src/lib/onboarding.js",
+        "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+        "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js"
+      ],
+      "checks": [
+        "source_node",
+        "web_tests",
+        "web_build",
+        "native_workspace"
+      ],
+      "requires": [
+        "HS-01"
+      ],
+      "runtime_requirements": [
+        "browser"
+      ],
+      "acceptance": [
+        "Sign in, sign out and safe return navigation work in the built app.",
+        "A revoked or foreign account cannot reopen private workspace data.",
+        "Fresh and concurrent onboarding is atomic; uncertain retries recover one workspace and all seven planned services."
+      ],
+      "next_step": "Execute rendered onboarding and both native profiles, then demonstrate fresh signup, setup recovery, password recovery and return navigation on the accepted candidate."
+    },
+    {
+      "id": "HS-03",
+      "day": 5,
+      "title": "Workspace collections live",
+      "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype.",
+      "owner": "BITS-CODEGEN / IDE1",
+      "sources": [
+        "apps/pocketbase/pb_migrations",
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_hooks/workspace-record-policy.js",
+        "apps/pocketbase/pb_hooks/workspace-administration.js",
+        "apps/web/src/hooks/useWorkspaceRecords.js",
+        "apps/pocketbase/pb_hooks/workspace-assistant.js",
+        "apps/pocketbase/pb_hooks/business-actions.js"
+      ],
+      "checks": [
+        "source_node",
+        "native_workspace",
+        "native_classroom",
+        "native_learning",
+        "native_dossier"
+      ],
+      "requires": [
+        "HS-02"
+      ],
+      "runtime_requirements": [
+        "migrations"
+      ],
+      "acceptance": [
+        "The declared PocketBase versions apply the needed migrations and enforce current membership.",
+        "Saved work survives restart and denial/retry cases preserve record integrity.",
+        "Personal assistant collections deny other users including workspace administrators; protocol rollback retains records and disables commands."
+      ],
+      "next_step": "Execute both native runtime profiles and have the release owner validate migration rollout and recovery on staging."
+    },
+    {
+      "id": "HS-04",
+      "day": 7,
+      "title": "Signals pipeline MVP",
+      "why": "An observed problem must retain its source as it becomes a bounded proposal.",
+      "owner": "BITS-CODEGEN",
+      "sources": [
+        "apps/web/src/pages/workspace/SignalsPage.jsx",
+        "apps/web/src/components/workspace/SignalMissionProposal.jsx",
+        "apps/web/src/lib/missionResearch.js",
+        "apps/pocketbase/pb_hooks/mission-research.js",
+        "apps/research",
+        "apps/web/src/components/workspace/SourceCapture.jsx",
+        "apps/pocketbase/pb_hooks/business-actions.js",
+        "apps/mission_suite/business_worker.py"
+      ],
+      "checks": [
+        "source_node",
+        "source_python",
+        "web_tests",
+        "native_workspace"
+      ],
+      "requires": [
+        "HS-03"
+      ],
+      "runtime_requirements": [
+        "live_input"
+      ],
+      "acceptance": [
+        "A current readable signal produces one unapproved proposal and source snapshot.",
+        "Revoked access, stale source versions and lost responses cannot create falsely confirmed or duplicated work.",
+        "A permitted Firecrawl capture retains exact source text, URL and digest, and unchanged captures reuse the saved signal."
+      ],
+      "next_step": "Install the reviewed capture hooks and registered Firecrawl worker; capture a permitted real source, retry its lost response and propose the same mission once."
+    },
+    {
+      "id": "HS-05",
+      "day": 9,
+      "title": "Missions - bounded-action engine",
+      "why": "Work must have a fixed scope, approval and a review independent of its producer.",
+      "owner": "BITS-CODEGEN / CMAX-B",
+      "sources": [
+        "apps/pocketbase/pb_hooks/mission-policy.js",
+        "apps/pocketbase/pb_hooks/missions.pb.js",
+        "apps/pocketbase/pb_hooks/mission-suite.js",
+        "apps/mission_suite",
+        "apps/web/src/components/workspace/missions",
+        "apps/web/src/lib/missionLearning.js",
+        "docs/mission-system.md",
+        "apps/pocketbase/pb_hooks/business-actions.js",
+        "apps/pocketbase/pb_hooks/business-action-policy.js",
+        "apps/pocketbase/pb_migrations/1790800000_business_execution.js",
+        "docs/business-execution.md"
+      ],
+      "checks": [
+        "source_node",
+        "source_python",
+        "native_workspace",
+        "native_suite",
+        "web_tests"
+      ],
+      "requires": [
+        "HS-04"
+      ],
+      "runtime_requirements": [
+        "operator_runtime",
+        "independent_review"
+      ],
+      "acceptance": [
+        "Saved boundaries and approval precede action; outcomes remain terminal.",
+        "An independent-review plan rejects verification by its proposer or a selected evidence author.",
+        "Actual ERP and registered external actions bind frozen inputs, release declarations and current authority before effect.",
+        "Dispatched work is never blindly reissued after timeout or response loss."
+      ],
+      "next_step": "Use the receiving dispatch to run the native ERP effect and the registered bounded n8n operation; retain current release identity and a distinct result verifier."
+    },
+    {
+      "id": "HS-06",
+      "day": 11,
+      "title": "Workflows editor",
+      "why": "Ordered work and atomic observations allow failed or interrupted actions to be explained and replayed.",
+      "owner": "BITS-CODEGEN / IDE1",
+      "sources": [
+        "apps/pocketbase/pb_hooks/workflow-policy.js",
+        "apps/pocketbase/pb_hooks/workflow-runs.js",
+        "apps/web/src/pages/workspace/WorkflowsPage.jsx",
+        "apps/web/src/components/workspace/workflows",
+        "apps/web/src/lib/workflowRuns.js",
+        "docs/workflow-system.md",
+        "apps/web/src/lib/businessExecution.js",
+        "apps/pocketbase/pb_hooks/business-actions.js"
+      ],
+      "checks": [
+        "source_node",
+        "native_workspace",
+        "web_tests"
+      ],
+      "requires": [
+        "HS-05"
+      ],
+      "runtime_requirements": [
+        "operator_runtime"
+      ],
+      "acceptance": [
+        "Concurrent starts/decisions and retries preserve one run and one receipt per accepted step.",
+        "A recorded procedure is not represented as an external worker or n8n execution.",
+        "An explicit approval checkpoint precedes executable steps; native results and run events commit atomically.",
+        "Cancellation preserves uncertain issued work; late receipts cannot advance cancelled runs."
+      ],
+      "next_step": "Execute frozen approved steps, exercise cancellation and HOLD reconciliation, and retain the actual native result alongside the run event."
+    },
+    {
+      "id": "HS-07",
+      "day": 13,
+      "title": "Service connectors (Firecrawl, n8n)",
+      "why": "A saved integration setting must not be mistaken for a working service connection.",
+      "owner": "CMAX-B / IDE1",
+      "sources": [
+        "apps/pocketbase/pb_hooks/workspace-administration.js",
+        "apps/pocketbase/pb_hooks/research-policy.js",
+        "apps/web/src/components/workspace/IntegrationControls.jsx",
+        "apps/research",
+        "docs/workspace-administration.md",
+        "docs/mission-research.md",
+        "apps/mission_suite/business_worker.py",
+        "docs/business-execution.md"
+      ],
+      "checks": [
+        "source_node",
+        "source_python",
+        "native_workspace",
+        "native_suite"
+      ],
+      "requires": [
+        "HS-06"
+      ],
+      "runtime_requirements": [
+        "connectors"
+      ],
+      "acceptance": [
+        "Firecrawl/n8n bindings have fresh observations for their current configuration revisions.",
+        "Disabled, stale and unavailable providers remain explicit and do not create successful activity.",
+        "Both Firecrawl and n8n have an observed successful use plus disabled, stale and unavailable-provider controls.",
+        "n8n deduplicates effect identities and reconciliation only reads an existing result."
+      ],
+      "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery."
+    },
+    {
+      "id": "HS-08",
+      "day": 15,
+      "title": "ERP foundation",
+      "why": "Objectives, tasks and contacts make the demonstrated outcome actionable for a small organization.",
+      "owner": "BITS-CODEGEN / IDE1",
+      "sources": [
+        "apps/web/src/pages/workspace/ErpPage.jsx",
+        "apps/web/src/lib/businessPlanning.js",
+        "apps/pocketbase/pb_hooks/business-policy.js",
+        "apps/pocketbase/pb_hooks/business.pb.js",
+        "docs/business-learning.md",
+        "apps/web/src/lib/businessExecution.js",
+        "apps/pocketbase/pb_hooks/business-actions.js"
+      ],
+      "checks": [
+        "source_node",
+        "native_workspace",
+        "web_tests"
+      ],
+      "requires": [
+        "HS-03"
+      ],
+      "runtime_requirements": [
+        "browser"
+      ],
+      "acceptance": [
+        "An operator can create and link an objective, task and contact in one workspace.",
+        "Foreign-workspace links and viewer writes are rejected by the backend.",
+        "Executed tasks retain immutable mission/execution/evidence links while business outcome review remains separate from task state."
+      ],
+      "next_step": "Run native/browser business journeys, inspect the executed task and its mission/evidence links, and review the objective outcome separately."
+    },
+    {
+      "id": "HS-09",
+      "day": 17,
+      "title": "Evidence ledger and verification",
+      "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate.",
+      "owner": "BITS-CODEGEN / release owner",
+      "sources": [
+        "libs/semantic_twin",
+        "apps/pocketbase/pb_hooks/evidence-policy.js",
+        "apps/pocketbase/pb_hooks/evidence.pb.js",
+        "apps/web/src/pages/workspace/EvidencePage.jsx",
+        "docs/BUILDANDDO_RELEASE_TRUTH.md",
+        "apps/pocketbase/pb_hooks/mission-policy.js",
+        "apps/pocketbase/pb_hooks/business-actions.js",
+        "apps/web/src/components/workspace/missions/MissionReview.jsx"
+      ],
+      "checks": [
+        "semantic_twin",
+        "source_node",
+        "native_workspace"
+      ],
+      "requires": [
+        "HS-05",
+        "HS-06"
+      ],
+      "runtime_requirements": [
+        "release",
+        "independent_review"
+      ],
+      "acceptance": [
+        "Static capability, reported observations and verified readback stay distinct.",
+        "Release/provider exports reconcile to the expected SHA and artifact; missing evidence remains incomplete.",
+        "Verified review snapshots retain exact source observations; referenced evidence cannot silently change or disappear.",
+        "Native result bytes and release declaration agree with independent replay/deployment evidence."
+      ],
+      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures."
+    },
+    {
+      "id": "HS-10",
+      "day": 19,
+      "title": "Daily edition and specialist desks",
+      "why": "The operator and daily edition must explain current work with visible uncertainty and evidence.",
+      "owner": "BITS-CODEGEN / CMAX-B",
+      "sources": [
+        "apps/web/src/pages/workspace/DailyEditionPage.jsx",
+        "apps/web/src/pages/workspace/OperatorPage.jsx",
+        "apps/web/src/lib/operatorPlane.js",
+        "apps/pocketbase/pb_hooks/workspace-operator.js",
+        "docs/operator-plane.md",
+        "apps/web/src/lib/dailyDigest.js",
+        "apps/web/src/pages/workspace/SpecialistWorkPage.jsx",
+        "apps/web/src/pages/workspace/RoomsPage.jsx",
+        "apps/web/src/lib/workspaceRooms.js",
+        "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+        "apps/web/src/components/workspace/PersonalAssistantKnowledge.jsx",
+        "apps/web/src/lib/workspaceAssistant.js",
+        "apps/pocketbase/pb_hooks/assistant-policy.js",
+        "apps/pocketbase/pb_hooks/workspace-assistant.js",
+        "docs/workspace-assistant.md"
+      ],
+      "checks": [
+        "source_node",
+        "source_python",
+        "native_workspace",
+        "web_tests"
+      ],
+      "requires": [
+        "HS-08",
+        "HS-09"
+      ],
+      "runtime_requirements": [
+        "operator_runtime",
+        "browser",
+        "assistant_runtime"
+      ],
+      "acceptance": [
+        "The operator readback exposes the bounded mission outcome and its receipt.",
+        "A daily edition is based on actual workspace activity; stale or incomplete reads remain labelled.",
+        "Verification totals use actual review times, reset at the local date boundary and distinguish failed reads from empty activity.",
+        "Specialist desks open real tools; Living Rooms modes expose source inspection, operations, learning and retained replay.",
+        "The existing agent performs one reviewed ordinary form action with native authority and personal, account/workspace-isolated session knowledge."
+      ],
+      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior."
+    },
+    {
+      "id": "HS-11",
+      "day": 21,
+      "title": "Sprint review - verified replay",
+      "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria.",
+      "owner": "Repository owner / independent verifier",
+      "sources": [
+        "tests/upgrade",
+        "scripts/ci/hostinger_replay.py",
+        "docs/hostinger-sprint-closure.md",
+        "apps/web/src/components/workspace/ProgressionPipeline.jsx",
+        "scripts/ci/submission_readiness.py",
+        ".bits/submission-policy.json",
+        "docs/submission-guide.md",
+        "apps/web/src/pages/workspace/ExecutionReplayPage.jsx"
+      ],
+      "checks": [
+        "source_node",
+        "source_python",
+        "web_tests",
+        "web_build",
+        "native_workspace",
+        "native_learning"
+      ],
+      "requires": [
+        "HS-07",
+        "HS-10"
+      ],
+      "runtime_requirements": [
+        "demo_replay",
+        "competition_rules"
+      ],
+      "acceptance": [
+        "The ordered signal-to-action-to-verification replay binds one scope, candidate and artifact.",
+        "The owner checks official judging, hosting and submission requirements against the final demonstration.",
+        "The submission package includes the exact native business receipt, all six materials and an actual official-rule capture reviewed by the selected owner."
+      ],
+      "next_step": "Validate actual replay/native exports and all eleven owner decisions, supply six dated materials and captured official requirements, then have the owner perform submission."
+    }
+  ],
+  "external_requirements": [
+    {
+      "id": "ci_execution",
+      "why": "GitLab executes acceptance; configured jobs and historical GitHub observations cannot establish current runner health or passing acceptance.",
+      "owner": "GitLab runner owner / acceptance operator",
+      "next_step": "Provision Node from .nvmrc, Python venv/pip, the declared Python/npm dependencies and Docker or both declared binaries; run the complete matrix and retain its full GitLab artifact export.",
+      "evidence_required": "Actually executed GitLab job records and all eighteen candidate-bound receipt/log/artifact profiles. GitHub billing status is not a GitLab prerequisite."
+    },
+    {
+      "id": "release",
+      "why": "Merged source is not proof of an installed version or successful release.",
+      "owner": "Private release owner",
+      "next_step": "Use the existing governed release lane and capture staging/production SHA, artifact and health readback plus the DORA acknowledgment.",
+      "evidence_required": "Existing controller receipts and GitLab/Datadog exports bound to the same SHA/artifact; public sanitized references only."
+    },
+    {
+      "id": "browser",
+      "why": "Source and storage doubles do not execute the rendered application with real auth.",
+      "owner": "IDE1 / acceptance operator",
+      "next_step": "Use the locked frontend build and authorized staging accounts for desktop/mobile, retry, account-switch and resume journeys.",
+      "evidence_required": "Dated browser evidence for the accepted candidate and route; exported-certificate previews do not count as application acceptance."
+    },
+    {
+      "id": "migrations",
+      "why": "A source migration may not be installed or compatible with the running backend.",
+      "owner": "IDE1 / backend release owner",
+      "next_step": "Run both disposable native profiles, then apply and verify the reviewed migrations through the receiving release process.",
+      "evidence_required": "Native runtime/version results plus installed migration, restart, isolation and rollback observations."
+    },
+    {
+      "id": "live_input",
+      "why": "A manually authored signal does not establish live provider ingestion.",
+      "owner": "CMAX-B / business operator",
+      "next_step": "Capture one permitted business observation through an existing bound source and follow it into a proposed mission.",
+      "evidence_required": "Source identity, observation time, workspace, signal and captured source observation references."
+    },
+    {
+      "id": "operator_runtime",
+      "why": "The public cockpit does not contain the private NXC/fleet executor.",
+      "owner": "CMAX-B / IDE1",
+      "next_step": "Complete OP-00, verify the receiving dispatch/scope, read NXC, reuse one bounded staging capability and read back its result.",
+      "evidence_required": "VCC-BUILDANDDO-OPERATOR-RUNTIME-001 scope, adapter inventory, NXC observation and actual job/result receipts."
+    },
+    {
+      "id": "independent_review",
+      "why": "An author's passing assertion cannot establish independent verification.",
+      "owner": "Independent verifier seat",
+      "next_step": "Inspect and replay the producer's actual result under a distinct authenticated identity.",
+      "evidence_required": "Producer and verifier identities, observed result hash, actual checks and the final workspace evidence/readback."
+    },
+    {
+      "id": "connectors",
+      "why": "Configuration and requested enablement do not establish health.",
+      "owner": "Private integration owner",
+      "next_step": "Bind the reviewed provider and write a fresh health observation for its current revision through the existing runtime.",
+      "evidence_required": "Current provider/binding/configuration revision, observation time and actual readback; no credentials in exports."
+    },
+    {
+      "id": "demo_replay",
+      "why": "A set of individually tested pages does not prove the competition journey.",
+      "owner": "Acceptance operator / independent verifier",
+      "next_step": "Capture one authorized staged journey and validate its replay against the expected candidate and source fingerprint.",
+      "evidence_required": "Ordered context, signal, proposal snapshot, approval, native or worker action, verification, evidence, reviewed outcome, operator readback and release references; synthetic captures cannot earn milestones."
+    },
+    {
+      "id": "competition_rules",
+      "why": "The repository's internal day-21 plan is not an official competition rubric or deadline.",
+      "owner": "Repository owner",
+      "next_step": "Attach the official Hostinger rules, deadline, hosting requirements and submission checklist; review the final entry against them.",
+      "evidence_required": "Authoritative rule/source references and dated owner review; no inferred deadline or eligibility."
+    },
+    {
+      "id": "assistant_runtime",
+      "why": "Source tests and a configured URL do not establish that the existing agent is available or permitted to receive workspace data.",
+      "owner": "CMAX-B / IDE1 / workspace data owner",
+      "next_step": "Bind the approved existing endpoint/model, confirm data handling and complete native/browser plan, save, retry, revoke and personal-knowledge journeys.",
+      "evidence_required": "Candidate-bound real inference and native save observations, permission denials for foreign accounts/workspaces, scoped citations and user session retention/forget outcomes; no secrets in exports."
+    }
+  ]
+}

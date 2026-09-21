@@ -49,7 +49,7 @@ def main() -> int:
     coverage = {}
     for path in sorted((ROOT / "apps/research/policy").glob("*.py")):
         executable = {
-            line for line in trace._find_executable_linenos(str(path)) if line > 0
+            line for line in trace._find_executable_linenos(str(path)) if isinstance(line, int) and line > 0
         }
         hit = {
             line

@@ -32,6 +32,7 @@ safe to expose since it's the same commit log already visible on GitHub.
 from __future__ import annotations
 import datetime as dt
 import json
+import os
 import sys
 import urllib.request
 from pathlib import Path
@@ -76,6 +77,92 @@ def _last_gate_and_deploy() -> dict:
     }
 
 
+def _estate_progression() -> dict:
+    """The estate's canonical progression, when the ship rail exposes it (BUILDANDDO_PROGRESSION_FILE). It is a
+    DIFFERENT truth from the milestone ledger (owner: development-continuity fabric; criteria verified to date), so it
+    is carried under its own key with its own generated_at and never averaged into actual_pct."""
+    path = os.environ.get("BUILDANDDO_PROGRESSION_FILE", "").strip()
+    if not path:
+        # The env name has never been set anywhere - measured 2026-09-20, the only hits in the
+        # estate are inside 2026-09-17 backups - so this panel has always rendered "Unknown"
+        # while the projection it wants sat on disk, freshly written, carrying exactly the
+        # summary keys read below. A required-config knob nobody configures is a feature that
+        # does not exist, so the estate's own path is the default and the env var is the override.
+        default = (ROOT.parent.parent / "state" / "development_continuity"
+                   / "sprint_progression" / "latest.json")
+        if default.is_file():
+            path = str(default)
+        else:
+            return {"state": "UNMEASURED",
+                    "reason": "BUILDANDDO_PROGRESSION_FILE unset and no estate projection on disk"}
+    try:
+        doc = json.loads(Path(path).read_text(encoding="utf-8-sig"))
+    except Exception as exc:  # noqa: BLE001
+        return {"state": "UNMEASURED", "reason": f"{type(exc).__name__}: {exc}"[:160]}
+    summary = doc.get("summary") or {}
+    return {
+        "state": "MEASURED",
+        "owner": "citadel-development-continuity-fabric",
+        "generated_at": doc.get("generated_at"),
+        "campaign_id": doc.get("campaign_id"),
+        "schedule_elapsed_percent": summary.get("schedule_elapsed_percent"),
+        "verified_to_date_percent": summary.get("verified_to_date_percent"),
+        "full_campaign_percent": summary.get("full_campaign_percent"),
+        "pace_state": summary.get("pace_state"),
+        "verified_to_date": summary.get("verified_to_date"),
+        "verified_total": summary.get("verified_total"),
+        "criteria_to_date": summary.get("criteria_to_date"),
+        "criteria_total": summary.get("criteria_total"),
+        "next_hard_milestone": doc.get("next_hard_milestone"),
+    }
+
+
+def _replay() -> dict:
+    """Re-check every milestone against its own evidence, for the public page.
+
+    Day 21's contract, as the roadmap itself states it: every milestone "gets replayed
+    against its own stated evidence bar, in public - not summarized as 'done,' but shown
+    with what was actually verified and what wasn't." So the rotted claims travel with
+    their reasons; a verdict with the reason stripped out is just another assertion.
+
+    A replay that cannot run reports UNMEASURED and never blocks a build. It must also
+    never report health: an exception here means nothing was checked, which is a different
+    thing from everything checking out.
+
+    Returns:
+        The replay summary, or an UNMEASURED marker naming what went wrong.
+    """
+    try:
+        sys.path.insert(0, str(ROOT / "scripts" / "ci"))
+        import sprint_replay  # noqa: PLC0415 - imported here so a replay fault cannot break the build
+
+        report = sprint_replay.replay(sprint_cycle._load_state(), sprint_replay.Context())  # noqa: SLF001
+    except Exception as exc:  # noqa: BLE001 - a broken replay must not fail the ship
+        return {"state": "UNMEASURED", "reason": f"{type(exc).__name__}: {exc}"[:160]}
+    return {
+        "state": "MEASURED",
+        "context": report["context"],
+        "claimed_pct": report["claimed_pct"],
+        "replayed_pct": report["replayed_pct"],
+        "overstatement_pct": report["overstatement_pct"],
+        "counts": report["counts"],
+        # A verification recorded rather than measured is a public fact about the number on
+        # this page, so it travels with it rather than living only in a pipeline log.
+        "synthetic_stamps": report.get("synthetic_stamps", 0),
+        "milestones": [
+            {
+                "day": m["day"],
+                "verdict": m["verdict"],
+                "claims": m["claims"],
+                "stamp": m.get("stamp"),
+                "rot": [{"kind": c["kind"], "ref": c["ref"], "reason": c["reason"]}
+                        for c in m["checked"] if c["outcome"] == sprint_replay.ROTTED],
+            }
+            for m in report["milestones"]
+        ],
+    }
+
+
 def main() -> int:
     sprint_day = sprint_cycle.sprint_day()  # clamped to [1, SPRINT_DAYS]
     state = sprint_cycle._load_state()  # noqa: SLF001 - intentional reuse, this IS the interface
@@ -84,6 +171,11 @@ def main() -> int:
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "state": "MEASURED",
         "campaign_id": sprint_cycle.CAMPAIGN_ID,
+        # sprint_day is derived; publish what it is derived FROM, so a reader can check the
+        # arithmetic instead of taking "day 12" on trust. sprint_cycle.py is the canonical,
+        # tracked home for this date per SRS-BUILDANDDO-ROADMAP-001, and state["sprint_start"]
+        # reads it from there rather than from the ledger file, which may be stale.
+        "sprint_start": state["sprint_start"],
         "sprint_day": sprint_day,
         "sprint_days": sprint_cycle.SPRINT_DAYS,
         "planned_pct": round(sprint_cycle._planned_pct(sprint_day), 1),  # noqa: SLF001
@@ -92,6 +184,11 @@ def main() -> int:
         "milestones": state["milestones"],
         "recent_commits": _recent_commits(),
         **_last_gate_and_deploy(),
+        "progression": _estate_progression(),
+        # Carried under its own key, never averaged into actual_pct: actual_pct is what the
+        # ledger claims, replay is what survived re-checking, and collapsing the two would
+        # destroy the only comparison that makes either number meaningful.
+        "replay": _replay(),
     }
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(report, indent=2, default=str), encoding="utf-8")

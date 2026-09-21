@@ -14,7 +14,10 @@
 //              telemetry event is tagged with, in one place.
 // ───────────────────────────────────────────────────────────────
 
-export const PRODUCTION_HOSTS = ['buildanddo.tech', 'buildanddo.com'];
+// buildanddo.tech is NOT ours - it has no DNS record and the estate does not use it
+// (operator, 2026-09-20). Listing a host the estate does not control as production would
+// tag telemetry from it as our own production traffic if it ever resolved for someone else.
+export const PRODUCTION_HOSTS = ['buildanddo.com'];
 
 // scripts/deploy/ship.py serves staging from staging.buildanddo.com, a
 // subdomain of a production apex - so non-production subdomains are matched

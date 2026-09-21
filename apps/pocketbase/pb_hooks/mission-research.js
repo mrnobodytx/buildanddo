@@ -18,7 +18,7 @@
 const p = require(`${__hooks}/research-policy.js`);
 const missionPolicy = require(`${__hooks}/mission-policy.js`);
 const FAILURES = ['unavailable', 'timeout', 'unsupported', 'invalid_data', 'too_large', 'unsafe_source', 'capability_unavailable'];
-const ACTIONS = ['mission.propose', 'submit', 'retry', 'cancel', 'attach'];
+const ACTIONS = ['mission.propose', 'signal.propose', 'submit', 'retry', 'cancel', 'attach'];
 const now = () => new Date().toISOString();
 function assign(record, values) { Object.entries(values).forEach(([key, value]) => record.set(key, value)); return record; }
 function commandInput(body, actions = ACTIONS) {
@@ -78,16 +78,45 @@ function submitInput(app, scope, value) {
     }
     return { ...value, input, title, context: detail };
 }
-function proposed(app, scope, payload) {
+function proposed(app, scope, payload, plan = null) {
     p.exact(payload, ['title', 'description']);
     const record = assign(new Record(app.findCollectionByNameOrId('missions')), {
         title: p.bounded(payload.title, 160), description: p.bounded(payload.description, 1000, false),
         owner: scope.auth.id, workspace: scope.workspace, status: 'proposed', progress: 0, priority: 'medium' });
+    if (plan) record.set('mission_plan', plan);
     missionPolicy.enforce({ app, auth: scope.auth, record, requestInfo: () => scope.info, next: () => undefined }, true);
     app.save(record); return record;
 }
+function signalFor(app, scope, payload) {
+    p.exact(payload, ['signal', 'signal_updated']);
+    const signal = p.find(app, 'signals', p.id(payload.signal));
+    p.bounded(payload.signal_updated, 80);
+    if (signal.getString('workspace') !== scope.workspace) throw new ForbiddenError('Choose a signal in this workspace.');
+    p.readable(app, signal, scope.info);
+    return signal;
+}
 function perform(app, scope, body, origin, sourceRef) {
     const workspace = scope.workspace;
+    if (body.action === 'signal.propose') {
+        if (body.revision !== 0) p.conflict('A new proposal starts at revision zero.');
+        const signal = signalFor(app, scope, body.payload);
+        if (signal.getString('updated') !== body.payload.signal_updated)
+            p.conflict('The signal changed. Reload it before preparing a proposal.');
+        const snapshot = { signal: signal.id, updated: signal.getString('updated'),
+            title: signal.getString('title'), description: signal.getString('description'),
+            source: signal.getString('source'), type: signal.getString('type'), owner: signal.getString('owner') };
+        const plan = { version: 1, risk: 'A1', independent_review: true,
+            ...Object.fromEntries(missionPolicy.PLAN_FIELDS.map((field) => [field, ''])) };
+        plan.purpose = `Review signal: ${snapshot.title}`.slice(0, 1200);
+        const record = proposed(app, scope, { title: `Review: ${snapshot.title}`.slice(0, 160),
+            description: `Signal ${signal.id}: ${snapshot.description}`.slice(0, 1000) }, plan);
+        const evidence = assign(new Record(app.findCollectionByNameOrId('evidence')), {
+            workspace, mission: record.id, owner: scope.auth.id, type: 'observed', category: 'signal',
+            title: 'Saved signal snapshot for review', content: JSON.stringify(snapshot),
+            source: `Signal ${signal.id}; revision ${snapshot.updated}`.slice(0, 160), tags: 'signal, source-snapshot', url: '' });
+        app.save(evidence);
+        return { workspace, action: body.action, id: record.id, revision: 1, status: 'proposed', evidence: evidence.id };
+    }
     if (body.action === 'mission.propose') {
         if (body.revision !== 0) p.conflict('A new proposal starts at revision zero.');
         const record = proposed(app, scope, body.payload);
@@ -142,11 +171,13 @@ function execute(e, scope, raw, origin = 'website', sourceRef = '') {
         p.schema(app); p.requireRole(app, scope.auth, scope.workspace, p.WRITERS);
         // Even a previously accepted retry requires readable, current mission scope.
         if (body.action === 'submit') p.mission(app, scope.auth, scope.info, scope.workspace, body.payload.mission);
+        else if (body.action === 'signal.propose') signalFor(app, scope, body.payload);
         else if (body.action !== 'mission.propose') {
             const record = source(app, scope.workspace, body.payload.id);
             p.submissionScope(app, scope.auth, scope.info, scope.workspace, record);
         }
         response = audit(app, scope.auth, scope.workspace, body, () => perform(app, scope, body, origin, sourceRef));
+        if (body.action === 'signal.propose') p.mission(app, scope.auth, scope.info, scope.workspace, response.id);
     });
     return response;
 }

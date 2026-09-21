@@ -1,0 +1,1334 @@
+{
+  "schema_version": "buildanddo.four-gap-validation/v1",
+  "recorded_at": "2026-09-21T20:36:36.172069+00:00",
+  "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs_code": "SRS-BUILDANDDO-UPGRADE-001",
+  "status": "PARTIAL",
+  "seat": "BITS-CODEGEN",
+  "source_candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+  "base_revision": "4fa01b3276df387d58f832e2511bbee4d2fd7367",
+  "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+  "candidate_scope": "All eighteen process receipts bind the recorded committed source candidate before evidence packaging. Later report, memory and measured-inventory changes are not acceptance of the later revision; tested pins remain bound to the original Git objects.",
+  "source_files": [
+    {
+      "path": ".bits/context.lock.json",
+      "sha256": "b4b8c848bc998aa249078983f62466fb3dcc8a0e0291788cb878ccdf01b19a68"
+    },
+    {
+      "path": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md",
+      "sha256": "acdeae97b853471afd33d3a29851fe4e393f3526b12d69b637792c17d0e627f7"
+    },
+    {
+      "path": ".bits/hostinger-readiness.lock.json",
+      "sha256": "709aa22c316fec5a4fd7aefdba17911cb759ddf001ed2d369f882d4cc186ae9f"
+    },
+    {
+      "path": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
+      "sha256": "7835efe4756c49f53f83179edf5890a0714b154b84bef966e7dd4409afed0017"
+    },
+    {
+      "path": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "sha256": "5630b8a907760c643abdbe64f4817609460eed44ca73b3a26bfd1cad5debf213"
+    },
+    {
+      "path": "docs/development-loop.md",
+      "sha256": "4f64d8d6d97e10c7d71004bdc0b7788111b2e6521efde4d62196d41964e12ee5"
+    },
+    {
+      "path": "docs/submission-guide.md",
+      "sha256": "0077143e9f68a7561f8199b11532fed81ab5215af784b464a380fd59db7b9168"
+    },
+    {
+      "path": "libs/evolution/review_packets.py",
+      "sha256": "1df305477c0cc2167abdd050f3dd2b8f7316c369617c8bebdff58e20fd1c0307"
+    },
+    {
+      "path": "scripts/ci/day21_submission.py",
+      "sha256": "dc216fe29f5a9ad720278e5a67ad026fb04376f15aea2a0a1f03c5fbcd295def"
+    },
+    {
+      "path": "scripts/ci/hostinger_checks.py",
+      "sha256": "538987be04ffceb68290de12cdebe1fc60daa2bbbfd26b7428b4a9e3f3d66700"
+    },
+    {
+      "path": "scripts/ci/hostinger_readiness.py",
+      "sha256": "a63b640ac0a3bcf188b725467a7f713d01eb2cc0ff30eba53af5e3dec77bfa1c"
+    },
+    {
+      "path": "scripts/ci/hostinger_replay.py",
+      "sha256": "18158249d91763552c89eefb5036067ff9b56422593d4e9ce42e7034fe956def"
+    },
+    {
+      "path": "scripts/ci/submission_readiness.py",
+      "sha256": "5aa33c84baa8712b00d22d02d09810c2a4c8e1587fa3bc82eddb6fab515b4720"
+    },
+    {
+      "path": "tests/upgrade/admin-fixture.mjs",
+      "sha256": "c41650d74c7eb63aff2f55e444241d1945bad55cd69f39c5fcf12b350ec58d70"
+    },
+    {
+      "path": "tests/upgrade/business-execution.test.mjs",
+      "sha256": "693c49bf40ba3cef2170e327268d8352a4c8452949f84d3d698c68035b8e2ff2"
+    },
+    {
+      "path": "tests/upgrade/business-learning.test.mjs",
+      "sha256": "e475a50768ecddae19b1544621a3de70f99d24aed36621fb70ec77ae62ec8476"
+    },
+    {
+      "path": "tests/upgrade/government-learning.test.mjs",
+      "sha256": "d4240366bc9f9a48d8b4825a7d37e61f5750792141c067b4c4e30acfe1572361"
+    },
+    {
+      "path": "tests/upgrade/test_day21_submission.py",
+      "sha256": "75f2e4a8c1a6047f60af63321c1308c2e354ce842568727e820058019124e566"
+    },
+    {
+      "path": "tests/upgrade/test_day21_support.py",
+      "sha256": "c6d70798777fe7781f42b40555c523b9a3b2f2df243c1dbc4d15afd41faeeca1"
+    },
+    {
+      "path": "tests/upgrade/test_development_review_packets.py",
+      "sha256": "f2dd11ac8dd5974613a0fb2c70098073bc7fc59f457155c13c17211d9c99a9f8"
+    },
+    {
+      "path": "tests/upgrade/test_hostinger_readiness.py",
+      "sha256": "ebafcb8566235e7d15ec9bff52c5033a2847b6b991ca1e30066f1adf9fe50ea3"
+    },
+    {
+      "path": "tests/upgrade/test_submission_readiness.py",
+      "sha256": "f9ab8372ba15aab2579df1741f16d7a1fdbb0b0f87898407c51743f75e9bb77a"
+    }
+  ],
+  "fixture_repair": {
+    "baseline": {
+      "tests": 43,
+      "pass": 11,
+      "fail": 32
+    },
+    "final": {
+      "tests": 44,
+      "pass": 44,
+      "fail": 0
+    },
+    "cause": "PocketBase migration host fixtures lacked $filepath.join and did not mirror explicitly assigned record IDs.",
+    "changes": "Match PocketBase path and ID behavior; remove obsolete migration-host assumptions and assert real sibling seed files and seeded IDs.",
+    "scope": "Source fixtures only; native execution is separately required."
+  },
+  "focused_tests": {
+    "tests": 67,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "source_unchanged": true
+  },
+  "coverage": {
+    "method": "stdlib trace executable-line coverage; not branch coverage",
+    "modules": [
+      {
+        "path": "libs/evolution/review_packets.py",
+        "sha256": "1df305477c0cc2167abdd050f3dd2b8f7316c369617c8bebdff58e20fd1c0307",
+        "covered": 213,
+        "statements": 229,
+        "percent": 93.01
+      },
+      {
+        "path": "scripts/ci/day21_submission.py",
+        "sha256": "dc216fe29f5a9ad720278e5a67ad026fb04376f15aea2a0a1f03c5fbcd295def",
+        "covered": 868,
+        "statements": 987,
+        "percent": 87.94
+      },
+      {
+        "path": "scripts/ci/hostinger_checks.py",
+        "sha256": "538987be04ffceb68290de12cdebe1fc60daa2bbbfd26b7428b4a9e3f3d66700",
+        "covered": 257,
+        "statements": 260,
+        "percent": 98.85
+      },
+      {
+        "path": "scripts/ci/hostinger_readiness.py",
+        "sha256": "a63b640ac0a3bcf188b725467a7f713d01eb2cc0ff30eba53af5e3dec77bfa1c",
+        "covered": 370,
+        "statements": 391,
+        "percent": 94.63
+      },
+      {
+        "path": "scripts/ci/hostinger_replay.py",
+        "sha256": "18158249d91763552c89eefb5036067ff9b56422593d4e9ce42e7034fe956def",
+        "covered": 482,
+        "statements": 494,
+        "percent": 97.57
+      },
+      {
+        "path": "scripts/ci/submission_readiness.py",
+        "sha256": "5aa33c84baa8712b00d22d02d09810c2a4c8e1587fa3bc82eddb6fab515b4720",
+        "covered": 386,
+        "statements": 389,
+        "percent": 99.23
+      }
+    ],
+    "covered": 2576,
+    "statements": 2750
+  },
+  "static_checks": {
+    "ruff": "PASS on changed Python source and tests",
+    "mypy": "PASS: --strict --follow-imports=silent --explicit-package-bases on six changed source modules",
+    "scope": "Strict typing of all transitive legacy imports is not claimed; the earlier unrestricted run exposed pre-existing sprint_cycle annotations.",
+    "mypy_command": [
+      "python",
+      "-m",
+      "mypy",
+      "--strict",
+      "--follow-imports=silent",
+      "--explicit-package-bases",
+      "libs/evolution/review_packets.py",
+      "scripts/ci/day21_submission.py",
+      "scripts/ci/hostinger_checks.py",
+      "scripts/ci/hostinger_readiness.py",
+      "scripts/ci/hostinger_replay.py",
+      "scripts/ci/submission_readiness.py"
+    ],
+    "ruff_command": [
+      "python",
+      "-m",
+      "ruff",
+      "check",
+      "libs/evolution/review_packets.py",
+      "scripts/ci/day21_submission.py",
+      "scripts/ci/hostinger_checks.py",
+      "scripts/ci/hostinger_readiness.py",
+      "scripts/ci/hostinger_replay.py",
+      "scripts/ci/submission_readiness.py",
+      "tests/upgrade/test_day21_submission.py",
+      "tests/upgrade/test_day21_support.py",
+      "tests/upgrade/test_development_review_packets.py",
+      "tests/upgrade/test_hostinger_readiness.py",
+      "tests/upgrade/test_submission_readiness.py"
+    ]
+  },
+  "acceptance": {
+    "state": "HOLD",
+    "expected_profiles": 18,
+    "counts": {
+      "PASS": 4,
+      "BLOCKED": 10,
+      "HOLD": 1,
+      "FAIL": 3
+    },
+    "profiles": {
+      "boundary": "PASS",
+      "dependency_lock": "PASS",
+      "native_classroom:compose": "BLOCKED",
+      "native_classroom:package": "BLOCKED",
+      "native_dossier:compose": "BLOCKED",
+      "native_dossier:package": "BLOCKED",
+      "native_learning:compose": "BLOCKED",
+      "native_learning:package": "BLOCKED",
+      "native_suite:compose": "BLOCKED",
+      "native_suite:package": "BLOCKED",
+      "native_workspace:compose": "BLOCKED",
+      "native_workspace:package": "BLOCKED",
+      "semantic_twin": "PASS",
+      "source_node": "PASS",
+      "source_python": "HOLD",
+      "web_build": "FAIL",
+      "web_lint": "FAIL",
+      "web_tests": "FAIL"
+    },
+    "receipts": [
+      {
+        "check": "boundary",
+        "profile": "package",
+        "status": "PASS",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "",
+        "exit_code": 0,
+        "started_at": "2026-09-21T20:24:31.812079+00:00",
+        "finished_at": "2026-09-21T20:24:34.674101+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/boundary-package-1790022271812104221.json",
+          "sha256": "94f71e695462e79db66416635f6061ef29f40ad5336607c135f499cd8acc69a6",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/boundary-package-1790022271812104221.log",
+          "sha256": "a3f241ea9ccd49179e1db4ca5dc43b7acfde23f9177224ac850722d8cd680d33",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "scripts/ci/verify_public_boundary.py"
+        ]
+      },
+      {
+        "check": "dependency_lock",
+        "profile": "package",
+        "status": "PASS",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "",
+        "exit_code": 0,
+        "started_at": "2026-09-21T20:24:34.872620+00:00",
+        "finished_at": "2026-09-21T20:24:35.172989+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/dependency_lock-package-1790022274872632887.json",
+          "sha256": "c4e9cec08efebd03db7379c2bdab1dd6c9ca4086a162a583f0e2369783d86e61",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/dependency_lock-package-1790022274872632887.log",
+          "sha256": "8f58cc0dfc76fa603d99afdb5eee8b09208f53b3bacb0a5c3529c88d111b9d98",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "scripts/ci/supply_chain.py",
+          "--skip-audit",
+          "--check-lock"
+        ]
+      },
+      {
+        "check": "native_classroom",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:24:33.362212+00:00",
+        "finished_at": "2026-09-21T20:24:33.676039+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_classroom-compose-1790022273362223582.json",
+          "sha256": "cb9c32e6d751a321beeb7912829c83d10a863a5d63ab4b9f83ace1d8fd4160cd",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_classroom-compose-1790022273362223582.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_classroom_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "native_classroom",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:27:50.079794+00:00",
+        "finished_at": "2026-09-21T20:27:50.138968+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_classroom-package-1790022470079809673.json",
+          "sha256": "8d7693e42b979793801187668c24eb7f662a428e6bdc11fb4420465aab1190ee",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_classroom-package-1790022470079809673.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_classroom_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "native_dossier",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:24:33.916391+00:00",
+        "finished_at": "2026-09-21T20:24:34.191207+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_dossier-compose-1790022273916402965.json",
+          "sha256": "eee99c48f0d5b19d129eb6657d19883b787671d96c693a4db857fcc44ee4d99b",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_dossier-compose-1790022273916402965.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_dossier_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "native_dossier",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:27:50.196671+00:00",
+        "finished_at": "2026-09-21T20:27:50.262107+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_dossier-package-1790022470196686438.json",
+          "sha256": "480df0e45d3f4d98d194049d8493bef18da42c3fd7c2b5935fdbed6c6783599f",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_dossier-package-1790022470196686438.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_dossier_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "native_learning",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:24:32.759536+00:00",
+        "finished_at": "2026-09-21T20:24:32.963562+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_learning-compose-1790022272759550361.json",
+          "sha256": "8bde32638e44dfea1493660507232e1ef89665868b5afab51f1c1d554c8b6cf8",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_learning-compose-1790022272759550361.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_tutorial_learning_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "native_learning",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:27:49.951965+00:00",
+        "finished_at": "2026-09-21T20:27:50.021563+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_learning-package-1790022469951984391.json",
+          "sha256": "da595f1f4e51d3cab094d9856b00d1bff849cdbce7f91ab060cd9fee36585ddb",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_learning-package-1790022469951984391.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_tutorial_learning_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "native_suite",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:24:32.472028+00:00",
+        "finished_at": "2026-09-21T20:24:32.578786+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_suite-compose-1790022272472044542.json",
+          "sha256": "b8044518bd2c9efad65bb491f6082c5c4b79d4f66c0c8790a4bdad817dddf0f6",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_suite-compose-1790022272472044542.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_suite_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "native_suite",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:27:49.830626+00:00",
+        "finished_at": "2026-09-21T20:27:49.893227+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_suite-package-1790022469830641417.json",
+          "sha256": "4da7a81b2f9f435489ecdf8662296fe7ab0ed75f18f05a277f42137976bc2b2c",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_suite-package-1790022469830641417.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_suite_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "native_workspace",
+        "profile": "compose",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:24:32.109863+00:00",
+        "finished_at": "2026-09-21T20:24:32.301099+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.28.4",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_workspace-compose-1790022272109882637.json",
+          "sha256": "a1475317aac2e06a8b94bccdf31cd83d0b68d50f0d5fb90336d30107e7f7e5ef",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_workspace-compose-1790022272109882637.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_workspace_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "native_workspace",
+        "profile": "package",
+        "status": "BLOCKED",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "Install the declared disposable PocketBase test runtime and set BUILDANDDO_TEST_POCKETBASE.",
+        "exit_code": -1,
+        "started_at": "2026-09-21T20:27:49.697228+00:00",
+        "finished_at": "2026-09-21T20:27:49.773868+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "0.39.8",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_workspace-package-1790022469697243454.json",
+          "sha256": "011afccb1d7eae5862d9e913cb9ab70edb4a89120b80b4a9fa3f1ec65510c7f1",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/native_workspace-package-1790022469697243454.log",
+          "sha256": "678399d77b131431a830449e734b6c972aecec43ef93f23bfeb2ec2130d34600",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "tests/upgrade/test_workspace_native.py",
+          "--require-binary"
+        ]
+      },
+      {
+        "check": "semantic_twin",
+        "profile": "package",
+        "status": "PASS",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 122
+        },
+        "reason": "",
+        "exit_code": 0,
+        "started_at": "2026-09-21T20:27:06.155538+00:00",
+        "finished_at": "2026-09-21T20:27:46.316931+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/semantic_twin-package-1790022426155551063.json",
+          "sha256": "677f6123dbbce8b4526e06e8c9fdd4bdc1c19a66ed0805a9e2a35d8679c48818",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/semantic_twin-package-1790022426155551063.log",
+          "sha256": "3f6faee1c5907b543d121ae1ee544cfd54be44d8027ace9af6f67785c247249b",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/upgrade",
+          "-p",
+          "test_semantic_twin*.py"
+        ]
+      },
+      {
+        "check": "source_node",
+        "profile": "package",
+        "status": "PASS",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 510
+        },
+        "reason": "",
+        "exit_code": 0,
+        "started_at": "2026-09-21T20:24:35.353515+00:00",
+        "finished_at": "2026-09-21T20:25:01.675888+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/source_node-package-1790022275353527657.json",
+          "sha256": "59d9efa959713517adbfe20dba1d8616fe510fb435131a7d602174f6cffafcc5",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/source_node-package-1790022275353527657.log",
+          "sha256": "09826d2a4bd3881bc76b16737fb488368ed4a0d8c2b06f4b3d118f6130a5a87f",
+          "retention": "session-local"
+        },
+        "argv": [
+          "node",
+          "--test",
+          "--test-reporter=tap",
+          "tests/upgrade/blueprint-client.test.mjs",
+          "tests/upgrade/blueprint-saved-client.test.mjs",
+          "tests/upgrade/blueprint-system.test.mjs",
+          "tests/upgrade/build.test.mjs",
+          "tests/upgrade/business-client.test.mjs",
+          "tests/upgrade/business-execution.test.mjs",
+          "tests/upgrade/business-learning.test.mjs",
+          "tests/upgrade/classroom-client.test.mjs",
+          "tests/upgrade/classroom-presence.test.mjs",
+          "tests/upgrade/classroom-system.test.mjs",
+          "tests/upgrade/decision-runtime.test.mjs",
+          "tests/upgrade/discord-catalogue.test.mjs",
+          "tests/upgrade/dossier-client.test.mjs",
+          "tests/upgrade/dossier-system.test.mjs",
+          "tests/upgrade/editorial-frontpage.test.mjs",
+          "tests/upgrade/government-learning.test.mjs",
+          "tests/upgrade/knowledge-client.test.mjs",
+          "tests/upgrade/knowledge-system.test.mjs",
+          "tests/upgrade/mission-research.test.mjs",
+          "tests/upgrade/mission-system.test.mjs",
+          "tests/upgrade/motion-system.test.mjs",
+          "tests/upgrade/operator-client.test.mjs",
+          "tests/upgrade/operator-system.test.mjs",
+          "tests/upgrade/pocketbase-metrics.test.mjs",
+          "tests/upgrade/policy-intelligence.test.mjs",
+          "tests/upgrade/research-client.test.mjs",
+          "tests/upgrade/signal-mission.test.mjs",
+          "tests/upgrade/source-checker.test.mjs",
+          "tests/upgrade/sprint-integrity.test.mjs",
+          "tests/upgrade/staging-contract.test.mjs",
+          "tests/upgrade/suite-client.test.mjs",
+          "tests/upgrade/suite-system.test.mjs",
+          "tests/upgrade/tutorial-learning-client.test.mjs",
+          "tests/upgrade/tutorial-learning-system.test.mjs",
+          "tests/upgrade/work-history.test.mjs",
+          "tests/upgrade/workflow-client.test.mjs",
+          "tests/upgrade/workflow-runs.test.mjs",
+          "tests/upgrade/workspace-administration.test.mjs",
+          "tests/upgrade/workspace-assistant.test.mjs",
+          "tests/upgrade/workspace-community.test.mjs",
+          "tests/upgrade/workspace-control-client.test.mjs",
+          "tests/upgrade/workspace-integration.test.mjs",
+          "tests/upgrade/workspace-rooms.test.mjs",
+          "tests/upgrade/workspace-summary.test.mjs"
+        ]
+      },
+      {
+        "check": "source_python",
+        "profile": "package",
+        "status": "HOLD",
+        "counts": {
+          "failures": 0,
+          "skipped": 6,
+          "tests": 712
+        },
+        "reason": "Tests were empty, failing or skipped; acceptance is incomplete.",
+        "exit_code": 0,
+        "started_at": "2026-09-21T20:25:01.734952+00:00",
+        "finished_at": "2026-09-21T20:27:06.084527+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/source_python-package-1790022301734968010.json",
+          "sha256": "761cc865c80d5f663aadf987326c36190add5456ba9aef62b0f6401959cc3052",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/source_python-package-1790022301734968010.log",
+          "sha256": "be503b23c552ad7bb2079bffda11a73ff001d5a7b05a5d347bb6b7f3a10a66f0",
+          "retention": "session-local"
+        },
+        "argv": [
+          "python",
+          "-m",
+          "unittest",
+          "tests.upgrade.test_blueprint_extraction",
+          "tests.upgrade.test_blueprint_pipeline",
+          "tests.upgrade.test_blueprint_service",
+          "tests.upgrade.test_blueprints",
+          "tests.upgrade.test_business_worker",
+          "tests.upgrade.test_capability_token_cli",
+          "tests.upgrade.test_capability_token_contracts",
+          "tests.upgrade.test_capability_token_records",
+          "tests.upgrade.test_capability_token_registry",
+          "tests.upgrade.test_capability_token_support",
+          "tests.upgrade.test_datadog_metrics",
+          "tests.upgrade.test_day21_submission",
+          "tests.upgrade.test_day21_support",
+          "tests.upgrade.test_decision_runtime",
+          "tests.upgrade.test_development_intelligence",
+          "tests.upgrade.test_development_loop",
+          "tests.upgrade.test_development_review_packets",
+          "tests.upgrade.test_development_sources",
+          "tests.upgrade.test_development_support",
+          "tests.upgrade.test_discordbot_adapter",
+          "tests.upgrade.test_discordbot_commands",
+          "tests.upgrade.test_discordbot_doctor",
+          "tests.upgrade.test_discordbot_dossier",
+          "tests.upgrade.test_discordbot_public",
+          "tests.upgrade.test_discordbot_research",
+          "tests.upgrade.test_evolution_cli",
+          "tests.upgrade.test_evolution_events",
+          "tests.upgrade.test_evolution_learning",
+          "tests.upgrade.test_evolution_support",
+          "tests.upgrade.test_federal_foundry",
+          "tests.upgrade.test_hostinger_readiness",
+          "tests.upgrade.test_hostinger_replay",
+          "tests.upgrade.test_mission_suite",
+          "tests.upgrade.test_operator_compiler",
+          "tests.upgrade.test_policy_intelligence",
+          "tests.upgrade.test_research_runtime",
+          "tests.upgrade.test_semantic_twin",
+          "tests.upgrade.test_semantic_twin_contracts",
+          "tests.upgrade.test_semantic_twin_ingestion",
+          "tests.upgrade.test_semantic_twin_integration",
+          "tests.upgrade.test_semantic_twin_integration_v2",
+          "tests.upgrade.test_semantic_twin_phase1_complete",
+          "tests.upgrade.test_submission_readiness",
+          "tests.upgrade.test_supply_chain",
+          "tests.upgrade.test_theme_contrast"
+        ]
+      },
+      {
+        "check": "web_build",
+        "profile": "package",
+        "status": "FAIL",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "The required command failed; inspect its retained log.",
+        "exit_code": 127,
+        "started_at": "2026-09-21T20:27:49.085557+00:00",
+        "finished_at": "2026-09-21T20:27:49.626189+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/web_build-package-1790022469085572861.json",
+          "sha256": "1f7716d6f6f790ac362e122e5a1900f2b42e0fac79ac1d65d2966cf624772acd",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/web_build-package-1790022469085572861.log",
+          "sha256": "5ea869f8ced673362379859fa489acad9ddb0b4cacc0736eaa28e4ba11c2f5dc",
+          "retention": "session-local"
+        },
+        "argv": [
+          "npm",
+          "run",
+          "build"
+        ]
+      },
+      {
+        "check": "web_lint",
+        "profile": "package",
+        "status": "FAIL",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "The required command failed; inspect its retained log.",
+        "exit_code": 2,
+        "started_at": "2026-09-21T20:27:46.369110+00:00",
+        "finished_at": "2026-09-21T20:27:48.455066+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/web_lint-package-1790022466369124661.json",
+          "sha256": "a13d0b19735dc7a18a7409ca48034ad13babe5fd98c97a9fe4d2088ba98da21f",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/web_lint-package-1790022466369124661.log",
+          "sha256": "bd8fa0462c98fb583f0b6e6229329a6a63060b146a7c478f2fe2b471f3a0154f",
+          "retention": "session-local"
+        },
+        "argv": [
+          "npm",
+          "--prefix",
+          "apps/web",
+          "run",
+          "lint"
+        ]
+      },
+      {
+        "check": "web_tests",
+        "profile": "package",
+        "status": "FAIL",
+        "counts": {
+          "failures": 0,
+          "skipped": 0,
+          "tests": 0
+        },
+        "reason": "The required command failed; inspect its retained log.",
+        "exit_code": 127,
+        "started_at": "2026-09-21T20:27:48.507037+00:00",
+        "finished_at": "2026-09-21T20:27:49.035577+00:00",
+        "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+        "candidate_clean": true,
+        "candidate_unchanged": true,
+        "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+        "runtime_expected": "",
+        "runtime_observed": "",
+        "receipt": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/web_tests-package-1790022468507050900.json",
+          "sha256": "0ae9bfb32f4bc3e13463cf0d880cbd7d1b70958c1167d046ac1fa6cf6e42569f",
+          "retention": "session-local"
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-acceptance/web_tests-package-1790022468507050900.log",
+          "sha256": "39459eea9bbcdd1ab9f11f5cd880b0e03629764f5c05756722c4032f3c3e0404",
+          "retention": "session-local"
+        },
+        "argv": [
+          "npm",
+          "--prefix",
+          "apps/web",
+          "run",
+          "test:coverage",
+          "--",
+          "--reporter=default",
+          "--reporter=junit",
+          "--outputFile.junit=../../reports/junit/web.xml"
+        ]
+      }
+    ],
+    "node": {
+      "tests": 510,
+      "failures": 0,
+      "skipped": 0
+    },
+    "python": {
+      "tests": 712,
+      "failures": 0,
+      "skipped": 6
+    },
+    "semantic_twin": {
+      "tests": 122,
+      "failures": 0,
+      "skipped": 0
+    },
+    "count_scope": "The focused and semantic-twin suites overlap the Python regression suite; these totals must not be summed."
+  },
+  "development_dogfood": {
+    "schema_version": "buildanddo.four-gap-dogfood/v1",
+    "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+    "prediction_id": "cni://decision/evolution/08e574d91902eaf93f227537d164d7fff59d9145a4749a4e830cebf4152ef9d3",
+    "run_id": "cni://test-run/evolution/8b995f4135d7419e6114c15cb577b2fb414e03506325efd52b91aba62a3a240b",
+    "process_status": "PASS",
+    "counts": {
+      "tests_run": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "expected_failures": 0,
+      "unexpected_successes": 0,
+      "failed_tests": []
+    },
+    "selected_tests": [
+      "tests/upgrade/test_development_review_packets.py"
+    ],
+    "source_unchanged": true,
+    "source_files": 91,
+    "semantic_objects": 108,
+    "independently_graded_pairs": 0,
+    "qualified_capabilities": 0,
+    "grading": "UNMEASURED",
+    "qualification": "HOLD",
+    "packet": "/tmp/buildanddo-four-gap-development/reviewer-packet/packet.json",
+    "packet_sha256": "a2b06a8414243fff62ae09059c97f6a0d51a714f85c354f4db809d478dbe0d44",
+    "recorded_at": "2026-09-21T20:24:49.073307+00:00"
+  },
+  "submission": {
+    "audit": {
+      "schema_version": "buildanddo.submission-result/v1",
+      "status": "HOLD",
+      "candidate_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
+      "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+      "official_rules": "UNCONFIRMED",
+      "verified_milestones": 0,
+      "blockers": [
+        "Missing material: walkthrough",
+        "Retain candidate-bound acceptance, public URL, browser journey and four separately observed Hostinger product proofs.",
+        "A real deployed replay and its independent owner review are required for all eleven checkpoints.",
+        "Official eligibility, deadline/time zone, hosting and submission requirements remain unconfirmed."
+      ],
+      "scope": "Consistency of supplied captured evidence and owner review. This does not publish an entry or attest external identities.",
+      "manifest_sha256": "e9e98bfe00b728b182a16815c2144d6e1f4d92e6b98991f0510200bcb17afb21"
+    },
+    "day21_audit": {
+      "schema": "buildanddo.day21-evidence-audit/v1",
+      "state": "HOLD",
+      "items": {
+        "acceptance-summary.json": {
+          "state": "HOLD",
+          "reason": "all 18 required acceptance profiles must PASS"
+        },
+        "public-url.json": {
+          "state": "MISSING",
+          "reason": "required evidence file absent"
+        },
+        "hostinger-products.json": {
+          "state": "MISSING",
+          "reason": "required evidence file absent"
+        },
+        "browser-journey.json": {
+          "state": "MISSING",
+          "reason": "required evidence file absent"
+        },
+        "demo-replay.json": {
+          "state": "MISSING",
+          "reason": "required evidence file absent"
+        },
+        "architecture.json": {
+          "state": "MISSING",
+          "reason": "required evidence file absent"
+        },
+        "build-journey.json": {
+          "state": "MISSING",
+          "reason": "required evidence file absent"
+        },
+        "demo-video.json": {
+          "state": "OPTIONAL"
+        },
+        "cover-image.json": {
+          "state": "OPTIONAL"
+        },
+        "social-proof.json": {
+          "state": "OPTIONAL"
+        }
+      }
+    },
+    "materials": {
+      "product_summary": {
+        "path": "/tmp/buildanddo-four-gap-entry/product_summary.md",
+        "sha256": "fe7c6fb67fab971f651eb8b8ff534442a4e4823cb9c91dff9ec1afa50c92f58e",
+        "retention": "session-local",
+        "state": "DRAFT_FOR_OWNER_REVIEW"
+      },
+      "evaluator_journey": {
+        "path": "/tmp/buildanddo-four-gap-entry/evaluator_journey.md",
+        "sha256": "fbc59d8fb3838bc1f54f1299e4a1960627fe2a43102af1d29b344e2f28620bb6",
+        "retention": "session-local",
+        "state": "DRAFT_FOR_OWNER_REVIEW"
+      },
+      "walkthrough": null,
+      "license_and_attribution": {
+        "path": "/tmp/buildanddo-four-gap-entry/license_and_attribution.md",
+        "sha256": "0411328f72832f8f36de575315d180b0db0251951aa004b5c559f9c7940bf806",
+        "retention": "session-local",
+        "state": "DRAFT_FOR_OWNER_REVIEW"
+      },
+      "privacy_and_permissions": {
+        "path": "/tmp/buildanddo-four-gap-entry/privacy_and_permissions.md",
+        "sha256": "762326d877e9906b974232123b7e10a81e1dcb32980d16cca4a61b6ae7245620",
+        "retention": "session-local",
+        "state": "DRAFT_FOR_OWNER_REVIEW"
+      },
+      "rollback_and_support": {
+        "path": "/tmp/buildanddo-four-gap-entry/rollback_and_support.md",
+        "sha256": "646f6adf66a218ec786ed2059b4648eca2f3d6bc467d05a16319ae49a395ac25",
+        "retention": "session-local",
+        "state": "DRAFT_FOR_OWNER_REVIEW"
+      }
+    },
+    "official_deadline": "UNCONFIRMED",
+    "external_submission": "NOT_PERFORMED"
+  },
+  "environment_limits": [
+    "Offline npm installation failed because the cache lacks the locked zod-4.4.3 tarball; no dependency lock was changed.",
+    "The frontend could not find eslint-plugin-import, vitest or concurrently.",
+    "Six Python tests skipped because native PDF and Discord dependencies are absent.",
+    "No installed PocketBase binaries or cached container images for package 0.39.8 and compose 0.28.4.",
+    "The prior GitHub Actions billing lock was not independently rechecked in this continuation.",
+    "No independent reviewer labels/receipt pins, deployed candidate capture, browser journey, four Hostinger product observations or organizer/owner review were supplied."
+  ],
+  "local_artifacts": [
+    {
+      "path": "/tmp/buildanddo-four-gap-coverage-final.json",
+      "sha256": "14257cde531c75432467a1aec1b53493866db893ca13f3341f51f9d4817f6a7f",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-coverage-final.log",
+      "sha256": "d8bfcc02423618eb1050c184122a61d2e139fdf307bfc2fe5b804e2fb8179f3c",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-mypy.log",
+      "sha256": "ab35ee42183d4d6d3ba483825ab037d18a5a15622d03be01d82220b1564851ff",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-ruff.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-source-node.log",
+      "sha256": "d7f4c9a767b71ea9334b623c2d5b84b516cc2296f0392c1defa169c735abd87d",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-fixtures/baseline.tap",
+      "sha256": "e0b114f3bf61fc3418631d2d98c6dbbebf4bf419a95d4f96e9143b5dbf0de6ca",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-fixtures/seed-identity-red.tap",
+      "sha256": "7875f120a0445dc5049ffbc03d3dde75bb13bee73c81cac7a099ff5979777c0f",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-fixtures/targeted-green.tap",
+      "sha256": "d8c462cf301d5cf66eaa741f0d3caaa906b1e4a475306e69746e510f8068ed24",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-acceptance.log",
+      "sha256": "0b7bbb31ac95e6352c76f432cc684d83e340d7643473bdec16c478d7c13e1b08",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-native-compose.log",
+      "sha256": "bfe6cfb397a9425b811487099637c2520008d0cbc39d83129b04ed8f2b5b28a8",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-development/summary.json",
+      "sha256": "dc393ff0df61811c410935db80c04823e2a1bd0a408859232de928ad5d39fbb1",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-development/reviewer-packet/packet.json",
+      "sha256": "a2b06a8414243fff62ae09059c97f6a0d51a714f85c354f4db809d478dbe0d44",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-entry/submission.json",
+      "sha256": "e9e98bfe00b728b182a16815c2144d6e1f4d92e6b98991f0510200bcb17afb21",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-entry/audit.json",
+      "sha256": "8201aef86a72044ea593d9bd6d457a9c308f85f0d26c59bf121b80093b801f5f",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-entry/day21/acceptance-summary.json",
+      "sha256": "f9f2ceabdccd53f3a2498c0a6272e9a7977a1975cc830a21a0b09d75ac339169",
+      "retention": "session-local"
+    },
+    {
+      "path": "/tmp/buildanddo-four-gap-entry/day21-audit.json",
+      "sha256": "34a713c378a8e32b9588904880a849a572a07d3f16077bec76e09bf3f6a79ad5",
+      "retention": "session-local"
+    }
+  ],
+  "retention_scope": "This public file retains source bindings and selected actual results. Raw logs, the portable packet and material drafts remain at the listed session-local paths; they are not uploaded or independently attested.",
+  "governance_checks": {
+    "status": "PASS",
+    "recorded_at": "2026-09-21T20:47:23.310050+00:00",
+    "checks": [
+      {
+        "name": "boundary",
+        "status": "PASS",
+        "command": "python scripts/ci/verify_public_boundary.py",
+        "observed": {
+          "state": "PASS",
+          "files_checked": 1286,
+          "failures": [],
+          "actor": null
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-final-boundary.log",
+          "sha256": "2f61e372a9a58a4ea621894ba09865c3272507e69eac18adbc1a41137a0fcd8e",
+          "retention": "session-local"
+        }
+      },
+      {
+        "name": "context",
+        "status": "PASS",
+        "command": "python scripts/ci/agent_context.py --check",
+        "observed": "PASS: .bits/context.lock.json matches the repository (22 findings, 20 unwired gates).",
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-final-context.log",
+          "sha256": "c9905537c9cf815ae00d0e0c2bae92a61ee761331c901c56e747bfa0465a41dc",
+          "retention": "session-local"
+        }
+      },
+      {
+        "name": "readiness",
+        "status": "PASS",
+        "command": "python scripts/ci/hostinger_readiness.py --check",
+        "observed": "PASS: all eleven milestones retain current rationale, owners, checks and next steps.",
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-final-readiness.log",
+          "sha256": "7799e54ef92ae57c822cdc3c86f8b0a27b57ea4cc0825d813de3e0ae6969cfd1",
+          "retention": "session-local"
+        }
+      },
+      {
+        "name": "submission",
+        "status": "PASS",
+        "command": "python scripts/ci/submission_readiness.py --check",
+        "observed": "PASS: eleven internal submission checkpoints; official rules remain explicitly unknown.",
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-final-submission.log",
+          "sha256": "f67a6b0785d6eb8c1010f942b404ff5ed35157c2532d7241de173a9447ab6038",
+          "retention": "session-local"
+        }
+      },
+      {
+        "name": "memory",
+        "status": "PASS",
+        "command": "python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py",
+        "observed": "PASS: 719 file vectors, 1584 edges, 159 events; IOO complete; no orphans.",
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-final-memory.log",
+          "sha256": "5e9148c07e6e0be25b1035b733b8d4a843ceef4e181b76cecd222ff84ba80cd4",
+          "retention": "session-local"
+        }
+      },
+      {
+        "name": "packet",
+        "status": "PASS",
+        "command": "python -m libs.evolution.review_packets inspect /tmp/buildanddo-four-gap-development/reviewer-packet/packet.json --scope buildanddo/public-development",
+        "observed": {
+          "prediction_id": "cni://decision/evolution/08e574d91902eaf93f227537d164d7fff59d9145a4749a4e830cebf4152ef9d3",
+          "run_id": "cni://test-run/evolution/8b995f4135d7419e6114c15cb577b2fb414e03506325efd52b91aba62a3a240b",
+          "source_files": 91,
+          "process_status": "PASS",
+          "grading": "UNMEASURED",
+          "next_step": "Independently review source, labels and exact process evidence; supply the existing receipt and trusted policy separately."
+        },
+        "log": {
+          "path": "/tmp/buildanddo-four-gap-final-packet.log",
+          "sha256": "e2ff8fbac858dba29bf032cd2257d67e7615bc02ff3f8aa4efae4ecb06150bda",
+          "retention": "session-local"
+        }
+      }
+    ],
+    "integrity": {
+      "checked_at": "2026-09-21T20:42:00.343704+00:00",
+      "source_hashes": "PASS: exact tested Git object pins retained; the later measured-inventory update is listed separately",
+      "coverage_hashes": "PASS: all measured executable source files remain unchanged",
+      "incremental_secret_scan": "PASS",
+      "secret_findings": [],
+      "restricted_paths": "PASS",
+      "restricted_path_findings": [],
+      "changed_file_count": 26,
+      "scope": "Incremental new text plus untracked artifacts; no key values are emitted."
+    },
+    "cgrf_new_files": {
+      "checked": 8,
+      "pass": 8,
+      "paths": [
+        ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-four-gap-closure.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml",
+        "libs/evolution/review_packets.py",
+        "tests/upgrade/test_day21_submission.py",
+        "tests/upgrade/test_day21_support.py",
+        "tests/upgrade/test_development_review_packets.py"
+      ]
+    },
+    "memory": {
+      "type_a_count": 719,
+      "type_b_count": 1584,
+      "type_c_count": 159,
+      "historical_events_preserved": 152,
+      "dkg_orphans": 0,
+      "ioo_compliance": true
+    },
+    "scope": "Local source, public-boundary, metadata and packet consistency checks. These do not change the actual 4/18 acceptance or UNMEASURED independent qualification."
+  },
+  "ck": "pending",
+  "caps": "pending",
+  "cks": "pending",
+  "post_acceptance_metadata_updates": [
+    {
+      "path": ".bits/context.lock.json",
+      "tested_sha256": "b4b8c848bc998aa249078983f62466fb3dcc8a0e0291788cb878ccdf01b19a68",
+      "current_sha256": "badbc4741c8a072d08e371a675bb0fc79130e2dc2195fb9b2fde94a56b01b1a5",
+      "reason": "Refresh the measured tracked-file inventory after adding the three retained report/evidence artifacts; executable source and acceptance fingerprint are unchanged."
+    }
+  ]
+}

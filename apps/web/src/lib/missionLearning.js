@@ -24,7 +24,7 @@ export const FRAMEWORKS = [
     },
     {
         name: 'OWASP ASVS',
-        href: 'https://owasp.org/www-project-application-security-verification-standard/',
+        href: 'https://owasp.org/ASVS/',
         note: 'Use applicable security verification requirements to design and review controls; this checklist is a teaching aid, not an ASVS assessment.',
     },
     {
@@ -239,6 +239,7 @@ export function readPlan(value) {
     const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
     return {
         ...emptyPlan(),
+        ...(Object.hasOwn(source, 'independent_review') ? { independent_review: source.independent_review === true } : {}),
         risk: ['A0', 'A1', 'A2'].includes(source.risk) ? source.risk : 'A1',
         ...Object.fromEntries(
             PLAN_FIELDS.map(({ id }) => [id, typeof source[id] === 'string' ? source[id] : '']),
@@ -253,6 +254,7 @@ export function planIssues(plan) {
     ).map(({ label }) => label);
     if (!['A0', 'A1', 'A2'].includes(plan?.risk)) issues.push('Supported risk tier');
     if (plan?.version !== 1) issues.push('Current plan format');
+    if (Object.hasOwn(plan || {}, 'independent_review') && typeof plan.independent_review !== 'boolean') issues.push('Independent review choice');
     return issues;
 }
 

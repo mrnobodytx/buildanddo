@@ -5,13 +5,15 @@
 # SRS:         SRS-BUILDANDDO-AGENTCTX-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
-# Depends:     AGENTS.md, .bits/context.md, .bits/srs_registry.yml
+# Depends:     AGENTS.md, .bits/context.md, .bits/srs_registry.yml, scripts/ci/gitlab_ci.py
 # EnumType:    Service
 # EnumEdges:   CONSUMES .bits/srs_registry.yml; PRODUCES .bits/context.lock.json;
-#              GATES bits/SRS-* branches; VALIDATES .github/workflows
+#              GATES bits/SRS-* branches; VALIDATES .github/workflows; CONSUMES scripts/ci/hostinger_readiness.py;
+#              CONSUMES scripts/ci/gitlab_ci.py; VALIDATES .gitlab/ci/day21-submission.yml
 # Intent:      Give every agent turn the same measured view of the repo instead of a
 #              hand-written brief that silently goes stale.
 # ───────────────────────────────────────────────────────────────
@@ -30,8 +32,20 @@ are derived, never hand-maintained, so the brief cannot drift from the repo.
 Standard library only, matching the rest of scripts/ci.
 """
 from __future__ import annotations
-import argparse, datetime as dt, json, re, subprocess, sys
+import argparse
+import datetime as dt
+import json
+import re
+import subprocess
+import sys
 from pathlib import Path
+
+_MODULE_ROOT = Path(__file__).resolve().parents[2]
+if str(_MODULE_ROOT) not in sys.path:
+    sys.path.insert(0, str(_MODULE_ROOT))
+from scripts.ci.hostinger_checks import CHECKS  # noqa: E402
+from scripts.ci.hostinger_readiness import ReadinessError, check_review  # noqa: E402
+from scripts.ci import gitlab_ci  # noqa: E402
 
 LOCK_PATH = ".bits/context.lock.json"
 REGISTRY_PATH = ".bits/srs_registry.yml"
@@ -46,7 +60,7 @@ GOVERNANCE_FILES = [
     ".bits/context.md",
     ".bits/srs_registry.yml",
 ]
-SCRIPT_RE = re.compile(r"(?:scripts|services)/[A-Za-z0-9_./-]+\.py")
+SCRIPT_RE = re.compile(r"(?:scripts|services|tools)/[A-Za-z0-9_./-]+\.py")
 NPM_RUN_RE = re.compile(r"npm run ([A-Za-z0-9:_-]+)")
 USES_LOCAL_RE = re.compile(r"uses:\s*\./(\.github/actions/[A-Za-z0-9_-]+)")
 TRIGGERS = ["pull_request", "push", "workflow_run", "workflow_dispatch", "schedule", "release"]
@@ -106,6 +120,10 @@ def collect_pipelines(root: Path) -> list[dict]:
     paths = sorted(root.glob(".github/workflows/*.yml")) + sorted(root.glob(".github/actions/*/action.yml"))
     for path in paths:
         text = read(path)
+        scripts = set(SCRIPT_RE.findall(text))
+        for check in re.findall(r"hostinger_readiness\.py --run ([a-z_]+)", text):
+            if check in CHECKS:
+                scripts.update(part for part in CHECKS[check].argv if SCRIPT_RE.fullmatch(part))
         name = ""
         for line in text.splitlines():
             m = re.match(r"^name:\s*(.+)$", line)
@@ -114,25 +132,79 @@ def collect_pipelines(root: Path) -> list[dict]:
                 break
         pipelines.append({
             "file": path.relative_to(root).as_posix(),
+            "provider": "github",
             "name": name or path.stem,
             "kind": "action" if path.name == "action.yml" else "workflow",
             "triggers": sorted({t for t in TRIGGERS if re.search(rf"^\s+{t}:", text, re.M)}),
-            "scripts": sorted(set(SCRIPT_RE.findall(text))),
+            "scripts": sorted(scripts),
             "npm_scripts": sorted(set(NPM_RUN_RE.findall(text))),
             "local_actions": sorted(set(USES_LOCAL_RE.findall(text))),
+        })
+    gitlab = gitlab_ci.collect(root)
+    for name in gitlab.files:
+        jobs = [job for job in gitlab.jobs if job.file == name]
+        commands = [command for job in jobs for command in job.commands]
+        required = [command for job in jobs if job.required for command in job.commands]
+        pipelines.append({
+            "file": name,
+            "provider": "gitlab",
+            "name": Path(name).stem,
+            "kind": "pipeline" if name == ".gitlab-ci.yml" else "include",
+            "triggers": ["rules (not evaluated)"] if re.search(r"^\s+rules:", read(root / name), re.M) else [],
+            "scripts": sorted(gitlab_scripts(commands)),
+            "required_scripts": sorted(gitlab_scripts(required)) if not gitlab.errors else [],
+            "npm_scripts": sorted({script for command in commands for script in NPM_RUN_RE.findall(command)}),
+            "local_actions": [],
+            "jobs": [job.name for job in jobs],
+            "configuration_errors": list(gitlab.errors) if name == ".gitlab-ci.yml" else [],
         })
     return pipelines
 
 
+def gitlab_scripts(commands: list[str]) -> set[str]:
+    """Expand literal Python invocations and the repository's fixed acceptance wrappers."""
+    scripts: set[str] = set()
+    for command in commands:
+        argv = gitlab_ci.arguments(command)
+        if len(argv) < 2 or not re.fullmatch(r"python(?:3(?:\.\d+)?)?", Path(argv[0]).name):
+            continue
+        if any(token in {"||", "&&", ";", "|", ">", "<"} for token in argv):
+            continue
+        if not SCRIPT_RE.fullmatch(argv[1]):
+            continue
+        scripts.add(argv[1])
+        names: list[str] = []
+        if argv[1] == "tools/day21/day21_acceptance.py":
+            scripts.update({"scripts/ci/hostinger_readiness.py", "scripts/ci/day21_submission.py"})
+            names = [name for name, check in CHECKS.items()
+                     if not ("--source-only" in argv and check.level == "native")
+                     and not ("--native-only" in argv and check.level != "native")]
+        elif argv[1] == "scripts/ci/hostinger_readiness.py" and "--run" in argv:
+            index = argv.index("--run") + 1
+            if index < len(argv):
+                names = list(CHECKS) if argv[index] == "all" else [argv[index]]
+        for name in names:
+            if name in CHECKS:
+                scripts.update(part for part in CHECKS[name].argv if SCRIPT_RE.fullmatch(part))
+    return scripts
+
+
 def collect_gates(root: Path, files: list[str], pipelines: list[dict]) -> list[dict]:
-    """A gate is a check script. Wired means a workflow or composite action runs it."""
-    candidates = [f for f in files if f.startswith("scripts/ci/") and f.endswith(".py")]
+    """Report GitLab wiring and retain separate GitHub configuration provenance."""
+    # The registry is a library. Replay is an owner-supplied capture reader,
+    # reported separately below; running it in CI cannot establish live proof.
+    support = {"scripts/ci/hostinger_checks.py", "scripts/ci/hostinger_replay.py", "scripts/ci/gitlab_ci.py"}
+    candidates = [f for f in files if f.startswith("scripts/ci/") and f.endswith(".py") and f not in support]
     candidates += [f for f in files if f.endswith("run_all_tests.py")]
+    candidates += [f for f in files if f == "tools/day21/day21_acceptance.py"]
 
     workflow_refs: set[str] = set()
-    action_refs: set[str] = set()
+    gitlab_refs: set[str] = set()
     for p in pipelines:
-        (action_refs if p["kind"] == "action" else workflow_refs).update(p["scripts"])
+        if p.get("provider") == "gitlab":
+            gitlab_refs.update(p["required_scripts"])
+        elif p["kind"] == "workflow":
+            workflow_refs.update(p["scripts"])
 
     # A composite action only runs when a workflow calls it.
     reachable_actions = {a for p in pipelines if p["kind"] == "workflow" for a in p["local_actions"]}
@@ -147,7 +219,8 @@ def collect_gates(root: Path, files: list[str], pipelines: list[dict]) -> list[d
         used_by = sorted(src for src, text in other_sources.items() if Path(gate).name in text)
         gates.append({
             "path": gate,
-            "wired_into_ci": gate in workflow_refs,
+            "wired_into_ci": gate in gitlab_refs,
+            "configured_providers": [provider for provider, refs in (("gitlab", gitlab_refs), ("github", workflow_refs)) if gate in refs],
             "referenced_by": used_by,
         })
     return gates
@@ -196,8 +269,12 @@ def collect_findings(root: Path, inventory: dict, registry: list[dict]) -> list[
             continue
         where = ", ".join(gate["referenced_by"]) or "nothing in this repo"
         srs = "SRS-BUILDANDDO-EVIDENCE-CI-001" if gate["path"].endswith("run_all_tests.py") else ""
-        add("high", "ci", f"{gate['path']} is never executed by GitHub Actions",
+        add("high", "ci", f"{gate['path']} is not configured in reachable GitLab jobs",
             f"referenced by: {where}", srs)
+
+    for pipeline in inventory["pipelines"]:
+        for error in pipeline.get("configuration_errors", []):
+            add("high", "ci", error, pipeline["file"])
 
     tests = inventory["tests"]
     if not tests["js_runners"]:
@@ -241,6 +318,17 @@ def collect_findings(root: Path, inventory: dict, registry: list[dict]) -> list[
     return sorted(findings, key=lambda f: (order.get(f["severity"], 3), f["area"], f["statement"]))
 
 
+def collect_readiness(root: Path) -> dict:
+    """Expose the current mandatory sprint review in the measured briefing."""
+    try:
+        contract, source = check_review(root)
+        return {"state": "PASS", "source_sha256": source,
+            "pieces": [{key: piece[key] for key in ("id", "why", "owner", "next_step")} for piece in contract["pieces"]],
+            "acceptance": "UNMEASURED; run the receipt assessment separately"}
+    except (ReadinessError, OSError, subprocess.SubprocessError) as error:
+        return {"state": "FAIL", "reason": str(error), "pieces": []}
+
+
 def build_inventory(root: Path) -> dict:
     files = git_files(root)
     pipelines = collect_pipelines(root)
@@ -251,6 +339,8 @@ def build_inventory(root: Path) -> dict:
 
     inventory = {
         "schema_version": 1,
+        "execution_provider": "gitlab",
+        "execution_state": "UNMEASURED; source inventory is not a pipeline result",
         "repo": {
             "tracked_files": len(files),
             "apps": sorted({f.split("/")[1] for f in files if f.startswith("apps/") and "/" in f[5:]}),
@@ -270,6 +360,8 @@ def build_inventory(root: Path) -> dict:
         "pipelines": pipelines,
         "gates": collect_gates(root, files, pipelines),
         "tests": collect_tests(root, files),
+        "sprint_readiness": collect_readiness(root),
+        "operational_receipt_tools": ["scripts/ci/hostinger_replay.py"],
     }
     inventory["findings"] = collect_findings(root, inventory, registry)
     open_srs = [s for s in inventory["governance"]["srs"] if s.get("status") not in {"delivered", "withdrawn"}]
@@ -298,16 +390,28 @@ def briefing(inventory: dict) -> str:
         "by creating its SRS and dispatch first. A2/A3 require pre-existing authority.",
         "",
         "## Pipelines",
+        "GitLab executes CI. GitHub definitions are inventoried separately; configured commands are not observed runs.",
     ]
     for p in inventory["pipelines"]:
         detail = ",".join(p["triggers"]) or p["kind"]
-        lines.append(f"- `{p['file']}` ({detail})")
+        lines.append(f"- `{p['file']}` ({p['provider']}; {detail})")
 
     lines += ["", "## Gates"]
     for g in inventory["gates"]:
-        state = "wired into CI" if g["wired_into_ci"] else "NOT run by CI"
+        state = "configured in GitLab CI" if g["wired_into_ci"] else "NOT configured in GitLab CI"
         extra = f" (used by {', '.join(g['referenced_by'])})" if g["referenced_by"] and not g["wired_into_ci"] else ""
         lines.append(f"- `{g['path']}` - {state}{extra}")
+
+    readiness = inventory["sprint_readiness"]
+    lines += ["", "## Required sprint review", f"- Source binding: {readiness['state']}",
+        "- Recheck before selecting work and before handoff: python scripts/ci/hostinger_readiness.py --check",
+        "- Read docs/hostinger-sprint-closure.md and .bits/hostinger-readiness.json; this binding does not establish acceptance."]
+    lines.append("- Operational replay: scripts/ci/hostinger_replay.py requires captured inputs and explicit expected scope; CI exercises its synthetic regression suite only.")
+    if readiness["state"] == "FAIL":
+        lines.append(f"- {readiness['reason']}")
+    elif readiness["pieces"]:
+        first = readiness["pieces"][0]
+        lines.append(f"- First ({first['owner']}): {first['next_step']}")
 
     t = inventory["tests"]
     lines += [
@@ -349,6 +453,10 @@ def main() -> int:
     root = Path(args.root).resolve()
     inventory = build_inventory(root)
     lock_path = root / LOCK_PATH
+
+    if (args.check or args.write) and inventory["sprint_readiness"]["state"] != "PASS":
+        print(f"FAIL: {inventory['sprint_readiness']['reason']}")
+        return 1
 
     if args.check:
         if not lock_path.is_file():

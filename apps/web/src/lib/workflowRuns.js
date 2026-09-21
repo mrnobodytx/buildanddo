@@ -16,7 +16,7 @@
 // ───────────────────────────────────────────────────────────────
 
 export const STEP_KINDS = Object.freeze({ read: 'Read data', transform: 'Summarise or transform',
-    approval: 'Wait for approval', notify: 'Send a message', record: 'Record evidence' });
+    approval: 'Wait for approval', notify: 'Send a message', record: 'Record evidence', execute: 'Execute bounded action' });
 export const RUN_STATUS = Object.freeze({
     running: { label: 'In progress', tone: 'violet' },
     awaiting_approval: { label: 'Awaiting approval', tone: 'amber' },
@@ -36,7 +36,7 @@ export function readWorkflowSteps(value) {
     if (!Array.isArray(parsed)) return [];
     return parsed.filter((step) => step && typeof step.name === 'string' && Object.hasOwn(STEP_KINDS, step.kind))
         .map((step) => ({ id: typeof step.id === 'string' ? step.id : '', name: step.name, kind: step.kind,
-            detail: typeof step.detail === 'string' ? step.detail : '' }));
+            detail: typeof step.detail === 'string' ? step.detail : '', ...(step.kind === 'execute' ? { action: step.action } : {}) }));
 }
 
 /** @param {object} run Saved run. @returns {object|null} Supported immutable snapshot. */

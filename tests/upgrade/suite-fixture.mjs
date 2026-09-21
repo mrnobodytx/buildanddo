@@ -16,15 +16,12 @@
 // ───────────────────────────────────────────────────────────────
 
 import { createHash } from 'node:crypto';
-import { spawnSync } from 'node:child_process';
-import { fixture, plain } from './admin-fixture.mjs';
+import { fixture, plain, runPython } from './admin-fixture.mjs';
 export const SCHEMA = 'apps/pocketbase/pb_migrations/1790300000_mission_suite.js';
 export const hash = (value) => createHash('sha256').update(value).digest('hex');
 let cachedSourceHash;
 export function python(code, input = '') {
-    const run = spawnSync('python', ['-c', code], { input, encoding: 'utf8', maxBuffer: 3000000 });
-    if (run.status !== 0) throw new Error(run.stderr || 'Python source check failed.');
-    return JSON.parse(run.stdout);
+    return JSON.parse(runPython(['-c', code], { input }));
 }
 export const compute = (input) => python('import sys,json; from apps.mission_suite.engine import run_suite; print(json.dumps(run_suite(sys.stdin.read()),sort_keys=True,separators=(",",":")))', input);
 export function suiteFixture({ bound = true } = {}) {

@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/hostinger-readiness.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-20
+# Depends:     .bits/hostinger-readiness.json
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES .bits/hostinger-readiness.json
+# Intent:      Identify the mandatory sprint contract without embedding comments in JSON.
+# ───────────────────────────────────────────────────────────────
+schema_version: 1
+artifact: .bits/hostinger-readiness.json
+evidence_scope: milestone rationale, source, acceptance requirements and receiving ownership
+runtime_acceptance: pending

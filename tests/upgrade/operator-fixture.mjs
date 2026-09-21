@@ -17,6 +17,7 @@
 
 import { researchFixture } from './research-fixture.mjs';
 import { plain } from './admin-fixture.mjs';
+import { repoPath, pythonBin } from './admin-fixture.mjs';
 import { spawnSync } from 'node:child_process';
 
 export function operatorFixture() {
@@ -43,23 +44,23 @@ export function operatorFixture() {
 
 /** Compile real portable output with optional synthetic untrusted document text. */
 export function operatorPlan({ problem, document } = {}) {
-    const result = spawnSync('python', ['-c',
+    const result = spawnSync(pythonBin(), ['-c',
         'import json,sys; from apps.federal_foundry.catalog import load_catalog; from apps.federal_foundry.operator import operator_blueprint; ' +
         'from apps.research.blueprint_documents import structure_text; options=json.load(sys.stdin); ' +
         'blueprint=structure_text(options["document"],source_file="synthetic.pdf",source_hash="a"*64,page_count=1).to_dict() if options.get("document") else None; ' +
         'blueprint.update(extracted_at="2026-09-18T11:00:00Z") if blueprint else None; ' +
         'print(json.dumps(operator_blueprint(load_catalog(), problem=options.get("problem"), blueprint=blueprint, evaluated_at="2026-09-18T12:00:00Z"), sort_keys=True, ensure_ascii=False))'],
-    { input: JSON.stringify({ problem, document }), encoding: 'utf8', maxBuffer: 2000000, cwd: new URL('../../', import.meta.url) });
+    { input: JSON.stringify({ problem, document }), encoding: 'utf8', maxBuffer: 2000000, cwd: repoPath('.') });
     if (result.status !== 0) throw new Error(result.stderr || 'Operator compiler failed');
     return JSON.parse(result.stdout);
 }
 
 /** Recompute integrity for adversarial test inputs; this grants no authority. */
 export function sealOperator(plan) {
-    const result = spawnSync('python', ['-c',
+    const result = spawnSync(pythonBin(), ['-c',
         'import json,sys; from apps.federal_foundry.operator import content_fingerprint; value=json.load(sys.stdin); ' +
         'value["content_sha256"]=content_fingerprint(value); value["id"]="OP-"+value["content_sha256"][:24]; print(json.dumps(value,sort_keys=True,ensure_ascii=False))'],
-    { input: JSON.stringify(plan), encoding: 'utf8', maxBuffer: 2000000, cwd: new URL('../../', import.meta.url) });
+    { input: JSON.stringify(plan), encoding: 'utf8', maxBuffer: 2000000, cwd: repoPath('.') });
     if (result.status !== 0) throw new Error(result.stderr || 'Operator integrity fixture failed');
     return JSON.parse(result.stdout);
 }

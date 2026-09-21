@@ -23,6 +23,11 @@ onRecordUpdateRequest((e) => require(`${__hooks}/workspace-record-policy.js`).en
 onRecordDeleteRequest((e) => require(`${__hooks}/workspace-record-policy.js`).enforce(e, 'delete'), ...scopedCollections);
 onRecordCreateRequest((e) => require(`${__hooks}/workspace-record-policy.js`).workspaceCreate(e), 'workspaces');
 
+routerAdd('POST', '/api/buildanddo/onboarding', (e) => {
+    e.response.header().set('Cache-Control', 'no-store');
+    return e.json(200, require(`${__hooks}/workspace-onboarding.js`).create(e));
+}, $apis.requireAuth('users'), $apis.bodyLimit(2000));
+
 routerAdd('GET', '/api/buildanddo/workspaces/{workspace}/access', (e) => {
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(200, require(`${__hooks}/workspace-access.js`).access(e));

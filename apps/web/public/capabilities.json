@@ -1,0 +1,655 @@
+{
+  "generated_at": "2026-09-20T23:07:53+00:00",
+  "state": "MEASURED",
+  "deployed": {
+    "production": "",
+    "staging": "3f0bd84",
+    "source": {
+      "staging": "_version"
+    },
+    "conflicts": {},
+    "reason": "production: no identity published;"
+  },
+  "readiness_basis": "presence of the source file in the commit each environment reports serving; route probing is vacuous because the SPA returns 200 for any path, including ones that do not exist",
+  "provenance_conflicts": {},
+  "counts": {
+    "LIVE": 0,
+    "STAGED": 39,
+    "BUILT": 0,
+    "UNMEASURABLE": 0,
+    "DECLARED": 1
+  },
+  "total": 40,
+  "with_tests": 30,
+  "capabilities": [
+    {
+      "surface": "public",
+      "path": "/about",
+      "label": "About",
+      "component": "AboutPage",
+      "import": "./pages/AboutPage",
+      "file": "apps/web/src/pages/AboutPage.jsx",
+      "lines": 96,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/__tests__/PublicPages.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/blog",
+      "label": "Blog",
+      "component": "BlogPage",
+      "import": "./pages/BlogPage",
+      "file": "apps/web/src/pages/BlogPage.jsx",
+      "lines": 91,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/__tests__/PublicPages.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/classrooms",
+      "label": "ClassroomLanding",
+      "component": "ClassroomLandingPage",
+      "import": "./pages/ClassroomLandingPage",
+      "file": "apps/web/src/pages/ClassroomLandingPage.jsx",
+      "lines": 44,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/__tests__/PublicPages.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/contact",
+      "label": "Contact",
+      "component": "ContactPage",
+      "import": "./pages/ContactPage",
+      "file": "apps/web/src/pages/ContactPage.jsx",
+      "lines": 161,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/__tests__/PublicPages.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/docs",
+      "label": "Docs",
+      "component": "DocsPage",
+      "import": "./pages/DocsPage",
+      "file": "apps/web/src/pages/DocsPage.jsx",
+      "lines": 193,
+      "tests": 2,
+      "test_files": [
+        "apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx",
+        "apps/web/src/pages/__tests__/PublicPages.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/forgot-password",
+      "label": "ForgotPassword",
+      "component": "ForgotPasswordPage",
+      "import": "./pages/ForgotPasswordPage",
+      "file": "apps/web/src/pages/ForgotPasswordPage.jsx",
+      "lines": 154,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/components/auth/__tests__/LoginPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/",
+      "label": "Home",
+      "component": "HomePage",
+      "import": "./pages/HomePage",
+      "file": "apps/web/src/pages/HomePage.jsx",
+      "lines": 764,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/__tests__/HomePage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/hostinger-challenge",
+      "label": "HostingerChallenge",
+      "component": "HostingerChallengePage",
+      "import": "./pages/HostingerChallengePage",
+      "file": "apps/web/src/pages/HostingerChallengePage.jsx",
+      "lines": 157,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/__tests__/HostingerChallengePage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/platform",
+      "label": "Platform",
+      "component": "PlatformPage",
+      "import": "./pages/PlatformPage",
+      "file": "apps/web/src/pages/PlatformPage.jsx",
+      "lines": 307,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/components/platform/__tests__/MetaFunctionPlatform.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/practice",
+      "label": "Practice",
+      "component": "PracticePage",
+      "import": "./pages/PracticePage",
+      "file": "apps/web/src/pages/PracticePage.jsx",
+      "lines": 100,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/pricing",
+      "label": "Pricing",
+      "component": "PricingPage",
+      "import": "./pages/PricingPage",
+      "file": "apps/web/src/pages/PricingPage.jsx",
+      "lines": 95,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/__tests__/PublicPages.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "public",
+      "path": "/roadmap",
+      "label": "Roadmap",
+      "component": "RoadmapPage",
+      "import": "./pages/RoadmapPage",
+      "file": "apps/web/src/pages/RoadmapPage.jsx",
+      "lines": 967,
+      "tests": 4,
+      "test_files": [
+        "apps/web/src/pages/__tests__/RoadmapPage.capabilities.test.jsx",
+        "apps/web/src/pages/__tests__/RoadmapPage.planMirror.test.jsx",
+        "apps/web/src/pages/__tests__/RoadmapPage.replay.test.jsx",
+        "apps/web/src/pages/workspace/__tests__/RoadmapPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/admin",
+      "label": "Administration",
+      "component": "AdminPage",
+      "import": "./pages/workspace/AdminPage",
+      "file": "apps/web/src/pages/workspace/AdminPage.jsx",
+      "lines": 147,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/AdministrationFlow.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/blueprints",
+      "label": "Blueprints",
+      "component": "BlueprintPage",
+      "import": "./pages/workspace/BlueprintPage",
+      "file": "apps/web/src/pages/workspace/BlueprintPage.jsx",
+      "lines": 177,
+      "tests": 2,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/BlueprintPage.test.jsx",
+        "apps/web/src/pages/workspace/__tests__/BlueprintSavedPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/desks",
+      "label": "Capability Passport",
+      "component": "CapabilityPassportPage",
+      "import": "./pages/workspace/SpecialistDeskPage",
+      "file": "apps/web/src/pages/workspace/SpecialistDeskPage.jsx",
+      "lines": 320,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/missions",
+      "label": "Challenge Desk",
+      "component": "MissionsPage",
+      "import": "./pages/workspace/MissionsPage",
+      "file": "apps/web/src/pages/workspace/MissionsPage.jsx",
+      "lines": 718,
+      "tests": 2,
+      "test_files": [
+        "apps/web/src/components/__tests__/DialogFocus.test.jsx",
+        "apps/web/src/pages/workspace/__tests__/MissionsPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/classrooms",
+      "label": "Classrooms",
+      "component": "ClassroomsPage",
+      "import": "./pages/workspace/ClassroomsPage",
+      "file": "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+      "lines": 203,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/community",
+      "label": "Community & Social",
+      "component": "CommunitySocialPage",
+      "import": "./pages/workspace/CommunitySocialPage",
+      "file": "apps/web/src/pages/workspace/CommunitySocialPage.jsx",
+      "lines": 558,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/corrections",
+      "label": "Corrections",
+      "component": "CorrectionsPage",
+      "import": "./pages/workspace/CorrectionsPage",
+      "file": "apps/web/src/pages/workspace/CorrectionsPage.jsx",
+      "lines": 122,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/edition",
+      "label": "Daily Edition",
+      "component": "DailyEditionPage",
+      "import": "./pages/workspace/DailyEditionPage",
+      "file": "apps/web/src/pages/workspace/DailyEditionPage.jsx",
+      "lines": 441,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/erp",
+      "label": "ERP",
+      "component": "ErpPage",
+      "import": "./pages/workspace/ErpPage",
+      "file": "apps/web/src/pages/workspace/ErpPage.jsx",
+      "lines": 154,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/evidence",
+      "label": "Evidence Ledger",
+      "component": "EvidencePage",
+      "import": "./pages/workspace/EvidencePage",
+      "file": "apps/web/src/pages/workspace/EvidencePage.jsx",
+      "lines": 437,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/tutorials",
+      "label": "Field Manual",
+      "component": "TutorialsPage",
+      "import": "./pages/workspace/TutorialsPage",
+      "file": "apps/web/src/pages/workspace/TutorialsPage.jsx",
+      "lines": 67,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/fleet",
+      "label": "Fleet",
+      "component": "FleetPage",
+      "import": "./pages/workspace/FleetPage",
+      "file": "apps/web/src/pages/workspace/FleetPage.jsx",
+      "lines": 522,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/knowledge",
+      "label": "Knowledge & context",
+      "component": "KnowledgePage",
+      "import": "./pages/workspace/KnowledgePage",
+      "file": "apps/web/src/pages/workspace/KnowledgePage.jsx",
+      "lines": 164,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/KnowledgePage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/research",
+      "label": "Mission research",
+      "component": "ResearchPage",
+      "import": "./pages/workspace/ResearchPage",
+      "file": "apps/web/src/pages/workspace/ResearchPage.jsx",
+      "lines": 180,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/ResearchFlow.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/suite",
+      "label": "Mission suite",
+      "component": "SuitePage",
+      "import": "./pages/workspace/SuitePage",
+      "file": "apps/web/src/pages/workspace/SuitePage.jsx",
+      "lines": 111,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/SuiteFlow.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/dossier",
+      "label": "My dossier",
+      "component": "DossierPage",
+      "import": "./pages/workspace/DossierPage",
+      "file": "apps/web/src/pages/workspace/DossierPage.jsx",
+      "lines": 158,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/DossierFlow.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/operations",
+      "label": "Operations",
+      "component": "OperationsPage",
+      "import": "./pages/workspace/OperationsPage",
+      "file": "apps/web/src/pages/workspace/OperationsPage.jsx",
+      "lines": 617,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/OperationsPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/operator",
+      "label": "Operator cockpit",
+      "component": "OperatorPage",
+      "import": "./pages/workspace/OperatorPage",
+      "file": "apps/web/src/pages/workspace/OperatorPage.jsx",
+      "lines": 317,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/platforms",
+      "label": "Platform Health",
+      "component": "PlatformHealthPage",
+      "import": "./pages/workspace/PlatformHealthPage",
+      "file": "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
+      "lines": 501,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/policy",
+      "label": "Policy intelligence",
+      "component": "PolicyPage",
+      "import": "./pages/workspace/PolicyPage",
+      "file": "apps/web/src/pages/workspace/PolicyPage.jsx",
+      "lines": 207,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/PolicyPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/roadmap",
+      "label": "Roadmap",
+      "component": "WorkspaceRoadmapPage",
+      "import": "./pages/workspace/RoadmapPage",
+      "file": "apps/web/src/pages/workspace/RoadmapPage.jsx",
+      "lines": 625,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/settings",
+      "label": "Settings",
+      "component": "SettingsPage",
+      "import": "./pages/workspace/SettingsPage",
+      "file": "apps/web/src/pages/workspace/SettingsPage.jsx",
+      "lines": 263,
+      "tests": 3,
+      "test_files": [
+        "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx",
+        "apps/web/src/pages/workspace/__tests__/AdministrationFlow.test.jsx",
+        "apps/web/src/pages/workspace/__tests__/SettingsPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/signals",
+      "label": "Signals",
+      "component": "SignalsPage",
+      "import": "./pages/workspace/SignalsPage",
+      "file": "apps/web/src/pages/workspace/SignalsPage.jsx",
+      "lines": 483,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/SignalsPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/support",
+      "label": "Support & Revenue",
+      "component": "SupportRevenuePage",
+      "import": "./pages/workspace/SupportRevenuePage",
+      "file": "apps/web/src/pages/workspace/SupportRevenuePage.jsx",
+      "lines": 108,
+      "tests": 0,
+      "test_files": [],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/workflows",
+      "label": "Workflows",
+      "component": "WorkflowsPage",
+      "import": "./pages/workspace/WorkflowsPage",
+      "file": "apps/web/src/pages/workspace/WorkflowsPage.jsx",
+      "lines": 721,
+      "tests": 2,
+      "test_files": [
+        "apps/web/src/components/workspace/workflows/__tests__/WorkflowRuns.test.jsx",
+        "apps/web/src/pages/workspace/__tests__/WorkflowsPage.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/forums",
+      "label": "Workspace forum",
+      "component": "ForumsPage",
+      "import": "./pages/workspace/ForumsPage",
+      "file": "apps/web/src/pages/workspace/ForumsPage.jsx",
+      "lines": 117,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/CommunityFlow.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/wiki",
+      "label": "Workspace wiki",
+      "component": "WikiPage",
+      "import": "./pages/workspace/WikiPage",
+      "file": "apps/web/src/pages/workspace/WikiPage.jsx",
+      "lines": 95,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/CommunityFlow.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "STAGED"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/integrations",
+      "label": "Sinks & extensions",
+      "component": "IntegrationsPage",
+      "import": "./pages/workspace/IntegrationsPage",
+      "file": "apps/web/src/pages/workspace/IntegrationsPage.jsx",
+      "lines": 26,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/AdministrationFlow.test.jsx"
+      ],
+      "in_production": null,
+      "in_staging": true,
+      "state": "DECLARED"
+    }
+  ]
+}

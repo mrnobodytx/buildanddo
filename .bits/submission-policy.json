@@ -1,0 +1,150 @@
+{
+  "schema_version": "buildanddo.internal-submission-policy/v1",
+  "authority": "internal-provisional",
+  "official_rules": {
+    "status": "unknown",
+    "url": null,
+    "deadline": null
+  },
+  "principles": [
+    "Use only authorized accounts, data, providers and actions.",
+    "Preserve failed and uncertain outcomes with source identity.",
+    "Keep independent verification separate from production and hashes.",
+    "Never represent an internal deadline or rubric as official competition rules.",
+    "Publish only sanitized public materials; private workspace data stays private.",
+    "Every advertised capability needs rendered/native and deployed evidence or an explicit limitation."
+  ],
+  "milestones": [
+    {
+      "id": "HS-01",
+      "day": 1,
+      "title": "Foundations",
+      "required": [
+        "Required CI jobs execute",
+        "Locked dependencies resolve",
+        "Build and release identities agree",
+        "No skipped required gate is counted as passing"
+      ]
+    },
+    {
+      "id": "HS-02",
+      "day": 3,
+      "title": "Authentication and onboarding",
+      "required": [
+        "Fresh account completes atomic onboarding",
+        "Retry and concurrent setup create one workspace",
+        "Sign out and sign in restore the same workspace",
+        "Password reset and account switching are observed"
+      ]
+    },
+    {
+      "id": "HS-03",
+      "day": 5,
+      "title": "Workspace isolation and persistence",
+      "required": [
+        "Both declared backend versions execute native tests",
+        "Current membership protects every read and write",
+        "Restart preserves receipts and records",
+        "Retention-aware migration rollback is rehearsed"
+      ]
+    },
+    {
+      "id": "HS-04",
+      "day": 7,
+      "title": "Signals",
+      "required": [
+        "Permitted source is actually captured",
+        "Source URL, text digest and time are retained",
+        "Duplicate captures do not create duplicate signals",
+        "Exactly one recoverable mission proposal follows the signal"
+      ]
+    },
+    {
+      "id": "HS-05",
+      "day": 9,
+      "title": "Bounded business actions",
+      "required": [
+        "Frozen inputs and approved mission precede effects",
+        "An actual business action returns a receipt",
+        "Scope revocation stops undispatched work",
+        "Timeouts retain uncertainty and cannot cause blind retries"
+      ]
+    },
+    {
+      "id": "HS-06",
+      "day": 11,
+      "title": "Workflows",
+      "required": [
+        "Approval checkpoint guards executable steps",
+        "Step events and evidence are atomic",
+        "Cancellation and late results retain the actual outcome",
+        "Replay is a read and never reruns effects"
+      ]
+    },
+    {
+      "id": "HS-07",
+      "day": 13,
+      "title": "Connectors",
+      "required": [
+        "Firecrawl and n8n use registered workspace bindings",
+        "Health observations match current configuration revision",
+        "Disabled, stale and unavailable providers fail closed",
+        "n8n reconciliation reads an existing effect receipt"
+      ]
+    },
+    {
+      "id": "HS-08",
+      "day": 15,
+      "title": "ERP",
+      "required": [
+        "Create, link, edit and reload tasks, objectives and contacts",
+        "Executed tasks retain mission, execution and evidence references",
+        "Foreign relationships are rejected by the backend",
+        "Task completion is distinct from objective verification"
+      ]
+    },
+    {
+      "id": "HS-09",
+      "day": 17,
+      "title": "Evidence",
+      "required": [
+        "Reviewed evidence versions remain exact",
+        "Execution receipts cannot be rewritten through ordinary requests",
+        "Producer and verifier are distinct",
+        "Candidate, artifact and provider receipts reconcile"
+      ]
+    },
+    {
+      "id": "HS-10",
+      "day": 19,
+      "title": "Edition, desks and assistant",
+      "required": [
+        "Failed reads remain visible",
+        "Verification dates use actual review stamps",
+        "Specialist desks connect to their working tools",
+        "Assistant conversations and patterns are account/workspace isolated",
+        "Assistant actions use native permissions and human decisions remain explicit"
+      ]
+    },
+    {
+      "id": "HS-11",
+      "day": 21,
+      "title": "Replay and submission",
+      "required": [
+        "One actual deployed input-to-independent-review journey is retained",
+        "All eleven owner-reviewed milestones have current evidence",
+        "Public submission materials match the accepted candidate",
+        "Official requirements are confirmed separately before entry"
+      ]
+    }
+  ],
+  "materials": [
+    "product_summary",
+    "evaluator_journey",
+    "walkthrough",
+    "license_and_attribution",
+    "privacy_and_permissions",
+    "rollback_and_support"
+  ],
+  "submission_gate": "All eleven milestones, current required profiles, real replay, owner review and confirmed official requirements are required. Preparation is allowed while the gate remains HOLD."
+}

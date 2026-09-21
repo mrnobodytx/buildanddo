@@ -287,4 +287,26 @@ export function setupUser() {
     return userEvent.setup({ pointerEventsCheck: 0 });
 }
 
+/**
+ * Script elements in the document that carry `payload`.
+ *
+ * `expect(document.querySelector('script')).toBeNull()` cannot express "this stored text did not
+ * become code". next-themes' ThemeProvider - which `renderWithProviders` mounts - injects its own
+ * inline `<script nonce>` so the theme applies before first paint, so the document always holds
+ * one and the assertion fails on the harness rather than on an injection.
+ *
+ * Scoping to the payload states the property under test directly, and states it more precisely
+ * than the count ever did: not "no script exists" but "this untrusted text is inert". `src` is
+ * checked too, because a payload that produced `<script src=...>` carries no text content.
+ *
+ * @param {string} payload The untrusted text that must never become executable.
+ * @returns {HTMLScriptElement[]} Scripts carrying it. Empty is the passing case.
+ */
+export function scriptsCarrying(payload) {
+    return Array.from(document.querySelectorAll('script')).filter(
+        (node) => (node.textContent || '').includes(payload)
+            || (node.getAttribute('src') || '').includes(payload),
+    );
+}
+
 export * from '@testing-library/react';

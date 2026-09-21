@@ -10,7 +10,7 @@
 # Created:     2026-09-17
 # Depends:     apps/web/src/lib/publicPages.js, apps/research/processing.py, apps/research/contracts.py
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/web/src/lib/publicPages.js; EXTENDS apps/research/processing.py; VALIDATES https://buildanddo.tech
+# EnumEdges:   CONSUMES apps/web/src/lib/publicPages.js; EXTENDS apps/research/processing.py; VALIDATES https://buildanddo.com
 # Intent:      Specify repeatable Firecrawl-backed evidence that every canonical public page renders its required public content.
 # ───────────────────────────────
 
