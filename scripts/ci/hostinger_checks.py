@@ -237,7 +237,9 @@ def run_check(
                 check=False,
             )
             match = re.fullmatch(
-                r"(?:pocketbase\s+(?:version\s+)?)?v?(\d+\.\d+\.\d+)\s*",
+                # The program name carries an extension on Windows, where the binary
+                # self-reports "pocketbase.exe version X".
+                r"(?:pocketbase(?:\.\w+)?\s+(?:version\s+)?)?v?(\d+\.\d+\.\d+)\s*",
                 result.stdout,
                 re.IGNORECASE,
             )

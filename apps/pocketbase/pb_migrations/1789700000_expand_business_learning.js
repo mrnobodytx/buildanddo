@@ -21,8 +21,18 @@ migrate((app) => {
     // therefore threw ReferenceError and PocketBase ABORTS STARTUP on a failed migration, so this
     // file took staging down until it was quarantined. pb_hooks and pb_migrations are siblings by
     // convention, so derive the path instead of depending on a global that does not exist.
-    const dataDir = $filepath.join(__hooks, '..', 'pb_migrations', 'data');
-    const curriculum = JSON.parse(toString($os.readFile($filepath.join(dataDir, 'starter-tutorials.json'))));
+    // 0.39.8 binds no __migrations, so the fixture directory is resolved beside
+    // __hooks. Its NAME differs between the deployed layout (pb_migrations) and
+    // an isolated test fixture (migrations), so try both instead of hardcoding
+    // one and failing wherever the other is used.
+    const readData = (fixture) => {
+        for (const dir of ['pb_migrations', 'migrations']) {
+            try { return toString($os.readFile($filepath.join(__hooks, '..', dir, 'data', fixture))); }
+            catch (_) { /* try the next layout */ }
+        }
+        throw new Error('Starter data not found beside the hooks directory: ' + fixture);
+    };
+    const curriculum = JSON.parse(readData('starter-tutorials.json'));
     if (curriculum.version !== '2026.09.1' || curriculum.lessons.length !== 25)
         throw new Error('The expected 25-lesson curriculum is missing or invalid.');
     const users = app.findCollectionByNameOrId('users');

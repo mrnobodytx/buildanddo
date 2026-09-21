@@ -99,7 +99,17 @@ class WorkspaceServer(NativeServer):
         self.binary = str(Path(binary).resolve())
         self.process = None
         self.log = (self.root / "native.log").open("w")
-        self.environment = {"PATH": os.environ.get("PATH", "")}
+        self.environment = {
+            "PATH": os.environ.get("PATH", ""),
+            # Windows initializes Winsock from SystemRoot. Without it the child
+            # exits before health with "socket: The requested service provider
+            # could not be loaded or initialized"; the env stays otherwise restricted.
+            **(
+                {"SystemRoot": os.environ["SystemRoot"]}
+                if os.name == "nt" and "SystemRoot" in os.environ
+                else {}
+            ),
+        }
         try:
             hooks = self.root / "hooks"
             hooks.mkdir()
@@ -136,7 +146,11 @@ class WorkspaceServer(NativeServer):
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             migrations = self.root / "migrations"
             migrations.mkdir()
-            (migrations / "1_auth.js").write_text(AUTH)
+            # PocketBase applies migrations in byte-wise filename order, so
+            # "1_auth.js" sorted AFTER "1999999000_seed.js" ("_" > "9") and the
+            # seed referenced fixture users that did not exist yet. This name
+            # sorts first, which is the order the fixture always intended.
+            (migrations / "0000000001_auth.js").write_text(AUTH)
             for name in MIGRATIONS:
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations" / (name + ".js"),

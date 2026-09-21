@@ -86,7 +86,17 @@ class ClassroomServer(NativeServer):
         self.binary = str(Path(binary).resolve())
         self.process = None
         self.log = (self.root / "native.log").open("w")
-        self.environment = {"PATH": os.environ.get("PATH", "")}
+        self.environment = {
+            "PATH": os.environ.get("PATH", ""),
+            # Windows initializes Winsock from SystemRoot. Without it the child
+            # exits before health with "socket: The requested service provider
+            # could not be loaded or initialized"; the env stays otherwise restricted.
+            **(
+                {"SystemRoot": os.environ["SystemRoot"]}
+                if os.name == "nt" and "SystemRoot" in os.environ
+                else {}
+            ),
+        }
         try:
             hooks = self.root / "hooks"
             hooks.mkdir()

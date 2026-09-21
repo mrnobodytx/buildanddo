@@ -97,6 +97,14 @@ class NativeServer:
         self.keys = json.dumps({"active": "fixture", "keys": {"fixture": "k" * 32}})
         self.environment = {
             "PATH": os.environ.get("PATH", ""),
+            # Windows initializes Winsock from SystemRoot. Without it the child
+            # exits before health with "socket: The requested service provider
+            # could not be loaded or initialized"; the env stays otherwise restricted.
+            **(
+                {"SystemRoot": os.environ["SystemRoot"]}
+                if os.name == "nt" and "SystemRoot" in os.environ
+                else {}
+            ),
             "BUILDANDDO_DOSSIER_KEYS": self.keys,
             "BUILDANDDO_RESEARCH_BINDINGS": json.dumps(
                 [

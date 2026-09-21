@@ -20,8 +20,18 @@ migrate((app) => {
     const SLUG = 'owasp-in-workspace-flows';
     let curriculum;
     try {
-        const dataDir = $filepath.join(__hooks, '..', 'pb_migrations', 'data');
-        curriculum = JSON.parse(toString($os.readFile($filepath.join(dataDir, 'starter-tutorials.json'))));
+        // 0.39.8 binds no __migrations, so the fixture directory is resolved beside
+        // __hooks. Its NAME differs between the deployed layout (pb_migrations) and
+        // an isolated test fixture (migrations), so try both instead of hardcoding
+        // one and failing wherever the other is used.
+        const readData = (fixture) => {
+            for (const dir of ['pb_migrations', 'migrations']) {
+                try { return toString($os.readFile($filepath.join(__hooks, '..', dir, 'data', fixture))); }
+                catch (_) { /* try the next layout */ }
+            }
+            throw new Error('Starter data not found beside the hooks directory: ' + fixture);
+        };
+        curriculum = JSON.parse(readData('starter-tutorials.json'));
     } catch (err) {
         // A missing or unreadable data file must not take the whole service down on boot.
         console.log('[1791000000] curriculum unreadable, skipping: ' + err);
