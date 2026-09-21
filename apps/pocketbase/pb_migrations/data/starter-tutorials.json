@@ -1360,23 +1360,40 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "A brief explains the reader’s situation, useful takeaway, available evidence and limits. “Everyone” is usually too broad to guide language or examples.",
-       "The content desk creates editable outlines from your brief. It does not invent research or call a private generation service. Any factual claims in the finished copy remain the author’s and reviewer’s responsibility."
+       "A brief exists so that the person writing and the person commissioning can discover they disagree BEFORE the writing happens. That is its entire function. A brief everyone nods at has usually failed, because agreement that costs nothing was not tested.",
+       "Four things make a brief usable. WHO it is for, specifically enough to exclude people. What they should be able to DO afterwards that they cannot do now. What you are deliberately NOT covering. And how you will know it worked. The third is the one people skip, and it is where most scope arguments come from - an unstated exclusion is an invitation to add it later.",
+       "'Small business owners' is not an audience. A sole trader who does their own invoicing on a phone and a forty-person agency with a finance manager share a label and nothing else - not the vocabulary, not the time available, not the problem. Writing for both produces something that fits neither, and the failure is invisible because nobody complains; they just do not read it.",
+       "Write the outcome as a capability, not a topic. 'Understand invoicing' is a subject heading. 'Issue a compliant invoice with the right VAT treatment for a one-off overseas client' is something a reader either can or cannot do afterwards, which means the piece can succeed or fail rather than merely exist."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Open Community, then the Content studio tab, and choose New draft.",
-       "Select a format and name the specific intended audience.",
-       "Write the brief and a clear optional next action; link an objective if appropriate.",
-       "Save the draft and reopen it before generating or editing an outline."
+       "Name your reader in one sentence with at least two constraints - what they already know, and what they do not have (time, budget, tooling, authority).",
+       "Write the capability they will have afterwards. Start with a verb they could perform in front of you.",
+       "List three things you are NOT covering. If you cannot think of three, the scope is not yet real.",
+       "Write the check: what would you look at in two weeks to know this worked?",
+       "Show the brief to someone who could disagree, and ask specifically what they would cut. A brief nobody argues with has not been reviewed."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: “Audience: front-desk coordinators testing reminders. Takeaway: compare two templates with synthetic appointments. Next action: review the consent checklist.” No revenue or delivery guarantee is needed."
+       "A trades-services platform wants a piece about quoting. Watch the brief get narrower and more useful at each step.",
+       "Draft one: 'A guide to quoting for tradespeople.' Audience unbounded, outcome unstated, scope infinite. Every reviewer approves it because there is nothing to object to.",
+       "Draft two, after asking who exactly: 'Sole-trader electricians who currently quote verbally on site and lose track of what they promised.' That excludes firms with an estimator, and it excludes anyone already using quoting software - both deliberately.",
+       "The capability: 'send a written quote from their phone before leaving the customer's property, with the scope and exclusions stated.' A reader either does that next Tuesday or does not.",
+       "Not covering: pricing strategy, VAT registration, or chasing payment. Naming those stops the piece from growing three extra sections during review, and each one is a reasonable thing somebody would otherwise have added.",
+       "The check: in two weeks, how many quotes were created from a mobile device within an hour of a site visit? That number existed before the piece and will exist after it, so the comparison is possible. Notice the brief now makes a claim that could be wrong."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is a brief that survives review because it cannot be argued with.",
+       "'A guide to quoting for tradespeople' gets approved in a minute. Four days later a draft arrives, and now the disagreements begin - it is too basic, it is too long, it should have covered payment terms, it is aimed at the wrong people. None of those are writing problems. They are brief problems discovered after the expensive part.",
+       "The cost is not the rewrite. It is that the argument now happens over somebody's finished work, which makes it personal and makes people defend choices they would happily have changed at the brief stage.",
+       "The test before you start: could a reasonable colleague read this brief and say 'no, not that reader' or 'no, not that outcome'? If every possible response is agreement, you have written a topic and called it a brief."
       ]
      }
     ],
@@ -1430,23 +1447,44 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Start with the reader’s problem, explain the useful action, then present evidence and limitations. Replace bracketed outline prompts with your own reviewed writing.",
-       "The preview supports simple headings and lists and treats text as text. Pasted HTML is not an instruction to execute. Do not confuse a formatted preview with a published page."
+       "Writing from a brief is mostly a discipline of refusal. The brief said who it is for and what it excludes; the draft's job is to keep saying no to the interesting material that does not serve that reader.",
+       "Structure carries more weight than prose. A reader arriving from a search result decides in about fifteen seconds whether this is about their problem, and they decide from the title, the first two sentences, and the shape of the headings. If those three do not match what the brief promised, the writing quality underneath is irrelevant because it will not be read.",
+       "Lead with the reader's situation, not with context. Background that explains why the topic matters is written for the author's comfort - it delays the moment the reader recognises themselves. If your first paragraph could open any piece on the subject, cut it.",
+       "One piece, one capability. When a draft starts teaching two things, it is because the brief's exclusions were not respected, and the usual result is that neither is taught well enough to act on.",
+       "Write the ending before the middle. A piece that trails off has usually been written forward from the beginning, with the author discovering their point somewhere around the third section. Knowing the last paragraph tells you which of the middle sections are load-bearing and which are the author thinking out loud."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Choose Blog article in a new draft and complete its audience and brief.",
-       "Use Create outline on an empty body; confirm before replacing existing copy.",
-       "Replace prompts with short paragraphs, useful steps and attributable facts.",
-       "Open Preview, inspect the structure, then save the draft before requesting review."
+       "Re-read the brief and write the capability at the top of your draft where you can see it.",
+       "Draft the headings first, and check each one earns its place against that capability.",
+       "Write the opening so the reader recognises their own situation in the first two sentences.",
+       "Work one example all the way through with real numbers rather than describing several.",
+       "Cut every passage that is interesting and does not serve the capability. Keep them somewhere - they are usually the next brief.",
+       "Read the piece as the reader named in the brief and ask: could I now do the thing?"
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: an article about reminder testing describes a small synthetic experiment, gives its procedure and admits that production delivery was not measured. It does not turn that experiment into a customer success story."
+       "The electrician quoting brief becomes a draft. Watch what gets cut.",
+       "The writer knows a lot about pricing psychology and it is genuinely good material. The brief excluded pricing strategy. It goes - not because it is weak, but because a sole trader standing in a customer's hallway is not choosing a pricing philosophy, they are trying to leave with a quote sent.",
+       "Headings that survive: 'What to capture before you leave', 'The five lines every quote needs', 'Sending it from your phone in under three minutes', 'What to do when the job changes'. Each maps to the capability.",
+       "A heading that does not survive: 'A brief history of trade estimating'. It is true, it is interesting, and no reader gets closer to sending a quote by reading it.",
+       "The opening becomes: 'You quoted a rewire in the customer's kitchen on Tuesday. By Friday neither of you is sure whether the consumer unit was included.' The reader is in the first sentence, and the problem is the one the brief named.",
+       "The worked section uses one real quote: four rooms, two circuits, a named exclusion for making good the plaster, total and validity date. One example finished beats three examples started."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is a draft that is good and is not the brief.",
+       "It happens gradually and reads well. A paragraph of useful context, a related point that deserved mentioning, a second audience accommodated in passing. Nothing in it is bad, and the finished piece serves nobody in particular - too basic for the experienced, too broad for the beginner.",
+       "It is hard to catch in review because every individual addition was defensible. The question that catches it is not 'is this good' but 'which sentence in the brief made me write this paragraph'. When the answer is 'none', you have found the drift.",
+       "The reliable repair is mechanical: put the capability at the top of the draft while writing and re-read it between sections. Drift happens when the brief is in another tab.",
+       "A third failure is worth naming because it is invisible to the writer: the piece that answers the question the author found interesting rather than the one the reader arrived with. Someone searching how to send a quote from their phone does not want an argument about whether written quotes are better than verbal ones - they settled that before searching. Answering the upstream question is a way of not answering the actual one, and it reads as thorough.",
+       "The check is to write the search phrase your reader typed at the top of the draft, next to the capability. If the first section does not begin answering that phrase, the piece opens in the wrong place however good the prose is."
       ]
      }
     ],
@@ -1500,23 +1538,47 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "State what the learner will do and what they need first. Each step should contain an action and an expected observation, with a recovery instruction where mistakes are likely.",
-       "A good knowledge check tests understanding rather than word recognition. Explain why the correct answer works and what misconception the alternatives reveal. Completion records learning activity, not professional certification."
+       "A tutorial teaches when the reader can do the thing afterwards. That is a much higher bar than a tutorial that is accurate, complete and well organised - all of which can be true of something nobody learns from.",
+       "Three things make the difference. A worked example that is actually WORKED, with real values carried through rather than described. A failure case, so the reader knows what going wrong looks like before they meet it. And a check that tests the idea rather than the wording.",
+       "A definition followed by a question about that definition teaches recall of the previous paragraph. It feels like assessment and measures nothing about capability. If your check can be answered by scrolling up, it is not a check.",
+       "Be honest about effort. A tutorial claiming fifteen minutes and carrying two hundred words is taking more of a reader's time than it returns, and the reader notices - not consciously, but they stop finishing your tutorials. One useful floor is around sixty instructional words per claimed minute; below that, either write more or claim less, and writing more is usually the honest option.",
+       "Place the failure case after the success. A reader who meets everything that can go wrong before they have seen the thing work simply closes the page.",
+       "Order the reader's first success as early as you can. A tutorial that spends its first third on concepts loses the readers who came to do something, and concepts land better once somebody has felt the thing work. Teach enough to act, let them act, then explain why it worked.",
+       "Say what the reader needs before they start, and be specific about it. 'Some familiarity with the platform' tells nobody whether they qualify. 'You have a workspace you are allowed to change, and you have created one mission before' lets a reader decide in five seconds instead of finding out in ten minutes."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Select Tutorial in the content desk and describe the learner and outcome.",
-       "Create the outline and fill the preparation and ordered steps.",
-       "Add a clearly labelled worked example and a short independent exercise.",
-       "Ask a reviewer to follow the draft using only the written instructions."
+       "Write the capability first: what will the reader do afterwards that they cannot do now?",
+       "Work one example end to end with real numbers, carrying the same values through every stage.",
+       "Write the failure case: the version where this goes wrong, and how a reader would notice.",
+       "Write a check that someone who skimmed would get wrong and someone who understood would get right.",
+       "Count your instructional words and divide by the minutes you claim. If the number is low, add substance rather than editing the claim.",
+       "Give it to someone who does not know the topic and watch where they stop."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: a task-linking lesson asks the learner to save a task, reopen it and identify its objective. A question about whether a contact link grants access exposes an important permission misconception."
+       "This curriculum is the example, because it failed the test and the repair is measurable.",
+       "Thirty-three lessons, every structural field filled: outcomes, preparation, an exercise with a checklist, a knowledge check with a legal answer. A structural checker passed all thirty-three.",
+       "The depth measurement said something different: 9,619 instructional words against 467 claimed minutes - 20.6 per claimed minute, and zero lessons above the floor. The median lesson was 221 words asking for fifteen minutes.",
+       "What was missing was specific. The 'Worked example' was one sentence DESCRIBING an example rather than working one, and there was no failure case anywhere. So a reader never watched the idea do work and never learned what going wrong looks like - then got a check asking them to recognise a definition from two paragraphs earlier.",
+       "The repair per lesson: work one example with real values, add a failure case after it, and re-measure. Fifteen lessons later the curriculum reads 38.6 words per claimed minute and fifteen lessons clear the floor, with structural health unchanged.",
+       "One lesson measured 53.9 against the 60 floor. Its claimed minutes could have been edited from 14 to 12 - the ratio clears instantly, the check goes green, and the reader gets exactly the same thin lesson. It was given the missing substance instead. That choice is the difference between a measurement and a target."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is a tutorial that passes every check and teaches nothing, and it is common because it is what optimising for completeness produces.",
+       "Every field is filled, the prose is accurate, the check has a correct answer. A reviewer skimming for gaps finds none. A reader finishes it and cannot do the thing, and usually blames themselves rather than the tutorial.",
+       "The tell is uniformity. Thirty-three lessons with almost exactly three sections and three paragraphs each is not how humans write; it is what filling a template looks like. Content shaped to satisfy a schema will satisfy the schema, and no schema check will ever catch it.",
+       "The second tell is a worked example written in the abstract - 'for instance, a business might track its conversion rate'. Nothing is carried through, no number appears twice, and the reader has watched nothing happen. Real values that recur across stages are what makes an example teach.",
+       "There is a failure specific to tutorials written by the person who built the thing: the steps are correct and assume a mental model the reader does not have. Every instruction works, and the reader cannot tell why they are doing any of it, so nothing transfers to the next problem. They can follow the tutorial and cannot use the tool.",
+       "Watching one person attempt it without help finds this in minutes and almost nothing else does. The moments where they hesitate are the missing model - not the missing step, which is why re-reading your own draft never reveals it.",
+       "A last one, easy to miss: the tutorial that is correct today and silently rots. Interfaces move, field names change, a button is renamed. The prose stays confident while the steps stop matching what the reader sees, and the reader concludes they have misunderstood rather than that the page is stale. Put a date on it and re-walk it when the surface changes."
       ]
      }
     ],
@@ -1570,23 +1632,40 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Choose one useful observation, one explanation and one next action. Keep the wording understandable without requiring readers to know internal acronyms.",
-       "Channel names and planned dates in the desk are editorial metadata. They do not connect an account, send a post or prove delivery. Publishing still happens through a separately authorized process."
+       "Adapting is not shortening. A summary of a long piece is usually worse than either the piece or a purpose-written post, because it inherits the structure of something designed for a reader who had already decided to read.",
+       "Each surface has a different implicit contract. Someone scrolling has not chosen your topic; your first line has to earn the second. Someone who clicked a link has already decided. Writing as though the scroller had decided is the most common adaptation error.",
+       "Keep the claim identical across surfaces even when the framing changes. If the article says quotes sent from site are accepted more often in this sample, the post cannot say quotes sent from site get accepted more often. The second is a general law and the evidence does not support it - and the shorter the format, the more tempting the stronger claim becomes.",
+       "Decide what the post is for. Reading the post IS the outcome for some pieces; for others the outcome is the click. Those need different endings, and a post trying to do both usually achieves neither."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Create a Social post draft and name its audience and channel.",
-       "Use the outline to write a short hook and practical takeaway.",
-       "Keep a source reference and any limitation essential to the claim.",
-       "Preview, save and request review; do not label the item published to simulate delivery."
+       "Write down the single claim from the source piece, in one sentence, with its qualifier attached.",
+       "For each surface, write the first line as though the reader has not chosen your topic.",
+       "Check that the qualifier survived. If it did not, the post is now making a bigger claim than your evidence.",
+       "Decide the outcome for each post: read, or click. Write the ending for that outcome.",
+       "Read it as someone who will never see the original. Does it stand alone, and is it still true?"
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: “Our test workflow now records one receipt per accepted decision” is narrower than “Our automation never fails.” Link the actual test evidence when available."
+       "The quoting article becomes three posts. Watch the claim stay constant.",
+       "Source claim: 'Among the 40 electricians in this sample, quotes sent before leaving the property were accepted 31% more often than quotes sent later.' The sample size and the population are part of the claim, not decoration.",
+       "Short-form post: 'You quoted the job in their kitchen on Tuesday. By Friday you both remember it differently. In a sample of 40 electricians, quotes sent before leaving were accepted 31% more often.' The reader is in line one; the qualifier survives in line three.",
+       "Professional network post: opens with the mechanism rather than the anecdote - the quote sent on site is the one that matches what was discussed - and ends on the click, because the article carries the how.",
+       "What was refused: 'Sending quotes on site increases acceptance by 31%.' Fourteen words shorter, reads better, and it is a different and unsupported claim. The sample has become the world.",
+       "Notice the discipline is not caution for its own sake. If somebody acts on the stronger version and sees no change, the loss is not the post - it is that they now discount everything else you publish."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is the qualifier falling off in the edit.",
+       "Nobody decides to overstate. The line is one word too long, the caveat is the clumsiest part, it goes, and the post now asserts something the evidence never supported. The article underneath is still careful, which makes it worse - the careful version exists and almost nobody reads it.",
+       "The second failure is posting the same text everywhere. The surface where people have already chosen your topic and the surface where they are scrolling past need different first lines, and using one is choosing to fail on the other.",
+       "Before publishing, read the post alone and ask what a stranger would now believe is true. If that is broader than what you measured, the edit went too far - and the fix is almost always to cut something else rather than the qualifier."
       ]
      }
     ],
@@ -1640,23 +1719,44 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Accuracy asks whether claims are supported and limits are visible. Privacy checks unnecessary personal information. Rights checks permission to use the material. Accessibility checks structure and understandable language.",
-       "The server attributes approval to the authenticated reviewer and records the time. Approved copy and its brief must return to draft before editing. The checklist records a human review; it does not certify legal or technical compliance."
+       "Editorial review has three jobs that people collapse into one: is it TRUE, does it serve the BRIEF, and is it READABLE. They need different attention and ideally different passes, because the mind that is fixing commas is not the mind that notices an unsupported claim.",
+       "Check claims against sources, not against plausibility. A sentence that sounds right and cites nothing is the most dangerous kind, because it survives every reader who already agrees. When a piece asserts a number, the review question is where it came from and when.",
+       "Reviewing against the brief is the pass most often skipped and the one that saves the most work. A draft can be excellent and not be the commissioned piece, and that is a scope conversation rather than a writing one.",
+       "Separate the mandatory from the preference. 'This claim is unsupported' and 'I would have said this differently' are not the same note, and a review that mixes them makes the writer adjudicate which are which - usually by guessing.",
+       "Publishing a correction is a feature of a serious publication. The record of having been wrong, with what was believed and what turned out to be true, is what lets a reader calibrate everything else you publish.",
+       "Review for what is MISSING as deliberately as for what is wrong. An absent caveat, an unstated assumption, a step the writer knew and did not say - none of these appear as errors on the page, and all of them break for the reader. Reading for absence is a different pass again, and it is the one that most benefits from someone who does not know the topic."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Request review for a saved draft.",
-       "As an authorized reviewer, read the actual copy and its brief.",
-       "Record the four checks and explain evidence or changes in the review note.",
-       "Approve only after the checks are satisfied; otherwise return the item to draft."
+       "Read once for the brief alone. Does this serve the named reader and the stated capability?",
+       "Read again for claims. Mark every assertion of fact and find its source.",
+       "Read a third time for readability, and only now touch the sentences.",
+       "Mark each note MUST or PREFER. Send both, labelled.",
+       "If something published turns out wrong, write the correction: what was claimed, what is true, and how it was found."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: a tutorial uses a customer screenshot without permission. Return it to draft and replace the image with a synthetic example before approval, rather than checking Rights without evidence."
+       "A review of an automated content assessment report. The report was confident, well structured, and wrong.",
+       "It reported that all 33 lessons were broken: 29 broken references and 28 dangling prerequisites. Everything about the format invited belief - specific counts, named lessons, a consistent shape.",
+       "The claims pass asked the only question that mattered: what would this look like if the CHECKER were broken? Identical. That is what sent the review to the tool instead of the curriculum.",
+       "Three defects, each producing a finding rather than an error. A fetch truncated to 4,000 bytes, so a 761KB bundle was searched over its first 4KB and no routes were found. A patched pattern carrying an invisible control byte, so a filter that read as correct never matched. And prerequisites compared against a graph the curriculum does not have - all 33 are prose, and none names another lesson.",
+       "The published correction states the prior claim, the observed result, and the status. One real defect did exist - a reference answering 404 - and it was repaired. The correction is more useful than the original report, because it tells a reader how this publication behaves when it is wrong."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is reviewing prose and not claims.",
+       "The draft comes back with cleaner sentences, better transitions and the same unsupported assertion, now stated more elegantly. Editing has made the error more persuasive. A reviewer who improves the writing and does not check the facts has increased the reach of whatever is wrong.",
+       "The second failure is the review that never says no. If no draft has ever been sent back for scope, the brief pass is not happening - drafts do drift, and a review that catches it never is not catching it.",
+       "The third is treating a correction as an embarrassment to be minimised. A quiet edit removes the error and also removes the reader's ability to know it happened, which is the thing that made the publication trustworthy in the first place.",
+       "A fourth failure is the review that arrives too late to matter. Notes on a finished piece three hours before publication are not a review; they are a choice between shipping something the reviewer disagrees with and missing the slot. If the brief pass had happened at the brief, and the claims pass at first draft, the final read would be the cheap one it is supposed to be.",
+       "Where a review is genuinely late, say which notes are blocking and which are for next time. Giving a writer twenty notes an hour before publication and letting them work out which are load-bearing is how tired people ship errors.",
+       "And notice when a reviewer has only ever approved. A review that has never returned a draft is not evidence that the drafts are good."
       ]
      }
     ],
@@ -1710,23 +1810,41 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "A planned date is an editorial commitment. It is not an installed scheduler. The public desk sends no external posts and does not hold channel credentials.",
-       "An owner or admin can record the HTTPS URL of a publication they checked. The server records who made that assertion and when. This is an operator receipt, not an automated proof that every audience member received the content."
+       "A receipt is proof from the far side. Your own system reporting success is a statement about its intention; a receipt is a statement from the thing that would know.",
+       "There are usually three levels and they are easy to confuse. SUBMITTED - you handed it over. ACCEPTED - the platform took it and gave you an identifier. VERIFIED - you fetched the thing back and it is there, and it matches what you sent. Most teams stop at the first and report the third.",
+       "A 200 response is not a receipt. It means the request was well formed and handled. Some endpoints return 200 with an invalid key, some accept and then reject asynchronously, some accept an object that never becomes visible. If you did not read something back, you have a response and not a result.",
+       "Store the identifier the platform gave you. Without it you cannot fetch the object later, and 'we published it' becomes a memory. The identifier is the difference between a claim and an address.",
+       "Rendered under a name is not the same as posted by that identity. A message can carry any display name if the mechanism allows it, so a receipt that shows a name proves rendering, and only an authenticated identity proves authorship."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Inspect the saved approval on a content item.",
-       "Optionally save a planned date and confirm the item is labelled Planned.",
-       "After an authorized publication outside this desk, open its URL and inspect the actual copy.",
-       "Use Record publication with that URL; retain the resulting history instead of editing it."
+       "For one publication, write down which of submitted, accepted or verified you actually have.",
+       "Find the identifier the platform returned. If none was stored, that is the first gap.",
+       "Fetch the object back by that identifier and compare it to what you sent.",
+       "Record the receipt with its timestamp beside the publication, not in a chat message.",
+       "Write the honest sentence: what does this receipt establish, and what does it not?"
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: a training article is approved on Monday and planned for Tuesday. Until the operator checks the actual published page, its state remains a plan rather than a publication receipt."
+       "A newsletter and a post, worked to the level the evidence supports.",
+       "The composer shows 'Sent successfully' at 10:02. That is SUBMITTED - the application believed it handed the message off. It is produced by the system that was hoping.",
+       "The provider returns 412 accepted, 3 rejected, with a batch id. That is ACCEPTED, from the system that would know about acceptance, and it is still not delivery.",
+       "A delivery webhook at 10:09 reports 406 delivered, 6 bounced. Now delivery is established for 406 addresses, at that time. The honest sentence: accepted for 412, delivered to 406, 3 rejected at submission and 6 bounced. Nobody has established that a person read it.",
+       "The same discipline caught a subtler case elsewhere. An analytics endpoint returned 200 with status Ok for an INVALID key - the 200 meant the request was well formed, nothing more. Only reading the event back showed whether it had landed.",
+       "And a message published through a channel webhook rendered under a guild's name. That proves the name was rendered; it does not prove that guild wrote it, because anyone holding the webhook URL could render any name. The receipt was recorded as a display identity, which is what it is."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is reporting the strongest sentence that any of your records touches.",
+       "'The newsletter went out to all our customers.' Nobody lied. The screenshot is real. But 9 addresses never received it and the claim covers them, and the person reporting it saw a success message with their own eyes.",
+       "This gets worse with time rather than better. A month later the screenshot is still in the ledger, the bounce data was never captured, and the gap cannot be reconstructed. Weak evidence does not strengthen with age; it just gets cited more confidently.",
+       "Ask of every receipt: which system produced this, and what is the next step it does not cover? Then either collect that step, or say the claim at the size the evidence supports. The second option is available far more often than people use it."
       ]
      }
     ],
@@ -1780,23 +1898,45 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Start with objective measures, then inspect tasks and related mission evidence. A completed task may be useful progress even when the objective’s target is not yet met.",
-       "Review content plans separately from actual publication receipts. Do not count scheduled items as delivered or combine unrelated financial amounts without a common basis."
+       "A weekly review exists to change what happens next week. If nothing was decided, it was a status meeting wearing a review's name, and the cost is everyone's hour.",
+       "Review measurements, not impressions. 'Things feel better' and 'error rate went from 4.1% to 1.2% measured the same way' lead to different decisions, and only one of them can be wrong - which is what makes it useful.",
+       "Look at what you could NOT measure this week, deliberately and every week. A source that stopped reporting looks exactly like a source reporting zero problems, and the second reading is the comfortable one. An unmeasured column is the most important thing on the page.",
+       "Check the checkers too. A monitor that has not alerted in three months is either a quiet system or a broken monitor, and those need opposite responses. If you cannot remember the last time it fired, test it.",
+       "End with decisions that have owners. 'We should look into that' is how an item survives eleven consecutive reviews without anything happening.",
+       "Keep the review's own record. The numbers from last week, the decisions and their owners, and what was unmeasurable - written down somewhere that persists. A review held from memory cannot notice a slow drift, and slow drift is exactly what a weekly cadence exists to catch."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Read active ERP objectives and their success measures.",
-       "Inspect unfinished or overdue tasks and assign one clear next action to each relevant item.",
-       "Review mission outcomes and the strongest evidence from the period.",
-       "Inspect content awaiting review and planned items; record decisions in your authorized work record."
+       "Open with the numbers, measured the same way as last week. State the method if it changed.",
+       "List explicitly what could not be measured, and why. Do not skip this because it is short.",
+       "For anything that has been green a long time, ask when it last went red.",
+       "Turn each finding into a decision with a named owner, or record deliberately that it is accepted and not being worked on.",
+       "Re-read last week's decisions. Note which happened, and which quietly did not."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: three tasks are done, one objective still lacks a baseline, and two articles await review. A useful next week begins with baseline collection and review, not an unsupported “all goals achieved” statement."
+       "A fleet review that started with a roll call and found the problem was the question.",
+       "The report said four of eight guild agents were ABSENT. That reads as a serious operational failure: half the estate unreachable.",
+       "The unmeasured column is what unpicked it. Four names had never had a credential issued, never had a service deployed, and never appeared in the directory. They were not absent; they had never been commissioned. The measurement was right and the denominator was wrong.",
+       "Corrected, the same data reads: four commissioned agents, four of four healthy, and four names on a roadmap. That is a different week - and the wrong version would have generated an urgent repair queue for things nobody had built.",
+       "The review also found work parked behind those four names: items that could never be accepted because no one existed to accept them, sitting in a backlog reading as in-progress. They were moved to owners who exist.",
+       "The decision that came out of it was not 'fix the four agents'. It was 'report the commissioned count as the denominator', which is a change to how the review is run rather than to the estate."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is the review where everything is green and nothing was examined.",
+       "Dashboards load, no alerts fired, the meeting is short and everyone is pleased. Somewhere a collector stopped writing three weeks ago and its panel shows a flat line that looks like stability. Nobody asks, because the answer is already comfortable.",
+       "The second failure is the recurring item. Something appears in eleven consecutive reviews, is discussed each time, and has no owner. Its presence on the agenda substitutes for progress, and the longer it stays the more normal it looks.",
+       "Two questions fix most of this. What could we not see this week? And which of these has been green so long that I should test whether it can still go red?",
+       "The most expensive failure is the review that quietly changes its own method. A filter is added, a date range shifts, a metric is redefined to something more sensible - each change reasonable, none announced. The chart continues smoothly across the change and now compares two different questions. The line looks like continuity and is an artifact.",
+       "When you change how something is measured, break the series deliberately: note the change, and show both the old and new measure for a period. A visible discontinuity is honest; a smooth line across a redefinition is not.",
+       "Finally, watch for the review that has stopped being attended by anyone who can decide. If every action needs someone not in the room, the meeting produces a list of things to ask about later, which is indistinguishable from a list of things that will not happen."
       ]
      }
     ],
@@ -1850,23 +1990,45 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Meaningful headings, labelled controls and visible focus help readers orient. Dialogs should keep focus within the open interaction and return it to the opener when closed.",
-       "Test at narrow widths and increased zoom. Look for horizontal page overflow, clipped buttons and long unbroken text. WCAG guidance supports a broader review; these checks do not replace a complete accessibility evaluation."
+       "Accessibility is not a final pass. Most of what makes content usable is decided in structure - headings, order, link text, contrast - and those are cheap while writing and expensive once everything is built around them.",
+       "Headings are navigation, not decoration. Someone using a screen reader moves through a page by its headings, so a heading chosen for how it looks rather than what level it is turns the page into an unsorted list. Skipping from a top-level heading to a third-level one is a broken step in that navigation.",
+       "Link text has to work alone. 'Click here' and 'read more' are useless in a list of links extracted from the page, which is how many people encounter them. The link should say where it goes.",
+       "Images need alternative text that carries the same information, not a description of the picture. If a chart shows a rise from 20 to 38, the alt text says that - a reader who cannot see it needs the finding, not 'a line chart'.",
+       "Some things only appear at real sizes. Layout that works at a desktop width can clip at a narrower one, and an automated checker that renders a single size will report the page as clean. Check at the sizes people use.",
+       "Colour must never be the only carrier. Red text and green text are one text to a substantial number of readers; the state needs a word or a shape as well.",
+       "Plain language is an accessibility measure, not a style preference. Long sentences, stacked clauses and unexplained jargon exclude people with cognitive disabilities, people reading in a second language, and anybody under time pressure - which is most readers, most of the time."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Navigate to the Field Manual with Tab and open a lesson using the keyboard.",
-       "Move through controls, answer choices and the exercise confirmation.",
-       "Close the reader with Escape and check that focus returns to the lesson control.",
-       "Repeat at 320 and 375 px widths, in both themes, and note any unreadable or unreachable content."
+       "Read your page by headings alone. Does the outline make sense with nothing else?",
+       "Extract every link's text and read the list. Can you tell where each one goes?",
+       "For each image, write what a reader would lose without it. That is the alt text.",
+       "View the page at a narrow width and at a large text size. Note anything that clips or overlaps.",
+       "Find any place where colour alone carries meaning and add a second signal.",
+       "Try one page with the keyboard only. Where does focus get lost?"
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: a long title should wrap instead of pushing a completion button off-screen. A visible close icon also needs an accessible name so its purpose is available without sight."
+       "A visual audit of two environments, and the thing an automated pass missed.",
+       "The automated checks were clean: contrast passed, images had alt attributes, headings were present and in order. By every machine measure the pages were fine.",
+       "Rendering the pages at the widths people actually use told a different story. The navigation overflowed its container by 38 pixels on one page and 12 on another, and the final item clipped at the edge - visible only at that width, and invisible to a checker rendering one size.",
+       "That is the general shape of the lesson: automated checks find violations of rules, and human checks find failures of use. Both are needed and neither substitutes.",
+       "A second finding was a missing content security policy header on both environments. That is not a visual defect at all - no reader would ever notice it - and it is exactly the sort of thing a checklist catches and an eye does not. The two methods fail in opposite directions."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is treating a green automated report as an accessibility result.",
+       "Those tools check what can be checked mechanically, which is real and is a minority of what matters. A page can pass every automated rule and be unusable - a logical heading order that is nonsense as an outline, alt text that describes rather than informs, a focus order that jumps around the page.",
+       "The opposite failure is equally common: relying on a sighted colleague clicking through and declaring it fine. That catches clipped navigation and misses the missing header, the unreachable control and the unlabelled field.",
+       "Run both, and treat a disagreement between them as the interesting case rather than a contradiction to resolve quickly.",
+       "A failure worth watching for: accessibility treated as a compliance artifact rather than a property of the thing. A report is produced, filed, and never acted on, and the next release reintroduces the same problems because nothing in the authoring process changed. The report becomes evidence that somebody looked, which is not the same as evidence that anything is usable.",
+       "The repair is to move the checks earlier - heading structure and link text at the drafting stage cost nothing, and are the bulk of what an audit would have found anyway."
       ]
      }
     ],
@@ -1924,23 +2086,46 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "Before the exercise, define the audience, task, measure and observation period. In a tutorial test, task completion and the point of confusion may be more useful than likes.",
-       "Separate prediction from observed result. A change in a metric does not by itself prove that the content caused it; audience, timing and other releases may have changed too."
+       "Evaluating content means asking whether the reader can now do the thing. Almost every easily available number answers a different question, which is why content evaluation drifts toward whatever is convenient to count.",
+       "Views measure distribution. Time on page measures length as much as engagement. Shares measure how quotable something is. None is worthless and none tells you whether anybody acted, so if the brief promised a capability, the evaluation has to look for the capability.",
+       "Set the threshold before you look. An evaluation whose bar is chosen afterwards will always be met, and everyone involved will feel it was rigorous.",
+       "Expect to be unable to attribute cleanly. Many things moved that week. The honest form is 'this is consistent with the piece helping, and here is what else changed', which is less satisfying and much more use than a causal claim you cannot support.",
+       "Decide in advance what a negative result would look like and what you would do about it, because the decision is much harder to make honestly once the number is in front of you.",
+       "Give the evaluation a window and hold to it. Content rarely has its effect in the first forty-eight hours, and checking daily converts a measurement into a mood - you will see noise, react to it, and change something before the window closes, after which no clean read is possible."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Read the content brief and choose one intended reader action.",
-       "Define a small test and how you will record completion or confusion.",
-       "Collect authorized observations and retain their source and date.",
-       "Compare results with the original objective; record uncertainty and a useful next revision."
+       "Write down the capability the piece promised, from the brief.",
+       "Identify a measurement that would change if readers gained it, and take the baseline now.",
+       "Write the threshold and the window before you look at anything.",
+       "Measure, using the same source and method as the baseline. Note anything else that changed.",
+       "State what the result is consistent with, and what it does not establish.",
+       "If the answer is negative, write what you will change - or record deliberately that you will not."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: three of four consenting test readers link a task to an objective without help. Record the small sample and the step where the fourth reader hesitated; do not generalize it to every customer."
+       "Evaluating a curriculum rewrite, where the measure was built before the work started.",
+       "The capability: lessons that return a reader's time. The measurement, defined in advance: instructional words divided by the minutes each lesson claims. The threshold: 60 per claimed minute, stated openly as a declared floor rather than an industry standard, so it could be argued with separately from the result.",
+       "Baseline, taken before any writing: 33 lessons, 9,619 words against 467 declared minutes, 20.6 per claimed minute, zero lessons above the floor.",
+       "After fifteen lessons: 18,008 words, 38.6 per claimed minute, fifteen lessons above the floor, and structural health unchanged at 33 of 33 - which matters, because it shows the gain did not come from breaking something else.",
+       "What this establishes: the lessons are substantially longer and carry worked examples and failure cases they did not have. What it does NOT establish: that anybody learned more. Word count is a proxy for substance and a poor one - a lesson could clear the floor and still teach badly.",
+       "So the honest report names the next measurement rather than claiming the outcome: whether readers complete these lessons and can perform the capability afterwards. The evaluation that was run is a floor, not a finding about learning."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is reporting the metric that moved.",
+       "The piece promised a capability, the capability is hard to measure, and views went up 40%. The report says views went up 40%. Nobody is lying and the question has been quietly replaced with an easier one.",
+       "The compounding version: because views were reported, the next brief optimises for views. Two quarters later the content is measurably more popular and no better at the thing it was commissioned to do, and the measurement will never reveal that.",
+       "The other failure is claiming cause from sequence. 'Sign-ups rose after we published' has the same shape as a finding and none of the content. If you cannot name what else changed that week, you have not looked.",
+       "The most durable failure is a metric that becomes a target. Once a team is measured on time on page, content gets longer and more padded; once it is measured on shares, content gets more quotable and less useful. The number goes up in both cases, exactly as designed, and the thing it was standing in for goes down.",
+       "This is why it matters that a proxy is labelled as a proxy when it is chosen. Words per claimed minute is a floor against thinness, not a measure of teaching - and if anybody starts padding lessons to raise it, the number will rise while the curriculum gets worse. Naming that in advance is the only defence a proxy has.",
+       "A smaller failure with a long tail: evaluating once and never again. A piece judged successful in its first month can be quietly wrong a year later - the product changed, the advice no longer applies - and it continues to attract readers on the strength of an evaluation nobody has revisited. Old content with good numbers is the easiest thing in a library to stop looking at."
       ]
      }
     ],
@@ -1994,23 +2179,47 @@
      {
       "heading": "Understand the idea",
       "paragraphs": [
-       "A commit identifies source; a merge puts source on a branch. A build produces an artifact. Deployment places an artifact in an environment. A served-version check observes what that environment returns.",
-       "BuildAndDo generates version.json with its build version and commit SHA. Compare it with the accepted release receipt and inspect real behavior as well: a version file alone cannot prove every backend migration or user flow works."
+       "A release with evidence means somebody who was not there can establish what shipped, from records rather than from memory. The test is simple: in six weeks, can you prove which version is running and that it worked?",
+       "Four things carry the weight. WHAT shipped, identified precisely - a commit, not 'the latest'. WHERE it went. That it works, from the far side. And what you would do if it did not.",
+       "Identify the artifact exactly. 'We deployed the new version' is not identification. A commit identifier is, and it lets the question 'is that what is running' be answered rather than discussed.",
+       "Verify from outside the thing you deployed. A deploy script reporting success is the system that was hoping; fetching a version endpoint from somewhere else is the system that would know. Publish a version marker your own deploy writes and read it back from outside.",
+       "Prove it on a copy first where you can. A rollback that works is good; not needing one is better, and for anything that can abort a service at startup the copy is the difference between a two-minute recovery and no incident at all.",
+       "Take the backup BEFORE the change. A backup captured as part of the deploy, after it has begun, is a copy of the problem.",
+       "Decide what the release does NOT change, and be able to show it. Most regressions are not in the thing that shipped; they are in something adjacent that nobody thought to look at. One measurement of an unrelated surface, taken before and after, is cheap and catches the class of problem that a targeted check by definition cannot."
       ]
      },
      {
       "heading": "Try it in BuildAndDo",
       "steps": [
-       "Read the source revision and test results attached to an accepted change.",
-       "Find its build and environment deployment receipt through the authorized operator.",
-       "Compare the confirmed environment’s version.json with the expected release identity.",
-       "Exercise a permitted read or test flow and record the result, timestamp and remaining gaps."
+       "Record the exact identifier of what you are shipping.",
+       "Take the backup and note its name. Before, not during.",
+       "Apply the change to a copy and confirm the service starts. Record what the copy said.",
+       "Deploy, then verify from OUTSIDE - read the deployed version back rather than trusting the deploy's own report.",
+       "Record the rollback path: the command and how long it takes.",
+       "Attach all of it to the release. A receipt in a chat message is not attached to anything."
       ]
      },
      {
-      "heading": "Worked example — illustrative data",
+      "heading": "Worked example",
       "paragraphs": [
-       "Illustration: source merges successfully but the candidate job never starts. That proves a source merge, not an updated staging site. An independent private runner still needs tests, a build, deployment evidence and served checks."
+       "Ten curriculum changes shipped to a live backend, with the full chain.",
+       "WHAT: a named migration file, and the data file it reads. Not 'the curriculum update' - the specific artifacts, identified.",
+       "PROVED ON A COPY FIRST: the pending set was applied to a copy of the live database with the real binary, and the service started. The copy's log read 'deepened 10 lesson record(s), skipped 0'. This is the step that matters here, because on this backend a bad migration does not fail the migration - it aborts startup, so the blast radius of a typo is the whole API.",
+       "BACKUP: the database copied and named with the date, before the restart. Rollback path: restore that file and restart, about two minutes.",
+       "DEPLOYED AND VERIFIED FROM OUTSIDE: the service restarted and its log showed the same line. Then an independent run from a different machine re-measured the lessons and returned 15 of 33 above the depth floor, up from 5 - a fact established by a process that had no stake in the deploy.",
+       "The evidence attached to the release is therefore: what shipped, what the rehearsal said, what the backup is called, what the service logged, and an independent measurement of the outcome. In six weeks all five are still answerable."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is a release verified by the thing that performed it.",
+       "The deploy script reports success and the release is marked done. The script is reporting that it finished its own steps - it has not asked the running system anything. If a stale artifact is being served, or the service came up with the previous version, the script has no way to know and no reason to say so.",
+       "A concrete version of this: a deploy that clears a directory with a shell glob leaves dotfiles untouched, because the glob never matches a leading dot. A version marker in a dotted directory survived nine days and several deploys while a sibling file was replaced every time, so the environment published two identities that disagreed - and a tool reading the survivor concluded the wrong version was live.",
+       "The other failure is the release that cannot be identified afterwards. 'We shipped the fix on Tuesday' is not a record. When the question is which of four changes caused a regression, 'Tuesday' cannot answer it and a commit identifier can.",
+       "The last failure is the release nobody can reproduce. The artifact was built on somebody's machine from a working tree with uncommitted changes, so the identifier in the release notes does not describe what shipped. Everything is recorded, and the record is wrong in a way that only surfaces when you try to rebuild it.",
+       "Build from a clean checkout of the identifier you are going to record, and have the build write that identifier into the artifact so the running system can be asked what it is. A version a service reports about itself is worth more than a version written down beside it.",
+       "One more: evidence collected and never attached to anything. The preflight ran, the backup was taken, somebody checked the version - and all of it lives in a terminal history that will be gone next week. Evidence that is not attached to the release is not evidence, because the person who needs it in six weeks has no way to find it."
       ]
      }
     ],
