@@ -16,6 +16,21 @@
 // ───────────────────────────────────────────────────────────────
 
 migrate((app) => {
+    // PocketBase 0.39.8 does not expose a saved Field's properties as plain
+    // values: `type` is a METHOD (reflect.methodValueCall) and numeric bounds
+    // like `min` are *float64 POINTERS that read as typeof 'object'.
+    // JSON.stringify returns undefined for the method and an opaque {} for the
+    // pointer, so EVERY existing field compared as drift and re-applying this
+    // migration threw - which aborted PocketBase startup on any rollback.
+    // Resolve the bound value, then normalise both sides to comparable text.
+    const norm = (holder, key) => {
+        const raw = holder[key];
+        const value = typeof raw === 'function' ? raw() : raw;
+        const json = JSON.stringify(value);
+        if (json === undefined) return String(value);
+        if (json === '{}' && value !== null && typeof value === 'object') return String(value);
+        return json;
+    };
     const research = app.findCollectionByNameOrId('research_submissions');
     const mission = research.fields.getByName('mission');
     // In the PocketBase 0.39.x JSVM a field's `type` is a METHOD, not a property: measured
@@ -31,7 +46,7 @@ migrate((app) => {
         throw new Error('Review the research mission schema before adding blueprint mode.');
     const mode = { name: 'mode', type: 'select', values: ['blueprint'], maxSelect: 1, required: false };
     const savedMode = research.fields.getByName('mode');
-    if (savedMode && Object.keys(mode).some((key) => JSON.stringify(savedMode[key]) !== JSON.stringify(mode[key])))
+    if (savedMode && Object.keys(mode).some((key) => norm(savedMode, key) !== norm(mode, key)))
         throw new Error('Review custom research blueprint mode.');
     const locked = { type: 'base', listRule: null, viewRule: null, createRule: null, updateRule: null, deleteRule: null };
     for (const key of ['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'])
@@ -60,7 +75,7 @@ migrate((app) => {
         for (const field of definition.fields) {
             const actual = collection.fields.getByName(field.name);
             if (!actual && field.name === 'protocol_version') continue;
-            if (!actual || Object.keys(field).some((key) => JSON.stringify(actual[key]) !== JSON.stringify(field[key])))
+            if (!actual || Object.keys(field).some((key) => norm(actual, key) !== norm(field, key)))
                 throw new Error(`Review custom workspace_blueprints.${field.name}.`);
         }
         if (!definition.indexes.every((index) => collection.indexes.includes(index))) throw new Error('Review blueprint indexes.');

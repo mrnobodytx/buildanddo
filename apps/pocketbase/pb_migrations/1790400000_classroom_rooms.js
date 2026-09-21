@@ -16,6 +16,21 @@
 // ───────────────────────────────────────────────────────────────
 
 migrate((app) => {
+    // PocketBase 0.39.8 does not expose a saved Field's properties as plain
+    // values: `type` is a METHOD (reflect.methodValueCall) and numeric bounds
+    // like `min` are *float64 POINTERS that read as typeof 'object'.
+    // JSON.stringify returns undefined for the method and an opaque {} for the
+    // pointer, so EVERY existing field compared as drift and re-applying this
+    // migration threw - which aborted PocketBase startup on any rollback.
+    // Resolve the bound value, then normalise both sides to comparable text.
+    const norm = (holder, key) => {
+        const raw = holder[key];
+        const value = typeof raw === 'function' ? raw() : raw;
+        const json = JSON.stringify(value);
+        if (json === undefined) return String(value);
+        if (json === '{}' && value !== null && typeof value === 'object') return String(value);
+        return json;
+    };
     const exists = (name) => {
         try { return app.findCollectionByNameOrId(name); }
         catch (error) { if (String(error.message).includes('no rows in result set')) return null; throw error; }
@@ -59,7 +74,7 @@ migrate((app) => {
         for (const field of definition.fields) {
             const saved = actual.fields.getByName(field.name);
             if (!saved && field.name === 'protocol_version') continue;
-            if (!saved || Object.keys(field).some((key) => JSON.stringify(saved[key]) !== JSON.stringify(field[key])))
+            if (!saved || Object.keys(field).some((key) => norm(saved, key) !== norm(field, key)))
                 throw new Error(`Review custom ${definition.name}.${field.name}.`);
         }
         if (!definition.indexes.every((index) => actual.indexes.includes(index))) throw new Error(`Review ${definition.name} indexes.`);
