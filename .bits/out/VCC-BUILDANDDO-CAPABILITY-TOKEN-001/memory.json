@@ -1,0 +1,3482 @@
+{
+  "vectors": [
+    {
+      "type": "A",
+      "file_path": ".bits/context.lock.json",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/agent_context.py",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 836,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the measured repository inventory after registering the additive capability protocol.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-capability-runtime.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/capability-tokens.md",
+        "libs/capability_tokens/verification.py"
+      ],
+      "lines": 72,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep federation trust, private data publication, real execution and payments with their receiving authority.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/hostinger-readiness.lock.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/hostinger_readiness.py",
+        ".bits/hostinger-readiness.json"
+      ],
+      "lines": 998,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind the reviewed sprint acceptance requirements to current source without granting operational acceptance.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json",
+        "libs/capability_tokens/models.py"
+      ],
+      "lines": 165,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the measured public-source capability contract portable and reviewable without claiming certification.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json",
+        "libs/capability_tokens/models.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the measured public-source capability contract portable and reviewable without claiming certification.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json",
+        "tools/buildanddo_release.py"
+      ],
+      "lines": 113,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain actual local conformance on public release source while preserving absent independent evidence.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json",
+        "tools/buildanddo_release.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain actual local conformance on public release source while preserving absent independent evidence.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "object_schema",
+        "main"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/conformance.py",
+        "libs/capability_tokens/interop.py",
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/registry.py",
+        "libs/capability_tokens/schema.py",
+        "libs/evolution/candidate.py",
+        "libs/evolution/common.py",
+        "libs/evolution/compiler.py",
+        "libs/evolution/registry.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/ingestion/source.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 303,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Measure the local protocol against actual public release source without fabricating independent learning or operational evidence.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json",
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py"
+      ],
+      "lines": 3482,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve file intent, graph relationships and actual protocol verification events for later ingestion.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json",
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve file intent, graph relationships and actual protocol verification events for later ingestion.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+        ".bits/queue/VCC-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json",
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json",
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json",
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py",
+        "docs/capability-tokens.md",
+        ".bits/context.lock.json",
+        ".bits/hostinger-readiness.lock.json"
+      ],
+      "lines": 169,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the six local protocol surfaces reviewable with measured source evidence and explicit receiving-runtime requirements.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json",
+        "libs/capability_tokens/cli.py"
+      ],
+      "lines": 393,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain observed verification outputs, coverage and exact source fingerprints.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json",
+        "libs/capability_tokens/cli.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain observed verification outputs, coverage and exact source fingerprints.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "checked_file",
+        "prefixes",
+        "main"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/conformance.py",
+        "libs/semantic_twin/ingestion/source.py"
+      ],
+      "lines": 246,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep source claims and governance memory reproducible without upgrading absent runtime evidence.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 64,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound the six portable capability protocol pieces to local additive work and observed acceptance.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "AGENTS.md",
+        "libs/evolution/registry.py",
+        "libs/semantic_twin/promotions.py"
+      ],
+      "lines": 88,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make portable skills measurable capabilities without conferring execution, sharing or payment authority.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs_registry.yml",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/context.md",
+        "scripts/ci/agent_context.py"
+      ],
+      "lines": 243,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/capability-tokens.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/cli.py"
+      ],
+      "lines": 283,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Document the portable protocol, executable boundaries and evidence needed for runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/__init__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py"
+      ],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide the portable capability protocol without granting authority.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/__main__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "libs/capability_tokens/cli.py"
+      ],
+      "lines": 22,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose the capability protocol through the Python module entry point.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/cli.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_read",
+        "_model",
+        "_models",
+        "_emit",
+        "parser",
+        "_dispatch",
+        "main"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/composition.py",
+        "libs/capability_tokens/conformance.py",
+        "libs/capability_tokens/economics.py",
+        "libs/capability_tokens/interop.py",
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/passport.py",
+        "libs/capability_tokens/registry.py",
+        "libs/capability_tokens/sharing.py",
+        "libs/capability_tokens/verification.py",
+        "libs/evolution/common.py",
+        "libs/evolution/compiler.py",
+        "libs/evolution/episode.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/promotions.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 476,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the six local capability protocol surfaces executable and reviewable from one CLI.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/composition.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "PortBinding",
+        "CompositionStep",
+        "CompositionPlan",
+        "compose"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/registry.py",
+        "libs/capability_tokens/verification.py",
+        "libs/evolution/common.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 157,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compose measured capabilities without implicit authority joins or privacy downgrades.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/conformance.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "input_features",
+        "propose",
+        "draft_transaction",
+        "ConformanceCase",
+        "ConformanceSuite",
+        "CheckResult",
+        "ConformanceReport",
+        "check",
+        "Certification",
+        "certify"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/verification.py",
+        "libs/evolution/candidate.py",
+        "libs/evolution/common.py",
+        "libs/evolution/compiler.py",
+        "libs/evolution/promotion.py",
+        "libs/evolution/replay.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/promotions.py",
+        "libs/semantic_twin/transactions.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 425,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Execute finite conformance probes and require exact independent TEVV before certification.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/economics.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Adjustment",
+        "ReviewedAdjustment",
+        "settlement"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/passport.py",
+        "libs/capability_tokens/verification.py",
+        "libs/evolution/common.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/receipts.py"
+      ],
+      "lines": 178,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Calculate conserved royalty accruals from reviewed outcomes without moving money or inventing measured revenue.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/interop.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "_frontmatter",
+        "SkillPackage",
+        "import_skill",
+        "skill_zip",
+        "export_skill",
+        "McpToolCapture",
+        "mcp_descriptor",
+        "import_skill_index",
+        "export_skill_index"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/schema.py",
+        "libs/evolution/common.py",
+        "libs/evolution/compiler.py",
+        "libs/semantic_twin/contracts.py"
+      ],
+      "lines": 343,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Use portable skill and MCP formats as inert inputs without importing their authority claims.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/models.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "content_hash",
+        "version_key",
+        "safe_path",
+        "TokenPin",
+        "Asset",
+        "Implementation",
+        "AuthorityRequirements",
+        "EvidenceRequirements",
+        "Rollback",
+        "Attribution",
+        "Pricing",
+        "CapabilityToken",
+        "ImplementationBinding",
+        "TokenBundle"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/schema.py",
+        "libs/evolution/common.py",
+        "libs/evolution/promotion.py",
+        "libs/evolution/registry.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 436,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind portable capabilities to immutable implementation bytes, compatibility, authority and economic contracts.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/passport.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "CallObservation",
+        "MeteredCall",
+        "validated_calls",
+        "CapabilityPassport",
+        "passport",
+        "PassportPublication",
+        "publish_passport"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/verification.py",
+        "libs/evolution/common.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 372,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Measure implementation-specific outcomes and costs without treating reports as independent verification.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/registry.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "FederatedIndex",
+        "RegistryEntry",
+        "Registry",
+        "RegistryState"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/conformance.py",
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/passport.py",
+        "libs/capability_tokens/verification.py",
+        "libs/evolution/common.py",
+        "libs/evolution/compiler.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py"
+      ],
+      "lines": 587,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Distribute pinned capability versions locally while retaining revocation history and the existing proposal boundary.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/schema.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_number",
+        "_sequence",
+        "_validate",
+        "_check",
+        "ValueSchema"
+      ],
+      "dependencies": [
+        "libs/evolution/common.py",
+        "libs/semantic_twin/contracts.py"
+      ],
+      "lines": 210,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Validate a bounded portable JSON Schema profile without silently ignoring unsupported constraints.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/sharing.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "GeneralizedPattern",
+        "SharingDraft",
+        "prepare_sharing",
+        "SharedPattern",
+        "export_pattern"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/verification.py",
+        "libs/evolution/common.py",
+        "libs/evolution/episode.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 177,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Export only reviewed closed-vocabulary learning patterns while retaining tenant evidence locally.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/capability_tokens/verification.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "ReviewPolicy",
+        "require_review"
+      ],
+      "dependencies": [
+        "libs/evolution/common.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/promotions.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 122,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require typed independent receipts plus caller-pinned evidence before accepting capability claims.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/cnwb",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "libs/capability_tokens/cli.py"
+      ],
+      "lines": 28,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose the CNWB token protocol without installing a package or contacting services.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_capability_token_cli.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "CliTests"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/cli.py",
+        "libs/capability_tokens/composition.py",
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/passport.py",
+        "libs/capability_tokens/registry.py",
+        "libs/capability_tokens/sharing.py",
+        "libs/evolution/common.py",
+        "libs/semantic_twin/vocabulary.py",
+        "tests/upgrade/test_capability_token_records.py",
+        "tests/upgrade/test_capability_token_support.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 437,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise persistent operator commands and distinguish local protocol tests from live acceptance.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_capability_token_contracts.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "SchemaTests",
+        "TokenTests",
+        "InteropTests"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/interop.py",
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/schema.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/merkle.py",
+        "tests/upgrade/test_capability_token_support.py"
+      ],
+      "lines": 326,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Test portable typed contracts, exact artifact identity and malicious skill containers.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_capability_token_records.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "call",
+        "PassportTests",
+        "EconomicsTests",
+        "SharingTests"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/economics.py",
+        "libs/capability_tokens/passport.py",
+        "libs/capability_tokens/registry.py",
+        "libs/capability_tokens/sharing.py",
+        "libs/evolution/common.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/vocabulary.py",
+        "tests/upgrade/test_capability_token_support.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 521,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject cross-tenant learning, duplicate metering, unsupported verification and unbalanced settlement.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_capability_token_registry.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ConformanceTests",
+        "RegistryTests"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/composition.py",
+        "libs/capability_tokens/conformance.py",
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/registry.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/promotions.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/transactions.py",
+        "libs/semantic_twin/vocabulary.py",
+        "tests/upgrade/test_capability_token_support.py"
+      ],
+      "lines": 550,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify exact certification, pinned federation, revocation, authority and composition boundaries.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_capability_token_support.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "verification",
+        "schema",
+        "bundle",
+        "observation",
+        "suite",
+        "trust",
+        "certified"
+      ],
+      "dependencies": [
+        "libs/capability_tokens/conformance.py",
+        "libs/capability_tokens/models.py",
+        "libs/capability_tokens/schema.py",
+        "libs/capability_tokens/verification.py",
+        "libs/evolution/common.py",
+        "libs/evolution/compiler.py",
+        "libs/evolution/promotion.py",
+        "libs/evolution/registry.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/merkle.py",
+        "libs/semantic_twin/promotions.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/vocabulary.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 250,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Construct explicitly synthetic protocol evidence without claiming live certification.",
+      "objective_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "capability-token-protocol"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/context.lock.json",
+      "target": "scripts/ci/agent_context.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/context.lock.json depends_on scripts/ci/agent_context.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/context.lock.json",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/context.lock.json depends_on .bits/srs_registry.yml",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-capability-runtime.md",
+      "target": "docs/capability-tokens.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-capability-runtime.md depends_on docs/capability-tokens.md",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-capability-runtime.md",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-capability-runtime.md depends_on libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json.cgrf.yaml depends_on .bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json.cgrf.yaml",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood-bundle.json.cgrf.yaml depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json.cgrf.yaml depends_on .bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json.cgrf.yaml",
+      "target": "tools/buildanddo_release.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json.cgrf.yaml depends_on tools/buildanddo_release.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/capability_tokens/conformance.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/capability_tokens/conformance.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/capability_tokens/interop.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/capability_tokens/interop.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/capability_tokens/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/capability_tokens/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/capability_tokens/schema.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/capability_tokens/schema.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/evolution/candidate.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/evolution/candidate.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/evolution/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/evolution/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/evolution/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/semantic_twin/ingestion/source.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/semantic_twin/ingestion/source.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json.cgrf.yaml depends_on .bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json.cgrf.yaml depends_on .bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md depends_on .bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "target": ".bits/queue/VCC-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md depends_on .bits/queue/VCC-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md depends_on .bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md depends_on .bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md depends_on .bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md depends_on .bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "target": "docs/capability-tokens.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md depends_on docs/capability-tokens.md",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "target": ".bits/context.lock.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md depends_on .bits/context.lock.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "target": ".bits/hostinger-readiness.lock.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md depends_on .bits/hostinger-readiness.lock.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json.cgrf.yaml depends_on .bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json.cgrf.yaml",
+      "target": "libs/capability_tokens/cli.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/validation.json.cgrf.yaml depends_on libs/capability_tokens/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py",
+      "target": "libs/capability_tokens/conformance.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py depends_on libs/capability_tokens/conformance.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py",
+      "target": "libs/semantic_twin/ingestion/source.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/verify.py depends_on libs/semantic_twin/ingestion/source.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/queue/VCC-BUILDANDDO-CAPABILITY-TOKEN-001.md depends_on .bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/queue/VCC-BUILDANDDO-CAPABILITY-TOKEN-001.md depends_on .bits/srs_registry.yml",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "target": "AGENTS.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md depends_on AGENTS.md",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "target": "libs/evolution/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md depends_on libs/evolution/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md depends_on libs/semantic_twin/promotions.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": "bits/SRS-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": ".bits/srs_registry.yml gates bits/SRS-* branches",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": ".bits/srs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/srs_registry.yml validates .bits/srs",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/capability-tokens.md",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/capability-tokens.md depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/capability-tokens.md",
+      "target": "libs/capability_tokens/cli.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/capability-tokens.md depends_on libs/capability_tokens/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/__init__.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/__init__.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/__main__.py",
+      "target": "libs/capability_tokens/cli.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/__main__.py depends_on libs/capability_tokens/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/capability_tokens/composition.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/capability_tokens/composition.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/capability_tokens/conformance.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/capability_tokens/conformance.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/capability_tokens/economics.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/capability_tokens/economics.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/capability_tokens/interop.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/capability_tokens/interop.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/capability_tokens/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/capability_tokens/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/capability_tokens/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/capability_tokens/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/capability_tokens/sharing.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/capability_tokens/sharing.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/evolution/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/evolution/episode.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/evolution/episode.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/semantic_twin/promotions.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/semantic_twin/receipts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/cli.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/cli.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/composition.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/composition.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/composition.py",
+      "target": "libs/capability_tokens/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/composition.py depends_on libs/capability_tokens/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/composition.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/composition.py depends_on libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/composition.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/composition.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/composition.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/composition.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/composition.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/composition.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/composition.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/composition.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/evolution/candidate.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/evolution/candidate.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/evolution/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/evolution/promotion.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/evolution/promotion.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/evolution/replay.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/evolution/replay.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/semantic_twin/promotions.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/semantic_twin/transactions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/semantic_twin/transactions.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/conformance.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/conformance.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/economics.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/economics.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/economics.py",
+      "target": "libs/capability_tokens/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/economics.py depends_on libs/capability_tokens/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/economics.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/economics.py depends_on libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/economics.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/economics.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/economics.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/economics.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/economics.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/economics.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/economics.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/economics.py depends_on libs/semantic_twin/receipts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/interop.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/interop.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/interop.py",
+      "target": "libs/capability_tokens/schema.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/interop.py depends_on libs/capability_tokens/schema.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/interop.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/interop.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/interop.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/interop.py depends_on libs/evolution/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/interop.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/interop.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/models.py",
+      "target": "libs/capability_tokens/schema.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/models.py depends_on libs/capability_tokens/schema.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/models.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/models.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/models.py",
+      "target": "libs/evolution/promotion.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/models.py depends_on libs/evolution/promotion.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/models.py",
+      "target": "libs/evolution/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/models.py depends_on libs/evolution/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/models.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/models.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/models.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/models.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/models.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/models.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/models.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/models.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/passport.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/passport.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/passport.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/passport.py depends_on libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/passport.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/passport.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/passport.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/passport.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/passport.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/passport.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/passport.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/passport.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/passport.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/passport.py depends_on libs/semantic_twin/receipts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/passport.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/passport.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/registry.py",
+      "target": "libs/capability_tokens/conformance.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/registry.py depends_on libs/capability_tokens/conformance.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/registry.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/registry.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/registry.py",
+      "target": "libs/capability_tokens/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/registry.py depends_on libs/capability_tokens/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/registry.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/registry.py depends_on libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/registry.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/registry.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/registry.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/registry.py depends_on libs/evolution/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/registry.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/registry.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/registry.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/registry.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/registry.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/registry.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/schema.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/schema.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/schema.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/schema.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/sharing.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/sharing.py depends_on libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/sharing.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/sharing.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/sharing.py",
+      "target": "libs/evolution/episode.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/sharing.py depends_on libs/evolution/episode.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/sharing.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/sharing.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/sharing.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/sharing.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/sharing.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/sharing.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/sharing.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/sharing.py depends_on libs/semantic_twin/receipts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/sharing.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/sharing.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/verification.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/verification.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/verification.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/verification.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/verification.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/verification.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/verification.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/verification.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/verification.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/verification.py depends_on libs/semantic_twin/promotions.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/verification.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/verification.py depends_on libs/semantic_twin/receipts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/capability_tokens/verification.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "libs/capability_tokens/verification.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/cnwb",
+      "target": "libs/capability_tokens/cli.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/cnwb depends_on libs/capability_tokens/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "libs/capability_tokens/cli.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on libs/capability_tokens/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "libs/capability_tokens/composition.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on libs/capability_tokens/composition.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "libs/capability_tokens/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on libs/capability_tokens/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "libs/capability_tokens/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on libs/capability_tokens/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "libs/capability_tokens/sharing.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on libs/capability_tokens/sharing.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "tests/upgrade/test_capability_token_records.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on tests/upgrade/test_capability_token_records.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "tests/upgrade/test_capability_token_support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on tests/upgrade/test_capability_token_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_cli.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_cli.py depends_on tests/upgrade/test_evolution_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_contracts.py",
+      "target": "libs/capability_tokens/interop.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_contracts.py depends_on libs/capability_tokens/interop.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_contracts.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_contracts.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_contracts.py",
+      "target": "libs/capability_tokens/schema.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_contracts.py depends_on libs/capability_tokens/schema.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_contracts.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_contracts.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_contracts.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_contracts.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_contracts.py",
+      "target": "tests/upgrade/test_capability_token_support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_contracts.py depends_on tests/upgrade/test_capability_token_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "libs/capability_tokens/economics.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on libs/capability_tokens/economics.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "libs/capability_tokens/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on libs/capability_tokens/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "libs/capability_tokens/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on libs/capability_tokens/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "libs/capability_tokens/sharing.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on libs/capability_tokens/sharing.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "tests/upgrade/test_capability_token_support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on tests/upgrade/test_capability_token_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_records.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_records.py depends_on tests/upgrade/test_evolution_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/capability_tokens/composition.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/capability_tokens/composition.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/capability_tokens/conformance.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/capability_tokens/conformance.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/capability_tokens/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/capability_tokens/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/semantic_twin/promotions.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/semantic_twin/receipts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/semantic_twin/transactions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/semantic_twin/transactions.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_registry.py",
+      "target": "tests/upgrade/test_capability_token_support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_registry.py depends_on tests/upgrade/test_capability_token_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/capability_tokens/conformance.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/capability_tokens/conformance.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/capability_tokens/models.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/capability_tokens/models.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/capability_tokens/schema.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/capability_tokens/schema.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/evolution/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/evolution/promotion.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/evolution/promotion.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/evolution/registry.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/evolution/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/semantic_twin/identity.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/semantic_twin/merkle.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/semantic_twin/merkle.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/semantic_twin/promotions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/semantic_twin/promotions.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/semantic_twin/receipts.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on libs/semantic_twin/vocabulary.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_capability_token_support.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_capability_token_support.py depends_on tests/upgrade/test_evolution_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "libs/capability_tokens/schema.py",
+      "description": "Exact-bound integers exposed float coercion loss; integer arithmetic now preserves values above 2**53 and arbitrarily large bounds.",
+      "caps_before": null,
+      "caps_after": "pending",
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "timestamp": "2026-09-21T03:36:43.428005+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "libs/capability_tokens",
+      "description": "All 50 contract, registry, measurement, sharing, accounting and CLI regression cases passed on current source.",
+      "caps_before": null,
+      "caps_after": "pending",
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "timestamp": "2026-09-21T03:38:25.114783+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "libs/semantic_twin",
+      "description": "All 122 semantic-twin regressions passed alongside the separately retained 63 evolution tests.",
+      "caps_before": null,
+      "caps_after": "pending",
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "timestamp": "2026-09-21T03:34:59.286209+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.py",
+      "description": "The CLI rejected the oversized indented example suite; compact equivalent JSON fits the unchanged bounded input limit.",
+      "caps_before": null,
+      "caps_after": "pending",
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "timestamp": "2026-09-21T03:44:04.094376+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/dogfood.json",
+      "description": "Actual public-source inspection produced 157 semantic objects, portable round trips and six local PASS groups; independent replay and TEVV remain absent.",
+      "caps_before": null,
+      "caps_after": "pending",
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "timestamp": "2026-09-21T03:45:08.072865+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "scripts/cnwb",
+      "description": "The real compact example returned expected exit 2 (HOLD), without minting certification, effects or payments.",
+      "caps_before": null,
+      "caps_after": "pending",
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "timestamp": "2026-09-21T03:45:55.278227+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "dispatch_completed",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAPABILITY-TOKEN-001/report.md",
+      "description": "The additive local source scope completed its nine smoke commands. Authenticated federation, real runners, publication and payments remain receiving-runtime work.",
+      "caps_before": null,
+      "caps_after": "pending",
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "timestamp": "2026-09-21T03:50:16.702226+00:00",
+      "commit_sha": null,
+      "smoke_result": "9/9"
+    }
+  ],
+  "summary": {
+    "type_a_count": 37,
+    "type_b_count": 195,
+    "type_c_count": 7,
+    "ioo_compliance": true,
+    "dkg_orphans": 0,
+    "dispatch_id": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001",
+    "srs_codes": [
+      "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+    ],
+    "seat": "BITS-CODEGEN"
+  }
+}

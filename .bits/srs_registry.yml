@@ -32,6 +32,13 @@
 schema_version: 1
 
 srs:
+  - code: SRS-BUILDANDDO-CAPABILITY-TOKEN-001
+    title: CNWB Capability Token Protocol v1
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md
+    notes: Owner-requested additive portable contracts, conformance, local federation, passports, reviewed sharing and settlement calculations; no external effects or authority expansion
+
   - code: SRS-BUILDANDDO-EVOLUTION-001
     title: Citadel Verified Evolution Fabric v1
     status: in_progress
