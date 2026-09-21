@@ -8,25 +8,37 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     tools/day21/day21_acceptance.py, scripts/ci/day21_submission.py, scripts/ci/hostinger_readiness.py, scripts/ci/submission_readiness.py
+# Depends:     tools/day21/day21_acceptance.py, scripts/ci/day21_submission.py, scripts/ci/hostinger_readiness.py, scripts/ci/submission_readiness.py, scripts/ci/verify_public_boundary.py, .gitlab/ci/source-validation.yml
 # EnumType:    Workflow
-# EnumEdges:   CONSUMES tools/day21/day21_acceptance.py; CONSUMES scripts/ci/day21_submission.py; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/submission_readiness.py
+# EnumEdges:   CONSUMES tools/day21/day21_acceptance.py; CONSUMES scripts/ci/day21_submission.py; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/submission_readiness.py; CONSUMES scripts/ci/verify_public_boundary.py; CONSUMES .gitlab/ci/source-validation.yml
 # Intent:      Execute and retain one complete candidate-bound acceptance matrix on the GitLab shell runner before submission evidence review.
 # ───────────────────────────────────────────────────────────────
 
 # Included by the existing GitLab root. These jobs run disposable tests and
 # compile supplied evidence; they do not activate providers or deploy services.
+include:
+  - local: '.gitlab/ci/source-validation.yml'
+
 day21_governance:
   stage: verify
   tags: [buildanddo]
   script:
     - python3 scripts/ci/hostinger_readiness.py --check
     - python3 scripts/ci/submission_readiness.py --check
+    - python3 scripts/ci/verify_public_boundary.py --gitlab-ci
     - python3 scripts/ci/agent_context.py --check
-    - python3 -m unittest tests.upgrade.test_gitlab_acceptance tests.upgrade.test_hostinger_readiness tests.upgrade.test_submission_readiness tests.upgrade.test_day21_acceptance tests.upgrade.test_day21_submission
+    - python3 -m unittest tests.upgrade.test_public_boundary tests.upgrade.test_gitlab_acceptance tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay tests.upgrade.test_submission_readiness tests.upgrade.test_day21_acceptance tests.upgrade.test_day21_submission
+    - python3 tests/upgrade/check_sprint_execution.py
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - .buildanddo/public/boundary-report.json
+      - reports/junit/sprint-execution.xml
+      - reports/coverage/sprint-execution.json
   rules:
     - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
     - when: never
 
@@ -55,7 +67,7 @@ day21_full_acceptance:
       - state/day21/evidence/
   rules:
     - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
     - when: never
 
@@ -67,6 +79,16 @@ day21_submission_bundle:
   needs:
     - job: day21_full_acceptance
       artifacts: true
+    - job: day21_governance
+      artifacts: false
+    - job: source_discord
+      artifacts: false
+    - job: source_foundry
+      artifacts: false
+    - job: source_federal_portfolio
+      artifacts: false
+    - job: source_mission_suite
+      artifacts: false
   script:
     - python3 scripts/ci/day21_submission.py bundle --root . --evidence state/day21/evidence --output state/day21/submission
   artifacts:

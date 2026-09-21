@@ -26,7 +26,9 @@
         "docs/submission-guide.md",
         ".gitlab-ci.yml",
         ".gitlab/ci/day21-submission.yml",
-        "tools/day21/day21_architecture_snapshot.py"
+        "tools/day21/day21_architecture_snapshot.py",
+        ".gitlab/ci/source-validation.yml",
+        "scripts/ci/verify_public_boundary.py"
       ],
       "checks": [
         "boundary",
@@ -47,9 +49,11 @@
         "The local acceptance runner revalidates all eighteen profiles and retains current BLOCKED receipts when runtime provisioning fails.",
         "The tested candidate and deployed readback share an exact source identity.",
         "Internal submission standards stay distinct from captured official requirements.",
-        "The GitLab artifact download retains every referenced receipt, log and artifact plus the original JUnit/build paths; the shared validator rechecks their bytes."
+        "The GitLab artifact download retains every referenced receipt, log and artifact plus the original JUnit/build paths; the shared validator rechecks their bytes.",
+        "Required native SDK/parser and portable-suite coverage checks execute in GitLab, retaining Python 3.11 and 3.12; manual submission waits for every required source job.",
+        "Review pipelines retain exactly one actor label from the current provider context; GitHub exports bind repository, review number and exact tested head. Missing metadata cannot satisfy governance."
       ],
-      "next_step": "Execute day21_full_acceptance on the GitLab buildanddo runner for one clean candidate; retain all eighteen profiles and the complete artifact export. Missing local dependencies remain prerequisites, and the separate Cloudflare diagnostic belongs to the hosting owner."
+      "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic."
     },
     {
       "id": "HS-02",
@@ -431,8 +435,8 @@
       "id": "ci_execution",
       "why": "GitLab executes acceptance; configured jobs and historical GitHub observations cannot establish current runner health or passing acceptance.",
       "owner": "GitLab runner owner / acceptance operator",
-      "next_step": "Provision Node from .nvmrc, Python venv/pip, the declared Python/npm dependencies and Docker or both declared binaries; run the complete matrix and retain its full GitLab artifact export.",
-      "evidence_required": "Actually executed GitLab job records and all eighteen candidate-bound receipt/log/artifact profiles. GitHub billing status is not a GitLab prerequisite."
+      "next_step": "Verify candidate delivery and review/status integration, provision Node from .nvmrc plus Python 3.11/3.12 and declared dependencies, run every required GitLab job and retain its complete evidence export.",
+      "evidence_required": "Actually executed GitLab job records, actor-labelled review metadata, same-candidate public statuses and all eighteen receipt/log/artifact profiles. Historical GitHub billing status does not establish GitLab health."
     },
     {
       "id": "release",

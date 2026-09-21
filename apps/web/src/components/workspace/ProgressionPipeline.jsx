@@ -100,6 +100,8 @@ export const PIPELINE_STEPS = [
         checks: [
             'Lint passes',
             'GitLab runs source Node/Python, semantic-twin and web coverage suites',
+            'Native Discord/PDF and CPU blueprint checks pass with required dependencies',
+            'Foundry, federal portfolio and mission coverage passes on Python 3.11 and 3.12',
             'Skipped or unavailable dependencies keep acceptance incomplete',
             'Native PocketBase dossier, suite, operator and classroom auth, scoped reads, storage, presence, leases and retry checks pass for both declared runtimes',
             'Native interactive tutorial checkpoints, completion certificates, concurrent credit and migration retention pass for both declared runtimes',
@@ -134,6 +136,7 @@ export const PIPELINE_STEPS = [
         checks: [
             'verify_public_boundary.py reports PASS',
             'No forbidden path or secret-like literal',
+            'The current review has exactly one actor label',
             'agent_context.py --check finds the lock current',
         ],
         tag: 'governance:boundary-scan',

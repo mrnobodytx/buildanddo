@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md
 # Intent:      Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.
 # ───────────────────────────────────────────────────────────────
 
@@ -149,10 +149,14 @@ evidence about GitHub and do not block the GitLab runner.
 
 ### GitLab execution and artifact handoff
 
-The existing `.gitlab-ci.yml` includes `.gitlab/ci/day21-submission.yml`.
-`day21_governance` checks source bindings and validator regressions, followed by
-`day21_full_acceptance` on the `buildanddo` shell runner. Both are configured for
-main, sprint branches, merge-request pipelines or `DAY21_FULL_ACCEPTANCE=1`.
+The existing `.gitlab-ci.yml` includes `.gitlab/ci/day21-submission.yml`, which
+includes `.gitlab/ci/source-validation.yml`. `day21_governance` checks source
+bindings, public boundaries, review attribution, validator regressions and
+worker/submission coverage. `day21_full_acceptance` runs on the `buildanddo`
+shell runner. The separate source jobs retain required Discord/PDF and CPU
+blueprint checks, and foundry/portfolio/mission coverage on Python 3.11 and 3.12.
+These jobs are configured for main, sprint branches, merge requests, external
+pull requests or `DAY21_FULL_ACCEPTANCE=1`.
 The full job replaces the split source/native jobs: the shared runner requires
 all eighteen profiles for success. Its Python virtual environment lives in
 ignored `state/day21/venv`; npm installs development tools from the root lock
@@ -166,8 +170,35 @@ Always download the entire `state/day21/evidence/` directory, plus
 The validator hashes exported copies and compares the original artifact paths;
 a standalone summary is insufficient. Artifacts are retained even for HOLD or
 failed acceptance. `day21_submission_bundle` explicitly needs the full job's
-artifacts and is manual when `DAY21_COMPILE_SUBMISSION=1`. The receiving owner
+artifacts and all required governance/source jobs, including both Python
+versions. It is manual when `DAY21_COMPILE_SUBMISSION=1`. The receiving owner
 must provide the other same-candidate captures before that bundle can pass.
+
+### Review attribution and public check status
+
+`verify_public_boundary.py --gitlab-ci` reads the current merge request's
+`CI_MERGE_REQUEST_IID` and `CI_MERGE_REQUEST_LABELS`. Exactly one of
+`actor:human`, `actor:agent` or `actor:mixed` is required. `Bits AI` is a separate
+label and does not satisfy this rule. For a GitHub external pull request, the
+receiving integration sets `BUILDANDDO_GITHUB_PR_EVENT` to an authenticated
+provider export shaped as `{"pull_request": <GitHub pull object>}`. The gate
+checks the base repository, review number, labels and exact checked-out SHA;
+missing or foreign exports fail. No tokens belong in that file. Default-branch
+scans report review attribution as NOT_APPLICABLE, never as a reviewed actor.
+
+The GitHub governance workflow is retained only for explicit manual diagnostics.
+Its required PR number resolves once to a SHA used by every job. Governance
+rechecks that review's labels and revision, so an updated PR cannot silently
+supply labels for a different candidate. Old failed checks remain historical.
+
+The private CI owner must verify that public candidates reach GitLab, supply
+trusted review metadata, and publish actual job results against the same GitHub
+SHA. Required-check configuration must then name those observed GitLab checks;
+disabling an obsolete GitHub trigger alone cannot satisfy branch protection.
+The read-only coding session cannot activate this integration or change repository
+settings. The receiving contract is
+`.bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md`.
+The separate Cloudflare Workers check requires its own build diagnostic.
 
 The stdlib source inspector follows literal local includes, rejects unresolved
 or unsafe include paths and inventories executable command lists. It does not

@@ -49,6 +49,10 @@ defines the precise tiers and hard NO list.
 GitLab executes CI through `.gitlab-ci.yml` and its reachable local includes.
 The Day-21 lane checks governance, runs the complete eighteen-profile acceptance
 matrix and retains the receipts, logs and referenced artifacts together. The
+source-validation include retains the native SDK/parser gates and Python
+3.11/3.12 foundry, portfolio and mission coverage. GitLab review pipelines also
+require exactly one actor label; external GitHub reviews require an export
+bound to the tested head. GitHub governance runs only by manual dispatch. The
 existing private release path remains separately governed. GitHub is the public
 collaboration plane; its workflow definitions and historical check observations
 do not establish GitLab execution or runner health. The browser ships RUM and
@@ -93,6 +97,10 @@ acceptance. The contract does not assert a percentage or rewrite sprint state.
    evidence about GitHub only; it is not a GitLab prerequisite. Vitest/JUnit, release
    tags and supply telemetry now exist; older proposed specs are not a current
    inventory of missing implementations.
+   The receiving owner must confirm candidate mirroring, review metadata and
+   same-revision GitLab statuses on the public review before changing required
+   checks. The source configuration cannot repair provider account settings or
+   publish those statuses. See docs/hostinger-sprint-closure.md for that handoff.
 2. Complete one connected small-business journey: saved signal, bounded mission,
    explicit approval, action, a different verifier, evidence and operator readback.
    The workflow desk now separates recorded procedures from frozen executable

@@ -20,6 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Governance execution repair authorized 2026-09-21
+
+Owner request: all governance checks are failing. Continue the GitLab correction
+under this A2 dispatch, preserving prior tests and public/private boundaries.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| GV-1 | Establish provider failure and reproduce scheduling/actor gaps | Provider metadata, routing and actor regressions | PASS: eleven GitHub jobs stopped before steps; missing routing and actor checks reproduced |
+| GV-2 | Complete GitLab validation parity and remove duplicate automatic scheduling | Routing, actor and existing readiness suites | source PASS: 103 regressions; manual fallback freezes one candidate; required GitLab coverage and submission dependencies retained |
+| GV-3 | Execute available governance/coverage gates and preserve exact results | Context, readiness, boundary and memory checks | local repair and evidence in governance-report.md; mission coverage recovered on both Python versions; dependency and hosted execution gates remain open |
+
+Memory brief: PR 64's GitHub run 35664137943 failed all eleven jobs with zero
+steps; job 106545971095 reports a billing lock before execution. Its Cloudflare
+check exposes no diagnostic. These observations do not describe GitLab health.
+Current local readiness/context/memory checks pass. The GitHub pull-request
+trigger remains automatic, while GitLab lacks the separate coverage jobs and
+actor-label enforcement. PR 64 carries only Bits AI, which is not an actor label.
+No job-scoped Datadog logs or candidate GitLab events were returned. No live seat
+or workspace is available; no seat event or remote status is fabricated.
+
 ## GitLab acceptance correction authorized 2026-09-21
 
 Owner request: GitLab powers execution; revise the system accordingly and clear

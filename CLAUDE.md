@@ -59,6 +59,10 @@ job runs all eighteen acceptance profiles and retains the complete evidence
 export. The briefing distinguishes reachable GitLab wiring from GitHub
 definitions; neither source inventory nor a GitHub job failure establishes
 GitLab runtime acceptance.
+GitHub governance is a manual fallback pinned to one pull-request head. The
+GitLab source-validation include preserves the separate coverage matrices;
+review pipelines require one actor label. Public GitHub review metadata and
+GitLab status publication must come from the receiving CI integration.
 
 ## Traps that have already cost time
 

@@ -223,6 +223,101 @@ class GitLabAcceptanceTests(unittest.TestCase):
         hostinger_readiness.check_wiring(ROOT)
         submission_readiness.check_wiring(ROOT)
 
+    def test_github_governance_is_an_explicit_manual_fallback(self) -> None:
+        workflow = next(
+            item
+            for item in agent_context.collect_pipelines(ROOT)
+            if item["file"] == ".github/workflows/pr-governance.yml"
+        )
+        self.assertEqual(workflow["triggers"], ["workflow_dispatch"])
+        text = (ROOT / workflow["file"]).read_text()
+        self.assertNotIn("ref: refs/pull/", text)
+        self.assertEqual(text.count("uses: actions/checkout@v4"), 7)
+        self.assertEqual(text.count("ref: ${{ needs.candidate.outputs.sha }}"), 7)
+        self.assertEqual(text.count("needs: candidate"), 7)
+
+    def test_gitlab_preserves_required_coverage_and_actor_gates(self) -> None:
+        commands = (
+            ("scripts/ci/verify_public_boundary.py", "--gitlab-ci"),
+            ("tests/upgrade/check_sprint_execution.py",),
+            (
+                "tests/upgrade/check_discordbot.py",
+                "--include-research",
+                "--require-sdk",
+                "--require-pdf",
+            ),
+            ("tests/upgrade/check_blueprint_pipeline.py", "--require-pdf"),
+            ("tests/foundry/check_foundry.py",),
+            ("tests/upgrade/check_federal_foundry.py",),
+            ("tests/upgrade/check_mission_suite.py",),
+        )
+        for script, *args in commands:
+            with self.subTest(script=script):
+                gitlab_ci.require_command(ROOT, script, *args)
+        governance = next(
+            job
+            for job in gitlab_ci.collect(ROOT).jobs
+            if job.name == "day21_governance"
+        )
+        self.assertTrue(
+            any(
+                "tests.upgrade.test_hostinger_replay" in command
+                for command in governance.commands
+            )
+        )
+
+    def test_portable_suites_keep_both_python_versions_and_real_outputs(self) -> None:
+        path = ROOT / ".gitlab/ci/source-validation.yml"
+        self.assertTrue(
+            path.is_file(), "Required suites must move with the execution provider"
+        )
+        text = path.read_text()
+        sections = {name: body for name, _inline, body in gitlab_ci._sections(text)}
+        for name in (
+            "source_foundry",
+            "source_federal_portfolio",
+            "source_mission_suite",
+        ):
+            with self.subTest(job=name):
+                body = sections[name]
+                self.assertIn('PYTHON_VERSION: ["3.11", "3.12"]', body)
+                self.assertIn("python${PYTHON_VERSION} -m venv", body)
+                self.assertIn("when: always", body)
+                self.assertNotIn("allow_failure: true", body)
+        self.assertIn(
+            "federal_foundry verify state/ci/foundry-review", sections["source_foundry"]
+        )
+        self.assertIn(
+            "apps.federal_foundry compile --output state/ci/federal-portfolio",
+            sections["source_federal_portfolio"],
+        )
+        self.assertIn(
+            "apps.mission_suite package state/ci/mission-suite.tgz",
+            sections["source_mission_suite"],
+        )
+
+    def test_submission_waits_for_all_required_source_jobs(self) -> None:
+        sections = {
+            name: body
+            for name, _inline, body in gitlab_ci._sections(
+                (ROOT / ".gitlab/ci/day21-submission.yml").read_text()
+            )
+        }
+        bundle = sections["day21_submission_bundle"]
+        for name in (
+            "day21_governance",
+            "day21_full_acceptance",
+            "source_discord",
+            "source_foundry",
+            "source_federal_portfolio",
+            "source_mission_suite",
+        ):
+            with self.subTest(job=name):
+                self.assertIn("- job: " + name + "\n", bundle)
+        self.assertNotIn("optional: true", bundle)
+        self.assertIn("when: manual", bundle)
+        self.assertIn("allow_failure: false", bundle)
+
     def test_wrapper_modes_and_literal_scripts_are_reported_conservatively(
         self,
     ) -> None:
