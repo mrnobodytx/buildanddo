@@ -43,7 +43,7 @@
         "The tested candidate and deployed readback share an exact source identity.",
         "Internal submission standards stay distinct from captured official requirements."
       ],
-      "next_step": "Restore the GitHub account's Actions access, run the required acceptance checks and inspect the separate Cloudflare build diagnostic."
+      "next_step": "Run the local acceptance gate against the pinned backend build. GitHub Actions is not the gate here - the operator has confirmed this estate's CI is GitLab, and the stored GitHub credential returns 401, so its check state cannot be measured from this seat and should not be read as signal. On project 104, restore the GitLab instance's write path before reading any pipeline as a code verdict: measured 2026-09-21, its reads answered in 8-12s while a pipeline retry returned 500, a second timed out and pipeline creation returned 502."
     },
     {
       "id": "HS-02",
@@ -114,7 +114,7 @@
         "Saved work survives restart and denial/retry cases preserve record integrity.",
         "Personal assistant collections deny other users including workspace administrators; protocol rollback retains records and disables commands."
       ],
-      "next_step": "Execute both native runtime profiles and have the release owner validate migration rollout and recovery on staging."
+      "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it."
     },
     {
       "id": "HS-04",
@@ -423,16 +423,16 @@
   "external_requirements": [
     {
       "id": "ci_account",
-      "why": "The last captured required-job failure reported an account billing lock; current execution still needs evidence.",
+      "why": "The recorded blocker was a GitHub Actions billing lock. The operator has since confirmed this estate's CI is GitLab, and the stored GitHub credential returns 401, so that claim is neither the gate nor measurable from this seat. The measured blocker on 2026-09-21 is the GitLab instance itself: its own HTTP 500 on git fetch is what failed the 09-20 jobs, in get_sources, before any test ran.",
       "owner": "Repository account owner",
-      "next_step": "Resolve the Actions billing lock, rerun required checks and inspect Cloudflare's separate build logs.",
+      "next_step": "Restore write availability on the GitLab instance (18.8.3), then re-run project 104's pipeline and read the FIRST failure in each trace rather than the last warning - exit status 128 is git, not the test runner. Note that a write there can return 500 and still apply, so confirm by readback; a half-applied retry leaves jobs queued under a pipeline already marked failed, which never dispatches.",
       "evidence_required": "Actual completed CI/check records for the selected candidate; failure labels alone are not code diagnostics."
     },
     {
       "id": "release",
       "why": "Merged source is not proof of an installed version or successful release.",
       "owner": "Private release owner",
-      "next_step": "Use the existing governed release lane and capture staging/production SHA, artifact and health readback plus the DORA acknowledgment.",
+      "next_step": "The release readback now exists: the governed lane captured staging and production probes at 200 with /_version reporting the same commit on both, and evidence epochs EPOCH-20260921-01 and -02 fingerprinted the serving artifact set. What remains is the DORA acknowledgment and binding those receipts to a GitLab or Datadog export under the same SHA.",
       "evidence_required": "Existing controller receipts and GitLab/Datadog exports bound to the same SHA/artifact; public sanitized references only."
     },
     {
@@ -446,7 +446,7 @@
       "id": "migrations",
       "why": "A source migration may not be installed or compatible with the running backend.",
       "owner": "IDE1 / backend release owner",
-      "next_step": "Run both disposable native profiles, then apply and verify the reviewed migrations through the receiving release process.",
+      "next_step": "A disposable-profile preflight now exists and is wired: it copies the live database, runs the pinned binary against the pending set and requires the serving line, with a control proving it refuses a broken set rather than merely surviving one. It cleared 33 pending migrations onto production and one onto both environments on 2026-09-21, each confirmed by readback. Still owed: an isolation observation and an actual rollback, neither of which a preflight can establish.",
       "evidence_required": "Native runtime/version results plus installed migration, restart, isolation and rollback observations."
     },
     {
