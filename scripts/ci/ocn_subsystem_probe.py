@@ -60,10 +60,10 @@ def http(url, data=None, headers=None, method=None, timeout=30):
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             raw = resp.read()
-            return resp.status, (json.loads(raw) if raw[:1] in b"{[" else {})
+            return resp.status, (json.loads(raw) if raw[:1] in (b"{", b"[") else {})
     except urllib.error.HTTPError as exc:
         raw = exc.read()
-        return exc.code, (json.loads(raw) if raw[:1] in b"{[" else {})
+        return exc.code, (json.loads(raw) if raw[:1] in (b"{", b"[") else {})
     except Exception as exc:  # noqa: BLE001
         return 0, {"err": type(exc).__name__}
 
