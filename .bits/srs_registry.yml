@@ -32,6 +32,13 @@
 schema_version: 1
 
 srs:
+  - code: SRS-BUILDANDDO-DEVELOPMENT-LOOP-001
+    title: Connect development observations, sprint missions and reviewed outcomes
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md
+    notes: Owner-requested additive adapters over evolution, capability review and semantic contracts; authenticated repository reads, local proposals and measured tests only; deployment, remote writes and self-certification excluded
+
   - code: SRS-BUILDANDDO-CAPABILITY-TOKEN-001
     title: CNWB Capability Token Protocol v1
     status: in_progress

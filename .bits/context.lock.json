@@ -355,7 +355,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-21T03:48:21.871895+00:00",
+  "generated_at": "2026-09-21T18:26:24.031614+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -424,6 +424,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-DECISION-001.md",
         "status": "in_progress",
         "title": "BuildAndDo Decision Runtime Phase 1 typed decision primitive"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+        "status": "in_progress",
+        "title": "Connect development observations, sprint missions and reviewed outcomes"
       },
       {
         "code": "SRS-BUILDANDDO-DEVENV-001",
@@ -732,11 +739,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 46,
-    "python_files": 300,
+    "python_files": 309,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1257,
+    "tracked_files": 1278,
     "web_source_files": 333
   },
   "schema_version": 1,
@@ -810,15 +817,15 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "80a74d1cddd83b8a9738a0b5c00982cc08bd3709d9af9b5d526918883f35a9dd",
+    "source_sha256": "cdd6b47bb09a769afbc7d2acf122157cf665478f0543b950df48f6388ff50f26",
     "state": "PASS"
   },
   "summary": {
     "findings": 22,
     "findings_high": 22,
     "pipelines": 7,
-    "srs_open": 27,
-    "srs_total": 31,
+    "srs_open": 28,
+    "srs_total": 32,
     "unwired_gates": 20
   },
   "tests": {
