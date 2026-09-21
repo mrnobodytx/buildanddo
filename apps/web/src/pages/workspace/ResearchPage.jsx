@@ -166,10 +166,7 @@ function ResearchDesk({ control, page, onPage, missionFilter, initialSource }) {
 function ResearchView({ params }) {
     const [page, setPage] = useState(1);
     const mission = params.get('mission') || ''; const control = useMissionResearch({ page, ...(mission ? { mission } : {}) });
-    // The desk reads `source` once, as initialSource, so following a link to another
-    // source kept showing the old one. The key carries the source too, which remounts
-    // the desk on a different deep link and drops the previous source's state with it.
-    return <ResearchDesk key={`${control.scope}:${params.get('source') || ''}`} control={control} page={page} onPage={setPage} missionFilter={mission} initialSource={params.get('source') || ''} />;
+    return <ResearchDesk key={control.scope} control={control} page={page} onPage={setPage} missionFilter={mission} initialSource={params.get('source') || ''} />;
 }
 
 export default function ResearchPage() {
