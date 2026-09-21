@@ -532,7 +532,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 43542,
+      "lines": 43738,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -43525,12 +43525,208 @@
       "file_path": "tests/upgrade/test_day21_acceptance.py",
       "description": "Validated the repaired acceptance wrapper with 13 new tests and 41 combined runner/export/readiness regressions. Synthetic fixtures and missing-runtime subprocesses exercise orchestration; they do not establish native or rendered acceptance.",
       "timestamp": "2026-09-21T21:14:28.356689+00:00"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "tools/day21/day21_acceptance.py",
+        "tests/upgrade/test_day21_acceptance.py",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json",
+        "docs/hostinger-sprint-closure.md"
+      ],
+      "lines": 187,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the repaired acceptance runner and the measured runtime prerequisites that still prevent complete acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "acceptance-runner"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json",
+        "tools/day21/day21_acceptance.py",
+        "tests/upgrade/test_day21_acceptance.py"
+      ],
+      "lines": 677,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the observed acceptance matrix and exact tested source without converting unavailable runtimes into passing evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "acceptance-runner"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json",
+        "tools/day21/day21_acceptance.py",
+        "tests/upgrade/test_day21_acceptance.py"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the observed acceptance matrix and exact tested source without converting unavailable runtimes into passing evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "acceptance-runner"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md",
+      "target": "docs/hostinger-sprint-closure.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/hostinger-sprint-closure.md as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md",
+      "target": "tests/upgrade/test_day21_acceptance.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tests/upgrade/test_day21_acceptance.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md",
+      "target": "tools/day21/day21_acceptance.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tools/day21/day21_acceptance.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json.cgrf.yaml",
+      "target": "tests/upgrade/test_day21_acceptance.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tests/upgrade/test_day21_acceptance.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json.cgrf.yaml",
+      "target": "tools/day21/day21_acceptance.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tools/day21/day21_acceptance.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "42f5a375795299aeb8ac0e2e6c1f0a1691b3b81b",
+      "smoke_result": "4/18 PASS; source Node 510/510; Python 725 cases, 6 skips",
+      "event_type": "smoke_run",
+      "file_path": "tools/day21/day21_acceptance.py",
+      "description": "Executed the repaired offline acceptance runner on one unchanged source candidate. All eighteen receipts were exported: four PASS, three missing-frontend-package FAIL, one Python dependency-skip HOLD and ten absent-PocketBase BLOCKED. Node passes 510 tests; Python runs 725 cases with zero failures and six skips.",
+      "timestamp": "2026-09-21T21:21:49.671910+00:00"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": "0 hosted jobs executed",
+      "event_type": "failure",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md",
+      "description": "Recorded the current hosted acceptance blocker from read-only GitHub observations: PR 63 governance run 35654152630 has eleven failed jobs with zero steps, and check 106513509603 states the account is locked due to billing. No hosted rerun or billing mutation was performed.",
+      "timestamp": "2026-09-21T21:24:16.962498+00:00"
     }
   ],
   "summary": {
-    "type_a_count": 721,
-    "type_b_count": 1590,
-    "type_c_count": 161,
+    "type_a_count": 724,
+    "type_b_count": 1597,
+    "type_c_count": 163,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
