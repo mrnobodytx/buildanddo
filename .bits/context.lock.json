@@ -40,6 +40,27 @@
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
+      "statement": "scripts/ci/ocn_content_assessment.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_guild_dogfood.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_guild_forum.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
       "statement": "scripts/ci/ocn_mission_lifecycle.py is never executed by GitHub Actions"
     },
     {
@@ -220,6 +241,21 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/ocn_content_assessment.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_guild_dogfood.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_guild_forum.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "path": "scripts/ci/ocn_mission_lifecycle.py",
       "referenced_by": [],
       "wired_into_ci": false
@@ -274,6 +310,14 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/submission_readiness.py",
+      "referenced_by": [
+        "tests/upgrade/check_sprint_execution.py",
+        "tests/upgrade/test_submission_readiness.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
       "path": "scripts/ci/supply_chain.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
@@ -311,7 +355,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-20T23:21:09.568128+00:00",
+  "generated_at": "2026-09-21T03:48:21.871895+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -338,6 +382,13 @@
         "spec": "",
         "status": "delivered",
         "title": "Machine-facing governance bootstrap"
+      },
+      {
+        "code": "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+        "status": "in_progress",
+        "title": "CNWB Capability Token Protocol v1"
       },
       {
         "code": "SRS-BUILDANDDO-CHANGELOG-001",
@@ -680,13 +731,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 42,
-    "python_files": 251,
+    "migrations": 46,
+    "python_files": 300,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1138,
-    "web_source_files": 316
+    "tracked_files": 1257,
+    "web_source_files": 333
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -759,22 +810,22 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "9e3a0c5a6d999aefd031ee939782d78709ad2c5ee8532ac7ee29fbb55b205a24",
+    "source_sha256": "80a74d1cddd83b8a9738a0b5c00982cc08bd3709d9af9b5d526918883f35a9dd",
     "state": "PASS"
   },
   "summary": {
-    "findings": 19,
-    "findings_high": 19,
+    "findings": 22,
+    "findings_high": 22,
     "pipelines": 7,
-    "srs_open": 25,
-    "srs_total": 29,
-    "unwired_gates": 17
+    "srs_open": 27,
+    "srs_total": 31,
+    "unwired_gates": 20
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 60,
+    "js_test_files": 64,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
