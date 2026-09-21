@@ -130,7 +130,10 @@ describe('SignalsPage', () => {
         expect(dialog.getByLabelText('Description')).toBeInTheDocument();
         expect(dialog.getByLabelText('Source')).toBeInTheDocument();
         expect(dialog.getByLabelText(/Confidence/)).toBeInTheDocument();
-        expect(dialog.getByRole('combobox')).toBeInTheDocument();
+        // The record dialog carries two selects, Type and Severity, so an unnamed
+        // combobox query is ambiguous. Assert both by name.
+        expect(dialog.getByRole('combobox', { name: 'Type' })).toBeInTheDocument();
+        expect(dialog.getByRole('combobox', { name: 'Severity' })).toBeInTheDocument();
     });
 
     it('refuses to save a signal without a title', async () => {
@@ -165,6 +168,8 @@ describe('SignalsPage', () => {
                 description: 'Four missed visits.',
                 source: 'Appointment calendar',
                 type: 'fact',
+                severity: 'medium',
+                state: 'new',
                 confidence: 72,
                 workspace: 'ws_test',
                 owner: 'user_test',
