@@ -21,6 +21,7 @@ import { Button, Card } from '@/components/site/ui';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { controlInput, dateLabel } from '@/components/workspace/ControlPrimitives';
 import { KnowledgeContextResults } from '@/components/workspace/KnowledgeContext';
+import PersonalAssistantKnowledge from '@/components/workspace/PersonalAssistantKnowledge';
 import { useWorkspaceKnowledge } from '@/hooks/useWorkspaceKnowledge';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { useAuth } from '@/contexts/AuthContext';
@@ -28,7 +29,7 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { KNOWLEDGE_KINDS, knowledgeNeighborhood, knowledgeSourceHref } from '@/lib/workspaceKnowledge';
 
-const relationLabels = { EVIDENCE_FOR: 'Evidence for', RESEARCH_FOR: 'Research for', DERIVED_FROM: 'Derived from', CATEGORIZED_AS: 'Categorized as', TAGGED_WITH: 'Tagged with' };
+const relationLabels = { OBSERVED_IN: 'Observed in personal session', EVIDENCE_FOR: 'Evidence for', RESEARCH_FOR: 'Research for', DERIVED_FROM: 'Derived from', CATEGORIZED_AS: 'Categorized as', TAGGED_WITH: 'Tagged with' };
 const sourceLabels = { missions: 'Missions', evidence: 'Evidence', research_submissions: 'Completed research', signals: 'Signals', wiki_pages: 'Published wiki' };
 
 function GraphNeighborhood({ graph, selected, onSelect }) {
@@ -148,6 +149,7 @@ function KnowledgeDesk({ mission, onMission }) {
                 {!control.data.complete && <Card className="space-y-2 p-4"><p role="status" className="text-sm">Some knowledge sources are unavailable or capped. Review source coverage before relying on this context.</p></Card>}
             </>}
         <GraphBrowser graph={control.data} />
+        <PersonalAssistantKnowledge renderGraph={(graph) => <GraphBrowser graph={graph} />} />
         {control.data && <Card className="space-y-3 p-5"><h2 className="font-display text-lg">Source coverage</h2>
                     <p className="text-xs text-muted-foreground">Rebuilt {dateLabel(control.data.assembled_at)}. Published wiki pages and readable completed research join your missions, evidence and signals.</p>
                     <ul className="space-y-1 text-sm">{control.data.coverage.map((item) => <li key={item.collection}>{sourceLabels[item.collection]}: {item.state} · {item.included} records</li>)}</ul>

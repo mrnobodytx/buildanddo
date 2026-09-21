@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://buildanddo.tech/schemas/foundry/opportunity-v1.json",
+  "$id": "https://buildanddo.com/schemas/foundry/opportunity-v1.json",
   "title": "Citadel Federal R&D Foundry Opportunity",
   "type": "object",
   "additionalProperties": false,

@@ -233,15 +233,17 @@ test('custom reply relations, types and indexes block schema replay before the p
 
 test('routes bind users auth, per-callback module loading, no-store responses and all native write operations', () => {
     const routes = []; const hooks = []; const calls = [];
-    const globals = { __hooks: '/hooks', $apis: { requireAuth: (name) => { assert.equal(name, 'users'); return 'users-auth'; } },
+    const globals = { __hooks: '/hooks', $apis: { requireAuth: (name) => { assert.equal(name, 'users'); return 'users-auth'; }, bodyLimit: (bytes) => ({ bytes }) },
         routerAdd: (...args) => routes.push(args), require: (name) => new Proxy({}, { get: (_, action) => (e, operation) => {
             assert.ok(name.startsWith('/hooks/')); calls.push({ name, action, operation }); return 'ok'; } }) };
     for (const verb of ['Create', 'Update', 'Delete']) globals[`onRecord${verb}Request`] = (callback, ...names) => hooks.push({ callback, names, verb });
     vm.runInNewContext(source('apps/pocketbase/pb_hooks/administration.pb.js'), globals,
         { filename: new URL('../../apps/pocketbase/pb_hooks/administration.pb.js', import.meta.url).pathname });
-    assert.equal(routes.length, 8);
-    for (const [method, path, callback, auth] of routes) {
-        assert.equal(auth, 'users-auth'); assert.ok(['GET', 'POST'].includes(method)); assert.match(path, /\{workspace\}/);
+    assert.equal(routes.length, 9);
+    for (const [method, path, callback, auth, bodyLimit] of routes) {
+        assert.equal(auth, 'users-auth'); assert.ok(['GET', 'POST'].includes(method));
+        if (path === '/api/buildanddo/onboarding') { assert.equal(method, 'POST'); assert.equal(bodyLimit.bytes, 2000); }
+        else assert.match(path, /\{workspace\}/);
         let noStore = false;
         callback({ response: { header: () => ({ set: (k, v) => { assert.equal(k, 'Cache-Control'); assert.equal(v, 'no-store'); noStore = true; } }) },
             json: (status, data) => { assert.equal(status, 200); assert.equal(data, 'ok'); } }); assert.ok(noStore);

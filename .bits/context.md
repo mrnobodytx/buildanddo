@@ -4,16 +4,17 @@
 # SRS:         SRS-BUILDANDDO-AGENTCTX-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
 # Depends:     AGENTS.md, .bits/srs_registry.yml, scripts/ci/agent_context.py
 # EnumType:    ConfigDoc
-# EnumEdges:   GATES bits/SRS-* branches; VALIDATES .bits/srs_registry.yml
+# EnumEdges:   GATES bits/SRS-* branches; VALIDATES .bits/srs_registry.yml; CONSUMES .bits/hostinger-readiness.json
 # Intent:      The durable brief an agent reads first; measured facts live in the lock beside it.
 # ───────────────────────────────────────────────────────────────
 
-# Agent context — buildanddo.tech
+# Agent context — buildanddo.com
 
 This file is the **durable** half of agent context: intent, invariants and
 priorities that change rarely. The **measured** half is `.bits/context.lock.json`,
@@ -73,19 +74,42 @@ These are not style preferences. Each one exists because it broke something.
 
 ## Current plan
 
-Ordered by how much unmeasured risk each removes, not by effort. Full specs in
-`.bits/srs/`; statuses in `.bits/srs_registry.yml`.
+The owner prioritizes the 21-day Hostinger demo under the existing upgrade
+SRS/dispatch. Run `python scripts/ci/hostinger_readiness.py --check` and
+`python scripts/ci/submission_readiness.py --check` before
+choosing work and before handoff. Read `docs/hostinger-sprint-closure.md` and
+`.bits/hostinger-readiness.json`: every canonical milestone has rationale,
+dependencies, required evidence, an owner and a next step. Follow those
+dependencies and recheck them against changed source. Review, update and refresh
+the source binding before final validation; never refresh as a substitute for
+acceptance. The contract does not assert a percentage or rewrite sprint state.
 
-1. **SRS-BUILDANDDO-TEST-001** — a web test runner emitting JUnit. CI already
-   uploads test results; nothing produces any. Highest ratio of safety gained to
-   work done, and it lights up a telemetry path that is currently dark.
-2. **SRS-BUILDANDDO-EVIDENCE-CI-001** — run the Praxis evidence suite on the
-   public plane. Fourteen suites exist, CONTRIBUTING tells people to run them,
-   and public CI never does.
-3. **SRS-BUILDANDDO-RELEASE-TAG-001** — one version identifier across RUM, CI
-   and DORA, so "did this deploy hurt users" becomes answerable.
-4. **SRS-BUILDANDDO-SUPPLY-001** — vulnerability, license and lockfile-integrity
-   telemetry for a 630-package dependency tree nobody currently watches.
+1. Restore the ability to execute acceptance. GitHub check annotations observed
+   on September 20 report an account billing lock; that needs the account owner.
+   Then run the locked web toolchain and both declared disposable PocketBase
+   profiles, retaining actual failure and skip counts. Vitest/JUnit, release
+   tags and supply telemetry now exist; older proposed specs are not a current
+   inventory of missing implementations.
+2. Complete one connected small-business journey: saved signal, bounded mission,
+   explicit approval, action, a different verifier, evidence and operator readback.
+   The workflow desk now separates recorded procedures from frozen executable
+   ERP, Firecrawl and registered n8n steps. The worker retains uncertain effects
+   for reconciliation. Provider activation and current NXC context retain their
+   receiving dispatch and scope. The assistant proposes visible form interactions
+   under native permissions and keeps each user's session patterns personal.
+3. Capture release/provider readback, reconcile it with the semantic twin and
+   obtain owner review of the milestone evidence. A passing source test, prepared
+   packet or synthetic replay cannot establish live deployment or competition
+   readiness. Official competition rules and the submission deadline still need
+   a cited owner confirmation.
+
+`docs/submission-guide.md`, `docs/business-execution.md` and
+`docs/workspace-assistant.md` explain the implemented paths, personal-data
+boundaries, runtime bindings, acceptance commands and remaining owner decisions.
+
+The live Praxis suite and fleet/deployment tools retain their separately scoped
+runtime requirements. Do not silently run them against a shared backend or hide
+unwired-gate findings to make a progress indicator green.
 
 Findings that are not yet specs appear in the briefing with their evidence.
 Promote one to a spec rather than fixing it inline in an unrelated PR.

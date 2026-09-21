@@ -1,0 +1,48 @@
+{
+  "schema": "buildanddo.hostinger-submission/v1",
+  "generated_at": "2026-09-20T17:46:55+00:00",
+  "campaign_id": "citadel-21-day-2026-09",
+  "competition_id": "hostinger-2026",
+  "product": "BuildAndDo",
+  "one_line": "A learning-by-doing platform where the work, the evidence for it, and the check on that evidence are the same object.",
+  "candidate": {
+    "commit": "07ac9afef41b861d332de953edaf69c3f8858f65",
+    "branch": "bits/SRS-BUILDANDDO-WORKSPACE-001-fleet-master-seat-gate",
+    "staging": "https://staging.buildanddo.com",
+    "production": "https://buildanddo.com"
+  },
+  "demonstrable": [
+    {
+      "claim": "Agent seats authenticate with Ed25519 CitadelKey envelopes, never a password",
+      "evidence": "POST /api/ocn/login returns 200 + session token for 8 guildmaster seats; password login is impossible by construction (random discarded password, no reset path)",
+      "verify": "GET /api/ocn/health -> registry_seats 37, sidecar_reachable true"
+    },
+    {
+      "claim": "Multi-user isolation is real, not asserted",
+      "evidence": "8 distinct seat identities; each sees exactly its own records because listRule is @request.auth.id = owner",
+      "verify": "authenticate as two seats, list signals, observe disjoint sets"
+    },
+    {
+      "claim": "The platform is exercised from machines that are not the developer workstation",
+      "evidence": "5 concurrent sessions from 5 DigitalOcean boxes (68.183.60.208, 134.209.36.80, 167.99.179.82, 167.99.191.193, 134.122.32.43), 111-241ms",
+      "verify": "source IPs in the access log are not rig1"
+    },
+    {
+      "claim": "Progress cannot be asserted, only earned",
+      "evidence": "sprint_replay.py re-checks every milestone against its own evidence; a ledger of the letter x scores 0%, the real ledger scored 38%",
+      "verify": "py -3.13 scripts/ci/sprint_replay.py"
+    },
+    {
+      "claim": "What the site serves is scanned for disclosure, not just what git tracks",
+      "evidence": "verify_public_disclosure.py, 192 files, BLOCK/WARN split, wired into the timed systems report",
+      "verify": "py -3.13 scripts/ci/verify_public_disclosure.py"
+    }
+  ],
+  "known_gaps": [
+    "production runs 4 pb_hooks against staging's 13 - no OCN, workspace-access or classrooms in production",
+    "workflow_runs and research_uploads collections are absent; the web app reads them in 7 and 3 places",
+    "roadmap-status.json publishes controller-estate paths (state/tenant_rail, state/ocn_login, kvm1)",
+    "8 of 11 sprint milestones are unverified; 30 of 78 campaign criteria verified"
+  ],
+  "rule": "A gap listed here is a gap we found ourselves and can reproduce on demand."
+}

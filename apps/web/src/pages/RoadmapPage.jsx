@@ -4,7 +4,8 @@
 // SRS:         SRS-BUILDANDDO-ROADMAP-001
 // CAPS:        pending
 // CK:          pending
-// Seat:        BITS-CODEGEN
+// Seat:        BITS-CODEGEN, C-ONE (live sources panel, interaction layer,
+//              2026-09-11 sprint-day-3 replay of what actually landed)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     scripts/ci/sprint_cycle.py,
@@ -19,7 +20,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { Gauge, ArrowRight, Info, TrendingUp, GitCommit } from 'lucide-react';
+import { Gauge, ArrowRight, Info, TrendingUp, GitCommit, Activity } from 'lucide-react';
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import Seo from '@/components/Seo';
@@ -52,28 +53,57 @@ const SPRINT_DAYS = 21;
 
 const STALE_AFTER_MS = 48 * 60 * 60 * 1000;
 
-const PLANNED_MILESTONES = [
+// Activity rows are live reads made at build time; past their own stale_after_seconds they are labelled STALE, never hidden.
+function relativeTime(iso) {
+    const t = iso ? new Date(iso).getTime() : NaN;
+    if (!Number.isFinite(t)) return 'Unknown';
+    const mins = Math.round((Date.now() - t) / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins} min ago`;
+    const hours = Math.round(mins / 60);
+    if (hours < 48) return `${hours} h ago`;
+    return `${Math.round(hours / 24)} d ago`;
+}
+
+const HIGHLIGHT_MS = 2500;
+
+export const PLANNED_MILESTONES = [
     {
         day: 1, title: 'Sprint kickoff — foundations', status: 'planned', value: 5,
         description: 'Repo, self-hosted deploy target, and the staging→production pipeline itself. '
-            + 'Nothing downstream works without a real, provable way to ship a change.',
+            + 'Nothing downstream works without a real, provable way to ship a change. '
+            + 'What landed: staging and production on one self-hosted KVM behind nginx, and ship.py running '
+            + 'build → gate → staging sync → staging probe → promote, writing a release manifest the staging '
+            + 'readback gate checks (commit d2d5f83). The rail keeps its receipts in the controller estate, '
+            + 'outside this repository.',
         deliverables: ['Self-hosted domain + TLS (no third-party site builder)', 'Staging environment, separate from production',
-            'Automated build → gate → staging-probe → promote pipeline', 'Public GitHub repo + private release mirror'],
+            'Automated build → gate → staging-probe → promote pipeline, with a release manifest per build (ship.py)',
+            'Public GitHub repo + private release mirror'],
     },
     {
         day: 3, title: 'Auth & onboarding hardening', status: 'planned', value: 12,
-        description: 'A user can sign up, log in, and create a workspace without the flow silently failing. '
-            + 'Includes the real backend (not a mock) the rest of the product is built on.',
-        deliverables: ['Real backend auth (PocketBase)', 'Workspace creation flow, reproduced end-to-end and fixed when broken',
-            'Team roles per workspace (owner/admin/editor/viewer), not just single-owner'],
+        description: 'A person — or a Citadel Nexus seat — can sign in and reach a workspace without the flow '
+            + 'silently failing, on the real backend (not a mock) the rest of the platform is built on. '
+            + 'What landed: PocketBase auth, and seat sign-in over OCN — a CitadelKey Ed25519 envelope posted to '
+            + '/api/ocn/login, verified by the rooms sidecar on loopback, never a shared password '
+            + '(pb_hooks/ocn-login.pb.js, apps/web/src/lib/ocnLogin.js, docs/architecture/BUILDANDDO_OCN_LOGIN.md). '
+            + 'Measured on staging 2026-09-11: seat c-one signed in and could read 23 of 24 collections. '
+            + 'Not yet measured: a workspace created end-to-end through onboarding — the staging audit shows zero workspaces.',
+        deliverables: ['Real backend auth (PocketBase)', 'Seat sign-in over OCN with a CitadelKey, so guilds and agents log in the same way people do',
+            'Team roles per workspace (owner/admin/editor/viewer) as a migration; multi-user behaviour still to be measured',
+            'Workspace creation through onboarding, end-to-end — open'],
     },
     {
         day: 5, title: 'Workspace collections live', status: 'planned', value: 20,
         description: 'The actual data model behind every workspace panel — evidence, missions, signals, '
-            + 'workflows, roadmap items — backed by a real database with real access rules, not placeholders.',
-        deliverables: ['Backend deployed for real (was unused scaffolding until this sprint)',
-            'Role-aware access rules verified with real multi-user accounts, not assumed',
-            'Public/private boundary scan wired into CI so nothing internal leaks by accident'],
+            + 'workflows, roadmap items — backed by a real database with real access rules, not placeholders. '
+            + 'What landed: 35 migrations reconciled against the production disk and made safe for a fresh install '
+            + '(docs/architecture/POCKETBASE_MIGRATION_DRIFT_2026-09-11.md, apps/pocketbase/tools/check_migration_order.mjs, '
+            + 'commit 2510ac6), and a staging backend proxied on its own path and isolated from production data.',
+        deliverables: ['Backend deployed for real, on staging and production, from the same migration set',
+            'Migration order checked by a tool, not by hoping production applied them first',
+            'Public/private boundary scan wired into CI (scripts/ci/verify_public_boundary.py)',
+            'Role-aware access rules verified with real multi-user accounts — open'],
     },
     {
         day: 7, title: 'Signals pipeline MVP', status: 'planned', value: 30,
@@ -96,21 +126,28 @@ const PLANNED_MILESTONES = [
         description: 'Letting a user compose a repeatable automation from the same building blocks the '
             + 'platform itself uses, instead of a one-off script per business.',
         deliverables: ['Workflow records with a real owner/workspace scope', 'A visual builder for the common cases',
-            'Connectors reusing the same evidence/audit model as everything else, not a parallel system'],
+            'Steps that reuse the same evidence/audit model as everything else, so a learner’s workflow is verified the same way the platform’s own is'],
     },
     {
-        day: 13, title: 'Service connectors (Firecrawl, n8n)', status: 'planned', value: 60,
-        description: 'Real external integrations for research and automation — website/content extraction and '
-            + 'workflow orchestration — each with a stated data boundary, not blanket credential access.',
-        deliverables: ['Firecrawl for controlled web research', 'Self-hosted n8n for orchestration',
-            'Bounded adapter authority per connector, not a generic admin key'],
+        day: 13, title: 'Living Rooms and public-record bridges', status: 'planned', value: 60,
+        description: 'Where people and Citadel Nexus guilds actually work together: Living Rooms that project '
+            + 'live guild activity into a workspace, and bridges that carry the verified record out to the public '
+            + 'surfaces (wiki, forum, Discord, Reddit) — each with a stated data boundary, not blanket credential access. '
+            + 'What landed (2026-09-18): the rooms overlay — RoomCanvas, UtilizationPanel and useRoomProjection on '
+            + 'app/rooms, app/rooms/systems and app/rooms/live — reading projections published to the staging webroot '
+            + '(systems.json measured live), with a Rooms-live pill in the header. The outward bridges (wiki, forum, '
+            + 'Discord, Reddit) are still open.',
+        deliverables: ['Living Rooms reading live projections on staging (route mounted and probed, not just present in the repo)',
+            'Public-record bridges: wiki, forum, Discord, Reddit — one canonical event, projected outward',
+            'Bounded authority per bridge, not a generic admin key'],
     },
     {
-        day: 15, title: 'ERP foundation', status: 'planned', value: 70,
-        description: 'The unglamorous backbone — contacts, objectives, tasks — that every other workspace '
-            + 'feature (missions, signals, evidence) actually needs to point at something real.',
-        deliverables: ['Contacts/objectives/tasks with the same RBAC model as the rest of the workspace',
-            'Cross-links from missions/signals into ERP records, not a disconnected module'],
+        day: 15, title: 'Objectives, tasks and guild contacts', status: 'planned', value: 70,
+        description: 'The unglamorous backbone of learning by doing — the objective a learner picks, the bounded tasks '
+            + 'it breaks into, and the guild members and agents working it — so missions, signals and evidence '
+            + 'point at something real rather than a disconnected module.',
+        deliverables: ['Objectives, tasks and guild contacts with the same RBAC model as the rest of the workspace',
+            'Cross-links from missions and signals into those records, so a receipt always names the objective it served'],
     },
     {
         day: 17, title: 'Evidence ledger & verification', status: 'planned', value: 80,
@@ -123,14 +160,20 @@ const PLANNED_MILESTONES = [
     {
         day: 19, title: 'Daily edition & specialist desks', status: 'planned', value: 88,
         description: 'Surfacing what actually happened — real commits, real deploys, real verified claims — '
-            + 'as a readable daily record, not a marketing summary.',
+            + 'as a readable daily record, not a marketing summary. What landed (PR #40, 2c49f00, on staging '
+            + '2026-09-18): the daily edition front page with its specialist desks (research, classroom, mission, '
+            + 'knowledge, evidence, practice) and a read-first operator cockpit. Production promotion and the '
+            + 'wiki/Discord projection of the release event are still open.',
         deliverables: ['A canonical release event compiled once, projected consistently to wiki/Discord/community channels',
             'Self-hosted wiki as the durable public record', 'Specialist desk views scoped by role, not one firehose'],
     },
     {
         day: 21, title: 'Sprint review — verified replay', status: 'planned', value: 100,
         description: 'Every milestone above gets replayed against its own stated evidence bar, in public — '
-            + 'not summarized as "done," but shown with what was actually verified and what wasn’t.',
+            + 'not summarized as "done," but shown with what was actually verified and what wasn’t. '
+            + 'The first replay happened on sprint day 3 (2026-09-11): days 1, 3 and 5 recorded with evidence. '
+            + 'The second on 2026-09-18: days 13 and 19 recorded against staging readbacks; everything else left '
+            + 'as the plan it still is.',
         deliverables: ['Public test suite results, not just a green checkmark', 'An honest list of what remains open',
             'This roadmap updated to reflect what actually happened, not the original plan'],
     },
@@ -171,6 +214,154 @@ function mergeLiveStatus(live) {
             verifiedAt: entry.verified_at || null,
         };
     });
+}
+
+/**
+ * One milestone's replay verdict, from scripts/ci/sprint_replay.py.
+ *
+ * Day 21's contract, in the words this page already uses for it: every milestone is shown
+ * "with what was actually verified and what wasn't." So a rotted claim is printed with its
+ * reason rather than reduced to a colour, and UNCHECKED — evidence that names nothing any
+ * machine can re-check — is stated outright instead of being left to look like a pass.
+ *
+ * Renders nothing when there is no replay: a page that silently omits the verdict is
+ * honest, whereas one that defaults to HOLDS would be asserting the very thing the replay
+ * exists to stop asserting.
+ *
+ * @param {{entry?: object}} props The replay entry for this day, if any.
+ */
+export function ReplayVerdict({ entry }) {
+    if (!entry || entry.verdict === 'NOT_VERIFIED') return null;
+    const tone = {
+        HOLDS: 'text-success',
+        ROTTED: 'text-destructive',
+        UNCHECKED: 'text-muted-foreground',
+    }[entry.verdict] || 'text-muted-foreground';
+    const claims = entry.claims || {};
+    return (
+        <div className="font-evidence mt-1 pl-0 text-[11px] sm:pl-[calc(8.33%+0.75rem)]">
+            <span className={`uppercase tracking-[0.14em] ${tone}`}>Replay: {entry.verdict}</span>
+            <span className="text-muted-foreground">
+                {' '}· {claims.held ?? 0} held, {claims.rotted ?? 0} rotted,{' '}
+                {claims.external ?? 0} external, {claims.unmeasurable ?? 0} unmeasurable
+            </span>
+            {entry.verdict === 'UNCHECKED' && (
+                <span className="text-muted-foreground"> — evidence names nothing re-checkable</span>
+            )}
+            {(entry.rot || []).map((r) => (
+                <p key={`${r.kind}:${r.ref}`} className="text-destructive">
+                    {r.ref} — {r.reason}
+                </p>
+            ))}
+        </div>
+    );
+}
+
+/** How each capability state reads, and what it means for a person trying to use the thing. */
+const CAPABILITY_STATES = {
+    LIVE: { label: 'Ready to use', tone: 'text-success',
+        note: 'in the commit production is serving right now' },
+    STAGED: { label: 'Built, waiting to ship', tone: 'text-primary',
+        note: 'on staging; production has not been promoted to it yet' },
+    BUILT: { label: 'Built, not deployed', tone: 'text-muted-foreground',
+        note: 'in the repository, not yet on either environment' },
+    UNMEASURABLE: { label: 'Unknown', tone: 'text-muted-foreground',
+        note: 'the environments could not be asked which commit they serve' },
+    DECLARED: { label: 'Named only', tone: 'text-muted-foreground',
+        note: 'a route exists but there is no page behind it yet' },
+};
+
+const CAPABILITY_ORDER = ['LIVE', 'STAGED', 'BUILT', 'UNMEASURABLE', 'DECLARED'];
+
+/**
+ * What exists, what is tested, and what you can actually open today.
+ *
+ * The plan curve and the milestone ledger both answer "are we on schedule". Neither answers
+ * "what can I use", and a milestone reading "Signals pipeline MVP — verified" does not tell a
+ * reader whether Signals opens. This does, from scripts/ci/capability_inventory.py.
+ *
+ * READINESS IS NOT A ROUTE PROBE. Controlled against production 2026-09-20: `/app/missions` and
+ * `/__definitely-not-a-real-route-zzz` both return 200 text/html, because a single-page app
+ * answers 200 for everything. So readiness is the presence of each capability's source in the
+ * commit that environment reports serving — an exact question with an exact answer.
+ *
+ * Renders nothing without a measured report: a capability list that appears when nothing was
+ * measured would be the invented progress this page exists to refuse.
+ *
+ * @param {{report?: object}} props The inventory from capabilities.json.
+ */
+export function CapabilityInventory({ report }) {
+    const groups = useMemo(() => {
+        const rows = report?.capabilities || [];
+        return CAPABILITY_ORDER
+            .map((state) => ({ state, rows: rows.filter((r) => r.state === state) }))
+            .filter((g) => g.rows.length > 0);
+    }, [report]);
+
+    if (report?.state !== 'MEASURED' || groups.length === 0) return null;
+    const { counts = {}, deployed = {}, total, with_tests: withTests } = report;
+
+    return (
+        <Section className="border-t border-foreground/80 py-12 sm:py-16">
+            <SectionLabel icon={Activity}>What you can use</SectionLabel>
+            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                Built, verified, and actually reachable are three different things.
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                Every route this application exposes, measured against the commit each environment
+                reports serving. Not a plan — if it says Ready to use, the code is in the build
+                production is running.
+            </p>
+
+            <div className="font-evidence mt-4 flex flex-wrap gap-x-6 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                <span className="text-success">{counts.LIVE || 0} ready to use</span>
+                <span className="text-primary">{counts.STAGED || 0} waiting to ship</span>
+                <span>{withTests}/{total} have tests</span>
+                <span>production {deployed.production || 'unknown'}</span>
+                <span>staging {deployed.staging || 'unknown'}</span>
+            </div>
+
+            {(counts.STAGED || 0) > 0 && (
+                <p className="font-evidence mt-3 text-[11px] text-primary">
+                    {counts.STAGED} capabilities are built and on staging that production cannot
+                    reach. That gap closes on a promote, not on more building.
+                </p>
+            )}
+
+            <Card className="mt-6 divide-y divide-border">
+                {groups.map(({ state, rows }) => (
+                    <div key={state} className="p-4">
+                        <div className="font-evidence flex flex-wrap items-baseline gap-x-3 text-[11px] uppercase tracking-[0.14em]">
+                            <span className={CAPABILITY_STATES[state].tone}>
+                                {CAPABILITY_STATES[state].label}
+                            </span>
+                            <span className="text-muted-foreground">{rows.length}</span>
+                            <span className="normal-case tracking-normal text-muted-foreground">
+                                — {CAPABILITY_STATES[state].note}
+                            </span>
+                        </div>
+                        <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2">
+                            {rows.map((row) => (
+                                <li key={row.path} className="flex items-baseline justify-between gap-3">
+                                    <span className="text-sm">{row.label}</span>
+                                    <span className="font-evidence shrink-0 text-[11px] text-muted-foreground">
+                                        {row.path}
+                                        {row.tests > 0
+                                            ? ` · ${row.tests} test${row.tests > 1 ? 's' : ''}`
+                                            : ' · no tests'}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </Card>
+
+            <p className="font-evidence mt-4 text-[11px] text-muted-foreground">
+                {`${report.readiness_basis}.`}
+            </p>
+        </Section>
+    );
 }
 
 const CHART_W = 1040;
@@ -313,6 +504,9 @@ export default function RoadmapPage() {
     const [activeDay, setActiveDay] = useState(null);
     const [live, setLive] = useState(null);
     const [liveError, setLiveError] = useState(false);
+    const [activity, setActivity] = useState(null);
+    const [capabilities, setCapabilities] = useState(null);
+    const [activityError, setActivityError] = useState(false);
 
     const milestones = useMemo(() => mergeLiveStatus(live?.milestones), [live]);
     const verifiedCount = useMemo(
@@ -355,6 +549,41 @@ export default function RoadmapPage() {
             .catch(() => { if (!cancelled) setLiveError(true); });
         return () => { cancelled = true; };
     }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+        // A failed fetch leaves this null, and CapabilityInventory renders nothing rather than an
+        // empty list — "we could not measure" must not look like "there is nothing".
+        fetch('/capabilities.json', { cache: 'no-store' })
+            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
+            .then((data) => { if (!cancelled) setCapabilities(data); })
+            .catch(() => {});
+        return () => { cancelled = true; };
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+        fetch('/activity-status.json', { cache: 'no-store' })
+            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
+            .then((data) => { if (!cancelled) setActivity(data); })
+            .catch(() => { if (!cancelled) setActivityError(true); });
+        return () => { cancelled = true; };
+    }, []);
+
+    const activityStale = useMemo(() => {
+        const t = activity?.generated_at ? new Date(activity.generated_at).getTime() : NaN;
+        if (!Number.isFinite(t)) return false;
+        return Date.now() - t > (Number(activity?.stale_after_seconds) || 6 * 3600) * 1000;
+    }, [activity]);
+    const progression = live?.progression?.state === 'MEASURED' ? live.progression : null;
+
+    // Only a MEASURED replay populates this. An absent or failed one leaves the map empty,
+    // so every ReplayVerdict renders nothing - absence must not render as health.
+    const replay = live?.replay?.state === 'MEASURED' ? live.replay : null;
+    const replayByDay = useMemo(
+        () => new Map((replay?.milestones || []).map((m) => [m.day, m])),
+        [replay],
+    );
 
     const handleHover = (day) => {
         setActiveDay(day);
@@ -492,6 +721,9 @@ export default function RoadmapPage() {
                 </div>
             </Section>
 
+            {/* What you can actually use — measured, not planned */}
+            <CapabilityInventory report={capabilities} />
+
             {/* Milestone ledger */}
             <Section className="border-t border-foreground/80 py-12 sm:py-16">
                 <SectionLabel>Milestone ledger</SectionLabel>
@@ -522,6 +754,7 @@ export default function RoadmapPage() {
                                     {m.verifiedAt ? ` · verified ${m.verifiedAt}` : ''}
                                 </p>
                             )}
+                            <ReplayVerdict entry={replayByDay.get(m.day)} />
                             {m.description && (
                                 <p className="mt-2 pl-0 text-sm leading-relaxed text-muted-foreground sm:pl-[calc(8.33%+0.75rem)]">
                                     {m.description}
@@ -575,6 +808,101 @@ export default function RoadmapPage() {
                     ) : (
                         <div className="p-4 text-sm text-muted-foreground">
                             {liveError ? 'Unknown — live commit feed unavailable.' : 'Loading…'}
+                        </div>
+                    )}
+                </Card>
+            </Section>
+
+            {/* Activity in the sinks and connected resources - live reads at build time, never inferred */}
+            <Section className="border-t border-foreground/80 py-12 sm:py-16">
+                <SectionLabel icon={Activity}>Activity · sinks and connected resources</SectionLabel>
+                <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                    What is moving, and what could not be read.
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                    One row per sink the work flows into and per resource it depends on. Each row is a live
+                    read taken when this page was built: MEASURED with its last activity and counts over 24 h
+                    and 7 d, or UNMEASURED with the reason. Absence is never shown as zero.
+                </p>
+                <div className="font-evidence mt-4 space-y-1 text-[11px] text-muted-foreground">
+                    <p>
+                        Ledger: {verifiedCount} of {milestones.length} milestones verified
+                        {measured && Number.isFinite(live?.actual_pct) ? ` · actual ${live.actual_pct}% (verified milestones only)` : ''}.
+                    </p>
+                    {progression ? (
+                        <p>
+                            Estate progression ({progression.owner || 'owner unknown'}):{' '}
+                            {progression.verified_to_date_percent ?? 'Unknown'}% of criteria verified to date · plan{' '}
+                            {progression.schedule_elapsed_percent ?? 'Unknown'}% elapsed · pace {progression.pace_state || 'Unknown'}
+                            {progression.generated_at ? ` · generated ${progression.generated_at}` : ''}. Two progressions, never averaged.
+                        </p>
+                    ) : (
+                        <p>Estate progression: Unknown — {live?.progression?.reason || 'not carried by this projection'}.</p>
+                    )}
+                    {replay ? (
+                        <p>
+                            Replay (day 21, {replay.context?.shallow_clone ? 'shallow clone' : 'full history'}
+                            {replay.context?.endpoints_probed ? ', endpoints probed' : ', endpoints not probed'}):
+                            the ledger claims {replay.claimed_pct}% and {replay.replayed_pct}% survives re-checking
+                            {replay.overstatement_pct > 0
+                                ? ` — ${replay.overstatement_pct}% is claimed but not shown.`
+                                : ' — every verified milestone still holds.'}{' '}
+                            {replay.counts?.HOLDS ?? 0} hold, {replay.counts?.ROTTED ?? 0} rotted,{' '}
+                            {replay.counts?.UNCHECKED ?? 0} unchecked. A replay may only ever subtract.
+                        </p>
+                    ) : (
+                        <p>Replay: Unknown — {live?.replay?.reason || 'not carried by this projection'}.</p>
+                    )}
+                    {activity?.generated_at && (
+                        <p>
+                            Activity measured {relativeTime(activity.generated_at)} ({activity.generated_at})
+                            {activityStale ? ' · STALE past its own window' : ''}
+                            {activity.summary ? ` · ${activity.summary.measured} measured, ${activity.summary.unmeasured} unmeasured, ${activity.summary.active_24h} active in 24 h` : ''}.
+                        </p>
+                    )}
+                </div>
+                <Card className="mt-6 divide-y divide-border">
+                    {activity?.entries?.length ? (
+                        activity.entries.map((e) => (
+                            <div key={e.id} className="grid grid-cols-12 items-center gap-3 p-4 text-sm">
+                                <div className="col-span-12 sm:col-span-4">
+                                    <span className="font-medium">{e.id}</span>
+                                    <span className="font-evidence ml-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                                        {e.kind} · {e.provider}
+                                    </span>
+                                </div>
+                                <div className="font-evidence col-span-4 text-[11px] text-muted-foreground sm:col-span-2">
+                                    {e.state === 'MEASURED' ? relativeTime(e.last_activity_at) : 'Unknown'}
+                                </div>
+                                <div className="font-evidence col-span-4 text-[11px] text-muted-foreground sm:col-span-3">
+                                    {e.count_24h ?? '—'} / 24 h · {e.count_7d ?? '—'} / 7 d
+                                </div>
+                                <div className="col-span-4 flex items-center justify-end gap-3 sm:col-span-3">
+                                    {e.evidence && (
+                                        <a
+                                            href={e.evidence}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            onClick={() => trackEvent('roadmap_activity_evidence_click', { id: e.id })}
+                                            className="font-evidence text-[11px] text-primary"
+                                        >
+                                            evidence
+                                        </a>
+                                    )}
+                                    <span className={`font-evidence text-[10px] uppercase tracking-[0.14em] ${e.state === 'MEASURED' ? 'text-success' : 'text-muted-foreground'}`}>
+                                        {e.state}
+                                    </span>
+                                </div>
+                                {(e.reason || e.note) && (
+                                    <p className="font-evidence col-span-12 text-[11px] text-muted-foreground">
+                                        {e.reason ? `Unmeasured — ${e.reason}` : e.note}
+                                    </p>
+                                )}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="p-4 text-sm text-muted-foreground">
+                            {activityError ? 'Unknown — activity projection unavailable.' : 'Loading…'}
                         </div>
                     )}
                 </Card>

@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-DEVELOPMENT-LOOP-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-DEVELOPMENT-LOOP-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-21
+# Depends:     .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json, .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py
+# EnumType:    ConfigDoc
+# EnumEdges:   CONSUMES .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json; CONSUMES .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py
+# Intent:      Retain the actual provider observation, frozen prediction, measured test result and unqualified registry route.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: 1
+artifact: .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json
+evidence_scope: local source and actual captured development observations
+runtime_acceptance: HOLD

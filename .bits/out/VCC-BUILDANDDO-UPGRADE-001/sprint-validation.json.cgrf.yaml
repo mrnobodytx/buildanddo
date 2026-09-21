@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:         .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json.cgrf.yaml
+# Stage:        11_COMMIT
+# SRS:          SRS-BUILDANDDO-UPGRADE-001
+# CAPS:         pending
+# CK:           pending
+# Dispatch:     VCC-BUILDANDDO-UPGRADE-001
+# Seat:         BITS-CODEGEN
+# Owner:        Citadel Nexus Inc.
+# Created:      2026-09-21
+# Depends:      .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json, tests/upgrade/check_sprint_execution.py, tests/upgrade/assistant-browser.mjs
+# EnumType:     Schema
+# EnumEdges:    DEPENDS_ON .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json; DEPENDS_ON tests/upgrade/check_sprint_execution.py; DEPENDS_ON tests/upgrade/assistant-browser.mjs
+# DAG Node:     none
+# Intent:       Retain exact source acceptance receipts and logs, the real browser regression and unexecuted runtime limits for this continuation.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: 1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-validation.json

@@ -1,0 +1,545 @@
+{
+  "schema_version": "citadel.evolution.validation/v1",
+  "status": "COMPLETE_SOURCE",
+  "dispatch_id": "VCC-BUILDANDDO-EVOLUTION-001",
+  "srs_code": "SRS-BUILDANDDO-EVOLUTION-001",
+  "captured_at": "2026-09-21T02:26:12.743625+00:00",
+  "baseline_commit": "ae97c0f0b0aad952b00b56a1106bd8310ac607b3",
+  "source_files": {
+    ".bits/context.lock.json": "4f0d30bca6d63d0dab5103adbafe4974f95c7bcf9c36e583421ad164e0f90add",
+    ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-evolution-runtime.md": "a06d074ad6628eb14291923c798cfe1cabc99d104837c65e4a6ec9d95176aeee",
+    ".bits/hostinger-readiness.lock.json": "5f41b611a829dde083e3667a22bb6c2c62ac3d263d9b7abcd2ae30a252b5ec0c",
+    ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py": "a975d35cde575438bb48f03f72f62ee05c4040c4277433fa30c3787938be3619",
+    ".bits/queue/VCC-BUILDANDDO-EVOLUTION-001.md": "14d3c038df824e7d9b3a0da3f1dc91c854af37d93bba157d53bde67b05455249",
+    ".bits/srs/SRS-BUILDANDDO-EVOLUTION-001.md": "31372c1496755cfb75acdfbfceb08b858ea4f999e522959ea6e69cfa4a873847",
+    ".bits/srs_registry.yml": "cfb2e99365a77086ffa9bf2c24103f0302faa3327ddb85e52610f2019b4704a2",
+    "docs/verified-evolution.md": "20e2cc023b6088efecba65de63b07f9d52c23b4e28f478611dbaae3f0e3cee53",
+    "libs/evolution/__init__.py": "37f84db85de3c8b54398de47f62c025a567c43083c432c44824202df8f93eed0",
+    "libs/evolution/__main__.py": "95e6f7440dc90b8b2c2e1395380b49f55b1221366c409a2585ff94b7c6e990be",
+    "libs/evolution/adapters.py": "17178d80b5a77a404f7bbd2f9cccd126cdc0d9c2c7be0bec8c96cea4a33916c2",
+    "libs/evolution/benchmark.py": "26c20d79658c7b0343e3b83567fcfc2ae9e7077ced72d906e71fb150a5593305",
+    "libs/evolution/candidate.py": "9d436c88334e306a7a87e5051be96dec8779837f1978e711f3f1a896510826b0",
+    "libs/evolution/cli.py": "abc6c1a41aed4aa4776e6a4c338c2dd540abc9ab68d572de5617e6a3e0a6492c",
+    "libs/evolution/common.py": "87f33c118f4953a21b7df0df0d57dfc319cc5a89173b96315911adc44ee07cea",
+    "libs/evolution/compiler.py": "9bada6c53f59b5d620c38af49243c157c6a8b974b5c92ebd59826325273971c9",
+    "libs/evolution/episode.py": "3f83e33f8db81a8d3f77e9cb6a0e19c760eb602034e61f9470d5254dac7f71d5",
+    "libs/evolution/event.py": "6c163aaac1fb8c09ac67463f0056936566e1afdc55fc22a79efb7ea5f56c01b8",
+    "libs/evolution/loop.py": "aa2d16e83597985b824711f7ca1b74bd9a65e80d7da91413735b7fea2ec90d40",
+    "libs/evolution/promotion.py": "82acb8d874a68b22aaa157843ac3f571008e900e6058239a11d8704d21a8f26a",
+    "libs/evolution/registry.py": "3b492ef8d995aa659b947b86e75fc3fe2953ae1de8645b6b71a0965e25c7f243",
+    "libs/evolution/replay.py": "29cdb51fb4f24e1022db29b51ec3ec9285e0cbe6dd67adce3806546bb5deee18",
+    "libs/evolution/scorer.py": "f96623b467e2d7ef220bd678fb473a9db26e594368069b5576a10c558f8aebdf",
+    "libs/evolution/store.py": "4bc826c3af9208bb5bb3032836ec6794c374ea35acbf41ed10243f8bf721b1e8",
+    "scripts/citadel-evolve": "767edf22d0f46357e7021d7a8111393dcbe9be2d726887a754fe88402a0d2e46",
+    "tests/upgrade/test_evolution_cli.py": "fee3ec751410168004e96ab6dae857e0b8f2dd5a85c2513b2f674ad8675c1ed9",
+    "tests/upgrade/test_evolution_events.py": "770b0463d444a0b1705a3b8eaf26f96338a3e591e3db40a1179b2aa8c4fa3503",
+    "tests/upgrade/test_evolution_learning.py": "ff72d6af69467af71a7eb2feda1384f012ed7395a18a4ab0d3b88bb0ebd15bbe",
+    "tests/upgrade/test_evolution_support.py": "0b3a35f4b10df86948ed0317d6826dff0cf30ca98fc26640e44877f08bea7de9"
+  },
+  "checks": [
+    {
+      "name": "tests",
+      "command": "python -m unittest discover -s tests/upgrade -p 'test_evolution*.py' -v",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "test_benchmark_cli_retains_full_report_and_refuses_overwrite (test_evolution_cli.CliTests.test_benchmark_cli_retains_full_report_and_refuses_overwrite) ... ok\ntest_both_executable_entrypoints_expose_the_same_commands (test_evolution_cli.CliTests.test_both_executable_entrypoints_expose_the_same_commands) ... ok\ntest_git_observation_uses_phase1_history_and_enforces_limit (test_evolution_cli.CliTests.test_git_observation_uses_phase1_history_and_enforces_limit) ... ok\ntest_human_status_and_phase1_capture_adapter (test_evolution_cli.CliTests.test_human_status_and_phase1_capture_adapter) ... ok\ntest_persistent_observe_learn_replay_shadow_promote_use_observe_loop (test_evolution_cli.CliTests.test_persistent_observe_learn_replay_shadow_promote_use_observe_loop) ... ok\ntest_unconfigured_use_is_explicit_and_wrong_scope_fails (test_evolution_cli.CliTests.test_unconfigured_use_is_explicit_and_wrong_scope_fails) ... ok\ntest_epoch_delta_requires_same_corpus_and_real_denominators (test_evolution_cli.HistoricalBenchmarkTests.test_epoch_delta_requires_same_corpus_and_real_denominators) ... ok\ntest_final_verified_result_must_name_the_commit_being_graded (test_evolution_cli.HistoricalBenchmarkTests.test_final_verified_result_must_name_the_commit_being_graded) ... ok\ntest_merge_changes_use_first_parent_metadata_without_rename_reads (test_evolution_cli.HistoricalBenchmarkTests.test_merge_changes_use_first_parent_metadata_without_rename_reads) ... ok\ntest_missing_local_blobs_remain_gaps_without_fetching (test_evolution_cli.HistoricalBenchmarkTests.test_missing_local_blobs_remain_gaps_without_fetching) ... ok\ntest_multiple_outcomes_are_a_conflict_and_raw_pass_has_no_grade (test_evolution_cli.HistoricalBenchmarkTests.test_multiple_outcomes_are_a_conflict_and_raw_pass_has_no_grade) ... ok\ntest_parent_import_closure_without_fabricated_historical_truth (test_evolution_cli.HistoricalBenchmarkTests.test_parent_import_closure_without_fabricated_historical_truth) ... ok\ntest_scores_require_exact_source_bound_reviewed_labels (test_evolution_cli.HistoricalBenchmarkTests.test_scores_require_exact_source_bound_reviewed_labels) ... ok\ntest_unavailable_parent_is_not_scored_as_a_resolution_failure (test_evolution_cli.HistoricalBenchmarkTests.test_unavailable_parent_is_not_scored_as_a_resolution_failure) ... ok\ntest_database_tampering_and_bootstrap_escalation_fail_closed (test_evolution_cli.JournalTests.test_database_tampering_and_bootstrap_escalation_fail_closed) ... ok\ntest_epoch_counts_current_episode_versions_and_unknown_routing (test_evolution_cli.JournalTests.test_epoch_counts_current_episode_versions_and_unknown_routing) ... ok\ntest_event_retries_keep_first_ingestion_and_other_scopes_cannot_read (test_evolution_cli.JournalTests.test_event_retries_keep_first_ingestion_and_other_scopes_cannot_read) ... ok\ntest_new_candidate_version_restarts_but_retains_previous_evidence (test_evolution_cli.JournalTests.test_new_candidate_version_restarts_but_retains_previous_evidence) ... ok\ntest_registry_compare_and_swap_and_history_retention (test_evolution_cli.JournalTests.test_registry_compare_and_swap_and_history_retention) ... ok\ntest_schema_and_symlink_validation (test_evolution_cli.JournalTests.test_schema_and_symlink_validation) ... ok\ntest_capture_digest_binds_the_single_read_used_for_normalization (test_evolution_events.AdapterTests.test_capture_digest_binds_the_single_read_used_for_normalization) ... ok\ntest_event_import_rejects_foreign_scope (test_evolution_events.AdapterTests.test_event_import_rejects_foreign_scope) ... ok\ntest_memory_missing_time_or_revision_is_explicit (test_evolution_events.AdapterTests.test_memory_missing_time_or_revision_is_explicit) ... ok\ntest_mission_learning_does_not_mint_verification (test_evolution_events.AdapterTests.test_mission_learning_does_not_mint_verification) ... ok\ntest_telemetry_preserves_missing_metrics (test_evolution_events.AdapterTests.test_telemetry_preserves_missing_metrics) ... ok\ntest_counts_do_not_promote_competence (test_evolution_events.CandidateTests.test_counts_do_not_promote_competence) ... ok\ntest_episode_revisions_cannot_inflate_independent_observation_counts (test_evolution_events.CandidateTests.test_episode_revisions_cannot_inflate_independent_observation_counts) ... ok\ntest_future_success_and_insufficient_repeats_are_excluded (test_evolution_events.CandidateTests.test_future_success_and_insufficient_repeats_are_excluded) ... ok\ntest_unfinished_episodes_supply_observations_without_successful_repairs (test_evolution_events.CandidateTests.test_unfinished_episodes_supply_observations_without_successful_repairs) ... ok\ntest_failed_attempts_survive_success_and_round_trip (test_evolution_events.EpisodeTests.test_failed_attempts_survive_success_and_round_trip) ... ok\ntest_future_events_and_unbound_reviews_do_not_complete_episode (test_evolution_events.EpisodeTests.test_future_events_and_unbound_reviews_do_not_complete_episode) ... ok\ntest_provider_pass_is_only_complete (test_evolution_events.EpisodeTests.test_provider_pass_is_only_complete) ... ok\ntest_scope_authority_and_correlation_isolation (test_evolution_events.EpisodeTests.test_scope_authority_and_correlation_isolation) ... ok\ntest_self_review_and_conflicting_results_are_rejected (test_evolution_events.EpisodeTests.test_self_review_and_conflicting_results_are_rejected) ... ok\ntest_unlinked_attempts_and_after_action_hypotheses_remain_incomplete (test_evolution_events.EpisodeTests.test_unlinked_attempts_and_after_action_hypotheses_remain_incomplete) ... ok\ntest_every_capture_family_is_an_observation (test_evolution_events.EventTests.test_every_capture_family_is_an_observation) ... ok\ntest_round_trip_digest_and_idempotent_ingestion (test_evolution_events.EventTests.test_round_trip_digest_and_idempotent_ingestion) ... ok\ntest_strict_wire_input (test_evolution_events.EventTests.test_strict_wire_input) ... ok\ntest_timestamps_and_verified_assertions_fail_closed (test_evolution_events.EventTests.test_timestamps_and_verified_assertions_fail_closed) ... ok\ntest_ambiguous_missing_or_out_of_scope_matches_abstain (test_evolution_learning.CompilerTests.test_ambiguous_missing_or_out_of_scope_matches_abstain) ... ok\ntest_enters_existing_draft_transaction_without_policy_or_execution (test_evolution_learning.CompilerTests.test_enters_existing_draft_transaction_without_policy_or_execution) ... ok\ntest_future_graph_and_future_features_are_rejected (test_evolution_learning.CompilerTests.test_future_graph_and_future_features_are_rejected) ... ok\ntest_graph_rejects_relation_evidence_captured_after_decision (test_evolution_learning.CompilerTests.test_graph_rejects_relation_evidence_captured_after_decision) ... ok\ntest_graph_rule_resolution_and_reverse_tests_are_deterministic (test_evolution_learning.CompilerTests.test_graph_rule_resolution_and_reverse_tests_are_deterministic) ... ok\ntest_proposal_preserves_authority_and_compatibility (test_evolution_learning.CompilerTests.test_proposal_preserves_authority_and_compatibility) ... ok\ntest_cannot_skip_ladder_or_promote_statistics_alone (test_evolution_learning.PromotionTests.test_cannot_skip_ladder_or_promote_statistics_alone) ... ok\ntest_degrading_precision_watches_and_unsafe_measurements_disable (test_evolution_learning.PromotionTests.test_degrading_precision_watches_and_unsafe_measurements_disable) ... ok\ntest_demotion_retains_authority_and_history (test_evolution_learning.PromotionTests.test_demotion_retains_authority_and_history) ... ok\ntest_entire_ladder_uses_typed_proofs_and_round_trips (test_evolution_learning.PromotionTests.test_entire_ladder_uses_typed_proofs_and_round_trips) ... ok\ntest_proof_binds_candidate_reports_and_required_checks (test_evolution_learning.PromotionTests.test_proof_binds_candidate_reports_and_required_checks) ... ok\ntest_unrelated_policy_targets_cannot_authorize_competence_promotion (test_evolution_learning.PromotionTests.test_unrelated_policy_targets_cannot_authorize_competence_promotion) ... ok\ntest_unsafe_and_unknown_scores_cannot_qualify (test_evolution_learning.PromotionTests.test_unsafe_and_unknown_scores_cannot_qualify) ... ok\ntest_demoted_incompatible_or_ambiguous_capabilities_fall_back (test_evolution_learning.RegistryTests.test_demoted_incompatible_or_ambiguous_capabilities_fall_back) ... ok\ntest_local_then_frontier_fallback_is_explicit_and_has_same_boundary (test_evolution_learning.RegistryTests.test_local_then_frontier_fallback_is_explicit_and_has_same_boundary) ... ok\ntest_other_workspace_and_future_promotions_are_not_selected (test_evolution_learning.RegistryTests.test_other_workspace_and_future_promotions_are_not_selected) ... ok\ntest_preferred_use_generates_a_proposal_and_next_observation (test_evolution_learning.RegistryTests.test_preferred_use_generates_a_proposal_and_next_observation) ... ok\ntest_actual_safety_and_trigger_denominators (test_evolution_learning.ReplayTests.test_actual_safety_and_trigger_denominators) ... ok\ntest_disjoint_replay_and_shadow_scores (test_evolution_learning.ReplayTests.test_disjoint_replay_and_shadow_scores) ... ok\ntest_later_unlinked_attempt_invalidates_episode_grading (test_evolution_learning.ReplayTests.test_later_unlinked_attempt_invalidates_episode_grading) ... ok\ntest_no_grade_from_untyped_pass_or_teacher_agreement (test_evolution_learning.ReplayTests.test_no_grade_from_untyped_pass_or_teacher_agreement) ... ok\ntest_tampered_predictions_and_future_evidence_are_rejected (test_evolution_learning.ReplayTests.test_tampered_predictions_and_future_evidence_are_rejected) ... ok\ntest_teacher_disagreement_is_separate_from_correctness (test_evolution_learning.ReplayTests.test_teacher_disagreement_is_separate_from_correctness) ... ok\ntest_training_ids_sources_and_times_cannot_leak (test_evolution_learning.ReplayTests.test_training_ids_sources_and_times_cannot_leak) ... ok\n\n----------------------------------------------------------------------\nRan 63 tests in 11.541s\n\nOK\n",
+      "output_sha256": "3c584b204c852d968811d3045de3c890668fdd1f1dee4641cf9cdfc7f624500d",
+      "finished_at": "2026-09-21T02:12:56.065553+00:00"
+    },
+    {
+      "name": "semantic_twin",
+      "command": "python -m unittest discover -s tests/upgrade -p 'test_semantic_twin*.py'",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "..........................................................................................................................\n----------------------------------------------------------------------\nRan 122 tests in 51.573s\n\nOK\n",
+      "output_sha256": "4399a4e0b24faf9d95cbe8c6a6825ae41492e4483e20c340689d938e71787925",
+      "finished_at": "2026-09-21T02:14:00.944049+00:00"
+    },
+    {
+      "name": "mypy",
+      "command": "python -m mypy --strict libs/evolution",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "Success: no issues found in 16 source files\n",
+      "output_sha256": "ca16d6d1a06c6903f5407ba5268cb8b5eb5d8c7811b7532282916ec31807c328",
+      "finished_at": "2026-09-21T02:13:10.297662+00:00"
+    },
+    {
+      "name": "ruff",
+      "command": "python -m ruff check libs/evolution tests/upgrade/test_evolution*.py scripts/citadel-evolve .bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "All checks passed!\n",
+      "output_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "finished_at": "2026-09-21T02:26:11.204635+00:00"
+    },
+    {
+      "name": "coverage",
+      "command": "python -m trace --count --summary --missing --coverdir /tmp/evolution-complete-coverage --module unittest discover -s tests/upgrade -p 'test_evolution*.py' -v",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "test_benchmark_cli_retains_full_report_and_refuses_overwrite (test_evolution_cli.CliTests.test_benchmark_cli_retains_full_report_and_refuses_overwrite) ... ok\ntest_both_executable_entrypoints_expose_the_same_commands (test_evolution_cli.CliTests.test_both_executable_entrypoints_expose_the_same_commands) ... ok\ntest_git_observation_uses_phase1_history_and_enforces_limit (test_evolution_cli.CliTests.test_git_observation_uses_phase1_history_and_enforces_limit) ... ok\ntest_human_status_and_phase1_capture_adapter (test_evolution_cli.CliTests.test_human_status_and_phase1_capture_adapter) ... ok\ntest_persistent_observe_learn_replay_shadow_promote_use_observe_loop (test_evolution_cli.CliTests.test_persistent_observe_learn_replay_shadow_promote_use_observe_loop) ... ok\ntest_unconfigured_use_is_explicit_and_wrong_scope_fails (test_evolution_cli.CliTests.test_unconfigured_use_is_explicit_and_wrong_scope_fails) ... ok\ntest_epoch_delta_requires_same_corpus_and_real_denominators (test_evolution_cli.HistoricalBenchmarkTests.test_epoch_delta_requires_same_corpus_and_real_denominators) ... ok\ntest_final_verified_result_must_name_the_commit_being_graded (test_evolution_cli.HistoricalBenchmarkTests.test_final_verified_result_must_name_the_commit_being_graded) ... ok\ntest_merge_changes_use_first_parent_metadata_without_rename_reads (test_evolution_cli.HistoricalBenchmarkTests.test_merge_changes_use_first_parent_metadata_without_rename_reads) ... ok\ntest_missing_local_blobs_remain_gaps_without_fetching (test_evolution_cli.HistoricalBenchmarkTests.test_missing_local_blobs_remain_gaps_without_fetching) ... ok\ntest_multiple_outcomes_are_a_conflict_and_raw_pass_has_no_grade (test_evolution_cli.HistoricalBenchmarkTests.test_multiple_outcomes_are_a_conflict_and_raw_pass_has_no_grade) ... ok\ntest_parent_import_closure_without_fabricated_historical_truth (test_evolution_cli.HistoricalBenchmarkTests.test_parent_import_closure_without_fabricated_historical_truth) ... ok\ntest_scores_require_exact_source_bound_reviewed_labels (test_evolution_cli.HistoricalBenchmarkTests.test_scores_require_exact_source_bound_reviewed_labels) ... ok\ntest_unavailable_parent_is_not_scored_as_a_resolution_failure (test_evolution_cli.HistoricalBenchmarkTests.test_unavailable_parent_is_not_scored_as_a_resolution_failure) ... ok\ntest_database_tampering_and_bootstrap_escalation_fail_closed (test_evolution_cli.JournalTests.test_database_tampering_and_bootstrap_escalation_fail_closed) ... ok\ntest_epoch_counts_current_episode_versions_and_unknown_routing (test_evolution_cli.JournalTests.test_epoch_counts_current_episode_versions_and_unknown_routing) ... ok\ntest_event_retries_keep_first_ingestion_and_other_scopes_cannot_read (test_evolution_cli.JournalTests.test_event_retries_keep_first_ingestion_and_other_scopes_cannot_read) ... ok\ntest_new_candidate_version_restarts_but_retains_previous_evidence (test_evolution_cli.JournalTests.test_new_candidate_version_restarts_but_retains_previous_evidence) ... ok\ntest_registry_compare_and_swap_and_history_retention (test_evolution_cli.JournalTests.test_registry_compare_and_swap_and_history_retention) ... ok\ntest_schema_and_symlink_validation (test_evolution_cli.JournalTests.test_schema_and_symlink_validation) ... ok\ntest_capture_digest_binds_the_single_read_used_for_normalization (test_evolution_events.AdapterTests.test_capture_digest_binds_the_single_read_used_for_normalization) ... ok\ntest_event_import_rejects_foreign_scope (test_evolution_events.AdapterTests.test_event_import_rejects_foreign_scope) ... ok\ntest_memory_missing_time_or_revision_is_explicit (test_evolution_events.AdapterTests.test_memory_missing_time_or_revision_is_explicit) ... ok\ntest_mission_learning_does_not_mint_verification (test_evolution_events.AdapterTests.test_mission_learning_does_not_mint_verification) ... ok\ntest_telemetry_preserves_missing_metrics (test_evolution_events.AdapterTests.test_telemetry_preserves_missing_metrics) ... ok\ntest_counts_do_not_promote_competence (test_evolution_events.CandidateTests.test_counts_do_not_promote_competence) ... ok\ntest_episode_revisions_cannot_inflate_independent_observation_counts (test_evolution_events.CandidateTests.test_episode_revisions_cannot_inflate_independent_observation_counts) ... ok\ntest_future_success_and_insufficient_repeats_are_excluded (test_evolution_events.CandidateTests.test_future_success_and_insufficient_repeats_are_excluded) ... ok\ntest_unfinished_episodes_supply_observations_without_successful_repairs (test_evolution_events.CandidateTests.test_unfinished_episodes_supply_observations_without_successful_repairs) ... ok\ntest_failed_attempts_survive_success_and_round_trip (test_evolution_events.EpisodeTests.test_failed_attempts_survive_success_and_round_trip) ... ok\ntest_future_events_and_unbound_reviews_do_not_complete_episode (test_evolution_events.EpisodeTests.test_future_events_and_unbound_reviews_do_not_complete_episode) ... ok\ntest_provider_pass_is_only_complete (test_evolution_events.EpisodeTests.test_provider_pass_is_only_complete) ... ok\ntest_scope_authority_and_correlation_isolation (test_evolution_events.EpisodeTests.test_scope_authority_and_correlation_isolation) ... ok\ntest_self_review_and_conflicting_results_are_rejected (test_evolution_events.EpisodeTests.test_self_review_and_conflicting_results_are_rejected) ... ok\ntest_unlinked_attempts_and_after_action_hypotheses_remain_incomplete (test_evolution_events.EpisodeTests.test_unlinked_attempts_and_after_action_hypotheses_remain_incomplete) ... ok\ntest_every_capture_family_is_an_observation (test_evolution_events.EventTests.test_every_capture_family_is_an_observation) ... ok\ntest_round_trip_digest_and_idempotent_ingestion (test_evolution_events.EventTests.test_round_trip_digest_and_idempotent_ingestion) ... ok\ntest_strict_wire_input (test_evolution_events.EventTests.test_strict_wire_input) ... ok\ntest_timestamps_and_verified_assertions_fail_closed (test_evolution_events.EventTests.test_timestamps_and_verified_assertions_fail_closed) ... ok\ntest_ambiguous_missing_or_out_of_scope_matches_abstain (test_evolution_learning.CompilerTests.test_ambiguous_missing_or_out_of_scope_matches_abstain) ... ok\ntest_enters_existing_draft_transaction_without_policy_or_execution (test_evolution_learning.CompilerTests.test_enters_existing_draft_transaction_without_policy_or_execution) ... ok\ntest_future_graph_and_future_features_are_rejected (test_evolution_learning.CompilerTests.test_future_graph_and_future_features_are_rejected) ... ok\ntest_graph_rejects_relation_evidence_captured_after_decision (test_evolution_learning.CompilerTests.test_graph_rejects_relation_evidence_captured_after_decision) ... ok\ntest_graph_rule_resolution_and_reverse_tests_are_deterministic (test_evolution_learning.CompilerTests.test_graph_rule_resolution_and_reverse_tests_are_deterministic) ... ok\ntest_proposal_preserves_authority_and_compatibility (test_evolution_learning.CompilerTests.test_proposal_preserves_authority_and_compatibility) ... ok\ntest_cannot_skip_ladder_or_promote_statistics_alone (test_evolution_learning.PromotionTests.test_cannot_skip_ladder_or_promote_statistics_alone) ... ok\ntest_degrading_precision_watches_and_unsafe_measurements_disable (test_evolution_learning.PromotionTests.test_degrading_precision_watches_and_unsafe_measurements_disable) ... ok\ntest_demotion_retains_authority_and_history (test_evolution_learning.PromotionTests.test_demotion_retains_authority_and_history) ... ok\ntest_entire_ladder_uses_typed_proofs_and_round_trips (test_evolution_learning.PromotionTests.test_entire_ladder_uses_typed_proofs_and_round_trips) ... ok\ntest_proof_binds_candidate_reports_and_required_checks (test_evolution_learning.PromotionTests.test_proof_binds_candidate_reports_and_required_checks) ... ok\ntest_unrelated_policy_targets_cannot_authorize_competence_promotion (test_evolution_learning.PromotionTests.test_unrelated_policy_targets_cannot_authorize_competence_promotion) ... ok\ntest_unsafe_and_unknown_scores_cannot_qualify (test_evolution_learning.PromotionTests.test_unsafe_and_unknown_scores_cannot_qualify) ... ok\ntest_demoted_incompatible_or_ambiguous_capabilities_fall_back (test_evolution_learning.RegistryTests.test_demoted_incompatible_or_ambiguous_capabilities_fall_back) ... ok\ntest_local_then_frontier_fallback_is_explicit_and_has_same_boundary (test_evolution_learning.RegistryTests.test_local_then_frontier_fallback_is_explicit_and_has_same_boundary) ... ok\ntest_other_workspace_and_future_promotions_are_not_selected (test_evolution_learning.RegistryTests.test_other_workspace_and_future_promotions_are_not_selected) ... ok\ntest_preferred_use_generates_a_proposal_and_next_observation (test_evolution_learning.RegistryTests.test_preferred_use_generates_a_proposal_and_next_observation) ... ok\ntest_actual_safety_and_trigger_denominators (test_evolution_learning.ReplayTests.test_actual_safety_and_trigger_denominators) ... ok\ntest_disjoint_replay_and_shadow_scores (test_evolution_learning.ReplayTests.test_disjoint_replay_and_shadow_scores) ... ok\ntest_later_unlinked_attempt_invalidates_episode_grading (test_evolution_learning.ReplayTests.test_later_unlinked_attempt_invalidates_episode_grading) ... ok\ntest_no_grade_from_untyped_pass_or_teacher_agreement (test_evolution_learning.ReplayTests.test_no_grade_from_untyped_pass_or_teacher_agreement) ... ok\ntest_tampered_predictions_and_future_evidence_are_rejected (test_evolution_learning.ReplayTests.test_tampered_predictions_and_future_evidence_are_rejected) ... ok\ntest_teacher_disagreement_is_separate_from_correctness (test_evolution_learning.ReplayTests.test_teacher_disagreement_is_separate_from_correctness) ... ok\ntest_training_ids_sources_and_times_cannot_leak (test_evolution_learning.ReplayTests.test_training_ids_sources_and_times_cannot_leak) ... ok\n\n----------------------------------------------------------------------\nRan 63 tests in 137.035s\n\nOK\nlines   cov%   module   (path)\n   56    91%   __future__   (/root/.pyenv/versions/3.12.13/lib/python3.12/__future__.py)\n  154     5%   _weakrefset   (/root/.pyenv/versions/3.12.13/lib/python3.12/_weakrefset.py)\n 1558    48%   argparse   (/root/.pyenv/versions/3.12.13/lib/python3.12/argparse.py)\n 1295     1%   ast   (/root/.pyenv/versions/3.12.13/lib/python3.12/ast.py)\n   39    94%   asyncio.__init__   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/__init__.py)\n 1353    15%   asyncio.base_events   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/base_events.py)\n   41    26%   asyncio.base_futures   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/base_futures.py)\n  209    19%   asyncio.base_subprocess   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/base_subprocess.py)\n   71    14%   asyncio.base_tasks   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/base_tasks.py)\n   14   100%   asyncio.constants   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/constants.py)\n   63    23%   asyncio.coroutines   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/coroutines.py)\n  401    47%   asyncio.events   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/events.py)\n   28    67%   asyncio.exceptions   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/exceptions.py)\n   52    21%   asyncio.format_helpers   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/format_helpers.py)\n  239    25%   asyncio.futures   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/futures.py)\n  274    25%   asyncio.locks   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/locks.py)\n    3   100%   asyncio.log   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/log.py)\n   15    46%   asyncio.mixins   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/mixins.py)\n   46    69%   asyncio.protocols   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/protocols.py)\n  131    33%   asyncio.queues   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/queues.py)\n  120    22%   asyncio.runners   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/runners.py)\n 1000    13%   asyncio.selector_events   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/selector_events.py)\n  598    17%   asyncio.sslproto   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/sslproto.py)\n   82     9%   asyncio.staggered   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/staggered.py)\n  435    19%   asyncio.streams   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/streams.py)\n  179    21%   asyncio.subprocess   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/subprocess.py)\n  141    10%   asyncio.taskgroups   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/taskgroups.py)\n  530    19%   asyncio.tasks   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/tasks.py)\n   10    60%   asyncio.threads   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/threads.py)\n   84    35%   asyncio.timeouts   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/timeouts.py)\n  130    41%   asyncio.transports   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/transports.py)\n   66    37%   asyncio.trsock   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/trsock.py)\n  985    18%   asyncio.unix_events   (/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/unix_events.py)\n  318    18%   base64   (/root/.pyenv/versions/3.12.13/lib/python3.12/base64.py)\n   51    17%   bisect   (/root/.pyenv/versions/3.12.13/lib/python3.12/bisect.py)\n  902     8%   collections.__init__   (/root/.pyenv/versions/3.12.13/lib/python3.12/collections/__init__.py)\n   16    37%   concurrent.futures.__init__   (/root/.pyenv/versions/3.12.13/lib/python3.12/concurrent/futures/__init__.py)\n  352    28%   concurrent.futures._base   (/root/.pyenv/versions/3.12.13/lib/python3.12/concurrent/futures/_base.py)\n  382     8%   contextlib   (/root/.pyenv/versions/3.12.13/lib/python3.12/contextlib.py)\n    2   100%   contextvars   (/root/.pyenv/versions/3.12.13/lib/python3.12/contextvars.py)\n  121     2%   copyreg   (/root/.pyenv/versions/3.12.13/lib/python3.12/copyreg.py)\n  673    49%   dataclasses   (/root/.pyenv/versions/3.12.13/lib/python3.12/dataclasses.py)\n    7    57%   datetime   (/root/.pyenv/versions/3.12.13/lib/python3.12/datetime.py)\n 1286    37%   enum   (/root/.pyenv/versions/3.12.13/lib/python3.12/enum.py)\n  116    38%   fnmatch   (/root/.pyenv/versions/3.12.13/lib/python3.12/fnmatch.py)\n  587    11%   functools   (/root/.pyenv/versions/3.12.13/lib/python3.12/functools.py)\n  397    16%   gettext   (/root/.pyenv/versions/3.12.13/lib/python3.12/gettext.py)\n  113    45%   hashlib   (/root/.pyenv/versions/3.12.13/lib/python3.12/hashlib.py)\n   81     3%   importlib.__init__   (/root/.pyenv/versions/3.12.13/lib/python3.12/importlib/__init__.py)\n 1957    13%   inspect   (/root/.pyenv/versions/3.12.13/lib/python3.12/inspect.py)\n 1122    40%   ipaddress   (/root/.pyenv/versions/3.12.13/lib/python3.12/ipaddress.py)\n   99    65%   json.__init__   (/root/.pyenv/versions/3.12.13/lib/python3.12/json/__init__.py)\n  221    30%   json.decoder   (/root/.pyenv/versions/3.12.13/lib/python3.12/json/decoder.py)\n  266    68%   json.encoder   (/root/.pyenv/versions/3.12.13/lib/python3.12/json/encoder.py)\n   60    16%   json.scanner   (/root/.pyenv/versions/3.12.13/lib/python3.12/json/scanner.py)\n    1   100%   libs.evolution.__init__   (/workspace/repo/libs/evolution/__init__.py)\n    4   100%   libs.evolution.__main__   (/workspace/repo/libs/evolution/__main__.py)\n  266    97%   libs.evolution.adapters   (/workspace/repo/libs/evolution/adapters.py)\n  519    91%   libs.evolution.benchmark   (/workspace/repo/libs/evolution/benchmark.py)\n  243    97%   libs.evolution.candidate   (/workspace/repo/libs/evolution/candidate.py)\n  354    96%   libs.evolution.cli   (/workspace/repo/libs/evolution/cli.py)\n   77    92%   libs.evolution.common   (/workspace/repo/libs/evolution/common.py)\n  297    97%   libs.evolution.compiler   (/workspace/repo/libs/evolution/compiler.py)\n  202    99%   libs.evolution.episode   (/workspace/repo/libs/evolution/episode.py)\n  118    99%   libs.evolution.event   (/workspace/repo/libs/evolution/event.py)\n  183   100%   libs.evolution.loop   (/workspace/repo/libs/evolution/loop.py)\n  384    96%   libs.evolution.promotion   (/workspace/repo/libs/evolution/promotion.py)\n  193    97%   libs.evolution.registry   (/workspace/repo/libs/evolution/registry.py)\n  218    99%   libs.evolution.replay   (/workspace/repo/libs/evolution/replay.py)\n  149    99%   libs.evolution.scorer   (/workspace/repo/libs/evolution/scorer.py)\n  207   100%   libs.evolution.store   (/workspace/repo/libs/evolution/store.py)\n   12   100%   libs.semantic_twin.__init__   (/workspace/repo/libs/semantic_twin/__init__.py)\n  229    73%   libs.semantic_twin.contracts   (/workspace/repo/libs/semantic_twin/contracts.py)\n  262    88%   libs.semantic_twin.identity   (/workspace/repo/libs/semantic_twin/identity.py)\n   11   100%   libs.semantic_twin.ingestion.__init__   (/workspace/repo/libs/semantic_twin/ingestion/__init__.py)\n  200    92%   libs.semantic_twin.ingestion.builder   (/workspace/repo/libs/semantic_twin/ingestion/builder.py)\n  263    23%   libs.semantic_twin.ingestion.claims   (/workspace/repo/libs/semantic_twin/ingestion/claims.py)\n  295    38%   libs.semantic_twin.ingestion.drafts   (/workspace/repo/libs/semantic_twin/ingestion/drafts.py)\n  132    71%   libs.semantic_twin.ingestion.graph   (/workspace/repo/libs/semantic_twin/ingestion/graph.py)\n   85    95%   libs.semantic_twin.ingestion.inputs   (/workspace/repo/libs/semantic_twin/ingestion/inputs.py)\n  109    26%   libs.semantic_twin.ingestion.pipeline   (/workspace/repo/libs/semantic_twin/ingestion/pipeline.py)\n  178    26%   libs.semantic_twin.ingestion.receipts   (/workspace/repo/libs/semantic_twin/ingestion/receipts.py)\n   59    38%   libs.semantic_twin.ingestion.release   (/workspace/repo/libs/semantic_twin/ingestion/release.py)\n   36    80%   libs.semantic_twin.ingestion.serializer   (/workspace/repo/libs/semantic_twin/ingestion/serializer.py)\n  443    16%   libs.semantic_twin.ingestion.source   (/workspace/repo/libs/semantic_twin/ingestion/source.py)\n  327    59%   libs.semantic_twin.merkle   (/workspace/repo/libs/semantic_twin/merkle.py)\n  399    66%   libs.semantic_twin.models   (/workspace/repo/libs/semantic_twin/models.py)\n   11   100%   libs.semantic_twin.phase1.__init__   (/workspace/repo/libs/semantic_twin/phase1/__init__.py)\n  184    21%   libs.semantic_twin.phase1.claims   (/workspace/repo/libs/semantic_twin/phase1/claims.py)\n   39    53%   libs.semantic_twin.phase1.common   (/workspace/repo/libs/semantic_twin/phase1/common.py)\n  203    30%   libs.semantic_twin.phase1.compiler   (/workspace/repo/libs/semantic_twin/phase1/compiler.py)\n  177    34%   libs.semantic_twin.phase1.context   (/workspace/repo/libs/semantic_twin/phase1/context.py)\n  167    26%   libs.semantic_twin.phase1.history   (/workspace/repo/libs/semantic_twin/phase1/history.py)\n  104    18%   libs.semantic_twin.phase1.memory   (/workspace/repo/libs/semantic_twin/phase1/memory.py)\n  124    26%   libs.semantic_twin.phase1.merkle   (/workspace/repo/libs/semantic_twin/phase1/merkle.py)\n  180    20%   libs.semantic_twin.phase1.providers   (/workspace/repo/libs/semantic_twin/phase1/providers.py)\n  147    38%   libs.semantic_twin.phase1.release_state   (/workspace/repo/libs/semantic_twin/phase1/release_state.py)\n  228    16%   libs.semantic_twin.phase1.sbom   (/workspace/repo/libs/semantic_twin/phase1/sbom.py)\n  272    19%   libs.semantic_twin.phase1.truth   (/workspace/repo/libs/semantic_twin/phase1/truth.py)\n  142    46%   libs.semantic_twin.promotions   (/workspace/repo/libs/semantic_twin/promotions.py)\n  487    62%   libs.semantic_twin.receipts   (/workspace/repo/libs/semantic_twin/receipts.py)\n  328    72%   libs.semantic_twin.relations   (/workspace/repo/libs/semantic_twin/relations.py)\n  446    58%   libs.semantic_twin.transactions   (/workspace/repo/libs/semantic_twin/transactions.py)\n  501    68%   libs.semantic_twin.transitions   (/workspace/repo/libs/semantic_twin/transitions.py)\n  286    99%   libs.semantic_twin.vocabulary   (/workspace/repo/libs/semantic_twin/vocabulary.py)\n 1301     1%   locale   (/root/.pyenv/versions/3.12.13/lib/python3.12/locale.py)\n 1040    34%   logging.__init__   (/root/.pyenv/versions/3.12.13/lib/python3.12/logging/__init__.py)\n  809    43%   pathlib   (/root/.pyenv/versions/3.12.13/lib/python3.12/pathlib.py)\n  266    27%   pkgutil   (/root/.pyenv/versions/3.12.13/lib/python3.12/pkgutil.py)\n  431    25%   random   (/root/.pyenv/versions/3.12.13/lib/python3.12/random.py)\n  145    19%   re.__init__   (/root/.pyenv/versions/3.12.13/lib/python3.12/re/__init__.py)\n  609    57%   re._compiler   (/root/.pyenv/versions/3.12.13/lib/python3.12/re/_compiler.py)\n  896    47%   re._parser   (/root/.pyenv/versions/3.12.13/lib/python3.12/re/_parser.py)\n  170     6%   reprlib   (/root/.pyenv/versions/3.12.13/lib/python3.12/reprlib.py)\n    7   100%   scripts   (/workspace/repo/scripts/citadel-evolve)\n  373    25%   selectors   (/root/.pyenv/versions/3.12.13/lib/python3.12/selectors.py)\n  891     6%   shutil   (/root/.pyenv/versions/3.12.13/lib/python3.12/shutil.py)\n  604    16%   socket   (/root/.pyenv/versions/3.12.13/lib/python3.12/socket.py)\n   10    40%   sqlite3.__init__   (/root/.pyenv/versions/3.12.13/lib/python3.12/sqlite3/__init__.py)\n   57    59%   sqlite3.dbapi2   (/root/.pyenv/versions/3.12.13/lib/python3.12/sqlite3/dbapi2.py)\n  879    37%   ssl   (/root/.pyenv/versions/3.12.13/lib/python3.12/ssl.py)\n  170    30%   string   (/root/.pyenv/versions/3.12.13/lib/python3.12/string.py)\n 1261    11%   subprocess   (/root/.pyenv/versions/3.12.13/lib/python3.12/subprocess.py)\n  539    40%   tempfile   (/root/.pyenv/versions/3.12.13/lib/python3.12/tempfile.py)\n  575    99%   test_evolution_cli   (/workspace/repo/tests/upgrade/test_evolution_cli.py)\n  293    99%   test_evolution_events   (/workspace/repo/tests/upgrade/test_evolution_events.py)\n  510    99%   test_evolution_learning   (/workspace/repo/tests/upgrade/test_evolution_learning.py)\n  324   100%   test_evolution_support   (/workspace/repo/tests/upgrade/test_evolution_support.py)\n  184    31%   textwrap   (/root/.pyenv/versions/3.12.13/lib/python3.12/textwrap.py)\n  787     0%   threading   (/root/.pyenv/versions/3.12.13/lib/python3.12/threading.py)\n  388     8%   tokenize   (/root/.pyenv/versions/3.12.13/lib/python3.12/tokenize.py)\n  699     0%   traceback   (/root/.pyenv/versions/3.12.13/lib/python3.12/traceback.py)\n  203     7%   types   (/root/.pyenv/versions/3.12.13/lib/python3.12/types.py)\n 1622    50%   typing   (/root/.pyenv/versions/3.12.13/lib/python3.12/typing.py)\n   10   100%   unittest.__main__   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/__main__.py)\n  837    21%   unittest.case   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/case.py)\n  323    27%   unittest.loader   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/loader.py)\n  205    53%   unittest.main   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/main.py)\n 1806    32%   unittest.mock   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/mock.py)\n  161    19%   unittest.result   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/result.py)\n  230    42%   unittest.runner   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/runner.py)\n   48     2%   unittest.signals   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/signals.py)\n  277    40%   unittest.suite   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/suite.py)\n  130     1%   unittest.util   (/root/.pyenv/versions/3.12.13/lib/python3.12/unittest/util.py)\n  665    34%   urllib.parse   (/root/.pyenv/versions/3.12.13/lib/python3.12/urllib/parse.py)\n  386     7%   warnings   (/root/.pyenv/versions/3.12.13/lib/python3.12/warnings.py)\n  447     9%   weakref   (/root/.pyenv/versions/3.12.13/lib/python3.12/weakref.py)\n",
+      "output_sha256": "771838230e98b791b0f1a64eb9722410e0f7eb9445b904475dc8fe4322a1fd69",
+      "finished_at": "2026-09-21T02:18:19.011023+00:00"
+    },
+    {
+      "name": "benchmark",
+      "command": "python -m libs.evolution --state /tmp/buildanddo-evolution-final.sqlite benchmark --repository . --limit 100 --output /tmp/evolution-history-final.json",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "{\n  \"cases\": 100,\n  \"cases_with_unavailable_source\": 25,\n  \"causal_identification\": \"UNMEASURED\",\n  \"corpus_digest\": \"d73b4c51bcf073279f5c810daebb1b263b05edb4f01e498a367c585ca7ab4340\",\n  \"delta\": {\n    \"reason\": \"no earlier benchmark\",\n    \"status\": \"UNMEASURED\"\n  },\n  \"effects_executed\": 0,\n  \"evaluated_at\": \"2026-09-21T02:13:09.114207+00:00\",\n  \"graph_scores\": {\n    \"dependency_precision\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"dependency_recall\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"failure_classification\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"repair_class_selection\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"runtime_risk\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"subsystem_resolution\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"test_precision\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"test_recall\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    }\n  },\n  \"latency_ms\": 29161.725741,\n  \"limitations\": [\n    \"Parent-tree Python import closure is a static prediction, not measured dependency impact.\",\n    \"Changed paths are the declared input; new source and commit messages are not prediction inputs.\",\n    \"Missing pipeline, runtime, repair and model captures have no grading denominator.\",\n    \"Ordering and subsequent fixes do not establish causality.\"\n  ],\n  \"model_calls\": 0,\n  \"model_captures\": 0,\n  \"model_scores\": {\n    \"dependency_precision\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"dependency_recall\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"failure_classification\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"repair_class_selection\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"runtime_risk\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"subsystem_resolution\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"test_precision\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"test_recall\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    }\n  },\n  \"profile\": \"citadel.history-benchmark/1\",\n  \"report_id\": \"cni://evaluation/evolution/31b950ecf33cfde904e965226ec8da689101b12ef58e2a461c7df3a32671e656\",\n  \"reviewed_outcomes\": 0,\n  \"scope_id\": \"buildanddo-public\",\n  \"structural_parent_resolution\": {\n    \"denominator\": 1116,\n    \"numerator\": 1116,\n    \"value\": 1.0\n  },\n  \"structural_prediction_coverage\": {\n    \"denominator\": 100,\n    \"numerator\": 100,\n    \"value\": 1.0\n  },\n  \"tokens\": 0\n}\n",
+      "output_sha256": "72a57b28c02eab2bff814595f0de50d3aff4afcb984a95f88be0b4c482ccb334",
+      "finished_at": "2026-09-21T02:13:38.662879+00:00"
+    },
+    {
+      "name": "benchmark_second",
+      "command": "python -m libs.evolution --state /tmp/buildanddo-evolution-final.sqlite benchmark --repository . --limit 100 --output /tmp/evolution-history-final-second.json",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "{\n  \"cases\": 100,\n  \"cases_with_unavailable_source\": 25,\n  \"causal_identification\": \"UNMEASURED\",\n  \"corpus_digest\": \"d73b4c51bcf073279f5c810daebb1b263b05edb4f01e498a367c585ca7ab4340\",\n  \"delta\": {\n    \"current\": \"cni://evaluation/evolution/6efbabcaf307d20e90f8640df6dca18c8ffad79ba492919d5449e72da982ea25\",\n    \"graph_score_deltas\": {\n      \"dependency_precision\": null,\n      \"dependency_recall\": null,\n      \"failure_classification\": null,\n      \"repair_class_selection\": null,\n      \"runtime_risk\": null,\n      \"subsystem_resolution\": null,\n      \"test_precision\": null,\n      \"test_recall\": null\n    },\n    \"previous\": \"cni://evaluation/evolution/31b950ecf33cfde904e965226ec8da689101b12ef58e2a461c7df3a32671e656\",\n    \"status\": \"COMPARABLE\",\n    \"verified_outcome_delta\": 0\n  },\n  \"effects_executed\": 0,\n  \"evaluated_at\": \"2026-09-21T02:14:54.516865+00:00\",\n  \"graph_scores\": {\n    \"dependency_precision\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"dependency_recall\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"failure_classification\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"repair_class_selection\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"runtime_risk\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"subsystem_resolution\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"test_precision\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"test_recall\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    }\n  },\n  \"latency_ms\": 10886.529212,\n  \"limitations\": [\n    \"Parent-tree Python import closure is a static prediction, not measured dependency impact.\",\n    \"Changed paths are the declared input; new source and commit messages are not prediction inputs.\",\n    \"Missing pipeline, runtime, repair and model captures have no grading denominator.\",\n    \"Ordering and subsequent fixes do not establish causality.\"\n  ],\n  \"model_calls\": 0,\n  \"model_captures\": 0,\n  \"model_scores\": {\n    \"dependency_precision\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"dependency_recall\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"failure_classification\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"repair_class_selection\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"runtime_risk\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"subsystem_resolution\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"test_precision\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"test_recall\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    }\n  },\n  \"profile\": \"citadel.history-benchmark/1\",\n  \"report_id\": \"cni://evaluation/evolution/6efbabcaf307d20e90f8640df6dca18c8ffad79ba492919d5449e72da982ea25\",\n  \"reviewed_outcomes\": 0,\n  \"scope_id\": \"buildanddo-public\",\n  \"structural_parent_resolution\": {\n    \"denominator\": 1116,\n    \"numerator\": 1116,\n    \"value\": 1.0\n  },\n  \"structural_prediction_coverage\": {\n    \"denominator\": 100,\n    \"numerator\": 100,\n    \"value\": 1.0\n  },\n  \"tokens\": 0\n}\n",
+      "output_sha256": "4d4537cf084bd2931ea8b6b7ff61dcd7653d1459bcddee051ce3bf49b620846a",
+      "finished_at": "2026-09-21T02:15:06.255548+00:00"
+    },
+    {
+      "name": "observe_git",
+      "command": "python -m libs.evolution --state /tmp/buildanddo-evolution-final.sqlite observe --git . --limit 100",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "{\n  \"gaps\": [],\n  \"inserted\": 100,\n  \"observed\": 100\n}\n",
+      "output_sha256": "11c656e968fe6fc66fe16d0b4eccdeac242bb467c3003ea7b1e4148d61b93fe8",
+      "finished_at": "2026-09-21T02:13:27.666794+00:00"
+    },
+    {
+      "name": "observe_memory",
+      "command": "python -m libs.evolution --state /tmp/buildanddo-evolution-final.sqlite observe --input .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json --format memory",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "{\n  \"gaps\": [\n    \"memory event assertions do not provide independent verification\"\n  ],\n  \"inserted\": 152,\n  \"observed\": 152\n}\n",
+      "output_sha256": "3c52fe248967aaabc16895eff70c27024b0ee8c9945978a9b03dd8df69032198",
+      "finished_at": "2026-09-21T02:14:08.109104+00:00"
+    },
+    {
+      "name": "episodes",
+      "command": "python -m libs.evolution --state /tmp/buildanddo-evolution-final.sqlite episodes",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "{\n  \"episodes\": [\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/004a3dffbe710655ee2213480d6f58ced0bb63856182f93ba55d44367b6bb529\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/09f6eed6d040e11e0cdfef5e208950a33e9f09802b7eee73c1a18ebe6eb12ac9\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/0a7742de018eafa992e507073a15076ffd6c6afeff01760ae853db23c7eec4f5\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/0b838b851986b3aa2006e330f36c1a43e3d163fed44a7e624eadd08988ba22f5\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/1207e6aa19c0ece453da7922015831a50354c18a88dd7707e5619a528562fecb\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/170bdc36f9458f6022ce78fb680ea65e45aeb081fff78050ffd45204e634618a\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/186b9d26df7c32349ae62b9572ca5b32bcd69fe7d11ec99018de2b27b2b0c527\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/19aa74a7f29e83583e1abd146501af09b92b453e0a4531cab65c7ea3e01b0505\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/1da389f0011d4b302c08d2525c32b28458f9da2ebd187539a4c4eafd913c0ba4\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/2918de756e4ab3ab4e01d550164627c70ed5f14cf8bc8c11d1aeab855b604983\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/2ba70350c82edaee6bd556c7f1f62e711df3225d131d07ffb2305bb7311b39bc\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/2ced2f844d2217cc032d594130695bd8f4af62d31cab91e17a1fed7e061c3762\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/3366866241eb9973c131d7bf4a53741dc56497bcbdbff66f1b60d9360fe41acf\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/392ba1c4d779b892f78d90e5e4edf49d61b387f012959d0c91dd7edafdfa39b6\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/397d07de5c06c36680ecb8f32ee781c4bbb077c957397d312f89762f95a7ebc8\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/3bdd24d151e64d1f76a8f4a4b983a52ea13d4549de866507a5fba074c173ff61\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/3f2c071ff4ca3ba9799343f4b81610048de9fd78f5a84653b226cc9990d132d3\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/40b786409087024f0c1391199b9e4712c028c751479fae8d2f72640c8f14fc20\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/4197525638f62eb9e89a57fc66349b6dce8cf67535d07170508a2499036e548a\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/437161e0b7ce9521c207f994aa81685bfee25d003a0ee1b0cac96f12f6f834e2\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/4403c19c16fe634ac2aeb50f859b93f3078cd1363002ad2d5ed8a2366247fd7b\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/46f51c476b94d0f9ee7b726a17cf03e9b9e7d77c1c4d74bb9242ef3b4e82c441\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/47c88d09c9afefc861313048939d8fcc3818b812738ef1df54cb94dcc529e1ef\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/49dc15714c7205535f5dc61c84f036f3737f7edb105bd811c8bf5d8ae554ab0e\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/4a65f2555364011e0f8185dd15748af33a8d4e2de105754281b666254eee5d45\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/4a8a38a4bf413a55a8106e5311797f355e8795ade4d5d13068743aee2f472d41\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/4c7ab1e58eb7cb64af34c1557ebda6545eec5f2fe3ac43c77119244130d74b6e\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/50b3159780dd70d5ea1c6354b541f0168c1430b6ce464b1a00d88114efb501cb\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/52788b0ed35fbe55d3230438de805ce87c7d5de2c992e1e4ec44da6d8f3e0140\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/5616e09e71b2520419f47c5b2aeeff875f0ee6ae09caddc243e9ef1933ceb23a\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/5629f08e88a54cdb6a522905cf2982be5def91aae29021675224ac9f7799fba6\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/569fe7cad1524d64729ec2824bf8531a8ae03322067467f1cff1379bf35179f5\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/589fc50814c5ccac706bf1cbb48f508867cafb577c8cd9386ac85568f2f5f74e\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/59e67686aea08d99b9693049e71b1827fd32f917f682c1e848fa844d04ac5d81\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/5aed803f70f197acfaecb86b38dc5db9cae007bd338a11f76b805cb2a24a035d\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/5bb23b804d84bfe0dcaff394ad185f4cdf4fa86527ca6257f006dfe1eb43e719\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/5d1ad209e8081b401df4fd7d8af1b3d27bc03bdce0ff78f8a63551ff2ce6c4d8\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/5fedd4541d834677c7c32e9eb6839b38dccaa7c6b569a7508113b57522f2a66a\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/61eac747e2859d2101c1e86cdbeed9e07335738a70935adf13974e722a9b9dd8\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/62a6c37721e4c05fff3cace6f73ceda44bef62bcbe4e01236e404f944d11a2b2\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/650cb39df6e7a538dc30b4cc7a5ffaf72dfff63eca20a1b8224d7a1f5535069c\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/67c4782f1206b6149a65087f1e7adb0acc5531f003f1c029dfe249cf1afacc8a\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/69acd0a53418adadd70dd0dbdd13b036c603bcf5e274168852b5a3ddbc838106\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/6a6c3a305e359c53788b6053e357589de523ce3bfd1469c220dd3d315c728577\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/70cb5ade496cd33a4645cc98b6085c7a74e708aa67ff82b3f20b1ac2a996d7f5\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/7618f103c5fa6b580555876893f4b83b2f0af6ad53182caa0428280f9acefc46\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/7a641b87d01dbff998a04c1d36d09ab406cb1883e18e226ed08ba4aaa264aeaf\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/7aef602c6b2bdf636af5007c786f661e67c0d757bfbb9f10bb449bad75bb44da\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/7c9b05630447a17d12787d091f1af5720e75b00e42274946d0506b1f337ca0d7\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/7d30559c4574c0e0d4d4610d3cfafe14608910fca915400a1aa784cfef145f32\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/7d89a63f066a6d6712bdae88aff7cb5e509746e728e974f012f61956c46140a6\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/81836526a211033c335526cef190a50b6107844fbc6518ed8bc6907edb314c14\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/82a48368a55dffb87d303787f6e16de9edcf747251bbe68ecc3690707b0545e5\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/8483f999b2f84edbafe6d54352dcfbaa793b1bc2ee6673daa9666c493405d1be\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/850a6443db83cd9093e986e61eafbf84a546a81e28a1da7f1a07c6a3cea1281c\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/8e0cdaa23012d4a2daeaa85a3b140edee50c4761fb1b490871c0c39bd7e5a92a\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/906fe26e99be4f8b9475852d032d5290a64755076fc450d13afb35b94a5bd225\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/9363f3c4c71d294a0204b31fd6125eaf7f8c71afde5f44a13fa1d3ab79265365\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/998d968a49422ca776c25619302ac161aa5c663d32ab8a4ae84b8db3163640d8\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/9b136f652229780b7c0160ff5950f746c940a151795dda33b13abacdfeb6fe56\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/9f394ebb0af32d538ab59c9c3a4713e66fc8d0fc15f97ecf2bc15076173959f5\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/9f8f9ec97d9d47e165d35319c9a4b968c97fc98e9c2e7a9d83e9dd45cca62414\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/a224161c20ab49424512a7ad237e1f63626f9fddd8eeebfebf803d7c2109db5e\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/a4e07084f3a9bc208bf4b756fbdb51c66546dbc452beb77a273a49d9b06877b6\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/a533b6e783d49e8d84743a143a1db0987ee9b95c1fe18c3cf4fc98147c45cc08\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/a53a90d54d70983557edfb389adf40be40220df176871402678ce4a59c0918af\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/a85acff101a51cf63e0c36753019a0e0014020753133d076de04583cfd3be617\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/a9c43a84282a02c3258236c74d9da10dce28ff785f60c8806d079602c0c6a937\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/af6f825b49609b013f0bb1efbd6b6b7af8a5addd23ca0c131eac05d2c97983be\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/b152132a83b3ff9eb68bb9fdf087961d8a833f4a5779378a5ebd0c2770eb9ff6\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/b3a6a49eb1255cc8653ef239b19f5dba3de937b11bb9ac513f47462c074f7dd7\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/b9bfcace8aa76435010fdfd1e4146d8410851c4e862eb4adb99c2bea932d8593\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/ba8194f5ee07c75a096289720d4659da36db04fa62638151ef5efc6097aaf14d\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/bb04cfb420b11c2665b412d91b13ec8bb29a535742611b97715e83610ba0eaad\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/bc6ec5843d6913e660fa0c38b305e9ae03e4060a5aa085817ce2e0aca1c65abe\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/bd4761329a4998b9a153549da690096b05de6f994b49d446fbd1e91a76eea9f1\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/be1d7c457375aeaeba4f019ff5c6714a2dfdae6fbab941ea527cafdd5642aafe\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/c59ad4fe37c08967f0cec0c460b866260d2f0f7c17fc427f3e7ee37ec41df1e9\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/c617630f1840dab3bb607cdb69a536687ad2a7547631beb08fb83cb94d98b2f6\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/cb103caef1efadeb392b3746facc643773a0cc64f70803df01ace6c7ce3bb60e\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/cb298e55be7c7274825ca64e856e408e7845f3deac6d39d0988b8fa87e2e60f7\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/cbebcaf2a5dc93213dbf7924074d34bc0742d90e1ca86afcf22ca85b4ee028ac\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/cbf62502b1fadb09e03f7f1e5a3da8f210857a4f3a4fcf1c2af218bf5c64b300\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/cf90f681817dbcf2ef6fe1c123e719b654b78ff520880502cd1331421da7af50\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/d29e618e1e6817229f5d30e95fb671ab5e523f7b78617297ee1e9bc6a2443563\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/d2aa0588ece90ed21396b70e50ec78055226e2ca43ab86a8a21002f7754ae98d\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/d3bb9df934cd8567ce0b1a05e5fb0f9395116f2ddbb605576229c65bafd1e0c8\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/d7f43dedadbdf7a80da94389db84dd03e979160cae632d046d21e9f7475a8541\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/dea957275bc332da529d5527f6772839c2a5cd1df31966f2970416559febd664\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/e1f17aa7c03f44200bee00e59e6bfebad385ac628b9fabc35a0fc50d8531178e\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/e3299bedcaae73f8ef97098b7e608c450863be6182d5c99a24f0df28a9b51baf\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/e8db56d732140538c606412a114d0b5a5cd9aeda125b8645f67bbd5b860ce3cc\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/ea313c02efd8769c424d3bfb5a4cb4f1524dea209e33c06b21229523982ff843\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/eedaf4b7d443d447906265748e1a27ce55f7c0cd95d0ccd60ebd55e8f45703f3\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/f0640c7b66e5afa71389331fe3127f54b9350507fea25df515e503fab5714334\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/f0f9d4d99c1973329bfce52918d82137e923cf8dd0ac27775f418112fb371891\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/f712a845bf589d0cd2d41349e34a88b91d6217d289da77f8143881075622be01\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/f894fd9ee5f164d0f7057f3f160822b06d26e147998e5dea73f789d53de83627\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/fd2011faef0bc97c73e5fa178e57d3fe81e99b6a07413baad38e3a88b0fd6786\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/ffe183fa550237f01950a87ab84fa5a7534938e05f129cbdf8af759526429c86\",\n      \"status\": \"INCOMPLETE\"\n    },\n    {\n      \"attempts\": 0,\n      \"episode_id\": \"cni://episode/evolution/99592969a90cf4d04a28a62078da69624ed812eb4f24e188c477b067d3c966f7\",\n      \"status\": \"INCOMPLETE\"\n    }\n  ]\n}\n",
+      "output_sha256": "b5bca0a89592fd2ea32cf80e61027b00cee63a79e372b596b5525da782cc7308",
+      "finished_at": "2026-09-21T02:14:54.162456+00:00"
+    },
+    {
+      "name": "status",
+      "command": "python -m libs.evolution --state /tmp/buildanddo-evolution-final.sqlite status --human",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "CITADEL VERIFIED EVOLUTION\n\nEvents observed: 252\n\nEPISODES\n  incomplete               101\n  complete                 0\n  verified                 0\n\nLEARNING\n  discovered               0\n  hypothesis               0\n  candidate                0\n  replay_pass              0\n  shadow                   0\n  verified_capability      0\n  tokenless_preferred      0\n  watch                    0\n  disabled                 0\n\nCOGNITION\n  tokenless                UNMEASURED (0/0)\n  local_model              UNMEASURED (0/0)\n  frontier_model           UNMEASURED (0/0)\n  unresolved               UNMEASURED (0/0)\n\nSAFETY\n  authority expansions     0\n  execution effects        none; proposals only\n\nDELTA\n  {\"reason\": \"no earlier local epoch\", \"status\": \"UNMEASURED\"}\n\nNEXT\n  Capture independently reviewed episodes before discovering capabilities.\n",
+      "output_sha256": "fdf2611bff6d9be471481e40a3ca9790ed82aeb093e1bf03a6a5a4ca335c97a0",
+      "finished_at": "2026-09-21T02:15:40.287809+00:00"
+    },
+    {
+      "name": "status_second",
+      "command": "python -m libs.evolution --state /tmp/buildanddo-evolution-final.sqlite status",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "{\n  \"cognition\": {\n    \"FRONTIER_MODEL\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"LOCAL_MODEL\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"TOKENLESS\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    },\n    \"UNRESOLVED\": {\n      \"denominator\": 0,\n      \"numerator\": 0,\n      \"value\": null\n    }\n  },\n  \"delta\": {\n    \"current_events\": 252,\n    \"previous_events\": 252,\n    \"scope\": \"Cumulative request mix, not an accuracy comparison on a fixed corpus.\",\n    \"status\": \"OBSERVED_ROUTING_MIX\",\n    \"tokenless_share_delta\": null,\n    \"verified_capability_delta\": 0\n  },\n  \"episodes\": {\n    \"COMPLETE\": 0,\n    \"INCOMPLETE\": 101,\n    \"VERIFIED\": 0\n  },\n  \"epoch_root\": \"5790692b4578c1b3b8b56149d90c8115887ad2398c5b8a5ebd305c3c739fe318\",\n  \"events\": 252,\n  \"learning\": {\n    \"CANDIDATE\": 0,\n    \"DISABLED\": 0,\n    \"DISCOVERED\": 0,\n    \"HYPOTHESIS\": 0,\n    \"REPLAY_PASS\": 0,\n    \"SHADOW\": 0,\n    \"TOKENLESS_PREFERRED\": 0,\n    \"VERIFIED_CAPABILITY\": 0,\n    \"WATCH\": 0\n  },\n  \"next\": [\n    \"Capture independently reviewed episodes before discovering capabilities.\"\n  ],\n  \"previous_root\": \"e8a9db876adfd3fcb0eebafa8842aa2a25a0a98d27a13f09852f3d77c09c4a0b\",\n  \"recorded_at\": \"2026-09-21T02:19:03.155201+00:00\",\n  \"safety\": {\n    \"authority_expansions\": 0,\n    \"causal_claims\": 0,\n    \"scope\": \"Validated retained local proposals and competence history; no execution or live attestation.\",\n    \"unsafe_promotions\": 0\n  },\n  \"scope_id\": \"buildanddo-public\"\n}\n",
+      "output_sha256": "0ac52a2617e4055ca9eb269278a83f257aa17a3215f2bd08b72edee7cf67bc75",
+      "finished_at": "2026-09-21T02:19:03.716365+00:00"
+    },
+    {
+      "name": "boundary",
+      "command": "python scripts/ci/verify_public_boundary.py",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "{\n  \"state\": \"PASS\",\n  \"files_checked\": 1135,\n  \"failures\": [],\n  \"actor\": null\n}\n",
+      "output_sha256": "89792888e82398c5262f254312114e1e68d6692243388c66da7521b424d7f08c",
+      "finished_at": "2026-09-21T02:23:49.864553+00:00"
+    },
+    {
+      "name": "agent_context",
+      "command": "python scripts/ci/agent_context.py --check",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "PASS: .bits/context.lock.json matches the repository (6 findings, 4 unwired gates).\n",
+      "output_sha256": "5917495f092702e7df9dcbcdf0b22d6e4f043ad885a3d84319c3bc4b76dfa38c",
+      "finished_at": "2026-09-21T02:23:52.794576+00:00"
+    },
+    {
+      "name": "readiness",
+      "command": "python scripts/ci/hostinger_readiness.py --check",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "PASS: all eleven milestones retain current rationale, owners, checks and next steps.\n",
+      "output_sha256": "7799e54ef92ae57c822cdc3c86f8b0a27b57ea4cc0825d813de3e0ae6969cfd1",
+      "finished_at": "2026-09-21T02:23:52.523574+00:00"
+    },
+    {
+      "name": "submission",
+      "command": "python scripts/ci/submission_readiness.py --check",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "PASS: eleven internal submission checkpoints; official rules remain explicitly unknown.\n",
+      "output_sha256": "f67a6b0785d6eb8c1010f942b404ff5ed35157c2532d7241de173a9447ab6038",
+      "finished_at": "2026-09-21T02:23:52.498574+00:00"
+    },
+    {
+      "name": "secret_prefixes",
+      "command": "python .bits/out/VCC-BUILDANDDO-EVOLUTION-001/verify.py --secret-scan",
+      "exit_code": 0,
+      "status": "PASS",
+      "output": "PASS: 36 changed files; no credential prefixes detected.\n",
+      "output_sha256": "59cc0c7633e003c2108c78694c754de89762f158b90f49dbd3be9f02a323fa05",
+      "finished_at": "2026-09-21T02:23:52.379573+00:00"
+    }
+  ],
+  "tests": {
+    "evolution": 63,
+    "semantic_twin": 122,
+    "synthetic_receipts": "Source fixtures only; no live outcome or identity attestation"
+  },
+  "coverage": {
+    "method": "Python stdlib trace executable lines; unfiltered run",
+    "branch_coverage": "UNMEASURED",
+    "files": {
+      "libs/evolution/__init__.py": {
+        "covered": 1,
+        "total": 1
+      },
+      "libs/evolution/__main__.py": {
+        "covered": 4,
+        "total": 4
+      },
+      "libs/evolution/adapters.py": {
+        "covered": 259,
+        "total": 266
+      },
+      "libs/evolution/benchmark.py": {
+        "covered": 477,
+        "total": 519
+      },
+      "libs/evolution/candidate.py": {
+        "covered": 236,
+        "total": 243
+      },
+      "libs/evolution/cli.py": {
+        "covered": 342,
+        "total": 354
+      },
+      "libs/evolution/common.py": {
+        "covered": 71,
+        "total": 77
+      },
+      "libs/evolution/compiler.py": {
+        "covered": 289,
+        "total": 297
+      },
+      "libs/evolution/episode.py": {
+        "covered": 201,
+        "total": 202
+      },
+      "libs/evolution/event.py": {
+        "covered": 117,
+        "total": 118
+      },
+      "libs/evolution/loop.py": {
+        "covered": 183,
+        "total": 183
+      },
+      "libs/evolution/promotion.py": {
+        "covered": 372,
+        "total": 384
+      },
+      "libs/evolution/registry.py": {
+        "covered": 189,
+        "total": 193
+      },
+      "libs/evolution/replay.py": {
+        "covered": 216,
+        "total": 218
+      },
+      "libs/evolution/scorer.py": {
+        "covered": 148,
+        "total": 149
+      },
+      "libs/evolution/store.py": {
+        "covered": 207,
+        "total": 207
+      },
+      "scripts/citadel-evolve": {
+        "covered": 7,
+        "total": 7
+      }
+    },
+    "covered": 3319,
+    "total": 3422
+  },
+  "benchmark": {
+    "artifact": ".bits/out/VCC-BUILDANDDO-EVOLUTION-001/benchmark.json",
+    "summaries": [
+      {
+        "report_id": "cni://evaluation/evolution/31b950ecf33cfde904e965226ec8da689101b12ef58e2a461c7df3a32671e656",
+        "profile": "citadel.history-benchmark/1",
+        "scope_id": "buildanddo-public",
+        "evaluated_at": "2026-09-21T02:13:09.114207+00:00",
+        "cases": 100,
+        "corpus_digest": "d73b4c51bcf073279f5c810daebb1b263b05edb4f01e498a367c585ca7ab4340",
+        "reviewed_outcomes": 0,
+        "model_captures": 0,
+        "cases_with_unavailable_source": 25,
+        "structural_parent_resolution": {
+          "numerator": 1116,
+          "denominator": 1116,
+          "value": 1.0
+        },
+        "structural_prediction_coverage": {
+          "numerator": 100,
+          "denominator": 100,
+          "value": 1.0
+        },
+        "graph_scores": {
+          "subsystem_resolution": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "dependency_precision": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "dependency_recall": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "test_precision": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "test_recall": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "runtime_risk": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "failure_classification": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "repair_class_selection": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          }
+        },
+        "model_scores": {
+          "subsystem_resolution": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "dependency_precision": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "dependency_recall": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "test_precision": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "test_recall": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "runtime_risk": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "failure_classification": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "repair_class_selection": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          }
+        },
+        "latency_ms": 29161.725741,
+        "model_calls": 0,
+        "tokens": 0,
+        "effects_executed": 0,
+        "causal_identification": "UNMEASURED",
+        "limitations": [
+          "Parent-tree Python import closure is a static prediction, not measured dependency impact.",
+          "Changed paths are the declared input; new source and commit messages are not prediction inputs.",
+          "Missing pipeline, runtime, repair and model captures have no grading denominator.",
+          "Ordering and subsequent fixes do not establish causality."
+        ]
+      },
+      {
+        "report_id": "cni://evaluation/evolution/6efbabcaf307d20e90f8640df6dca18c8ffad79ba492919d5449e72da982ea25",
+        "profile": "citadel.history-benchmark/1",
+        "scope_id": "buildanddo-public",
+        "evaluated_at": "2026-09-21T02:14:54.516865+00:00",
+        "cases": 100,
+        "corpus_digest": "d73b4c51bcf073279f5c810daebb1b263b05edb4f01e498a367c585ca7ab4340",
+        "reviewed_outcomes": 0,
+        "model_captures": 0,
+        "cases_with_unavailable_source": 25,
+        "structural_parent_resolution": {
+          "numerator": 1116,
+          "denominator": 1116,
+          "value": 1.0
+        },
+        "structural_prediction_coverage": {
+          "numerator": 100,
+          "denominator": 100,
+          "value": 1.0
+        },
+        "graph_scores": {
+          "subsystem_resolution": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "dependency_precision": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "dependency_recall": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "test_precision": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "test_recall": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "runtime_risk": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "failure_classification": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "repair_class_selection": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          }
+        },
+        "model_scores": {
+          "subsystem_resolution": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "dependency_precision": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "dependency_recall": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "test_precision": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "test_recall": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "runtime_risk": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "failure_classification": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "repair_class_selection": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          }
+        },
+        "latency_ms": 10886.529212,
+        "model_calls": 0,
+        "tokens": 0,
+        "effects_executed": 0,
+        "causal_identification": "UNMEASURED",
+        "limitations": [
+          "Parent-tree Python import closure is a static prediction, not measured dependency impact.",
+          "Changed paths are the declared input; new source and commit messages are not prediction inputs.",
+          "Missing pipeline, runtime, repair and model captures have no grading denominator.",
+          "Ordering and subsequent fixes do not establish causality."
+        ]
+      }
+    ],
+    "delta": {
+      "status": "COMPARABLE",
+      "previous": "cni://evaluation/evolution/31b950ecf33cfde904e965226ec8da689101b12ef58e2a461c7df3a32671e656",
+      "current": "cni://evaluation/evolution/6efbabcaf307d20e90f8640df6dca18c8ffad79ba492919d5449e72da982ea25",
+      "graph_score_deltas": {
+        "subsystem_resolution": null,
+        "dependency_precision": null,
+        "dependency_recall": null,
+        "test_precision": null,
+        "test_recall": null,
+        "runtime_risk": null,
+        "failure_classification": null,
+        "repair_class_selection": null
+      },
+      "verified_outcome_delta": 0
+    }
+  },
+  "runtime_evolution": "UNMEASURED",
+  "local_capture": {
+    "git_events": 100,
+    "memory_assertions": 152,
+    "episodes_incomplete": 101,
+    "verified_episodes": 0,
+    "promoted_capabilities": 0,
+    "live_providers_configured": false
+  },
+  "limitations": [
+    "Typed fixture proofs exercise source contracts; exported identities still require receiving authentication.",
+    "No independently reviewed historical outcomes or captured model answers; accuracy and delta denominators stay unknown.",
+    "Twenty-five historical cases have incomplete local Python source context.",
+    "Existing UI, native backend and deployment acceptance was not rerun or claimed.",
+    "Chronological status describes retained local observations, not deployed learning or causal truth.",
+    "Local stdlib trace measures executable lines, not branches; the incomplete filtered trace is superseded."
+  ]
+}

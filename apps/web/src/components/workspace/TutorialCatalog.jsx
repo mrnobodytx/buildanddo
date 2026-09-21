@@ -12,13 +12,14 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/observability/mutations.js;
 //              CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/web/src/components/workspace/TutorialReader.jsx;
-//              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json
+//              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json;
+//              CONSUMES apps/web/src/lib/tutorialLearning.js; CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx; CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx
 // DAG Node:    none
 // Intent:      Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.
 // ───────────────────────────────────────────────────────────────
 
 import { MotionList } from '@/components/motion/MotionPrimitives';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Clock } from 'lucide-react';
 import curriculum from '../../../../pocketbase/pb_migrations/data/starter-tutorials.json';
 import government from '../../../../pocketbase/pb_migrations/data/government-submissions.json';
@@ -27,15 +28,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNotices';
 import TutorialReader from '@/components/workspace/TutorialReader';
+import InteractiveTutorial from '@/components/workspace/InteractiveTutorial';
+import TutorialGrowth from '@/components/workspace/TutorialGrowth';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { describeWriteError, useRecords } from '@/hooks/useWorkspaceRecords';
-import { workspaceCollection } from '@/lib/observability/mutations';
-import { lessonProgress, mergeTutorials, selectTutorials } from '@/lib/tutorialCurriculum';
+import { observeMutation, workspaceCollection } from '@/lib/observability/mutations';
+import { lessonProgress, mergeTutorials, selectTutorials, validLesson } from '@/lib/tutorialCurriculum';
+import { createTutorialLearningClient } from '@/lib/tutorialLearning';
 import pb from '@/lib/pocketbaseClient';
 
 const authoredLessons = [...curriculum.lessons, ...government.lessons];
-function CatalogView({ lessons, progress = [], progressKnown = false, canPersist = false, onSave, busy = '', error = '', saved = '', limit = 0, initialCategory = 'all', initialLesson = '', onLinkedLesson }) {
+function CatalogView({ lessons, progress = [], progressKnown = false, canPersist = false, onSave, onGuided, busy = '', error = '', saved = '', limit = 0, initialCategory = 'all', initialLesson = '', onLinkedLesson }) {
     const [query, setQuery] = useState('');
     const [category, setCategory] = useState(initialCategory);
     const [selected, setSelected] = useState(null);
@@ -70,7 +74,10 @@ function CatalogView({ lessons, progress = [], progressKnown = false, canPersist
                     <p className="text-sm leading-6 text-muted-foreground">{tutorial.summary}</p>
                     <p className="flex items-center gap-2 text-xs text-muted-foreground"><Clock className="h-3.5 w-3.5" aria-hidden="true" />About {tutorial.effort_minutes || 10} minutes</p>
                     {tutorial.prerequisites && <p className="text-xs leading-5 text-muted-foreground">Prerequisite: {tutorial.prerequisites}</p>}
-                    <Button size="sm" variant="secondary" className="mt-auto self-start" aria-label={`${action} ${tutorial.title}`} onClick={(event) => { opener.current = event.currentTarget; const bounds = event.currentTarget.closest('li')?.getBoundingClientRect(); origin.current = bounds ? { left: bounds.left, top: bounds.top } : null; setSelected(tutorial.catalogueKey); }}>{action} lesson</Button>
+                    <div className="mt-auto flex flex-wrap gap-2">
+                        {onGuided && tutorial.persistedId && validLesson(tutorial.lesson) && <Button size="sm" disabled={!progressKnown || Boolean(busy)} aria-label={`Start interactive tutorial: ${tutorial.title}`} onClick={(event) => onGuided(tutorial.persistedId, event.currentTarget)}>Interactive tutorial</Button>}
+                        <Button size="sm" variant="secondary" aria-label={`${action} ${tutorial.title}`} onClick={(event) => { opener.current = event.currentTarget; const bounds = event.currentTarget.closest('li')?.getBoundingClientRect(); origin.current = bounds ? { left: bounds.left, top: bounds.top } : null; setSelected(tutorial.catalogueKey); }}>{action} lesson</Button>
+                    </div>
                 </Card></li>;
             })}
         </MotionList>}
@@ -78,6 +85,7 @@ function CatalogView({ lessons, progress = [], progressKnown = false, canPersist
         {current && <TutorialReader key={current.catalogueKey} tutorial={current}
             completed={lessonProgress(progress, current.persistedId)?.status === 'completed'}
             canSave={canPersist && progressKnown && Boolean(current.persistedId)} busy={Boolean(busy)} error={error} saved={saved}
+            onGuided={onGuided && current.persistedId && progressKnown ? () => { setSelected(null); onGuided(current.persistedId, opener.current); } : undefined}
             onSave={(status) => onSave?.(current, status)} onClose={() => setSelected(null)} opener={opener.current} origin={origin.current} />}
     </div>;
 }
@@ -89,9 +97,25 @@ function SignedInCatalog({ userId, limit, initialCategory, initialLesson }) {
     const [writeError, setWriteError] = useState('');
     const [saved, setSaved] = useState('');
     const [openedLink, setOpenedLink] = useState('');
+    const [guided, setGuided] = useState(null);
+    const [growth, setGrowth] = useState({ data: null, loading: true, error: '' });
+    const growthRequest = useRef(0);
     const saving = useRef(false);
     const mounted = useRef(true);
     useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+    const learning = useMemo(() => createTutorialLearningClient({ client: pb, accountId: userId,
+        isCurrent: () => mounted.current, observe: observeMutation }), [userId]);
+    const refreshGrowth = useCallback(async (page = 1) => {
+        const request = ++growthRequest.current;
+        setGrowth((before) => ({ ...before, loading: true, error: '' }));
+        const result = await learning.read('', page);
+        if (!mounted.current || request !== growthRequest.current || result.reason === 'scope_changed') return;
+        setGrowth(result.ok ? { data: result.data, loading: false, error: '' } : { data: null, loading: false, error: result.error });
+    }, [learning]);
+    useEffect(() => { refreshGrowth(); return () => { growthRequest.current++; }; }, [refreshGrowth]);
+    const openGuided = (tutorialId, opener) => setGuided({ tutorialId, opener,
+        client: createTutorialLearningClient({ client: pb, accountId: userId,
+            isCurrent: () => mounted.current, observe: observeMutation }) });
     const lessons = mergeTutorials(tutorials.records, authoredLessons);
     const progressKnown = !progress.loading && !progress.degraded && !tutorials.loading && !tutorials.degraded;
     const saveProgress = async (tutorial, status) => {
@@ -118,13 +142,16 @@ function SignedInCatalog({ userId, limit, initialCategory, initialLesson }) {
         }
     };
     return <div className="ph-no-capture space-y-5" data-dd-privacy="mask">
+        <TutorialGrowth {...growth} onRefresh={refreshGrowth} onOpen={openGuided} />
         <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{authoredLessons.length} authored lessons plus your shared catalogue.</p><Button size="sm" variant="secondary" disabled={tutorials.loading || progress.loading || Boolean(busy)} onClick={() => { tutorials.refresh(); progress.refresh(); }}>Refresh lessons</Button></div>
         {tutorials.degraded && <DegradedNotice message="The lesson catalogue is unavailable. Showing the bundled starter curriculum; progress cannot be saved." onRetry={tutorials.refresh} />}
         {progress.degraded && <DegradedNotice message="Your saved progress is unavailable. You can read lessons; retry before saving progress." onRetry={progress.refresh} />}
         {!tutorials.loading && !tutorials.degraded && lessons.some((lesson) => !lesson.persistedId) && <p className="text-sm leading-6 text-muted-foreground">Starter previews are ready to read. Apply the tutorial catalogue migration to save progress for lessons not yet installed.</p>}
         {tutorials.loading ? <ListSkeleton label="Loading lessons…" /> : <CatalogView lessons={lessons} progress={progress.records} progressKnown={progressKnown}
-            canPersist onSave={saveProgress} busy={busy} error={writeError} saved={saved} limit={limit} initialCategory={initialCategory}
+            canPersist onSave={saveProgress} onGuided={openGuided} busy={busy} error={writeError} saved={saved} limit={limit} initialCategory={initialCategory}
             initialLesson={openedLink === initialLesson ? '' : initialLesson} onLinkedLesson={setOpenedLink} />}
+        {guided && <InteractiveTutorial key={guided.tutorialId} tutorialId={guided.tutorialId} client={guided.client} opener={guided.opener}
+            onClose={() => setGuided(null)} onSaved={() => { refreshGrowth(); progress.refresh(); }} />}
     </div>;
 }
 

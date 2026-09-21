@@ -13,7 +13,7 @@
 // EnumType:    Adapter
 // EnumEdges:   PRODUCES datadog.rum.session; CONSUMES import.meta.env;
 //              TRIGGERS apps/web/src/lib/observability/report.js
-// Intent:      Own the Datadog browser SDK configuration for buildanddo.tech -
+// Intent:      Own the Datadog browser SDK configuration for buildanddo.com -
 //              sampling, trace propagation into the PocketBase backend, and the
 //              scrubbing rules applied before any event leaves the browser.
 // ───────────────────────────────────────────────────────────────

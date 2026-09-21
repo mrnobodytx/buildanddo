@@ -20,6 +20,111 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Four-gap completion authorized 2026-09-21
+
+Owner request: build all four remaining gaps identified after the merged
+development-loop integration. Continue local A2 source work on the session
+branch; preserve external authority and independent verification requirements.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| FC-1 | Repair acceptance failures and use available locked dependencies | Actual source/web/native acceptance receipts | source PASS: 510 Node tests; final acceptance and unavailable dependencies recorded in four-gap-report.md |
+| FC-2 | Make real prediction/run evidence portable for independent qualification | Review admission, source/log tamper and promotion regressions | source PASS: portable evidence, separate trust inputs; real independent grading remains a receiving gate |
+| FC-3 | Connect same-candidate acceptance, deployment, browser and product inputs | Candidate continuity and evidence rejection tests | source PASS: raw receipts, all profiles, ordered browser observations and separate product proofs are revalidated |
+| FC-4 | Assemble and audit submission materials through existing validators | Closure tests, readiness contracts and retained report | source PASS: 67 focused tests; runtime submission HOLD, detailed in .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md |
+
+Memory brief: PR 62 provides working adapters but zero independently graded
+pairs. The prior acceptance result was 3/18 PASS, four FAIL, one HOLD and ten
+BLOCKED; Node migration fixtures omitted the PocketBase `$filepath` host API.
+The source checkout was fast-forwarded to locally available merged main before
+this continuation. Do not recycle old evidence as a new candidate's acceptance
+or substitute local producer checks for independent reviewer or owner decisions.
+
+## Workspace assistant continuation authorized 2026-09-20
+
+The owner extends the eleven-checkpoint submission build with a persistent
+workspace assistant. Use the existing application shell, native PocketBase user
+authentication, current workspace roles and collection record rules. Preserve
+per-account, per-workspace session and knowledge isolation. The assistant may
+navigate registered platform routes, propose and fill visible nonsensitive form
+fields, and invoke existing governed commands with the current user identity.
+Reviewed effects retain the existing approval and independent verification gates.
+Model text, retrieved records and learned patterns never grant authority.
+
+Persist each session and its observed action patterns as user-owned knowledge;
+keep proposed, applied, failed and independently verified states distinct. Do not
+capture passwords, authentication material, hidden fields or arbitrary page text
+as patterns. Account/workspace changes cancel outstanding proposals and responses.
+Use an explicitly configured server-side inference binding; a missing binding
+must be visible, never replaced by fabricated model responses. Provide source,
+connected-client and native/browser tests with unexecuted runtime gates reported.
+This source continuation does not activate providers, read deployed credentials,
+launch a private agent, or authorize external effects outside approved missions.
+
+## Eleven-checkpoint completion authorized 2026-09-20
+
+Owner request: devise safe internal submission rules and build all eleven
+remaining day 1–21 checkpoints exhaustively. This continues the registered A2
+source dispatch and retains separate receiving authority for external effects.
+
+| Phase | Day | Task | Gate | Status |
+|---|---|---|---|---|
+| SC-01 | 1 | Reproducible acceptance and internal submission policy | Submission and readiness suites | source implemented — policy, strict receipt admission and required coverage gate; hosted/deployed acceptance pending |
+| SC-02 | 3 | Atomic, recoverable onboarding | Onboarding backend/client/rendered cases | source verified — atomic setup, stable retry and account-scoped form; rendered/native cases authored |
+| SC-03 | 5 | Retained schema, isolation and restart | Both native workspace profiles | schema and six native cases authored — both required runtimes unavailable locally |
+| SC-04 | 7 | Public-source ingestion and signal provenance | Connector and signal regressions | source verified — current binding, source bytes, deduplication and durable proposal; live source pending |
+| SC-05 | 9 | Bounded approved business actions | Action lifecycle and authority cases | source verified — native ERP effect and bounded external jobs with uncertainty HOLD; deployed loop pending |
+| SC-06 | 11 | Executable workflow steps and durable recovery | Workflow/action integration cases | source verified — frozen executable steps, approval, cancellation and receipt recovery |
+| SC-07 | 13 | Firecrawl/n8n request, health and result adapters | Portable adapter negative controls | source verified — Firecrawl/n8n transport, health and receipt adapters; live bindings remain receiving work |
+| SC-08 | 15 | ERP action outcomes and scoped links | Business and connected native cases | source implemented — executed task links its mission and evidence; native/browser acceptance pending |
+| SC-09 | 17 | Immutable reviewed evidence and release truth | Evidence tamper/review regressions | source verified — reviewed/executed evidence immutable, exact snapshot retained and release context bound |
+| SC-10 | 19 | Correct editions and specialist desks | Digest, desk and rendered cases | source implemented — review-time digest, unavailable states, eight desk links, personal assistant and working room modes |
+| SC-11 | 21 | Inspectable replay and submission dossier | Replay/submission admission suites | source verified — replay/submission validators reject missing native receipts, official terms and acceptance; entry remains HOLD |
+
+Memory brief: the audit reproduced onboarding's browser-connected service
+rejection, duplicate partial setup, mutation of verified evidence and false
+edition digest conclusions. PRs 56 and 57 are the retained merged baseline.
+Existing source tests use explicit doubles; frontend dependencies and both
+PocketBase binaries are absent. Previous hosted failures report an account
+billing lock, with a separate unresolved Cloudflare failure. Never replace these
+gaps with simulated acceptance or invented competition requirements.
+
+Observed continuation: all eleven checkpoints have concrete public source and
+reviewable receiving steps in `docs/submission-guide.md`. The assistant uses
+native account/workspace roles and locked personal stores; plans remain inferred
+until the user applies them, and observed patterns confer no authority. Source
+and Chromium DOM fixtures passed after correcting wrapping-select label capture.
+The required worker/submission gate runs 32 cases and measures more than 93%
+statement coverage in both new Python modules. Full React, both native versions,
+provider bindings, deployment and official-rule acceptance remain separate gates.
+Current exact results and retained failures are recorded in
+`.bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-implementation-report.md` and
+`sprint-validation.json`. No live seat event or runtime activation was performed.
+
+## Hostinger sprint closure authorized 2026-09-20
+
+The owner asks for the missing repository implementation and durable mandatory
+governance after the sprint assessment. Use the existing A2 scope; source work
+does not activate the private runtime or lift an operational acceptance hold.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| HS-1 | Bind all eleven milestones to rationale, owners, checks and next actions | `python scripts/ci/hostinger_readiness.py --check` | implemented — current source binding is required; runtime acceptance remains separate |
+| HS-2 | Capture local acceptance and validate scoped replay/milestone evidence | `python -m unittest tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay -v` | source verified — empty/skipped checks, stale or altered evidence, foreign scope and synthetic milestone claims are rejected |
+| HS-3 | Connect signals to replayable proposals and independent mission review | Focused mission/research Node and rendered tests | source verified — atomic proposal, stable recovery and separate review; rendered acceptance requires the frontend toolchain |
+| HS-4 | Add the connected native workspace journey to both runtime gates | `python tests/upgrade/test_workspace_native.py --require-binary` | authored and required in CI — three connected native cases; execution requires installed PocketBase 0.28.4 and 0.39.8 |
+| HS-5 | Enforce rechecks in agent context, CI and contribution flow | Context, readiness and boundary checks | implemented — mandatory recheck and source review; the hosted runner remains billing-blocked |
+| HS-6 | Record observed results, remaining receiving work and preserved memory | Dispatch memory validator and closure report | see .bits/out/VCC-BUILDANDDO-UPGRADE-001/hostinger-report.md for current evidence and retained external gates |
+
+Memory brief: the September 20 assessment found substantial source coverage
+across all eleven milestones but no local verified sprint state. PR 56's
+tutorial work is already merged and must be preserved. Source tests are not
+native or deployed acceptance. The first runtime proof remains one bounded
+BuildAndDo staging loop with separate producer/verifier and outcome readback.
+Candidate check 105834583008 and telemetry check 106077221075 identify an account
+billing lock before runner startup. Do not invent a code repair or successful
+rerun for that condition. Retain the private operator handoff and prior events.
+
 ## PR 40 main integration authorized 2026-09-18
 
 The owner requests merging the latest main into the existing PR branch,
@@ -632,6 +737,30 @@ The first source inspection confirms Discord.py, pypdf and the native PocketBase
 executable are absent. Do not infer activation from merges or fixture results.
 No seat message is fabricated. The initial dossier scope is private to each
 canonical user, with explicit entry and no passive Discord collection.
+
+## Interactive learning continuation — 2026-09-19
+
+Owner request: an interactive tutorial that awards a completion certificate,
+updates personal progress and contributes to persistent growth. Authority: the
+existing A2 learning scope; local source and disposable test fixtures only.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| TL1 | Persist versioned checkpoints and atomic completion/certificate receipts | `node --test tests/upgrade/tutorial-learning-system.test.mjs` | PASS for source contracts |
+| TL2 | Add guided interaction, resume, certificate download and growth feedback to the shared Field Manual | `node --test tests/upgrade/tutorial-learning-client.test.mjs`; targeted component tests | source complete; rendered acceptance blocked by missing Vitest |
+| TL3 | Validate isolation, retries, native migration retention and browser behavior | native tutorial-learning tests; web lint/build | contract and certificate browser checks PASS; native/Vite/ESLint dependencies missing |
+| TL4 | Record evidence and remaining runtime requirements | context, boundary and dispatch-evidence checks | evidence in learning-report.md; no live backend changes |
+
+Memory brief: all 33 authored lessons already have structured sections, practice
+and knowledge checks. Existing tutorial_progress stores account learning history,
+but old browser checks do not establish an assessed completion. Mission learning
+points are educational; contributor_reputation XP/TP require independent audit
+outcomes and must not receive tutorial credit. Preserve those distinctions.
+
+The existing PocketBase CI matrix now requires native tutorial auth, concurrent
+completion and retained down/up history on both declared versions. Its `ci:test`
+description is updated in AGENTS.md and ProgressionPipeline. Configure no new
+provider or deployment. Recorded validation: `.bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-report.md`.
 
 ## Authorization and objective
 

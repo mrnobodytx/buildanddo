@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- CGRF: SRS-BUILDANDDO-UPGRADE-001 | VCC-BUILDANDDO-UPGRADE-001 | BITS-CODEGEN | Citadel Nexus Inc. | CK: pending | CAPS: pending -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://buildanddo.tech/</loc></url>
-  <url><loc>https://buildanddo.tech/platform</loc></url>
-  <url><loc>https://buildanddo.tech/practice</loc></url>
-  <url><loc>https://buildanddo.tech/roadmap</loc></url>
-  <url><loc>https://buildanddo.tech/pricing</loc></url>
-  <url><loc>https://buildanddo.tech/about</loc></url>
-  <url><loc>https://buildanddo.tech/classrooms</loc></url>
-  <url><loc>https://buildanddo.tech/docs</loc></url>
-  <url><loc>https://buildanddo.tech/blog</loc></url>
-  <url><loc>https://buildanddo.tech/contact</loc></url>
+  <url><loc>https://buildanddo.com/</loc></url>
+  <url><loc>https://buildanddo.com/hostinger-challenge</loc></url>
+  <url><loc>https://buildanddo.com/platform</loc></url>
+  <url><loc>https://buildanddo.com/practice</loc></url>
+  <url><loc>https://buildanddo.com/roadmap</loc></url>
+  <url><loc>https://buildanddo.com/pricing</loc></url>
+  <url><loc>https://buildanddo.com/about</loc></url>
+  <url><loc>https://buildanddo.com/classrooms</loc></url>
+  <url><loc>https://buildanddo.com/docs</loc></url>
+  <url><loc>https://buildanddo.com/blog</loc></url>
+  <url><loc>https://buildanddo.com/contact</loc></url>
 </urlset>

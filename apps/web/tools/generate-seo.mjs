@@ -61,7 +61,7 @@ export function generatePublicAssets(directory) {
 # Intent:      Publish the same public route catalogue for text-based discovery.
 # ───────────────────────────────────────────────────────────────
 -->
-# BuildAndDo\n\nA business newspaper built around sources, scoped missions and evidence.\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
+# BuildAndDo\n\nA daily learning edition built around sources, scoped missions and evidence.\n\n## Community and store\n\n- [r/buildanddo on Reddit](https://www.reddit.com/r/buildanddo): the public community.\n- [Playbooks and courses on Gumroad](https://citadelnexus.gumroad.com): the Citadel Nexus store.\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
     );
 }
 

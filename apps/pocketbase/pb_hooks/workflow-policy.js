@@ -15,7 +15,7 @@
 // Intent:      Enforce workspace roles and bounded saved workflow definitions before a run can record evidence.
 // ───────────────────────────────────────────────────────────────
 
-const KINDS = ['read', 'transform', 'approval', 'notify', 'record'];
+const KINDS = ['read', 'transform', 'approval', 'notify', 'record', 'execute'];
 const OPEN = ['running', 'awaiting_approval'];
 
 function invalid(message) {
@@ -42,12 +42,15 @@ function steps(value, required = false) {
         invalid('Use up to 20 steps and add at least one before activating or starting a workflow.');
     const ids = new Set();
     return value.map((step) => {
-        if (!fields(step, ['id', 'name', 'kind', 'detail']) ||
+        if (!fields(step, ['id', 'name', 'kind', 'detail', 'action']) ||
             !text(step.id, 64) || !/^[a-zA-Z0-9_-]+$/.test(step.id) || ids.has(step.id) ||
             !text(step.name, 160) || !KINDS.includes(step.kind) || !text(step.detail, 300, false))
             invalid('Each step needs a unique identifier, a name, a listed kind and a short detail. Edit and save legacy steps first.');
         ids.add(step.id);
-        return { id: step.id, name: step.name.trim(), kind: step.kind, detail: step.detail.trim() };
+        const result = { id: step.id, name: step.name.trim(), kind: step.kind, detail: step.detail.trim() };
+        if (step.kind === 'execute') result.action = require(`${__hooks}/business-action-policy.js`).action(step.action);
+        else if (Object.hasOwn(step, 'action')) invalid('Only executable steps may carry an action.');
+        return result;
     });
 }
 function authenticated(e) {

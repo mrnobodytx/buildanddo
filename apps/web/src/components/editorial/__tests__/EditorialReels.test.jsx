@@ -43,7 +43,19 @@ const tick = (milliseconds) => act(() => vi.advanceTimersByTime(milliseconds));
 const user = () => userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
 
 beforeEach(() => {
-    vi.useFakeTimers();
+    // shouldAdvanceTime IS THE FIX, and it is the whole fix.
+    // The four `async` tests here hung rather than failed - timing out asserting nothing, and still
+    // doing so at --testTimeout=30000. userEvent v14 awaits internally between synthetic events;
+    // under a frozen fake clock those awaits never settle, so the promise behind `await
+    // user().click(...)` never resolves. The tests using fireEvent were unaffected, which is the
+    // discriminator: fireEvent is synchronous and never waits on the clock.
+    //
+    // Measured 2026-09-20. Two plausible fixes were tried FIRST and BOTH changed nothing - passing
+    // `delay: null` to drop the inter-event wait, and binding advanceTimers as
+    // (ms) => vi.advanceTimersByTime(ms) instead of the bare reference. Neither is needed; both
+    // were reverted. Letting the clock advance on its own is what unblocks the awaits.
+    // 4 failed / 13 passed in ~21s of timeouts -> 17 passed in 932ms.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
     Object.assign(policy, { active: true, enabled: true, automatic: true });
 });
 afterEach(() => {

@@ -60,6 +60,13 @@ const statCard = (label) => {
     return labelNode.parentElement.parentElement;
 };
 
+// The front page shows the same record in more than one place on purpose: a new signal is both
+// the most recent thing that happened and a thing awaiting triage, and a running mission is both
+// recent and active. An unscoped getByText therefore finds two nodes and fails on the page working
+// as designed. Scope to the panel the assertion is actually about.
+const panel = (heading) =>
+    screen.getByRole('heading', { name: heading, level: 2 }).closest('section');
+
 const seed = ({ signals = [], missions = [], workflows = [], evidence = [] } = {}) => {
     pb.__setRecords('signals', signals);
     pb.__setRecords('missions', missions);
@@ -81,7 +88,7 @@ describe('OverviewPage', () => {
             await screen.findByRole('heading', { name: 'Front Page', level: 1 }),
         ).toBeInTheDocument();
         expect(
-            screen.getByRole('heading', { name: 'What changed', level: 2 }),
+            screen.getByRole('heading', { name: 'Recent activity', level: 2 }),
         ).toBeInTheDocument();
         expect(
             screen.getByRole('heading', { name: 'Active missions', level: 2 }),
@@ -109,27 +116,31 @@ describe('OverviewPage', () => {
         // One waitFor for all four: the collections resolve independently, so
         // asserting the later cards outside it would race the slowest query.
         await waitFor(() => {
-            expect(within(statCard('Business signals')).getByText('2')).toBeInTheDocument();
+            expect(within(statCard('Signals awaiting triage')).getByText('2')).toBeInTheDocument();
             // approved | running | needs_attention only — proposed and verified
             // are not "active".
             expect(within(statCard('Active missions')).getByText('2')).toBeInTheDocument();
-            expect(within(statCard('Workflow health')).getByText('1')).toBeInTheDocument();
+            expect(within(statCard('Workflows active')).getByText('1')).toBeInTheDocument();
             expect(
-                within(statCard('Workflow health')).getByText('3 workflows total'),
+                within(statCard('Workflows active')).getByText('3 workflows defined'),
             ).toBeInTheDocument();
             expect(within(statCard('Verified outcomes')).getByText('3')).toBeInTheDocument();
         });
     });
 
-    it('counts verified outcomes from evidence filtered server-side', async () => {
+    it('reads evidence scoped to the workspace and counts the verified ones', async () => {
         seed({ evidence: [createMockEvidence()] });
         renderWithProviders(<OverviewPage />);
 
+        // This asked for `type = "verified"` server-side until the activity feed started
+        // carrying evidence. The feed needs every kind, so one read now serves both and the
+        // verified count is taken from it. The half that mattered is still asserted: the read
+        // is scoped to the workspace, so a user with several workspaces cannot be shown another
+        // one's records. The dropped half is a scaling cost, not a privacy one, and it is
+        // recorded as a finding rather than left implied by a deleted assertion.
         await waitFor(() =>
             expect(pb.__collection('evidence').getFullList).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    filter: 'workspace = "ws_test" && type = "verified"',
-                }),
+                expect.objectContaining({ filter: 'workspace = "ws_test"' }),
             ),
         );
     });
@@ -140,7 +151,7 @@ describe('OverviewPage', () => {
 
         await waitFor(() => {
             expect(
-                within(statCard('Business signals')).getByText('No signals collected yet'),
+                within(statCard('Signals awaiting triage')).getByText('No signals collected yet'),
             ).toBeInTheDocument();
             expect(
                 within(statCard('Active missions')).getByText('No missions running'),
@@ -190,33 +201,41 @@ describe('OverviewPage', () => {
         expect(screen.queryByText('example-plumbing.com')).not.toBeInTheDocument();
     });
 
-    it('lists at most five signals in the activity feed, newest first', async () => {
+    it('caps the activity feed at eight entries, newest first', async () => {
+        // Five was the cap when the feed held signals only. It now carries signals, missions,
+        // evidence and editions together and keeps the eight most recent of all of them, so the
+        // cap has to be exercised with more than eight or it is not being tested at all.
         seed({
-            signals: Array.from({ length: 6 }, (_, i) =>
+            signals: Array.from({ length: 10 }, (_, i) =>
                 createMockSignal({ title: `Signal ${i + 1}` }),
             ),
         });
         renderWithProviders(<OverviewPage />);
 
-        expect(await screen.findByText('Signal 1')).toBeInTheDocument();
-        expect(screen.getByText('Signal 5')).toBeInTheDocument();
-        expect(screen.queryByText('Signal 6')).not.toBeInTheDocument();
+        await screen.findByRole('heading', { name: 'Recent activity', level: 2 });
+        const feed = within(panel('Recent activity'));
+        expect(feed.getByText('Signal 1')).toBeInTheDocument();
+        expect(feed.getByText('Signal 8')).toBeInTheDocument();
+        expect(feed.queryByText('Signal 9')).not.toBeInTheDocument();
     });
 
     it('invites the user to connect a source when no signals exist', async () => {
         seed();
         renderWithProviders(<OverviewPage />);
 
-        // Scoped to the feed's empty state — the signals stat card carries the
-        // same sentence as its hint.
+        // The feed's empty state. It is no longer named after signals because the feed is no
+        // longer only signals; 'No signals collected yet' is now the stat card's hint, and the
+        // two strings deliberately no longer match.
         expect(
             await screen.findByRole('heading', {
-                name: 'No signals collected yet',
+                name: 'Nothing has happened here yet',
                 level: 3,
             }),
         ).toBeInTheDocument();
+        // Scoped: 'Connect a source' is also a standing quick action, so an unscoped query
+        // finds two and cannot tell whether the empty state offered anything at all.
         expect(
-            screen.getByRole('button', { name: /Connect a source/ }),
+            within(panel('Recent activity')).getByRole('button', { name: /Connect a source/ }),
         ).toBeInTheDocument();
     });
 
@@ -230,9 +249,11 @@ describe('OverviewPage', () => {
         });
         renderWithProviders(<OverviewPage />);
 
-        expect(await screen.findByText('Running work')).toBeInTheDocument();
-        expect(screen.queryByText('Proposed work')).not.toBeInTheDocument();
-        expect(screen.queryByText('Verified work')).not.toBeInTheDocument();
+        await screen.findByRole('heading', { name: 'Active missions', level: 2 });
+        const missions = within(panel('Active missions'));
+        expect(missions.getByText('Running work')).toBeInTheDocument();
+        expect(missions.queryByText('Proposed work')).not.toBeInTheDocument();
+        expect(missions.queryByText('Verified work')).not.toBeInTheDocument();
     });
 
     it('routes the quick actions and the feed links', async () => {
@@ -247,9 +268,13 @@ describe('OverviewPage', () => {
         );
         expect(navigateMock).toHaveBeenCalledWith('/app/missions');
 
-        const viewAll = screen.getAllByRole('button', { name: 'View all' });
-        await user.click(viewAll[0]);
-        expect(navigateMock).toHaveBeenCalledWith('/app/signals');
+        // The activity feed's "View all" opens evidence, not signals: the feed carries
+        // signals, missions, evidence and editions, so there is no single collection to send
+        // the reader to and evidence is the one that holds the provenance.
+        await user.click(
+            within(panel('Recent activity')).getByRole('button', { name: 'View the ledger' }),
+        );
+        expect(navigateMock).toHaveBeenCalledWith('/app/evidence');
     });
 
     it('still renders the page when a collection fails to load', async () => {
@@ -263,7 +288,7 @@ describe('OverviewPage', () => {
         ).toBeInTheDocument();
         await waitFor(() =>
             expect(
-                within(statCard('Business signals')).getByText('0'),
+                within(statCard('Signals awaiting triage')).getByText('0'),
             ).toBeInTheDocument(),
         );
     });

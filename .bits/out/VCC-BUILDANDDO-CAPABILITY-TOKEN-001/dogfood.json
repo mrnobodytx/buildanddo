@@ -1,0 +1,113 @@
+{
+  "archive_roundtrip": "PASS",
+  "artifact_digests": {
+    "bundle.json": "747ab5f49831663884c167f0a96e41bffa60e89931ab0cffd6ab4037c0f0b650",
+    "conformance.json": "b75383c9a84997f0c47161d4852c015c2e683f34f0152cb0bc43f147cbec060c",
+    "index.json": "ed5ba3e8f3bd42be2c7fffba35c47be8d7e925329adc67beddab3b58b30eb78c",
+    "mcp-tool.json": "f1416a856fcd8a131f91ef14d07ae3572f7af909b6bef8301bd279b32eb0b01c",
+    "suite.json": "7f73230987e6e48f117fc614f02d0da15c3112ff3186455fbf1554174790dd1b"
+  },
+  "authority": "A0",
+  "captured_at": "2026-09-21T03:45:05.529686+00:00",
+  "conformance": {
+    "binding": {
+      "implementation_digest": {
+        "algorithm": "sha256",
+        "value": "2d01a3a396eee2d04654ec637bd681a4c17b4bc9d97666155d6672635e9faf81"
+      },
+      "implementation_id": "graph-v1",
+      "token": {
+        "capability_id": "cni://capability/citadel/release-source-inspection",
+        "manifest_digest": {
+          "algorithm": "sha256",
+          "value": "9206fcb1280c307fb391fe64c0027561c456019a88174c02dd738777456d233d"
+        },
+        "version": "1.0.0"
+      }
+    },
+    "checked_at": "2026-09-21T03:45:05.529686+00:00",
+    "checks": [
+      {
+        "name": "schema",
+        "passed": 1,
+        "reason": "strict contract and asset hashes validated",
+        "total": 1,
+        "verdict": "PASS"
+      },
+      {
+        "name": "positive",
+        "passed": 1,
+        "reason": "bounded proposal/denial expectations",
+        "total": 1,
+        "verdict": "PASS"
+      },
+      {
+        "name": "negative",
+        "passed": 1,
+        "reason": "bounded proposal/denial expectations",
+        "total": 1,
+        "verdict": "PASS"
+      },
+      {
+        "name": "replay",
+        "passed": 0,
+        "reason": "independent holdout replay absent",
+        "total": 0,
+        "verdict": "HOLD"
+      },
+      {
+        "name": "security",
+        "passed": 1,
+        "reason": "bounded proposal/denial expectations",
+        "total": 1,
+        "verdict": "PASS"
+      },
+      {
+        "name": "rollback",
+        "passed": 1,
+        "reason": "bounded proposal/denial expectations",
+        "total": 1,
+        "verdict": "PASS"
+      },
+      {
+        "name": "compatibility",
+        "passed": 1,
+        "reason": "bounded proposal/denial expectations",
+        "total": 1,
+        "verdict": "PASS"
+      }
+    ],
+    "suite_digest": {
+      "algorithm": "sha256",
+      "value": "3bbab229e5437ef02b24e71a444648fb6329f7146c0b483780d810ae2392514a"
+    }
+  },
+  "context_root": "91f79c44feb84467301d8cf475d4fd6ca32586fcd98ef93d6a788c6683989578",
+  "effects_executed": 0,
+  "funds_moved": 0,
+  "graph_objects": 157,
+  "mcp_descriptor": "GENERATED",
+  "missing": [
+    "independent holdout replay",
+    "independent pinned TEVV",
+    "authenticated receiving runtime"
+  ],
+  "pin": {
+    "capability_id": "cni://capability/citadel/release-source-inspection",
+    "manifest_digest": {
+      "algorithm": "sha256",
+      "value": "9206fcb1280c307fb391fe64c0027561c456019a88174c02dd738777456d233d"
+    },
+    "version": "1.0.0"
+  },
+  "registry": {
+    "certifications": 0,
+    "installed": 1,
+    "versions": 1
+  },
+  "schema_version": "cnwb.capability-dogfood/v1",
+  "source_path": "tools/buildanddo_release.py",
+  "source_sha": "916507f53d203a1dff809948049cf59455f56205",
+  "source_sha256": "bab9249204c4852f5bf9121c7248e4016891c31690eeb61586922e7de2bd5741",
+  "status": "HOLD"
+}

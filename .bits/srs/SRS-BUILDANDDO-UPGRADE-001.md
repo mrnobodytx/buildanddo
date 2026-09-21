@@ -20,6 +20,146 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Four-gap completion continuation authorized 2026-09-21
+
+The owner requests implementation of the remaining development-loop,
+acceptance, candidate evidence and submission closure work after PR 62. Continue
+this pre-existing A2 dispatch for local shared-source repairs and integration.
+Reuse the merged evolution review/promotion contracts and the Hostinger/Day-21
+validators. Repair executable acceptance failures, prepare portable actual
+prediction/run evidence for an independently selected reviewer, and connect
+candidate-bound acceptance, deployment, browser, product and submission inputs.
+Run every available gate and retain its real result and missing prerequisites.
+
+The local integration must never create reviewer identity, receipt trust pins,
+deployment observations, product-use proof, organizer requirements or owner
+approval. Missing external inputs remain explicit HOLD requirements. Provision
+dependencies only from available authorized local caches in this environment.
+Keep historical evidence intact and bind new runs to the exact tested bytes.
+Billing changes, private release activation, external messages and final
+competition submission retain their receiving human authority.
+
+Acceptance: reproduce and fix the PocketBase host-API fixture failures; exercise
+the existing independent review and promotion boundaries; validate candidate
+continuity and missing/tampered evidence; execute available acceptance profiles;
+produce a reviewable entry package with runnable next steps for external inputs.
+
+## Workspace assistant continuation authorized 2026-09-20
+
+The owner extends the eleven-checkpoint submission build with a persistent
+workspace assistant. Use the existing application shell, native PocketBase user
+authentication, current workspace roles and collection record rules. Preserve
+per-account, per-workspace session and knowledge isolation. The assistant may
+navigate registered platform routes, propose and fill visible nonsensitive form
+fields, and invoke existing governed commands with the current user identity.
+Reviewed effects retain the existing approval and independent verification gates.
+Model text, retrieved records and learned patterns never grant authority.
+
+Persist each session and its observed action patterns as user-owned knowledge;
+keep proposed, applied, failed and independently verified states distinct. Do not
+capture passwords, authentication material, hidden fields or arbitrary page text
+as patterns. Account/workspace changes cancel outstanding proposals and responses.
+Use an explicitly configured server-side inference binding; a missing binding
+must be visible, never replaced by fabricated model responses. Provide source,
+connected-client and native/browser tests with unexecuted runtime gates reported.
+This source continuation does not activate providers, read deployed credentials,
+launch a private agent, or authorize external effects outside approved missions.
+
+## Complete the eleven sprint checkpoints — 2026-09-20
+
+The owner requests exhaustive source completion of days 1–21 and a conservative,
+governed submission standard while official competition rules are unknown.
+Continue the pre-existing A2 dispatch. Internal acceptance policy is explicitly
+not official eligibility, a submission deadline, or permission to deploy.
+
+1. Retain locked-toolchain/native checks and collect a reproducible submission
+   dossier bound to exact source, artifacts and observed acceptance.
+2. Replace browser-side onboarding writes with one atomic, replayable native
+   command; preserve account isolation and recover uncertain responses.
+3. Add idempotent, retention-aware migrations and connected native coverage for
+   setup, revoked membership, execution, review and restart.
+4. Capture permitted public Firecrawl observations into deduplicated signals
+   with source identity, time and content fingerprints.
+5. Execute bounded business actions using the existing authenticated mission
+   approval and workflow history. Include a real workspace ERP action and
+   portable Firecrawl/n8n adapters; configuration alone is never live evidence.
+6. Freeze executable step inputs, enforce approval before effects, preserve
+   cancellation, leases and retry identity, and hold ambiguous external effects
+   for reconciliation rather than blindly resending them.
+7. Apply connector requests through explicitly registered worker identities and
+   retain revision-bound health and execution receipts. No browser credentials,
+   arbitrary commands, callback URLs or private infrastructure are introduced.
+8. Connect ERP outcomes to their mission, workflow and result evidence while
+   retaining current-role and same-workspace constraints.
+9. Preserve the exact reviewed evidence and prevent ordinary mutation/deletion
+   from silently changing verified outcomes, including legacy reviews.
+10. Correct edition failure states and verification dates, restore usable
+    specialist desks alongside passports, and expose recorded execution replay.
+11. Package the acceptance matrix, product scope, evaluator walkthrough, known
+    limitations and owner checklist. Missing official rules, live receipts,
+    independent review or required tests keep submission admission on HOLD.
+
+Regression includes targeted negative controls, actual backend/client modules,
+rendered cases and both disposable PocketBase profiles. Retain dependency skips
+and failed commands. Deployment, live provider calls, account billing, hosted
+submission and private runtime activation remain receiving-owner work; these
+effects are not performed or claimed by this local source continuation.
+
+Observed public source continuation: atomic onboarding, current-role business
+execution, two connector adapters, immutable review evidence, edition/desks,
+scoped assistant sessions and personal patterns, workspace room modes and strict
+submission packaging are implemented. Tests exercise the actual backend/client
+modules with explicit storage/transport fixtures; Chromium also exercises the
+production assistant DOM helper. The required Python worker/submission coverage
+gate exceeds 93% in each module. Full React, native PocketBase and live provider/
+release acceptance remain unmeasured here. See `docs/submission-guide.md` and the
+sprint implementation report for all eleven acceptance and receiving obligations.
+
+## Hostinger sprint closure continuation — 2026-09-20
+
+The owner requests implementing the repository gaps identified by the 21-day
+sprint assessment and recording why each piece exists and the next best step
+as governance that every subsequent seat must recheck. This continues the
+existing A2 source dispatch. The merged tutorial implementation is retained.
+
+Acceptance:
+
+1. Keep one machine-readable contract for all eleven canonical sprint
+   milestones, their rationale, source owners, acceptance checks, dependencies
+   and next steps. Bind its review lock to current source bytes. Fail the CI
+   gate when that binding or required governance wiring changes without review.
+2. Execute the existing source, rendered, build and native checks through a
+   bounded local runner. Retain exact results and log hashes; missing runtimes,
+   skipped native cases and stale evidence cannot count as acceptance.
+3. Connect a saved signal to a replayable, server-created mission proposal and
+   source observation. Require an explicit user action and current workspace
+   authority. Support independently reviewed mission plans without rewriting
+   existing manual-learning outcomes or granting execution authority.
+4. Add a connected native workspace acceptance journey across signal, mission,
+   approval, recorded workflow, evidence, independent review, operator readback
+   and business records. Reuse the existing disposable PocketBase fixture and
+   required runtime matrix; no shared database or private executor is created.
+5. Validate captured competition replay and milestone receipts against exact
+   source identity, scope, ordered observations and distinct producer/verifier
+   accounts. Preserve UNMEASURED/HOLD for absent live readback. Reuse the
+   semantic twin's release reconciliation for controller/provider evidence.
+6. Wire the contract into AGENTS.md, the measured briefing, CI and progression
+   tags. Record runnable checks, observed blockers and the receiving next steps
+   in Git, retaining historical memory and acceptance limits.
+
+GitHub check annotations for the inspected candidate and telemetry jobs say
+the jobs were not started because the account is locked for billing. This is
+an account-owner prerequisite, not a source failure this continuation can fix.
+Cloudflare's separate failed build has no inspected diagnostic. Official
+Hostinger judging/submission requirements and private NXC/staging evidence are
+not attached. This dispatch does not authorize deployment, external messages,
+credential access, live connector activation or a fabricated completion claim.
+
+Verify: `python scripts/ci/hostinger_readiness.py --check`, its focused Python
+suite, connected mission/research Node cases, required native workspace entry
+point, existing web tests/lint/build, and context/boundary/memory gates. Any
+unavailable gate remains an explicit next action with an owner and evidence.
+
 ## PR 40 main integration continuation — 2026-09-18
 
 The owner requests updating the existing policy/operator PR branch from main.
@@ -898,6 +1038,39 @@ transactional dossier requests preserve non-enumerable event properties.
 An independent native CI matrix requires both declared PocketBase versions;
 the local native SDK/parser/backend and rendered acceptance remain unavailable.
 Verification and the retained event history are in the current dispatch report.
+
+## Authorized continuation — interactive tutorials and persistent learning growth
+
+On 2026-09-19 the owner requested interactive tutorials that award a completion
+certificate and contribute to persistent personal progress and growth. This
+continues the existing A2 learning scope under VCC-BUILDANDDO-UPGRADE-001.
+
+- Reuse the Field Manual's authored lessons, native PocketBase authentication
+  and per-account tutorial history. Add a guided reader with resumable sections,
+  practice checklist, answer feedback and a server-checked final knowledge check.
+- Freeze the enrolled lesson content. Persist checkpoints and completion through
+  authenticated commands and a locked collection with one enrollment per account
+  and tutorial. Retry, concurrent submission and review must not duplicate credit.
+- Complete the existing tutorial-progress record and issue an account-owned
+  BuildAndDo certificate of course completion in one transaction. Certificates
+  retain the learner name, course/version, issue time and stable receipt identity.
+  They do not claim external accreditation, signed credentials or live TEVV.
+- Derive learning points, levels and milestones from retained completions: 100
+  points per tutorial, once. Preserve existing manual lesson completions without
+  inventing certificates. Independently verified contributor reputation is unchanged.
+- Keep preview/demo read-only, isolate account changes and late responses, support
+  keyboard/reduced-motion use, and keep failed saves recoverable. Downloads expose
+  only the certificate the learner explicitly chooses to export.
+- Ship an idempotent migration whose down path disables the new commands while
+  retaining checkpoints and certificates. No shared backend or deployment is changed.
+- Require native learning acceptance in the existing PocketBase CI matrix and
+  update the shared `ci:test` description. Retain unavailable local tooling as a
+  validation gap; configured CI is not a passing hosted result.
+
+Acceptance: `node --test tests/upgrade/tutorial-learning*.test.mjs`, targeted
+TutorialCatalog/InteractiveTutorial component tests, native tutorial-learning
+tests with the existing disposable PocketBase harness, web lint/build, context,
+boundary and dispatch-evidence checks. Missing tooling remains an explicit gap.
 
 ## Authority
 

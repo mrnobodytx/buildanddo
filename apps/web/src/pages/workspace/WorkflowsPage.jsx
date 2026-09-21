@@ -56,6 +56,8 @@ import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
 import ListToolbar from '@/components/workspace/ListToolbar';
 import PreviousWorkNote from '@/components/workspace/PreviousWorkNote';
+import BusinessActionEditor from '@/components/workspace/workflows/BusinessActionEditor';
+import { defaultBusinessAction } from '@/lib/businessExecution';
 import WorkflowRunsPanel from '@/components/workspace/workflows/WorkflowRunsPanel';
 import {
     PageHeader,
@@ -81,6 +83,11 @@ import { readWorkflowSteps as readSteps, STEP_KINDS } from '@/lib/workflowRuns';
 // operator then edits; none of them is wired to anything by itself.
 const TEMPLATES = {
     blank: { label: 'Blank', steps: [] },
+    business: { label: 'Approved business task', steps: [
+        { name: 'Approve task inputs and mission scope', kind: 'approval', detail: 'Review the frozen task parameters before execution.' },
+        { name: 'Create the follow-up task', kind: 'execute', detail: '', action: { ...defaultBusinessAction(), parameters: {
+            ...defaultBusinessAction().parameters, title: 'Follow up on the selected signal' } } },
+    ] },
     reminders: {
         label: 'Appointment reminders',
         steps: [
@@ -120,7 +127,8 @@ function StepEditor({ steps, onChange }) {
 
     const add = () => {
         if (!draft.name.trim() || steps.length >= 20) return;
-        onChange([...steps, { ...draft, name: draft.name.trim(), detail: draft.detail.trim(), id: nextStepId() }]);
+        onChange([...steps, { name: draft.name.trim(), kind: draft.kind, detail: draft.detail.trim(), id: nextStepId(),
+            ...(draft.kind === 'execute' ? { action: draft.action || defaultBusinessAction() } : {}) }]);
         setDraft({ name: '', kind: 'read', detail: '' });
     };
 
@@ -155,6 +163,8 @@ function StepEditor({ steps, onChange }) {
                                     {STEP_KINDS[step.kind] || step.kind}
                                     {step.detail ? ` · ${step.detail}` : ''}
                                 </p>
+                                {step.kind === 'execute' && <BusinessActionEditor value={step.action}
+                                    onChange={(action) => onChange(steps.map((item, i) => i === index ? { ...item, action } : item))} />}
                             </div>
                             <div className="flex shrink-0 items-center gap-1">
                                 <button
@@ -207,7 +217,7 @@ function StepEditor({ steps, onChange }) {
                 />
                 <Select
                     value={draft.kind}
-                    onValueChange={(value) => setDraft((prev) => ({ ...prev, kind: value }))}
+                    onValueChange={(value) => setDraft((prev) => ({ ...prev, kind: value, ...(value === 'execute' ? { action: prev.action || defaultBusinessAction() } : {}) }))}
                 >
                     <SelectTrigger aria-label="Step kind">
                         <SelectValue />
@@ -227,6 +237,8 @@ function StepEditor({ steps, onChange }) {
                     maxLength={300}
                     aria-label="Step target"
                 />
+                {draft.kind === 'execute' && <div className="sm:col-span-2"><BusinessActionEditor value={draft.action}
+                    onChange={(action) => setDraft((before) => ({ ...before, action }))} /></div>}
                 <Button type="button" variant="secondary" size="sm" disabled={steps.length >= 20} onClick={add}>
                     <Plus className="h-4 w-4" />
                     Add step

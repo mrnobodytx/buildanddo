@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:         .bits/submission-policy.json.cgrf.yaml
+# Stage:        11_COMMIT
+# SRS:          SRS-BUILDANDDO-UPGRADE-001
+# CAPS:         pending
+# CK:           pending
+# Dispatch:     VCC-BUILDANDDO-UPGRADE-001
+# Seat:         BITS-CODEGEN
+# Owner:        Citadel Nexus Inc.
+# Created:      2026-09-20
+# Depends:      scripts/ci/sprint_cycle.py, .bits/hostinger-readiness.json
+# EnumType:     ConfigDoc
+# EnumEdges:    DEPENDS_ON scripts/ci/sprint_cycle.py; DEPENDS_ON .bits/hostinger-readiness.json
+# DAG Node:     none
+# Intent:       Define conservative internal submission standards while retaining unknown official eligibility and deadlines.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: 1
+artifact: .bits/submission-policy.json

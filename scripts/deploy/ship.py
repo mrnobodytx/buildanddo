@@ -53,21 +53,87 @@ ROOT = Path(__file__).resolve().parents[2]  # sites/buildanddo/
 LOCAL_SECRETS = ROOT / "secrets" / "deploy.local.env"
 NPM = shutil.which("npm") or "npm"
 
+# THE ESTATE CREDENTIAL STORE, which is where these belong.
+# Deploy credentials used to live ONLY in secrets/deploy.local.env - a per-repo file that does not
+# exist on this machine, so ship.py has been falling through to its hardcoded default host while
+# the release controller reported the credentials missing. One fact, two stores, neither canonical.
+# workspace.env is the estate's credential store and is now a source here. First readable path
+# wins; CITADEL_WORKSPACE_ENV overrides for a machine that keeps it elsewhere.
+WORKSPACE_ENV_CANDIDATES = (
+    Path(os.environ.get("CITADEL_WORKSPACE_ENV", "")) if os.environ.get("CITADEL_WORKSPACE_ENV")
+    else None,
+    Path(r"D:\citadel_secrets\CNWB\workspace.env"),
+    Path(r"D:\citadel_websites\Citadel-nexus\projects\guilds\CNWB\tools\workspace.env"),
+)
 
-def _load_local_secrets() -> dict:
+# Only these names are taken from the shared store. workspace.env holds 500+ credentials for the
+# whole estate; pulling all of them into a deploy script's environment would hand every subprocess
+# it spawns the keys to everything. A deploy needs two secrets, so it reads two.
+SHARED_KEYS = ("BUILDANDDO_VM_HOST", "BUILDANDDO_SSH_KEY")
+
+
+def _parse_env_file(path: Path) -> dict:
+    out = {}
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return out
+    for line in text.splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, _, v = line.partition("=")
+            v = v.strip()
+            if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
+                v = v[1:-1]
+            out[k.strip()] = v
+    return out
+
+
+def _load_local_secrets() -> tuple[dict, dict]:
+    """Resolve deploy secrets, and record WHICH store answered for each name.
+
+    Precedence, least to most specific: OS environment, then workspace.env (the estate store),
+    then secrets/deploy.local.env (a deliberate per-machine override). Inserting the shared store
+    BELOW the local file means nothing that works today changes behaviour - the local file still
+    wins where it exists - while a name placed in workspace.env now binds.
+
+    The provenance map records the SOURCE of each name and never its value, so a deploy can print
+    where its credentials came from without printing what they are."""
     env = dict(os.environ)
+    src = {k: ("environment" if env.get(k) else None) for k in SHARED_KEYS}
+
+    for cand in WORKSPACE_ENV_CANDIDATES:
+        if cand is None or not cand.is_file():
+            continue
+        shared = _parse_env_file(cand)
+        for k in SHARED_KEYS:
+            if shared.get(k):
+                env[k] = shared[k]
+                src[k] = f"workspace.env ({cand.name})"
+        break                                   # first readable store wins
+
     if LOCAL_SECRETS.is_file():
-        for line in LOCAL_SECRETS.read_text(encoding="utf-8", errors="replace").splitlines():
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                k, _, v = line.partition("=")
-                env[k.strip()] = v.strip()
-    return env
+        for k, v in _parse_env_file(LOCAL_SECRETS).items():
+            env[k] = v
+            if k in src:
+                src[k] = "secrets/deploy.local.env"
+    return env, src
 
 
-_SECRETS = _load_local_secrets()
+_SECRETS, SECRET_SOURCES = _load_local_secrets()
 SSH_KEY = _SECRETS.get("BUILDANDDO_SSH_KEY", "")
-VM_HOST = _SECRETS.get("BUILDANDDO_VM_HOST", "root@45.82.75.40")
+# The default stays as a LAST resort and is recorded as such, so a deploy that silently fell back
+# to a hardcoded host is visible in the receipt rather than indistinguishable from a configured one.
+VM_HOST = _SECRETS.get("BUILDANDDO_VM_HOST") or "root@45.82.75.40"
+if not SECRET_SOURCES.get("BUILDANDDO_VM_HOST"):
+    SECRET_SOURCES["BUILDANDDO_VM_HOST"] = "HARDCODED DEFAULT (no store supplied it)"
+if not SECRET_SOURCES.get("BUILDANDDO_SSH_KEY"):
+    SECRET_SOURCES["BUILDANDDO_SSH_KEY"] = "ABSENT (ssh will use the agent/default identity)"
+
+
+def secret_provenance() -> dict:
+    """Which store supplied each deploy credential. Names and sources only, never values."""
+    return dict(SECRET_SOURCES)
 STAGING_REMOTE_DIR = "/var/www/buildanddo-staging"
 PROD_REMOTE_DIR = "/var/www/buildanddo"
 STAGING_URL = "https://staging.buildanddo.com/"
@@ -87,12 +153,22 @@ def _run(cmd: list[str], cwd: Path | None = None, timeout: int = 600) -> dict:
         return {"ok": False, "returncode": None, "reason": f"{type(exc).__name__}: {exc}"}
 
 
+# Cloudflare fronts both environments and its WAF bans urllib's default User-Agent
+# ("Python-urllib/3.x") outright, answering 403 with error 1010 before the request ever reaches the
+# origin. Measured 2026-09-20 against staging: default UA -> 403/1010, browser UA -> 200 with the
+# real body, same URL, same second. The readback gate therefore FAILED ON EVERY RUN no matter how
+# healthy the deploy was, and because the gate is fail-closed the rail could never promote - which
+# is why production sat 33 commits behind staging. A blocked probe is not a failed deploy.
+_PROBE_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; buildanddo-ship/1.0)"}
+
+
 def _probe(url: str, retries: int = 5, delay: float = 2.0) -> dict:
     """Real HTTP GET, not a ping - a 200 with body is the only acceptable proof of 'serving'."""
     last_err = None
     for attempt in range(1, retries + 1):
         try:
-            with urllib.request.urlopen(url, timeout=10) as resp:  # noqa: S310 - fixed https URL, not user input
+            request = urllib.request.Request(url, headers=_PROBE_HEADERS)
+            with urllib.request.urlopen(request, timeout=10) as resp:  # noqa: S310 - fixed https URL, not user input
                 body = resp.read(200)
                 return {"ok": resp.status == 200, "status": resp.status, "attempt": attempt,
                         "body_prefix": body.decode("utf-8", errors="replace")[:120]}
@@ -112,8 +188,14 @@ def _rsync(local_dir: Path, remote_dir: str) -> dict:
     old chunk that the new index.html no longer references)."""
     if not VM_HOST:
         return {"ok": False, "stage": "config", "reason": "BUILDANDDO_VM_HOST not set (see secrets/deploy.local.env)"}
+    # `rm -rf dir/*` leaves DOTFILES: the shell glob never matches a leading dot. Measured
+    # 2026-09-20 - that is why /var/www/buildanddo/.well-known/citadel-release.json was still
+    # reporting commit 0b9faeb from 09-11 after deploys on 09-18 and 09-20, while `_version`
+    # (no dot) was deleted by every single one. The environment ended up publishing two
+    # identities that disagreed by nine days, and a capability inventory reading the survivor
+    # concluded production was missing pages it was in fact serving.
     clear = _run(["ssh", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", VM_HOST,
-                  f"rm -rf {remote_dir}/* && mkdir -p {remote_dir}"])
+                  f"mkdir -p {remote_dir} && find {remote_dir} -mindepth 1 -delete"])
     if not clear["ok"]:
         return {"ok": False, "stage": "clear_remote", **clear}
     copy = _run(["scp", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", "-r",
@@ -152,6 +234,86 @@ def _write_web_env() -> None:
 
     if lines:
         (web_dir / ".env").write_text("".join(lines), encoding="utf-8")
+
+
+def _refresh_capability_inventory() -> dict:
+    """Re-measure the capability inventory AFTER the deploy, and push just that file.
+
+    The inventory answers "what can I use", by checking each capability's source against the
+    commit each environment reports serving. Built before the sync, it therefore describes the
+    environments as they were BEFORE the deploy that carries it - measured 2026-09-20, production
+    shipped an inventory reading 18 live / 18 staged when the post-deploy truth was 36 / 2.
+
+    Re-running it here closes that by one deploy: the published file describes the environments as
+    they are once the files have actually moved. Non-fatal - a stale inventory is a worse page, not
+    a worse release, and the release has already been promoted and probed by this point.
+    """
+    built = _run([sys.executable, str(ROOT / "scripts" / "ci" / "capability_inventory.py"), "--write"],
+                 cwd=ROOT, timeout=180)
+    if not built["ok"]:
+        return {"ok": False, "stage": "measure", **built}
+    local = ROOT / "apps" / "web" / "public" / "capabilities.json"
+    if not local.is_file():
+        return {"ok": False, "stage": "measure", "reason": "capabilities.json not produced"}
+    for remote in (STAGING_REMOTE_DIR, PROD_REMOTE_DIR):
+        copy = _run(["scp", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no",
+                     str(local), f"{VM_HOST}:{remote}/capabilities.json"], timeout=60)
+        if not copy["ok"]:
+            return {"ok": False, "stage": "scp", "remote": remote, **copy}
+    return {"ok": True}
+
+
+def _write_deployed_version() -> None:
+    """Write dist/_version: what this build actually is, for external readback.
+
+    The schema matches what the release controller has always published
+    (buildanddo.deployed-version/v1), so tools reading /_version keep working. It is written
+    here because THIS is the step that moves the files - a record of the deploy written by
+    anything else can, and did, drift nine days out of date.
+    """
+    def _git(*args: str) -> str:
+        try:
+            out = subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True,
+                                 text=True, timeout=20, check=False)
+            return (out.stdout or "").strip()
+        except (OSError, subprocess.SubprocessError):
+            return ""
+
+    sha = _git("rev-parse", "HEAD")
+    payload = {
+        "built_at": dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z"),
+        "campaign_id": "citadel-21-day-2026-09",
+        "candidate_sha": sha,
+        "commit_sha": sha,
+        "gitlab_job_id": os.environ.get("CI_JOB_ID"),
+        "gitlab_pipeline_id": os.environ.get("CI_PIPELINE_ID"),
+        "schema": "buildanddo.deployed-version/v1",
+        "source_branch": _git("rev-parse", "--abbrev-ref", "HEAD"),
+    }
+    try:
+        (DIST_DIR / "_version").write_text(json.dumps(payload), encoding="utf-8")
+    except OSError as exc:
+        print(f"WARN could not write dist/_version: {type(exc).__name__}: {exc}")
+
+    # The release manifest is written HERE, from the same payload, so the two provenance sources
+    # cannot disagree - which is the only thing that makes capability_inventory's conflict check
+    # meaningful. Measured 2026-09-20: it had never existed. apps/web/public/.well-known/ is absent
+    # from the tree and `git ls-files` matches nothing, yet the published roadmap evidence claimed
+    # "/.well-known/citadel-release.json 200 on buildanddo.com and on staging.buildanddo.com".
+    # Staging honestly answered 404; production answered 200 with the SPA's index.html, because the
+    # SPA serves 200 for ANY unmatched path. A probe that only checked the status code read the
+    # fallback as the manifest, and a milestone's evidence rested on it.
+    try:
+        wk = DIST_DIR / ".well-known"
+        wk.mkdir(parents=True, exist_ok=True)
+        (wk / "citadel-release.json").write_text(json.dumps(payload), encoding="utf-8")
+    except OSError as exc:
+        print(f"WARN could not write dist/.well-known/citadel-release.json: {type(exc).__name__}: {exc}")
+
+
+def _write_capability_inventory() -> dict:
+    return _run([sys.executable, str(ROOT / "scripts" / "ci" / "capability_inventory.py"), "--write"],
+                cwd=ROOT, timeout=120)
 
 
 def _write_roadmap_status() -> dict:
@@ -297,6 +459,13 @@ def _build() -> dict:
         print(f"WARN roadmap projection failed (rc={roadmap.get('returncode')}); "
               "shipping an UNMEASURED status file instead of stale data")
         _write_unmeasured_roadmap_status(roadmap)
+    # public/capabilities.json - what each environment can actually serve, measured against the
+    # commit it reports running. Non-fatal: the page renders the section only when the file says
+    # MEASURED, so a failure here costs a section rather than a release.
+    caps = _write_capability_inventory()
+    if not caps["ok"]:
+        print(f"WARN capability inventory failed (rc={caps.get('returncode')}); "
+              "the roadmap will omit the 'what you can use' section rather than guess")
     return _run([NPM, "run", "build"], cwd=web_dir, timeout=600)
 
 
@@ -329,6 +498,12 @@ def main() -> int:
         _finish(record)
         return 1
 
+    # LAST thing before the files move, and deliberately not earlier: _gate() runs
+    # integrity_regression_check.py, which runs its own `npm run build` and cleans dist - so a
+    # _version written during _build is deleted before it can ship. Measured 2026-09-20: the
+    # promote landed with no _version at all and /_version fell through to the SPA's 200 HTML.
+    _write_deployed_version()
+
     if not DIST_DIR.is_dir():
         record["stages"]["staging_sync"] = {"ok": False, "reason": "dist dir missing after a passing build"}
         record["stopped_at"] = "staging_sync"
@@ -359,6 +534,16 @@ def main() -> int:
 
     prod_probe = _probe(PROD_URL)
     record["stages"]["prod_probe"] = prod_probe
+
+    # Both environments are now serving the new build, so the inventory can finally measure what
+    # it claims to describe. Deliberately after the probes: re-measuring earlier would just
+    # re-record the pre-deploy state with a newer timestamp on it.
+    if prod_probe["ok"]:
+        refresh = _refresh_capability_inventory()
+        record["stages"]["inventory_refresh"] = refresh
+        if not refresh["ok"]:
+            print(f"WARN capability inventory refresh failed at {refresh.get('stage')}; "
+                  "the published inventory describes the PREVIOUS deploy")
     record["stopped_at"] = None if prod_probe["ok"] else "prod_probe"
 
     if prod_probe["ok"]:

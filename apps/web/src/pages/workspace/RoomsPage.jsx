@@ -1,68 +1,80 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Building2, GitBranch, Network, RefreshCw, Search, Sparkles } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
-import RoomCanvas from '@/components/rooms/RoomCanvas';
-import { Button, Card, Rule, StatePill } from '@/components/site/ui';
-import { PageHeader } from '@/components/workspace/workspaceHelpers';
-import { projectionStats } from '@/lib/roomGraph';
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:         apps/web/src/pages/workspace/RoomsPage.jsx
+// Stage:        07_BUILD
+// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// CAPS:         pending
+// CK:           pending
+// Dispatch:     VCC-BUILDANDDO-UPGRADE-001
+// Seat:         BITS-CODEGEN
+// Owner:        Citadel Nexus Inc.
+// Created:      2026-09-20
+// Depends:      apps/web/src/lib/workspaceRooms.js, apps/web/src/hooks/useWorkspaceKnowledge.js, apps/web/src/pages/workspace/ExecutionReplayPage.jsx
+// EnumType:     Widget
+// EnumEdges:    DEPENDS_ON apps/web/src/lib/workspaceRooms.js; DEPENDS_ON apps/web/src/hooks/useWorkspaceKnowledge.js; DEPENDS_ON apps/web/src/pages/workspace/ExecutionReplayPage.jsx
+// DAG Node:     none
+// Intent:       Make room modes act on current workspace evidence and retained execution replay while preserving separate estate publication.
+// ───────────────────────────────────────────────────────────────
 
+import React, { useEffect, useMemo, useState } from 'react';
+import { Building2, GitBranch, Network, RefreshCw } from 'lucide-react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import RoomCanvas from '@/components/rooms/RoomCanvas';
+import { Button, Card } from '@/components/site/ui';
+import { PageHeader } from '@/components/workspace/workspaceHelpers';
+import { useWorkspaceKnowledge } from '@/hooks/useWorkspaceKnowledge';
+import { projectionStats } from '@/lib/roomGraph';
+import { publishedRoom, workspaceRoom } from '@/lib/workspaceRooms';
+import ExecutionReplayPage from '@/pages/workspace/ExecutionReplayPage';
 const ROOMS = [
-    { id: 'organization', label: 'Organization', icon: Building2, question: 'Who owns what?' },
-    { id: 'capability', label: 'Capabilities', icon: Network, question: 'What can we actually do and on what evidence?' },
-    { id: 'development', label: 'Development', icon: GitBranch, question: 'How is the system changing?' },
+    { id: 'organization', label: 'Organization', icon: Building2, question: 'How is the current workspace knowledge organized?' },
+    { id: 'capability', label: 'Capabilities', icon: Network, question: 'What source records support the planned work?' },
+    { id: 'development', label: 'Development', icon: GitBranch, question: 'Which signals, missions and evidence are connected?' },
 ];
 const MODES = ['operate', 'inspect', 'teach', 'replay'];
-
 export default function RoomsPage() {
-    const { room } = useParams(); const navigate = useNavigate();
-    const activeRoom = ROOMS.find((r) => r.id === room) || ROOMS[0];
-    const [mode, setMode] = useState('inspect'); const [projection, setProjection] = useState(null);
-    const [error, setError] = useState(''); const [selectedId, setSelectedId] = useState(null); const [refreshKey, setRefreshKey] = useState(0);
-
+    const { room } = useParams(), navigate = useNavigate();
+    const active = ROOMS.find((item) => item.id === room) || ROOMS[0];
+    const knowledge = useWorkspaceKnowledge();
+    const [mode, setMode] = useState('inspect'), [source, setSource] = useState('workspace');
+    const [published, setPublished] = useState({ key: '', value: null, error: '' }), [selectedId, setSelectedId] = useState(null), [refreshKey, setRefreshKey] = useState(0);
+    useEffect(() => { setSelectedId(null); }, [knowledge.scope, active.id, source]);
+    const publishedKey = `${active.id}:${refreshKey}`;
     useEffect(() => {
-        let alive = true; setProjection(null); setError(''); setSelectedId(null);
-        fetch(`/room-projections/${activeRoom.id}.json?ts=${Date.now()}`, { cache: 'no-store' })
-            .then((r) => { if (!r.ok) throw new Error(`projection unavailable (${r.status})`); return r.json(); })
-            .then((data) => { if (alive) setProjection(data); })
-            .catch((err) => { if (alive) setError(err.message || 'projection unavailable'); });
-        return () => { alive = false; };
-    }, [activeRoom.id, refreshKey]);
-
-    const selected = useMemo(() => projection?.nodes?.find((n) => n.id === selectedId) || null, [projection, selectedId]);
-    const stats = projectionStats(projection || {});
-
-    return (
-        <div className="space-y-6">
-            <PageHeader title="Living Rooms" description="Deterministic graph projections of BuildAndDo's organization, capabilities, and development history. A room can simplify truth; it cannot invent it." />
-            <div className="flex flex-wrap items-center gap-2">
-                {ROOMS.map((r) => <Button key={r.id} variant={r.id === activeRoom.id ? 'default' : 'outline'} size="sm" onClick={() => navigate(`/app/rooms/${r.id}`)}><r.icon className="h-4 w-4" />{r.label}</Button>)}
-                <span className="mx-1 h-5 w-px bg-border" />
-                {MODES.map((m) => <Button key={m} variant={mode === m ? 'secondary' : 'ghost'} size="sm" onClick={() => setMode(m)}>{m}</Button>)}
-                <Button variant="ghost" size="sm" className="ml-auto" onClick={() => setRefreshKey((v) => v + 1)}><RefreshCw className="h-4 w-4" />Refresh</Button>
-            </div>
-
-            <Card className="p-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div><p className="font-display text-lg font-semibold">{activeRoom.label} Room</p><p className="text-sm text-muted-foreground">{activeRoom.question}</p></div>
-                    <div className="flex flex-wrap gap-3 font-evidence text-xs text-muted-foreground"><span>{stats.nodes} nodes</span><span>{stats.edges} edges</span><span>{stats.verified} verified</span><span>{stats.unmeasured} unmeasured</span></div>
-                </div>
-            </Card>
-
-            {error ? (
-                <Card className="p-8 text-center"><Search className="mx-auto h-6 w-6 text-muted-foreground" /><p className="mt-3 font-medium">No measured room projection is published yet.</p><p className="mt-1 text-sm text-muted-foreground">{error}. Generate projections with the local Citadel room controller; absence is shown as UNMEASURED rather than demo data.</p></Card>
-            ) : !projection ? (
-                <Card className="p-8 text-center text-sm text-muted-foreground">Loading measured projection…</Card>
-            ) : (
-                <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_300px]">
-                    <RoomCanvas projection={projection} selectedId={selectedId} onSelect={setSelectedId} />
-                    <Card className="p-4">
-                        <div className="flex items-center justify-between"><p className="font-semibold">Inspector</p><StatePill state={(selected?.state || projection.state || 'UNMEASURED').toLowerCase()} /></div>
-                        <Rule className="my-3" />
-                        {selected ? <><p className="font-evidence text-xs text-muted-foreground">{selected.type}</p><p className="mt-1 font-medium">{selected.title || selected.id}</p><p className="mt-2 break-all font-evidence text-[11px] text-muted-foreground">{selected.id}</p><Rule className="my-3" /><pre className="max-h-72 overflow-auto whitespace-pre-wrap text-[11px] text-muted-foreground">{JSON.stringify(selected.attributes || {}, null, 2)}</pre></> : <div className="py-8 text-center text-sm text-muted-foreground"><Sparkles className="mx-auto h-5 w-5" /><p className="mt-2">Select a node to inspect its measured or declared state.</p></div>}
-                    </Card>
-                </div>
-            )}
-            <p className="text-xs text-muted-foreground">Edge semantics: verified = independently supported; observed = directly seen; declared = configuration/governance; inferred = candidate only. Missing data remains UNMEASURED.</p>
-        </div>
-    );
+        if (source !== 'published') return;
+        const controller = new AbortController(); let alive = true;
+        setPublished({ key: publishedKey, value: null, error: '' });
+        fetch(`/room-projections/${active.id}.json`, { cache: 'no-store', signal: controller.signal })
+            .then(async (response) => { if (!response.ok) throw new Error('No estate projection is published for this room.');
+                const raw = await response.text(); if (raw.length > 1000000) throw new Error('The published projection exceeds the supported size.');
+                return publishedRoom(JSON.parse(raw), active.id); })
+            .then((value) => { if (alive) setPublished({ key: publishedKey, value, error: '' }); })
+            .catch((error) => { if (alive) setPublished({ key: publishedKey, value: null, error: error.message || 'The published projection is unavailable.' }); });
+        return () => { alive = false; controller.abort(); };
+    }, [source, active.id, publishedKey]);
+    const liveProjection = useMemo(() => workspaceRoom(knowledge.data, active.id), [knowledge.data, active.id]);
+    const projection = source === 'workspace' ? liveProjection : published.key === publishedKey ? published.value : null;
+    const error = source === 'workspace' ? knowledge.error : published.key === publishedKey ? published.error : '';
+    const selected = projection?.nodes.find((node) => node.id === selectedId), stats = projectionStats(projection || {});
+    return <div className="space-y-5"><PageHeader title="Living Rooms" description="Inspect readable workspace records, open their work desks, learn the evidence flow and replay retained actions." />
+        <div className="flex flex-wrap gap-2">{ROOMS.map((item) => <Button key={item.id} size="sm" variant={item.id === active.id ? 'default' : 'outline'} onClick={() => navigate(`/app/rooms/${item.id}`)}><item.icon className="h-4 w-4" />{item.label}</Button>)}</div>
+        <div className="flex flex-wrap gap-2" aria-label="Room mode">{MODES.map((name) => <Button key={name} size="sm" aria-pressed={mode === name} variant={mode === name ? 'secondary' : 'ghost'} onClick={() => setMode(name)}>{name}</Button>)}</div>
+        {mode === 'operate' ? <Card className="space-y-3 p-5"><h2 className="font-display text-xl">Operate through the native desks</h2>
+            <p className="text-sm">Each desk keeps its own membership, approval and evidence checks. Opening a tool performs no action.</p>
+            <nav className="flex flex-wrap gap-4 text-sm">{[['/app/desks', 'Assign work scope'], ['/app/signals', 'Capture a signal'], ['/app/missions', 'Review a mission'], ['/app/workflows', 'Execute approved work'], ['/app/erp', 'Inspect business outcomes']].map(([to, label]) => <Link key={to} className="underline" to={to}>{label}</Link>)}</nav></Card> :
+        mode === 'teach' ? <Card className="space-y-3 p-5"><h2 className="font-display text-xl">Read a work graph</h2><ol className="list-inside list-decimal space-y-2 text-sm">
+            <li>Inspect a node and read its original collection, record identity and update time.</li><li>Follow a recorded source relation. A vocabulary category only groups text; it does not establish ownership or truth.</li>
+            <li>Open the mission plan, examine its bounds and compare its frozen review evidence.</li><li>Replay the action receipt, then locate the separate verifier and the operator readback.</li></ol>
+            <Link className="inline-block text-sm underline" to="/app/tutorials">Practice in the Field Manual</Link></Card> :
+        mode === 'replay' ? <ExecutionReplayPage /> : <>
+            <div className="flex flex-wrap items-center gap-3"><label className="text-sm">Projection source<select className="ml-2 border border-border bg-background p-2" value={source} onChange={(event) => setSource(event.target.value)}><option value="workspace">Current readable workspace</option><option value="published">Published estate projection</option></select></label>
+                <Button size="sm" variant="ghost" onClick={() => source === 'workspace' ? knowledge.refresh() : setRefreshKey((value) => value + 1)}><RefreshCw className="h-4 w-4" />Refresh</Button></div>
+            <p className="text-sm text-muted-foreground">{active.question} Workspace views show source records and categories; estate ownership and deployed capabilities need a separate published projection.</p>
+            {error ? <Card className="p-5" role="alert">{error} Missing observations remain unavailable.</Card> : !projection ? <p role="status">Reading the selected source…</p> : <>
+                <p className="text-sm">{stats.nodes} nodes · {stats.edges} relationships · {projection.state || 'UNMEASURED'}{projection.omitted ? ` · ${projection.omitted} additional records omitted` : ''}</p>
+                {source === 'workspace' && <p className="text-xs text-muted-foreground">Observed at {projection.observed_at}. Record statuses are source assertions; this view does not independently verify them. {projection.coverage?.filter((entry) => !['complete', 'disabled'].includes(entry.state)).map((entry) => `${entry.collection}: ${entry.state}`).join(' · ')}</p>}
+                {!projection.nodes.length ? <p>No readable records are present in this view.</p> : <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_300px]"><RoomCanvas projection={projection} selectedId={selectedId} onSelect={setSelectedId} />
+                    <Card className="space-y-3 p-4"><h2 className="font-semibold">Source inspector</h2>{selected ? <><p>{selected.title}</p><p className="break-all text-xs">{selected.id} · {selected.state || 'UNMEASURED'}</p><pre className="max-h-96 overflow-auto whitespace-pre-wrap break-words text-xs">{JSON.stringify(selected.attributes || {}, null, 2)}</pre></> : <p className="text-sm">Select a node to inspect its retained provenance.</p>}</Card></div>}
+            </>}
+        </>}
+    </div>;
 }

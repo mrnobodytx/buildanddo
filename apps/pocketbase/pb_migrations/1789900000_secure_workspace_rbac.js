@@ -16,6 +16,15 @@
 // ───────────────────────────────────────────────────────────────
 
 migrate((app) => {
+    // PocketBase 0.39.x binds a collection's rules as *string, which reaches the JSVM as an OBJECT and
+    // not a primitive: measured 2026-09-20 on 0.39.8, `typeof collection.listRule === 'object'` while
+    // String(...) yields the right text. Array.includes and === compare by identity, so EVERY
+    // comparison below against a string literal was false and this preflight threw on any database
+    // whatsoever - including one whose rules were already exactly the expected `before`. The guard was
+    // not detecting drift, it was unable to read the value it was guarding, and it silently kept this
+    // security fix unappliable from 2026-09-15 onward. Normalise through String() before comparing, and
+    // keep null distinct, because a null rule means superuser-only and is a real value here.
+    const ruleOf = (value) => (value === null || value === undefined ? null : String(value));
     const owner = "@request.auth.id != '' && @request.auth.id = owner";
     const create = "@request.auth.id != '' && @request.auth.id = @request.body.owner";
     const read = "@request.auth.id != '' && (workspace.owner = @request.auth.id || workspace.workspace_members_via_workspace.user ?= @request.auth.id)";
@@ -41,16 +50,26 @@ migrate((app) => {
     for (const item of plan) {
         item.collection = app.findCollectionByNameOrId(item.name);
         for (const field of Object.keys(item.before)) {
-            if (![item.before[field], item.after[field]].includes(item.collection[field]))
+            const actual = ruleOf(item.collection[field]);
+            if (actual !== ruleOf(item.before[field]) && actual !== ruleOf(item.after[field]))
                 throw new Error(`Review custom ${item.name} ${field} before applying workspace RBAC.`);
         }
     }
     for (const item of plan) {
-        if (Object.keys(item.after).every((field) => item.collection[field] === item.after[field])) continue;
+        if (Object.keys(item.after).every((field) => ruleOf(item.collection[field]) === ruleOf(item.after[field]))) continue;
         Object.assign(item.collection, item.after);
         app.save(item.collection);
     }
 }, (app) => {
+    // PocketBase 0.39.x binds a collection's rules as *string, which reaches the JSVM as an OBJECT and
+    // not a primitive: measured 2026-09-20 on 0.39.8, `typeof collection.listRule === 'object'` while
+    // String(...) yields the right text. Array.includes and === compare by identity, so EVERY
+    // comparison below against a string literal was false and this preflight threw on any database
+    // whatsoever - including one whose rules were already exactly the expected `before`. The guard was
+    // not detecting drift, it was unable to read the value it was guarding, and it silently kept this
+    // security fix unappliable from 2026-09-15 onward. Normalise through String() before comparing, and
+    // keep null distinct, because a null rule means superuser-only and is a real value here.
+    const ruleOf = (value) => (value === null || value === undefined ? null : String(value));
     const owner = "@request.auth.id != '' && @request.auth.id = owner";
     const create = "@request.auth.id != '' && @request.auth.id = @request.body.owner";
     const read = "@request.auth.id != '' && (workspace.owner = @request.auth.id || workspace.workspace_members_via_workspace.user ?= @request.auth.id)";
@@ -73,12 +92,13 @@ migrate((app) => {
     for (const item of plan) {
         item.collection = app.findCollectionByNameOrId(item.name);
         for (const field of Object.keys(item.before)) {
-            if (![item.before[field], item.after[field]].includes(item.collection[field]))
+            const actual = ruleOf(item.collection[field]);
+            if (actual !== ruleOf(item.before[field]) && actual !== ruleOf(item.after[field]))
                 throw new Error(`Review custom ${item.name} ${field} before restoring prior rules.`);
         }
     }
     for (const item of plan) {
-        if (Object.keys(item.before).every((field) => item.collection[field] === item.before[field])) continue;
+        if (Object.keys(item.before).every((field) => ruleOf(item.collection[field]) === ruleOf(item.before[field]))) continue;
         Object.assign(item.collection, item.before);
         app.save(item.collection);
     }

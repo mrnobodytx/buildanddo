@@ -61,6 +61,7 @@ function policyFixture() {
             return found;
         },
         findRecordsByFilter(name, filter, sort, limit, offset, params) {
+            if (name === 'business_jobs') throw missing(); // This legacy fixture predates execution storage.
             assert.equal(name, 'workspace_members');
             assert.equal(filter, 'workspace = {:workspace} && user = {:user}');
             assert.equal(limit, 1); assert.equal(offset, 0);

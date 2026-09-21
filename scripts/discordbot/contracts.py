@@ -27,7 +27,7 @@ import re
 import time
 from typing import Literal
 
-SITE_ORIGIN = "https://buildanddo.tech"
+SITE_ORIGIN = "https://buildanddo.com"
 SRS = "SRS-BUILDANDDO-UPGRADE-001"
 DISPATCH = "VCC-BUILDANDDO-UPGRADE-001"
 SESSION_SECONDS = 600

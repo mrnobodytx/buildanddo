@@ -16,3 +16,6 @@
 # ───────────────────────────────────────────────────────────────
 
 tests/fixtures/sample-blueprint.pdf binary
+
+# BuildAndDo deterministic generated artifact
+apps/web/src/data/policy-demo.json text eol=lf

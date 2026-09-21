@@ -15,7 +15,7 @@
 // Intent:      Deliver current scoped graph responses and cited context without retaining private data across accounts.
 // ───────────────────────────────────────────────────────────────
 
-export const KNOWLEDGE_KINDS = { mission: 'Missions', evidence: 'Evidence', research: 'Research', signal: 'Signals', wiki: 'Wiki pages' };
+export const KNOWLEDGE_KINDS = { mission: 'Missions', evidence: 'Evidence', research: 'Research', signal: 'Signals', wiki: 'Wiki pages', assistant_pattern: 'My action patterns', assistant_session: 'My assistant sessions' };
 const COLLECTIONS = { mission: 'missions', evidence: 'evidence', research: 'research_submissions', signal: 'signals', wiki: 'wiki_pages' };
 const RELATIONS = new Set(['CATEGORIZED_AS', 'TAGGED_WITH', 'EVIDENCE_FOR', 'RESEARCH_FOR', 'DERIVED_FROM']);
 const id = (value) => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(value);

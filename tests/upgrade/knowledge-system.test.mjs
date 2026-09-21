@@ -188,7 +188,7 @@ test('JSON-escaped quotes, Unicode and source instructions remain data within ev
 
 test('mission context includes bounded plan criteria, category matches and equivalent common word forms', () => {
     const f = knowledgeFixture(); const record = f.app.findRecordById('missions', 'mission1');
-    record.set('plan', { purpose: 'Improve attendance', target: 'Reduce missed bookings by a measured amount', rollback: 'Restore the old reminder time' });
+    record.set('mission_plan', { purpose: 'Improve attendance', target: 'Reduce missed bookings by a measured amount', rollback: 'Restore the old reminder time' });
     f.app.save(record);
     const mission = f.assemble({ mission: 'mission1' });
     assert.ok(mission.nodes.find((node) => node.kind === 'mission').text.includes('target: Reduce missed bookings'));

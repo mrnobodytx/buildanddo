@@ -54,7 +54,7 @@ export function researchFixture({ runtime = {} } = {}) {
     const input = (overrides = {}) => ({ mission: 'mission1', title: 'Appointment source', context: 'Understand missed bookings',
         kind: 'search', input: 'appointment reminders evidence', upload: '', ...overrides });
     const submit = (overrides = {}, options) => command('submit', input(overrides), options);
-    const result = { text: 'The observed page describes appointment reminders.', citations: [{ title: 'Source', url: 'https://buildanddo.tech/docs' }],
+    const result = { text: 'The observed page describes appointment reminders.', citations: [{ title: 'Source', url: 'https://buildanddo.com/docs' }],
         processor: 'firecrawl', version: 'v1', input_sha256: 'a'.repeat(64), truncated: false };
     return { ...f, get data() { return f.data; }, env, registered, service, policy, body, command, work, bridge, input, submit, result };
 }

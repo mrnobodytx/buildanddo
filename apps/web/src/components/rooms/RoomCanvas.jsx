@@ -1,3 +1,20 @@
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:         apps/web/src/components/rooms/RoomCanvas.jsx
+// Stage:        07_BUILD
+// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// CAPS:         pending
+// CK:           pending
+// Dispatch:     VCC-BUILDANDDO-UPGRADE-001
+// Seat:         BITS-CODEGEN
+// Owner:        Citadel Nexus Inc.
+// Created:      2026-09-21
+// Depends:      apps/web/src/lib/roomGraph.js
+// EnumType:     Widget
+// EnumEdges:    DEPENDS_ON apps/web/src/lib/roomGraph.js
+// DAG Node:     none
+// Intent:       Render source-derived room projections without clipping measured nodes or hiding their interactive semantics.
+// ───────────────────────────────────────────────────────────────
+
 import React, { useMemo } from 'react';
 import { layoutProjection } from '@/lib/roomGraph';
 
@@ -15,11 +32,13 @@ function nodeTone(state) {
 
 export default function RoomCanvas({ projection, selectedId, onSelect }) {
     const positions = useMemo(() => layoutProjection(projection), [projection]);
-    const width = 1450; const height = 760;
+    const coordinates = [...positions.values()];
+    const left = Math.min(0, ...coordinates.map((point) => point.x - 20)), top = Math.min(0, ...coordinates.map((point) => point.y - 20));
+    const width = Math.max(980, ...coordinates.map((point) => point.x + 220 - left)), height = Math.max(560, ...coordinates.map((point) => point.y + 120 - top));
     const nodes = projection?.nodes || []; const edges = projection?.edges || [];
     return (
         <div className="overflow-auto rounded-lg border border-border bg-secondary/10">
-            <svg viewBox={`0 0 ${width} ${height}`} className="min-h-[560px] min-w-[980px] w-full" role="img" aria-label={`${projection?.projection || 'room'} graph`}>
+            <svg viewBox={`${left} ${top} ${width} ${height}`} style={{ minWidth: width, minHeight: height }} className="w-full" role="group" aria-label={`${projection?.projection || 'room'} graph`}>
                 <defs>
                     <marker id="room-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" className="fill-muted-foreground/60" /></marker>
                 </defs>

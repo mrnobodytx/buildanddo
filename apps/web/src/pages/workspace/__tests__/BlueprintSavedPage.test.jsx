@@ -19,7 +19,7 @@ import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import BlueprintPage from '@/pages/workspace/BlueprintSavedPage';
 import pb from '@/lib/pocketbaseClient';
-import { renderWithProviders, screen, setupUser, waitFor, within } from '@/test/utils';
+import { renderWithProviders, scriptsCarrying, screen, setupUser, waitFor, within } from '@/test/utils';
 import { blueprintFixture, hash } from '../../../../../../tests/upgrade/blueprint-fixture.mjs';
 import { plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
 
@@ -98,7 +98,7 @@ describe('BlueprintPage', () => {
         const user = setupUser(); renderPage();
         await user.click(await screen.findByRole('button', { name: /sample.pdf/ }));
         expect(await screen.findByText('<script>source instructions</script>')).toBeVisible();
-        expect(document.querySelector('script')).toBeNull();
+        expect(scriptsCarrying('source instructions')).toEqual([]);
         await user.click(screen.getByRole('button', { name: 'Export mission definition' }));
         await user.click(screen.getByRole('button', { name: 'Export extracted blueprint' }));
         const blob = URL.createObjectURL.mock.calls[0][0];

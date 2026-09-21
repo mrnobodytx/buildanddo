@@ -139,7 +139,7 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         result["view"].stop()
 
     async def test_navigation_updates_page_link_and_rejects_foreign_control(self) -> None:
-        reply = Reply((Page("First", "One."), Page("Second", "Two.", "https://buildanddo.tech/about")))
+        reply = Reply((Page("First", "One."), Page("Second", "Two.", "https://buildanddo.com/about")))
         view = ADAPTER.ReplyView(self.service, self.caller, reply)
         self.addCleanup(view.stop)
         foreign = interaction(user=99)
@@ -151,7 +151,7 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         await view.next_page.callback(owner)
         self.assertEqual(view.session.index, 1)
         self.assertTrue(view.next_page.disabled)
-        self.assertEqual(view.open_site.url, "https://buildanddo.tech/about")
+        self.assertEqual(view.open_site.url, "https://buildanddo.com/about")
         await view.previous.callback(interaction())
         self.assertEqual(view.session.index, 0)
 

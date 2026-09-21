@@ -12,32 +12,35 @@
 // EnumType:    Service
 // EnumEdges:   CONSUMES apps/web/src/components/ProtectedRoute.jsx
 // DAG Node:    none
-// Intent:      Preserve local classroom links through sign-in and keep their identifiers out of browser telemetry.
+// Intent:      Preserve local classroom links through sign-in and keep classroom and personal learning identifiers out of browser telemetry.
 // ───────────────────────────────────────────────────────────────
 
 /** @param {unknown} value Requested destination. @returns {string} Valid local workspace path or the workspace front page. */
 export function workspaceDestination(value) {
     if (typeof value !== 'string' || value.length > 2000 || /[\\\s\u0000-\u001f\u007f]/.test(value) || !/^\/app(?:\/|[?#]|$)/.test(value)) return '/app';
     try {
-        const parsed = new URL(value, 'https://buildanddo.tech');
-        if (parsed.origin !== 'https://buildanddo.tech' || !/^\/app(?:\/[a-zA-Z0-9_-]+)*\/?$/.test(parsed.pathname)) return '/app';
+        const parsed = new URL(value, 'https://buildanddo.com');
+        if (parsed.origin !== 'https://buildanddo.com' || !/^\/app(?:\/[a-zA-Z0-9_-]+)*\/?$/.test(parsed.pathname)) return '/app';
         return `${parsed.pathname}${parsed.search}${parsed.hash}`;
     } catch { return '/app'; }
 }
 
-/** @param {unknown} value Browser location or request URL. @returns {unknown} Classroom location with private path and query identifiers removed. */
+/** @param {unknown} value Browser location or request URL. @returns {unknown} Classroom or learning location with private identifiers removed. */
 export function classroomTelemetryLocation(value) {
     if (typeof value !== 'string' || !value) return value;
     try {
-        const url = new URL(value, 'https://buildanddo.tech');
+        const url = new URL(value, 'https://buildanddo.com');
         const path = url.pathname;
         const room = /^\/app\/classrooms(?:\/|$)/.test(path);
         const api = /\/api\/buildanddo\/workspaces\/[^/]+\/classrooms(?:\/|$)/.test(path);
+        const learning = /\/api\/buildanddo\/learning(?:\/|$)/.test(path);
         const lesson = path === '/app/tutorials' && url.searchParams.has('lesson');
-        if (!room && !api && !lesson) return value;
+        if (!room && !api && !learning && !lesson) return value;
         if (room) url.pathname = path === '/app/classrooms' || path === '/app/classrooms/' ? '/app/classrooms' : '/app/classrooms/:room';
         if (api) url.pathname = path.replace(/(\/api\/buildanddo\/workspaces\/)[^/]+\/classrooms(?:\/(.*))?$/, (_all, prefix, suffix) =>
             `${prefix}:workspace/classrooms${suffix ? `/:room${suffix.endsWith('/presence') ? '/presence' : ''}` : ''}`);
+        if (learning) url.pathname = path.replace(/(\/api\/buildanddo\/learning)(?:\/.*)?$/, (_all, prefix) =>
+            `${prefix}${path.endsWith('/learning') || path.endsWith('/learning/') ? '' : '/:tutorial'}`);
         url.search = ''; url.hash = '';
         return value.startsWith('/') && !value.startsWith('//') ? url.pathname : `${url.origin}${url.pathname}`;
     } catch { return value; }

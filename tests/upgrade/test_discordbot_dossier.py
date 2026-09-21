@@ -55,7 +55,7 @@ class DossierTests(unittest.IsolatedAsyncioTestCase):
         return reply, state['items'][0]['id']
 
     async def test_discord_and_website_recall_the_same_encrypted_entity(self) -> None:
-        reply, entity_id = await self.remember(source_label='My interview', source_url='https://buildanddo.tech/docs')
+        reply, entity_id = await self.remember(source_label='My interview', source_url='https://buildanddo.com/docs')
         self.assertNotIn('Confirm opening hours.', reply.page.body)
         self.assertIn(entity_id, reply.page.url)
         viewed = await self.call('entity', {'id': entity_id})

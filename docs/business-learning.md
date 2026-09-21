@@ -109,7 +109,11 @@ Lessons are the default tab at `/app/tutorials`, also shared with Docs and Home.
 Readers can search by topic, choose a learning path and open a focus-managed
 reader. Wrong answers show feedback and permit another attempt. Mark complete
 requires the exercise confirmation and correct knowledge check in the UI.
-Completion is an account's learning record, not certification or verification.
+Ordinary reader completion is an account's self-recorded learning activity.
+The **Interactive tutorial** path adds saved checkpoints, server-checked answers,
+completion certificates and persistent learning growth; see
+[Interactive Field Manual](interactive-learning.md). Its completion certificate
+does not establish professional qualification or a verified business outcome.
 Reviewing a completed lesson keeps completion; the server rejects a downgrade.
 
 Anonymous and demo readers can preview the authored curriculum without any

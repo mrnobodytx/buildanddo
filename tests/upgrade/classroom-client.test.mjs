@@ -200,16 +200,16 @@ test('room, workspace and personal lesson identifiers stay out of classroom tele
     for (const [value, expected] of [
         ['/app/classrooms/roomalpha?workspace=workspacealpha#discussion', '/app/classrooms/:room'],
         ['/app/classrooms?workspace=workspacealpha', '/app/classrooms'],
-        ['https://buildanddo.tech/app/classrooms/roomalpha', 'https://buildanddo.tech/app/classrooms/:room'],
+        ['https://buildanddo.com/app/classrooms/roomalpha', 'https://buildanddo.com/app/classrooms/:room'],
         ['/hcgi/platform/api/buildanddo/workspaces/workspacealpha/classrooms/roomalpha/presence', '/hcgi/platform/api/buildanddo/workspaces/:workspace/classrooms/:room/presence'],
         ['/api/buildanddo/workspaces/workspacealpha/classrooms', '/api/buildanddo/workspaces/:workspace/classrooms'],
         ['/api/buildanddo/workspaces/workspacealpha/classrooms/roomalpha', '/api/buildanddo/workspaces/:workspace/classrooms/:room'],
         ['/app/tutorials?lesson=lessonalpha', '/app/tutorials'],
         ['/docs?guide=public', '/docs?guide=public'], [null, null], ['http://[', 'http://['],
     ]) assert.equal(classroomTelemetryLocation(value), expected);
-    const event = { event: '$pageview', properties: { $current_url: 'https://buildanddo.tech/app/classrooms/roomalpha?workspace=workspacealpha',
-        $pathname: '/app/classrooms/roomalpha', $set_once: { $initial_current_url: 'https://buildanddo.tech/app/classrooms/roomalpha' },
-        $set: { $referrer: 'https://buildanddo.tech/app/tutorials?lesson=lessonalpha' }, unrelated: 'retained' } };
+    const event = { event: '$pageview', properties: { $current_url: 'https://buildanddo.com/app/classrooms/roomalpha?workspace=workspacealpha',
+        $pathname: '/app/classrooms/roomalpha', $set_once: { $initial_current_url: 'https://buildanddo.com/app/classrooms/roomalpha' },
+        $set: { $referrer: 'https://buildanddo.com/app/tutorials?lesson=lessonalpha' }, unrelated: 'retained' } };
     assert.ok(!JSON.stringify(scrubClassroomProperties(event)).includes('alpha'));
     assert.equal(event.properties.unrelated, 'retained'); assert.equal(scrubClassroomProperties(null), null);
 });

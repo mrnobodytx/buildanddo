@@ -215,7 +215,7 @@ describe('home workspace edition', () => {
         const user = setupUser();
         renderWithProviders(<HomePage />);
         const desk = section('challenge-desk');
-        const input = desk.getByRole('textbox', { name: 'Your business challenge' });
+        const input = desk.getByRole('textbox', { name: 'Your challenge' });
         await user.type(input, 'Reduce Friday appointment no-shows');
         pb.__collection('challenge_submissions').create.mockRejectedValueOnce(
             mockPocketBaseError('Permission temporarily unavailable', 403),
@@ -248,7 +248,7 @@ describe('home workspace edition', () => {
         renderWithProviders(<HomePage />);
         expect(screen.getAllByText('Demonstration data.').length).toBeGreaterThan(0);
         expect(
-            section('challenge-desk').getByRole('textbox', { name: 'Your business challenge' }),
+            section('challenge-desk').getByRole('textbox', { name: 'Your challenge' }),
         ).toBeDisabled();
         expect(
             section('challenge-desk').getByRole('button', { name: 'Submit challenge' }),
@@ -263,7 +263,7 @@ describe('home workspace edition', () => {
         const view = renderWithProviders(<Scene auth={auth} workspace={oldWorkspace} />);
         expect(await screen.findByRole('heading', { name: 'Old workspace receipt' })).toBeVisible();
         await setupUser().type(
-            screen.getByLabelText('Your business challenge'),
+            screen.getByLabelText('Your challenge'),
             'Unsent old workspace problem',
         );
         pb.__setRecords('evidence', [
@@ -272,7 +272,7 @@ describe('home workspace edition', () => {
         const next = createWorkspaceValue({ active: createMockWorkspace({ id: 'ws_new' }) });
         view.rerender(<Scene auth={auth} workspace={next} />);
         expect(screen.queryByText('Old workspace receipt')).not.toBeInTheDocument();
-        expect(screen.getByLabelText('Your business challenge')).toHaveValue('');
+        expect(screen.getByLabelText('Your challenge')).toHaveValue('');
         expect(await screen.findByRole('heading', { name: 'New workspace receipt' })).toBeVisible();
         expect(pb.__collection('evidence').getFullList).toHaveBeenLastCalledWith(
             expect.objectContaining({ filter: 'workspace = "ws_new"' }),
