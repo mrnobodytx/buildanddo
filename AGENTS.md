@@ -29,7 +29,8 @@ read `CONTRIBUTING.md` first.
 - GitHub is the public collaboration plane; GitLab executes CI and holds
   golden, infrastructure, release and deployment authority. Inspect the root
   GitLab configuration and its reachable includes; GitHub job status does not
-  establish GitLab execution or acceptance.
+  establish GitLab execution or acceptance. GitHub governance is an explicitly
+  dispatched fallback; automatic validation belongs to the GitLab jobs.
 
 ## Start here
 
@@ -183,9 +184,9 @@ component says so rather than implying a check exists.
 
 | Tag                          | Step             | What it actually checks                                     |
 |------------------------------|------------------|-------------------------------------------------------------|
-| `ci:test`                    | Test             | GitLab source Node/Python and semantic-twin suites, web coverage, PocketBase workspace/suite/learning/classroom/dossier checks on both declared runtimes, and manifest/lock integrity |
+| `ci:test`                    | Test             | GitLab source Node/Python and semantic-twin suites, web coverage, native Discord/PDF and CPU blueprint checks, Python 3.11/3.12 foundry/portfolio/mission coverage, PocketBase workspace/suite/learning/classroom/dossier checks on both declared runtimes, and manifest/lock integrity |
 | `ci:build`                   | Pull request     | `npm run build` produces `dist/apps/web/index.html`         |
-| `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, one actor label, `agent_context.py --check` |
+| `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, exactly one actor label on the current review, `agent_context.py --check` |
 | `governance:readiness`       | Sprint readiness | All 11 milestones match reviewed source; acceptance, replay and provisional submission validators reject incomplete evidence and invented official rules |
 | `deploy:staging-probe`       | Staging deploy   | Candidate mirror to the private plane succeeds on `main`    |
 | `deploy:production`          | Production       | Release visible in RUM, no new error signature from the deploy |

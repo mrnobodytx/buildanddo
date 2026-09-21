@@ -20,6 +20,29 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Governance execution repair authorized 2026-09-21
+
+The owner reports that all governance checks still fail after the GitLab
+correction. Continue this A2 source dispatch and preserve the confirmed GitLab
+execution model. Inspect the current provider records before attributing a
+failure to source. Move the remaining required validation and actor checks into
+the reachable GitLab lane before making GitHub governance a manual fallback.
+Keep the full eighteen-profile acceptance requirements, both declared Python
+versions for the portable suites, coverage floors and native dependency gates.
+
+Acceptance: reject automatic duplicate GitHub scheduling, missing migrated
+checks, absent or conflicting actor labels and foreign review metadata. A
+GitHub review export must identify the exact tested revision. Run available
+governance and coverage checks; preserve the distinction between configured
+jobs, observed local results and hosted execution. Private mirroring, runner
+activation, remote status publication and branch protection remain receiving
+owner actions; no remote changes are made by this continuation.
+
+The migrated mission coverage checker must select the existing business worker
+tests alongside its original suite. Continue measuring every module at the same
+80 percent floor; excluding the untested worker or lowering the floor is not a
+repair. Retain the observed zero-coverage failure and both Python-version runs.
+
 ## GitLab acceptance correction authorized 2026-09-21
 
 The owner confirms that GitLab executes CI and requests clearing the remaining

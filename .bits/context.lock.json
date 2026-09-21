@@ -431,7 +431,8 @@
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
         "scripts/publish/activity_publish.py",
-        "tests/upgrade/test_gitlab_acceptance.py"
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_public_boundary.py"
       ],
       "wired_into_ci": true
     },
@@ -461,7 +462,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-21T22:25:34.958383+00:00",
+  "generated_at": "2026-09-21T23:13:53.400904+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -781,7 +782,7 @@
       "local_actions": [
         ".github/actions/datadog-ci-report"
       ],
-      "name": "BuildAndDo PR Governance",
+      "name": "BuildAndDo Manual Governance",
       "npm_scripts": [],
       "provider": "github",
       "scripts": [
@@ -793,7 +794,7 @@
         "scripts/ci/verify_public_boundary.py"
       ],
       "triggers": [
-        "pull_request"
+        "workflow_dispatch"
       ]
     },
     {
@@ -896,6 +897,26 @@
       "triggers": [
         "rules (not evaluated)"
       ]
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab/ci/source-validation.yml",
+      "jobs": [
+        "source_discord",
+        "source_foundry",
+        "source_federal_portfolio",
+        "source_mission_suite"
+      ],
+      "kind": "include",
+      "local_actions": [],
+      "name": "source-validation",
+      "npm_scripts": [],
+      "provider": "gitlab",
+      "required_scripts": [],
+      "scripts": [],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
     }
   ],
   "repo": {
@@ -921,11 +942,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 46,
-    "python_files": 316,
+    "python_files": 317,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1295,
+    "tracked_files": 1298,
     "web_source_files": 333
   },
   "schema_version": 1,
@@ -934,7 +955,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "Execute day21_full_acceptance on the GitLab buildanddo runner for one clean candidate; retain all eighteen profiles and the complete artifact export. Missing local dependencies remain prerequisites, and the separate Cloudflare diagnostic belongs to the hosting owner.",
+        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -999,13 +1020,13 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "c123fe9cf39db9b0d001a5c9db9629b54802cbadd8564c4a23496cfd22fa4db4",
+    "source_sha256": "506b2da60aa06a6ae6323fac7f5aa0b80c9fded6386dee4421dfda08a01ed436",
     "state": "PASS"
   },
   "summary": {
     "findings": 24,
     "findings_high": 24,
-    "pipelines": 9,
+    "pipelines": 10,
     "srs_open": 28,
     "srs_total": 32,
     "unwired_gates": 22
