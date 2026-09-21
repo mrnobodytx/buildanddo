@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 847,
+      "lines": 1025,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -48,6 +48,7 @@
       "file_path": ".bits/context.md",
       "cket_stage": "04_HYPOTHESIZE",
       "srs_codes": [
+        "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "ConfigDoc",
@@ -57,7 +58,7 @@
         ".bits/srs_registry.yml",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 126,
+      "lines": 129,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "The durable brief an agent reads first; measured facts live in the lock beside it.",
@@ -71,11 +72,8 @@
       "tags": [
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
-        "srs-buildanddo-upgrade-001",
-        "governance-telemetry",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -532,7 +530,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 43738,
+      "lines": 44039,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -547,7 +545,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "acceptance-runner"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -666,7 +664,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1397,
+      "lines": 1417,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -681,7 +679,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "acceptance-runner"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -985,7 +983,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1813,
+      "lines": 1831,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1000,7 +998,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "acceptance-runner"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -1293,6 +1291,8 @@
       "file_path": "AGENTS.md",
       "cket_stage": "04_HYPOTHESIZE",
       "srs_codes": [
+        "SRS-BUILDANDDO-BOOTSTRAP-001",
+        "SRS-BUILDANDDO-COMMUNITY-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "ConfigDoc",
@@ -1301,7 +1301,7 @@
         "CONTRIBUTING.md",
         ".buildanddo/public/path-policy.json"
       ],
-      "lines": 219,
+      "lines": 221,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define machine-facing governance for agents working in buildanddo.",
@@ -1316,12 +1316,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade",
-        "operator-acceptance",
-        "interactive-learning",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -1330,6 +1325,7 @@
       "file_path": "CLAUDE.md",
       "cket_stage": "04_HYPOTHESIZE",
       "srs_codes": [
+        "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "ConfigDoc",
@@ -1339,7 +1335,7 @@
         ".bits/context.md",
         "CONTRIBUTING.md"
       ],
-      "lines": 76,
+      "lines": 80,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide the human-facing companion AGENTS.md declares but the repo never had.",
@@ -1353,11 +1349,8 @@
       "tags": [
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
-        "srs-buildanddo-upgrade-001",
-        "governance-telemetry",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -6606,14 +6599,14 @@
       ],
       "dependencies": [
         "apps/web/src/components/site/ui.jsx",
-        ".github/workflows/pr-governance.yml"
+        ".gitlab/ci/day21-submission.yml"
       ],
-      "lines": 312,
+      "lines": 310,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -6623,12 +6616,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade",
-        "operator-acceptance",
-        "interactive-learning",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -16368,6 +16356,7 @@
       "file_path": "scripts/ci/agent_context.py",
       "cket_stage": "11_COMMIT",
       "srs_codes": [
+        "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Service",
@@ -16376,6 +16365,7 @@
         "read",
         "parse_registry",
         "collect_pipelines",
+        "gitlab_scripts",
         "collect_gates",
         "collect_tests",
         "collect_findings",
@@ -16388,9 +16378,10 @@
       "dependencies": [
         "AGENTS.md",
         ".bits/context.md",
-        ".bits/srs_registry.yml"
+        ".bits/srs_registry.yml",
+        "scripts/ci/gitlab_ci.py"
       ],
-      "lines": 428,
+      "lines": 494,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Give every agent turn the same measured view of the repo instead of a hand-written brief that silently goes stale.",
@@ -16404,9 +16395,8 @@
       "tags": [
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
-        "srs-buildanddo-upgrade-001",
-        "governance-telemetry",
-        "hostinger-sprint-closure"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -25054,16 +25044,6 @@
       "edge_type": "VERIFIED_BY",
       "weight": 1.0,
       "description": "apps/web/src/components/workspace/PreviousWorkNote.jsx verified_by apps/web/src/pages/workspace/MissionsPage.jsx.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/web/src/components/workspace/ProgressionPipeline.jsx",
-      "target": ".github/workflows/pr-governance.yml",
-      "edge_type": "VALIDATES",
-      "weight": 1.0,
-      "description": "apps/web/src/components/workspace/ProgressionPipeline.jsx validates .github/workflows/pr-governance.yml.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -38668,7 +38648,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 504,
+      "lines": 508,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38683,7 +38663,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "acceptance-runner"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -38730,7 +38710,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1011,
+      "lines": 1016,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38745,7 +38725,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "acceptance-runner"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -38958,7 +38938,7 @@
         "scripts/ci/hostinger_replay.py",
         "tools/day21/day21_acceptance.py"
       ],
-      "lines": 278,
+      "lines": 308,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.",
@@ -38973,7 +38953,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "acceptance-runner"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -39045,7 +39025,8 @@
       "dependencies": [
         ".bits/hostinger-readiness.json",
         "scripts/ci/sprint_cycle.py",
-        "scripts/ci/hostinger_checks.py"
+        "scripts/ci/hostinger_checks.py",
+        "scripts/ci/gitlab_ci.py"
       ],
       "lines": 547,
       "caps_grade": "pending",
@@ -39062,7 +39043,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -39159,7 +39140,7 @@
         "scripts/ci/hostinger_checks.py",
         "scripts/ci/hostinger_readiness.py"
       ],
-      "lines": 526,
+      "lines": 528,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject stale governance, tampered receipts, skipped acceptance and misleading runtime versions using real local subprocess outcomes.",
@@ -39174,7 +39155,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -39490,16 +39471,6 @@
       "edge_type": "CONSUMES",
       "weight": 1.0,
       "description": "scripts/ci/hostinger_readiness.py consumes scripts/ci/hostinger_checks.py.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "scripts/ci/hostinger_readiness.py",
-      "target": ".github/workflows/pr-governance.yml",
-      "edge_type": "GATES",
-      "weight": 1.0,
-      "description": "scripts/ci/hostinger_readiness.py gates .github/workflows/pr-governance.yml.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -41085,7 +41056,7 @@
         "docs/business-execution.md",
         "docs/workspace-assistant.md"
       ],
-      "lines": 239,
+      "lines": 242,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define provisional submission rules, exhaustive checkpoint acceptance and a verifiable owner-reviewed entry package.",
@@ -41100,7 +41071,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -41160,9 +41131,10 @@
       "dependencies": [
         ".bits/submission-policy.json",
         "scripts/ci/hostinger_readiness.py",
-        "scripts/ci/hostinger_replay.py"
+        "scripts/ci/hostinger_replay.py",
+        "scripts/ci/gitlab_ci.py"
       ],
-      "lines": 524,
+      "lines": 518,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep all eleven submission milestones gated by current acceptance, captured replay and reviewed official requirements.",
@@ -41177,7 +41149,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -41466,7 +41438,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -42613,7 +42585,7 @@
         "docs/submission-guide.md",
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md"
       ],
-      "lines": 62,
+      "lines": 66,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Assign the exact external inputs still needed after acceptance repair and source completion of the four closure paths.",
@@ -42628,7 +42600,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -43381,7 +43353,7 @@
         "tools/day21/day21_acceptance.py",
         "tests/upgrade/test_day21_support.py"
       ],
-      "lines": 369,
+      "lines": 402,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject empty acceptance runs and stale success after runtime failures while exercising the real receipt exporter.",
@@ -43396,7 +43368,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "acceptance-runner"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -43421,7 +43393,7 @@
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/day21_submission.py"
       ],
-      "lines": 254,
+      "lines": 256,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the declared acceptance profiles and retain current failures without mistaking an incomplete run for acceptance.",
@@ -43436,7 +43408,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "acceptance-runner"
+        "gitlab-acceptance"
       ],
       "tenant_id": null
     },
@@ -43721,12 +43693,341 @@
       "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/acceptance-report.md",
       "description": "Recorded the current hosted acceptance blocker from read-only GitHub observations: PR 63 governance run 35654152630 has eleven failed jobs with zero steps, and check 106513509603 states the account is locked due to billing. No hosted rerun or billing mutation was performed.",
       "timestamp": "2026-09-21T21:24:16.962498+00:00"
+    },
+    {
+      "type": "A",
+      "file_path": ".gitlab/ci/day21-submission.yml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Workflow",
+      "functions": [],
+      "dependencies": [
+        "tools/day21/day21_acceptance.py",
+        "scripts/ci/day21_submission.py",
+        "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/submission_readiness.py"
+      ],
+      "lines": 81,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Execute and retain one complete candidate-bound acceptance matrix on the GitLab shell runner before submission evidence review.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/ci/gitlab_ci.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Job",
+        "Configuration",
+        "arguments",
+        "_scalar",
+        "_sections",
+        "_commands",
+        "collect",
+        "require_command"
+      ],
+      "dependencies": [
+        ".gitlab/ci/day21-submission.yml"
+      ],
+      "lines": 221,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Inspect reachable local GitLab commands without treating comments, optional jobs or external configuration as executed acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_gitlab_acceptance.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "GitLabAcceptanceTests"
+      ],
+      "dependencies": [
+        "scripts/ci/agent_context.py",
+        "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/submission_readiness.py",
+        ".gitlab/ci/day21-submission.yml"
+      ],
+      "lines": 249,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prevent GitHub configuration, unreachable jobs or incomplete artifacts from standing in for GitLab acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tools/day21/day21_architecture_snapshot.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "sha",
+        "compile_snapshot",
+        "main"
+      ],
+      "dependencies": [
+        ".gitlab/ci/day21-submission.yml",
+        "scripts/ci/hostinger_readiness.py"
+      ],
+      "lines": 121,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe source-declared architecture and GitLab execution without promoting configuration into runtime evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/day21-submission.yml",
+      "target": "scripts/ci/day21_submission.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/day21_submission.py as declared by .gitlab/ci/day21-submission.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/day21-submission.yml",
+      "target": "scripts/ci/hostinger_readiness.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/hostinger_readiness.py as declared by .gitlab/ci/day21-submission.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/day21-submission.yml",
+      "target": "scripts/ci/submission_readiness.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/submission_readiness.py as declared by .gitlab/ci/day21-submission.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/day21-submission.yml",
+      "target": "tools/day21/day21_acceptance.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tools/day21/day21_acceptance.py as declared by .gitlab/ci/day21-submission.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ProgressionPipeline.jsx",
+      "target": ".gitlab/ci/day21-submission.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES .gitlab/ci/day21-submission.yml as declared by apps/web/src/components/workspace/ProgressionPipeline.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/agent_context.py",
+      "target": "scripts/ci/gitlab_ci.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/gitlab_ci.py as declared by scripts/ci/agent_context.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/agent_context.py",
+      "target": ".gitlab/ci/day21-submission.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES .gitlab/ci/day21-submission.yml as declared by scripts/ci/agent_context.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/gitlab_ci.py",
+      "target": ".gitlab/ci/day21-submission.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES .gitlab/ci/day21-submission.yml as declared by scripts/ci/gitlab_ci.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/hostinger_readiness.py",
+      "target": "scripts/ci/gitlab_ci.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/gitlab_ci.py as declared by scripts/ci/hostinger_readiness.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/hostinger_readiness.py",
+      "target": ".gitlab/ci/day21-submission.yml",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": "GATES .gitlab/ci/day21-submission.yml as declared by scripts/ci/hostinger_readiness.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/submission_readiness.py",
+      "target": "scripts/ci/gitlab_ci.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/gitlab_ci.py as declared by scripts/ci/submission_readiness.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_gitlab_acceptance.py",
+      "target": ".gitlab/ci/day21-submission.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES .gitlab/ci/day21-submission.yml as declared by tests/upgrade/test_gitlab_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_gitlab_acceptance.py",
+      "target": "scripts/ci/agent_context.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES scripts/ci/agent_context.py as declared by tests/upgrade/test_gitlab_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_gitlab_acceptance.py",
+      "target": "scripts/ci/hostinger_readiness.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES scripts/ci/hostinger_readiness.py as declared by tests/upgrade/test_gitlab_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_gitlab_acceptance.py",
+      "target": "scripts/ci/submission_readiness.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES scripts/ci/submission_readiness.py as declared by tests/upgrade/test_gitlab_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tools/day21/day21_architecture_snapshot.py",
+      "target": ".gitlab/ci/day21-submission.yml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .gitlab/ci/day21-submission.yml as declared by tools/day21/day21_architecture_snapshot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tools/day21/day21_architecture_snapshot.py",
+      "target": "scripts/ci/hostinger_readiness.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/hostinger_readiness.py as declared by tools/day21/day21_architecture_snapshot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": "74/74",
+      "event_type": "test_pass",
+      "file_path": ".gitlab/ci/day21-submission.yml",
+      "description": "GitLab acceptance correction: 74 focused regressions passed after reproducing provider selection, reachability and artifact handoff defects. Tests use explicit synthetic receipts and do not establish hosted or native acceptance.",
+      "timestamp": "2026-09-21T22:13:58.857241+00:00"
     }
   ],
   "summary": {
-    "type_a_count": 724,
-    "type_b_count": 1597,
-    "type_c_count": 163,
+    "type_a_count": 728,
+    "type_b_count": 1612,
+    "type_c_count": 164,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

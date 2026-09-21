@@ -59,12 +59,12 @@ class SubmissionTests(unittest.TestCase):
         for name in (
             "AGENTS.md",
             ".bits/context.md",
-            ".github/workflows/pr-governance.yml",
+            ".gitlab-ci.yml",
         ):
             path = self.root / name
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(
-                "    run: python scripts/ci/submission_readiness.py --check\n"
+                "review:\n  script:\n    - python scripts/ci/submission_readiness.py --check\n"
             )
         self.contract = json.loads(
             (ROOT / ".bits/hostinger-readiness.json").read_text()
@@ -277,8 +277,8 @@ class SubmissionTests(unittest.TestCase):
 
     def test_required_policy_gate_cannot_be_hidden_in_a_ci_comment(self) -> None:
         submission.check_wiring(self.root)
-        (self.root / ".github/workflows/pr-governance.yml").write_text(
-            "# run: python scripts/ci/submission_readiness.py --check\n"
+        (self.root / ".gitlab-ci.yml").write_text(
+            "# - python3 scripts/ci/submission_readiness.py --check\n"
         )
         with self.assertRaises(ReadinessError):
             submission.check_wiring(self.root)

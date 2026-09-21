@@ -97,9 +97,9 @@ installed test binary. Native checks create disposable loopback instances and
 synthetic accounts; they never migrate a shared database. Run all other
 `native_*` checks required by the contract in both profiles too. `--run all
 --runtime package` runs every local check for that profile; it does not stand in
-for compose acceptance. The CI version matrix provisions the declared binaries
-and calls these commands. Receipts/logs remain workflow artifacts, including
-failed runs. Jobs that cannot start have no test acceptance.
+for compose acceptance. The GitLab full-acceptance job provisions the declared
+binaries and runs the complete matrix in one checkout. Receipts/logs remain job
+artifacts, including failed runs. Jobs that cannot start have no test acceptance.
 
 Default receipts live in ignored `state/hostinger/acceptance/`. To assess CI
 exports, collect their receipt/log files in one directory and restore referenced
@@ -144,7 +144,37 @@ A connected runner can use `--install-deps` and the existing Docker provisioning
 instead. `--source-only` and `--native-only` are mutually exclusive. A partial
 selection still exits nonzero unless the shared validator accepts all eighteen
 current profiles; a selected command's success cannot certify missing profiles.
-GitHub jobs with zero steps require the account owner to restore Actions access.
+GitLab executes this lane. The earlier GitHub billing observations are historical
+evidence about GitHub and do not block the GitLab runner.
+
+### GitLab execution and artifact handoff
+
+The existing `.gitlab-ci.yml` includes `.gitlab/ci/day21-submission.yml`.
+`day21_governance` checks source bindings and validator regressions, followed by
+`day21_full_acceptance` on the `buildanddo` shell runner. Both are configured for
+main, sprint branches, merge-request pipelines or `DAY21_FULL_ACCEPTANCE=1`.
+The full job replaces the split source/native jobs: the shared runner requires
+all eighteen profiles for success. Its Python virtual environment lives in
+ignored `state/day21/venv`; npm installs development tools from the root lock
+even if the shell inherited `NODE_ENV=production`. The runner
+needs the Node major in `.nvmrc`, Python with venv/pip, Docker and access to the
+declared package/image sources. A local provisioned machine can use the offline
+command above instead.
+
+Always download the entire `state/day21/evidence/` directory, plus
+`reports/junit/web.xml` and `dist/apps/web/index.html` at their original paths.
+The validator hashes exported copies and compares the original artifact paths;
+a standalone summary is insufficient. Artifacts are retained even for HOLD or
+failed acceptance. `day21_submission_bundle` explicitly needs the full job's
+artifacts and is manual when `DAY21_COMPILE_SUBMISSION=1`. The receiving owner
+must provide the other same-candidate captures before that bundle can pass.
+
+The stdlib source inspector follows literal local includes, rejects unresolved
+or unsafe include paths and inventories executable command lists. It does not
+resolve remote includes, YAML aliases, inherited command templates or merged
+job overrides, evaluate GitLab rules, or attest that any hosted job ran. Such
+configuration needs GitLab's merged-config review; actual acceptance still
+requires the candidate-bound run export.
 
 ## Product connection
 

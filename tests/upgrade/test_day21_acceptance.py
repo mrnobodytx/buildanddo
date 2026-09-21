@@ -24,6 +24,8 @@ import io
 import json
 import os
 from pathlib import Path
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -134,6 +136,37 @@ class AcceptanceRunnerTests(unittest.TestCase):
         self.assertEqual(summary["profiles"]["source_node"], "INVALID")
         self.assertEqual(summary["profiles"]["web_build"], "STALE")
 
+    def test_gitlab_download_retains_a_revalidatable_acceptance_export(self) -> None:
+        target = self.root / "state/day21/evidence/acceptance-summary.json"
+        runner.write_summary(self.root, self.receipts, target)
+        config = (runner.ROOT / ".gitlab/ci/day21-submission.yml").read_text()
+        full_job = config.split("day21_full_acceptance:\n", 1)[1].split(
+            "\nday21_submission_bundle:", 1
+        )[0]
+        paths = re.findall(
+            r"^      - ((?:reports|state|dist)/[^\s#]+)$", full_job, re.MULTILINE
+        )
+        downloaded = self.root / "downloaded"
+        fixture(downloaded)
+        for declaration in (
+            "apps/pocketbase/.pocketbase-version",
+            "docker-compose.yml",
+        ):
+            shutil.copyfile(self.root / declaration, downloaded / declaration)
+        for name in paths:
+            source, destination = self.root / name, downloaded / name
+            if source.is_dir():
+                shutil.copytree(source, destination, dirs_exist_ok=True)
+            elif source.is_file():
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, destination)
+        exported = downloaded / "state/day21/evidence"
+        result = day21.validate_acceptance(exported, NOW, root=downloaded)
+        self.assertEqual(result["state"], "PASS")
+        (exported / "acceptance/source_node.log").write_text("Changed after download\n")
+        with self.assertRaises(day21.Day21Error):
+            day21.validate_acceptance(exported, NOW, root=downloaded)
+
     def test_existing_output_and_dirty_source_stop_before_any_command(self) -> None:
         self.target.parent.mkdir()
         self.target.write_text("Existing evidence\n")
@@ -179,7 +212,7 @@ class AcceptanceRunnerTests(unittest.TestCase):
             self.assertEqual(
                 runner.main([*self.args, "--source-only", "--install-deps"]), 1
             )
-        self.assertIn(["npm", "ci"], commands)
+        self.assertIn(["npm", "ci", "--include=dev"], commands)
         self.assertTrue(any("pip" in argv and "install" in argv for argv in commands))
 
     def test_docker_extraction_cleans_up_on_copy_failure_and_success(self) -> None:

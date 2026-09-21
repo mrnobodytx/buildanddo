@@ -53,8 +53,12 @@ work always needs an explicit human dispatch. Then branch
 `apps/web` is the React + Vite site, `apps/pocketbase` is the backend and its
 migrations, `services/praxis_evidence` is the evidence fabric with its own
 Python suites, `scripts/ci` holds the gates, `scripts/deploy` holds the real
-ship pipeline. GitHub is the public collaboration plane; golden data,
-infrastructure and deployment authority live on the private GitLab mirror.
+ship pipeline. GitHub is the public collaboration plane; GitLab executes CI and
+holds golden data, infrastructure and deployment authority. The Day-21 GitLab
+job runs all eighteen acceptance profiles and retains the complete evidence
+export. The briefing distinguishes reachable GitLab wiring from GitHub
+definitions; neither source inventory nor a GitHub job failure establishes
+GitLab runtime acceptance.
 
 ## Traps that have already cost time
 

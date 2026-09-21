@@ -20,6 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## GitLab acceptance correction authorized 2026-09-21
+
+Owner request: GitLab powers execution; revise the system accordingly and clear
+the other actionable blockers. This continues local A2 work on the session branch.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| GL-1 | Inventory reachable GitLab CI and enforce its governance checks | GitLab inventory and readiness regressions | source PASS: 14 GitLab cases; 74 combined regressions |
+| GL-2 | Repair complete acceptance, isolated dependency setup and evidence artifacts | GitLab job/runner regressions and local acceptance | source PASS: complete artifact download revalidates; missing runtime prerequisites remain explicit |
+| GL-3 | Correct receiving actions and retain observed results | Context, readiness, boundary and memory checks | source corrected; exact local results retained in gitlab-report.md; hosted execution UNMEASURED |
+
+Memory brief: the root GitLab pipeline includes the public Day-21 acceptance
+fragment. Its default source-only job cannot satisfy the runner's full-matrix
+success requirement; the opt-in full job archives only the summary, omitting
+referenced export files. Agent context inventories only GitHub, and both
+readiness wiring validators inspect only GitHub. The last actual local result
+is 4 PASS, 3 FAIL, 1 HOLD and 10 BLOCKED. GitLab execution is not observed here;
+the recorded GitHub billing failure says nothing about GitLab runner health.
+No authenticated workspace seat is available, so no seat event is fabricated.
+
 ## Acceptance-only continuation authorized 2026-09-21
 
 Owner request: focus on the failing acceptance profiles. The last retained run

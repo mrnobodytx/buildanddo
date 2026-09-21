@@ -20,6 +20,23 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## GitLab acceptance correction authorized 2026-09-21
+
+The owner confirms that GitLab executes CI and requests clearing the remaining
+locally actionable acceptance blockers. Continue this existing A2 dispatch.
+Measure the checked-in GitLab entry point and reachable local includes, repair
+the public acceptance job and artifact handoff, and make the briefing and
+readiness gates describe GitLab execution. GitHub billing observations remain
+historical provider-specific evidence, not prerequisites for GitLab acceptance.
+
+Run the complete eighteen-profile matrix in one GitLab job, with isolated Python
+dependencies and both declared disposable PocketBase versions. Retain the whole
+candidate-bound evidence export, including failures. Test include reachability,
+comment/template rejection, governance wiring and artifact continuity. Execute
+all locally available checks; absent packages or runtimes remain explicit.
+Do not change private release jobs, trigger hosted pipelines, access credentials,
+deploy, or substitute synthetic evidence for a completed GitLab run.
+
 ## Acceptance-only continuation authorized 2026-09-21
 
 The owner narrows the four-gap continuation to acceptance. Reuse the existing
@@ -34,8 +51,9 @@ existing acceptance exporter rather than maintaining a second summary validator.
 Acceptance: reproduce the empty-run false PASS; test failed provisioning after
 an older PASS, supplied runtime selection, candidate/log/artifact revalidation,
 and rejection of incomplete execution. Run every available profile and retain
-the actual results. Missing dependencies and the GitHub billing lock remain
-runtime prerequisites; test doubles do not satisfy native or rendered gates.
+the actual results. Missing dependencies remain runtime prerequisites; test
+doubles do not satisfy native or rendered gates. The later GitLab correction
+supersedes the initial assumption that GitHub billing gates this execution.
 
 ## Four-gap completion continuation authorized 2026-09-21
 

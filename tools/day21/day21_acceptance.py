@@ -198,7 +198,9 @@ def main(argv: list[str] | None = None) -> int:
         failures = 0
         if not args.native_only:
             if args.install_deps:
-                failures += bool(run(["npm", "ci"], cwd=root))
+                # Shell runners may inherit NODE_ENV=production; acceptance needs
+                # the locked dev toolchain for lint, rendered tests and the build.
+                failures += bool(run(["npm", "ci", "--include=dev"], cwd=root))
                 failures += bool(
                     run(
                         [

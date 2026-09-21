@@ -46,12 +46,14 @@ defines the precise tiers and hard NO list.
 
 ## What is already wired
 
-Three pipelines: PR governance (boundary scan, lint, build, artifact), candidate
-mirror to private GitLab on main, and DORA deployment reporting. Every run also
-measures itself — bundle, dependencies, source volume, tests, lint, dead code,
-boundary results — compares against the last main baseline, and publishes
-metrics, deltas, events and logs to Datadog on us5. The browser ships RUM and
-browser logs. Run the briefing for the current, measured version of this list.
+GitLab executes CI through `.gitlab-ci.yml` and its reachable local includes.
+The Day-21 lane checks governance, runs the complete eighteen-profile acceptance
+matrix and retains the receipts, logs and referenced artifacts together. The
+existing private release path remains separately governed. GitHub is the public
+collaboration plane; its workflow definitions and historical check observations
+do not establish GitLab execution or runner health. The browser ships RUM and
+browser logs. Run the briefing for the current source inventory; configured jobs
+remain unmeasured until actual pipeline records and acceptance exports exist.
 
 ## Invariants this repo has already paid for
 
@@ -84,10 +86,11 @@ dependencies and recheck them against changed source. Review, update and refresh
 the source binding before final validation; never refresh as a substitute for
 acceptance. The contract does not assert a percentage or rewrite sprint state.
 
-1. Restore the ability to execute acceptance. GitHub check annotations observed
-   on September 20 report an account billing lock; that needs the account owner.
-   Then run the locked web toolchain and both declared disposable PocketBase
-   profiles, retaining actual failure and skip counts. Vitest/JUnit, release
+1. Run acceptance on the GitLab `buildanddo` shell runner with Node from `.nvmrc`,
+   isolated declared Python dependencies, the locked web toolchain and both
+   disposable PocketBase profiles. Retain the entire candidate-bound export and
+   actual failure/skip counts. The earlier GitHub billing annotation is historical
+   evidence about GitHub only; it is not a GitLab prerequisite. Vitest/JUnit, release
    tags and supply telemetry now exist; older proposed specs are not a current
    inventory of missing implementations.
 2. Complete one connected small-business journey: saved signal, bounded mission,

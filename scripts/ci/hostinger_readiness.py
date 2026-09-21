@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/sprint_cycle.py, scripts/ci/hostinger_checks.py
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/sprint_cycle.py, scripts/ci/hostinger_checks.py, scripts/ci/gitlab_ci.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/sprint_cycle.py; CONSUMES scripts/ci/hostinger_checks.py; GATES .github/workflows/pr-governance.yml
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/sprint_cycle.py; CONSUMES scripts/ci/hostinger_checks.py; CONSUMES scripts/ci/gitlab_ci.py; GATES .gitlab/ci/day21-submission.yml
 # Intent:      Keep milestone rationale and next actions current while preventing missing, stale or skipped acceptance from becoming sprint completion.
 # ───────────────────────────────────────────────────────────────
 
@@ -40,6 +40,7 @@ from scripts.ci.hostinger_checks import (  # noqa: E402
     test_counts,
 )
 from scripts.ci.sprint_cycle import CAMPAIGN_ID, MILESTONES  # noqa: E402
+from scripts.ci.gitlab_ci import require_command  # noqa: E402
 
 CONTRACT = ".bits/hostinger-readiness.json"
 LOCK = ".bits/hostinger-readiness.lock.json"
@@ -267,6 +268,8 @@ def source_snapshot(root: Path, contract: dict[str, object]) -> dict[str, object
             "scripts",
             "CLAUDE.md",
             "docker-compose.yml",
+            ".gitlab-ci.yml",
+            ".gitlab/ci",
         }
     )
     result = subprocess.run(
@@ -309,13 +312,10 @@ def check_wiring(root: Path) -> None:
     for path in ("AGENTS.md", ".bits/context.md"):
         if required not in (root / path).read_text():
             raise ReadinessError(f"Mandatory readiness recheck is missing from {path}.")
-    workflow = (root / ".github/workflows/pr-governance.yml").read_text()
-    if not re.search(
-        r"^[ \t]+(?:-[ \t]+)?run: python scripts/ci/hostinger_readiness\.py --check[ \t]*$",
-        workflow,
-        re.MULTILINE,
-    ):
-        raise ReadinessError("The required CI readiness step is not wired.")
+    try:
+        require_command(root, "scripts/ci/hostinger_readiness.py", "--check")
+    except ValueError as error:
+        raise ReadinessError(str(error)) from error
     for path in (
         "AGENTS.md",
         "apps/web/src/components/workspace/ProgressionPipeline.jsx",

@@ -23,7 +23,10 @@
         ".bits/submission-policy.json",
         "scripts/ci/submission_readiness.py",
         "tools/day21/day21_acceptance.py",
-        "docs/submission-guide.md"
+        "docs/submission-guide.md",
+        ".gitlab-ci.yml",
+        ".gitlab/ci/day21-submission.yml",
+        "tools/day21/day21_architecture_snapshot.py"
       ],
       "checks": [
         "boundary",
@@ -36,16 +39,17 @@
       ],
       "requires": [],
       "runtime_requirements": [
-        "ci_account",
+        "ci_execution",
         "release"
       ],
       "acceptance": [
-        "Required CI jobs actually start and execute the locked toolchain.",
+        "Required GitLab jobs execute the declared Node runtime, isolated Python requirements and locked web toolchain.",
         "The local acceptance runner revalidates all eighteen profiles and retains current BLOCKED receipts when runtime provisioning fails.",
         "The tested candidate and deployed readback share an exact source identity.",
-        "Internal submission standards stay distinct from captured official requirements."
+        "Internal submission standards stay distinct from captured official requirements.",
+        "The GitLab artifact download retains every referenced receipt, log and artifact plus the original JUnit/build paths; the shared validator rechecks their bytes."
       ],
-      "next_step": "Restore the GitHub account's Actions access or supply the locked dependencies and both declared binaries to the local acceptance runner; execute all eighteen profiles and inspect the separate Cloudflare build diagnostic."
+      "next_step": "Execute day21_full_acceptance on the GitLab buildanddo runner for one clean candidate; retain all eighteen profiles and the complete artifact export. Missing local dependencies remain prerequisites, and the separate Cloudflare diagnostic belongs to the hosting owner."
     },
     {
       "id": "HS-02",
@@ -424,11 +428,11 @@
   ],
   "external_requirements": [
     {
-      "id": "ci_account",
-      "why": "The last captured required-job failure reported an account billing lock; current execution still needs evidence.",
-      "owner": "Repository account owner",
-      "next_step": "Resolve the Actions billing lock, rerun required checks and inspect Cloudflare's separate build logs.",
-      "evidence_required": "Actual completed CI/check records for the selected candidate; failure labels alone are not code diagnostics."
+      "id": "ci_execution",
+      "why": "GitLab executes acceptance; configured jobs and historical GitHub observations cannot establish current runner health or passing acceptance.",
+      "owner": "GitLab runner owner / acceptance operator",
+      "next_step": "Provision Node from .nvmrc, Python venv/pip, the declared Python/npm dependencies and Docker or both declared binaries; run the complete matrix and retain its full GitLab artifact export.",
+      "evidence_required": "Actually executed GitLab job records and all eighteen candidate-bound receipt/log/artifact profiles. GitHub billing status is not a GitLab prerequisite."
     },
     {
       "id": "release",
