@@ -53,20 +53,29 @@
       "previous_root": "4de0b979719b3a06a13dfc2da8a998e1fa0d85d71f90a72dd997fc4dc9a67867",
       "root_digest": "c2934978decf41936b89046ec47f581cd0a156febbd534cf1baeaee74815c49a",
       "trigger": "production_deploy"
+    },
+    {
+      "artifact_count": 208,
+      "created_at": "2026-09-21T13:59:01Z",
+      "epoch_id": "EPOCH-20260921-03",
+      "git_sha": "b51bdd3ffae873c53a304b5ebf1bd6a285dee169",
+      "previous_root": "c2934978decf41936b89046ec47f581cd0a156febbd534cf1baeaee74815c49a",
+      "root_digest": "c95b75e9cf835fc2e6a5491f62a39966bf1eeed7d8bd0a8c1a093fc9f3c3da3e",
+      "trigger": "production_deploy"
     }
   ],
   "history_note": "last 50 epochs; earlier entries are in this file's git history",
   "latest": {
     "artifact_count": 208,
-    "created_at": "2026-09-21T13:29:28Z",
-    "epoch_id": "EPOCH-20260921-02",
-    "git_sha": "a04fe4893d9979d2f5b6c4ae8057a26643fa2994",
-    "previous_root": "4de0b979719b3a06a13dfc2da8a998e1fa0d85d71f90a72dd997fc4dc9a67867",
-    "root_digest": "c2934978decf41936b89046ec47f581cd0a156febbd534cf1baeaee74815c49a",
+    "created_at": "2026-09-21T13:59:01Z",
+    "epoch_id": "EPOCH-20260921-03",
+    "git_sha": "b51bdd3ffae873c53a304b5ebf1bd6a285dee169",
+    "previous_root": "c2934978decf41936b89046ec47f581cd0a156febbd534cf1baeaee74815c49a",
+    "root_digest": "c95b75e9cf835fc2e6a5491f62a39966bf1eeed7d8bd0a8c1a093fc9f3c3da3e",
     "trigger": "production_deploy"
   },
-  "length": 6,
+  "length": 7,
   "root_algorithm": "sha256-merkle-v1",
   "schema": "buildanddo.epoch-chain/v1",
-  "updated_at": "2026-09-21T13:29:28Z"
+  "updated_at": "2026-09-21T13:59:01Z"
 }
