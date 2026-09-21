@@ -69,7 +69,7 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
                     </section>)}
                     <details className="border border-border p-4">
                         <summary className="cursor-pointer py-2 text-sm font-semibold">Walk through this lesson</summary>
-                        <div className="mt-4"><StepSequence title={tutorial.title} steps={lesson.sections.slice(0, 5).map((section) => ({ title: section.heading, body: [...(section.paragraphs || []), ...(section.steps || [])].join(' ') }))} /></div>
+                        <div className="mt-4"><StepSequence title="Steps in this lesson" steps={lesson.sections.slice(0, 5).map((section) => ({ title: section.heading, body: [...(section.paragraphs || []), ...(section.steps || [])].join(' ') }))} /></div>
                     </details>
                     <section className="space-y-3 rounded-md border border-border p-4">
                         <h3 className="font-display text-xl font-semibold">Practice</h3>
