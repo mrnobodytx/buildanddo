@@ -29,7 +29,7 @@ export default function Header({
     const roomsLive = useRoomsLive();
     return (
         <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/95 backdrop-blur-md">
-            <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6">
+            <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 2xl:max-w-[88rem]">
                 <Link
                     to="/"
                     className="flex shrink-0 items-center gap-2"
@@ -50,8 +50,8 @@ export default function Header({
                             </li>
                         ))}
                     </ul>
-                    <span aria-hidden="true" className="mx-3 h-5 w-px bg-border" />
-                    <ul className="flex items-center gap-0.5" aria-label="Company">
+                    <span aria-hidden="true" className="mx-3 hidden h-5 w-px bg-border 2xl:block" />
+                    <ul className="hidden items-center gap-0.5 2xl:flex" aria-label="Company">
                         {PUBLIC_NAV_SECONDARY.map((page) => (
                             <li key={page.path}>
                                 <NavLink to={page.path} className={secondaryLinkClass}>
