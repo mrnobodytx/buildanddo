@@ -93,7 +93,10 @@ def login(seat, base):
 
 
 def post_evidence(root, auth, uid, workspace, item):
-    body = {"content": item["content"][:20000], "source": item["source"][:160], "type": "observed",
+    # MEASURED, not assumed: evidence.content caps at 2000 characters. A 20000 truncation wrote
+    # nothing at all and returned "Must be no more than 2000 character(s)" - a silent cap is the
+    # kind of guess that loses a whole record.
+    body = {"content": item["content"][:2000], "source": item["source"][:160], "type": "observed",
             "workspace": workspace, "owner": uid,
             "title": item["title"][:120], "category": item.get("category", "mission_work"),
             "tags": item.get("tags", "sprint,work")}
