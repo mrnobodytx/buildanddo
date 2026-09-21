@@ -40,6 +40,27 @@
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
+      "statement": "scripts/ci/ocn_content_assessment.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_guild_dogfood.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_guild_forum.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
       "statement": "scripts/ci/ocn_mission_lifecycle.py is never executed by GitHub Actions"
     },
     {
@@ -220,6 +241,21 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/ocn_content_assessment.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_guild_dogfood.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_guild_forum.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "path": "scripts/ci/ocn_mission_lifecycle.py",
       "referenced_by": [],
       "wired_into_ci": false
@@ -274,6 +310,14 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/submission_readiness.py",
+      "referenced_by": [
+        "tests/upgrade/check_sprint_execution.py",
+        "tests/upgrade/test_submission_readiness.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
       "path": "scripts/ci/supply_chain.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
@@ -311,7 +355,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-20T23:21:09.568128+00:00",
+  "generated_at": "2026-09-21T03:44:35.669173+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -680,13 +724,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 42,
-    "python_files": 251,
+    "migrations": 46,
+    "python_files": 282,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1138,
-    "web_source_files": 316
+    "tracked_files": 1225,
+    "web_source_files": 333
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -759,22 +803,22 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "9e3a0c5a6d999aefd031ee939782d78709ad2c5ee8532ac7ee29fbb55b205a24",
+    "source_sha256": "1060e3475ee6598caa9ac4725009669ce41b027cb9fb61e73aaa125da19af9a1",
     "state": "PASS"
   },
   "summary": {
-    "findings": 19,
-    "findings_high": 19,
+    "findings": 22,
+    "findings_high": 22,
     "pipelines": 7,
-    "srs_open": 25,
-    "srs_total": 29,
-    "unwired_gates": 17
+    "srs_open": 26,
+    "srs_total": 30,
+    "unwired_gates": 20
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 60,
+    "js_test_files": 64,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
