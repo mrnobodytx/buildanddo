@@ -530,7 +530,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 44039,
+      "lines": 44209,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -44022,12 +44022,182 @@
       "file_path": ".gitlab/ci/day21-submission.yml",
       "description": "GitLab acceptance correction: 74 focused regressions passed after reproducing provider selection, reachability and artifact handoff defects. Tests use explicit synthetic receipts and do not establish hosted or native acceptance.",
       "timestamp": "2026-09-21T22:13:58.857241+00:00"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json"
+      ],
+      "lines": 195,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the GitLab correction and actual local acceptance limits so the next owner can act on evidence instead of the earlier GitHub assumption.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json"
+      ],
+      "lines": 937,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind the GitLab acceptance correction to exact tested source and preserved process evidence without claiming a hosted run.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json"
+      ],
+      "lines": 16,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind the GitLab acceptance correction to exact tested source and preserved process evidence without claiming a hosted run.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "gitlab-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-report.md",
+      "target": "tests/upgrade/test_gitlab_acceptance.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "VERIFIED_BY tests/upgrade/test_gitlab_acceptance.py as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "PRODUCES .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json.cgrf.yaml",
+      "target": ".gitlab/ci/day21-submission.yml",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES .gitlab/ci/day21-submission.yml as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "c177bf56bc16e8b80bca46f567534c43afe3c030",
+      "smoke_result": null,
+      "event_type": "commit",
+      "file_path": ".gitlab/ci/day21-submission.yml",
+      "description": "Recorded the GitLab provider correction, one full acceptance job and complete artifact handoff as a source implementation; no hosted execution or release activation was performed.",
+      "timestamp": "2026-09-21T22:14:57Z"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "c177bf56bc16e8b80bca46f567534c43afe3c030",
+      "smoke_result": "4/18",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json",
+      "description": "Executed all 18 local profiles with Node 22 and isolated Python. Reused the existing installed ESLint diagnostic through NODE_PATH to recover the failed Node profile. Final revalidated history is 4 PASS, 3 FAIL, 1 HOLD, 10 BLOCKED; Node 510 passing, Python 740 cases with six dependency skips, semantic twin 122 passing. All 19 receipts are retained and no GitLab run is claimed.",
+      "timestamp": "2026-09-21T22:24:29.477208+00:00"
     }
   ],
   "summary": {
-    "type_a_count": 728,
-    "type_b_count": 1612,
-    "type_c_count": 164,
+    "type_a_count": 731,
+    "type_b_count": 1617,
+    "type_c_count": 166,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
