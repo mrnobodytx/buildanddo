@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py
 # EnumType:    Doc
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md
 # Intent:      Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.
 # ───────────────────────────────────────────────────────────────
 
@@ -114,6 +114,37 @@ or artifacts, future times, mismatched counts, altered logs and receipts older
 than 48 hours cannot establish current acceptance. These are consistency checks,
 not signed identity attestations. Private source bodies, credentials and shared
 backend exports must not enter Git or public artifacts.
+
+### Run with installed dependencies and binaries
+
+`tools/day21/day21_acceptance.py` runs the eight source/build checks and all five
+native checks for each declared runtime. It accepts a clean committed candidate
+and exports receipts, logs and artifacts through the shared Day-21 validator.
+Choose a new summary directory for each run; existing evidence is never replaced.
+
+On a provisioned runner, supply both actual binaries explicitly:
+
+```bash
+python tools/day21/day21_acceptance.py --offline \
+  --pocketbase-package /path/to/pocketbase-0.39.8 \
+  --pocketbase-compose /path/to/pocketbase-0.28.4 \
+  --evidence-dir state/day21/acceptance/run-001 \
+  --summary-output state/day21/evidence/run-001/acceptance-summary.json
+```
+
+Recheck those versions against the declarations when provisioning. Each native
+check measures `--version` before starting a disposable backend. An absent or
+incorrect binary creates a BLOCKED receipt for every affected check, even when
+older passing receipts exist. `--offline` disables installs and Docker builds;
+it does not supply missing packages. The frontend needs `npm ci` from the lock,
+and source Python needs `scripts/discordbot/requirements.txt` and
+`apps/research/requirements.txt` in the runner's interpreter.
+
+A connected runner can use `--install-deps` and the existing Docker provisioning
+instead. `--source-only` and `--native-only` are mutually exclusive. A partial
+selection still exits nonzero unless the shared validator accepts all eighteen
+current profiles; a selected command's success cannot certify missing profiles.
+GitHub jobs with zero steps require the account owner to restore Actions access.
 
 ## Product connection
 

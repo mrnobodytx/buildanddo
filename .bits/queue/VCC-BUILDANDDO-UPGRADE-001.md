@@ -20,6 +20,23 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Acceptance-only continuation authorized 2026-09-21
+
+Owner request: focus on the failing acceptance profiles. The last retained run
+is 4/18 PASS, three FAIL, one HOLD and ten BLOCKED after the Node fixture repair.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| AC-1 | Repair empty-run success, preserve failed runtime attempts and accept preinstalled versioned binaries | `python -m unittest tests.upgrade.test_day21_acceptance -v` | PASS: 13 runner regressions; 41 combined acceptance/export tests |
+| AC-2 | Execute available acceptance, retain exact remaining prerequisites and update source bindings | Eighteen-profile receipts, readiness/context and memory checks | runtime BLOCKED on missing packages and binaries; current results retained in acceptance-report.md |
+
+Memory brief: PR 63 contains the prior fixture and evidence integration.
+Governance run 35654152630 has eleven failed jobs with zero steps; annotation
+106513509603 states that billing locked the account before execution. The local
+wheel cache has neither pypdf nor Discord.py; the locked frontend packages,
+PocketBase binaries and Docker images are absent. No network download, billing
+change, CI retrigger or external effect is authorized by this local continuation.
+
 ## Four-gap completion authorized 2026-09-21
 
 Owner request: build all four remaining gaps identified after the merged

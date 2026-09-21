@@ -22,6 +22,7 @@
         ".nvmrc",
         ".bits/submission-policy.json",
         "scripts/ci/submission_readiness.py",
+        "tools/day21/day21_acceptance.py",
         "docs/submission-guide.md"
       ],
       "checks": [
@@ -40,10 +41,11 @@
       ],
       "acceptance": [
         "Required CI jobs actually start and execute the locked toolchain.",
+        "The local acceptance runner revalidates all eighteen profiles and retains current BLOCKED receipts when runtime provisioning fails.",
         "The tested candidate and deployed readback share an exact source identity.",
         "Internal submission standards stay distinct from captured official requirements."
       ],
-      "next_step": "Restore the GitHub account's Actions access, run the required acceptance checks and inspect the separate Cloudflare build diagnostic."
+      "next_step": "Restore the GitHub account's Actions access or supply the locked dependencies and both declared binaries to the local acceptance runner; execute all eighteen profiles and inspect the separate Cloudflare build diagnostic."
     },
     {
       "id": "HS-02",

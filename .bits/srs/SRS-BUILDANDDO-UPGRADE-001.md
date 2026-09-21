@@ -20,6 +20,23 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Acceptance-only continuation authorized 2026-09-21
+
+The owner narrows the four-gap continuation to acceptance. Reuse the existing
+eighteen-profile checks and restore available prerequisites without changing
+their pass criteria. Repair the Day-21 runner so mutually exclusive selections
+cannot skip all work successfully, failed native provisioning records current
+BLOCKED receipts, and its exit status agrees with revalidated acceptance.
+Allow explicitly supplied, version-checked PocketBase binaries and an offline
+mode that performs no dependency installation or Docker build. Reuse the
+existing acceptance exporter rather than maintaining a second summary validator.
+
+Acceptance: reproduce the empty-run false PASS; test failed provisioning after
+an older PASS, supplied runtime selection, candidate/log/artifact revalidation,
+and rejection of incomplete execution. Run every available profile and retain
+the actual results. Missing dependencies and the GitHub billing lock remain
+runtime prerequisites; test doubles do not satisfy native or rendered gates.
+
 ## Four-gap completion continuation authorized 2026-09-21
 
 The owner requests implementation of the remaining development-loop,

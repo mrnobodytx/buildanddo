@@ -9,7 +9,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_day21_submission.py, tests/upgrade/test_day21_support.py",
+      "evidence": "referenced by: tests/upgrade/test_day21_submission.py, tests/upgrade/test_day21_support.py, tools/day21/day21_acceptance.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/day21_submission.py is never executed by GitHub Actions"
@@ -191,7 +191,8 @@
       "path": "scripts/ci/day21_submission.py",
       "referenced_by": [
         "tests/upgrade/test_day21_submission.py",
-        "tests/upgrade/test_day21_support.py"
+        "tests/upgrade/test_day21_support.py",
+        "tools/day21/day21_acceptance.py"
       ],
       "wired_into_ci": false
     },
@@ -358,7 +359,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-21T20:46:50.664823+00:00",
+  "generated_at": "2026-09-21T21:16:34.012168+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -742,11 +743,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 46,
-    "python_files": 313,
+    "python_files": 314,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1286,
+    "tracked_files": 1287,
     "web_source_files": 333
   },
   "schema_version": 1,
@@ -755,7 +756,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "Restore the GitHub account's Actions access, run the required acceptance checks and inspect the separate Cloudflare build diagnostic.",
+        "next_step": "Restore the GitHub account's Actions access or supply the locked dependencies and both declared binaries to the local acceptance runner; execute all eighteen profiles and inspect the separate Cloudflare build diagnostic.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -820,7 +821,7 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "286dba693f1b5dff3c13382a370a1cc9049da8bbb4442228703fdd0c6f521f84",
+    "source_sha256": "0516516fcc3dc0b8f75ddbb9f69ba51ed6dcd841c6a7e7a04b4963173bf5f4fa",
     "state": "PASS"
   },
   "summary": {

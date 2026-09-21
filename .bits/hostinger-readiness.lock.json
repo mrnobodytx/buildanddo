@@ -1,11 +1,11 @@
 {
-  "contract_sha256": "190f391a2cea8ffbb79bbacae4c581afe500538ca1cc917172412c93f98de01e",
+  "contract_sha256": "f5dee36f0981789d02db1554e6b0396a4cdabc5c69fad5e220b9ada912253f61",
   "schema_version": "buildanddo.hostinger-review/v1",
   "sources": {
     ".bits/context.md": "58cf3b52b55b3eeedf4dc61e4beff6214441d5f3305af34154555c4c3013e2be",
-    ".bits/hostinger-readiness.json": "f133e5afc63dbf13f7f0251c0a691ac966fdd3b148fcdfb004892a960377398a",
-    ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md": "7835efe4756c49f53f83179edf5890a0714b154b84bef966e7dd4409afed0017",
-    ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md": "5630b8a907760c643abdbe64f4817609460eed44ca73b3a26bfd1cad5debf213",
+    ".bits/hostinger-readiness.json": "43743933cbbe034293e3732ebec1f2ecfa2f877478d4cc054750822712126727",
+    ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md": "85396721286c303b96b0cf655b43c31714548871638b08440430d900c452cd8b",
+    ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md": "6dc7ff990a6b11fc565b8d86484f127ce4cd47a639b9bdd570c09ef64d785793",
     ".bits/submission-policy.json": "5d3ba33d150204428d48aba3a7311d3f3d5ca1c5ebbeb8262324647f6381456e",
     ".github/workflows/pr-governance.yml": "dbae97b9459429a76c30bb4c0a3f82a1c15bf425a8b3ef1e4067f24457975f5a",
     ".nvmrc": "f14b4987904bcb5814e4459a057ed4d20f58a633152288a761214dcd28780b56",
@@ -610,7 +610,7 @@
     "docs/BUILDANDDO_RELEASE_TRUTH.md": "35ea02615ae2fe613fd50ef9ef9ffc9e0fbca2fba5927ef973561a19a1520236",
     "docs/business-execution.md": "7d50843eaea52cc6726b9a0518e0a06842e6cce84f9639663e54cf1d693a5acb",
     "docs/business-learning.md": "555a8b22eec7c61112a3e023c539ac9ca69169222e2fcbe6813621069f4cc5b5",
-    "docs/hostinger-sprint-closure.md": "38d8bee114cce578c44b0ecdd8f5f536276832337b95f9a947b069ecb51256ae",
+    "docs/hostinger-sprint-closure.md": "d61f553cb6f2c6ba25ee827d5c951af04fc47f3f22db8549aa347f169dd75211",
     "docs/mission-research.md": "c279ec9ebe1d4505abecad72d48ca2b4efbc68b86e050909a423e30b4dd0a08c",
     "docs/mission-system.md": "d4ef5a6bb27ac44910bb95ba989c0dbbc914903c685a615a211e7aee1005a77f",
     "docs/operator-plane.md": "d03f05854052ab112ca57a048ff664e7c2ea93997631f8d45110f6c0aac26b22",
@@ -954,6 +954,7 @@
     "tests/upgrade/test_capability_token_support.py": "73418c69696e36fa3e4be257354a781a7df1168829cffee7fb4c06346036d343",
     "tests/upgrade/test_classroom_native.py": "4e59c870b43081b3f4265ff76083e5693e0687644f1d0f8e134de79c4b2b7b93",
     "tests/upgrade/test_datadog_metrics.py": "a1a313f7656394ecc0fdd00f2eb2829396883c919ed4989062b8059a30f9f784",
+    "tests/upgrade/test_day21_acceptance.py": "5e9647644804f454a578382be656f65bf6c67e22b97526061e81a34221ac644f",
     "tests/upgrade/test_day21_submission.py": "75f2e4a8c1a6047f60af63321c1308c2e354ce842568727e820058019124e566",
     "tests/upgrade/test_day21_support.py": "c6d70798777fe7781f42b40555c523b9a3b2f2df243c1dbc4d15afd41faeeca1",
     "tests/upgrade/test_decision_runtime.py": "b43c664060d594c0008dd9c075df25ff772bf56e387967c83ea40951daed77a3",
@@ -1004,6 +1005,7 @@
     "tests/upgrade/workspace-control-client.test.mjs": "0ff2959bfc48ba675851159df21fe3a4ab957997396de8a5fcb4b46350c0e99a",
     "tests/upgrade/workspace-integration.test.mjs": "abc34aba469bb56a6cb3a68fd810d748b3e49c27ea1f02ad6bbfb6096bc7bb74",
     "tests/upgrade/workspace-rooms.test.mjs": "ad3cbd7b52ce7ba2aeab4fd50552b981d5c6c2d7a544d5d28f2ba364c3236d36",
-    "tests/upgrade/workspace-summary.test.mjs": "bc5755c4f7aa3d8fe04982fff89a2afe45ee05fa76a90171af3af3837615840e"
+    "tests/upgrade/workspace-summary.test.mjs": "bc5755c4f7aa3d8fe04982fff89a2afe45ee05fa76a90171af3af3837615840e",
+    "tools/day21/day21_acceptance.py": "3aca17e82f4721b6aa8827a38c4840225f6f8705441b77d61b9f5cdf15e6bf11"
   }
 }

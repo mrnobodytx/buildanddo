@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 846,
+      "lines": 847,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -532,7 +532,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 43385,
+      "lines": 43542,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -547,7 +547,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "acceptance-runner"
       ],
       "tenant_id": null
     },
@@ -666,7 +666,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1380,
+      "lines": 1397,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -681,7 +681,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "acceptance-runner"
       ],
       "tenant_id": null
     },
@@ -985,7 +985,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1796,
+      "lines": 1813,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1000,7 +1000,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "acceptance-runner"
       ],
       "tenant_id": null
     },
@@ -38668,7 +38668,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 502,
+      "lines": 504,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38683,9 +38683,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "acceptance-runner"
       ],
       "tenant_id": null
     },
@@ -38732,7 +38730,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1009,
+      "lines": 1011,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38747,7 +38745,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "acceptance-runner"
       ],
       "tenant_id": null
     },
@@ -38957,9 +38955,10 @@
       "dependencies": [
         ".bits/hostinger-readiness.json",
         "scripts/ci/hostinger_readiness.py",
-        "scripts/ci/hostinger_replay.py"
+        "scripts/ci/hostinger_replay.py",
+        "tools/day21/day21_acceptance.py"
       ],
-      "lines": 247,
+      "lines": 278,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.",
@@ -38974,9 +38973,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "hostinger-sprint-closure",
-        "sprint-completion",
-        "workspace-assistant"
+        "acceptance-runner"
       ],
       "tenant_id": null
     },
@@ -43368,12 +43365,172 @@
       "timestamp": "2026-09-21T20:40:40.375921+00:00",
       "commit_sha": "210aa1d7efe9999d3c858347280642e5459ad756",
       "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_day21_acceptance.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "AcceptanceRunnerTests"
+      ],
+      "dependencies": [
+        "tools/day21/day21_acceptance.py",
+        "tests/upgrade/test_day21_support.py"
+      ],
+      "lines": 369,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject empty acceptance runs and stale success after runtime failures while exercising the real receipt exporter.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "acceptance-runner"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tools/day21/day21_acceptance.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "run",
+        "version_for",
+        "extract_binary",
+        "readiness",
+        "write_summary",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/ci/hostinger_checks.py",
+        "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/day21_submission.py"
+      ],
+      "lines": 254,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Run the declared acceptance profiles and retain current failures without mistaking an incomplete run for acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "acceptance-runner"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "docs/hostinger-sprint-closure.md",
+      "target": "tools/day21/day21_acceptance.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tools/day21/day21_acceptance.py as declared by docs/hostinger-sprint-closure.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_day21_acceptance.py",
+      "target": "tests/upgrade/test_day21_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tests/upgrade/test_day21_support.py as declared by tests/upgrade/test_day21_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_day21_acceptance.py",
+      "target": "tools/day21/day21_acceptance.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES tools/day21/day21_acceptance.py as declared by tests/upgrade/test_day21_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tools/day21/day21_acceptance.py",
+      "target": "scripts/ci/day21_submission.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/day21_submission.py as declared by tools/day21/day21_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tools/day21/day21_acceptance.py",
+      "target": "scripts/ci/hostinger_checks.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/hostinger_checks.py as declared by tools/day21/day21_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tools/day21/day21_acceptance.py",
+      "target": "scripts/ci/hostinger_readiness.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES scripts/ci/hostinger_readiness.py as declared by tools/day21/day21_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": "0/18 executed; false PASS reproduced",
+      "event_type": "failure",
+      "file_path": "tools/day21/day21_acceptance.py",
+      "description": "Reproduced an empty acceptance invocation: both source-only and native-only skipped all profiles but returned zero and printed PASS while its summary was HOLD.",
+      "timestamp": "2026-09-21T21:05:16.522984+00:00"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": "41/41; zero skips",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_day21_acceptance.py",
+      "description": "Validated the repaired acceptance wrapper with 13 new tests and 41 combined runner/export/readiness regressions. Synthetic fixtures and missing-runtime subprocesses exercise orchestration; they do not establish native or rendered acceptance.",
+      "timestamp": "2026-09-21T21:14:28.356689+00:00"
     }
   ],
   "summary": {
-    "type_a_count": 719,
-    "type_b_count": 1584,
-    "type_c_count": 159,
+    "type_a_count": 721,
+    "type_b_count": 1590,
+    "type_c_count": 161,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
