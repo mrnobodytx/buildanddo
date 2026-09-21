@@ -41,6 +41,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
 import ListToolbar from '@/components/workspace/ListToolbar';
+import SourceCapture from '@/components/workspace/SourceCapture';
 import SignalMissionProposal from '@/components/workspace/SignalMissionProposal';
 import {
     PageHeader,
@@ -194,6 +195,8 @@ export default function SignalsPage() {
                 }
             />
 
+
+            <SourceCapture onSaved={refresh} />
 
             {counts.total > 0 && (
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">

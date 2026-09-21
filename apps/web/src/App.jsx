@@ -47,6 +47,8 @@ const DossierPage = lazy(() => import('./pages/workspace/DossierPage'));
 const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
 // Capability Passport viewer; file path retained from the former desks page so
 // existing /app/desks bookmarks keep resolving (SRS-BUILDANDDO-WITNESS-001).
+const SpecialistWorkPage = lazy(() => import('./pages/workspace/SpecialistWorkPage'));
+const ExecutionReplayPage = lazy(() => import('./pages/workspace/ExecutionReplayPage'));
 const CapabilityPassportPage = lazy(() => import('./pages/workspace/SpecialistDeskPage'));
 const CorrectionsPage = lazy(() => import('./pages/workspace/CorrectionsPage'));
 const SupportRevenuePage = lazy(() => import('./pages/workspace/SupportRevenuePage'));
@@ -99,7 +101,8 @@ const WORKSPACE_ROUTES = [
     { path: 'suite', label: 'Mission suite', element: SuitePage },
     { path: 'dossier', label: 'My dossier', element: DossierPage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
-    { path: 'desks', label: 'Capability Passport', element: CapabilityPassportPage },
+    { path: 'desks', label: 'Specialist desks', element: SpecialistWorkPage },
+    { path: 'replay', label: 'Execution replay', element: ExecutionReplayPage },
     { path: 'passport', label: 'Capability Passport', element: CapabilityPassportPage },
     { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
     { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },

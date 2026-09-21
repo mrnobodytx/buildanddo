@@ -340,10 +340,10 @@ def validate_capture(
         )
     require(
         action.get("status") == "PASS"
-        and action.get("execution_kind") == "worker"
+        and action.get("execution_kind") in ("worker", "native")
         and nonempty(action.get("job_id"))
         and nonempty(action.get("producer")),
-        "A completed bounded worker action is required; recorded workflow steps alone do not establish execution.",
+        "A completed bounded native or worker action is required; recorded workflow steps alone do not establish execution.",
     )
     limits = object_value(action.get("limits"))
     require(

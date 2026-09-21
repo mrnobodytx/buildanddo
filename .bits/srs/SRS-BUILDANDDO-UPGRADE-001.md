@@ -20,6 +20,77 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Workspace assistant continuation authorized 2026-09-20
+
+The owner extends the eleven-checkpoint submission build with a persistent
+workspace assistant. Use the existing application shell, native PocketBase user
+authentication, current workspace roles and collection record rules. Preserve
+per-account, per-workspace session and knowledge isolation. The assistant may
+navigate registered platform routes, propose and fill visible nonsensitive form
+fields, and invoke existing governed commands with the current user identity.
+Reviewed effects retain the existing approval and independent verification gates.
+Model text, retrieved records and learned patterns never grant authority.
+
+Persist each session and its observed action patterns as user-owned knowledge;
+keep proposed, applied, failed and independently verified states distinct. Do not
+capture passwords, authentication material, hidden fields or arbitrary page text
+as patterns. Account/workspace changes cancel outstanding proposals and responses.
+Use an explicitly configured server-side inference binding; a missing binding
+must be visible, never replaced by fabricated model responses. Provide source,
+connected-client and native/browser tests with unexecuted runtime gates reported.
+This source continuation does not activate providers, read deployed credentials,
+launch a private agent, or authorize external effects outside approved missions.
+
+## Complete the eleven sprint checkpoints — 2026-09-20
+
+The owner requests exhaustive source completion of days 1–21 and a conservative,
+governed submission standard while official competition rules are unknown.
+Continue the pre-existing A2 dispatch. Internal acceptance policy is explicitly
+not official eligibility, a submission deadline, or permission to deploy.
+
+1. Retain locked-toolchain/native checks and collect a reproducible submission
+   dossier bound to exact source, artifacts and observed acceptance.
+2. Replace browser-side onboarding writes with one atomic, replayable native
+   command; preserve account isolation and recover uncertain responses.
+3. Add idempotent, retention-aware migrations and connected native coverage for
+   setup, revoked membership, execution, review and restart.
+4. Capture permitted public Firecrawl observations into deduplicated signals
+   with source identity, time and content fingerprints.
+5. Execute bounded business actions using the existing authenticated mission
+   approval and workflow history. Include a real workspace ERP action and
+   portable Firecrawl/n8n adapters; configuration alone is never live evidence.
+6. Freeze executable step inputs, enforce approval before effects, preserve
+   cancellation, leases and retry identity, and hold ambiguous external effects
+   for reconciliation rather than blindly resending them.
+7. Apply connector requests through explicitly registered worker identities and
+   retain revision-bound health and execution receipts. No browser credentials,
+   arbitrary commands, callback URLs or private infrastructure are introduced.
+8. Connect ERP outcomes to their mission, workflow and result evidence while
+   retaining current-role and same-workspace constraints.
+9. Preserve the exact reviewed evidence and prevent ordinary mutation/deletion
+   from silently changing verified outcomes, including legacy reviews.
+10. Correct edition failure states and verification dates, restore usable
+    specialist desks alongside passports, and expose recorded execution replay.
+11. Package the acceptance matrix, product scope, evaluator walkthrough, known
+    limitations and owner checklist. Missing official rules, live receipts,
+    independent review or required tests keep submission admission on HOLD.
+
+Regression includes targeted negative controls, actual backend/client modules,
+rendered cases and both disposable PocketBase profiles. Retain dependency skips
+and failed commands. Deployment, live provider calls, account billing, hosted
+submission and private runtime activation remain receiving-owner work; these
+effects are not performed or claimed by this local source continuation.
+
+Observed public source continuation: atomic onboarding, current-role business
+execution, two connector adapters, immutable review evidence, edition/desks,
+scoped assistant sessions and personal patterns, workspace room modes and strict
+submission packaging are implemented. Tests exercise the actual backend/client
+modules with explicit storage/transport fixtures; Chromium also exercises the
+production assistant DOM helper. The required Python worker/submission coverage
+gate exceeds 93% in each module. Full React, native PocketBase and live provider/
+release acceptance remain unmeasured here. See `docs/submission-guide.md` and the
+sprint implementation report for all eleven acceptance and receiving obligations.
+
 ## Hostinger sprint closure continuation — 2026-09-20
 
 The owner requests implementing the repository gaps identified by the 21-day

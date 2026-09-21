@@ -612,6 +612,7 @@
         "scripts/ci/agent_context.py",
         "scripts/ci/changelog_gen.py",
         "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py"
       ],
@@ -692,7 +693,7 @@
       },
       {
         "id": "HS-02",
-        "next_step": "Run the native and rendered auth checks, then capture a real-account browser journey on the accepted staging candidate.",
+        "next_step": "Execute rendered onboarding and both native profiles, then demonstrate fresh signup, setup recovery, password recovery and return navigation on the accepted candidate.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "A judge must enter and resume the workspace using real account authority."
       },
@@ -704,49 +705,49 @@
       },
       {
         "id": "HS-04",
-        "next_step": "Select one permitted business observation, capture its source and propose the review mission through the Signals desk.",
+        "next_step": "Install the reviewed capture hooks and registered Firecrawl worker; capture a permitted real source, retry its lost response and propose the same mission once.",
         "owner": "BITS-CODEGEN",
         "why": "An observed problem must retain its source as it becomes a bounded proposal."
       },
       {
         "id": "HS-05",
-        "next_step": "Bind the receiving dispatch to one staging-safe existing worker capability, then run it with distinct producer and verifier accounts.",
+        "next_step": "Use the receiving dispatch to run the native ERP effect and the registered bounded n8n operation; retain current release identity and a distinct result verifier.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "Work must have a fixed scope, approval and a review independent of its producer."
       },
       {
         "id": "HS-06",
-        "next_step": "Rehearse approval, step failure and response recovery, then capture the separate authorized executor's actual action receipt.",
+        "next_step": "Execute frozen approved steps, exercise cancellation and HOLD reconciliation, and retain the actual native result alongside the run event.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Ordered work and atomic observations allow failed or interrupted actions to be explained and replayed."
       },
       {
         "id": "HS-07",
-        "next_step": "Activate only the connector needed by the bounded demo through the private owner and capture its current revision and health/readback.",
+        "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery.",
         "owner": "CMAX-B / IDE1",
         "why": "A saved integration setting must not be mistaken for a working service connection."
       },
       {
         "id": "HS-08",
-        "next_step": "Run the native business-record journey and confirm the same save/reload flow in the deployed browser.",
+        "next_step": "Run native/browser business journeys, inspect the executed task and its mission/evidence links, and review the objective outcome separately.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Objectives, tasks and contacts make the demonstrated outcome actionable for a small organization."
       },
       {
         "id": "HS-09",
-        "next_step": "Capture the real controller, GitLab and Datadog receipts and pass them through the existing semantic-twin compiler and replay validator.",
+        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures.",
         "owner": "BITS-CODEGEN / release owner",
         "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
       },
       {
         "id": "HS-10",
-        "next_step": "Show the completed mission and its evidence in the operator and edition desks using the same authorized workspace.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
       {
         "id": "HS-11",
-        "next_step": "Validate the captured replay, have the independent reviewer approve evidenced milestones, and rehearse the official Hostinger submission.",
+        "next_step": "Validate actual replay/native exports and all eleven owner decisions, supply six dated materials and captured official requirements, then have the owner perform submission.",
         "owner": "Repository owner / independent verifier",
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }

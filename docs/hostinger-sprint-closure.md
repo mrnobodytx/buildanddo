@@ -38,6 +38,7 @@ At the beginning of work, before selecting the next task, and before handoff:
 
 ```bash
 python scripts/ci/hostinger_readiness.py --check
+python scripts/ci/submission_readiness.py --check
 python scripts/ci/agent_context.py
 python scripts/ci/hostinger_readiness.py --json
 ```
@@ -132,6 +133,14 @@ Different account IDs enforce separation in this application; they do not prove
 real-world identity independence or worker execution. Release the matching hooks
 and frontend together. This connection requires no new collection.
 
+The subsequent eleven-checkpoint continuation adds transactional onboarding,
+locked business execution receipts and private assistant session/pattern stores.
+Its new migrations must ship with the matching hooks and frontend. See
+`docs/business-execution.md` for approved ERP/Firecrawl/n8n effects and uncertainty
+reconciliation, `docs/workspace-assistant.md` for native permissions and personal
+knowledge, and `docs/submission-guide.md` for the full checkpoint/entry contract.
+The earlier no-new-collection statement applies only to the signal proposal link.
+
 `tests/upgrade/test_workspace_native.py --require-binary` covers production public
 migrations, login, signal proposals, workflow receipts/retries, separate mission
 review, operator readback, restart persistence, revoked membership, foreign links,
@@ -166,7 +175,7 @@ format examples, never live receipts.
 | `signal` | Saved signal with ID, revision, title, description, source, type and owner |
 | `proposal` | Actual mission-linked signal snapshot evidence from `signal.propose` |
 | `approval` | Approved mission with owner, plan, approval account/time and independent review enabled |
-| `action` | Receiver-exported job summary: `execution_kind=worker`, `status=PASS`, job/producer/mission/dispatch/release identities, environment, `limits.max_seconds`, start/completion times and `result_sha256` |
+| `action` | Receiver-exported job summary: `execution_kind=worker` or `native`, `status=PASS`, job/producer/mission/dispatch/release identities, environment, `limits.max_seconds`, start/completion times and `result_sha256` |
 | `verification` | Review with matching job/result/scope, `status=PASS`, separate `verifier`, `verified_at` and passing `test/evaluate/verify/validate` checks |
 | `evidence` | Result evidence with author, mission, source and exact result digest in its content |
 | `outcome` | Verified mission retaining plan/owner, matching reviewer and four observed reviews referencing the result evidence |

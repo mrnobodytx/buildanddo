@@ -573,7 +573,7 @@ function MissionDesk() {
                 open={Boolean(approval)}
                 onOpenChange={(open) => !open && !busy && setApprovalId(null)}
             >
-                <DialogContent className="sm:max-w-2xl ph-no-capture" data-dd-privacy="mask">
+                <DialogContent className="sm:max-w-2xl ph-no-capture" data-dd-privacy="mask" data-assistant-authority="human">
                     <DialogHeader>
                         <DialogTitle>Approve the saved mission</DialogTitle>
                         <DialogDescription>

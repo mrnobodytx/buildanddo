@@ -38,6 +38,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/s
 import { Button } from '@/components/site/ui';
 import { StatusBadge, DOMAIN_STATUS } from './workspaceHelpers';
 import { DemoModeBanner } from './WorkspaceNotices';
+import WorkspaceAssistant from './WorkspaceAssistant';
 
 const NAV = [
     { to: '/app', label: 'Front Page', icon: LayoutDashboard, end: true },
@@ -54,6 +55,8 @@ const NAV = [
     { to: '/app/dossier', label: 'My dossier', icon: BookOpen },
     { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },
     { to: '/app/rooms/organization', label: 'Living Rooms', icon: Network },
+    { to: '/app/desks', label: 'Specialist desks', icon: Boxes },
+    { to: '/app/replay', label: 'Execution replay', icon: Workflow },
     { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },
     { to: '/app/corrections', label: 'Corrections', icon: Scale },
     { to: '/app/tutorials', label: 'Field Manual', icon: GraduationCap },
@@ -262,6 +265,7 @@ export default function WorkspaceLayout() {
                     </header>
 
                     <main
+                        data-assistant-surface
                         id="main-content"
                         tabIndex={-1}
                         className="workspace-content px-4 py-8 sm:px-6 lg:px-8"
@@ -276,6 +280,7 @@ export default function WorkspaceLayout() {
                     </main>
                 </div>
             </Sheet>
+            <WorkspaceAssistant />
         </div>
         </WorkspaceAccessProvider>
     );

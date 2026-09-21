@@ -1,4 +1,5 @@
 import { MotionList, MotionValue } from '@/components/motion/MotionPrimitives';
+import { Link } from 'react-router-dom';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
@@ -120,6 +121,7 @@ function ErpDesk({ accountId, demo }) {
                         {kind === 'objectives' && <><p className="text-sm leading-6">Success measure: {record.success_metric || 'Not recorded yet.'}</p><p className="text-xs text-muted-foreground">{knownTasks ? `${tasks.records.filter((task) => task.objective === record.id && task.status === 'done').length} of ${tasks.records.filter((task) => task.objective === record.id).length} linked tasks done` : 'Linked task counts unavailable'}</p></>}
                         {kind === 'tasks' && <><p className="text-xs text-muted-foreground">Objective: {record.objective ? objectives.records.find((item) => item.id === record.objective)?.title || 'Current link unavailable' : 'Not linked'}</p><p className="text-xs text-muted-foreground">Contact: {record.contact ? contacts.records.find((item) => item.id === record.contact)?.name || 'Current link unavailable' : 'Not linked'}</p></>}
                         {dateInput(record.due_date) && <p className={`text-xs ${overdue(record, today) && kind === 'tasks' ? 'text-destructive' : 'text-muted-foreground'}`}>Due: {dateInput(record.due_date)}{kind === 'tasks' && overdue(record, today) ? ' · Overdue' : ''}</p>}
+                        {kind === 'tasks' && record.execution && <p className="text-xs">Created by an approved action. <Link className="underline" to="/app/replay">Inspect execution {record.execution}</Link>{record.mission && <> · <Link className="underline" to={`/app/missions?mission=${encodeURIComponent(record.mission)}`}>Review mission</Link></>}</p>}
                         {record.email && <p className="break-all text-sm">{record.email}</p>}{record.notes && <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">{record.notes}</p>}
                     </Card></li>)}
                 </MotionList>}

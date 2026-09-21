@@ -25,8 +25,22 @@ jobs:
           python-version: '3.12'
       - name: Require reviewed milestone rationale, ownership and next steps
         run: python scripts/ci/hostinger_readiness.py --check
+      - name: Require internal submission standards and explicitly unknown official rules
+        run: python scripts/ci/submission_readiness.py --check
       - name: Require evidence integrity and replay rejection cases
-        run: python -m unittest tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay
+        run: python -m unittest tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay tests.upgrade.test_submission_readiness
+      - name: Require bounded worker and submission source coverage
+        run: python tests/upgrade/check_sprint_execution.py
+      - name: Retain worker and submission evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sprint-execution-${{ github.event.pull_request.number }}
+          path: |
+            reports/coverage/sprint-execution.json
+            reports/junit/sprint-execution.xml
+          if-no-files-found: error
+          retention-days: 14
 
   govern:
     runs-on: ubuntu-latest

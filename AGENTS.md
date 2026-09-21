@@ -38,7 +38,8 @@ remembered. Then read `.bits/context.md` for intent, invariants and the current
 plan, and `.bits/srs/<CODE>.md` for the spec your dispatch names.
 
 Before selecting work and before handing it off, run
-`python scripts/ci/hostinger_readiness.py --check` and read
+`python scripts/ci/hostinger_readiness.py --check` and
+`python scripts/ci/submission_readiness.py --check`, then read
 `docs/hostinger-sprint-closure.md` with `.bits/hostinger-readiness.json`.
 This is mandatory sprint governance. Every milestone records why it exists,
 its source, executable checks, receiving owner and next action. Follow its
@@ -48,6 +49,11 @@ then run `python scripts/ci/hostinger_readiness.py --refresh` and recheck.
 Refreshing the binding acknowledges source review only. It cannot mark a test,
 deployment or milestone complete. Missing, stale, skipped and synthetic evidence
 must remain explicit. The CI `governance:readiness` gate enforces this binding.
+The submission policy defines internal provisional standards. It does not invent
+official rules, eligibility or deadlines. Read `docs/submission-guide.md` for the
+eleven-checkpoint acceptance matrix, current source boundaries and owner actions.
+The workspace assistant reuses native permissions; its inferred plans and personal
+patterns cannot approve missions, verify claims or confer deployment authority.
 
 ## Authorization
 
@@ -178,7 +184,7 @@ component says so rather than implying a check exists.
 | `ci:test`                    | Test             | Lint, web coverage, public adapters, native Discord/research parser and CPU blueprint pipeline, PocketBase dossier/suite/operator/classroom and tutorial certificate checks, portable suite and federal portfolio coverage, foundry execution/replay/export coverage, and manifest/lock integrity |
 | `ci:build`                   | Pull request     | `npm run build` produces `dist/apps/web/index.html`         |
 | `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, one actor label, `agent_context.py --check` |
-| `governance:readiness`       | Sprint readiness | All 11 milestone rationales, dependencies, owners, checks and next steps match reviewed source; acceptance and replay validators reject incomplete evidence |
+| `governance:readiness`       | Sprint readiness | All 11 milestones match reviewed source; acceptance, replay and provisional submission validators reject incomplete evidence and invented official rules |
 | `deploy:staging-probe`       | Staging deploy   | Candidate mirror to the private plane succeeds on `main`    |
 | `deploy:production`          | Production       | Release visible in RUM, no new error signature from the deploy |
 

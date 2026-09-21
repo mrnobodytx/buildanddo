@@ -1,5 +1,5 @@
 {
-  "contract_sha256": "7ec81c5e35ea0d7dabb77fcbe5c9f165eb9e4b658d76b3308c13835b4456fe35",
+  "contract_sha256": "190f391a2cea8ffbb79bbacae4c581afe500538ca1cc917172412c93f98de01e",
   "schema_version": "buildanddo.hostinger-review/v1",
   "sources": {
     ".bits/context.md": "0cf885d2ea0f3714ff9116b003a15fb02d29e1039e5736aace2761df79bbe033",

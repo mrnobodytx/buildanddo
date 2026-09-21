@@ -246,6 +246,7 @@ export default function MissionReview({
                 }}
                 className="space-y-5"
                 aria-label="TEVV outcomes"
+                data-assistant-authority="human"
                 aria-busy={saving}
             >
                 {TEVV.map((step) => (
@@ -435,6 +436,15 @@ export default function MissionReview({
                     {message}
                 </p>
             )}
+            {Array.isArray(mission.mission_review?.evidence_snapshot) && <section className="space-y-2" aria-label="Evidence captured at verification">
+                <h3 className="font-display text-lg">Evidence captured at verification</h3>
+                <p className="text-xs text-muted-foreground">These are the exact observations the saved review evaluated.</p>
+                {mission.mission_review.evidence_snapshot.map((item) => <details key={item.id} className="border border-border p-3">
+                    <summary className="cursor-pointer text-sm">{item.title || item.id} · {item.source}</summary>
+                    <p className="mt-2 whitespace-pre-wrap break-words text-sm">{item.content}</p>
+                    <p className="mt-2 text-xs">Recorded version: {item.updated || item.created || 'Date unavailable'}</p>
+                </details>)}
+            </section>}
             {mission.mission_reviewed_at && (
                 <p className="text-xs text-muted-foreground">
                     Review saved at {mission.mission_reviewed_at}. Reviewer account:{' '}

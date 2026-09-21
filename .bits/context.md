@@ -75,7 +75,8 @@ These are not style preferences. Each one exists because it broke something.
 ## Current plan
 
 The owner prioritizes the 21-day Hostinger demo under the existing upgrade
-SRS/dispatch. Run `python scripts/ci/hostinger_readiness.py --check` before
+SRS/dispatch. Run `python scripts/ci/hostinger_readiness.py --check` and
+`python scripts/ci/submission_readiness.py --check` before
 choosing work and before handoff. Read `docs/hostinger-sprint-closure.md` and
 `.bits/hostinger-readiness.json`: every canonical milestone has rationale,
 dependencies, required evidence, an owner and a next step. Follow those
@@ -91,13 +92,20 @@ acceptance. The contract does not assert a percentage or rewrite sprint state.
    inventory of missing implementations.
 2. Complete one connected small-business journey: saved signal, bounded mission,
    explicit approval, action, a different verifier, evidence and operator readback.
-   The public workflow desk records people performing steps. Private worker
-   execution and current NXC context retain their receiving dispatch and scope.
+   The workflow desk now separates recorded procedures from frozen executable
+   ERP, Firecrawl and registered n8n steps. The worker retains uncertain effects
+   for reconciliation. Provider activation and current NXC context retain their
+   receiving dispatch and scope. The assistant proposes visible form interactions
+   under native permissions and keeps each user's session patterns personal.
 3. Capture release/provider readback, reconcile it with the semantic twin and
    obtain owner review of the milestone evidence. A passing source test, prepared
    packet or synthetic replay cannot establish live deployment or competition
    readiness. Official competition rules and the submission deadline still need
    a cited owner confirmation.
+
+`docs/submission-guide.md`, `docs/business-execution.md` and
+`docs/workspace-assistant.md` explain the implemented paths, personal-data
+boundaries, runtime bindings, acceptance commands and remaining owner decisions.
 
 The live Praxis suite and fleet/deployment tools retain their separately scoped
 runtime requirements. Do not silently run them against a shared backend or hide
