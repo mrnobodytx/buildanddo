@@ -532,12 +532,12 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 48275,
+      "lines": 48424,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -547,7 +547,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -47847,6 +47848,101 @@
     },
     {
       "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "README.md",
+        "docs/submission-guide.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json"
+      ],
+      "lines": 194,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the educational collaboration framing, its source checks and the remaining acceptance limits for reviewers.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json"
+      ],
+      "lines": 446,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact source and validation observations for educational product framing without claiming unavailable rendered or deployed acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json"
+      ],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact source and validation observations for educational product framing without claiming unavailable rendered or deployed acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
       "file_path": "README.md",
       "cket_stage": "06_PLAN",
       "srs_codes": [
@@ -48112,6 +48208,46 @@
     },
     {
       "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md",
+      "target": "README.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md consumes README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md consumes docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.cgrf.yaml depends_on .bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "apps/web/src/__tests__/HostingerChallengePage.test.jsx",
       "target": "apps/web/src/pages/HostingerChallengePage.jsx",
       "edge_type": "VALIDATES",
@@ -48258,12 +48394,25 @@
       "timestamp": "2026-09-22T15:57:35.338369+00:00",
       "commit_sha": null,
       "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "commit",
+      "file_path": "apps/web/src/pages/HomePage.jsx",
+      "description": "Frame BuildAndDo as educational collaboration across the homepage, public entry points and submission materials; keep business tooling as one application and preserve existing authority and evidence gates.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T16:05:12Z",
+      "commit_sha": "6703a37cc5c138c78dc9c42a93515f491db188a3",
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 787,
-    "type_b_count": 1787,
-    "type_c_count": 195,
+    "type_a_count": 790,
+    "type_b_count": 1791,
+    "type_c_count": 196,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
