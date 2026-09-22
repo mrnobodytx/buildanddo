@@ -89,6 +89,13 @@ migrate((app) => {
 # console but never a CHILD's, which is why the earlier watchdog fix did not cover these.
 # CREATE_NO_WINDOW is Windows-only, so this is an empty mapping everywhere else and the calls
 # below read the same on every platform.
+#
+# MEASURED, same parent and binary with only the flag varying: spawning from a console-less
+# pythonw.exe parent WITHOUT it adds two visible windows and WITH it adds none. Note the two:
+# Windows 11 hosts a new console through ConPTY, so it appears as a Windows Terminal window
+# (class CASCADIA_HOSTING_WINDOW_CLASS) plus a PseudoConsoleWindow - the classic
+# ConsoleWindowClass is never created, and a detector looking only for that name reports a
+# confident zero while the windows are on screen.
 NO_WINDOW = {"creationflags": subprocess.CREATE_NO_WINDOW} if os.name == "nt" else {}
 
 
