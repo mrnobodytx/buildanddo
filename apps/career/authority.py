@@ -155,7 +155,7 @@ def authorize(
     if tier >= JobTier.J3_FILL and unresolved_reserved:
         return AuthorityResult(
             action, tier, Decision.HUMAN_REQUIRED,
-            "reserved questions unresolved: " + ", ".join(sorted(set(unresolved_reserved))),
+            "awaiting the human: " + ", ".join(sorted(set(unresolved_reserved))),
         )
     if tier is JobTier.J4_SUBMIT:
         if package_digest is None:

@@ -35,6 +35,10 @@ turned into dossiers and application packages whose every claim has provenance.
 | 4 | Dossier with mandatory DO NOT CLAIM | `python -m unittest tests.career.test_career.DossierTests && echo PASS` | done |
 | 5 | J0-J5 authority policy and application compiler | `python -m unittest tests.career.test_career.AuthorityTests tests.career.test_career.CompilerTests && echo PASS` | done |
 | 6 | CLI and per-module coverage | `python tests/career/check_career.py && echo PASS` | done |
+| 8 | BuildAndDo mission evidence source | `python -m unittest tests.career.test_slice2.MissionTests && echo PASS` | done |
+| 9 | Public Lever/Greenhouse/Ashby discovery adapters | `python -m unittest tests.career.test_slice2.SourceTests && echo PASS` | done |
+| 10 | Verified package reload and outcome ledger | `python -m unittest tests.career.test_slice2.PackageTests tests.career.test_slice2.OutcomeTests && echo PASS` | done |
+| 11 | J3 fill plan with authority decisions | `python -m unittest tests.career.test_slice2.FillTests tests.career.test_slice2.SliceCliTests && echo PASS` | done |
 | 7 | Public boundary and context gates | `python scripts/ci/verify_public_boundary.py && python scripts/ci/agent_context.py --check && echo PASS` | done |
 
 ## Constraints
@@ -47,8 +51,10 @@ turned into dossiers and application packages whose every claim has provenance.
   governed source, and no milestone rationale, owner, check or next action changes).
 - Files it must not touch: existing application, PocketBase, web, CI,
   authority policy, migrations, deployment and private-plane files.
-- Anything that would raise risk above A1: network access, ATS or browser
-  adapters, submission, credential or personal-data storage, persisted schema.
+- Anything that would raise risk above A1: network access beyond the opt-in GET
+  to the three allow-listed public posting endpoints, authenticated ATS APIs,
+  browser runners, submission, credential or personal-data storage, persisted
+  schema, staging or production deployment.
 
 ## Smoke test
 

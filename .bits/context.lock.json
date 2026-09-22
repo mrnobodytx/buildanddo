@@ -462,7 +462,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-22T22:24:25.469876+00:00",
+  "generated_at": "2026-09-22T23:25:42.645629+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -929,6 +929,7 @@
   ],
   "repo": {
     "apps": [
+      "career",
       "decision",
       "estate",
       "federal_foundry",
@@ -950,11 +951,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 47,
-    "python_files": 319,
+    "python_files": 340,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1341,
+    "tracked_files": 1381,
     "web_source_files": 347
   },
   "schema_version": 1,
@@ -1028,7 +1029,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "623622cd23976b75f9ff0eaa7246299fd8f800ae87dd57b06a68b9389036c311",
+    "source_sha256": "805385ebc031115ad6717c27bb591a1dca5050bb4ee0a0411f1f23a5cdd66719",
     "state": "PASS"
   },
   "summary": {

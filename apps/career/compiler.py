@@ -41,6 +41,14 @@ from apps.career.passport import Passport, entry_by_id, parse_instant
 from apps.career.taxonomy import BY_ID, capabilities_for_text
 
 SCHEMA = "buildanddo.career.package/v1"
+PACKAGE_FILES = (
+    "resume_variant.md",
+    "cover_letter.txt",
+    "application_answers.json",
+    "portfolio_manifest.json",
+    "interview_brief.md",
+    "evidence_manifest.json",
+)
 REFS_PER_CLAIM = 5
 
 
@@ -59,7 +67,7 @@ class Package:
 
 COUNT_PHRASES: dict[str, str] = {
     Participation.PERSONALLY_IMPLEMENTED.value: "authored",
-    Participation.PERSONALLY_OPERATED.value: "operated (attested)",
+    Participation.PERSONALLY_OPERATED.value: "operated",
     Participation.DESIGNED.value: "designed (attested)",
     Participation.DIRECTED.value: "directed (attested)",
     Participation.REVIEWED.value: "reviewed and integrated",
@@ -224,6 +232,10 @@ def compile_application(
     manifest = {
         "schema": SCHEMA,
         "job_id": job.job_id,
+        "role": job.role,
+        "company": job.company,
+        "application_system": job.fields.get("application_system"),
+        "apply_url": job.fields.get("apply_url"),
         "job_digest": job.digest,
         "passport_digest": passport.digest,
         "dossier_digest": dossier.digest,

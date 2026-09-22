@@ -50,10 +50,28 @@ git history + human attestations
   writing only to a new local output directory.
 - Add synthetic job fixtures, unit tests and a statement-coverage gate.
 
+Slice 2 (same SRS, same PR):
+
+- BuildAndDo mission evidence as a passport source, from an exported snapshot of
+  `missions`, `evidence` and `suite_runs` records.
+- Public job-board discovery adapters for Lever, Greenhouse and Ashby posting
+  feeds (J0), from a saved payload or an opt-in HTTPS GET to those three
+  allow-listed endpoints, with refresh diffs.
+- Digest-verified reload of written application packages.
+- An append-only outcome ledger recorded by the human, with funnel and
+  per-dimension response reporting that refuses to rank small samples.
+- A J3 fill plan mapping an employer form's fields to profile, package or human
+  sources, with fill and submit authority decisions. It is a plan, not a runner.
+
 ## Out of scope
 
-- Live job discovery, ATS APIs, browser automation or any network access.
-- Application submission, form filling or any external write (A3).
+- Network access other than an explicit `--allow-network` GET to the three public
+  posting endpoints; authenticated ATS APIs.
+- Browser automation, form filling, application submission or any external write (A3).
+- Encrypted storage of reserved answers: no encryption dependency is declared and
+  the slice does not implement its own cryptography. Stored answers remain a
+  human-supplied local input.
+- Staging or production deployment (A3, separate human dispatch).
 - Inferring answers to reserved questions: work authorization, clearance,
   criminal history, compensation, relocation, contract acceptance, background
   check consent, disability, veteran or demographic disclosure.
@@ -77,6 +95,11 @@ git history + human attestations
   at least one evidence reference that exists in the passport.
 - Reserved questions return `HUMAN_REQUIRED` unless the human stored an answer
   explicitly marked reusable; the compiler never produces those answers.
+- Mission records the person wrote are DECLARED, whatever their `type` says. A
+  suite run is VERIFIED only when a reviewer other than its requester attached it
+  with a result digest. Owner-set mission `status` is never used.
+- Outcome events are recorded by a named human against a digest-verified package;
+  stages only advance. Groups under ten applications are never ranked.
 - The compiler's maximum authority is J2. J3 and J4 are policy decisions only;
   an anti-bot challenge always yields a human stop, never a bypass.
 
@@ -84,9 +107,10 @@ git history + human attestations
 
 1. `python tests/career/check_career.py` passes all behavior tests and reports at
    least 80 percent statement coverage for every `apps/career` module.
-2. `python -m unittest tests.career.test_career` covers participation, merge
-   integration, attestations, extraction, coverage, dossiers, authority and
-   package validation.
+2. `python -m unittest tests.career.test_career tests.career.test_slice2` covers
+   participation, merge integration, attestations, extraction, coverage, dossiers,
+   authority, package validation, board normalization, mission verification,
+   package tamper detection, the outcome ledger and fill plans.
 3. `python -m apps.career passport --repo . --identity <file> --output <new-dir>`
    runs against this repository's own history.
 4. `python scripts/ci/verify_public_boundary.py` reports `PASS`.

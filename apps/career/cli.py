@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     apps/career/history.py, apps/career/passport.py, apps/career/match.py, apps/career/dossier.py, apps/career/compiler.py
+# Depends:     apps/career/history.py, apps/career/passport.py, apps/career/match.py, apps/career/dossier.py, apps/career/compiler.py, apps/career/missions.py, apps/career/sources.py, apps/career/outcomes.py, apps/career/packages.py, apps/career/fill.py
 # EnumType:    Adapter
-# EnumEdges:   DEPENDS_ON apps/career/history.py; DEPENDS_ON apps/career/passport.py; DEPENDS_ON apps/career/match.py; DEPENDS_ON apps/career/dossier.py; DEPENDS_ON apps/career/compiler.py
+# EnumEdges:   DEPENDS_ON apps/career/history.py; DEPENDS_ON apps/career/passport.py; DEPENDS_ON apps/career/match.py; DEPENDS_ON apps/career/dossier.py; DEPENDS_ON apps/career/compiler.py; DEPENDS_ON apps/career/missions.py; DEPENDS_ON apps/career/sources.py; DEPENDS_ON apps/career/outcomes.py; DEPENDS_ON apps/career/packages.py; DEPENDS_ON apps/career/fill.py
 # DAG Node:    none
 # Intent:      Run the passport, match, dossier and package stages locally, writing only to a new output directory.
 # ─────────────────────────────────────────────────────────────
@@ -28,6 +28,11 @@ from pathlib import Path
 from typing import Any
 
 from apps.career.compiler import canonical_json, compile_application
+from apps.career.fill import grant_from_dict, plan_fill
+from apps.career.missions import attribute_missions
+from apps.career.outcomes import STAGES, TERMINAL, read_ledger, record_applied, record_stage, report
+from apps.career.packages import load_package, write_package
+from apps.career.sources import ENDPOINTS, diff_jobs, discover, endpoint, fetch_json
 from apps.career.dossier import build_dossier, rank
 from apps.career.evidence import CareerError, attestation_evidence
 from apps.career.history import Identity, attribute, read_git_history
@@ -71,12 +76,21 @@ def load_identity(raw: Any) -> tuple[Identity, list[dict[str, Any]]]:
 
 def cmd_passport(args: argparse.Namespace) -> dict[str, Any]:
     """Build a passport from local git history plus attestations."""
-    identity, attestations = load_identity(_read_json(Path(args.identity)))
+    raw_identity = _read_json(Path(args.identity))
+    identity, attestations = load_identity(raw_identity)
     as_of = parse_instant(args.as_of) if args.as_of else datetime.now(timezone.utc)
     head, commits = read_git_history(Path(args.repo), max_count=args.max_count)
     attribution = attribute(commits, identity)
     extra = [ref for item in attestations for ref in attestation_evidence(item, identity.person_id)]
-    passport = passport_from_history(identity.person_id, attribution, extra, as_of=as_of, head=head)
+    missions = None
+    if args.missions:
+        user_ids = raw_identity.get("person_user_ids", [])
+        if not isinstance(user_ids, list):
+            raise CareerError("person_user_ids must be a list")
+        missions = attribute_missions(_read_json(Path(args.missions)), [str(item) for item in user_ids])
+    passport = passport_from_history(
+        identity.person_id, attribution, extra, as_of=as_of, head=head, missions=missions
+    )
     out = _fresh_directory(Path(args.output))
     (out / "passport.json").write_text(canonical_json(passport.to_dict()), encoding="utf-8")
     return {
@@ -125,13 +139,7 @@ def cmd_evaluate(args: argparse.Namespace) -> dict[str, Any]:
             questions=list(questions.get(job.job_id, [])),
             stored_answers=stored,
         )
-        folder = out / "packages" / _SAFE.sub("_", job.job_id)
-        folder.mkdir(parents=True)
-        for filename, content in package.files.items():
-            (folder / filename).write_text(content, encoding="utf-8")
-        (folder / "manifest.json").write_text(
-            canonical_json({**package.manifest, "package_digest": package.digest}), encoding="utf-8"
-        )
+        write_package(out / "packages" / _SAFE.sub("_", job.job_id), package)
         packages.append({"job_id": job.job_id, "package_digest": package.digest,
                          "next_step": package.manifest["next_step"]["decision"]})
     ranking = [
@@ -145,6 +153,67 @@ def cmd_evaluate(args: argparse.Namespace) -> dict[str, Any]:
             "submitted": 0}
 
 
+def cmd_discover(args: argparse.Namespace) -> dict[str, Any]:
+    """Normalize a public job board from a saved payload or, when allowed, a live GET."""
+    if args.payload:
+        payload = _read_json(Path(args.payload))
+        origin = f"file:{Path(args.payload).name}"
+    elif args.allow_network:
+        url = endpoint(args.source, args.board)
+        payload, origin = fetch_json(url), url
+    else:
+        raise CareerError("pass --payload, or --allow-network to fetch the public board")
+    result = discover(args.source, args.board, payload)
+    previous: list[dict[str, Any]] = []
+    if args.previous:
+        raw = _read_json(Path(args.previous))
+        previous = list(raw.get("jobs", [])) if isinstance(raw, dict) else []
+    out = _fresh_directory(Path(args.output))
+    jobs = [job.to_dict() for job in result.jobs]
+    (out / "jobs.json").write_text(canonical_json({"origin": origin, "jobs": jobs}), encoding="utf-8")
+    summary = {
+        "state": "PASS",
+        "origin": origin,
+        "jobs": len(jobs),
+        "skipped": result.skipped,
+        "diff": diff_jobs(previous, result.jobs) if args.previous else None,
+    }
+    (out / "discovery.json").write_text(canonical_json(summary), encoding="utf-8")
+    return summary
+
+
+def cmd_outcome(args: argparse.Namespace) -> dict[str, Any]:
+    """Record a human-reported application outcome or report the ledger."""
+    ledger = Path(args.ledger)
+    if args.action == "report":
+        return {"state": "PASS", **report(read_ledger(ledger))}
+    if not args.at or not args.recorded_by:
+        raise CareerError("--at and --recorded-by are required to record an outcome")
+    if args.action == "applied":
+        if not args.package_dir:
+            raise CareerError("--package-dir names the package that was submitted")
+        event = record_applied(ledger, load_package(Path(args.package_dir)), at=args.at,
+                               recorded_by=args.recorded_by, channel=args.channel)
+    else:
+        if not args.application_id:
+            raise CareerError("--application-id is required")
+        event = record_stage(ledger, args.application_id, args.action, at=args.at, recorded_by=args.recorded_by)
+    return {"state": "PASS", "event": event}
+
+
+def cmd_fill_plan(args: argparse.Namespace) -> dict[str, Any]:
+    """Write a fill plan for one package and employer form."""
+    package = load_package(Path(args.package_dir))
+    grant = grant_from_dict(_read_json(Path(args.grant))) if args.grant else grant_from_dict(None)
+    profile = _read_json(Path(args.profile)) if args.profile else {}
+    if not isinstance(profile, dict):
+        raise CareerError("profile must be an object")
+    plan = plan_fill(package, _read_json(Path(args.form)), profile, grant, challenge_present=args.challenge)
+    out = _fresh_directory(Path(args.output))
+    (out / "fill_plan.json").write_text(canonical_json(plan), encoding="utf-8")
+    return {"state": "PASS", "fill": plan["fill"], "submit": plan["submit"], "blocking": plan["blocking"]}
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Return the argument parser."""
     parser = argparse.ArgumentParser(prog="python -m apps.career", description=__doc__)
@@ -155,6 +224,7 @@ def build_parser() -> argparse.ArgumentParser:
     passport.add_argument("--output", required=True)
     passport.add_argument("--as-of")
     passport.add_argument("--max-count", type=int)
+    passport.add_argument("--missions", help="exported BuildAndDo missions/evidence/suite_runs JSON")
     passport.set_defaults(handler=cmd_passport)
     run = sub.add_parser("evaluate", help="match supplied jobs and compile packages")
     run.add_argument("--passport", required=True)
@@ -165,6 +235,31 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--questions")
     run.add_argument("--stored-answers")
     run.set_defaults(handler=cmd_evaluate)
+    find = sub.add_parser("discover", help="normalize a public Lever, Greenhouse or Ashby board (read-only)")
+    find.add_argument("--source", required=True, choices=sorted(ENDPOINTS))
+    find.add_argument("--board", required=True)
+    find.add_argument("--output", required=True)
+    find.add_argument("--payload", help="saved board JSON; no network")
+    find.add_argument("--allow-network", action="store_true", help="GET the public board endpoint")
+    find.add_argument("--previous", help="earlier jobs.json to diff against")
+    find.set_defaults(handler=cmd_discover)
+    outcome = sub.add_parser("outcome", help="record or report human-reported application outcomes")
+    outcome.add_argument("action", choices=["applied", *STAGES[1:], *TERMINAL[1:], "report"])
+    outcome.add_argument("--ledger", required=True)
+    outcome.add_argument("--package-dir")
+    outcome.add_argument("--application-id")
+    outcome.add_argument("--at")
+    outcome.add_argument("--recorded-by")
+    outcome.add_argument("--channel")
+    outcome.set_defaults(handler=cmd_outcome)
+    fill = sub.add_parser("fill-plan", help="plan a form fill; never opens a browser or submits")
+    fill.add_argument("--package-dir", required=True)
+    fill.add_argument("--form", required=True)
+    fill.add_argument("--output", required=True)
+    fill.add_argument("--profile")
+    fill.add_argument("--grant")
+    fill.add_argument("--challenge", action="store_true", help="an anti-bot challenge is present")
+    fill.set_defaults(handler=cmd_fill_plan)
     return parser
 
 

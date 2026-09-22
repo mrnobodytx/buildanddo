@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     apps/career/evidence.py, apps/career/history.py, apps/career/taxonomy.py
+# Depends:     apps/career/evidence.py, apps/career/history.py, apps/career/missions.py, apps/career/taxonomy.py
 # EnumType:    Service
-# EnumEdges:   DEPENDS_ON apps/career/evidence.py; DEPENDS_ON apps/career/history.py; DEPENDS_ON apps/career/taxonomy.py; PRODUCES apps/career/match.py
+# EnumEdges:   DEPENDS_ON apps/career/evidence.py; DEPENDS_ON apps/career/history.py; DEPENDS_ON apps/career/missions.py; DEPENDS_ON apps/career/taxonomy.py; PRODUCES apps/career/match.py
 # DAG Node:    none
 # Intent:      Aggregate participation-classified evidence into a per-capability Career Passport that states its own limits.
 # ─────────────────────────────────────────────────────────────
@@ -38,6 +38,7 @@ from apps.career.evidence import (
     strongest,
 )
 from apps.career.history import Attribution
+from apps.career.missions import MissionAttribution
 from apps.career.taxonomy import CAPABILITIES
 
 SCHEMA = "buildanddo.career.passport/v1"
@@ -324,8 +325,9 @@ def passport_from_history(
     *,
     as_of: datetime,
     head: str,
+    missions: MissionAttribution | None = None,
 ) -> Passport:
-    """Build a passport from git attribution plus attestation evidence."""
+    """Build a passport from git attribution, attestations and optional mission evidence."""
     extra = list(attestations)
     source = {
         "kind": "git",
@@ -341,7 +343,13 @@ def passport_from_history(
     sources = [source]
     if extra:
         sources.append({"kind": "attestations", "records": len({item.ref for item in extra})})
-    return build_passport(person_id, [*attribution.evidence, *extra], as_of=as_of, sources=sources)
+    mission_evidence: list[EvidenceRef] = []
+    if missions is not None:
+        sources.append(missions.source())
+        mission_evidence = missions.evidence
+    return build_passport(
+        person_id, [*attribution.evidence, *extra, *mission_evidence], as_of=as_of, sources=sources
+    )
 
 
 def entry_by_id(passport: Passport) -> dict[str, CapabilityEntry]:

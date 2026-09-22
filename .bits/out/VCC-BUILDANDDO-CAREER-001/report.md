@@ -19,18 +19,18 @@
 
 ## §1 SUMMARY
 
-Status:      COMPLETE (vertical slice 1: local compile only)
+Status:      COMPLETE (slices 1 and 2; no submission, no deployment)
 Dispatch:    VCC-BUILDANDDO-CAREER-001
 Seat:        BITS-CODEGEN
 SRS:         SRS-BUILDANDDO-CAREER-001
 Branch:      bits/SRS-BUILDANDDO-CAREER-001-career-evidence
-Tasks:       7/7
+Tasks:       11/11
 Smoke:       3/3
 CKS Gate:    pending
 CKS:         pending
 CAPS:        pending
 CK:          pending
-Commits:     1 (SHA assigned by the focused repository commit)
+Commits:     2 (SHAs assigned by the focused repository commits)
 
 ## §2 TASK RESULTS
 
@@ -68,9 +68,30 @@ Task 7 — Boundary and context
   Status:  PASS
   Verify:  `python scripts/ci/verify_public_boundary.py && python scripts/ci/agent_context.py --check`
 
+Task 8 — BuildAndDo mission evidence source
+  Status:  PASS
+  Output:  Self-written mission evidence is DECLARED; a suite run is VERIFIED only when a different reviewer attached it with a result digest.
+  Verify:  `python -m unittest tests.career.test_slice2.MissionTests`
+
+Task 9 — Public job-board discovery
+  Status:  PASS
+  Output:  Lever, Greenhouse and Ashby feeds normalize to canonical jobs; postings without a requirement section are skipped with a reason; refresh diffs by digest.
+  Verify:  `python -m unittest tests.career.test_slice2.SourceTests`
+  Limit:   the live GET path is covered with a mocked transport only; this sandbox has no internet.
+
+Task 10 — Verified package reload and outcome ledger
+  Status:  PASS
+  Output:  Edited package files are rejected; outcomes are human-recorded, stages only advance, groups under 10 are never ranked.
+  Verify:  `python -m unittest tests.career.test_slice2.PackageTests tests.career.test_slice2.OutcomeTests`
+
+Task 11 — J3 fill plan
+  Status:  PASS
+  Output:  Each form field names its source; required human fields and reserved classes block fill; a challenge always stops for the human.
+  Verify:  `python -m unittest tests.career.test_slice2.FillTests tests.career.test_slice2.SliceCliTests`
+
 ## §3 SMOKE TEST RESULTS
 
-1. `python tests/career/check_career.py` — expected PASS — actual PASS (34 run, 0 failures).
+1. `python tests/career/check_career.py` — expected PASS — actual PASS (50 run, 0 failures; every module 96-100 percent).
 2. `python scripts/ci/verify_public_boundary.py` — expected PASS — actual PASS.
 3. `python scripts/ci/agent_context.py --check` — expected PASS — actual PASS.
 
@@ -92,6 +113,12 @@ the Bits and source-bridge addresses to agents:
   Staff Platform Engineer CANDIDATE (hard REVIEW: tenure and work authorization),
   iOS Lead REAL_GAP. Two packages compiled; 0 submitted.
 
+Slice 2 dogfood: the saved Greenhouse fixture discovered 1 job (1 duplicate
+skipped); evaluated against the repository passport it was STRONG_CANDIDATE; the
+fill plan returned fill DENIED and submit DENIED under the default J2 grant,
+blocked on name, email, work authorization and compensation; one human-recorded
+`applied` event was written to a local ledger and reported as insufficient sample.
+
 ## §4 MEMORY INGEST
 
 Payload: .bits/out/VCC-BUILDANDDO-CAREER-001/memory.json (counts in its summary block).
@@ -111,9 +138,11 @@ External effects: none (no network, no submission, no personal data committed)
 ## §7 NEXT ACTIONS
 
 Blockers: none for this slice.
-Not done, by design: live discovery adapters, ATS/browser runner (A3, needs a
-human dispatch), encrypted storage of reserved answers, outcome feedback loop,
-BuildAndDo mission evidence as a passport source.
-Suggested next dispatch: add BuildAndDo mission/assessment evidence and
-independent TEVV receipts as passport sources so capabilities can reach VERIFIED.
+Not done, by design: browser application runner and submission (A3, needs a
+human dispatch and a runner outside this public repository), encrypted storage of
+reserved answers (needs an owner-chosen encryption dependency or OS keyring),
+staging deployment (A3; this package has no service surface to deploy), a live
+PocketBase reader for missions (needs credentials; exported snapshots only).
+Suggested next dispatch: human-dispatched A3 runner that consumes fill_plan.json
+and stops at every HUMAN_REQUIRED field and challenge.
 Bugs filed (out of scope, comment-only): none.
