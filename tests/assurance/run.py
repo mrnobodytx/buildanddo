@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     tests/assurance/browser.py, tests/assurance/test_runtime.py, tools/day21/day21_acceptance.py
+# Depends:     tests/assurance/browser.py, tests/assurance/test_runtime.py, tools/day21/day21_acceptance.py, libs/career_passport, libs/capability_tokens, libs/evolution
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/assurance/browser.py; CONSUMES tests/assurance/test_runtime.py; EXTENDS tools/day21/day21_acceptance.py
+# EnumEdges:   CONSUMES tests/assurance/browser.py; CONSUMES tests/assurance/test_runtime.py; EXTENDS tools/day21/day21_acceptance.py; CONSUMES libs/career_passport; CONSUMES libs/capability_tokens; CONSUMES libs/evolution
 # Intent:      Retain eight explicit assurance profiles with source binding and non-passing missing prerequisites beside the unchanged Day-21 gate.
 # ───────────────────────────────────────────────────────────────
 
@@ -103,6 +103,9 @@ def source_binding(root: Path = ROOT) -> dict[str, str]:
         "apps/federal_foundry",
         "apps/mission_suite",
         "libs/semantic_twin",
+        "libs/career_passport",
+        "libs/capability_tokens",
+        "libs/evolution",
         "foundry/shared/federal_foundry",
         "tests/upgrade",
         "tests/assurance",

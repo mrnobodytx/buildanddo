@@ -193,10 +193,19 @@ class AssuranceRunnerTests(unittest.TestCase):
         (source / "public.js").write_text("export const ready = true;")
         (source / ".env").write_text("test_only_fixture")
         (source / "link.js").symlink_to(source / "public.js")
+        career = self.root / "libs/career_passport"
+        career.mkdir(parents=True)
+        (career / "passport.py").write_text("review_required = True\n")
         binding = assurance.source_binding(self.root)
-        self.assertEqual(set(binding), {"apps/web/src/public.js"})
+        self.assertEqual(
+            set(binding),
+            {"apps/web/src/public.js", "libs/career_passport/passport.py"},
+        )
         (source / "public.js").write_text("export const ready = false;")
         self.assertNotEqual(binding, assurance.source_binding(self.root))
+        current = assurance.source_binding(self.root)
+        (career / "passport.py").write_text("review_required = False\n")
+        self.assertNotEqual(current, assurance.source_binding(self.root))
 
     def test_missing_preflight_reports_all_local_browser_requirements(self) -> None:
         with (

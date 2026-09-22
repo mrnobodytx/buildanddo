@@ -20,6 +20,44 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Career Passport dogfood authorized 2026-09-22
+
+The owner selects BuildAndDo as the first career-evidence instance. This
+continues the existing A2 source dispatch; one real reviewed application is the
+receiving target. No employment claim, sensitive answer or submission authority
+is inferred from the illustrative architecture or the platform's development.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| CP1 | Bind work, personal participation and independent review | Attribution/provenance negative tests and real repository capture | source PASS — 22 real artifacts, 19 agent-attributed observations, zero verified personal claims; missing ancestor diffs retained as a gap |
+| CP2 | Normalize job requirements, explain gaps and compile draft artifacts | Feed, matching, package and approval regressions | source PASS — 90 Python cases and 82.30–100 percent statement coverage; synthetic 100/10/3 succeeds, actual job/submission counts remain zero |
+| CP3 | Connect the scoped Career Passport review desk | Client and rendered page cases | source PASS — 14 client cases within 625 Node passes; seven rendered cases await the missing frontend runtime |
+| CP4 | Retain dogfood results, validation and receiving acceptance | Typing, source regression, readiness, context, boundary and memory | PARTIAL — typing/lint/readiness/submission pass; broad Python has two missing-history errors and 32 skips; rendered/build/lint prerequisites and live receiving work remain open |
+
+The source implementation uses the existing work/read/review owners. The real
+repository-only passport remains HOLD with no personal claims or draft packages;
+its person identifier is deliberately unresolved, not a native account mapping.
+The full Python run executed 952 cases and reported two errors (one class setup)
+from unchanged Semantic Twin history consumers requiring absent ancestor trees;
+four compiler-class cases could not run. No missing objects were fetched and no
+existing tests were disabled. The seven-command application smoke is 3/7 when
+context and boundary pass: Node passes, Python and all three frontend gates do
+not. Detailed evidence and receiving actions are retained in
+`.bits/out/VCC-BUILDANDDO-UPGRADE-001/career-passport-report.md` and the dated
+Career Passport handoff. The original eighteen acceptance profiles remain.
+
+Memory brief: the merged research/assurance baseline is locally available and
+restored. Existing capability passports describe callable assets, not a person's
+work. Native mission reviews preserve exact evidence and independent review;
+the development loop already uses externally pinned ReviewPolicy receipts.
+No reviewed mapping from human.nobody to personal contributions, live ATS feed,
+job-search preferences, or approved application is supplied. Git authorship,
+seat summaries and a source PASS cannot fill those gaps. Retain all 205 previous
+memory events and the unchanged eleven milestones/eighteen-profile acceptance.
+The baseline readiness binding is stale; review and refresh it after this source
+continuation without claiming a completed milestone. No external seat event is
+sent without an authenticated receiving session and explicit authorization.
+
 ## Test assurance and restricted research sprint — 2026-09-22
 
 The owner authorizes implementation of the testing recommendations and bounded

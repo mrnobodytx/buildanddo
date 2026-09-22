@@ -463,7 +463,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-22T18:37:48.805946+00:00",
+  "generated_at": "2026-09-22T23:05:43.325335+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -946,12 +946,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 50,
-    "python_files": 331,
+    "python_files": 347,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1372,
-    "web_source_files": 350
+    "tracked_files": 1395,
+    "web_source_files": 353
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1007,13 +1007,13 @@
       },
       {
         "id": "HS-09",
-        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review.",
+        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application.",
         "owner": "BITS-CODEGEN / release owner",
         "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
@@ -1024,7 +1024,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "e53938e8bab6b1dcd7df778007fee241eb2ce6b3098da121d93271d71927bcdd",
+    "source_sha256": "1b6a054ff39549e085181dd8afdc249856be3678c69eab4ac35d7a15fc1511af",
     "state": "PASS"
   },
   "summary": {
@@ -1039,7 +1039,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 66,
+    "js_test_files": 67,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-21
-// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/pages/workspace/GovernmentPage.jsx
+// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/pages/workspace/GovernmentPage.jsx, apps/web/src/pages/workspace/CareerPage.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx; CONSUMES apps/web/src/pages/workspace/GovernmentPage.jsx
+// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx; CONSUMES apps/web/src/pages/workspace/GovernmentPage.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx
 // Intent:      Route public and workspace views only after native session validation.
 // ───────────────────────────────────────────────────────────────
 
@@ -67,6 +67,7 @@ const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage')
 const SpecialistWorkPage = lazy(() => import('./pages/workspace/SpecialistWorkPage'));
 const ExecutionReplayPage = lazy(() => import('./pages/workspace/ExecutionReplayPage'));
 const CapabilityPassportPage = lazy(() => import('./pages/workspace/SpecialistDeskPage'));
+const CareerPage = lazy(() => import('./pages/workspace/CareerPage'));
 const CorrectionsPage = lazy(() => import('./pages/workspace/CorrectionsPage'));
 const SupportRevenuePage = lazy(() => import('./pages/workspace/SupportRevenuePage'));
 const CommunitySocialPage = lazy(() => import('./pages/workspace/CommunitySocialPage'));
@@ -122,6 +123,7 @@ const WORKSPACE_ROUTES = [
     { path: 'desks', label: 'Specialist desks', element: SpecialistWorkPage },
     { path: 'replay', label: 'Execution replay', element: ExecutionReplayPage },
     { path: 'passport', label: 'Capability Passport', element: CapabilityPassportPage },
+    { path: 'career', label: 'Career Passport', element: CareerPage },
     { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
     { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },
     { path: 'community', label: 'Community & Social', element: CommunitySocialPage },

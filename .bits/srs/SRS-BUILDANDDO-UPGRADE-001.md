@@ -20,6 +20,58 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## BuildAndDo Career Passport dogfood — 2026-09-22
+
+The owner requests BuildAndDo as the first verified career-evidence test case.
+Continue this existing A2 source dispatch. Reuse the development/Twin contracts,
+native workspace observations and capability-token independent review policy.
+The passport is a projection of work and pinned reviews, never a new identity,
+verification, employment-history or operational-authority owner.
+
+Acceptance:
+
+1. Capture bounded BuildAndDo repository history and current workspace exports
+   with exact source bytes, revisions, attribution and explicit gaps. Generate
+   person-level claims only from participation bound to that person. Preserve
+   personally implemented/operated, designed, directed, reviewed, verified,
+   team-delivered and agent-executed roles; account ownership and git authorship
+   alone cannot establish personal implementation or independent verification.
+2. Normalize public Lever/Ashby job captures, retaining source text, freshness,
+   requirements and unparsed clauses. Prepare a bounded 100-job batch, top ten
+   requirement dossiers and up to three draft packages. Missing/live-unavailable
+   data remains incomplete. No synthetic posting counts as a live job.
+3. Match each requirement against independently pinned, exact contribution and
+   artifact evidence. Keep scope, recency, participation, legal requirements and
+   duration separate; include DO NOT CLAIM gaps. Compile the six application
+   artifacts from verified facts only, with claim-level provenance and hashes.
+4. Keep J0–J5 workflow stages separate from A0–A3 authority. Bind any fill/submit
+   approval to a person, job, package, form and expiry. Reserved attestations need
+   explicit human answers; challenges require human handling. Preserve uncertain
+   submissions and actual outcome receipts; no autonomous mass submission.
+5. Add an authenticated Career Passport review desk using existing workspace
+   context and permissions. Clear imports on account/workspace changes; imported
+   packets cannot authenticate themselves, mint verification or send applications.
+6. Exercise attribution, self-review, foreign/stale/tampered evidence, hard gaps,
+   unsupported application prose, scoped approvals and deterministic outputs.
+   Retain a real repository dogfood capture separately from synthetic test jobs.
+
+Verify: `python -m unittest discover -s tests/upgrade -p 'test_career_*.py'`,
+`python tests/upgrade/check_career_passport.py`,
+`node --test tests/upgrade/career-passport.test.mjs`, the existing rendered web
+checks, strict typing and context/readiness/boundary/memory gates. Live job
+collection, personal identity/participation review, browser submission and real
+outcomes remain receiving acceptance until actually observed and authorized.
+Private career data, applications and raw feeds stay in ignored local storage.
+
+Observed source acceptance: 90 portable career cases pass with at least 82.30
+percent statement coverage per implementation module; 14 client cases pass in
+the 625-case Node source suite. The real repository capture yields 22 artifacts,
+19 agent-attributed contributions and no verified personal claim, job or draft.
+Missing historical Git trees prevent two unchanged Semantic Twin checks in full
+Python discovery; native/dependency skips and missing frontend tools remain
+non-passing evidence. See the career report and receiving handoff before making
+any live search, qualification or application-acceptance claim.
+
 ## Test assurance and research sprint — 2026-09-22
 
 The owner requests the eight testing categories from the retained gap assessment,

@@ -351,7 +351,9 @@
         "apps/web/src/components/workspace/missions/MissionReview.jsx",
         "apps/web/src/components/workspace/EvidenceInspector.jsx",
         "apps/web/src/lib/evidenceInspection.js",
-        "docs/development-loop.md"
+        "docs/development-loop.md",
+        "libs/career_passport",
+        "docs/career-passport.md"
       ],
       "checks": [
         "semantic_twin",
@@ -372,9 +374,10 @@
         "Verified review snapshots retain exact source observations; referenced evidence cannot silently change or disappear.",
         "Native result bytes and release declaration agree with independent replay/deployment evidence.",
         "The evidence inspector exposes the exact frozen reviewed observation, its author and reviewer, and differences from the current record.",
-        "Semantic invitations retain unresolved or conflicting owner identities; exact evidence prerequisites and historical captures cannot grant or promote authority."
+        "Semantic invitations retain unresolved or conflicting owner identities; exact evidence prerequisites and historical captures cannot grant or promote authority.",
+        "Career facts preserve personal, team and agent participation; only exact independently pinned reviews support application claims, while employment duration, personal attestations and operational authority remain separate."
       ],
-      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review."
+      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application."
     },
     {
       "id": "HS-10",
@@ -405,7 +408,10 @@
         "apps/web/src/lib/workspaceValue.js",
         "apps/web/src/components/workspace/ValueDashboard.jsx",
         "apps/web/src/pages/workspace/GovernmentPage.jsx",
-        "docs/research-sprint.md"
+        "docs/research-sprint.md",
+        "apps/web/src/pages/workspace/CareerPage.jsx",
+        "apps/web/src/lib/careerPassport.js",
+        "docs/career-passport.md"
       ],
       "checks": [
         "source_node",
@@ -430,9 +436,10 @@
         "The existing agent performs one reviewed ordinary form action with native authority and personal, account/workspace-isolated session knowledge.",
         "Overview next actions derive only from current readable records; missing reads and demo data do not imply completed or actionable work.",
         "Owner, Operator and Reviewer views consume one scoped value projection; current UTC-month counts retain exact readable native reviews and unknown economic baselines or denominators stay unmeasured.",
-        "The government desk is restricted to paid approved members and labels supplied research leads, synthetic demonstrations and absent model/GPU verification explicitly."
+        "The government desk is restricted to paid approved members and labels supplied research leads, synthetic demonstrations and absent model/GPU verification explicitly.",
+        "The Career Passport desk reads current scoped work and shows imported verification as reported; account/workspace changes or revocation clear private reviews, DO NOT CLAIM gaps remain visible, and imports cannot approve or submit applications."
       ],
-      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI."
+      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt."
     },
     {
       "id": "HS-11",
