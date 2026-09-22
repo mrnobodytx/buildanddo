@@ -20,6 +20,25 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Objective-first Day-21 continuation — 2026-09-22
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| OC-1 | Persist intent, objective and optional context through atomic onboarding | Connected Node and existing native workspace cases | source PASS — 28 connected cases; native execution remains required |
+| OC-2 | Connect explicit intake to the saved workspace and existing lesson/planning routes | Rendered onboarding/overview cases and destination checks | implemented; rendered cases require locked frontend packages |
+| OC-3 | Run the existing candidate-bound acceptance matrix and retain evidence | Day-21 runner, readiness, boundary and memory checks | prepared for the reviewed candidate; observed results are retained separately in objective-closure-report.md |
+| OC-4 | Reconcile runtime, rollback and submission receiving obligations | Existing release source and Day-21 contracts | done for source inspection and handoff; actual receiving execution remains open |
+
+Memory brief: the audited `5077a96` revision is locally available as origin/main
+and is now the source baseline. Earlier journey repairs and all event history
+are retained. Workspace setup already has an atomic native command and a
+content-derived retry identity; it does not persist intent or an objective.
+No authenticated workspace, independent verifier or registered provider access
+is supplied. Hosted GitLab execution and private deployment are not available
+through this session's read-only GitHub provider. Do not fabricate seat events,
+live captures, release receipts or acceptance. Use the existing runner and
+receiving handoff rather than another subsystem.
+
 ## Ten critical sprint repairs authorized 2026-09-21
 
 Owner request: restore governance and build the ten most critical remaining

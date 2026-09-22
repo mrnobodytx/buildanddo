@@ -20,6 +20,29 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Objective-first Day-21 continuation — 2026-09-22
+
+The owner prioritizes one accepted journey over additional subsystems. Continue
+this existing A2 dispatch by replacing domain-first onboarding with explicit
+Learn / Build / Project / Class / Challenge / Explore choices and a persisted
+objective. Keep business/domain context optional, retain atomic setup and retry
+recovery, and connect the saved objective to existing lessons and ERP planning.
+No illustrative lookup may be presented as a live search or proof of ownership.
+
+Acceptance: test every intent, objective persistence, optional context, legacy
+receipt recovery, transaction failure, current-account isolation, migration
+replay/retention, and the existing recommended lesson destinations. Extend the
+rendered/native cases and run the existing complete Day-21 acceptance runner on
+one source candidate. Retain unavailable checks and external gates explicitly.
+Do not substitute source fixtures for hosted GitLab execution, actual provider
+effects, an independent reviewer, deployment readback or official rule capture.
+
+Private release activation, registered Firecrawl/n8n/inference bindings and the
+verified-artifact rollback postcondition remain receiving-owner work under the
+existing public/private boundary. Inspect the existing release path and record
+the exact missing postconditions; do not create another release or acceptance
+system in the public application.
+
 ## Ten critical sprint repairs authorized 2026-09-21
 
 The owner requests restoration of automatic governance and implementation of

@@ -73,6 +73,8 @@
         "apps/web/src/lib/onboarding.js",
         "apps/pocketbase/pb_hooks/workspace-onboarding.js",
         "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js",
+        "apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js",
+        "apps/web/src/pages/workspace/OverviewPage.jsx",
         "apps/web/src/lib/authSession.js"
       ],
       "checks": [
@@ -90,10 +92,12 @@
       "acceptance": [
         "Sign in, sign out and safe return navigation work in the built app.",
         "A revoked or foreign account cannot reopen private workspace data.",
-        "Fresh and concurrent onboarding is atomic; uncertain retries recover one workspace and all seven planned services.",
+        "Fresh and concurrent onboarding is atomic; uncertain retries recover one workspace, its chosen intent, one ERP objective and all seven planned services. Domain and business context are optional and imply no lookup or authority.",
+        "All six intents are explicit choices; the saved workspace reopens its readable objective and a starting path into existing lessons and planning. Legacy setup receipts and existing workspaces remain usable.",
+        "Rollback of the objective migration disables new objective setup while retaining existing goals, workspace links and receipts. Failure to load a confirmed workspace can be retried without resubmitting setup.",
         "Persisted sessions require native refresh; delayed account responses cannot restore old identity. Named onboarding selects the exact returned readable workspace."
       ],
-      "next_step": "Execute rendered onboarding and both native profiles, then demonstrate fresh signup, setup recovery, password recovery and return navigation on the accepted candidate."
+      "next_step": "Execute rendered objective-first onboarding and both native profiles, then demonstrate signup, an explicit intent/objective, the saved workspace's first lesson, setup recovery, password recovery and return navigation on the accepted candidate."
     },
     {
       "id": "HS-03",
@@ -467,8 +471,8 @@
       "id": "release",
       "why": "Merged source is not proof of an installed version or successful release.",
       "owner": "Private release owner",
-      "next_step": "Use the existing governed release lane and capture staging/production SHA, artifact and health readback plus the DORA acknowledgment.",
-      "evidence_required": "Existing controller receipts and GitLab/Datadog exports bound to the same SHA/artifact; public sanitized references only."
+      "next_step": "Use the existing governed release lane; bind the previous verified SHA, manifest and artifact digest before promotion, verify restoration on failure, and capture staging/production identity plus Datadog RUM/deploy/DORA readback. See the Day-21 activation handoff.",
+      "evidence_required": "Existing controller receipts and GitLab/Datadog exports bound to the same SHA/artifact; verified rollback target and actual restored external identity/health receipt. ROLLED_BACK_UNVERIFIED is not a successful recovery. Public sanitized references only."
     },
     {
       "id": "browser",

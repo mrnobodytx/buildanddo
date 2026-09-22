@@ -42,6 +42,54 @@ source, native, coverage and acceptance matrix. The earlier manual-only change
 was premature because replacement enforcement had not been observed. No coverage
 floor, actor requirement or submission dependency is removed by this repair.
 
+## Objective-first entry
+
+Onboarding now asks for one of six explicit intents, then a concrete objective,
+then a workspace name. Business/organization and domain are optional context.
+The domain field performs no search or lookup; the former illustrative results
+are removed from this path. A saved domain remains selected, never verified.
+
+The existing native setup transaction creates an active ERP objective, links it
+to the workspace's intent, and retains the optional context and seven planned
+service cards. No service becomes connected, no mission is approved and no
+class enrollment is created by choosing an intent. All fields participate in
+the existing canonical retry identity. Legacy name/domain requests keep their
+original identity, and old workspaces need no invented goal or backfill.
+
+The front page reads the goal through native workspace expansion and presents
+a starting lesson, the exact ERP objective and the existing mission/classroom
+or Field Manual route. Recommendations are fixed starting points by intent;
+they do not infer competence or claim that a goal has been achieved. Missing
+or foreign expanded objectives remain unavailable. Account changes clear the
+form, and a confirmed setup whose workspace cannot yet load retries that read
+without creating a second setup.
+
+Migration `1791100000_objective_onboarding.js` adds optional fields without
+changing access rules. Its down migration disables new objective setup by
+removing a protocol marker; it retains saved goals, context, workspace links
+and receipts. Reapplying it restores the command and its retry history.
+
+Verify the connected behavior with
+`node --test tests/upgrade/objective-onboarding.test.mjs tests/upgrade/sprint-integrity.test.mjs`.
+Rendered onboarding/overview cases and the existing native workspace test cover
+the form, expanded goal, retries, account transitions and migration restart.
+Their required execution remains part of the existing Day-21 acceptance lane.
+
+## Release and activation boundary
+
+The current release code has two distinct gaps: `scripts/deploy/ship.py` stops
+on a failed production probe without restoring the previous artifact, while
+`tools/buildanddo_release.py` exposes rollback but records
+`ROLLED_BACK_UNVERIFIED`. Neither proves restoration of a previously verified
+SHA, manifest and artifact digest through external readback. This public source
+continuation does not change private deployment control or activate providers.
+
+The ordered receiving contract is
+`.bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md`: hosted GitLab
+acceptance, three registered runtime bindings, one real independently reviewed
+journey, same-artifact release with verified rollback, and the final materials
+derived from that replay. Source or fixture success cannot close these gates.
+
 ## Complete mission capture
 
 `GET /api/buildanddo/workspaces/{workspace}/mission-replay/{mission}` uses the

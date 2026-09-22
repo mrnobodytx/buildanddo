@@ -462,7 +462,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-22T00:16:26.972857+00:00",
+  "generated_at": "2026-09-22T00:52:17.404758+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -962,7 +962,7 @@
       },
       {
         "id": "HS-02",
-        "next_step": "Execute rendered onboarding and both native profiles, then demonstrate fresh signup, setup recovery, password recovery and return navigation on the accepted candidate.",
+        "next_step": "Execute rendered objective-first onboarding and both native profiles, then demonstrate signup, an explicit intent/objective, the saved workspace's first lesson, setup recovery, password recovery and return navigation on the accepted candidate.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "A judge must enter and resume the workspace using real account authority."
       },
@@ -1021,7 +1021,7 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "90289e9d95be8f1b988de0f8eb4efe67e5bb6cd9e703b87b1ee1c633a4429eee",
+    "source_sha256": "5262e0a99ab97a66903ed27ee3662469c4bdf5f9314a5cd66e7971315377b2ac",
     "state": "PASS"
   },
   "summary": {

@@ -21,6 +21,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { createHash } from 'node:crypto';
+import { ONBOARDING_INTENTS } from '@/lib/onboarding';
 import { fixture, plain } from '../../../../../tests/upgrade/admin-fixture.mjs';
 import OnboardingPage from '@/pages/OnboardingPage';
 import pb from '@/lib/pocketbaseClient';
@@ -31,9 +32,11 @@ vi.mock('@/components/motion/MotionPrimitives', () => ({ MotionEntrance: ({ chil
 vi.mock('@/lib/pocketbaseClient', () => ({ default: { authStore: { record: null }, send: vi.fn() } }));
 let backend, loseReply, delay;
 beforeEach(() => {
-    scope.user = { id: 'newuser' }; pb.authStore.record = scope.user; scope.refresh.mockReset().mockResolvedValue(undefined);
+    scope.user = { id: 'newuser' }; pb.authStore.record = scope.user;
+    scope.refresh.mockReset().mockImplementation(async () => backend.data.workspaces);
     backend = fixture({ runtime: { $security: { sha256: (value) => createHash('sha256').update(value).digest('hex') } } });
     backend.migration('apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js').up(); loseReply = false; delay = null;
+    backend.migration('apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js').up();
     pb.send.mockReset().mockImplementation(async (path, { body }) => {
         expect(path).toBe('/api/buildanddo/onboarding');
         const value = plain(backend.load('workspace-onboarding.js').create(backend.event(pb.authStore.record.id, body)));
@@ -47,8 +50,12 @@ function Page() {
         <Route path="/onboarding" element={<OnboardingPage />} /><Route path="/app/erp" element={<p>Workspace ERP desk</p>} />
     </Routes></MemoryRouter>;
 }
-async function select(user) {
-    await user.click(screen.getByRole('button', { name: 'Continue without a website' }));
+async function select(user, intent = 'Build something') {
+    await user.click(screen.getByRole('radio', { name: intent }));
+    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    await user.type(screen.getByLabelText('Your objective'), 'Deploy my first website');
+    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    await user.clear(screen.getByLabelText('Workspace name'));
     await user.type(screen.getByLabelText('Workspace name'), 'Appointment shop');
 }
 it('creates the complete initial workspace through native onboarding before opening the requested desk', async () => {
@@ -60,10 +67,21 @@ it('creates the complete initial workspace through native onboarding before open
     expect(scope.refresh).toHaveBeenCalledTimes(1);
     expect(scope.refresh).toHaveBeenCalledWith(backend.data.workspace_onboarding[0].workspace);
     expect(backend.data.workspaces.find((row) => row.id === backend.data.workspace_onboarding[0].workspace).name).toBe('Appointment shop');
+    expect(backend.data.erp_objectives).toHaveLength(1);
+    expect(backend.data.erp_objectives[0].title).toBe('Deploy my first website');
+    expect(backend.data.domains).toHaveLength(0);
 });
-it('requires an explicit name so separate website-less businesses are not collapsed into one setup', async () => {
+it('requires intent, objective and a workspace name before saving', async () => {
     const user = userEvent.setup(); render(<Page />);
-    await user.click(screen.getByRole('button', { name: 'Continue without a website' }));
+    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    expect(screen.getByRole('radio', { name: 'Build something' })).toBeInvalid();
+    await user.click(screen.getByRole('radio', { name: 'Build something' }));
+    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    expect(screen.getByLabelText('Your objective')).toBeInvalid();
+    await user.type(screen.getByLabelText('Your objective'), 'Ship a website');
+    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    await user.clear(screen.getByLabelText('Workspace name'));
     await user.click(screen.getByRole('button', { name: 'Create workspace' }));
     expect(screen.getByLabelText('Workspace name')).toBeInvalid();
     expect(pb.send).not.toHaveBeenCalled();
@@ -92,13 +110,52 @@ it('clears selected business data and suppresses delayed navigation when the acc
     scope.user = { id: 'owner' }; pb.authStore.record = scope.user; view.rerender(<Page />);
     await act(async () => { release(); });
     expect(screen.queryByText('Workspace ERP desk')).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Continue without a website' })).toBeVisible();
+    expect(screen.getByRole('radio', { name: 'Build something' })).not.toBeChecked();
+    expect(screen.queryByText('Deploy my first website')).not.toBeInTheDocument();
     expect(scope.refresh).not.toHaveBeenCalled();
 });
-it('domain selection remains illustrative and cannot create a workspace until explicitly selected', async () => {
+it('offers optional context without an illustrative search or an ownership claim', async () => {
     const user = userEvent.setup(); render(<Page />);
-    expect(screen.getByText(/no live DNS/)).toBeVisible();
-    await user.type(screen.getByLabelText('Domain or business name'), 'shop.example'); await user.click(screen.getByRole('button', { name: 'Search', exact: true }));
-    expect(pb.send).not.toHaveBeenCalled();
-    expect(screen.queryByRole('button', { name: 'Create workspace' })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Website domain (optional)')).not.toBeInTheDocument();
+    await select(user);
+    await user.click(screen.getByText('Add business or website context (optional)'));
+    expect(screen.getByText(/No DNS, website, traffic or SEO lookup/)).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Search', exact: true })).not.toBeInTheDocument();
+    await user.type(screen.getByLabelText('Website domain (optional)'), 'shop.example');
+    await user.type(screen.getByLabelText('Business or organization (optional)'), 'Studio');
+    await user.click(screen.getByRole('button', { name: 'Create workspace' }));
+    await screen.findByText('Workspace ERP desk');
+    expect(backend.data.domains[0].status).toBe('selected');
+    expect(backend.data.workspaces.find((row) => row.id === backend.data.workspace_onboarding[0].workspace).business_context).toBe('Studio');
+});
+
+it.each(ONBOARDING_INTENTS)('persists the $value choice through the actual form', async ({ value, label }) => {
+    const user = userEvent.setup(); render(<Page />); await select(user, label);
+    await user.click(screen.getByRole('button', { name: 'Create workspace' }));
+    await screen.findByText('Workspace ERP desk');
+    expect(backend.data.workspaces.find((row) => row.id === backend.data.workspace_onboarding[0].workspace).onboarding_intent).toBe(value);
+});
+
+it('retries workspace loading without resubmitting a confirmed setup', async () => {
+    const user = userEvent.setup(); scope.refresh.mockResolvedValueOnce(undefined);
+    render(<Page />); await select(user); await user.click(screen.getByRole('button', { name: 'Create workspace' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Workspace saved.');
+    expect(screen.getByLabelText('Workspace name')).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: 'Open saved workspace' }));
+    await screen.findByText('Workspace ERP desk');
+    expect(pb.send).toHaveBeenCalledTimes(1); expect(backend.data.erp_objectives).toHaveLength(1);
+});
+
+it('keeps the objective while navigating back and then uses the default workspace destination', async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter initialEntries={['/onboarding']}><Routes>
+        <Route path="/onboarding" element={<OnboardingPage />} /><Route path="/app" element={<p>Workspace front page</p>} />
+    </Routes></MemoryRouter>);
+    await select(user);
+    await user.click(screen.getByRole('button', { name: 'Back', exact: true }));
+    expect(screen.getByLabelText('Your objective')).toHaveValue('Deploy my first website');
+    await user.click(screen.getByRole('button', { name: 'Continue', exact: true }));
+    expect(screen.getByLabelText('Workspace name')).toHaveValue('Appointment shop');
+    await user.click(screen.getByRole('button', { name: 'Create workspace' }));
+    await screen.findByText('Workspace front page');
 });

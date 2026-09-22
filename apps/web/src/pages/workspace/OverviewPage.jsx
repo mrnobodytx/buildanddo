@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/workspaceActions.js, apps/web/src/components/workspace/NextWorkspaceActions.jsx
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/workspaceActions.js, apps/web/src/components/workspace/NextWorkspaceActions.jsx, apps/web/src/lib/onboarding.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; PRODUCES workspace.quick_action; CONSUMES apps/web/src/components/workspace/NextWorkspaceActions.jsx
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; PRODUCES workspace.quick_action; CONSUMES apps/web/src/components/workspace/NextWorkspaceActions.jsx; CONSUMES apps/web/src/lib/onboarding.js
 // Intent:      Answer "what is happening in this workspace" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.
 // ───────────────────────────────────────────────────────────────
 
@@ -55,6 +55,7 @@ import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
 import { activeMissions as selectActiveMissions, verifiedEvidence } from '@/lib/workspaceSummary';
+import { recommendedPath } from '@/lib/onboarding';
 
 const QUICK_ACTIONS = [
     {
@@ -190,6 +191,7 @@ export default function OverviewPage() {
 
     const domainRecord = active && active.expand && active.expand.domain;
     const domainVerified = domainRecord && domainRecord.status === 'verified';
+    const startingPath = recommendedPath(active);
 
     const go = (to, label) => {
         trackWorkspaceAction(WORKSPACE_ACTIONS.QUICK_ACTION, { target: to, label });
@@ -210,6 +212,19 @@ export default function OverviewPage() {
                 title="Front Page"
                 description="A live picture of what BuildAndDo noticed, what it's doing, and what it verified — for this workspace only."
             />
+            {!wsLoading && active?.onboarding_intent && !signals.demo && (
+                <Card className="ph-no-capture p-5" data-dd-privacy="mask">
+                    <h2 className="font-display text-xl font-semibold">Your starting path</h2>
+                    {startingPath ? <>
+                        <p className="mt-2 text-sm text-muted-foreground">{startingPath.intent}</p>
+                        <p className="mt-1 break-words font-medium">{startingPath.objective}</p>
+                        <p className="mt-3 text-sm text-muted-foreground">Start with a lesson, then use your objective to plan work. Joining a class or running a mission is a separate step.</p>
+                        <ol className="mt-4 list-inside list-decimal space-y-3 text-sm">
+                            {startingPath.steps.map((item) => <li key={item.to}><Button href={item.to} size="sm" variant="secondary" className="h-auto min-h-9 max-w-full justify-start py-2 text-left">{item.label}</Button></li>)}
+                        </ol>
+                    </> : <p role="status" className="mt-3 text-sm text-muted-foreground">Your saved objective is unavailable. Refresh the workspace or open ERP to inspect your current objectives.</p>}
+                </Card>
+            )}
             <NextWorkspaceActions signals={signals} missions={missions} evidence={evidence} />
 
             {degradedSources.length > 0 && (
@@ -228,10 +243,10 @@ export default function OverviewPage() {
                             </span>
                             <div className="text-sm">
                                 <p className="font-medium">
-                                    {(domainRecord && domainRecord.domain) || 'No website connected'}
+                                    {(domainRecord && domainRecord.domain) || 'Website context is optional'}
                                 </p>
                                 <p className="mt-0.5 text-muted-foreground">
-                                    {domainVerified
+                                    {!domainRecord ? 'You can work toward your objective without a website.' : domainVerified
                                         ? 'Domain verified — deeper analysis is authorized.'
                                         : 'Domain selected for analysis only. Confirm ownership or authorization before deeper analysis or actions.'}
                                 </p>

@@ -44,7 +44,7 @@ export const WorkspaceProvider = ({ children }) => {
         try {
             const list = await pb.collection('workspaces').getFullList({
                 sort: '-created',
-                expand: 'domain',
+                expand: 'domain,onboarding_objective',
                 requestKey: null,
             });
             if (request !== requestRef.current) return;
