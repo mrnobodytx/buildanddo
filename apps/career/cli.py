@@ -33,6 +33,7 @@ from apps.career.missions import attribute_missions
 from apps.career.outcomes import STAGES, TERMINAL, read_ledger, record_applied, record_stage, report
 from apps.career.packages import load_package, write_package
 from apps.career.sources import ENDPOINTS, diff_jobs, discover, endpoint, fetch_json
+from apps.career.verify import render_card, verify_passport
 from apps.career.dossier import build_dossier, rank
 from apps.career.evidence import CareerError, attestation_evidence
 from apps.career.history import Identity, attribute, read_git_history
@@ -89,10 +90,12 @@ def cmd_passport(args: argparse.Namespace) -> dict[str, Any]:
             raise CareerError("person_user_ids must be a list")
         missions = attribute_missions(_read_json(Path(args.missions)), [str(item) for item in user_ids])
     passport = passport_from_history(
-        identity.person_id, attribution, extra, as_of=as_of, head=head, missions=missions
+        identity.person_id, attribution, extra, as_of=as_of, head=head, missions=missions,
+        identity_digest=identity.digest(), max_count=args.max_count,
     )
     out = _fresh_directory(Path(args.output))
     (out / "passport.json").write_text(canonical_json(passport.to_dict()), encoding="utf-8")
+    (out / "passport_card.md").write_text(render_card(passport), encoding="utf-8")
     return {
         "state": "PASS",
         "passport": str(out / "passport.json"),
@@ -214,6 +217,12 @@ def cmd_fill_plan(args: argparse.Namespace) -> dict[str, Any]:
     return {"state": "PASS", "fill": plan["fill"], "submit": plan["submit"], "blocking": plan["blocking"]}
 
 
+def cmd_verify(args: argparse.Namespace) -> dict[str, Any]:
+    """Re-derive a passport's repository claims; any disagreement fails."""
+    identity, _ = load_identity(_read_json(Path(args.identity)))
+    return verify_passport(_read_json(Path(args.passport)), Path(args.repo), identity)
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Return the argument parser."""
     parser = argparse.ArgumentParser(prog="python -m apps.career", description=__doc__)
@@ -260,6 +269,11 @@ def build_parser() -> argparse.ArgumentParser:
     fill.add_argument("--grant")
     fill.add_argument("--challenge", action="store_true", help="an anti-bot challenge is present")
     fill.set_defaults(handler=cmd_fill_plan)
+    check = sub.add_parser("verify", help="re-derive a passport from a repository clone (for reviewers)")
+    check.add_argument("--passport", required=True)
+    check.add_argument("--repo", required=True)
+    check.add_argument("--identity", required=True)
+    check.set_defaults(handler=cmd_verify)
     return parser
 
 
@@ -272,4 +286,4 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps({"state": "FAIL", "error": str(error)}), file=sys.stderr)
         return 1
     print(json.dumps(result, indent=2))
-    return 0
+    return 2 if result.get("state") == "MISMATCH" else 0

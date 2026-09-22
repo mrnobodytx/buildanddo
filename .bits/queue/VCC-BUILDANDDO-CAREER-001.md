@@ -39,6 +39,8 @@ turned into dossiers and application packages whose every claim has provenance.
 | 9 | Public Lever/Greenhouse/Ashby discovery adapters | `python -m unittest tests.career.test_slice2.SourceTests && echo PASS` | done |
 | 10 | Verified package reload and outcome ledger | `python -m unittest tests.career.test_slice2.PackageTests tests.career.test_slice2.OutcomeTests && echo PASS` | done |
 | 11 | J3 fill plan with authority decisions | `python -m unittest tests.career.test_slice2.FillTests tests.career.test_slice2.SliceCliTests && echo PASS` | done |
+| 12 | Red-team: prove failures, then fix (co-authorship, bot identity, parsing, ledger) | `python -m unittest tests.career.test_redteam.LaunderingTests tests.career.test_redteam.RequirementTests && echo PASS` | done |
+| 13 | Third-party passport verification and shareable card | `python -m unittest tests.career.test_redteam.IntegrityTests && echo PASS` | done |
 | 7 | Public boundary and context gates | `python scripts/ci/verify_public_boundary.py && python scripts/ci/agent_context.py --check && echo PASS` | done |
 
 ## Constraints

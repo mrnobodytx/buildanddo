@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     tests/career/test_career.py, tests/career/test_slice2.py, apps/career
+# Depends:     tests/career/test_career.py, tests/career/test_slice2.py, tests/career/test_redteam.py, apps/career
 # EnumType:    Test
-# EnumEdges:   DEPENDS_ON tests/career/test_career.py; DEPENDS_ON tests/career/test_slice2.py; VALIDATES apps/career
+# EnumEdges:   DEPENDS_ON tests/career/test_career.py; DEPENDS_ON tests/career/test_slice2.py; DEPENDS_ON tests/career/test_redteam.py; VALIDATES apps/career
 # DAG Node:    none
 # Intent:      Require the career behavior suite and at least 80 percent measured statement coverage per module.
 # ───────────────────────────────────────────────────────────
@@ -34,7 +34,7 @@ def main() -> int:
     tracer = trace.Trace(count=True, trace=False, ignoredirs=[sys.base_prefix])
 
     def run() -> unittest.TestResult:
-        suite = unittest.defaultTestLoader.loadTestsFromNames(["tests.career.test_career", "tests.career.test_slice2"])
+        suite = unittest.defaultTestLoader.loadTestsFromNames(["tests.career.test_career", "tests.career.test_slice2", "tests.career.test_redteam"])
         return unittest.TextTestRunner(verbosity=1).run(suite)
 
     result = tracer.runfunc(run)

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any
@@ -36,6 +37,7 @@ class Participation(str, Enum):
     """Name how a person took part in a unit of work."""
 
     PERSONALLY_IMPLEMENTED = "PERSONALLY_IMPLEMENTED"
+    AGENT_ASSISTED = "AGENT_ASSISTED"
     PERSONALLY_OPERATED = "PERSONALLY_OPERATED"
     DESIGNED = "DESIGNED"
     DIRECTED = "DIRECTED"
@@ -43,6 +45,18 @@ class Participation(str, Enum):
     VERIFIED = "VERIFIED"
     TEAM_DELIVERED = "TEAM_DELIVERED"
     AGENT_EXECUTED = "AGENT_EXECUTED"
+
+
+AUTOMATED = re.compile(
+    r"\[bot\]|(?<![a-z])bots?(?![a-z])|dependabot|renovate|github-actions|copilot|datadog-bits"
+    r"|anthropic\.com|openai\.com|devin-ai|cursoragent|noreply@github\.com",
+    re.IGNORECASE,
+)
+
+
+def looks_automated(identity: str) -> bool:
+    """Return whether a git name or email belongs to a bot or AI agent rather than a person."""
+    return bool(AUTOMATED.search(identity))
 
 
 class ClaimState(str, Enum):
@@ -59,6 +73,7 @@ PARTICIPATION_ORDER: tuple[Participation, ...] = (
     Participation.PERSONALLY_IMPLEMENTED,
     Participation.DESIGNED,
     Participation.PERSONALLY_OPERATED,
+    Participation.AGENT_ASSISTED,
     Participation.DIRECTED,
     Participation.VERIFIED,
     Participation.REVIEWED,
@@ -77,6 +92,7 @@ STATE_ORDER: tuple[ClaimState, ...] = (
 CLAIM_VERBS: dict[Participation, str | None] = {
     Participation.PERSONALLY_IMPLEMENTED: "Implemented",
     Participation.PERSONALLY_OPERATED: "Operated",
+    Participation.AGENT_ASSISTED: "Built with AI agents:",
     Participation.DESIGNED: "Designed",
     Participation.DIRECTED: "Directed implementation of",
     Participation.REVIEWED: "Reviewed and integrated",

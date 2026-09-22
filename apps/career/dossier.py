@@ -104,6 +104,11 @@ def build_dossier(coverage: CoverageMap, passport: Passport) -> Dossier:
             f"personal authorship of {git['agent_integrated']} agent-authored commits; "
             "they were reviewed and integrated, not written by the person"
         )
+    if git and int(git.get("agent_assisted", 0)):
+        do_not_claim.append(
+            f"sole authorship of {git['agent_assisted']} commits that carry an AI or bot co-author; "
+            "describe them as built with AI agents"
+        )
     do_not_claim.append("any agent-executed work the person did not integrate or direct")
     body = {
         "schema": "buildanddo.career.dossier/v1",

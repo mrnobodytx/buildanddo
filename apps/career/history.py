@@ -30,6 +30,8 @@ from apps.career.evidence import (
     ClaimState,
     EvidenceRef,
     Participation,
+    canonical_digest,
+    looks_automated,
 )
 from apps.career.taxonomy import capabilities_for_change
 
@@ -37,6 +39,7 @@ RECORD = "\x1e"
 FIELD = "\x1f"
 LOG_FORMAT = f"{RECORD}%H{FIELD}%P{FIELD}%an{FIELD}%ae{FIELD}%aI{FIELD}%s{FIELD}%b{FIELD}"
 _FOOTER = re.compile(r"^(SRS|Dispatch):\s*(\S+)", re.MULTILINE)
+_COAUTHOR = re.compile(r"^co-authored-by:\s*(.*?)\s*<([^>]*)>\s*$", re.MULTILINE | re.IGNORECASE)
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,6 +59,10 @@ class Commit:
     def is_merge(self) -> bool:
         """Return whether the commit has more than one parent."""
         return len(self.parents) > 1
+
+    def coauthors(self) -> tuple[tuple[str, str], ...]:
+        """Return (name, lowercased email) for every Co-authored-by trailer."""
+        return tuple((name.strip(), email.strip().lower()) for name, email in _COAUTHOR.findall(self.body))
 
     def footer(self, key: str) -> str | None:
         """Return the first governance footer value for key, if present."""
@@ -80,14 +87,22 @@ class Identity:
             raise CareerError("at least one person email is required")
         if self.person_emails & self.agent_emails:
             raise CareerError("an identity cannot be both person and agent")
+        automated = sorted(email for email in self.person_emails if looks_automated(email))
+        if automated:
+            raise CareerError("person identity includes bot or agent addresses: " + ", ".join(automated))
 
     def is_person(self, email: str) -> bool:
         """Return whether the email belongs to the person."""
         return email.lower() in self.person_emails
 
-    def is_agent(self, email: str) -> bool:
-        """Return whether the email belongs to a declared agent seat."""
-        return email.lower() in self.agent_emails
+    def is_agent(self, email: str, name: str = "") -> bool:
+        """Return whether a declared agent seat or a recognisable bot wrote the commit."""
+        return email.lower() in self.agent_emails or looks_automated(email) or looks_automated(name)
+
+    def digest(self) -> str:
+        """Return a commitment to the identity used, so a verifier can confirm the same one."""
+        return canonical_digest({"person_emails": sorted(self.person_emails),
+                                 "agent_emails": sorted(self.agent_emails)})
 
 
 @dataclass(slots=True)
@@ -99,6 +114,7 @@ class Attribution:
     authored: int = 0
     integrated: int = 0
     agent_integrated: int = 0
+    agent_assisted: int = 0
     excluded_agent: int = 0
     excluded_other: int = 0
     unmapped: int = 0
@@ -130,14 +146,19 @@ def parse_git_log(text: str) -> list[Commit]:
     return commits
 
 
-def read_git_history(repo: Path, *, max_count: int | None = None) -> tuple[str, list[Commit]]:
-    """Read the local repository's history; return HEAD and commits, newest first."""
+def read_git_history(
+    repo: Path, *, max_count: int | None = None, rev: str = "HEAD"
+) -> tuple[str, list[Commit]]:
+    """Read history reachable from ``rev``; return the resolved commit and commits, newest first."""
     base = ["git", "-C", str(repo)]
+    if rev.startswith("-"):
+        raise CareerError("revision must not look like an option")
     try:
         head = subprocess.run(
-            [*base, "rev-parse", "HEAD"], check=True, capture_output=True, text=True
+            [*base, "rev-parse", "--verify", "--end-of-options", f"{rev}^{{commit}}"],
+            check=True, capture_output=True, text=True,
         ).stdout.strip()
-        command = [*base, "log", "--no-color", f"--format={LOG_FORMAT}", "--name-only"]
+        command = [*base, "log", "--no-color", f"--format={LOG_FORMAT}", "--name-only", head]
         if max_count is not None:
             command.append(f"--max-count={max_count}")
         log = subprocess.run(command, check=True, capture_output=True, text=True).stdout
@@ -181,7 +202,8 @@ def _integrations(commits: list[Commit], identity: Identity) -> dict[str, str]:
 def attribute(commits: Iterable[Commit], identity: Identity) -> Attribution:
     """Classify each commit for the person and emit evidence only where credit is earned.
 
-    - authored by the person, not a merge: PERSONALLY_IMPLEMENTED
+    - authored by the person, not a merge: PERSONALLY_IMPLEMENTED, or
+      AGENT_ASSISTED when a bot or AI co-author trailer is present
     - authored by anyone else and integrated by the person's merge: REVIEWED
     - agent-authored and not integrated by the person: excluded, no credit
     - authored by another human and not integrated by the person: excluded
@@ -194,18 +216,26 @@ def attribute(commits: Iterable[Commit], identity: Identity) -> Attribution:
         if commit.is_merge:
             continue
         if identity.is_person(commit.author_email):
-            participation = Participation.PERSONALLY_IMPLEMENTED
-            detail = commit.subject
+            agents = [email for name, email in commit.coauthors()
+                      if not identity.is_person(email) and identity.is_agent(email, name)]
+            if agents:
+                participation = Participation.AGENT_ASSISTED
+                detail = f"{commit.subject} [co-authored by agent {agents[0]}]"
+                result.agent_assisted += 1
+            else:
+                participation = Participation.PERSONALLY_IMPLEMENTED
+                detail = commit.subject
             result.authored += 1
         elif commit.sha in integrated:
             participation = Participation.REVIEWED
-            actor = "agent" if identity.is_agent(commit.author_email) else "contributor"
+            agent = identity.is_agent(commit.author_email, commit.author_name)
+            actor = "agent" if agent else "contributor"
             detail = f"{commit.subject} [{actor}-authored; integrated by merge {integrated[commit.sha][:12]}]"
             result.integrated += 1
             if actor == "agent":
                 result.agent_integrated += 1
         else:
-            if identity.is_agent(commit.author_email):
+            if identity.is_agent(commit.author_email, commit.author_name):
                 result.excluded_agent += 1
             else:
                 result.excluded_other += 1

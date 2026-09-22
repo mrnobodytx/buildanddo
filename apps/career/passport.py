@@ -49,6 +49,7 @@ PARTICIPATION_WEIGHT: dict[Participation, float] = {
     Participation.PERSONALLY_IMPLEMENTED: 1.0,
     Participation.DESIGNED: 0.95,
     Participation.PERSONALLY_OPERATED: 0.9,
+    Participation.AGENT_ASSISTED: 0.8,
     Participation.DIRECTED: 0.85,
     Participation.VERIFIED: 0.85,
     Participation.REVIEWED: 0.7,
@@ -198,6 +199,7 @@ class Passport:
             "limits": [
                 "git evidence is OBSERVED: it shows work was recorded, not independently verified",
                 "agent-authored work earns personal credit only when the person integrated it, and then only as REVIEWED",
+                "commits carrying an AI or bot co-author trailer are AGENT_ASSISTED, never sole authorship",
                 "employment tenure is not derivable from repository history",
             ],
         }
@@ -326,6 +328,8 @@ def passport_from_history(
     as_of: datetime,
     head: str,
     missions: MissionAttribution | None = None,
+    identity_digest: str | None = None,
+    max_count: int | None = None,
 ) -> Passport:
     """Build a passport from git attribution, attestations and optional mission evidence."""
     extra = list(attestations)
@@ -336,6 +340,9 @@ def passport_from_history(
         "authored": attribution.authored,
         "integrated": attribution.integrated,
         "agent_integrated": attribution.agent_integrated,
+        "agent_assisted": attribution.agent_assisted,
+        "identity_digest": identity_digest,
+        "max_count": max_count,
         "excluded_agent": attribution.excluded_agent,
         "excluded_other": attribution.excluded_other,
         "unmapped": attribution.unmapped,

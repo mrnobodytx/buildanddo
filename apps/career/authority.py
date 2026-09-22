@@ -62,6 +62,8 @@ RESERVED_CLASSES: dict[str, tuple[str, ...]] = {
     "veteran": ("veteran", "military service", "protected veteran"),
     "demographic": ("race", "ethnicity", "gender", "sexual orientation", "pronoun", "hispanic",
                     "demographic"),
+    "age": ("years of age", "date of birth", "your age", "over 18", "at least 18", "birth date"),
+    "export_control": ("u.s. person", "us person", "itar", "export control", "export-controlled"),
     "legal_attestation": ("i certify", "i attest", "true and complete", "under penalty"),
 }
 
@@ -72,9 +74,15 @@ _RESERVED = tuple(
 )
 
 
+# Engineering phrases that contain a reserved keyword but ask nothing personal.
+NEUTRAL_PHRASES = ("race condition", "race-condition", "data race", "disability insurance product")
+
+
 def reserved_class(text: str) -> str | None:
     """Return the reserved class a question or requirement belongs to, if any."""
     lowered = text.lower()
+    for phrase in NEUTRAL_PHRASES:
+        lowered = lowered.replace(phrase, " ")
     for name, pattern in _RESERVED:
         if pattern.search(lowered):
             return name

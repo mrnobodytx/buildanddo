@@ -28,7 +28,32 @@ from apps.career.authority import reserved_class
 from apps.career.evidence import CareerError, canonical_digest
 from apps.career.taxonomy import capabilities_for_text
 
-_TENURE = re.compile(r"(\d{1,2})\s*\+?\s*(?:or more\s+)?(?:years|yrs)", re.IGNORECASE)
+_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
+          "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "fifteen": 15, "twenty": 20}
+_NUMBER = r"(\d{1,2}|" + "|".join(_WORDS) + r")"
+_TENURE = re.compile(
+    r"(?<![a-z0-9])" + _NUMBER + r"\s*(?:\+|plus)?\s*(?:(?:-|\u2013|to)\s*" + _NUMBER + r"\s*)?"
+    r"(?:\+\s*)?(?:or more\s+)?(?:years?|yrs?)(?![a-z])",
+    re.IGNORECASE,
+)
+_DECADE = re.compile(r"(?<![a-z])(a|one|two|\d)\s+decades?(?![a-z])", re.IGNORECASE)
+_NEGATED = re.compile(
+    r"^\s*(?:no|not)\b.*\b(?:required|necessary|needed|expected)\b|\bnot (?:a )?(?:requirement|required)\b",
+    re.IGNORECASE,
+)
+
+
+def tenure_years(text: str) -> int | None:
+    """Return the minimum years a requirement asks for, including worded and ranged forms."""
+    match = _TENURE.search(text)
+    if match:
+        low = match.group(1).lower()
+        return int(low) if low.isdigit() else _WORDS[low]
+    decade = _DECADE.search(text)
+    if decade:
+        count = decade.group(1).lower()
+        return 10 * (int(count) if count.isdigit() else {"a": 1, "one": 1, "two": 2}[count])
+    return None
 _CREDENTIAL = re.compile(
     r"(?<![a-z])(degree|bachelor'?s?|master'?s?|ph\.?d|certification|certified|licen[cs]e)(?![a-z])",
     re.IGNORECASE,
@@ -139,11 +164,9 @@ def classify(requirement_id: str, text: str, hard: bool) -> Requirement:
     reserved = reserved_class(text)
     if reserved is not None:
         return Requirement(requirement_id, text, hard, RequirementKind.RESERVED, capabilities, reserved=reserved)
-    tenure = _TENURE.search(text)
-    if tenure:
-        return Requirement(
-            requirement_id, text, hard, RequirementKind.TENURE, capabilities, years=int(tenure.group(1))
-        )
+    years = tenure_years(text)
+    if years is not None:
+        return Requirement(requirement_id, text, hard, RequirementKind.TENURE, capabilities, years=years)
     if _CREDENTIAL.search(text):
         return Requirement(requirement_id, text, hard, RequirementKind.CREDENTIAL, capabilities)
     if capabilities:
@@ -152,12 +175,14 @@ def classify(requirement_id: str, text: str, hard: bool) -> Requirement:
 
 
 def extract_requirements(job: Job) -> list[Requirement]:
-    """Return hard requirements, then preferred items and listed technologies."""
+    """Return hard requirements, then preferred items and listed technologies.
+
+    Items that say something is not required ("No Kubernetes experience required")
+    are dropped rather than turned into requirements.
+    """
     items: list[Requirement] = []
-    for index, text in enumerate(job.fields["requirements"], start=1):
-        items.append(classify(f"R{index}", text, True))
-    for index, text in enumerate(job.fields["preferred"], start=1):
-        items.append(classify(f"P{index}", text, False))
-    for index, text in enumerate(job.fields["technologies"], start=1):
-        items.append(classify(f"T{index}", text, False))
+    for prefix, key, hard in (("R", "requirements", True), ("P", "preferred", False), ("T", "technologies", False)):
+        for index, text in enumerate(job.fields[key], start=1):
+            if not _NEGATED.search(text):
+                items.append(classify(f"{prefix}{index}", text, hard))
     return items

@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 1054,
+      "lines": 1055,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the measured repository inventory aligned with the newly registered career scope.",
@@ -41,7 +41,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1058,
+      "lines": 1063,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -74,7 +74,7 @@
         "tests/career/test_career.py",
         "tests/career/check_career.py"
       ],
-      "lines": 148,
+      "lines": 176,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve reviewer-runnable evidence that the career slice credits only attributed work and never infers reserved answers or submits.",
@@ -106,7 +106,7 @@
         ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
         ".bits/srs_registry.yml"
       ],
-      "lines": 73,
+      "lines": 75,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Authorize and gate the local career evidence slice without discovery, submission or external-write authority.",
@@ -138,7 +138,7 @@
         "AGENTS.md",
         "docs/architecture/CAPABILITY_PASSPORT.md"
       ],
-      "lines": 122,
+      "lines": 132,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Specify a local career evidence engine that derives role matches and application packages only from recorded work, with explicit participation and human-reserved attestations.",
@@ -273,7 +273,7 @@
       "dependencies": [
         "apps/career/evidence.py"
       ],
-      "lines": 170,
+      "lines": 178,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Bound every application step by an explicit J0-J5 tier so answers a human must give are never inferred or auto-submitted.",
@@ -309,6 +309,7 @@
         "cmd_discover",
         "cmd_outcome",
         "cmd_fill_plan",
+        "cmd_verify",
         "build_parser",
         "main"
       ],
@@ -324,7 +325,7 @@
         "apps/career/packages.py",
         "apps/career/fill.py"
       ],
-      "lines": 275,
+      "lines": 289,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the passport, match, dossier and package stages locally, writing only to a new output directory.",
@@ -368,7 +369,7 @@
         "apps/career/passport.py",
         "apps/career/taxonomy.py"
       ],
-      "lines": 291,
+      "lines": 292,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Compile an application package in which every claim traces to passport evidence and every reserved answer stays with the human.",
@@ -406,7 +407,7 @@
         "apps/career/passport.py",
         "apps/career/taxonomy.py"
       ],
-      "lines": 160,
+      "lines": 165,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain why a role fits, what to lead with and, mandatorily, what must not be claimed.",
@@ -436,6 +437,7 @@
       "functions": [
         "CareerError",
         "Participation",
+        "looks_automated",
         "ClaimState",
         "strongest",
         "best_state",
@@ -447,7 +449,7 @@
       "dependencies": [
         "apps/career/taxonomy.py"
       ],
-      "lines": 196,
+      "lines": 212,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep who did the work and how it is known explicit, so a claim can never outgrow its evidence.",
@@ -524,7 +526,7 @@
         "apps/career/evidence.py",
         "apps/career/taxonomy.py"
       ],
-      "lines": 229,
+      "lines": 259,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Turn local git history into participation-classified evidence, crediting a person only for work they authored or integrated.",
@@ -552,6 +554,7 @@
       ],
       "enum_type": "Service",
       "functions": [
+        "tenure_years",
         "RequirementKind",
         "Requirement",
         "Job",
@@ -564,7 +567,7 @@
         "apps/career/evidence.py",
         "apps/career/taxonomy.py"
       ],
-      "lines": 163,
+      "lines": 188,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Normalize supplied postings into canonical job entities and typed requirements the matcher can evaluate without guessing.",
@@ -672,6 +675,7 @@
       "enum_type": "Service",
       "functions": [
         "role_family",
+        "_chain",
         "read_ledger",
         "_applications",
         "record_applied",
@@ -684,7 +688,7 @@
         "apps/career/evidence.py",
         "apps/career/packages.py"
       ],
-      "lines": 195,
+      "lines": 213,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Record human-reported application outcomes and show which representations of real work get responses, without over-reading small samples.",
@@ -764,7 +768,7 @@
         "apps/career/missions.py",
         "apps/career/taxonomy.py"
       ],
-      "lines": 369,
+      "lines": 376,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Aggregate participation-classified evidence into a per-capability Career Passport that states its own limits.",
@@ -846,10 +850,45 @@
         "capabilities_for_change"
       ],
       "dependencies": [],
-      "lines": 194,
+      "lines": 195,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name the capabilities both work evidence and job requirements resolve to, so matching compares like with like.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/verify.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "verify_passport",
+        "render_card"
+      ],
+      "dependencies": [
+        "apps/career/history.py",
+        "apps/career/passport.py"
+      ],
+      "lines": 139,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let a recruiter or reviewer re-derive a passport's repository claims themselves, so a claim is checked against the work rather than taken on trust.",
       "objective_id": "VCC-BUILDANDDO-CAREER-001",
       "outcome": "success",
       "supersedes": false,
@@ -908,6 +947,7 @@
       "dependencies": [
         "tests/career/test_career.py",
         "tests/career/test_slice2.py",
+        "tests/career/test_redteam.py",
         "apps/career"
       ],
       "lines": 82,
@@ -963,6 +1003,42 @@
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prove participation-honest attribution, requirement coverage, mandatory do-not-claim lists, reserved-answer handling and claim provenance.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/career/test_redteam.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "LaunderingTests",
+        "RequirementTests",
+        "IntegrityTests"
+      ],
+      "dependencies": [
+        "apps/career",
+        "tests/career/test_career.py"
+      ],
+      "lines": 198,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep every adversarial failure found against the engine as a regression test: laundered agent work, bot identities, misread requirements, forged passports and edited ledgers.",
       "objective_id": "VCC-BUILDANDDO-CAREER-001",
       "outcome": "success",
       "supersedes": false,
@@ -1990,6 +2066,36 @@
     },
     {
       "type": "B",
+      "source": "apps/career/verify.py",
+      "target": "apps/career/history.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/verify.py DEPENDS_ON apps/career/history.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/verify.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/verify.py DEPENDS_ON apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/verify.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "apps/career/verify.py VALIDATES apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "tests/career/__init__.py",
       "target": "apps/career",
       "edge_type": "VALIDATES",
@@ -2015,6 +2121,16 @@
       "edge_type": "DEPENDS_ON",
       "weight": 0.8,
       "description": "tests/career/check_career.py DEPENDS_ON tests/career/test_slice2.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/check_career.py",
+      "target": "tests/career/test_redteam.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/career/check_career.py DEPENDS_ON tests/career/test_redteam.py",
       "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -2095,6 +2211,56 @@
       "edge_type": "VALIDATES",
       "weight": 0.8,
       "description": "tests/career/test_career.py VALIDATES apps/career/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_redteam.py",
+      "target": "apps/career/history.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_redteam.py VALIDATES apps/career/history.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_redteam.py",
+      "target": "apps/career/jobs.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_redteam.py VALIDATES apps/career/jobs.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_redteam.py",
+      "target": "apps/career/authority.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_redteam.py VALIDATES apps/career/authority.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_redteam.py",
+      "target": "apps/career/outcomes.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_redteam.py VALIDATES apps/career/outcomes.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_redteam.py",
+      "target": "apps/career/verify.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_redteam.py VALIDATES apps/career/verify.py",
       "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -2299,12 +2465,38 @@
       "timestamp": "2026-09-22T12:00:00Z",
       "commit_sha": "c46a96f",
       "smoke_result": "3/3"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/career/test_redteam.py",
+      "description": "Red-team suite against slice 2: 10 tests, 13 failures and 2 errors, proving agent-work laundering, bot identity claims, misread requirements and forgeable records",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "timestamp": "2026-09-22T18:00:00Z",
+      "commit_sha": "72ad135",
+      "smoke_result": "0/10"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/career/check_career.py",
+      "description": "Slice 3: 62 career tests pass including the red-team suite; this repository's passport verifies against the repository with 132 commit refs checked",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Recruiter-side verification is available for any passport",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "timestamp": "2026-09-22T18:30:00Z",
+      "commit_sha": null,
+      "smoke_result": "3/3"
     }
   ],
   "summary": {
-    "type_a_count": 34,
-    "type_b_count": 101,
-    "type_c_count": 4,
+    "type_a_count": 36,
+    "type_b_count": 110,
+    "type_c_count": 6,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-CAREER-001",

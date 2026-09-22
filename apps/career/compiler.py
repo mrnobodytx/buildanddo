@@ -68,6 +68,7 @@ class Package:
 COUNT_PHRASES: dict[str, str] = {
     Participation.PERSONALLY_IMPLEMENTED.value: "authored",
     Participation.PERSONALLY_OPERATED.value: "operated",
+    Participation.AGENT_ASSISTED.value: "agent-assisted",
     Participation.DESIGNED.value: "designed (attested)",
     Participation.DIRECTED.value: "directed (attested)",
     Participation.REVIEWED.value: "reviewed and integrated",

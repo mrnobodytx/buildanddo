@@ -60,6 +60,10 @@ Slice 2 (same SRS, same PR):
 - Digest-verified reload of written application packages.
 - An append-only outcome ledger recorded by the human, with funnel and
   per-dimension response reporting that refuses to rank small samples.
+- Adversarial hardening (slice 3): AI/bot co-author detection, bot-identity
+  refusal, reserved-class and tenure parsing fixes, negated requirements, a
+  hash-chained outcome ledger, and `verify`, which lets a reviewer re-derive a
+  passport's repository claims from a clone. `passport` also writes a shareable card.
 - A J3 fill plan mapping an employer form's fields to profile, package or human
   sources, with fill and submit authority decisions. It is a plan, not a runner.
 
@@ -85,6 +89,11 @@ Slice 2 (same SRS, same PR):
 - `DESIGNED`, `DIRECTED`, `PERSONALLY_OPERATED` and `VERIFIED` enter only through
   explicit attestations. An attestation is `VERIFIED` only with a verifier distinct
   from the person and a receipt reference; otherwise it is `DECLARED`.
+- A person-authored commit with a `Co-authored-by` trailer naming a bot or AI
+  agent is `AGENT_ASSISTED` ("Built with AI agents:"), never sole authorship. A
+  person identity may not include recognisable bot or agent addresses.
+- A passport's repository claims are accepted only when `verify` re-derives them;
+  a self-consistent digest is not evidence.
 - Git evidence is `OBSERVED`, never `VERIFIED`: a repository record shows work
   occurred, not that an independent party verified it.
 - Claim wording is bounded by participation: reviewed work is never phrased as
@@ -111,6 +120,7 @@ Slice 2 (same SRS, same PR):
    participation, merge integration, attestations, extraction, coverage, dossiers,
    authority, package validation, board normalization, mission verification,
    package tamper detection, the outcome ledger and fill plans.
+   `tests.career.test_redteam` holds every adversarial failure as a regression.
 3. `python -m apps.career passport --repo . --identity <file> --output <new-dir>`
    runs against this repository's own history.
 4. `python scripts/ci/verify_public_boundary.py` reports `PASS`.

@@ -19,18 +19,18 @@
 
 ## §1 SUMMARY
 
-Status:      COMPLETE (slices 1 and 2; no submission, no deployment)
+Status:      COMPLETE (slices 1-3; no submission, no deployment)
 Dispatch:    VCC-BUILDANDDO-CAREER-001
 Seat:        BITS-CODEGEN
 SRS:         SRS-BUILDANDDO-CAREER-001
 Branch:      bits/SRS-BUILDANDDO-CAREER-001-career-evidence
-Tasks:       11/11
+Tasks:       13/13
 Smoke:       3/3
 CKS Gate:    pending
 CKS:         pending
 CAPS:        pending
 CK:          pending
-Commits:     2 (SHAs assigned by the focused repository commits)
+Commits:     3 (SHAs assigned by the focused repository commits)
 
 ## §2 TASK RESULTS
 
@@ -89,9 +89,35 @@ Task 11 — J3 fill plan
   Output:  Each form field names its source; required human fields and reserved classes block fill; a challenge always stops for the human.
   Verify:  `python -m unittest tests.career.test_slice2.FillTests tests.career.test_slice2.SliceCliTests`
 
+Task 12 — Red-team, prove failures, then fix
+  Status:  PASS
+  Output:  10 adversarial tests written against slice 2 failed (13 failures, 2 errors); all pass after the fixes below.
+  Verify:  `python -m unittest tests.career.test_redteam`
+
+  Proven failures in slice 2, each now a regression test:
+  R1  66 of 68 "personally implemented" commits in this repository carry a Claude
+      Co-Authored-By trailer. Slice 2 reported them as sole authorship.
+  R2  A person could list the datadog-bits bot address as their own and take credit for its commits.
+  R3  "Debug race conditions" was classified as a demographic question and removed from matching.
+  R4  "Five years of Python" and "A decade of Python" were read as plain Python and marked SUPPORTED.
+  R5  "5-7 years" was read as 7; ages ("at least 18 years of age") and export control were not reserved.
+  R6  "the rest of the team" produced backend evidence; "privacy policy" produced governance.
+  R7  "No Kubernetes experience required" became a Kubernetes requirement.
+  R8  An outcome ledger line could be edited undetected.
+  R9  A forged passport with a recomputed digest passed every check that existed.
+
+Task 13 — Third-party verification
+  Status:  PASS
+  Output:  `verify` re-derives every commit reference and counter from a clone. This repository's real passport: VERIFIED_AGAINST_REPOSITORY, 132 commit refs checked. An inflated passport with a recomputed digest: MISMATCH, exit 2.
+  Verify:  `python -m unittest tests.career.test_redteam.IntegrityTests`
+
+Before and after on this repository (HEAD 72ad1355, same identity file):
+  slice 2: 70 authored, headline "Implemented" for architecture, backend, CI/CD, deployment, frontend, Python.
+  slice 3: 70 authored, 67 of them agent-assisted; no capability carries an "Implemented" headline.
+
 ## §3 SMOKE TEST RESULTS
 
-1. `python tests/career/check_career.py` — expected PASS — actual PASS (50 run, 0 failures; every module 96-100 percent).
+1. `python tests/career/check_career.py` — expected PASS — actual PASS (62 run, 0 failures; every module 94-100 percent).
 2. `python scripts/ci/verify_public_boundary.py` — expected PASS — actual PASS.
 3. `python scripts/ci/agent_context.py --check` — expected PASS — actual PASS.
 
@@ -143,6 +169,8 @@ human dispatch and a runner outside this public repository), encrypted storage o
 reserved answers (needs an owner-chosen encryption dependency or OS keyring),
 staging deployment (A3; this package has no service surface to deploy), a live
 PocketBase reader for missions (needs credentials; exported snapshots only).
+Known remaining limits: git identities and dates are forgeable, so verify must run against the canonical remote;
+squash merges authored by an agent are not credited to the merger; many trivial commits still inflate record counts.
 Suggested next dispatch: human-dispatched A3 runner that consumes fill_plan.json
 and stops at every HUMAN_REQUIRED field and challenge.
 Bugs filed (out of scope, comment-only): none.
