@@ -37,11 +37,17 @@ class Bid(NamedTuple):
 
 
 def evaluate(
-    dataset: dict[str, object], candidate: str, seed: int
+    dataset: dict[str, object],
+    candidate: str,
+    seed: int,
+    *,
+    orders: list[dict[str, object]] | None = None,
 ) -> dict[str, object]:
     """Clear seeded auctions and compare allocation value to the feasible optimum."""
-    if candidate not in {"truthful-auction", "shaded-auction"}:
+    if candidate not in {"truthful-auction", "shaded-auction", "recorded-auction"}:
         raise FoundryValidationError("unknown auction candidate")
+    if (candidate == "recorded-auction") != (orders is not None):
+        raise FoundryValidationError("recorded auctions require exact action receipts")
     agents = records(dataset.get("agents"), "agents")
     if not 2 <= len(agents) <= 32:
         raise FoundryValidationError("auction needs 2 to 32 scripted agents")
@@ -66,6 +72,27 @@ def evaluate(
         if event.get("asset") not in supply:
             raise FoundryValidationError("news references an unknown asset")
         finite(event.get("delta"), "news delta")
+    recorded: dict[tuple[str, str, int], float] = {}
+    if orders is not None:
+        if len(orders) != len(agents) * len(supply) * rounds:
+            raise FoundryValidationError(
+                "one recorded action per agent, asset and round is required"
+            )
+        for order in orders:
+            if set(order) != {"agent", "asset", "round", "price"}:
+                raise FoundryValidationError("unsupported order fields")
+            agent, asset = str(order["agent"]), str(order["asset"])
+            round_id = integer(order["round"], 0, rounds - 1, "order round")
+            price = finite(order["price"])
+            key = (agent, asset, round_id)
+            if (
+                agent not in identities
+                or asset not in supply
+                or not 0 <= price <= 1e9
+                or key in recorded
+            ):
+                raise FoundryValidationError("invalid or duplicate order identity")
+            recorded[key] = price
     rng = random.Random(seed)
     # Freeze heterogeneity once; factual and counterfactual runs share it.
     adjustments = {
@@ -101,6 +128,8 @@ def evaluate(
                     price = (
                         value
                         if candidate == "truthful-auction"
+                        else recorded[agent, asset, round_id]
+                        if orders is not None
                         else value * shading[agent]
                     )
                     bids.append(
@@ -159,7 +188,12 @@ def evaluate(
         "details": {
             "factual": factual,
             "counterfactual": counterfactual,
-            "agent_kind": "scripted valuations; no LLM or behavioral classifier",
+            "agent_kind": "recorded black-box bids; fixture valuations"
+            if orders is not None
+            else "scripted valuations; no LLM or behavioral classifier",
+            "counterfactual_scope": "fixed recorded actions under removed news; not an agent rerun"
+            if orders is not None
+            else "scripted policy reevaluation without news",
         },
         "limitations": [
             "Synthetic auction fixture; does not establish LLM-agent behavior, provider costs or federal target attainment."

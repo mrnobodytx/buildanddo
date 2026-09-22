@@ -127,6 +127,7 @@ class WorkspaceServer(NativeServer):
                 "business-policy.js",
                 "business.pb.js",
                 "workspace-access.js",
+                "government-access.js",
                 "workspace-record-policy.js",
                 "workspace-administration.js",
                 "workspace-community.js",
@@ -136,6 +137,7 @@ class WorkspaceServer(NativeServer):
                 "research.pb.js",
                 "operator.pb.js",
                 "workspace-operator.js",
+                "workspace-value.js",
             ):
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             migrations = self.root / "migrations"
@@ -146,10 +148,11 @@ class WorkspaceServer(NativeServer):
                     ROOT / "apps/pocketbase/pb_migrations" / (name + ".js"),
                     migrations / (name + ".js"),
                 )
-            (migrations / "data").mkdir()
+            data_dir = self.root / "pb_migrations" / "data"
+            data_dir.mkdir(parents=True)
             shutil.copyfile(
                 ROOT / "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
-                migrations / "data/starter-tutorials.json",
+                data_dir / "starter-tutorials.json",
             )
             (migrations / "1999999000_seed.js").write_text(SEED)
             with socket.socket() as reservation:

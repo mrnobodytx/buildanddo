@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-21
-// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx
+// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/pages/workspace/GovernmentPage.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx
+// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx; CONSUMES apps/web/src/pages/workspace/GovernmentPage.jsx
 // Intent:      Route public and workspace views only after native session validation.
 // ───────────────────────────────────────────────────────────────
 
@@ -59,6 +59,7 @@ const BlueprintPage = lazy(() => import('./pages/workspace/BlueprintPage'));
 const PolicyPage = lazy(() => import('./pages/workspace/PolicyPage'));
 const OperatorPage = lazy(() => import('./pages/workspace/OperatorPage'));
 const SuitePage = lazy(() => import('./pages/workspace/SuitePage'));
+const GovernmentPage = lazy(() => import('./pages/workspace/GovernmentPage'));
 const DossierPage = lazy(() => import('./pages/workspace/DossierPage'));
 const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
 // Capability Passport viewer; file path retained from the former desks page so
@@ -115,6 +116,7 @@ const WORKSPACE_ROUTES = [
     { path: 'blueprints', label: 'Blueprints', element: BlueprintPage },
     { path: 'policy', label: 'Policy intelligence', element: PolicyPage },
     { path: 'suite', label: 'Mission suite', element: SuitePage },
+    { path: 'government', label: 'Government research', element: GovernmentPage },
     { path: 'dossier', label: 'My dossier', element: DossierPage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
     { path: 'desks', label: 'Specialist desks', element: SpecialistWorkPage },

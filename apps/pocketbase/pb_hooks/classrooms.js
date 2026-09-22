@@ -8,14 +8,15 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
 // Intent:      Make shared lessons, host lifecycle and expiring classroom presence authoritative to the current workspace account.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
+const government = require(`${__hooks}/government-access.js`);
 const TTL = 75000;
 const CAPACITY = 100;
 const WRITERS = ['owner', 'admin', 'editor'];
@@ -69,7 +70,7 @@ function lessonBody(record) {
 }
 function lessonFor(app, id, info) {
     const lesson = access.find(app, 'tutorials', access.id(id));
-    access.readable(app, lesson, info);
+    if (!government.lesson(app, info.auth, lesson)) access.readable(app, lesson, info);
     const body = lessonBody(lesson);
     if (!body)
         access.invalid('Choose an installed lesson with a supported lesson body.');
@@ -78,8 +79,19 @@ function lessonFor(app, id, info) {
 }
 function lessons(app, info) {
     const rows = app.findRecordsByFilter('tutorials', 'id != ""', 'order,id', 201, 0);
-    return { items: rows.slice(0, 200).filter((row) => app.canAccessRecord(row, info, row.collection().viewRule) && lessonBody(row))
+    return { items: rows.slice(0, 200).filter((row) => {
+        if (row.getString('category') === 'Government submissions') {
+            if (!government.status(app, info.auth).allowed) return false;
+            government.lesson(app, info.auth, row);
+            return Boolean(lessonBody(row));
+        }
+        return app.canAccessRecord(row, info, row.collection().viewRule) && lessonBody(row);
+    })
         .map((row) => ({ id: row.id, title: row.getString('title'), category: row.getString('category') })), has_more: rows.length > 200 };
+}
+function roomMembership(app, auth, room) {
+    const tutorial = access.find(app, 'tutorials', room.getString('tutorial'));
+    if (tutorial.getString('category') === 'Government submissions') government.requireMember(app, auth);
 }
 function memberFor(app, workspace, room, owner) {
     const rows = app.findRecordsByFilter('classroom_members', 'workspace = {:workspace} && room = {:room} && owner = {:owner}',
@@ -155,6 +167,8 @@ function command(e) {
         if (!participation && !WRITERS.includes(scope.role)) throw new ForbiddenError('An editor or host must make this change.');
         if (room && !participation && body.action !== 'room.message' && !canManage(scope, e.auth, room))
             throw new ForbiddenError('Only this room\'s host or a workspace administrator may manage the class.');
+        if (room) roomMembership(app, e.auth, room);
+        if (body.payload.tutorial) lessonFor(app, body.payload.tutorial, e.requestInfo());
         result = receipt(app, e, workspace, body, () => {
             if (creating) {
                 if (body.revision !== 0) access.invalid('A new classroom starts at revision zero.');
@@ -211,7 +225,10 @@ function list(e) {
     if (!['all', 'scheduled', 'live', 'ended'].includes(status)) access.invalid('Choose a listed classroom state.');
     const result = access.list(e.app, 'classroom_rooms', 'workspace = {:workspace}' + (status === 'all' ? '' : ' && status = {:status}'),
         { workspace, status }, access.page(e));
-    return { workspace, role: scope.role, can_host: WRITERS.includes(scope.role), items: result.rows.map((row) => output(row, scope, e.auth)),
+    return { workspace, role: scope.role, can_host: WRITERS.includes(scope.role), items: result.rows.filter((row) => {
+        try { roomMembership(e.app, e.auth, row); return true; }
+        catch (error) { if ([403, 404].includes(error.status)) return false; throw error; }
+    }).map((row) => output(row, scope, e.auth)),
         page: result.page, has_more: result.has_more, lessons: lessons(e.app, e.requestInfo()) };
 }
 
@@ -221,6 +238,7 @@ function detail(e) {
     const workspace = access.workspaceId(e);
     const scope = scopeFor(e.app, e, workspace);
     const room = roomFor(e.app, workspace, e.request.pathValue('id'));
+    roomMembership(e.app, e.auth, room);
     const mine = memberFor(e.app, workspace, room.id, e.auth.id);
     const live = room.getString('status') === 'live';
     const discussion = access.list(e.app, 'classroom_messages', 'workspace = {:workspace} && room = {:room}',
@@ -245,6 +263,7 @@ function heartbeat(e) {
     e.app.runInTransaction((app) => {
         scopeFor(app, e, workspace);
         const room = roomFor(app, workspace, e.request.pathValue('id'));
+        roomMembership(app, e.auth, room);
         const member = memberFor(app, workspace, room.id, e.auth.id);
         if (room.getString('status') !== 'live' || member?.id !== body.membership || Number(member?.get('revision')) !== body.revision || !fresh(member))
             access.conflict('Your classroom connection ended. Rejoin the class to continue.');

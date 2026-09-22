@@ -12,7 +12,7 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/observability/mutations.js;
 //              CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/web/src/components/workspace/TutorialReader.jsx;
-//              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json;
+//              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json;
 //              CONSUMES apps/web/src/lib/tutorialLearning.js; CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx; CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx
 // DAG Node:    none
 // Intent:      Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.
@@ -22,7 +22,6 @@ import { MotionList } from '@/components/motion/MotionPrimitives';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Clock } from 'lucide-react';
 import curriculum from '../../../../pocketbase/pb_migrations/data/starter-tutorials.json';
-import government from '../../../../pocketbase/pb_migrations/data/government-submissions.json';
 import { Button, Card, StatePill } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -38,7 +37,7 @@ import { lessonProgress, mergeTutorials, selectTutorials, validLesson } from '@/
 import { createTutorialLearningClient } from '@/lib/tutorialLearning';
 import pb from '@/lib/pocketbaseClient';
 
-const authoredLessons = [...curriculum.lessons, ...government.lessons];
+const authoredLessons = curriculum.lessons;
 function CatalogView({ lessons, progress = [], progressKnown = false, canPersist = false, onSave, onGuided, busy = '', error = '', saved = '', limit = 0, initialCategory = 'all', initialLesson = '', onLinkedLesson }) {
     const [query, setQuery] = useState('');
     const [category, setCategory] = useState(initialCategory);
@@ -90,7 +89,7 @@ function CatalogView({ lessons, progress = [], progressKnown = false, canPersist
     </div>;
 }
 
-function SignedInCatalog({ userId, limit, initialCategory, initialLesson }) {
+function SignedInCatalog({ userId, limit, initialCategory, initialLesson, providedLessons = null }) {
     const tutorials = useRecords('tutorials', { sort: 'order' });
     const progress = useRecords('tutorial_progress', { sort: '-created' });
     const [busy, setBusy] = useState('');
@@ -116,7 +115,7 @@ function SignedInCatalog({ userId, limit, initialCategory, initialLesson }) {
     const openGuided = (tutorialId, opener) => setGuided({ tutorialId, opener,
         client: createTutorialLearningClient({ client: pb, accountId: userId,
             isCurrent: () => mounted.current, observe: observeMutation }) });
-    const lessons = mergeTutorials(tutorials.records, authoredLessons);
+    const lessons = mergeTutorials(providedLessons || tutorials.records, providedLessons ? [] : authoredLessons);
     const progressKnown = !progress.loading && !progress.degraded && !tutorials.loading && !tutorials.degraded;
     const saveProgress = async (tutorial, status) => {
         if (saving.current || !progressKnown || !tutorial.persistedId || pb.authStore.record?.id !== userId) return;
@@ -143,7 +142,7 @@ function SignedInCatalog({ userId, limit, initialCategory, initialLesson }) {
     };
     return <div className="ph-no-capture space-y-5" data-dd-privacy="mask">
         <TutorialGrowth {...growth} onRefresh={refreshGrowth} onOpen={openGuided} />
-        <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{authoredLessons.length} authored lessons plus your shared catalogue.</p><Button size="sm" variant="secondary" disabled={tutorials.loading || progress.loading || Boolean(busy)} onClick={() => { tutorials.refresh(); progress.refresh(); }}>Refresh lessons</Button></div>
+        <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{providedLessons ? 'Government member learning' : `${authoredLessons.length} authored lessons plus your shared catalogue.`}</p><Button size="sm" variant="secondary" disabled={tutorials.loading || progress.loading || Boolean(busy)} onClick={() => { tutorials.refresh(); progress.refresh(); }}>Refresh lessons</Button></div>
         {tutorials.degraded && <DegradedNotice message="The lesson catalogue is unavailable. Showing the bundled starter curriculum; progress cannot be saved." onRetry={tutorials.refresh} />}
         {progress.degraded && <DegradedNotice message="Your saved progress is unavailable. You can read lessons; retry before saving progress." onRetry={progress.refresh} />}
         {!tutorials.loading && !tutorials.degraded && lessons.some((lesson) => !lesson.persistedId) && <p className="text-sm leading-6 text-muted-foreground">Starter previews are ready to read. Apply the tutorial catalogue migration to save progress for lessons not yet installed.</p>}
@@ -153,6 +152,13 @@ function SignedInCatalog({ userId, limit, initialCategory, initialLesson }) {
         {guided && <InteractiveTutorial key={guided.tutorialId} tutorialId={guided.tutorialId} client={guided.client} opener={guided.opener}
             onClose={() => setGuided(null)} onSaved={() => { refreshGrowth(); progress.refresh(); }} />}
     </div>;
+}
+
+/** Render only lessons supplied by the protected government endpoint. */
+export function GovernmentTutorialCatalog({ lessons, initialLesson = '' }) {
+    const { isAuthed, user } = useAuth(); const { demo } = useDemoMode();
+    if (!isAuthed || !user?.id || demo || !Array.isArray(lessons)) return null;
+    return <SignedInCatalog key={user.id} userId={user.id} providedLessons={lessons} initialCategory="Government submissions" initialLesson={initialLesson} />;
 }
 
 /** @param {{limit?: number, initialCategory?: string, initialLesson?: string}} props Preview length, learning path and optional saved lesson link. @returns {React.ReactElement} Authored lessons and account-scoped progress. */

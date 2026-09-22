@@ -151,12 +151,17 @@ export default function ContactPage() {
                 </div>
                 <section id="commercial-enquiry" className="scroll-mt-24 border-t-2 border-foreground pt-5">
                     <h2 className="font-display text-2xl font-semibold">
-                        {interest === 'pilot' ? 'Discuss a paid pilot' : 'Commercial licensing'}
+                        {interest === 'pilot' ? 'Discuss a paid pilot' : interest === 'government' ? 'Request government membership' : 'Commercial licensing'}
                     </h2>
                     {interest === 'pilot' && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                         Start with one workspace and one agreed operation. We confirm the
                         connector and scope, then agree limits, support, data terms and a manual
                         invoice before work starts. Each operation still needs your approval.
+                    </p>}
+                    {interest === 'government' && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                        Government research membership is $100/month and requires operator approval.
+                        Request an invoice and confirm renewal and cancellation terms before paying.
+                        Access starts after payment and approval are recorded; this form does not activate it.
                     </p>}
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                         Contact Citadel Nexus Inc. at{' '}
@@ -170,10 +175,11 @@ export default function ContactPage() {
                     </p>
                     <label htmlFor="contact-interest" className="mb-2 mt-6 block text-sm font-medium">Enquiry type</label>
                     <select id="contact-interest" value={interest}
-                        onChange={(event) => setSearchParams(event.target.value === 'pilot' ? { interest: 'pilot' } : {}, { replace: true })}
+                        onChange={(event) => setSearchParams(['pilot', 'government'].includes(event.target.value) ? { interest: event.target.value } : {}, { replace: true })}
                         className="h-11 w-full border border-input bg-background px-3 text-sm">
                         <option value="commercial">Commercial licensing or team rollout</option>
                         <option value="pilot">Paid pilot</option>
+                        <option value="government">Government research membership</option>
                     </select>
                     <CommercialEnquiryForm key={interest} interest={interest} />
                 </section>

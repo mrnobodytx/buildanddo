@@ -97,6 +97,7 @@ class LearningServer(NativeServer):
                 "tutorial-learning.pb.js",
                 "tutorial-learning.js",
                 "workspace-access.js",
+                "government-access.js",
                 "workflow-policy.js",
             ):
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)

@@ -20,6 +20,44 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Test assurance and research sprint — 2026-09-22
+
+The owner requests the eight testing categories from the retained gap assessment,
+a bounded Army decision-package / DARPA market / FHERMA experiment sprint, and
+restricted government work for high-tier members at USD 100. This continues the
+existing public application dispatch. Existing decision, foundry, evidence,
+authentication and acceptance owners remain authoritative.
+
+Acceptance:
+
+1. Enforce government membership on the server and in navigation, direct routes,
+   learning content and submission tools. Membership records are provisioned by
+   the trusted operator/billing owner, never by account edits, workspace roles,
+   client payment claims, demo mode or query parameters. Expiry and revocation
+   fence reads, retries and in-flight worker completion. Missing configuration
+   denies access. No live billing is activated by this source change.
+2. Extend the decision runtime with an auditable package containing objectives,
+   options, constraints, assumptions, risks, evidence, bias checks, tradeoffs,
+   an advisory decision, flip conditions and independent review/approval gaps.
+   Produce point-in-time and changed-evidence demonstrations with retained hashes.
+3. Reuse the existing market simulation and evidence compiler for a two-asset
+   experiment, black-box action receipts, quantitative comparison and replay.
+   Scripted trials remain labeled synthetic; no LLM or federal performance claim
+   is inferred from them. Prepare separate Army and DARPA proposal skeletons and
+   requirement crosswalks with explicit gaps.
+4. Provide an exact integer polynomial reference and candidate-validation harness
+   for the reported FHERMA parameters. Unknown official interface, modulus,
+   hardware, cuPQC/CLI availability, correctness receipts and leaderboard remain
+   unverified until supplied by the official execution environment. Do not label
+   a CPU/reference timing as an official GPU benchmark or submit an entry here.
+5. Add runnable browser journey, accessibility, browser/mobile, load and recovery
+   profiles; strengthen security, evidence/authority and fault/retry tests. Reuse
+   disposable native fixtures and retain blocked prerequisites as non-passing
+   results. Preserve the existing eighteen-profile acceptance gate.
+6. Retain observed results, exact tested source, historical memory, a ten-day
+   dependency plan and concrete receiving actions. Pasted dates, topic claims,
+   prizes and timings are owner-supplied research leads, not verified notices.
+
 ## Educational collaboration framing — 2026-09-22
 
 The owner clarifies the product identity: BuildAndDo is an educational

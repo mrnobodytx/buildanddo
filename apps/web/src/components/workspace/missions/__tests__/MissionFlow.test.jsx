@@ -18,6 +18,7 @@
 import React, { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import MissionBuilder from '@/components/workspace/missions/MissionBuilder';
+import government from '../../../../../../pocketbase/pb_migrations/data/government-submissions.json';
 import MissionGuide from '@/components/workspace/missions/MissionGuide';
 import MissionLearning from '@/components/workspace/missions/MissionLearning';
 import MissionReview from '@/components/workspace/missions/MissionReview';
@@ -78,7 +79,7 @@ afterEach(() => {
 describe('guided mission planning', () => {
     it('creates a reviewable government submission draft with no implied approval', async () => {
         const user = setupUser(); const save = vi.fn().mockResolvedValue({ ok: true });
-        renderWithProviders(<MissionBuilder onSave={save} onCancel={vi.fn()} />);
+        renderWithProviders(<MissionBuilder governmentStarter={government.mission} onSave={save} onCancel={vi.fn()} />);
         await user.click(screen.getByRole('button', { name: 'Use government submission starter' }));
         expect(screen.getByLabelText('Goal')).toHaveValue('Prepare an evidence-backed government solution brief');
         await user.click(screen.getByRole('button', { name: 'Save draft' }));

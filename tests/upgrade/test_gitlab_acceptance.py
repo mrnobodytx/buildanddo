@@ -295,6 +295,7 @@ class GitLabAcceptanceTests(unittest.TestCase):
             "source_foundry",
             "source_federal_portfolio",
             "source_mission_suite",
+            "source_assurance",
         ):
             with self.subTest(job=name):
                 body = sections[name]
@@ -329,6 +330,7 @@ class GitLabAcceptanceTests(unittest.TestCase):
             "source_foundry",
             "source_federal_portfolio",
             "source_mission_suite",
+            "source_assurance",
         ):
             with self.subTest(job=name):
                 self.assertIn("- job: " + name + "\n", bundle)

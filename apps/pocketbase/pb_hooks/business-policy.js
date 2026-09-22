@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js
+// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
 // Intent:      Preserve workspace relations and require attributed review before recording content publication.
 // ───────────────────────────────────────────────────────────────
@@ -151,7 +151,8 @@ function progress(e, creating) {
     if (record.getString('owner') !== e.auth.id || (!creating &&
         (record.getString('owner') !== original.getString('owner') || record.getString('tutorial') !== original.getString('tutorial'))))
         access.invalid('Learning progress stays with its original account and lesson.');
-    access.readable(e.app, access.find(e.app, 'tutorials', record.getString('tutorial')), e.requestInfo());
+    const tutorial = access.find(e.app, 'tutorials', record.getString('tutorial'));
+    if (!require(`${__hooks}/government-access.js`).lesson(e.app, e.auth, tutorial)) access.readable(e.app, tutorial, e.requestInfo());
     const status = record.getString('status');
     if (!['not_started', 'in_progress', 'completed'].includes(status)) access.invalid('Choose a listed learning state.');
     if (original?.getString('status') === 'completed' && status !== 'completed')

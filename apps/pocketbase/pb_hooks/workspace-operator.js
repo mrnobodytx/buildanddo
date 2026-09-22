@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/workspace-administration.js, apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workspace-value.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/workspace-administration.js, apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workspace-value.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; CONSUMES apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_hooks/mission-policy.js; CONSUMES apps/pocketbase/pb_hooks/workspace-value.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; CONSUMES apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_hooks/mission-policy.js; CONSUMES apps/pocketbase/pb_hooks/workspace-value.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
 // Intent:      Project bounded existing workspace observations without creating work, exposing source bodies or replacing current record authority.
 // ───────────────────────────────────────────────────────────────
@@ -90,7 +90,7 @@ function snapshot(e) {
         suite_runs: list('suite_runs', ['status', 'mission', 'suite', 'attempt', 'revision'], (row) => ({
             ...summary(row), title: text(row, 'suite', 64), attempt: Number(row.get('attempt')), revision: Number(row.get('revision')),
             lease_until: text(row, 'lease_until', 80), failure: text(row, 'failure', 80),
-        }), missionReadable),
+        }), (row) => { require(`${__hooks}/government-access.js`).requireMember(e.app, e.auth); missionReadable(row); }),
         seat_events: list('seat_events', ['seat', 'event', 'subject', 'subject_type'], (row) => ({
             ...summary(row, 'event', 'summary'), seat: text(row, 'seat', 80),
             subject: text(row, 'subject', 64), subject_type: text(row, 'subject_type', 32),
