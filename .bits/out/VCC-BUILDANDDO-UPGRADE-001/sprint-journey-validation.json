@@ -1,0 +1,270 @@
+{
+  "schema_version": "buildanddo.sprint-user-journey/v1",
+  "observed_at": "2026-09-22T00:13:58.732128+00:00",
+  "srs": "SRS-BUILDANDDO-UPGRADE-001",
+  "dispatch": "VCC-BUILDANDDO-UPGRADE-001",
+  "implementation_commit": "2d5f7845eebd35f43e6f00a302f9601bb9b0ddf8",
+  "iteration_baseline": "e00bdbc808a3fc9a69b7c77ad056fbc2cd1b3fa4",
+  "tested_source_sha256": "90289e9d95be8f1b988de0f8eb4efe67e5bb6cd9e703b87b1ee1c633a4429eee",
+  "tested_file_sha256": {
+    ".bits/context.md": "a70cfefee8f2497e95bf8daf570ba510dcc04d30d060580daad472340d1febee",
+    ".bits/hostinger-readiness.json": "9e03889d733df0ad079ce2b6dbde5d5f7365dc120d8a8b2461f70c4c8a2b490e",
+    ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md": "ce30fd56a1b48f33c710b0b2516f925b3de4941a7436a145927c4a849d5846b8",
+    ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md": "fe65ed37297340d912296c09935834eea88350698aea2f6eddfd1f8fe625c441",
+    ".github/workflows/pr-governance.yml": "33649d45b02785635efd4ac379ac816ad6036cefe901e300ae21152174d15e9b",
+    "AGENTS.md": "80865b901223aafb2c99974a7fc4a09783fc5ff1cbb381df41774dda899e0e9d",
+    "CLAUDE.md": "2ee7ddbb0158a099cd6f7ee7a79b11c5f1c12c7008ba060de1c2d5719ddca09a",
+    "apps/pocketbase/pb_hooks/business-actions.js": "a13b4462b76363d8ef3d6b1056296f313703c071f1b4d5bd35ef967786e7ec6d",
+    "apps/pocketbase/pb_hooks/business-execution.pb.js": "1982fc8a43702c493113970ac71fdee8fd14ab895ec77257db421ac9ac645b3d",
+    "apps/pocketbase/pb_hooks/workspace-replay.js": "945053ad2e5d578d118d61ff0f9b9925b4a2fab5955c334e76f692dda8a6543e",
+    "apps/web/src/App.jsx": "272e794693dc86bc6d9e2cfc9148ebceae546fa0d6aafab287b466199e117460",
+    "apps/web/src/components/ProtectedRoute.jsx": "74395028cfe91a34d44e84fde755ee1f87689ce68e953cc2b03aed7b4b748786",
+    "apps/web/src/components/auth/__tests__/ProtectedRoute.test.jsx": "19bff8c72c50dde77daee5345d82619b01f377ca6be60b2068bbbf3464662162",
+    "apps/web/src/components/workspace/ConnectorBinding.jsx": "453e2efab43fc6771d8274bc49b5da431747307361c88a026556248faa4b1aee",
+    "apps/web/src/components/workspace/EvidenceInspector.jsx": "a4bcb054dc0b790c885bc323a4c30e9564dbb338cfe508efe3c8e522b26e85ab",
+    "apps/web/src/components/workspace/MissionReplayCapture.jsx": "ec7e8ad9af424dac3bb682ac96798d70bc6e61fcaac1dcb19434348e422b9cbd",
+    "apps/web/src/components/workspace/NextWorkspaceActions.jsx": "45e14e31d74cf42180afb963e4ec7c06405e9b88553ad8729d086528c7f11386",
+    "apps/web/src/components/workspace/SourceCapture.jsx": "1e3cb4130e513ea97ebc352e03afeed21af5c19ab57b0b1bc841d8170123032a",
+    "apps/web/src/components/workspace/__tests__/SprintJourney.test.jsx": "d66575b3bdb9b6923c34fbbb3b44633707cd8c2b2f9749012a4601745a8400da",
+    "apps/web/src/components/workspace/missions/MissionReview.jsx": "59f9c1bd528df2dd6014dad81dee0a27638d9a7eafa51e6c87f82893a077a7b9",
+    "apps/web/src/components/workspace/missions/__tests__/MissionFlow.test.jsx": "263a2b656d3e5291bce2f228b92a1db076d412000dba845d46b697aaaca50d24",
+    "apps/web/src/components/workspace/workflows/BusinessActionEditor.jsx": "1c103bd125e96361f65ce7c185790e07f2aca87871845434fc56d99a522cb052",
+    "apps/web/src/components/workspace/workflows/WorkflowRunsPanel.jsx": "31eaee45556568b59988f686fb87356c77cfbb9d96b0e7915be28433dab2f3a6",
+    "apps/web/src/components/workspace/workflows/__tests__/WorkflowRuns.test.jsx": "cebfe8d4c1aecdb98e63212880f66db496dc2a4ccaf94742031c7b6d18047787",
+    "apps/web/src/contexts/AuthContext.jsx": "f3b89b51ff9503a42d2c6e720ec666b1463b611128dcd1c262d56ee8777d6e4f",
+    "apps/web/src/contexts/WorkspaceContext.jsx": "b0368667c85ec759adcf49addc29daa52a8df0f6aff39519d5cf80f4334cb6ab",
+    "apps/web/src/contexts/__tests__/WorkspaceContext.test.jsx": "87637b1bc0b10fed81163bf85fbbbd98dc21b4520bd8a84202e644bf034e4d49",
+    "apps/web/src/hooks/__tests__/useWorkspaceRecords.test.js": "4a99c3d33424f714bf1872c41fbd0c5ab680c88cae1d1e6eb4e84a1a1b11b8d2",
+    "apps/web/src/hooks/useWorkspaceRecords.js": "b011b35608dcf793a9b57ab26770a56c1abb2b59626d91c893f2342835ddce87",
+    "apps/web/src/lib/authSession.js": "0f01c2d0811e5382d0990069bc9312841e3370d10629efabfbce882f2a2475b1",
+    "apps/web/src/lib/businessExecution.js": "8450ca5a76715729fc84e9896d895b887da4b53dbe0c0af947a0f4928558737c",
+    "apps/web/src/lib/businessPlanning.js": "acb98fa5be27c77921803ac2396af819c34ca250b5f33055e49132e965704fe6",
+    "apps/web/src/lib/connectorReadiness.js": "2715d7460deba8f729c08ec9b348f0684abb90d9f4642a35c0f93b70e06561c9",
+    "apps/web/src/lib/evidenceInspection.js": "d3c84e254812277acf632a6b5ec4d03192ba7cd1249fdf11c10457c7a04adf9b",
+    "apps/web/src/lib/missionLearning.js": "20167a8f00c5a4eb39a8695f322f08acf06fc4434e63e6449b6b4b70024efc50",
+    "apps/web/src/lib/missionReplay.js": "b7b700137f05392676d53de63a75e8e36da633d402bda1338e9db9ce13931b0c",
+    "apps/web/src/lib/workspaceJourney.js": "187e19f7cf5ea5b6ba670496db2e1177b50b1d6827b7407ca23b9397d0aba547",
+    "apps/web/src/lib/workspaceRecords.js": "f231f17424b8400780d65dd064c5ea007d75e1f69136f25e7a686a71707c33b2",
+    "apps/web/src/pages/OnboardingPage.jsx": "441b2e43a9e20151356621346f46638a904023678dc9222efaff78eccba80f14",
+    "apps/web/src/pages/__tests__/OnboardingPage.test.jsx": "93f6fbbefb13446c3868c6e69f368e58e04c7e4ae8d876a141a07821f6fe0e1a",
+    "apps/web/src/pages/workspace/ErpPage.jsx": "f8990f6d3c966f409947284eb80bab06602f02f3e7f36d0b9d2191cab530907a",
+    "apps/web/src/pages/workspace/EvidencePage.jsx": "f59acb3424744badc6f38ab48c10e9e577301218c3f9f6ba4b3b4e2a757779f3",
+    "apps/web/src/pages/workspace/ExecutionReplayPage.jsx": "ce3d2f5480be836ed7c561a316b9dcc2efcd26d9f04ae9230ddb9dcf687f7c19",
+    "apps/web/src/pages/workspace/OverviewPage.jsx": "2d3d57325a0cd5d2a39e9aa370a15449ddb2cf698fe21a8dfc938ba1ed8b9992",
+    "docs/hostinger-sprint-closure.md": "d7481d5a21c08217c99f0e122c9773d2ec0f665167cf7ba047c88014053414c1",
+    "docs/sprint-user-journey.md": "a7cf4e19f15707ed94ee42b4c12c4d304eab01a860385a1243b4603fcc54991b",
+    "tests/upgrade/admin-fixture.mjs": "9a73e13ddac749288fe79094cdd992b9e62139744a1b0e9f2ba39928e4e9e997",
+    "tests/upgrade/knowledge-fixture.mjs": "984aed5133182482cf539d154f35b023077bccb9bffdd6ea0f4bafaae741056b",
+    "tests/upgrade/knowledge-system.test.mjs": "c683bb4575242641714d678c63313eaa7ccdbbabdfd03bbc40cf905e35a844b5",
+    "tests/upgrade/research-fixture.mjs": "cbd330ddd310b8186566dad8a72cbb43c165fa1aa4d3b27ef6bf1f5c936beb20",
+    "tests/upgrade/sprint-journey.test.mjs": "c74bf90811d5b4177545faf239b8c65d034a940b66a806ebb5ac2b73c00c0d56",
+    "tests/upgrade/test_gitlab_acceptance.py": "ba8a80e8d6f66f10b6fa5e529d7465b925ebced2bd1f1e3f801a92606060d30b",
+    "tests/upgrade/test_workspace_native.py": "6987e0889e1e6744ab165d085f7c4380c7439335d7425d3b42ed30afc1dd5b28"
+  },
+  "status": "PARTIAL: ten source outcomes complete; rendered/native/hosted acceptance remains open",
+  "source_outcomes_completed": 10,
+  "automatic_pr_governance_restored": true,
+  "gitlab_gates_removed": 0,
+  "validation": {
+    "node_regressions": {
+      "tests": 539,
+      "passed": 539,
+      "failures": 0,
+      "skipped": 0
+    },
+    "journey_subset": {
+      "tests": 28,
+      "passed": 28,
+      "failures": 0,
+      "skipped": 0
+    },
+    "knowledge_subset": {
+      "tests": 26,
+      "passed": 26,
+      "failures": 0,
+      "skipped": 0
+    },
+    "python_governance": {
+      "tests": 103,
+      "passed": 103,
+      "failures": 0,
+      "skipped": 0
+    },
+    "new_module_coverage": {
+      "apps/pocketbase/pb_hooks/workspace-replay.js": {
+        "line_percent": 100.0,
+        "branch_percent": 96.83,
+        "function_percent": 100.0
+      },
+      "apps/web/src/lib/authSession.js": {
+        "line_percent": 95.45,
+        "branch_percent": 92.86,
+        "function_percent": 100.0
+      },
+      "apps/web/src/lib/connectorReadiness.js": {
+        "line_percent": 100.0,
+        "branch_percent": 90.48,
+        "function_percent": 100.0
+      },
+      "apps/web/src/lib/evidenceInspection.js": {
+        "line_percent": 100.0,
+        "branch_percent": 95.56,
+        "function_percent": 100.0
+      },
+      "apps/web/src/lib/missionReplay.js": {
+        "line_percent": 100.0,
+        "branch_percent": 100.0,
+        "function_percent": 100.0
+      },
+      "apps/web/src/lib/workspaceJourney.js": {
+        "line_percent": 100.0,
+        "branch_percent": 93.48,
+        "function_percent": 85.71
+      },
+      "apps/web/src/lib/workspaceRecords.js": {
+        "line_percent": 100.0,
+        "branch_percent": 89.47,
+        "function_percent": 100.0
+      }
+    },
+    "coverage_method": "Node 22 V8 test coverage on seven new library/backend modules; excludes rendered JSX",
+    "source_parser": {
+      "modules": 337,
+      "errors": 0,
+      "scope": "Offline parse, undefined identifiers and JSX bindings; not repository lint or rendering"
+    },
+    "typing": "PASS on both touched Python test modules",
+    "ruff": "PASS on both touched Python test modules",
+    "yaml": "PASS: automatic/manual triggers and seven downstream candidate-pinned jobs",
+    "required_runtime_commands": {
+      "web_coverage": "UNAVAILABLE: Vitest missing",
+      "web_lint": "UNAVAILABLE: locked concurrently package missing",
+      "web_build": "UNAVAILABLE: locked concurrently package missing",
+      "native_workspace": "UNAVAILABLE: declared PocketBase binary missing"
+    }
+  },
+  "environment": {
+    "node": "22.17.0",
+    "python": "3.12.13",
+    "source_diagnostic": "Existing global ESLint made discoverable through NODE_PATH; no locked frontend installation or lint success is inferred",
+    "dependency_installation": "none"
+  },
+  "fixture_scope": "Production hooks and client modules with explicit synthetic in-memory storage/transport. Native PocketBase rule execution, React rendering, real providers and hosting are not established.",
+  "logs": {
+    "node-final.log": {
+      "command": "NODE_PATH=<installed local diagnostic modules> node --test --test-reporter=tap tests/upgrade/*.test.mjs",
+      "exit_code": 0,
+      "session_path": "/tmp/buildanddo-sprint-ten/node-final.log",
+      "sha256": "d9870281ff4c5d3e9421b54e76c0f23ef8db0075eae2ca6d576ddbf1b84bda6d"
+    },
+    "journey-final-coverage.log": {
+      "command": "node --experimental-test-coverage --test-coverage-include='apps/web/src/lib/{authSession,workspaceRecords,connectorReadiness,evidenceInspection,workspaceJourney,missionReplay}.js' --test-coverage-include='apps/pocketbase/pb_hooks/workspace-replay.js' --test tests/upgrade/sprint-journey.test.mjs",
+      "exit_code": 0,
+      "session_path": "/tmp/buildanddo-sprint-ten/journey-final-coverage.log",
+      "sha256": "d05e7019dd4b6fbeddab664419e080f55ad2d38af29fd22549b8f12491d31755"
+    },
+    "knowledge-clock-green.log": {
+      "command": "node --test tests/upgrade/knowledge-system.test.mjs tests/upgrade/knowledge-client.test.mjs",
+      "exit_code": 0,
+      "session_path": "/tmp/buildanddo-sprint-ten/knowledge-clock-green.log",
+      "sha256": "8fe131477a57aa91355f3ed05a77f759d53aa8120732e1bb8565a1c85b492ae0"
+    },
+    "governance-final.log": {
+      "command": "python -m unittest tests.upgrade.test_public_boundary tests.upgrade.test_gitlab_acceptance tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay tests.upgrade.test_submission_readiness tests.upgrade.test_day21_acceptance tests.upgrade.test_day21_submission -v",
+      "exit_code": 0,
+      "session_path": "/tmp/buildanddo-sprint-ten/governance-final.log",
+      "sha256": "8ccb0ad11f8de3cecfbaf65c3e7c0ff7b3472248c1402cf0bd8a4d51668038fe"
+    },
+    "source-final.log": {
+      "command": "node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs",
+      "exit_code": 0,
+      "session_path": "/tmp/buildanddo-sprint-ten/source-final.log",
+      "sha256": "3ff70558e174accbf3a4692ef8149e938f09a5b3e98267d2106488945623ec7b"
+    },
+    "mypy-final.log": {
+      "command": "mypy --strict --follow-imports=silent --explicit-package-bases tests/upgrade/test_workspace_native.py tests/upgrade/test_gitlab_acceptance.py",
+      "exit_code": 0,
+      "session_path": "/tmp/buildanddo-sprint-ten/mypy-final.log",
+      "sha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8"
+    },
+    "ruff.log": {
+      "command": "ruff check tests/upgrade/test_workspace_native.py tests/upgrade/test_gitlab_acceptance.py; ruff format --check tests/upgrade/test_workspace_native.py tests/upgrade/test_gitlab_acceptance.py",
+      "exit_code": 0,
+      "session_path": "/tmp/buildanddo-sprint-ten/ruff.log",
+      "sha256": "afa20b27dacc9bf0aba3c1d265964c21e04ab42f6e39e2dd4769718ceded003a"
+    },
+    "native-final-required.log": {
+      "command": "python tests/upgrade/test_workspace_native.py --require-binary",
+      "exit_code": 1,
+      "session_path": "/tmp/buildanddo-sprint-ten/native-final-required.log",
+      "sha256": "be6369bb081422da8e95fd0e0eb5b1ecfd6f707c2021bac4d676350d6f277c36"
+    },
+    "web-coverage.log": {
+      "command": "npm run test:coverage",
+      "exit_code": 127,
+      "session_path": "/tmp/buildanddo-sprint-ten/web-coverage.log",
+      "sha256": "8164c6eec786db25334a3829c1e38f317d6454afe44fd09c4f1d340c96d1b5ea"
+    },
+    "web-lint.log": {
+      "command": "npm run lint",
+      "exit_code": 127,
+      "session_path": "/tmp/buildanddo-sprint-ten/web-lint.log",
+      "sha256": "565d4a7aed5323909a47a6149beaf3cabf2ed4881168eb3fde9ffd783260873e"
+    },
+    "web-build.log": {
+      "command": "npm run build",
+      "exit_code": 127,
+      "session_path": "/tmp/buildanddo-sprint-ten/web-build.log",
+      "sha256": "d0db5b414f3887ccc89f7652caf59c6345c4cf9a59b01ad2227d9a123cc9aa2f"
+    }
+  },
+  "retained_failures": {
+    "governance-red.log": {
+      "reason": "The original manual-only governance schedule failed the restored automatic-review regression.",
+      "session_path": "/tmp/buildanddo-sprint-ten/governance-red.log",
+      "sha256": "7372386558622818ccda529b20c315cb2865a29be62788b5344f2a2b1502f793"
+    },
+    "replay-connected-red.log": {
+      "reason": "The first complete ERP export incorrectly used the raw locked business collection view rule.",
+      "session_path": "/tmp/buildanddo-sprint-ten/replay-connected-red.log",
+      "sha256": "9ab4c1d03bc7cc16eea80ed379392b8098cff18660641526f4da2c2167304988"
+    },
+    "node-regression.log": {
+      "reason": "Node 22 initially could not locate the locally installed diagnostic ESLint package.",
+      "session_path": "/tmp/buildanddo-sprint-ten/node-regression.log",
+      "sha256": "847ec1ada790d5969f312c865d0b52c925228f1e8f77a648442c7348d6ee1a5c"
+    },
+    "node-final-bound.log": {
+      "reason": "A one-millisecond timestamp difference exposed a wall-clock dependency in shared knowledge fixtures.",
+      "session_path": "/tmp/buildanddo-sprint-ten/node-final-bound.log",
+      "sha256": "0dfd4b8e474929566614c1d3104eb7df1f25ff28e806ad0ebea16e55da3a8127"
+    },
+    "knowledge-time-reproduction.log": {
+      "reason": "Controlled equal/newer timestamps reproduce evidence versus research ordering without sleeps.",
+      "session_path": "/tmp/buildanddo-sprint-ten/knowledge-time-reproduction.log",
+      "sha256": "74bfe6b0bfa1b75c68f700724d020a043a8105fe2da844952c906b914f293027"
+    },
+    "mypy.log": {
+      "reason": "Strict checking exposed one pre-existing generic dict annotation in the touched native test; corrected without changing runtime behavior.",
+      "session_path": "/tmp/buildanddo-sprint-ten/mypy.log",
+      "sha256": "76ddca827b963689b8146d9c1d732894e59ad289c5547c9bb91824a19ce97466"
+    }
+  },
+  "raw_evidence_retention": "Logs remain session-local; their digests and measured results are retained. This record cannot replace candidate-bound hosted acceptance exports.",
+  "governance": {
+    "srs_dispatch": "in_progress A2",
+    "actor_label_applied": false,
+    "hosted_gitlab_execution": "UNMEASURED",
+    "deployment": "UNMEASURED",
+    "historical_events_preserved": 171
+  },
+  "remaining": [
+    "locked web dependencies and rendered lint/build/coverage",
+    "PocketBase 0.39.8 and 0.28.4 native acceptance",
+    "native Discord/PDF dependencies from the prior acceptance matrix",
+    "GitLab candidate/review/status integration and actor label",
+    "registered Firecrawl/n8n and inference bindings with observed health and effects",
+    "same-candidate deployment, browser and four-product evidence",
+    "independent real outcome grading, organizer requirements, owner review and final submission"
+  ]
+}

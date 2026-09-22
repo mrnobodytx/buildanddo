@@ -530,7 +530,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 45790,
+      "lines": 46004,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -45773,12 +45773,226 @@
       "description": "VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js as declared by tests/upgrade/test_workspace_native.py.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/sprint-user-journey.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json"
+      ],
+      "lines": 140,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain source and runtime results for the ten sprint repairs without replacing deployment or submission acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-user-journey"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json",
+        "tests/upgrade/sprint-journey.test.mjs"
+      ],
+      "lines": 270,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind the retained ten-piece sprint observations to exact source and command results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-user-journey"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json",
+        "tests/upgrade/sprint-journey.test.mjs"
+      ],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind the retained ten-piece sprint observations to exact source and command results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "sprint-user-journey"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-report.md",
+      "target": "docs/sprint-user-journey.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/sprint-user-journey.md as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json.cgrf.yaml",
+      "target": "tests/upgrade/sprint-journey.test.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES tests/upgrade/sprint-journey.test.mjs as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": null,
+      "event_type": "failure",
+      "file_path": "apps/pocketbase/pb_hooks/workspace-replay.js",
+      "description": "A connected approved ERP export exposed use of the locked raw business collection rule. The implementation now composes the existing authenticated business read policy and checks the original reported result digest.",
+      "timestamp": "2026-09-21T23:50:57.289921+00:00"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": "28/28",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/sprint-journey.test.mjs",
+      "description": "All 28 new source-connected journey cases pass; seven new library/backend modules measure 95.45 to 100 percent V8 line coverage. Explicit fixtures do not establish React rendering or native PocketBase acceptance.",
+      "timestamp": "2026-09-22T00:02:43.075787+00:00"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": null,
+      "event_type": "failure",
+      "file_path": "tests/upgrade/knowledge-fixture.mjs",
+      "description": "The full Node suite reproduced a wall-clock fixture ordering failure: equal-relevance evidence and research sources changed order across a millisecond boundary. A controlled timestamp reproduction identifies the fixture; production recency ranking is unchanged.",
+      "timestamp": "2026-09-22T00:04:14.068059+00:00"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": "26/26",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/knowledge-fixture.mjs",
+      "description": "Shared knowledge fixtures now use an injected deterministic clock. Twenty-six knowledge cases pass, including explicit timestamp ties and advancing recency; all original assertions remain.",
+      "timestamp": "2026-09-22T00:07:45.587015+00:00"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": "7/11",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-validation.json",
+      "description": "Ten sprint source outcomes and restored automatic governance pass 539 Node cases and 103 Python governance cases. Required web coverage/lint/build and native workspace checks cannot start without declared packages or binaries. No hosted, native, browser, provider or deployment acceptance is inferred.",
+      "timestamp": "2026-09-22T00:13:58.732128+00:00"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "2d5f7845eebd35f43e6f00a302f9601bb9b0ddf8",
+      "smoke_result": null,
+      "event_type": "commit",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-report.md",
+      "description": "Recorded the ten source repairs and automatic governance restoration under the existing upgrade dispatch, preserving all GitLab gates and the observed runtime limits.",
+      "timestamp": "2026-09-22T00:12:10Z"
     }
   ],
   "summary": {
-    "type_a_count": 753,
-    "type_b_count": 1697,
-    "type_c_count": 171,
+    "type_a_count": 756,
+    "type_b_count": 1701,
+    "type_c_count": 177,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
