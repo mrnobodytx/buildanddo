@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/career-passport-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/career-passport-validation.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/career-passport-validation.json
+# Intent:      Bind observed career tests and the real repository dogfood summary without publishing raw personal exports or claiming live acceptance.
+# ───────────────────────────────────────────────────────────────
+schema_version: buildanddo.career-validation/v1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/career-passport-validation.json
+status: partial
+source_authority: VCC-BUILDANDDO-UPGRADE-001
+runtime_authority: unmeasured
