@@ -16,7 +16,7 @@
 // ───────────────────────────────────────────────────────────────
 
 import React, { Suspense, lazy } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import MissionGuide from '@/components/workspace/missions/MissionGuide';
@@ -30,13 +30,14 @@ const ComponentCatalog = lazy(() => import('@/components/workspace/ComponentCata
 
 export default function TutorialsPage() {
     const [search] = useSearchParams();
+    if (search.get('path') === 'government') return <Navigate replace to={`/app/government${search.get('lesson') ? `?lesson=${encodeURIComponent(search.get('lesson'))}` : ''}`} />;
     return (
         <div className="space-y-8">
             <PageHeader
                 title="Field Manual"
                 description="Build your skills with interactive tutorials. Resume saved checkpoints, practice what you learn and earn completion certificates as your learning journey grows."
             />
-            <div className="flex flex-wrap gap-4 text-sm"><Link className="underline underline-offset-4" to="/app/classrooms">Learn together in Classrooms</Link><Link className="underline underline-offset-4" to="/app/missions">Create a government submission mission</Link><Link className="underline underline-offset-4" to="/app/suite">Open mission suite</Link></div>
+            <div className="flex flex-wrap gap-4 text-sm"><Link className="underline underline-offset-4" to="/app/classrooms">Learn together in Classrooms</Link><Link className="underline underline-offset-4" to="/app/government">Government research membership</Link></div>
 
             <Tabs defaultValue="lessons">
                 <TabsList className="h-auto flex-wrap justify-start">
@@ -59,7 +60,7 @@ export default function TutorialsPage() {
                     </Suspense>
                 </TabsContent>
                 <TabsContent value="lessons" className="mt-6">
-                    <TutorialCatalog initialCategory={search.get('path') === 'government' ? 'Government submissions' : 'all'} initialLesson={search.get('lesson') || ''} />
+                    <TutorialCatalog initialLesson={search.get('lesson') || ''} />
                 </TabsContent>
             </Tabs>
         </div>

@@ -20,6 +20,38 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Test assurance and restricted research sprint — 2026-09-22
+
+The owner authorizes implementation of the testing recommendations and bounded
+three-lane sprint in the existing public repository, with government work
+restricted to the USD 100 high tier. Production activation, purchases, provider
+credentials, hosted model runs and official submissions require receiving owners.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| QA | Enforce membership and existing-role boundaries across government surfaces | Government Node/native/rendered regressions | source PASS — 611 Node passes; 30 government boundary cases plus the membership enquiry regression; native and rendered acceptance BLOCKED |
+| QB | Extend the existing decision and foundry owners with reproducible research packages | Research sprint Python tests and demo export | source PASS — 44 research cases; 79 exported files checked and replayed; official/model/GPU evidence remains unavailable |
+| QC | Implement all eight testing categories with explicit runtime prerequisites | Assurance runner and source regressions | source PASS — 20 recorder regressions; all eight profiles retained, 2 PASS / 6 BLOCKED; required source and explicit full-runtime GitLab lanes configured |
+| QD | Review source bindings and retain observed evidence and receiving actions | Readiness, context, boundary and memory checks | source review complete; exact validation and receiving limits are retained in research-assurance-report.md and research-assurance-validation.json |
+
+Memory brief: the retained implementation contains 580 Node cases, 802 upgrade
+Python cases, 65 frontend files and ten live Praxis suites. Last measured source
+run passed 1,350 and skipped 32. The 18-profile acceptance matrix remains HOLD.
+Frontend packages, native PocketBase, PDF/Discord runtimes and GPU tooling are
+absent in this sandbox. The existing decision runtime is advisory; the foundry
+already contains a deterministic multi-asset auction and model-independent task
+packets. Membership billing is not implemented. Do not duplicate these owners,
+fabricate a charge or use an unverified source as an official solicitation.
+
+Observed source regression: 611 Node passes; 866 Python cases, 834 passed and
+32 existing dependency skips. The portable portfolio gate passes 110 cases with
+98.84–100% statement coverage across its measured modules. The standalone market
+controls replay 36 orders each; their metrics are synthetic controls. Release
+readiness stays HOLD. Missing Vitest, Vite and eslint-plugin-import keep the
+three frontend smoke gates non-passing. Provisioning and activation follow
+`.bits/handoffs/2026-09-22-bits-codegen-research-assurance.md`; no real payment,
+hosted-model call, official submission or GPU benchmark is asserted.
+
 ## Educational collaboration framing — 2026-09-22
 
 The owner's product correction continues this A2 source dispatch. Learning

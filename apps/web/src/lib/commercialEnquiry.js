@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     docs/business-execution.md
+// Depends:     docs/business-execution.md, docs/research-sprint.md
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES docs/business-execution.md
+// EnumEdges:   CONSUMES docs/business-execution.md; CONSUMES docs/research-sprint.md
 // DAG Node:    none
 // Intent:      Prepare bounded commercial email drafts without sending requests, granting authority or asserting payment.
 // ───────────────────────────────────────────────────────────────
@@ -26,11 +26,11 @@ export const PILOT_SCOPE = Object.freeze([
 
 /** Select only the supported enquiry from a public URL.
  * @param {string} search URL query string.
- * @returns {'pilot'|'commercial'} Public enquiry kind; other query data is ignored.
+ * @returns {'pilot'|'government'|'commercial'} Public enquiry kind; other query data is ignored.
  */
 export function commercialInterest(search) {
     const values = new URLSearchParams(search).getAll('interest');
-    return values.length === 1 && values[0] === 'pilot' ? 'pilot' : 'commercial';
+    return values.length === 1 && ['pilot', 'government'].includes(values[0]) ? values[0] : 'commercial';
 }
 
 function textField(value, label, maximum, minimum = 1, multiline = false) {
@@ -47,12 +47,12 @@ function textField(value, label, maximum, minimum = 1, multiline = false) {
 }
 
 /** Prepare a fixed-recipient draft for explicit review in the user's email app.
- * @param {{interest: 'pilot'|'commercial', name: string, email: string, message: string, outcome?: string, constraints?: string}} input Reviewed form values.
+ * @param {{interest: 'pilot'|'government'|'commercial', name: string, email: string, message: string, outcome?: string, constraints?: string}} input Reviewed form values.
  * @returns {{href: string, subject: string, body: string}} Encoded email and copyable plain text.
  * @throws {TypeError} When the enquiry is incomplete or outside the form limits.
  */
 export function prepareCommercialEnquiry(input) {
-    if (!input || !['pilot', 'commercial'].includes(input.interest)) throw new TypeError('Choose an enquiry type.');
+    if (!input || !['pilot', 'government', 'commercial'].includes(input.interest)) throw new TypeError('Choose an enquiry type.');
     const name = textField(input.name, 'a name', ENQUIRY_LIMITS.name);
     const email = textField(input.email, 'an email address', ENQUIRY_LIMITS.email);
     if (!/^[^\s@]+@[^\s@]+$/.test(email)) throw new TypeError('Enter an email address.');
@@ -70,7 +70,15 @@ export function prepareCommercialEnquiry(input) {
             'Before work starts: agree connector readiness, acceptance criteria, price and manual invoice terms, support, cancellation, and data access/retention/deletion. Execution still requires its own approval.',
         ];
     }
-    const subject = input.interest === 'pilot' ? 'BuildAndDo paid-pilot enquiry' : 'BuildAndDo commercial enquiry';
+    if (input.interest === 'government') {
+        sections = [
+            'Government research membership request', message,
+            'Requested tier: Government research, USD 100/month, subject to operator approval and confirmed payment.',
+            'This enquiry does not confirm payment, activate membership, establish federal eligibility or authorize submission. Please confirm invoice, renewal and cancellation terms before activation.',
+        ];
+    }
+    const subject = input.interest === 'pilot' ? 'BuildAndDo paid-pilot enquiry' : input.interest === 'government'
+        ? 'BuildAndDo government membership enquiry' : 'BuildAndDo commercial enquiry';
     const body = [...sections, `From: ${name}\nReply to: ${email}`].join('\n\n');
     return { subject, body, href: `mailto:${COMMERCIAL_CONTACT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}` };
 }

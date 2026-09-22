@@ -89,6 +89,8 @@ day21_submission_bundle:
       artifacts: false
     - job: source_mission_suite
       artifacts: false
+    - job: source_assurance
+      artifacts: false
   script:
     - python3 scripts/ci/day21_submission.py bundle --root . --evidence state/day21/evidence --output state/day21/submission
   artifacts:

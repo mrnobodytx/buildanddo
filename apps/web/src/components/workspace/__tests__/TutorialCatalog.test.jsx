@@ -59,24 +59,19 @@ const read = async (prefix = 'Read') => {
 };
 
 describe('complete Field Manual lessons', () => {
-    it('opens the government learning path directly and reads a substantive lesson', async () => {
-        renderWithProviders(<TutorialsPage />, { route: '/app/tutorials?path=government' });
-        const user = setupUser();
-        expect(await screen.findByLabelText('Learning path')).toHaveValue('Government submissions');
-        expect(screen.getAllByRole('button', { name: /^Read / })).toHaveLength(8);
-        await user.click(screen.getByRole('button', { name: 'Read Read the opportunity and freeze its rules' }));
-        const reader = within(screen.getByRole('dialog'));
-        expect(reader.getByRole('heading', { name: 'Create a source-backed matrix' })).toBeVisible();
-        expect(reader.getByText(/15 slides OR a paper of up to 10 pages/)).toBeVisible();
-        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
-        await user.keyboard('{Escape}'); expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    it('withholds government lessons from public and demo previews', async () => {
+        renderWithProviders(<TutorialCatalog />, { auth: { isAuthed: false, user: null } });
+        expect(screen.getByText('25 lessons to explore')).toBeVisible();
+        expect(screen.queryByRole('option', { name: 'Government submissions' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Read Read the opportunity and freeze its rules' })).not.toBeInTheDocument();
+        expect(pb.collection).not.toHaveBeenCalled();
     });
 
-    it('shows 33 readable previews when the backend has not installed the seed', async () => {
+    it('shows 25 readable previews when the backend has not installed the seed', async () => {
         pb.__setRecords('tutorials', []);
         renderWithProviders(<TutorialCatalog />);
         expect(await screen.findByText(/Apply the tutorial catalogue migration/)).toBeVisible();
-        expect(screen.getByText('0 of 33 lessons completed')).toBeVisible();
+        expect(screen.getByText('0 of 25 lessons completed')).toBeVisible();
         const { reader } = await read();
         expect(reader.getByRole('heading', { name: 'Why this matters' })).toBeVisible();
         expect(reader.getByRole('heading', { name: 'Worked example — illustrative data' })).toBeVisible();
@@ -86,7 +81,7 @@ describe('complete Field Manual lessons', () => {
 
     it('lets anonymous and demo readers explore without requesting any private collection', async () => {
         const view = renderWithProviders(<TutorialCatalog />, { auth: { isAuthed: false, user: null } });
-        expect(screen.getByText('33 lessons to explore')).toBeVisible();
+        expect(screen.getByText('25 lessons to explore')).toBeVisible();
         const { reader, user } = await read();
         expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
         await user.click(reader.getByRole('button', { name: 'Close lesson' }));
@@ -120,7 +115,7 @@ describe('complete Field Manual lessons', () => {
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(opener).toHaveFocus();
         expect(pb.__collection('tutorial_progress').update).not.toHaveBeenCalled();
-        expect(screen.getByText('1 of 33 lessons completed')).toBeVisible();
+        expect(screen.getByText('1 of 25 lessons completed')).toBeVisible();
     });
 
     it('shares saved progress between Docs and the default Field Manual lesson tab', async () => {
@@ -156,7 +151,7 @@ describe('complete Field Manual lessons', () => {
         pb.__clearError('tutorials');
         await user.click(screen.getByRole('button', { name: 'Try again' }));
         await waitFor(() => expect(screen.queryByText(/The lesson catalogue is unavailable/)).not.toBeInTheDocument());
-        expect(screen.getByText('0 of 33 lessons completed')).toBeVisible();
+        expect(screen.getByText('0 of 25 lessons completed')).toBeVisible();
     });
 
     it('blocks progress writes during a failed progress read while keeping the lesson readable', async () => {
@@ -189,7 +184,7 @@ describe('complete Field Manual lessons', () => {
     it('does not count orphaned progress and keeps completed counts outside a limited preview', async () => {
         pb.__setRecords('tutorial_progress', [{ id: 'hidden', tutorial: curriculum.lessons[1].id, status: 'completed' }, { id: 'orphan', tutorial: 'missing', status: 'completed' }]);
         renderWithProviders(<TutorialCatalog limit={1} />);
-        expect(await screen.findByText('1 of 33 lessons completed')).toBeVisible();
+        expect(await screen.findByText('1 of 25 lessons completed')).toBeVisible();
         expect(screen.queryByRole('heading', { name: curriculum.lessons[1].title })).not.toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'View all lessons' })).toHaveAttribute('href', '/docs#workspace-lessons');
     });

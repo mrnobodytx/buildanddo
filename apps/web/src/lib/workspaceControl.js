@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/administration.pb.js
+// Depends:     apps/pocketbase/pb_hooks/administration.pb.js, apps/pocketbase/pb_hooks/government.pb.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js; CONSUMES apps/pocketbase/pb_hooks/government.pb.js
 // DAG Node:    none
 // Intent:      Keep administration and community requests bound to one account/workspace with stable recovery after uncertain saves.
 // ───────────────────────────────────────────────────────────────
@@ -57,6 +57,10 @@ function readShape(value, workspace, section) {
         value.audit.items.every((item) => validId(item.id) && validId(item.actor) && validId(item.target) && ACTIONS.includes(item.action) && revision(item.revision, 1) && strings(item, ['created']));
     if (value.can_admin !== admin || value.can_write !== (value.role !== 'viewer') || value.can_grant_admin !== (value.role === 'owner')) return false;
     if (section === 'access') return true;
+    if (section === 'government') return value.government?.allowed === true && value.government?.tier === 'government' &&
+        value.plan?.schema_version === 'buildanddo.research-sprint/v1' && Array.isArray(value.plan.lanes) && Array.isArray(value.plan.days) &&
+        Array.isArray(value.lessons) && value.lessons.every((item) => validId(item.id) && item.category === 'Government submissions') &&
+        Boolean(value.starter?.mission_plan);
     if (section === 'integrations') return Array.isArray(value.items) && value.items.length === PROVIDERS.length &&
         new Set(value.items.map((item) => item?.provider)).size === PROVIDERS.length && value.items.every(integration);
     if (!page(value)) return false;
@@ -108,12 +112,12 @@ export function createWorkspaceControlClient({ client, workspaceId, accountId, d
     return {
         async read(section, query = {}) {
             if (!current()) return stale();
-            if (!['access', 'admin', 'integrations', 'wiki', 'forums'].includes(section) &&
+            if (!['access', 'admin', 'integrations', 'wiki', 'forums', 'government'].includes(section) &&
                 !(section.startsWith('forums/') && validId(section.slice(7)))) return { ok: false, reason: 'invalid', error: 'Choose a supported workspace view.' };
             try {
                 const data = await client.send(`${prefix}/${section}`, { method: 'GET', query, requestKey: null, cache: 'no-store' });
                 if (!current()) return stale();
-                return readShape(data, workspaceId, section) ? { ok: true, data } : message(null);
+                return readShape(data, workspaceId, section) && (section !== 'government' || data.account_id === accountId) ? { ok: true, data } : message(null);
             } catch (error) { return current() ? message(error) : stale(); }
         },
         async command(action, payload, revision) {

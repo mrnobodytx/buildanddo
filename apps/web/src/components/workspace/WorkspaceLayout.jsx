@@ -1,3 +1,19 @@
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/components/workspace/WorkspaceLayout.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-22
+// Depends:     apps/web/src/contexts/WorkspaceAccessContext.jsx
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx
+// Intent:      Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.
+// ───────────────────────────────────────────────────────────────
+
 import MotionToggle from '@/components/motion/MotionToggle';
 import React, { useId, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
@@ -51,7 +67,8 @@ const NAV = [
     { to: '/app/knowledge', label: 'Knowledge & context', icon: Network },
     { to: '/app/blueprints', label: 'Blueprints', icon: FileSearch },
     { to: '/app/policy', label: 'Policy intelligence', icon: Scale },
-    { to: '/app/suite', label: 'Mission suite', icon: Boxes },
+    { to: '/app/government', label: 'Government research', icon: Scale },
+    { to: '/app/suite', label: 'Mission suite', icon: Boxes, government: true },
     { to: '/app/dossier', label: 'My dossier', icon: BookOpen },
     { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },
     { to: '/app/rooms/organization', label: 'Living Rooms', icon: Network },
@@ -82,7 +99,7 @@ function NavList({ onNavigate }) {
     const masterSeat = isMasterSeat(user);
     return (
         <nav className="flex flex-col gap-1" aria-label="Workspace">
-            {NAV.filter((item) => (!item.admin || access.data?.can_admin) && (!item.estate || masterSeat)).map((item) => (
+            {NAV.filter((item) => (!item.admin || access.data?.can_admin) && (!item.estate || masterSeat) && (!item.government || access.data?.government?.allowed)).map((item) => (
                 <NavLink
                     key={item.to}
                     to={item.to}

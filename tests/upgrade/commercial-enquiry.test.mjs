@@ -23,6 +23,20 @@ const enquiry = Object.freeze({ interest: 'commercial', name: 'Pat & Team', emai
 const pilot = Object.freeze({ ...enquiry, interest: 'pilot', message: 'Each week we reconcile an approved supplier list.',
     outcome: 'A reviewer can confirm that the agreed rows were reconciled.', constraints: 'Public catalogue data only; no customer records.' });
 
+test('government membership request retains approved paid terms without claiming activation', () => {
+    assert.equal(commercialInterest('?interest=government&paid=true&amount=1'), 'government');
+    assert.equal(commercialInterest('?interest=government&interest=pilot'), 'commercial');
+    const draft = prepareCommercialEnquiry({ ...enquiry, interest: 'government', paid: true, amount: 1 });
+    const link = new URL(draft.href);
+    assert.equal(link.pathname, 'licensing@citadel-nexus.com');
+    assert.equal(link.searchParams.get('subject'), 'BuildAndDo government membership enquiry');
+    assert.equal(link.searchParams.get('body'), draft.body);
+    assert.match(draft.body, /USD 100\/month/);
+    assert.match(draft.body, /operator approval and confirmed payment/);
+    assert.match(draft.body, /does not confirm payment, activate membership/);
+    assert.equal(link.searchParams.has('paid'), false);
+});
+
 test('preserve the general commercial enquiry and fixed recipient', () => {
     const draft = prepareCommercialEnquiry(enquiry), link = new URL(draft.href);
     assert.equal(link.protocol, 'mailto:');

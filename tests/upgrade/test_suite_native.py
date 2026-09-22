@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_dossier_native.py, apps/mission_suite/engine.py, apps/pocketbase/pb_hooks/mission-suite.js, apps/pocketbase/pb_hooks/operator.pb.js, apps/pocketbase/pb_hooks/workspace-operator.js
+# Depends:     tests/upgrade/test_dossier_native.py, apps/mission_suite/engine.py, apps/pocketbase/pb_hooks/mission-suite.js, apps/pocketbase/pb_hooks/operator.pb.js, apps/pocketbase/pb_hooks/workspace-operator.js, tests/upgrade/government_fixture.py
 # EnumType:    Test
-# EnumEdges:   DEPENDS_ON tests/upgrade/test_dossier_native.py; VALIDATES apps/mission_suite/engine.py; VALIDATES apps/pocketbase/pb_hooks/mission-suite.js; VALIDATES apps/pocketbase/pb_hooks/operator.pb.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js
+# EnumEdges:   DEPENDS_ON tests/upgrade/test_dossier_native.py; VALIDATES apps/mission_suite/engine.py; VALIDATES apps/pocketbase/pb_hooks/mission-suite.js; VALIDATES apps/pocketbase/pb_hooks/operator.pb.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; CONSUMES tests/upgrade/government_fixture.py
 # DAG Node:    none
 # Intent:      Require native suite execution and scoped, read-only operator observations before accepting a box-worker runtime.
 # ───────────────────────────────────────────────────────────────
@@ -41,6 +41,7 @@ if str(ROOT) not in sys.path:
 from apps.mission_suite.bundle import source_fingerprint  # noqa: E402
 from apps.mission_suite.engine import decode, replay, run_suite  # noqa: E402
 from tests.upgrade.test_dossier_native import NativeServer  # noqa: E402
+from tests.upgrade.government_fixture import install_suite_membership  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
@@ -124,9 +125,13 @@ class SuiteServer(NativeServer):
                 "suite-policy.js",
                 "research-policy.js",
                 "workspace-access.js",
+                "government-access.js",
                 "workflow-policy.js",
                 "operator.pb.js",
                 "workspace-operator.js",
+                "business-action-policy.js",
+                "business-actions.js",
+                "workspace-value.js",
                 "workspace-administration.js",
                 "mission-policy.js",
             ):
@@ -134,6 +139,7 @@ class SuiteServer(NativeServer):
             migrations = self.root / "migrations"
             migrations.mkdir()
             (migrations / "1_fixture.js").write_text(SEED)
+            install_suite_membership(self.root)
             name = "1790300000_mission_suite.js"
             shutil.copyfile(
                 ROOT / "apps/pocketbase/pb_migrations" / name, migrations / name

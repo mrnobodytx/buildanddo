@@ -81,6 +81,16 @@ These are not style preferences. Each one exists because it broke something.
 
 ## Current plan
 
+The September 22 owner continuation also authorizes the restricted government
+research desk and eight-category assurance matrix under the existing upgrade
+dispatch. `docs/research-sprint.md` defines the provisional $100/month plus
+approval policy, local Decision Packages, market controls and polynomial checks.
+`docs/test-assurance.md` defines source and receiving-runtime checks. Generated
+research stays advisory; supplied opportunity dates and parameters are unverified.
+The native/browser, billing, official-notice, model and GPU receiving work is
+recorded in `.bits/handoffs/2026-09-22-bits-codegen-research-assurance.md`.
+This continuation does not complete or replace the existing acceptance gates.
+
 The owner prioritizes the 21-day Hostinger demo under the existing upgrade
 SRS/dispatch. Run `python scripts/ci/hostinger_readiness.py --check` and
 `python scripts/ci/submission_readiness.py --check` before
