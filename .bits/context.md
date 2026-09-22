@@ -52,7 +52,8 @@ matrix and retains the receipts, logs and referenced artifacts together. The
 source-validation include retains the native SDK/parser gates and Python
 3.11/3.12 foundry, portfolio and mission coverage. GitLab review pipelines also
 require exactly one actor label; external GitHub reviews require an export
-bound to the tested head. GitHub governance runs only by manual dispatch. The
+bound to the tested head. GitHub governance also runs automatically on public PR changes and label updates.
+Manual diagnostics remain available; no required GitLab check is removed. The
 existing private release path remains separately governed. GitHub is the public
 collaboration plane; its workflow definitions and historical check observations
 do not establish GitLab execution or runner health. The browser ships RUM and

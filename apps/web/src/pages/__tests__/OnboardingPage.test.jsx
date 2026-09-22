@@ -47,7 +47,10 @@ function Page() {
         <Route path="/onboarding" element={<OnboardingPage />} /><Route path="/app/erp" element={<p>Workspace ERP desk</p>} />
     </Routes></MemoryRouter>;
 }
-async function select(user) { await user.click(screen.getByRole('button', { name: 'Continue without a website' })); }
+async function select(user) {
+    await user.click(screen.getByRole('button', { name: 'Continue without a website' }));
+    await user.type(screen.getByLabelText('Workspace name'), 'Appointment shop');
+}
 it('creates the complete initial workspace through native onboarding before opening the requested desk', async () => {
     const user = userEvent.setup(); render(<Page />); await select(user); await user.click(screen.getByRole('button', { name: 'Create workspace' }));
     expect(await screen.findByText('Workspace ERP desk')).toBeVisible();
@@ -55,6 +58,15 @@ it('creates the complete initial workspace through native onboarding before open
     expect(backend.data.services.filter((item) => item.workspace === backend.data.workspace_onboarding[0].workspace)).toHaveLength(7);
     expect(backend.data.services.every((item) => item.status === 'planned')).toBe(true);
     expect(scope.refresh).toHaveBeenCalledTimes(1);
+    expect(scope.refresh).toHaveBeenCalledWith(backend.data.workspace_onboarding[0].workspace);
+    expect(backend.data.workspaces.find((row) => row.id === backend.data.workspace_onboarding[0].workspace).name).toBe('Appointment shop');
+});
+it('requires an explicit name so separate website-less businesses are not collapsed into one setup', async () => {
+    const user = userEvent.setup(); render(<Page />);
+    await user.click(screen.getByRole('button', { name: 'Continue without a website' }));
+    await user.click(screen.getByRole('button', { name: 'Create workspace' }));
+    expect(screen.getByLabelText('Workspace name')).toBeInvalid();
+    expect(pb.send).not.toHaveBeenCalled();
 });
 it('recovers a lost setup response without creating another workspace or service set', async () => {
     const user = userEvent.setup(); render(<Page />); await select(user); loseReply = true;

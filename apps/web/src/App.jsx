@@ -1,3 +1,19 @@
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/App.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-21
+// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx
+// Intent:      Route public and workspace views only after native session validation.
+// ───────────────────────────────────────────────────────────────
+
 import React, { lazy, Suspense } from 'react';
 import { MotionProvider } from '@/contexts/MotionContext';
 import { MotionEntrance } from '@/components/motion/MotionPrimitives';
@@ -120,8 +136,9 @@ const WORKSPACE_ROUTES = [
 
 // Redirect already-authenticated users away from the auth screens.
 function RedirectIfAuthed({ children }) {
-    const { isAuthed } = useAuth();
+    const { isAuthed, loading } = useAuth();
     const location = useLocation();
+    if (loading) return <RouteLoading fullPage />;
     if (isAuthed) return <Navigate to={workspaceDestination(location.state?.returnTo)} replace />;
     return children;
 }

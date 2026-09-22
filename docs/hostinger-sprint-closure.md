@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md
 # Intent:      Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.
 # ───────────────────────────────────────────────────────────────
 
@@ -186,19 +186,27 @@ checks the base repository, review number, labels and exact checked-out SHA;
 missing or foreign exports fail. No tokens belong in that file. Default-branch
 scans report review attribution as NOT_APPLICABLE, never as a reviewed actor.
 
-The GitHub governance workflow is retained only for explicit manual diagnostics.
-Its required PR number resolves once to a SHA used by every job. Governance
+The GitHub governance workflow runs automatically for public PR and label changes
+and retains explicit manual diagnostics. The selected review resolves once to a
+SHA used by every job; automatic runs also require that SHA to match the triggering
+PR head. Governance
 rechecks that review's labels and revision, so an updated PR cannot silently
 supply labels for a different candidate. Old failed checks remain historical.
 
 The private CI owner must verify that public candidates reach GitLab, supply
 trusted review metadata, and publish actual job results against the same GitHub
 SHA. Required-check configuration must then name those observed GitLab checks;
-disabling an obsolete GitHub trigger alone cannot satisfy branch protection.
+disabling an existing check cannot substitute for observed replacement enforcement.
 The read-only coding session cannot activate this integration or change repository
 settings. The receiving contract is
 `.bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md`.
 The separate Cloudflare Workers check requires its own build diagnostic.
+
+The current ten-piece product continuation is documented in
+`docs/sprint-user-journey.md`. It closes specific session, navigation, record
+isolation, capture, review and export gaps while retaining all required CI gates.
+The new complete mission export is a read-only observation bundle; the existing
+same-candidate replay, deployment and submission validators still decide admission.
 
 The stdlib source inspector follows literal local includes, rejects unresolved
 or unsafe include paths and inventories executable command lists. It does not

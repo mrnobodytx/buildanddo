@@ -223,14 +223,32 @@ class GitLabAcceptanceTests(unittest.TestCase):
         hostinger_readiness.check_wiring(ROOT)
         submission_readiness.check_wiring(ROOT)
 
-    def test_github_governance_is_an_explicit_manual_fallback(self) -> None:
+    def test_github_governance_preserves_automatic_and_manual_review_checks(
+        self,
+    ) -> None:
         workflow = next(
             item
             for item in agent_context.collect_pipelines(ROOT)
             if item["file"] == ".github/workflows/pr-governance.yml"
         )
-        self.assertEqual(workflow["triggers"], ["workflow_dispatch"])
+        self.assertEqual(
+            set(workflow["triggers"]), {"pull_request", "workflow_dispatch"}
+        )
         text = (ROOT / workflow["file"]).read_text()
+        for event in (
+            "opened",
+            "synchronize",
+            "reopened",
+            "labeled",
+            "unlabeled",
+            "ready_for_review",
+        ):
+            self.assertIn(event, text)
+        self.assertIn(
+            "github.event.pull_request.number || inputs.pull_request_number", text
+        )
+        self.assertIn("github.event.pull_request.head.sha", text)
+        self.assertIn('"$candidate_sha" == "$EVENT_SHA"', text)
         self.assertNotIn("ref: refs/pull/", text)
         self.assertEqual(text.count("uses: actions/checkout@v4"), 7)
         self.assertEqual(text.count("ref: ${{ needs.candidate.outputs.sha }}"), 7)

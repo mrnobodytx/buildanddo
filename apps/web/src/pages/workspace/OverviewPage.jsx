@@ -1,20 +1,17 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/OverviewPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js,
-//              apps/web/src/lib/workspaceActions.js
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/workspaceActions.js, apps/web/src/components/workspace/NextWorkspaceActions.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.quick_action
-// Intent:      Answer "what is happening in this workspace" in one screen —
-//              one merged activity feed, counts that mean something, and an
-//              honest statement when the data layer cannot be read.
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; PRODUCES workspace.quick_action; CONSUMES apps/web/src/components/workspace/NextWorkspaceActions.jsx
+// Intent:      Answer "what is happening in this workspace" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.
 // ───────────────────────────────────────────────────────────────
 
 import {
@@ -37,6 +34,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, Card } from '@/components/site/ui';
 import EmptyState from '@/components/workspace/EmptyState';
+import NextWorkspaceActions from '@/components/workspace/NextWorkspaceActions';
 import {
     MISSION_PRIORITY,
     MISSION_STATUS,
@@ -212,7 +210,7 @@ export default function OverviewPage() {
                 title="Front Page"
                 description="A live picture of what BuildAndDo noticed, what it's doing, and what it verified — for this workspace only."
             />
-
+            <NextWorkspaceActions signals={signals} missions={missions} evidence={evidence} />
 
             {degradedSources.length > 0 && (
                 <DegradedNotice

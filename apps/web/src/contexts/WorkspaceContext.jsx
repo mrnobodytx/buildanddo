@@ -31,10 +31,10 @@ export const WorkspaceProvider = ({ children }) => {
         loading: false,
         error: '',
     });
-    const [activeId, setActiveId] = useState(() => localStorage.getItem(ACTIVE_KEY) || null);
+    const [selection, setSelection] = useState({ accountId: '', id: null });
     const requestRef = useRef(0);
 
-    const load = useCallback(async () => {
+    const load = useCallback(async (preferredId = '') => {
         const request = ++requestRef.current;
         if (!accountId) {
             setSnapshot({ accountId: '', records: [], loading: false, error: '' });
@@ -48,7 +48,10 @@ export const WorkspaceProvider = ({ children }) => {
                 requestKey: null,
             });
             if (request !== requestRef.current) return;
+            if (preferredId && list.some((record) => record.id === preferredId))
+                setSelection({ accountId, id: preferredId });
             setSnapshot({ accountId, records: list, loading: false, error: '' });
+            return list;
         } catch {
             if (request !== requestRef.current) return;
             setSnapshot({
@@ -72,13 +75,16 @@ export const WorkspaceProvider = ({ children }) => {
     const workspaces = accountId && current ? snapshot.records : [];
     const loading = Boolean(accountId && (!current || snapshot.loading));
     const error = accountId && current ? snapshot.error : '';
+    let storedId = null;
+    try { storedId = localStorage.getItem(`${ACTIVE_KEY}:${accountId}`); } catch { /* Storage is optional. */ }
+    const activeId = selection.accountId === accountId ? selection.id : storedId;
     const active = workspaces.find((w) => w.id === activeId) || workspaces[0] || null;
 
     useEffect(() => {
-        if (active) localStorage.setItem(ACTIVE_KEY, active.id);
-    }, [active]);
+        try { if (active && accountId) localStorage.setItem(`${ACTIVE_KEY}:${accountId}`, active.id); } catch { /* Storage is optional. */ }
+    }, [active, accountId]);
 
-    const setActive = (id) => setActiveId(id);
+    const setActive = (id) => { if (workspaces.some((record) => record.id === id)) setSelection({ accountId, id }); };
 
     return (
         <WorkspaceContext.Provider

@@ -119,7 +119,7 @@ function predicate(filter, values, params) {
     const result = or(); assert.equal(i, tokens.length, filter); return result;
 }
 
-export function fixture({ migrated = true, runtime = {} } = {}) {
+export function fixture({ migrated = true, runtime = {}, now = () => new Date().toISOString() } = {}) {
     let data = {}; const collections = {};
     let count = 0; const denied = new Set(); const config = { failAudit: false, foreignMember: false };
     const app = {
@@ -144,7 +144,7 @@ export function fixture({ migrated = true, runtime = {} } = {}) {
             const name = value.collection().name;
             if (name === 'workspace_admin_events' && config.failAudit) throw new Error('audit storage unavailable');
             value.id ||= 'record' + String(++count).padStart(9, '0');
-            value.data.id = value.id; value.data.created ||= new Date().toISOString(); value.data.updated = new Date().toISOString();
+            value.data.id = value.id; value.data.created ||= now(); value.data.updated = now();
             const rows = data[name]; const index = rows.findIndex((row) => row.id === value.id);
             if (index >= 0) rows[index] = plain(value.data); else rows.push(plain(value.data));
         },

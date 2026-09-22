@@ -16,13 +16,17 @@
 // ───────────────────────────────────────────────────────────────
 
 import React, { useState } from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import MissionBuilder from '@/components/workspace/missions/MissionBuilder';
 import MissionGuide from '@/components/workspace/missions/MissionGuide';
 import MissionLearning from '@/components/workspace/missions/MissionLearning';
 import MissionReview from '@/components/workspace/missions/MissionReview';
 import { LESSONS, PLAN_FIELDS, TEVV, emptyPlan, emptyReview } from '@/lib/missionLearning';
 import { act, fireEvent, renderWithProviders, screen, setupUser, waitFor } from '@/test/utils';
+
+const currentAccess = vi.hoisted(() => ({ data: { can_write: true } }));
+vi.mock('@/contexts/WorkspaceAccessContext', () => ({ useWorkspaceAccess: () => currentAccess }));
+beforeEach(() => { currentAccess.data = { can_write: true }; });
 
 const fullPlan = () => ({
     ...emptyPlan(),
