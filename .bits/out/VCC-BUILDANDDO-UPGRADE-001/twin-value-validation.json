@@ -1,0 +1,663 @@
+{
+  "schema_version": "buildanddo.twin-value/v1",
+  "status": "PARTIAL",
+  "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs_codes": [
+    "SRS-BUILDANDDO-UPGRADE-001"
+  ],
+  "base_commit": "d88b43ea09f952d8cc39576f8d832240c3836b47",
+  "implementation_commit": "52ff911ab51288e2dd552e0b9903bb21832f3a29",
+  "test_identity": "Local source checks before the implementation commit; these source/test fingerprints match the committed bytes. The capture API case was rerun after comment-only test-header edits. No clean-candidate hosted acceptance is implied.",
+  "tested_file_sha256": {
+    "apps/pocketbase/pb_hooks/workspace-operator.js": "323a2947a1fbe01819cca373cdb172920f40768df55227f4c113e3006e3a544f",
+    "apps/pocketbase/pb_hooks/workspace-value.js": "54ae2a26245b0b84bc58f6b77a91c615d0bf2c9dc2fdd2c59cd401c105ed65cd",
+    "apps/web/src/components/workspace/ValueDashboard.jsx": "7d3dd20fa81eb34126196940a803771bb3cbb04dd3593897a44cb72fa4ffd134",
+    "apps/web/src/lib/operatorPlane.js": "b0b342ff47dd0c98885cff800adb5964ff12c8ef710a4dc6a7cafeed00b3df0b",
+    "apps/web/src/lib/workspaceValue.js": "308eff1854658247c5d21fcb4664deed5e3328b62edaf44ff9866bbfcb70f7cd",
+    "apps/web/src/pages/workspace/OperatorPage.jsx": "dc9d2190956120455c63fbfea63cf0c4daa4c0974466f3c7780f7c753888ea4c",
+    "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx": "71ccad41fdaea7d1b678d539942424ff680ca0cf06f7af65d4fe8fb772a075c8",
+    "libs/semantic_twin/phase1/compiler.py": "ea1ae7edab0938519374b71849f9439980a4f8ca783aa4d5a36b39bcda6ef555",
+    "libs/semantic_twin/progression.py": "e9bb2e9a083fcadc162a79c22705cb9bfdf56ee590b4e7c5db6ac39619ff4734",
+    "tests/upgrade/operator-client.test.mjs": "dbd08a725166c0940c334a2950a1354006b37135996a3bd0c8c6d8fff6334c50",
+    "tests/upgrade/operator-fixture.mjs": "e5f9defbc6336e5a5ba43c7c21a76f200c5810426096853dc52a92b18917e974",
+    "tests/upgrade/test_semantic_twin_phase1_complete.py": "25d849c7e4ead88f876fef4e10888998a027dc21e2f0ede6f57515a5248b36aa",
+    "tests/upgrade/test_semantic_twin_progression.py": "b3cad54a95291e50b250e628575fc64ea8f39ab6267d1d6c3fd1472106de647a",
+    "tests/upgrade/test_suite_native.py": "f2176fedfafb8239785f040ec1eb4fa6e6a4170e8e34b515aeb64b05b6da99e2",
+    "tests/upgrade/workspace-value.test.mjs": "3d184b4e342300249402f5c313687f09c0b76ccbba86c92189aa7fb4fe29b6d0"
+  },
+  "execution_environment": {
+    "node": "22.17.0",
+    "python": "3.12.13",
+    "source_checker_eslint": "9.16.0 global diagnostic only",
+    "source_checker_module_path": "/usr/local/share/nvm/versions/node/v24.13.0/lib/node_modules",
+    "source_checker_is_locked_lint": false
+  },
+  "results": {
+    "node-regression": {
+      "name": "node-regression",
+      "command": [
+        "node",
+        "--test",
+        "tests/upgrade/blueprint-client.test.mjs",
+        "tests/upgrade/blueprint-saved-client.test.mjs",
+        "tests/upgrade/blueprint-system.test.mjs",
+        "tests/upgrade/build.test.mjs",
+        "tests/upgrade/business-client.test.mjs",
+        "tests/upgrade/business-execution.test.mjs",
+        "tests/upgrade/business-learning.test.mjs",
+        "tests/upgrade/classroom-client.test.mjs",
+        "tests/upgrade/classroom-presence.test.mjs",
+        "tests/upgrade/classroom-system.test.mjs",
+        "tests/upgrade/commercial-enquiry.test.mjs",
+        "tests/upgrade/decision-runtime.test.mjs",
+        "tests/upgrade/discord-catalogue.test.mjs",
+        "tests/upgrade/dossier-client.test.mjs",
+        "tests/upgrade/dossier-system.test.mjs",
+        "tests/upgrade/editorial-frontpage.test.mjs",
+        "tests/upgrade/government-learning.test.mjs",
+        "tests/upgrade/knowledge-client.test.mjs",
+        "tests/upgrade/knowledge-system.test.mjs",
+        "tests/upgrade/mission-research.test.mjs",
+        "tests/upgrade/mission-system.test.mjs",
+        "tests/upgrade/motion-system.test.mjs",
+        "tests/upgrade/objective-onboarding.test.mjs",
+        "tests/upgrade/operator-client.test.mjs",
+        "tests/upgrade/operator-system.test.mjs",
+        "tests/upgrade/pocketbase-metrics.test.mjs",
+        "tests/upgrade/policy-intelligence.test.mjs",
+        "tests/upgrade/research-client.test.mjs",
+        "tests/upgrade/signal-mission.test.mjs",
+        "tests/upgrade/source-checker.test.mjs",
+        "tests/upgrade/sprint-integrity.test.mjs",
+        "tests/upgrade/sprint-journey.test.mjs",
+        "tests/upgrade/staging-contract.test.mjs",
+        "tests/upgrade/suite-client.test.mjs",
+        "tests/upgrade/suite-system.test.mjs",
+        "tests/upgrade/tutorial-learning-client.test.mjs",
+        "tests/upgrade/tutorial-learning-system.test.mjs",
+        "tests/upgrade/work-history.test.mjs",
+        "tests/upgrade/workflow-client.test.mjs",
+        "tests/upgrade/workflow-runs.test.mjs",
+        "tests/upgrade/workspace-administration.test.mjs",
+        "tests/upgrade/workspace-assistant.test.mjs",
+        "tests/upgrade/workspace-community.test.mjs",
+        "tests/upgrade/workspace-control-client.test.mjs",
+        "tests/upgrade/workspace-integration.test.mjs",
+        "tests/upgrade/workspace-rooms.test.mjs",
+        "tests/upgrade/workspace-summary.test.mjs",
+        "tests/upgrade/workspace-value.test.mjs"
+      ],
+      "exit_code": 1,
+      "started_at": "2026-09-22T14:18:56.559794+00:00",
+      "finished_at": "2026-09-22T14:19:21.953223+00:00",
+      "seconds": 25.393,
+      "log": "/tmp/buildanddo-twin-value/node-regression.log",
+      "log_sha256": "046bb1b0a3a4ac5b506eab723444c19131e53c00ce09c1c982f62335e98b8a8a",
+      "log_bytes": 138470
+    },
+    "node-regression-final": {
+      "name": "node-regression-final",
+      "command": [
+        "node",
+        "--test",
+        "tests/upgrade/blueprint-client.test.mjs",
+        "tests/upgrade/blueprint-saved-client.test.mjs",
+        "tests/upgrade/blueprint-system.test.mjs",
+        "tests/upgrade/build.test.mjs",
+        "tests/upgrade/business-client.test.mjs",
+        "tests/upgrade/business-execution.test.mjs",
+        "tests/upgrade/business-learning.test.mjs",
+        "tests/upgrade/classroom-client.test.mjs",
+        "tests/upgrade/classroom-presence.test.mjs",
+        "tests/upgrade/classroom-system.test.mjs",
+        "tests/upgrade/commercial-enquiry.test.mjs",
+        "tests/upgrade/decision-runtime.test.mjs",
+        "tests/upgrade/discord-catalogue.test.mjs",
+        "tests/upgrade/dossier-client.test.mjs",
+        "tests/upgrade/dossier-system.test.mjs",
+        "tests/upgrade/editorial-frontpage.test.mjs",
+        "tests/upgrade/government-learning.test.mjs",
+        "tests/upgrade/knowledge-client.test.mjs",
+        "tests/upgrade/knowledge-system.test.mjs",
+        "tests/upgrade/mission-research.test.mjs",
+        "tests/upgrade/mission-system.test.mjs",
+        "tests/upgrade/motion-system.test.mjs",
+        "tests/upgrade/objective-onboarding.test.mjs",
+        "tests/upgrade/operator-client.test.mjs",
+        "tests/upgrade/operator-system.test.mjs",
+        "tests/upgrade/pocketbase-metrics.test.mjs",
+        "tests/upgrade/policy-intelligence.test.mjs",
+        "tests/upgrade/research-client.test.mjs",
+        "tests/upgrade/signal-mission.test.mjs",
+        "tests/upgrade/source-checker.test.mjs",
+        "tests/upgrade/sprint-integrity.test.mjs",
+        "tests/upgrade/sprint-journey.test.mjs",
+        "tests/upgrade/staging-contract.test.mjs",
+        "tests/upgrade/suite-client.test.mjs",
+        "tests/upgrade/suite-system.test.mjs",
+        "tests/upgrade/tutorial-learning-client.test.mjs",
+        "tests/upgrade/tutorial-learning-system.test.mjs",
+        "tests/upgrade/work-history.test.mjs",
+        "tests/upgrade/workflow-client.test.mjs",
+        "tests/upgrade/workflow-runs.test.mjs",
+        "tests/upgrade/workspace-administration.test.mjs",
+        "tests/upgrade/workspace-assistant.test.mjs",
+        "tests/upgrade/workspace-community.test.mjs",
+        "tests/upgrade/workspace-control-client.test.mjs",
+        "tests/upgrade/workspace-integration.test.mjs",
+        "tests/upgrade/workspace-rooms.test.mjs",
+        "tests/upgrade/workspace-summary.test.mjs",
+        "tests/upgrade/workspace-value.test.mjs"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:23:13.830151+00:00",
+      "finished_at": "2026-09-22T14:23:32.015512+00:00",
+      "seconds": 18.185,
+      "log": "/tmp/buildanddo-twin-value/node-regression-final.log",
+      "log_sha256": "2b810167e08e21762ef291659c2d74766faff511fd73603031c4852fbdbd3a27",
+      "log_bytes": 137754
+    },
+    "python-regression": {
+      "name": "python-regression",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/upgrade",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:18:56.559037+00:00",
+      "finished_at": "2026-09-22T14:21:18.119061+00:00",
+      "seconds": 141.56,
+      "log": "/tmp/buildanddo-twin-value/python-regression.log",
+      "log_sha256": "1a717fda4b555330c6afeff0d24658e979579e3eac36d3d792892c8cd5a9788b",
+      "log_bytes": 3517
+    },
+    "value-coverage": {
+      "name": "value-coverage",
+      "command": [
+        "node",
+        "--experimental-test-coverage",
+        "--test-coverage-include=apps/web/src/lib/workspaceValue.js",
+        "--test-coverage-include=apps/pocketbase/pb_hooks/workspace-value.js",
+        "--test",
+        "tests/upgrade/workspace-value.test.mjs"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:15:16.017375+00:00",
+      "finished_at": "2026-09-22T14:15:23.038361+00:00",
+      "seconds": 7.021,
+      "log": "/tmp/buildanddo-twin-value/value-coverage.log",
+      "log_sha256": "728d6c573ce21b32e7e55191e7f2ba58ee6063b7e2700ab4e61bbd387c571c39",
+      "log_bytes": 3969
+    },
+    "progression-coverage": {
+      "name": "progression-coverage",
+      "command": [
+        "python",
+        "-m",
+        "trace",
+        "--count",
+        "--summary",
+        "--missing",
+        "--coverdir",
+        "/tmp/buildanddo-twin-value/python-coverage",
+        "--module",
+        "unittest",
+        "tests.upgrade.test_semantic_twin_progression"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:16:52.981143+00:00",
+      "finished_at": "2026-09-22T14:16:58.926454+00:00",
+      "seconds": 5.945,
+      "log": "/tmp/buildanddo-twin-value/progression-coverage.log",
+      "log_sha256": "9f20b1f3529d22a04e0900390fcf23460978747fd8a7809127527b69388e44b2",
+      "log_bytes": 6293
+    },
+    "capture-api-final": {
+      "name": "capture-api-final",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "tests.upgrade.test_semantic_twin_phase1_complete.CompleteCompilerTests.test_development_capture_reuses_canonical_graph_and_epoch_time"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:27:08.733130+00:00",
+      "finished_at": "2026-09-22T14:27:26.713002+00:00",
+      "seconds": 17.98,
+      "log": "/tmp/buildanddo-twin-value/capture-api-final.log",
+      "log_sha256": "41b9e69b40e67d3c6063caeda9564b6413bca2c7718c5909f402352424ed2f14",
+      "log_bytes": 99
+    },
+    "real-capture": {
+      "name": "real-capture",
+      "command": [
+        "python",
+        "/tmp/buildanddo-twin-value/check_capture.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:24:23.174589+00:00",
+      "finished_at": "2026-09-22T14:25:20.477060+00:00",
+      "seconds": 57.303,
+      "log": "/tmp/buildanddo-twin-value/real-capture.log",
+      "log_sha256": "5c5430daf4e755be778d2bd21c3dc17bfafcf91cacde4b3cfb9f2649c482ef69",
+      "log_bytes": 1600
+    },
+    "python-lint": {
+      "name": "python-lint",
+      "command": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "libs/semantic_twin/progression.py",
+        "libs/semantic_twin/phase1/compiler.py",
+        "tests/upgrade/test_semantic_twin_progression.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:24:35.535177+00:00",
+      "finished_at": "2026-09-22T14:24:35.657572+00:00",
+      "seconds": 0.122,
+      "log": "/tmp/buildanddo-twin-value/python-lint.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "log_bytes": 19
+    },
+    "python-typing": {
+      "name": "python-typing",
+      "command": [
+        "python",
+        "-m",
+        "mypy",
+        "--strict",
+        "libs/semantic_twin/progression.py",
+        "libs/semantic_twin/phase1/compiler.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:24:37.361219+00:00",
+      "finished_at": "2026-09-22T14:24:37.933520+00:00",
+      "seconds": 0.572,
+      "log": "/tmp/buildanddo-twin-value/python-typing.log",
+      "log_sha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+      "log_bytes": 43
+    },
+    "source-diagnostic": {
+      "name": "source-diagnostic",
+      "command": [
+        "node",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:18:56.560961+00:00",
+      "finished_at": "2026-09-22T14:19:09.734666+00:00",
+      "seconds": 13.174,
+      "log": "/tmp/buildanddo-twin-value/source-diagnostic.log",
+      "log_sha256": "ca36bb92698c0ae8bc7ccb17ee31ea82cd03e63e73e322f906d1d8e2c03d1743",
+      "log_bytes": 90
+    },
+    "offline-dependencies": {
+      "name": "offline-dependencies",
+      "command": [
+        "npm",
+        "ci",
+        "--offline",
+        "--include=dev",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exit_code": 1,
+      "started_at": "2026-09-22T14:15:16.017406+00:00",
+      "finished_at": "2026-09-22T14:15:25.458994+00:00",
+      "seconds": 9.442,
+      "log": "/tmp/buildanddo-twin-value/offline-dependencies.log",
+      "log_sha256": "7601bb24ca4b3e6c5e076e1e21c5870d658be5d2b2bd0cb7ab7f2cd923ff8d98",
+      "log_bytes": 489
+    },
+    "rendered-operator": {
+      "name": "rendered-operator",
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "test",
+        "--",
+        "src/pages/workspace/__tests__/OperatorPage.test.jsx"
+      ],
+      "exit_code": 127,
+      "started_at": "2026-09-22T14:16:52.980780+00:00",
+      "finished_at": "2026-09-22T14:16:54.157744+00:00",
+      "seconds": 1.177,
+      "log": "/tmp/buildanddo-twin-value/rendered-operator.log",
+      "log_sha256": "ae6eac5979f1c166a270ce775925b8b42cdba3f536db991372cdf20dc637b29d",
+      "log_bytes": 192
+    },
+    "native-operator": {
+      "name": "native-operator",
+      "command": [
+        "python",
+        "tests/upgrade/test_suite_native.py",
+        "--require-binary"
+      ],
+      "exit_code": 1,
+      "started_at": "2026-09-22T14:25:17.350907+00:00",
+      "finished_at": "2026-09-22T14:25:17.671565+00:00",
+      "seconds": 0.321,
+      "log": "/tmp/buildanddo-twin-value/native-operator.log",
+      "log_sha256": "fab2b870ae2780c1db7e6a6e2c582e5d8eded6f8a37cbc1a5acb493101cb87bb",
+      "log_bytes": 112
+    },
+    "web-tests": {
+      "name": "web-tests",
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "test"
+      ],
+      "exit_code": 127,
+      "started_at": "2026-09-22T14:27:53.926130+00:00",
+      "finished_at": "2026-09-22T14:27:55.001415+00:00",
+      "seconds": 1.075,
+      "log": "/tmp/buildanddo-twin-value/web-tests.log",
+      "log_sha256": "ad1008697a0e65d0c55a056826b79bc4031e3ac8af07c196e10f6e218ea33254",
+      "log_bytes": 140
+    },
+    "web-lint": {
+      "name": "web-lint",
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "lint"
+      ],
+      "exit_code": 2,
+      "started_at": "2026-09-22T14:18:56.595702+00:00",
+      "finished_at": "2026-09-22T14:19:08.979242+00:00",
+      "seconds": 12.384,
+      "log": "/tmp/buildanddo-twin-value/web-lint.log",
+      "log_sha256": "080d9baad27f964fed893b4d2394fe8afde45685f1ef5083c2bfb54465e170f2",
+      "log_bytes": 1693
+    },
+    "web-build": {
+      "name": "web-build",
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "build"
+      ],
+      "exit_code": 1,
+      "started_at": "2026-09-22T14:18:56.558222+00:00",
+      "finished_at": "2026-09-22T14:19:03.911844+00:00",
+      "seconds": 7.354,
+      "log": "/tmp/buildanddo-twin-value/web-build.log",
+      "log_sha256": "c8e1f6fca51c2294d50c1de473516617ed9f4af5434e81e1c3b1ae63cb4756fc",
+      "log_bytes": 587
+    },
+    "readiness": {
+      "name": "readiness",
+      "command": [
+        "python",
+        "scripts/ci/hostinger_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:27:08.750533+00:00",
+      "finished_at": "2026-09-22T14:27:09.434288+00:00",
+      "seconds": 0.684,
+      "log": "/tmp/buildanddo-twin-value/readiness.log",
+      "log_sha256": "7799e54ef92ae57c822cdc3c86f8b0a27b57ea4cc0825d813de3e0ae6969cfd1",
+      "log_bytes": 85
+    },
+    "submission-policy": {
+      "name": "submission-policy",
+      "command": [
+        "python",
+        "scripts/ci/submission_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:27:08.715624+00:00",
+      "finished_at": "2026-09-22T14:27:09.195374+00:00",
+      "seconds": 0.48,
+      "log": "/tmp/buildanddo-twin-value/submission-policy.log",
+      "log_sha256": "f67a6b0785d6eb8c1010f942b404ff5ed35157c2532d7241de173a9447ab6038",
+      "log_bytes": 88
+    },
+    "boundary": {
+      "name": "boundary",
+      "command": [
+        "python",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:27:08.704400+00:00",
+      "finished_at": "2026-09-22T14:27:10.187854+00:00",
+      "seconds": 1.484,
+      "log": "/tmp/buildanddo-twin-value/boundary.log",
+      "log_sha256": "28f78875d08afe13929ccd5c8a0ef4f51a584619cfd6fa7d9c8ecca1757b8ada",
+      "log_bytes": 82
+    },
+    "context": {
+      "name": "context",
+      "command": [
+        "python",
+        "scripts/ci/agent_context.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:27:08.732853+00:00",
+      "finished_at": "2026-09-22T14:27:09.561738+00:00",
+      "seconds": 0.829,
+      "log": "/tmp/buildanddo-twin-value/context.log",
+      "log_sha256": "f625e9d776db2194712d0e1d36d5d56049117007714d6b8bcf5b4ea0de192191",
+      "log_bytes": 86
+    },
+    "boundary-final": {
+      "name": "boundary-final",
+      "command": [
+        "python",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:33:52.225425+00:00",
+      "finished_at": "2026-09-22T14:33:54.212491+00:00",
+      "seconds": 1.987,
+      "log": "/tmp/buildanddo-twin-value/boundary-final.log",
+      "log_sha256": "19e796bc436db204a340121c1859a74aefeabca99a137c740b2f05774c0d19fc",
+      "log_bytes": 82
+    },
+    "context-final": {
+      "name": "context-final",
+      "command": [
+        "python",
+        "scripts/ci/agent_context.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:33:52.242465+00:00",
+      "finished_at": "2026-09-22T14:33:53.282119+00:00",
+      "seconds": 1.039,
+      "log": "/tmp/buildanddo-twin-value/context-final.log",
+      "log_sha256": "f625e9d776db2194712d0e1d36d5d56049117007714d6b8bcf5b4ea0de192191",
+      "log_bytes": 86
+    },
+    "readiness-final": {
+      "name": "readiness-final",
+      "command": [
+        "python",
+        "scripts/ci/hostinger_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:33:52.242489+00:00",
+      "finished_at": "2026-09-22T14:33:53.183496+00:00",
+      "seconds": 0.941,
+      "log": "/tmp/buildanddo-twin-value/readiness-final.log",
+      "log_sha256": "7799e54ef92ae57c822cdc3c86f8b0a27b57ea4cc0825d813de3e0ae6969cfd1",
+      "log_bytes": 85
+    },
+    "submission-policy-final": {
+      "name": "submission-policy-final",
+      "command": [
+        "python",
+        "scripts/ci/submission_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:33:52.242462+00:00",
+      "finished_at": "2026-09-22T14:33:52.780634+00:00",
+      "seconds": 0.537,
+      "log": "/tmp/buildanddo-twin-value/submission-policy-final.log",
+      "log_sha256": "f67a6b0785d6eb8c1010f942b404ff5ed35157c2532d7241de173a9447ab6038",
+      "log_bytes": 88
+    },
+    "memory-final": {
+      "name": "memory-final",
+      "command": [
+        "python",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T14:33:52.223785+00:00",
+      "finished_at": "2026-09-22T14:33:53.206598+00:00",
+      "seconds": 0.983,
+      "log": "/tmp/buildanddo-twin-value/memory-final.log",
+      "log_sha256": "c9b0eb90ad7fe10c599ec136f2fbe21ee556f7f3b567c27e173bb3cd461125bc",
+      "log_bytes": 74
+    }
+  },
+  "suite_totals": {
+    "node": {
+      "total": 580,
+      "passed": 580,
+      "skipped": 0
+    },
+    "python": {
+      "total": 802,
+      "passed": 770,
+      "skipped": 32
+    }
+  },
+  "focused_coverage": {
+    "workspace_value_backend": {
+      "tests": 12,
+      "line_percent": 100,
+      "branch_percent": 92.19,
+      "method": "Node 22.17.0 V8 test coverage; explicit storage/transport doubles"
+    },
+    "workspace_value_frontend": {
+      "tests": 12,
+      "line_percent": 100,
+      "branch_percent": 96.15,
+      "method": "Node 22.17.0 V8 test coverage; pure projection, not JSX rendering"
+    },
+    "progression": {
+      "tests": 19,
+      "line_percent": 99,
+      "executable_lines": 456,
+      "method": "Python 3.12.13 stdlib trace; not branch coverage"
+    }
+  },
+  "capture": {
+    "scope": "buildanddo/public-release",
+    "observed_at": "2026-09-22T14:24:23.452199+00:00",
+    "objects": 3373,
+    "relations": 7395,
+    "connected": true,
+    "capture_digest": "05e04265d7758a90312aa66f5a77109df7b4a00ac0da108055839112ef51afa9",
+    "phase1_root": "5d7a4ee6d7983360810d9efc02d64b6a488a037ae2c837b8c64b659133320ff0",
+    "evidence_states": {
+      "INFERRED": 12,
+      "OBSERVED": 2985,
+      "UNMEASURED": 376
+    },
+    "input_status": {
+      "source": {
+        "object_count": 83,
+        "status": "OBSERVED_INPUT"
+      },
+      "documentation": {
+        "object_count": 186,
+        "status": "OBSERVED_INPUT"
+      },
+      "dispatch_reports": {
+        "object_count": 20,
+        "status": "OBSERVED_INPUT"
+      },
+      "release_receipts": {
+        "object_count": 0,
+        "status": "UNMEASURED"
+      },
+      "git_history": {
+        "object_count": 5,
+        "status": "OBSERVED_INPUT"
+      },
+      "sbom": {
+        "object_count": 0,
+        "status": "UNMEASURED"
+      },
+      "gitlab": {
+        "object_count": 0,
+        "status": "UNMEASURED"
+      },
+      "datadog": {
+        "object_count": 0,
+        "status": "UNMEASURED"
+      },
+      "memory": {
+        "object_count": 2686,
+        "status": "OBSERVED_INPUT"
+      }
+    },
+    "bounded_inputs": {
+      "history_limit": 5,
+      "sbom_paths": [],
+      "memory_paths": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json"
+      ]
+    },
+    "literal_search_results": 100,
+    "dependency_paths": 3,
+    "deterministic_roundtrip": true,
+    "operational_verification": "UNMEASURED",
+    "authorized": false,
+    "file_sha256": "0e1cc7df03fd129c5aec4f5e84f47d1718c01fe52967fbd0b75715c0eebfa317"
+  },
+  "capture_script_sha256": "5939b6dd2d9e4efd6f96f7fb232b5ac2c167dcfd347c924041205a6d3960eff8",
+  "artifact_retention": "Complete logs, helper script and capture bytes remain session-local under /tmp/buildanddo-twin-value; this public record retains command/results/timestamps/digests and the report includes a runnable API composition. Regeneration after source changes yields a new capture.",
+  "governance": {
+    "readiness": "PASS; source binding only",
+    "submission_policy": "PASS; internal policy only",
+    "context": "PASS; 24 retained findings, 22 unwired gates",
+    "public_boundary": "PASS",
+    "remote_actor_label": "UNMEASURED; actor:agent required"
+  },
+  "unavailable_inputs": [
+    "Vitest and Vite from the locked frontend install",
+    "eslint-plugin-import from the locked frontend install",
+    "Locked zod archive absent from offline npm cache",
+    "Native PocketBase test runtimes",
+    "Authenticated workspace and real reviewed mission",
+    "Canonical owner mappings and development-model owner",
+    "Authenticated ecosystem observation/event transport and two retained runtime captures",
+    "Comparable effort, cost, revenue and eligible-work measurements",
+    "Hosted same-candidate GitLab acceptance and independent deployed release evidence"
+  ],
+  "limits": {
+    "authority_grants_created": 0,
+    "live_effects_performed": 0,
+    "economic_value_measured": false,
+    "semantic_runtime_operational": false,
+    "ui_rendered": false,
+    "native_acceptance": "HOLD",
+    "full_day21_matrix_rerun": false
+  }
+}
