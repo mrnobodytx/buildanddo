@@ -81,5 +81,14 @@ export function exportMissionPlan(plan) {
     const anchor = document.createElement('a');
     anchor.href = url; anchor.download = 'blueprint-mission-plan.json';
     document.body.appendChild(anchor); anchor.click(); anchor.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    // Revoking is cleanup, and this timer fires detached a second later - by then the page may be
+    // gone and nothing is left to catch a throw. Measured: under jsdom URL.revokeObjectURL is not a
+    // function, so the timer raised an unhandled TypeError inside whichever test was running at the
+    // time, and vitest reports that it "might cause false positive tests". A failure to release a
+    // blob must never surface as an error in the thing that scheduled it.
+    setTimeout(() => {
+        try {
+            if (typeof URL.revokeObjectURL === 'function') URL.revokeObjectURL(url);
+        } catch { /* the document went away first; the blob dies with it */ }
+    }, 1000);
 }
