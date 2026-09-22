@@ -1,9 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/__tests__/OverviewPage.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TEST-001
+// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
@@ -93,6 +94,31 @@ describe('OverviewPage', () => {
         expect(
             screen.getByRole('heading', { name: 'Active missions', level: 2 }),
         ).toBeInTheDocument();
+    });
+
+    it('reopens the persisted objective with an existing lesson and the exact ERP goal', async () => {
+        seed();
+        renderWithProviders(<OverviewPage />, { workspace: { active: createMockWorkspace({
+            id: 'ws_test', onboarding_intent: 'build', onboarding_objective: 'goal1',
+            expand: { onboarding_objective: { id: 'goal1', workspace: 'ws_test', title: 'Deploy my first website' } },
+        }) } });
+        expect(await screen.findByRole('heading', { name: 'Your starting path' })).toBeVisible();
+        expect(screen.getByText('Deploy my first website')).toBeVisible();
+        expect(screen.getByRole('link', { name: /First lesson:/ })).toHaveAttribute('href', '/app/tutorials?lesson=measurable-objectives');
+        expect(screen.getByRole('link', { name: 'Plan tasks for your objective' })).toHaveAttribute('href', '/app/erp?objective=goal1');
+        expect(screen.getByRole('link', { name: 'Draft a mission' })).toHaveAttribute('href', '/app/missions');
+        expect(screen.getByText('Website context is optional')).toBeVisible();
+    });
+
+    it('does not display an unreadable or foreign expanded objective', async () => {
+        seed();
+        renderWithProviders(<OverviewPage />, { workspace: { active: createMockWorkspace({
+            id: 'ws_test', onboarding_intent: 'class', onboarding_objective: 'goal1',
+            expand: { onboarding_objective: { id: 'goal1', workspace: 'other', title: 'Private foreign goal' } },
+        }) } });
+        expect(await screen.findByText(/Your saved objective is unavailable/)).toBeVisible();
+        expect(screen.queryByText('Private foreign goal')).not.toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: /First lesson:/ })).not.toBeInTheDocument();
     });
 
     it('derives every stat card from the loaded records', async () => {

@@ -530,7 +530,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 46004,
+      "lines": 46469,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -545,7 +545,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -664,7 +664,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1463,
+      "lines": 1482,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -679,7 +679,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -983,7 +983,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1903,
+      "lines": 1926,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -998,7 +998,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -3416,12 +3416,12 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js"
       ],
-      "lines": 86,
+      "lines": 88,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject stale membership, reassigned records and foreign relations at the native workspace write boundary.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -3431,9 +3431,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration",
-        "sprint-completion",
-        "workspace-assistant"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -7485,7 +7483,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -9173,8 +9171,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade",
-        "workspace-knowledge"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -9309,10 +9306,10 @@
         "apps/web/src/lib/onboarding.js",
         "apps/web/src/contexts/AuthContext.jsx"
       ],
-      "lines": 379,
+      "lines": 186,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Create a recoverable workspace while keeping selected domain input scoped to the current account.",
+      "intent_statement": "Start a recoverable workspace from an explicit intent and objective, with optional business context scoped to the current account.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9324,7 +9321,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -10147,9 +10144,10 @@
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/workspaceActions.js",
-        "apps/web/src/components/workspace/NextWorkspaceActions.jsx"
+        "apps/web/src/components/workspace/NextWorkspaceActions.jsx",
+        "apps/web/src/lib/onboarding.js"
       ],
-      "lines": 502,
+      "lines": 517,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Answer \"what is happening in this workspace\" in one screen \u2014 one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
@@ -10164,7 +10162,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -38608,7 +38606,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 537,
+      "lines": 541,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38623,7 +38621,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -38670,7 +38668,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1032,
+      "lines": 1034,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38685,7 +38683,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -39176,7 +39174,7 @@
         "apps/pocketbase/pb_hooks/workflow-runs.js",
         "apps/pocketbase/pb_hooks/workspace-replay.js"
       ],
-      "lines": 805,
+      "lines": 847,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.",
@@ -39191,7 +39189,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -40174,14 +40172,15 @@
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js",
-        "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js"
+        "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js",
+        "apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js"
       ],
-      "lines": 76,
+      "lines": 103,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Complete onboarding in one transaction so failed seeds and lost responses cannot create duplicate workspaces.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -40191,8 +40190,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-completion",
-        "workspace-assistant"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -40686,17 +40684,19 @@
       ],
       "enum_type": "Adapter",
       "functions": [
+        "recommendedPath",
         "createWorkspace"
       ],
       "dependencies": [
-        "apps/pocketbase/pb_hooks/workspace-onboarding.js"
+        "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+        "apps/pocketbase/pb_migrations/data/starter-tutorials.json"
       ],
-      "lines": 36,
+      "lines": 77,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Recover complete onboarding receipts while discarding late responses from a previous account.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -40706,8 +40706,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-completion",
-        "workspace-assistant"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -40805,7 +40804,7 @@
         "apps/web/src/pages/OnboardingPage.jsx",
         "apps/pocketbase/pb_hooks/workspace-onboarding.js"
       ],
-      "lines": 104,
+      "lines": 161,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise the actual onboarding page with native command fixtures, lost responses, rollback and account changes.",
@@ -40820,7 +40819,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -45170,7 +45169,7 @@
         "tests/upgrade/sprint-journey.test.mjs",
         "tests/upgrade/test_workspace_native.py"
       ],
-      "lines": 101,
+      "lines": 149,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the ten source gaps closing the sprint's user journey and preserve the separate runtime acceptance obligations.",
@@ -45185,7 +45184,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -45987,12 +45986,478 @@
       "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/sprint-journey-report.md",
       "description": "Recorded the ten source repairs and automatic governance restoration under the existing upgrade dispatch, preserving all GitLab gates and the observed runtime limits.",
       "timestamp": "2026-09-22T00:12:10Z"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/sprint-user-journey.md",
+        "docs/submission-guide.md",
+        ".gitlab/ci/day21-submission.yml"
+      ],
+      "lines": 116,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define the receiving evidence and verified rollback postconditions that separate source onboarding completion from a deployed Day-21 outcome.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js"
+      ],
+      "lines": 47,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain a workspace's chosen intent and first objective without changing native access rules or losing goals on rollback.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/OverviewPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-TEST-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/workspace/OverviewPage.jsx",
+        "apps/web/src/test/utils.jsx"
+      ],
+      "lines": 321,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep the front page honest: counts must come from records, the domain banner must not imply authorisation, and empty means empty.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/objective-onboarding.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "setup",
+        "expanded"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+        "apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js",
+        "apps/web/src/lib/onboarding.js"
+      ],
+      "lines": 168,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify that saved intent reaches a real objective and existing lessons without duplicate setups, lost goals or cross-account results.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": ".gitlab/ci/day21-submission.yml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .gitlab/ci/day21-submission.yml as declared by .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": "docs/sprint-user-journey.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/sprint-user-journey.md as declared by .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/submission-guide.md as declared by .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+      "target": "apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js as declared by apps/pocketbase/pb_hooks/workspace-onboarding.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js",
+      "target": "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "DEPENDS_ON apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js as declared by apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/onboarding.js",
+      "target": "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json as declared by apps/web/src/lib/onboarding.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/OverviewPage.jsx",
+      "target": "apps/web/src/lib/onboarding.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES apps/web/src/lib/onboarding.js as declared by apps/web/src/pages/workspace/OverviewPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/OverviewPage.test.jsx",
+      "target": "apps/web/src/test/utils.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES apps/web/src/test/utils.jsx as declared by apps/web/src/pages/workspace/__tests__/OverviewPage.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/OverviewPage.test.jsx",
+      "target": "apps/web/src/pages/workspace/OverviewPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES apps/web/src/pages/workspace/OverviewPage.jsx as declared by apps/web/src/pages/workspace/__tests__/OverviewPage.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/objective-onboarding.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-onboarding.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES apps/pocketbase/pb_hooks/workspace-onboarding.js as declared by tests/upgrade/objective-onboarding.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/objective-onboarding.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js as declared by tests/upgrade/objective-onboarding.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/objective-onboarding.test.mjs",
+      "target": "apps/web/src/lib/onboarding.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES apps/web/src/lib/onboarding.js as declared by tests/upgrade/objective-onboarding.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/sprint-user-journey.md",
+        ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json"
+      ],
+      "lines": 162,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report the objective-first implementation and distinguish measured local acceptance from the remaining live Day-21 obligations.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json"
+      ],
+      "lines": 1172,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind objective onboarding source results and all eighteen acceptance outcomes to the candidate actually tested.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind objective onboarding source results and all eighteen acceptance outcomes to the candidate actually tested.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-report.md",
+      "target": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-report.md",
+      "target": "docs/sprint-user-journey.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/sprint-user-journey.md as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "aa4b426173e22b4728b30185d410699c9ce3cb38",
+      "smoke_result": null,
+      "event_type": "commit",
+      "file_path": "apps/web/src/pages/OnboardingPage.jsx",
+      "timestamp": "2026-09-22T00:53:15Z",
+      "description": "Persist explicit onboarding intent and one scoped ERP objective atomically; optional context and legacy setup receipts remain supported."
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "aa4b426173e22b4728b30185d410699c9ce3cb38",
+      "smoke_result": "28/28",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/objective-onboarding.test.mjs",
+      "timestamp": "2026-09-22T00:48:50.555480+00:00",
+      "description": "The 28 connected onboarding/integrity cases pass, including all six intents, lost responses, transaction failure and retained migration rollback; three selected source modules have 100 percent V8 line coverage."
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": null,
+      "smoke_result": null,
+      "event_type": "failure",
+      "file_path": "apps/web/src/pages/OnboardingPage.jsx",
+      "timestamp": "2026-09-22T00:48:54.443534+00:00",
+      "description": "The offline source diagnostic caught a missing closing Button tag in the new intake form; it was fixed and the final diagnostic parsed 337 modules with zero errors. Rendered behavior remains unexecuted."
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "aa4b426173e22b4728b30185d410699c9ce3cb38",
+      "smoke_result": "558/558",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade",
+      "timestamp": "2026-09-22T00:57:57.263309+00:00",
+      "description": "The unchanged objective-onboarding candidate passes all 558 Node upgrade cases without skips; the separate semantic-twin profile also passes all 122 cases."
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "aa4b426173e22b4728b30185d410699c9ce3cb38",
+      "smoke_result": "4/18",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json",
+      "timestamp": "2026-09-22T00:58:10.360023+00:00",
+      "description": "The existing complete Day-21 runner retains four PASS, three FAIL, one HOLD and ten BLOCKED profiles. Python has 750 passes and six dependency skips; missing locked frontend packages and both PocketBase runtimes prevent acceptance."
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "aa4b426173e22b4728b30185d410699c9ce3cb38",
+      "smoke_result": null,
+      "event_type": "failure",
+      "file_path": "package-lock.json",
+      "timestamp": "2026-09-22T00:47:57.417737+00:00",
+      "description": "Offline locked dependency provisioning fails because zod 4.4.3 is not cached. No online install, substituted version, live activation, deployment or submission is represented as complete."
     }
   ],
   "summary": {
-    "type_a_count": 756,
-    "type_b_count": 1701,
-    "type_c_count": 177,
+    "type_a_count": 763,
+    "type_b_count": 1717,
+    "type_c_count": 183,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

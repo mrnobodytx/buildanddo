@@ -61,6 +61,7 @@ MIGRATIONS = (
     "1790700000_workspace_onboarding",
     "1790800000_business_execution",
     "1790900000_workspace_assistant",
+    "1791100000_objective_onboarding",
 )
 AUTH = r"""
 migrate((app) => {
@@ -410,7 +411,13 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertTrue(recovered["replayed"])
 
     def test_atomic_onboarding_concurrent_retries_and_restart(self) -> None:
-        body = {"name": "Native new business", "domain": "shop.fixture"}
+        body = {
+            "name": "Native learning workspace",
+            "domain": "",
+            "intent": "build",
+            "objective": "Deploy my first website",
+            "business_context": "",
+        }
 
         def create() -> tuple[int, dict[str, Any]]:
             return self.server.request(
@@ -423,11 +430,46 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(results[0][1]["workspace"], results[1][1]["workspace"])
         self.assertEqual(len(set(results[0][1]["services"])), 7)
         identity = results[0][1]["workspace"]
+        objective = results[0][1]["objective"]
+        self.assertEqual(objective, results[1][1]["objective"])
+        status, workspace = self.server.request(
+            "GET",
+            f"/api/collections/workspaces/records/{identity}?expand=onboarding_objective",
+            token=self.alice,
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(workspace["onboarding_intent"], "build")
+        self.assertEqual(workspace["domain"], "")
+        self.assertEqual(
+            workspace["expand"]["onboarding_objective"]["title"], body["objective"]
+        )
+        self.assertEqual(
+            workspace["expand"]["onboarding_objective"]["workspace"], identity
+        )
+        self.assertIn(
+            self.server.request(
+                "GET",
+                f"/api/collections/erp_objectives/records/{objective}",
+                token=self.other,
+            )[0],
+            (403, 404),
+        )
         self.server.stop()
         self.server.migrate()
         self.server.start()
         self.alice = self.server.login("alice")
         self.assertEqual(create()[1]["workspace"], identity)
+        self.assertEqual(create()[1]["objective"], objective)
+        legacy = {"name": "Legacy workspace", "domain": "legacy.fixture"}
+        first = self.server.request(
+            "POST", "/api/buildanddo/onboarding", legacy, self.alice
+        )
+        again = self.server.request(
+            "POST", "/api/buildanddo/onboarding", legacy, self.alice
+        )
+        self.assertEqual(first[0], 200)
+        self.assertEqual(first[1]["workspace"], again[1]["workspace"])
+        self.assertNotIn("objective", first[1])
         self.assertIn(
             self.server.request("POST", "/api/buildanddo/onboarding", body)[0],
             (401, 403),
