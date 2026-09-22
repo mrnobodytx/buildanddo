@@ -530,7 +530,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 46469,
+      "lines": 46644,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -664,7 +664,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1482,
+      "lines": 1499,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -983,7 +983,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1926,
+      "lines": 1960,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -4458,7 +4458,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Publish the same public route catalogue for text-based discovery.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -4468,7 +4468,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -8668,7 +8668,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Keep public navigation, canonical metadata and crawler output on the same route catalogue.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "success",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -8678,7 +8678,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -9118,12 +9118,14 @@
       ],
       "enum_type": "Widget",
       "functions": [
+        "CommercialEnquiryForm",
         "ContactPage"
       ],
       "dependencies": [
-        "apps/web/src/components/site/PublicPage.jsx"
+        "apps/web/src/components/site/PublicPage.jsx",
+        "apps/web/src/lib/commercialEnquiry.js"
       ],
-      "lines": 161,
+      "lines": 183,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Route real enquiries through existing public channels and an explicit user-sent email draft.",
@@ -9138,7 +9140,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -9413,9 +9415,10 @@
         "PricingPage"
       ],
       "dependencies": [
-        "apps/web/src/components/site/PublicPage.jsx"
+        "apps/web/src/components/site/PublicPage.jsx",
+        "apps/web/src/lib/commercialEnquiry.js"
       ],
-      "lines": 95,
+      "lines": 152,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain access and commercial conversations without inventing prices or plan guarantees.",
@@ -9430,7 +9433,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -9547,9 +9550,11 @@
         "renderPage"
       ],
       "dependencies": [
-        "apps/web/src/components/site/PublicPage.jsx"
+        "apps/web/src/components/site/PublicPage.jsx",
+        "apps/web/src/pages/PricingPage.jsx",
+        "apps/web/src/pages/ContactPage.jsx"
       ],
-      "lines": 147,
+      "lines": 220,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise public navigation, metadata, documentation search, articles and email-draft behavior.",
@@ -9564,7 +9569,7 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "objective-first-onboarding"
       ],
       "tenant_id": null
     },
@@ -38668,7 +38673,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1034,
+      "lines": 1036,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -45999,9 +46004,13 @@
       "dependencies": [
         "docs/sprint-user-journey.md",
         "docs/submission-guide.md",
-        ".gitlab/ci/day21-submission.yml"
+        ".gitlab/ci/day21-submission.yml",
+        "docs/business-execution.md",
+        "docs/workspace-assistant.md",
+        "apps/web/src/pages/PricingPage.jsx",
+        "apps/web/src/pages/ContactPage.jsx"
       ],
-      "lines": 116,
+      "lines": 173,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define the receiving evidence and verified rollback postconditions that separate source onboarding completion from a deployed Day-21 outcome.",
@@ -46452,11 +46461,177 @@
       "file_path": "package-lock.json",
       "timestamp": "2026-09-22T00:47:57.417737+00:00",
       "description": "Offline locked dependency provisioning fails because zod 4.4.3 is not cached. No online install, substituted version, live activation, deployment or submission is represented as complete."
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/commercialEnquiry.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "commercialInterest",
+        "textField",
+        "prepareCommercialEnquiry"
+      ],
+      "dependencies": [
+        "docs/business-execution.md"
+      ],
+      "lines": 76,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prepare bounded commercial email drafts without sending requests, granting authority or asserting payment.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/commercial-enquiry.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/lib/commercialEnquiry.js"
+      ],
+      "lines": 121,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify complete, bounded and safely encoded pilot enquiries while preserving the existing commercial draft path.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": "apps/web/src/pages/ContactPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES apps/web/src/pages/ContactPage.jsx as declared by .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": "apps/web/src/pages/PricingPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES apps/web/src/pages/PricingPage.jsx as declared by .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": "docs/business-execution.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/business-execution.md as declared by .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": "docs/workspace-assistant.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/workspace-assistant.md as declared by .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/commercialEnquiry.js",
+      "target": "docs/business-execution.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES docs/business-execution.md as declared by apps/web/src/lib/commercialEnquiry.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/ContactPage.jsx",
+      "target": "apps/web/src/lib/commercialEnquiry.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES apps/web/src/lib/commercialEnquiry.js as declared by apps/web/src/pages/ContactPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/PricingPage.jsx",
+      "target": "apps/web/src/lib/commercialEnquiry.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES apps/web/src/lib/commercialEnquiry.js as declared by apps/web/src/pages/PricingPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/__tests__/PublicPages.test.jsx",
+      "target": "apps/web/src/pages/ContactPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES apps/web/src/pages/ContactPage.jsx as declared by apps/web/src/pages/__tests__/PublicPages.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/__tests__/PublicPages.test.jsx",
+      "target": "apps/web/src/pages/PricingPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES apps/web/src/pages/PricingPage.jsx as declared by apps/web/src/pages/__tests__/PublicPages.test.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/commercial-enquiry.test.mjs",
+      "target": "apps/web/src/lib/commercialEnquiry.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES apps/web/src/lib/commercialEnquiry.js as declared by tests/upgrade/commercial-enquiry.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
     }
   ],
   "summary": {
-    "type_a_count": 763,
-    "type_b_count": 1717,
+    "type_a_count": 765,
+    "type_b_count": 1727,
     "type_c_count": 183,
     "ioo_compliance": true,
     "dkg_orphans": 0,

@@ -8,14 +8,15 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
-// Depends:     apps/web/src/components/site/PublicPage.jsx
+// Depends:     apps/web/src/components/site/PublicPage.jsx, apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/ContactPage.jsx
 // EnumType:    Test
-// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx
+// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx; VALIDATES apps/web/src/pages/PricingPage.jsx; VALIDATES apps/web/src/pages/ContactPage.jsx
 // DAG Node:    none
 // Intent:      Exercise public navigation, metadata, documentation search, articles and email-draft behavior.
 // ───────────────────────────────────────────────────────────────
 
 import { describe, expect, it } from 'vitest';
+import { Route, Routes } from 'react-router-dom';
 import { PUBLIC_PAGES, SITE_ORIGIN } from '@/lib/publicPages';
 import PricingPage from '@/pages/PricingPage';
 import AboutPage from '@/pages/AboutPage';
@@ -92,6 +93,12 @@ describe('public pages', () => {
             'href',
             '/contact',
         );
+        expect(screen.getByRole('link', { name: 'Discuss a paid pilot' })).toHaveAttribute(
+            'href', '/contact?interest=pilot#commercial-enquiry',
+        );
+        expect(screen.getByText('One workspace and one agreed external operation')).toBeVisible();
+        expect(screen.getByText(/manual invoice schedule/)).toBeVisible();
+        expect(screen.getByText(/Payment does not approve an operation/)).toBeVisible();
     });
 
     it('searches useful documentation and recovers from an empty result', async () => {
@@ -143,5 +150,71 @@ describe('public pages', () => {
         expect(body).toContain('Licensing for a team of five & support.');
         await user.type(screen.getByLabelText('Name'), ' updated');
         expect(screen.queryByRole('link', { name: 'Open email draft' })).not.toBeInTheDocument();
+    });
+
+    it('opens the pilot CTA, requires an outcome and retains a reviewable draft with restrictions', async () => {
+        const user = setupUser();
+        renderWithProviders(<Routes>
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+        </Routes>, { route: '/pricing', auth: { isAuthed: false, user: null } });
+        await user.click(screen.getByRole('link', { name: 'Discuss a paid pilot' }));
+        expect(screen.getByLabelText('Enquiry type')).toHaveValue('pilot');
+        const form = screen.getByRole('form', { name: 'Commercial enquiry' });
+        expect(form).toHaveClass('ph-no-capture');
+        expect(form).toHaveAttribute('data-dd-privacy', 'hidden');
+        expect(screen.queryByRole('link', { name: 'Open email draft' })).not.toBeInTheDocument();
+        await user.type(screen.getByLabelText('Name'), 'Pat & Team');
+        await user.type(screen.getByLabelText('Email'), 'pat@example.com');
+        await user.type(screen.getByLabelText('Recurring problem'), 'Reconcile the approved supplier list.');
+        await user.click(screen.getByRole('button', { name: 'Prepare email draft' }));
+        expect(screen.queryByRole('link', { name: 'Open email draft' })).not.toBeInTheDocument();
+        await user.type(screen.getByLabelText('What would a successful result look like?'), 'A reviewer confirms all agreed rows match.');
+        await user.type(screen.getByLabelText('Limits or data restrictions (optional)'), 'Public catalogue data only.');
+        await user.click(screen.getByRole('button', { name: 'Prepare email draft' }));
+        const draft = screen.getByLabelText('Email draft preview');
+        expect(draft).toHaveAttribute('readonly');
+        expect(draft.value).toContain('A reviewer confirms all agreed rows match.');
+        expect(draft.value).toContain('Public catalogue data only.');
+        const link = new URL(screen.getByRole('link', { name: 'Open email draft' }).href);
+        expect(link.searchParams.get('subject')).toBe('BuildAndDo paid-pilot enquiry');
+        expect(link.searchParams.get('body')).toBe(draft.value);
+        await user.type(screen.getByLabelText('Limits or data restrictions (optional)'), ' No customer records.');
+        expect(screen.queryByLabelText('Email draft preview')).not.toBeInTheDocument();
+    });
+
+    it('clears the pilot draft and contact details when the enquiry kind changes', async () => {
+        const user = setupUser();
+        renderPage(ContactPage, '/contact?interest=pilot');
+        await user.type(screen.getByLabelText('Name'), 'Pat');
+        await user.type(screen.getByLabelText('Email'), 'pat@example.com');
+        await user.type(screen.getByLabelText('Recurring problem'), 'Review the weekly approved list.');
+        await user.type(screen.getByLabelText('What would a successful result look like?'), 'An independently reviewed result.');
+        await user.click(screen.getByRole('button', { name: 'Prepare email draft' }));
+        expect(screen.getByLabelText('Email draft preview').value).toContain('To agree during scoping.');
+        await user.selectOptions(screen.getByLabelText('Enquiry type'), 'commercial');
+        expect(screen.getByLabelText('What would you like to discuss?')).toHaveValue('');
+        expect(screen.getByLabelText('Name')).toHaveValue('');
+        expect(screen.queryByLabelText('What would a successful result look like?')).not.toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Open email draft' })).not.toBeInTheDocument();
+        await user.selectOptions(screen.getByLabelText('Enquiry type'), 'pilot');
+        expect(screen.getByLabelText('Recurring problem')).toHaveValue('');
+        expect(screen.queryByLabelText('Email draft preview')).not.toBeInTheDocument();
+    });
+
+    it('ignores untrusted query values and rejects a whitespace-only enquiry before preparing a draft', async () => {
+        const user = setupUser();
+        renderPage(ContactPage, '/contact?interest=unlimited&name=Injected&email=foreign@example.com');
+        expect(screen.getByLabelText('Enquiry type')).toHaveValue('commercial');
+        expect(screen.getByLabelText('Name')).toHaveValue('');
+        expect(screen.getByLabelText('Email')).toHaveValue('');
+        await user.type(screen.getByLabelText('Name'), 'Pat');
+        await user.type(screen.getByLabelText('Email'), 'pat@example.com');
+        await user.type(screen.getByLabelText('What would you like to discuss?'), '          ');
+        await user.click(screen.getByRole('button', { name: 'Prepare email draft' }));
+        expect(screen.getByRole('alert')).toHaveTextContent('Use 10–2000 characters');
+        expect(screen.queryByRole('link', { name: 'Open email draft' })).not.toBeInTheDocument();
+        await user.type(screen.getByLabelText('What would you like to discuss?'), 'Licensing and support.');
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
 });

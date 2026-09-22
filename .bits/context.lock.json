@@ -462,7 +462,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-22T01:02:54.418463+00:00",
+  "generated_at": "2026-09-22T01:23:20.072834+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -947,8 +947,8 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1324,
-    "web_source_files": 344
+    "tracked_files": 1326,
+    "web_source_files": 345
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1021,7 +1021,7 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "5262e0a99ab97a66903ed27ee3662469c4bdf5f9314a5cd66e7971315377b2ac",
+    "source_sha256": "1974658e8fda002904b32cff21d1c98a75a550ee72fefc49d9d97175b0590d02",
     "state": "PASS"
   },
   "summary": {

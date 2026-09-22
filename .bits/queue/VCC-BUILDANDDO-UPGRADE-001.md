@@ -20,6 +20,23 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Paid-pilot continuation — 2026-09-22
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| PP-1 | Connect a scoped paid-pilot offer to the existing commercial draft | Draft contract and existing public-page tests | source PASS — 10 draft cases, 100 percent helper line/branch coverage; three rendered regressions added, execution requires missing Vitest |
+| PP-2 | Specify one real n8n outcome with Firecrawl/inference and independent replay | Existing business-execution contract and Day-21 receiving handoff | receiving contract prepared; runtime dispatch, workspace and operator requested; live execution unavailable here |
+| PP-3 | Preserve evidence and review the governed source binding | Source, readiness, submission, boundary, context and memory checks | source regression complete — 568 Node passes, 750 Python passes and 32 skips; retained results and final bookkeeping checks in paid-pilot-report.md |
+
+Memory brief: objective-first onboarding is the committed baseline. Its retained
+full acceptance run is 4 PASS / 3 FAIL / 1 HOLD / 10 BLOCKED, not a current live
+result. Pricing and Contact already support early-access interest and an explicit
+user-sent commercial email; there is no billing account or paid entitlement.
+No n8n, Firecrawl or inference management connector is attached to this session.
+No authenticated customer workspace or independent verifier was supplied.
+Keep all 183 historical memory events and reuse the existing activation handoff.
+Do not send customer email, read credentials, deploy or manufacture seat events.
+
 ## Objective-first Day-21 continuation — 2026-09-22
 
 | Phase | Task | Gate | Status |
