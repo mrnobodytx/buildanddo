@@ -34,7 +34,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from tests.upgrade.test_dossier_native import NativeServer  # noqa: E402
+from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
@@ -156,6 +156,7 @@ class ClassroomServer(NativeServer):
             stderr=subprocess.STDOUT,
             timeout=30,
             check=False,
+            **NO_WINDOW,
         )
         if result.returncode:
             raise AssertionError(

@@ -83,6 +83,15 @@ migrate((app) => {
 """
 
 
+# Windows gives a console executable its own window unless told otherwise, and every native
+# test starts the binary twice - once to migrate and once to serve - so a full run flashes a
+# window per spawn across whoever is sitting at the machine. pythonw.exe silences a PARENT's
+# console but never a CHILD's, which is why the earlier watchdog fix did not cover these.
+# CREATE_NO_WINDOW is Windows-only, so this is an empty mapping everywhere else and the calls
+# below read the same on every platform.
+NO_WINDOW = {"creationflags": subprocess.CREATE_NO_WINDOW} if os.name == "nt" else {}
+
+
 class NativeServer:
     """Own a loopback server, restricted environment and disposable fixture database."""
 
@@ -158,6 +167,7 @@ class NativeServer:
                 stderr=subprocess.STDOUT,
                 timeout=30,
                 check=False,
+                **NO_WINDOW,
             )
             if result.returncode:
                 raise AssertionError(
@@ -198,6 +208,7 @@ class NativeServer:
             capture_output=True,
             timeout=30,
             check=False,
+            **NO_WINDOW,
         )
         self.log.write(result.stdout or "")
         self.log.write(result.stderr or "")
@@ -254,6 +265,7 @@ class NativeServer:
             env=self.environment,
             stdout=self.log,
             stderr=subprocess.STDOUT,
+            **NO_WINDOW,
         )
         deadline = time.monotonic() + 15
         while time.monotonic() < deadline:

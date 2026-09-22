@@ -40,7 +40,7 @@ if str(ROOT) not in sys.path:
 # The standalone CI entry point must add the repository before local imports.
 from apps.mission_suite.bundle import source_fingerprint  # noqa: E402
 from apps.mission_suite.engine import decode, replay, run_suite  # noqa: E402
-from tests.upgrade.test_dossier_native import NativeServer  # noqa: E402
+from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
@@ -174,6 +174,7 @@ class SuiteServer(NativeServer):
             stderr=subprocess.STDOUT,
             timeout=30,
             check=False,
+            **NO_WINDOW,
         )
         if result.returncode:
             raise AssertionError(
