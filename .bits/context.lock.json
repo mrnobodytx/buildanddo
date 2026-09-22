@@ -462,7 +462,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-22T16:08:47.945854+00:00",
+  "generated_at": "2026-09-22T22:24:25.469876+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -496,6 +496,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
         "status": "in_progress",
         "title": "CNWB Capability Token Protocol v1"
+      },
+      {
+        "code": "SRS-BUILDANDDO-CAREER-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+        "status": "in_progress",
+        "title": "Career evidence engine vertical slice 1"
       },
       {
         "code": "SRS-BUILDANDDO-CHANGELOG-001",
@@ -1021,15 +1028,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "649795ee1f6fa256ec02e62b57b4657e35ce619ba9c9f7053a6aecdd99d6f27d",
+    "source_sha256": "623622cd23976b75f9ff0eaa7246299fd8f800ae87dd57b06a68b9389036c311",
     "state": "PASS"
   },
   "summary": {
     "findings": 24,
     "findings_high": 24,
     "pipelines": 10,
-    "srs_open": 28,
-    "srs_total": 32,
+    "srs_open": 29,
+    "srs_total": 33,
     "unwired_gates": 22
   },
   "tests": {

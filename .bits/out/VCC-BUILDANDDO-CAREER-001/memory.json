@@ -1,0 +1,1629 @@
+{
+  "vectors": [
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-CAREER-001/report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+        "tests/career/test_career.py",
+        "tests/career/check_career.py"
+      ],
+      "lines": 119,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve reviewer-runnable evidence that the career slice credits only attributed work and never infers reserved answers or submits.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-CAREER-001.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 67,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Authorize and gate the local career evidence slice without discovery, submission or external-write authority.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "AGENTS.md",
+        "docs/architecture/CAPABILITY_PASSPORT.md"
+      ],
+      "lines": 98,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Specify a local career evidence engine that derives role matches and application packages only from recorded work, with explicit participation and human-reserved attestations.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/__init__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [],
+      "dependencies": [
+        "apps/career/passport.py",
+        "apps/career/match.py",
+        "apps/career/dossier.py",
+        "apps/career/compiler.py"
+      ],
+      "lines": 43,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Expose the career evidence engine's public entry points.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/__main__.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [],
+      "dependencies": [
+        "apps/career/cli.py"
+      ],
+      "lines": 22,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Allow `python -m apps.career` to run the local CLI.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/authority.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "JobTier",
+        "reserved_class",
+        "Decision",
+        "AuthorityGrant",
+        "AuthorityResult",
+        "authorize"
+      ],
+      "dependencies": [
+        "apps/career/evidence.py"
+      ],
+      "lines": 170,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound every application step by an explicit J0-J5 tier so answers a human must give are never inferred or auto-submitted.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/cli.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "_read_json",
+        "_fresh_directory",
+        "load_identity",
+        "cmd_passport",
+        "cmd_evaluate",
+        "build_parser",
+        "main"
+      ],
+      "dependencies": [
+        "apps/career/history.py",
+        "apps/career/passport.py",
+        "apps/career/match.py",
+        "apps/career/dossier.py",
+        "apps/career/compiler.py"
+      ],
+      "lines": 180,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Run the passport, match, dossier and package stages locally, writing only to a new output directory.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/compiler.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Package",
+        "_breakdown",
+        "_claims",
+        "_answers",
+        "_markdown_list",
+        "compile_application",
+        "canonical_json",
+        "validate_package"
+      ],
+      "dependencies": [
+        "apps/career/authority.py",
+        "apps/career/dossier.py",
+        "apps/career/jobs.py",
+        "apps/career/passport.py",
+        "apps/career/taxonomy.py"
+      ],
+      "lines": 279,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compile an application package in which every claim traces to passport evidence and every reserved answer stays with the human.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/dossier.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Dossier",
+        "_state",
+        "build_dossier",
+        "rank"
+      ],
+      "dependencies": [
+        "apps/career/match.py",
+        "apps/career/passport.py",
+        "apps/career/taxonomy.py"
+      ],
+      "lines": 160,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain why a role fits, what to lead with and, mandatorily, what must not be claimed.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/evidence.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "CareerError",
+        "Participation",
+        "ClaimState",
+        "strongest",
+        "best_state",
+        "canonical_digest",
+        "EvidenceRef",
+        "_text",
+        "attestation_evidence"
+      ],
+      "dependencies": [
+        "apps/career/taxonomy.py"
+      ],
+      "lines": 196,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep who did the work and how it is known explicit, so a claim can never outgrow its evidence.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/history.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "Commit",
+        "Identity",
+        "Attribution",
+        "parse_git_log",
+        "read_git_history",
+        "_integrations",
+        "attribute"
+      ],
+      "dependencies": [
+        "apps/career/evidence.py",
+        "apps/career/taxonomy.py"
+      ],
+      "lines": 229,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Turn local git history into participation-classified evidence, crediting a person only for work they authored or integrated.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/jobs.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "RequirementKind",
+        "Requirement",
+        "Job",
+        "normalize_job",
+        "classify",
+        "extract_requirements"
+      ],
+      "dependencies": [
+        "apps/career/authority.py",
+        "apps/career/evidence.py",
+        "apps/career/taxonomy.py"
+      ],
+      "lines": 163,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Normalize supplied postings into canonical job entities and typed requirements the matcher can evaluate without guessing.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/match.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Coverage",
+        "CoverageRow",
+        "CoverageMap",
+        "_supports",
+        "_capability_row",
+        "_tenure_row",
+        "evaluate",
+        "summarize"
+      ],
+      "dependencies": [
+        "apps/career/evidence.py",
+        "apps/career/jobs.py",
+        "apps/career/passport.py"
+      ],
+      "lines": 196,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Map each job requirement to the passport evidence that does or does not support it, instead of a single opaque score.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/passport.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "parse_instant",
+        "recency_weight",
+        "confidence",
+        "CapabilityEntry",
+        "Passport",
+        "claim_participation",
+        "_sample",
+        "build_passport",
+        "passport_from_history",
+        "entry_by_id"
+      ],
+      "dependencies": [
+        "apps/career/evidence.py",
+        "apps/career/history.py",
+        "apps/career/taxonomy.py"
+      ],
+      "lines": 361,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Aggregate participation-classified evidence into a per-capability Career Passport that states its own limits.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/taxonomy.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "Capability",
+        "_keyword_pattern",
+        "capabilities_for_text",
+        "capabilities_for_change"
+      ],
+      "dependencies": [],
+      "lines": 194,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Name the capabilities both work evidence and job requirements resolve to, so matching compares like with like.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/career/__init__.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [],
+      "lines": 16,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the career tests importable as a package.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/career/check_career.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "tests/career/test_career.py",
+        "apps/career"
+      ],
+      "lines": 82,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require the career behavior suite and at least 80 percent measured statement coverage per module.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/career/test_career.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "git",
+        "commit",
+        "build_repo",
+        "RepoCase",
+        "TaxonomyTests",
+        "HistoryTests",
+        "AttestationTests",
+        "PassportTests",
+        "load_jobs",
+        "JobTests",
+        "MatchTests",
+        "DossierTests",
+        "AuthorityTests",
+        "CompilerTests",
+        "CliTests"
+      ],
+      "dependencies": [
+        "apps/career",
+        "tests/fixtures/career/jobs.json",
+        "tests/fixtures/career/questions.json"
+      ],
+      "lines": 637,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove participation-honest attribution, requirement coverage, mandatory do-not-claim lists, reserved-answer handling and claim provenance.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/fixtures/career/jobs.json",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/career/jobs.py"
+      ],
+      "lines": 74,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide synthetic postings covering supported, partial, unmapped, tenure, credential and reserved requirements.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/fixtures/career/jobs.json.cgrf.yaml",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/career/jobs.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide synthetic postings covering supported, partial, unmapped, tenure, credential and reserved requirements.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/fixtures/career/questions.json",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/career/compiler.py"
+      ],
+      "lines": 8,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide synthetic application questions mixing evidence-answerable and human-reserved classes.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/fixtures/career/questions.json.cgrf.yaml",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/career/compiler.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide synthetic application questions mixing evidence-answerable and human-reserved classes.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs_registry.yml",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/context.md",
+        "scripts/ci/agent_context.py"
+      ],
+      "lines": 257,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/context.lock.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [],
+      "lines": 1047,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep the measured repository inventory aligned with the newly registered career scope.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/hostinger-readiness.lock.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/hostinger-readiness.lock.json"
+      ],
+      "lines": 1058,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAREER-001/report.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-CAREER-001/report.md DEPENDS_ON .bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAREER-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-CAREER-001/memory.json",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-CAREER-001/report.md VALIDATES .bits/out/VCC-BUILDANDDO-CAREER-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAREER-001/report.md",
+      "target": "tests/career/test_career.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-CAREER-001/report.md VERIFIED_BY tests/career/test_career.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-CAREER-001/report.md",
+      "target": "tests/career/check_career.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-CAREER-001/report.md VERIFIED_BY tests/career/check_career.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-CAREER-001.md",
+      "target": "bits/SRS-BUILDANDDO-CAREER-001-* branches",
+      "edge_type": "GATES",
+      "weight": 0.8,
+      "description": ".bits/queue/VCC-BUILDANDDO-CAREER-001.md GATES bits/SRS-BUILDANDDO-CAREER-001-* branches",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-CAREER-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": ".bits/queue/VCC-BUILDANDDO-CAREER-001.md DEPENDS_ON .bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+      "target": "bits/SRS-BUILDANDDO-CAREER-001-* branches",
+      "edge_type": "GATES",
+      "weight": 0.8,
+      "description": ".bits/srs/SRS-BUILDANDDO-CAREER-001.md GATES bits/SRS-BUILDANDDO-CAREER-001-* branches",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+      "target": "docs/architecture/CAPABILITY_PASSPORT.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": ".bits/srs/SRS-BUILDANDDO-CAREER-001.md DEPENDS_ON docs/architecture/CAPABILITY_PASSPORT.md",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/__init__.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/__init__.py DEPENDS_ON apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/__init__.py",
+      "target": "apps/career/match.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/__init__.py DEPENDS_ON apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/__init__.py",
+      "target": "apps/career/dossier.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/__init__.py DEPENDS_ON apps/career/dossier.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/__init__.py",
+      "target": "apps/career/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/__init__.py DEPENDS_ON apps/career/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/__main__.py",
+      "target": "apps/career/cli.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/__main__.py DEPENDS_ON apps/career/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/authority.py",
+      "target": "apps/career/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/authority.py DEPENDS_ON apps/career/evidence.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/authority.py",
+      "target": "apps/career/compiler.py",
+      "edge_type": "GATES",
+      "weight": 0.8,
+      "description": "apps/career/authority.py GATES apps/career/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/history.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/history.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/match.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/dossier.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/dossier.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/compiler.py",
+      "target": "apps/career/dossier.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/compiler.py DEPENDS_ON apps/career/dossier.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/compiler.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/compiler.py DEPENDS_ON apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/compiler.py",
+      "target": "apps/career/authority.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/compiler.py DEPENDS_ON apps/career/authority.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/compiler.py",
+      "target": "application package",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/compiler.py PRODUCES application package",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/dossier.py",
+      "target": "apps/career/match.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/dossier.py DEPENDS_ON apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/dossier.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/dossier.py DEPENDS_ON apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/dossier.py",
+      "target": "apps/career/compiler.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/dossier.py PRODUCES apps/career/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/evidence.py",
+      "target": "apps/career/taxonomy.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/evidence.py DEPENDS_ON apps/career/taxonomy.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/evidence.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/evidence.py PRODUCES apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/history.py",
+      "target": "apps/career/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/history.py DEPENDS_ON apps/career/evidence.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/history.py",
+      "target": "apps/career/taxonomy.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/history.py DEPENDS_ON apps/career/taxonomy.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/history.py",
+      "target": "git log",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/career/history.py CONSUMES git log",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/history.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/history.py PRODUCES apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/jobs.py",
+      "target": "apps/career/authority.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/jobs.py DEPENDS_ON apps/career/authority.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/jobs.py",
+      "target": "apps/career/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/jobs.py DEPENDS_ON apps/career/evidence.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/jobs.py",
+      "target": "apps/career/taxonomy.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/jobs.py DEPENDS_ON apps/career/taxonomy.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/jobs.py",
+      "target": "apps/career/match.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/jobs.py PRODUCES apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/match.py",
+      "target": "apps/career/jobs.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/match.py DEPENDS_ON apps/career/jobs.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/match.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/match.py DEPENDS_ON apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/match.py",
+      "target": "apps/career/dossier.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/match.py PRODUCES apps/career/dossier.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/passport.py",
+      "target": "apps/career/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/passport.py DEPENDS_ON apps/career/evidence.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/passport.py",
+      "target": "apps/career/history.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/passport.py DEPENDS_ON apps/career/history.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/passport.py",
+      "target": "apps/career/taxonomy.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/passport.py DEPENDS_ON apps/career/taxonomy.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/passport.py",
+      "target": "apps/career/match.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/passport.py PRODUCES apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/taxonomy.py",
+      "target": "apps/career/history.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/taxonomy.py PRODUCES apps/career/history.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/taxonomy.py",
+      "target": "apps/career/jobs.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/taxonomy.py PRODUCES apps/career/jobs.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/__init__.py",
+      "target": "apps/career",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/__init__.py VALIDATES apps/career",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/check_career.py",
+      "target": "tests/career/test_career.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/career/check_career.py DEPENDS_ON tests/career/test_career.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/check_career.py",
+      "target": "apps/career",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/check_career.py VALIDATES apps/career",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/history.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/history.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/match.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/dossier.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/dossier.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/compiler.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/authority.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/authority.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/cli.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/fixtures/career/jobs.json",
+      "target": "apps/career/jobs.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/fixtures/career/jobs.json VALIDATES apps/career/jobs.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/fixtures/career/jobs.json",
+      "target": "apps/career/match.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/fixtures/career/jobs.json VALIDATES apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/fixtures/career/jobs.json.cgrf.yaml",
+      "target": "apps/career/jobs.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/fixtures/career/jobs.json.cgrf.yaml VALIDATES apps/career/jobs.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/fixtures/career/jobs.json.cgrf.yaml",
+      "target": "apps/career/match.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/fixtures/career/jobs.json.cgrf.yaml VALIDATES apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/fixtures/career/questions.json",
+      "target": "apps/career/compiler.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/fixtures/career/questions.json VALIDATES apps/career/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/fixtures/career/questions.json",
+      "target": "apps/career/authority.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/fixtures/career/questions.json VALIDATES apps/career/authority.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/fixtures/career/questions.json.cgrf.yaml",
+      "target": "apps/career/compiler.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/fixtures/career/questions.json.cgrf.yaml VALIDATES apps/career/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/fixtures/career/questions.json.cgrf.yaml",
+      "target": "apps/career/authority.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/fixtures/career/questions.json.cgrf.yaml VALIDATES apps/career/authority.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": "bits/SRS-* branches",
+      "edge_type": "GATES",
+      "weight": 0.8,
+      "description": ".bits/srs_registry.yml GATES bits/SRS-* branches",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": ".bits/srs",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": ".bits/srs_registry.yml VALIDATES .bits/srs",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/context.lock.json",
+      "target": "SRS-BUILDANDDO-CAREER-001",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.6,
+      "description": ".bits/context.lock.json governance bookkeeping for SRS-BUILDANDDO-CAREER-001",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/hostinger-readiness.lock.json",
+      "target": ".bits/hostinger-readiness.lock.json",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": ".bits/hostinger-readiness.lock.json VALIDATES .bits/hostinger-readiness.lock.json",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/career/check_career.py",
+      "description": "34 career tests passed; every apps/career module at or above 90 percent statement coverage",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "timestamp": "2026-09-22T00:00:00Z",
+      "commit_sha": null,
+      "smoke_result": "3/3"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "apps/career/cli.py",
+      "description": "Dogfood passport over this repository's 285 commits and evaluation of three synthetic postings; zero submissions",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Mission evidence and TEVV receipt sources can follow under a separate dispatch",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "timestamp": "2026-09-22T00:00:00Z",
+      "commit_sha": null,
+      "smoke_result": "3/3"
+    },
+    {
+      "type": "C",
+      "event_type": "dispatch_completed",
+      "file_path": null,
+      "description": "Career evidence vertical slice 1 completed without network, submission or reserved-answer inference",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "timestamp": "2026-09-22T00:00:00Z",
+      "commit_sha": null,
+      "smoke_result": "3/3"
+    }
+  ],
+  "summary": {
+    "type_a_count": 25,
+    "type_b_count": 68,
+    "type_c_count": 3,
+    "ioo_compliance": true,
+    "dkg_orphans": 0,
+    "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+    "srs_codes": [
+      "SRS-BUILDANDDO-CAREER-001"
+    ],
+    "seat": "BITS-CODEGEN"
+  }
+}
