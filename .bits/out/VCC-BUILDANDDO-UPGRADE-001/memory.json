@@ -530,7 +530,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 46644,
+      "lines": 46831,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -46008,9 +46008,10 @@
         "docs/business-execution.md",
         "docs/workspace-assistant.md",
         "apps/web/src/pages/PricingPage.jsx",
-        "apps/web/src/pages/ContactPage.jsx"
+        "apps/web/src/pages/ContactPage.jsx",
+        ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md"
       ],
-      "lines": 173,
+      "lines": 178,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define the receiving evidence and verified rollback postconditions that separate source onboarding completion from a deployed Day-21 outcome.",
@@ -46627,12 +46628,198 @@
       "description": "VALIDATES apps/web/src/lib/commercialEnquiry.js as declared by tests/upgrade/commercial-enquiry.test.mjs.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json",
+        ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md"
+      ],
+      "lines": 148,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report the paid-pilot request path and the actual evidence still needed for a customer automation outcome.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json"
+      ],
+      "lines": 489,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind paid-pilot source verification to exact code while retaining unavailable frontend and live-runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind paid-pilot source verification to exact code while retaining unavailable frontend and live-runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "objective-first-onboarding"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-report.md",
+      "target": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json as declared by .bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json.cgrf.yaml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "53cff4c39807dca2b7b0dfc2434ed0e30e115768",
+      "smoke_result": null,
+      "event_type": "commit",
+      "file_path": "apps/web/src/pages/PricingPage.jsx",
+      "timestamp": "2026-09-22T01:25:06Z",
+      "description": "Add a one-workspace paid-pilot offer and reviewed fixed-recipient commercial draft; scope, manual invoice, support and data terms remain operator-agreed."
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "53cff4c39807dca2b7b0dfc2434ed0e30e115768",
+      "smoke_result": "10/10",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/commercial-enquiry.test.mjs",
+      "timestamp": "2026-09-22T01:14:48.365262+00:00",
+      "description": "Ten commercial enquiry cases pass with 100 percent Node V8 helper line and branch coverage, including input bounds, Unicode, fixed recipient, undecided restrictions and complete draft round trips; rendered use remains unverified."
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "53cff4c39807dca2b7b0dfc2434ed0e30e115768",
+      "smoke_result": "3/7",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/paid-pilot-validation.json",
+      "timestamp": "2026-09-22T01:24:18.310670+00:00",
+      "description": "All 568 Node source cases pass. Full Python discovery has 750 passing cases and 32 explicit skips; source evidence does not establish native or deployed acceptance. Existing readiness, submission, context, boundary and memory checks pass."
+    },
+    {
+      "type": "C",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "commit_sha": "53cff4c39807dca2b7b0dfc2434ed0e30e115768",
+      "smoke_result": null,
+      "event_type": "failure",
+      "file_path": "apps/web/src/pages/__tests__/PublicPages.test.jsx",
+      "timestamp": "2026-09-22T01:21:33.727047+00:00",
+      "description": "Rendered tests, web coverage, lint and build cannot complete on the declared Node 22 runtime because Vitest, eslint-plugin-import and Vite are absent. Dependency gates remain intact; no live provider, payment or independently verified customer outcome is claimed."
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md as declared by .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
     }
   ],
   "summary": {
-    "type_a_count": 765,
-    "type_b_count": 1727,
-    "type_c_count": 183,
+    "type_a_count": 768,
+    "type_b_count": 1731,
+    "type_c_count": 187,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

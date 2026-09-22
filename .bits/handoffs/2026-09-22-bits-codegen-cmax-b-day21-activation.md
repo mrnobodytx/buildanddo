@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     docs/sprint-user-journey.md, docs/submission-guide.md, .gitlab/ci/day21-submission.yml, docs/business-execution.md, docs/workspace-assistant.md, apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/ContactPage.jsx
+# Depends:     docs/sprint-user-journey.md, docs/submission-guide.md, .gitlab/ci/day21-submission.yml, docs/business-execution.md, docs/workspace-assistant.md, apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/ContactPage.jsx, .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES docs/sprint-user-journey.md; CONSUMES docs/submission-guide.md; CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES docs/business-execution.md; CONSUMES docs/workspace-assistant.md; CONSUMES apps/web/src/pages/PricingPage.jsx; CONSUMES apps/web/src/pages/ContactPage.jsx
+# EnumEdges:   CONSUMES docs/sprint-user-journey.md; CONSUMES docs/submission-guide.md; CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES docs/business-execution.md; CONSUMES docs/workspace-assistant.md; CONSUMES apps/web/src/pages/PricingPage.jsx; CONSUMES apps/web/src/pages/ContactPage.jsx; CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md
 # Intent:      Define the receiving evidence and verified rollback postconditions that separate source onboarding completion from a deployed Day-21 outcome.
 # ───────────────────────────────────────────────────────────────
 
@@ -75,10 +75,15 @@ booked pilot or accepted outcome.
 
 Receiving owners: CMAX-B/IDE1 for registered runtimes; the commercial operator
 for scope/payment/support/data terms; a separate native reviewer for acceptance.
-The requested runtime dispatch, workspace ID, receiving operator and verifier
-are still unsupplied. No n8n, Firecrawl or inference management tool is attached
-to the public coding session. Resolve these inputs in the receiving plane;
-do not put tokens, private endpoints or customer records in this handoff.
+The owner previously supplied VCC-BUILDANDDO-OPERATOR-RUNTIME-001 and
+SRS-CN-BUILDANDDO-OPERATOR-RUNTIME-001 for discovery and one bounded staging loop,
+as retained in the 2026-09-18 operator-plane handoff. Their private registration,
+status and scope remain unmeasured; carry those identifiers forward when the
+receiving owner confirms coverage for this pilot. The target workspace, actual
+runtime access and independent verifier are still missing. No n8n, Firecrawl or
+inference management tool is attached to this public coding session. Resolve
+these inputs in the receiving plane; do not put tokens, private endpoints or
+customer records in this handoff.
 
 Use one workspace, one existing registered n8n operation and one bounded mission:
 
