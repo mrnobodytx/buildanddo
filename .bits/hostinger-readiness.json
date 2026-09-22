@@ -230,7 +230,7 @@
     {
       "id": "HS-07",
       "day": 13,
-      "title": "Service connectors (Firecrawl, n8n)",
+      "title": "Service connectors and provider health",
       "why": "A saved integration setting must not be mistaken for a working service connection.",
       "owner": "CMAX-B / IDE1",
       "sources": [
@@ -264,10 +264,40 @@
       "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery."
     },
     {
+      "id": "HS-12",
+      "day": 14,
+      "title": "Living Rooms and public-record bridges",
+      "why": "A verified record is only worth keeping if it can reach the people it is about, under an authority stated per surface rather than a blanket key.",
+      "owner": "BITS-CODEGEN / IDE1",
+      "sources": [
+        "apps/web/src/components/rooms/RoomCanvas.jsx",
+        "apps/web/src/components/rooms/UtilizationPanel.jsx",
+        "apps/web/src/hooks/useRoomProjection.js"
+      ],
+      "checks": [
+        "source_node",
+        "web_tests",
+        "native_workspace"
+      ],
+      "requires": [
+        "HS-03"
+      ],
+      "runtime_requirements": [
+        "browser",
+        "live_input"
+      ],
+      "acceptance": [
+        "Living Rooms read live projections on staging from a mounted, probed route, not merely present in the repository.",
+        "One canonical event projects outward to wiki, forum, Discord and Reddit without being restated per surface.",
+        "Each bridge carries its own bounded authority and a stated data boundary, never a generic admin key."
+      ],
+      "next_step": "The rooms overlay landed on 2026-09-18 (RoomCanvas, UtilizationPanel and useRoomProjection reading staging projections). The four outward bridges remain open; bind each one with its own bounded authority and prove the data boundary it states."
+    },
+    {
       "id": "HS-08",
       "day": 15,
-      "title": "ERP foundation",
-      "why": "Objectives, tasks and contacts make the demonstrated outcome actionable for a small organization.",
+      "title": "Objectives, tasks and guild contacts",
+      "why": "Objectives, tasks and contacts make the demonstrated outcome actionable for a guild working together.",
       "owner": "BITS-CODEGEN / IDE1",
       "sources": [
         "apps/web/src/pages/workspace/ErpPage.jsx",

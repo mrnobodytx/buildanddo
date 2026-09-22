@@ -19,6 +19,20 @@
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
+      "statement": "scripts/ci/classroom_media_roundtrip.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/classroom_video_proof.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
       "statement": "scripts/ci/curriculum_link_gate.py is never executed by GitHub Actions"
     },
     {
@@ -100,6 +114,13 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: scripts/ci/hostinger_checks.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_journey_report.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
@@ -118,6 +139,13 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_observation_record.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_project_fleet.py is never executed by GitHub Actions"
     },
     {
       "area": "ci",
@@ -184,7 +212,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: scripts/deploy/roadmap_status.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/verify_public_disclosure.py is never executed by GitHub Actions"
@@ -241,6 +269,16 @@
       "referenced_by": [
         "scripts/ci/hostinger_checks.py"
       ],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/classroom_media_roundtrip.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/classroom_video_proof.py",
+      "referenced_by": [],
       "wired_into_ci": false
     },
     {
@@ -346,6 +384,13 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/ocn_journey_report.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py"
+      ],
+      "wired_into_ci": false
+    },
+    {
       "path": "scripts/ci/ocn_mission_lifecycle.py",
       "referenced_by": [],
       "wired_into_ci": false
@@ -357,6 +402,11 @@
     },
     {
       "path": "scripts/ci/ocn_observation_record.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "path": "scripts/ci/ocn_project_fleet.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
@@ -446,7 +496,9 @@
     },
     {
       "path": "scripts/ci/verify_public_disclosure.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "scripts/deploy/roadmap_status.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -455,7 +507,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-21T19:04:51.567314+00:00",
+  "generated_at": "2026-09-22T10:56:44.735963+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -824,12 +876,12 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 54,
-    "python_files": 290,
+    "migrations": 55,
+    "python_files": 294,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1241,
+    "tracked_files": 1247,
     "web_source_files": 333
   },
   "schema_version": 1,
@@ -879,10 +931,16 @@
         "why": "A saved integration setting must not be mistaken for a working service connection."
       },
       {
+        "id": "HS-12",
+        "next_step": "The rooms overlay landed on 2026-09-18 (RoomCanvas, UtilizationPanel and useRoomProjection reading staging projections). The four outward bridges remain open; bind each one with its own bounded authority and prove the data boundary it states.",
+        "owner": "BITS-CODEGEN / IDE1",
+        "why": "A verified record is only worth keeping if it can reach the people it is about, under an authority stated per surface rather than a blanket key."
+      },
+      {
         "id": "HS-08",
         "next_step": "Run native/browser business journeys, inspect the executed task and its mission/evidence links, and review the objective outcome separately.",
         "owner": "BITS-CODEGEN / IDE1",
-        "why": "Objectives, tasks and contacts make the demonstrated outcome actionable for a small organization."
+        "why": "Objectives, tasks and contacts make the demonstrated outcome actionable for a guild working together."
       },
       {
         "id": "HS-09",
@@ -903,16 +961,16 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "7a8813ddfb99e25ce5346563d5836334b7c0fdc319d835ca5a93461aca898353",
+    "source_sha256": "c2a9106cdf33b54666233ce73e58028de3f0ecb7cfae1ba8ee4282f678b9ca62",
     "state": "PASS"
   },
   "summary": {
-    "findings": 30,
-    "findings_high": 30,
+    "findings": 34,
+    "findings_high": 34,
     "pipelines": 7,
     "srs_open": 26,
     "srs_total": 30,
-    "unwired_gates": 28
+    "unwired_gates": 32
   },
   "tests": {
     "js_runners": [

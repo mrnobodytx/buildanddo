@@ -129,7 +129,19 @@ export const PLANNED_MILESTONES = [
             'Steps that reuse the same evidence/audit model as everything else, so a learner’s workflow is verified the same way the platform’s own is'],
     },
     {
-        day: 13, title: 'Living Rooms and public-record bridges', status: 'planned', value: 60,
+        day: 13, title: 'Service connectors and provider health', status: 'planned', value: 60,
+        description: 'Outside data reaching a lesson through bindings that can be checked, because a saved '
+            + 'integration setting must not be mistaken for a working service connection. Each binding carries a '
+            + 'fresh observation for its current configuration revision, and a provider that is disabled, stale or '
+            + 'unavailable stays explicitly so rather than quietly producing successful-looking activity — the same '
+            + 'distinction between measured and merely declared that the rest of the platform is built on. Repeated '
+            + 'effects are deduplicated by identity, and reconciliation only reads a result that already exists.',
+        deliverables: ['Every provider bound through its receiving owner, with a health probe and a bounded effect',
+            'An observed successful use of each, plus the disabled, stale and unavailable-provider controls',
+            'Effect identities deduplicated; reconciliation reads an existing result and never creates one'],
+    },
+    {
+        day: 14, title: 'Living Rooms and public-record bridges', status: 'planned', value: 65,
         description: 'Where people and Citadel Nexus guilds actually work together: Living Rooms that project '
             + 'live guild activity into a workspace, and bridges that carry the verified record out to the public '
             + 'surfaces (wiki, forum, Discord, Reddit) — each with a stated data boundary, not blanket credential access. '

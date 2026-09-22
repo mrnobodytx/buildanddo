@@ -80,8 +80,23 @@ MILESTONES: list[dict] = [
     {"day": 7, "title": "Signals pipeline MVP", "planned_value": 30},
     {"day": 9, "title": "Missions - bounded-action engine", "planned_value": 40},
     {"day": 11, "title": "Workflows editor", "planned_value": 50},
-    {"day": 13, "title": "Service connectors (Firecrawl, n8n)", "planned_value": 60},
-    {"day": 15, "title": "ERP foundation", "planned_value": 70},
+    # DAYS 13 AND 15 WERE DOUBLE-BOOKED. Resolved 2026-09-22 by the sprint owner: both pieces of
+    # work are real, so they get a day each rather than one of them being written out.
+    #
+    # Day 13 was claimed by two different pieces of work. Service connectors keeps it - HS-07's
+    # why, sources and acceptance are entirely about Firecrawl/n8n bindings and none of that moved.
+    # Living Rooms takes a new day 14, carrying its own dated evidence with it. No contract entry
+    # changed day, so nothing that was already agreed had to be rewritten to make room.
+    #
+    # Day 15 was never a conflict, only two names for one thing: "ERP foundation" is the theme and
+    # "Objectives, tasks and guild contacts" is the deliverable, and HS-08's own acceptance asks an
+    # operator to "create and link an objective, task and contact in one workspace". It is named
+    # for the deliverable now, because the theme's rationale still read "actionable for a small
+    # organization" - the framing superseded on 2026-09-11 when BuildAndDo became an educational
+    # collaborative platform rather than an SMB provisioner.
+    {"day": 13, "title": "Service connectors and provider health", "planned_value": 60},
+    {"day": 14, "title": "Living Rooms and public-record bridges", "planned_value": 65},
+    {"day": 15, "title": "Objectives, tasks and guild contacts", "planned_value": 70},
     {"day": 17, "title": "Evidence ledger and verification", "planned_value": 80},
     {"day": 19, "title": "Daily edition and specialist desks", "planned_value": 88},
     {"day": 21, "title": "Sprint review - verified replay", "planned_value": 100},
