@@ -24,7 +24,7 @@
     },
     {
       "claim": "The platform is exercised from machines that are not the developer workstation",
-      "evidence": "5 concurrent sessions from 5 DigitalOcean boxes (68.183.60.208, 134.209.36.80, 167.99.179.82, 167.99.191.193, 134.122.32.43), 111-241ms",
+      "evidence": "5 concurrent sessions from 5 distinct DigitalOcean hosts, 111-241ms",
       "verify": "source IPs in the access log are not rig1"
     },
     {
