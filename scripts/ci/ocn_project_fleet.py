@@ -395,9 +395,47 @@ def run(env: str) -> dict[str, Any]:
     out["run_status"] = ((won or {}).get("body") or {}).get("status") or ""
     note(checks, "run-executable", HOST_BOX,
          {"http": 200 if out["run_status"] == "queued" else 0,
-          "body": {"message": f"run status is {out['run_status'] or 'unknown'}; "
-                              "BUILDANDDO_SUITE_BINDINGS is unset so no worker can take it"}},
+          "body": {"message": f"run status is {out['run_status'] or 'unknown'}"
+                              + ("" if out["run_status"] == "queued" else
+                                 "; a run is stored blocked/worker_unbound when no "
+                                 "BUILDANDDO_SUITE_BINDINGS entry covers this workspace")}},
          "queued", out["run_status"] == "queued")
+
+    # 2c. THE CLAIM LEASE, reachable at last. bindings() names ONE worker_user per workspace,
+    #     so this is not a race between peers - it is a ROLE boundary, and it needs its own
+    #     control: the designated worker must take the very run a non-worker member cannot.
+    #     Both callers are Guild Hall editors, so a difference here can only come from the
+    #     binding. Sequential on purpose - concurrency would conflate the role check with the
+    #     lease, and the role check runs first inside the hook regardless.
+    worker_claim: dict[str, Any] = {"http": 0}
+    peer_claim: dict[str, Any] = {"http": 0}
+    if out["run_status"] == "queued" and out["job_id"]:
+        worker_claim = on_box(HOST_BOX, boxes[HOST_BOX], base, "POST", suite, {
+            "action": "claim", "mission": out["mission"], "revision": 1,
+            "request_key": uuid.uuid4().hex, "payload": {"id": out["job_id"]},
+        })
+        note(checks, "worker-claims", HOST_BOX, worker_claim, "200",
+             worker_claim.get("http") == 200)
+        peer = next(b for b in RACER_BOXES if b != HOST_BOX)
+        peer_claim = on_box(peer, boxes[peer], base, "POST", suite, {
+            "action": "claim", "mission": out["mission"], "revision": 1,
+            "request_key": uuid.uuid4().hex, "payload": {"id": out["job_id"]},
+        })
+        note(checks, "non-worker-refused", peer, peer_claim, "403",
+             peer_claim.get("http") == 403)
+        by_role = (worker_claim.get("http") == 200 and peer_claim.get("http") == 403)
+        note(checks, "worker-role-discriminates", f"{HOST_BOX} vs {peer}",
+             {"http": 200 if by_role else 0,
+              "body": {"message": f"worker={worker_claim.get('http')} "
+                                  f"member={peer_claim.get('http')} - both are editors of "
+                                  "this workspace, so only the binding can separate them"}},
+             "worker takes it, member cannot", by_role)
+    out["claim_detail"] = {
+        "worker": {"box": HOST_BOX, "http": worker_claim.get("http"),
+                   "message": str((worker_claim.get("body") or {}).get("message") or "")[:120]},
+        "non_worker_member": {"http": peer_claim.get("http"),
+                              "message": str((peer_claim.get("body") or {}).get("message") or "")[:120]},
+    }
 
     # 3. THE CONTROL, rebuilt so that it discriminates. Every one of the six box seats is an
     #    editor of the Guild Hall, so the box named OUTSIDER_BOX was never outside anything.
