@@ -57,7 +57,19 @@ function bindings(workspace) {
     const seen = new Set();
     for (const item of items) {
         access.exact(item, ['workspace', 'worker_user', 'binding', 'source_sha256', 'enabled']);
-        access.id(item.workspace); access.id(item.worker_user); key(item.binding);
+        access.id(item.workspace); key(item.binding);
+        // `worker_user` may name one worker or a bounded list of them. What guards the evidence
+        // is ONE PINNED SOURCE per workspace - source_sha256 is matched in currentJob and
+        // re-attested by the worker on complete - not one person holding it. The lease was
+        // always multi-consumer machinery: suite_runs.processor is a per-user relation, an
+        // expired lease is re-claimable by someone else, and complete() fences on the attempt
+        // number the claimer recorded, which can only matter when another worker can take over.
+        // A plain string stays valid, so existing single-worker bindings are unaffected.
+        item.worker_users = Array.isArray(item.worker_user) ? item.worker_user : [item.worker_user];
+        if (!item.worker_users.length || item.worker_users.length > 16 ||
+            new Set(item.worker_users).size !== item.worker_users.length)
+            throw new ApiError(503, 'Suite worker bindings need operator review.');
+        item.worker_users.forEach((id) => access.id(id));
         if (seen.has(item.workspace) || !HASH.test(item.source_sha256) || typeof item.enabled !== 'boolean')
             throw new ApiError(503, 'Suite worker bindings need operator review.');
         seen.add(item.workspace);
@@ -66,7 +78,7 @@ function bindings(workspace) {
 }
 function worker(app, auth, workspace) {
     const binding = bindings(workspace);
-    if (!binding || auth.collection().name !== 'users' || binding.worker_user !== auth.id)
+    if (!binding || auth.collection().name !== 'users' || !binding.worker_users.includes(auth.id))
         throw new ForbiddenError('A registered suite worker is required.');
     return binding;
 }

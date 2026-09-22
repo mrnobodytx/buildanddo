@@ -71,6 +71,12 @@ HOST_BOX = "mesh-control"
 RACER_BOXES = ["mesh-memory", "ray-tor1-1"]
 OUTSIDER_BOX = "ray-tor1-4"
 
+# The two seats named in BUILDANDDO_SUITE_BINDINGS for this workspace, and one that is NOT.
+# All three are Guild Hall editors; only the binding tells them apart, which is what makes
+# UNBOUND_BOX a control rather than a second opinion.
+POOL_BOXES = ["mesh-control", "mesh-memory"]
+UNBOUND_BOX = "ray-tor1-1"
+
 # THE GUILD HALL, not a per-box workspace. ocn_feature_sweep.py maps each box to its OWN
 # private workspace ("OCN box workspace (ray-tor1-1)" etc), which is right for a single-seat
 # feature sweep and exactly wrong here: copying that map pointed mesh-control at ray-tor1-1's
@@ -401,40 +407,62 @@ def run(env: str) -> dict[str, Any]:
                                  "BUILDANDDO_SUITE_BINDINGS entry covers this workspace")}},
          "queued", out["run_status"] == "queued")
 
-    # 2c. THE CLAIM LEASE, reachable at last. bindings() names ONE worker_user per workspace,
-    #     so this is not a race between peers - it is a ROLE boundary, and it needs its own
-    #     control: the designated worker must take the very run a non-worker member cannot.
-    #     Both callers are Guild Hall editors, so a difference here can only come from the
-    #     binding. Sequential on purpose - concurrency would conflate the role check with the
-    #     lease, and the role check runs first inside the hook regardless.
-    worker_claim: dict[str, Any] = {"http": 0}
-    peer_claim: dict[str, Any] = {"http": 0}
+    # 2c. THE CLAIM LEASE, raced for real. This is the test this tool set out to write and
+    #     could not: bindings() admitted exactly ONE worker_user per workspace, so two machines
+    #     could never contend for a lease and the first attempt at this race refused every
+    #     caller identically. suite-policy.js now accepts a bounded LIST of worker ids against
+    #     the same pinned source_sha256, which is what actually guards the evidence - so the
+    #     lease's own machinery is finally reachable. It was always multi-consumer:
+    #     suite_runs.processor is a per-user relation, an expired lease is re-claimable, and
+    #     complete() fences on the attempt number the claimer recorded, which can only ever
+    #     matter when someone else can take over.
+    #
+    #     UNBOUND_BOX is the control and it is the sharp one: it is a Guild Hall editor exactly
+    #     like both racers, and the ONLY thing separating it from them is the binding. If the
+    #     pool admitted people by membership rather than by name, it would get through.
+    claim_race: list[dict[str, Any]] = []
+    unbound: dict[str, Any] = {"http": 0}
     if out["run_status"] == "queued" and out["job_id"]:
-        worker_claim = on_box(HOST_BOX, boxes[HOST_BOX], base, "POST", suite, {
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(POOL_BOXES)) as pool:
+            futures = {
+                pool.submit(on_box, box, boxes[box], base, "POST", suite, {
+                    "action": "claim", "mission": out["mission"], "revision": 1,
+                    "request_key": uuid.uuid4().hex, "payload": {"id": out["job_id"]},
+                }): box for box in POOL_BOXES
+            }
+            claim_race = [f.result() for f in concurrent.futures.as_completed(futures)]
+        out["claim_race"] = adjudicate(claim_race)
+        out["claim_race_detail"] = [
+            {"box": r.get("box"), "http": r.get("http"),
+             "message": str((r.get("body") or {}).get("message") or "")[:120]}
+            for r in claim_race]
+        note(checks, "concurrent-claim", "+".join(POOL_BOXES),
+             {"http": 200 if out["claim_race"]["verdict"] == "MUTUAL_EXCLUSION_HELD" else 0,
+              "body": {"message": out["claim_race"]["why"]}},
+             "exactly one lease holder",
+             out["claim_race"]["verdict"] == "MUTUAL_EXCLUSION_HELD")
+
+        unbound = on_box(UNBOUND_BOX, boxes[UNBOUND_BOX], base, "POST", suite, {
             "action": "claim", "mission": out["mission"], "revision": 1,
             "request_key": uuid.uuid4().hex, "payload": {"id": out["job_id"]},
         })
-        note(checks, "worker-claims", HOST_BOX, worker_claim, "200",
-             worker_claim.get("http") == 200)
-        peer = next(b for b in RACER_BOXES if b != HOST_BOX)
-        peer_claim = on_box(peer, boxes[peer], base, "POST", suite, {
-            "action": "claim", "mission": out["mission"], "revision": 1,
-            "request_key": uuid.uuid4().hex, "payload": {"id": out["job_id"]},
-        })
-        note(checks, "non-worker-refused", peer, peer_claim, "403",
-             peer_claim.get("http") == 403)
-        by_role = (worker_claim.get("http") == 200 and peer_claim.get("http") == 403)
-        note(checks, "worker-role-discriminates", f"{HOST_BOX} vs {peer}",
-             {"http": 200 if by_role else 0,
-              "body": {"message": f"worker={worker_claim.get('http')} "
-                                  f"member={peer_claim.get('http')} - both are editors of "
-                                  "this workspace, so only the binding can separate them"}},
-             "worker takes it, member cannot", by_role)
+        note(checks, "unbound-member-refused", UNBOUND_BOX, unbound, "403",
+             unbound.get("http") == 403)
+        won_lease = [r for r in claim_race if r.get("http") == 200]
+        by_binding = bool(won_lease) and unbound.get("http") == 403
+        note(checks, "pool-admits-by-binding", f"{'+'.join(POOL_BOXES)} vs {UNBOUND_BOX}",
+             {"http": 200 if by_binding else 0,
+              "body": {"message": f"pool winner={[r.get('box') for r in won_lease]} "
+                                  f"unbound_member={unbound.get('http')} - all three are "
+                                  "editors, so only the binding can separate them"}},
+             "a named worker leases it, an unnamed member cannot", by_binding)
+    else:
+        out["claim_race"] = {"verdict": "UNMEASURED",
+                             "why": "no queued run to contend for"}
     out["claim_detail"] = {
-        "worker": {"box": HOST_BOX, "http": worker_claim.get("http"),
-                   "message": str((worker_claim.get("body") or {}).get("message") or "")[:120]},
-        "non_worker_member": {"http": peer_claim.get("http"),
-                              "message": str((peer_claim.get("body") or {}).get("message") or "")[:120]},
+        "pool": out.get("claim_race_detail") or [],
+        "unbound_member": {"box": UNBOUND_BOX, "http": unbound.get("http"),
+                           "message": str((unbound.get("body") or {}).get("message") or "")[:120]},
     }
 
     # 3. THE CONTROL, rebuilt so that it discriminates. Every one of the six box seats is an
@@ -500,9 +528,13 @@ def table(result: dict) -> str:
     lines.append(f"  distinct public IPs: {result.get('distinct_public_ips')}")
     for box, machine in sorted((result.get("machines") or {}).items()):
         lines.append(f"    {box:14s} ip={machine.get('ip') or '?':16s} login={machine.get('login_http')}")
+    lease = result.get("claim_race") or {}
+    if lease:
+        lines.append(f"  LEASE RACE: {lease.get('verdict')} - {lease.get('why')}")
+        lines.append(f"    holder={lease.get('winners')} refused={lease.get('refused')}")
     race = result.get("race") or {}
     if race:
-        lines.append(f"  RACE: {race.get('verdict')} - {race.get('why')}")
+        lines.append(f"  ENQUEUE RACE: {race.get('verdict')} - {race.get('why')}")
         lines.append(f"    winners={race.get('winners')} refused={race.get('refused')} errored={race.get('errored')}")
     for check in result.get("checks") or []:
         mark = "ok" if check["outcome"] == "AS_EXPECTED" else "XX"
