@@ -76,6 +76,45 @@ beforeEach(() => {
 afterEach(() => { cleanup(); setDemoMode(false); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 describe('OperatorPage', () => {
+    it('renders economic unknowns and switches all three lenses without new reads or writes', async () => {
+        const user = setupUser(); renderPage();
+        const values = await screen.findByRole('region', { name: 'Business value' });
+        expect(values).toHaveTextContent('Value created');
+        expect(values).toHaveTextContent('Hours returned');
+        expect(values).toHaveTextContent('Work verified');
+        expect(values).toHaveTextContent('Risk prevented');
+        expect(values).toHaveTextContent('Automation rate');
+        expect(within(values).getAllByText('Not yet measured')).toHaveLength(4);
+        expect(values).not.toHaveTextContent('$4,820');
+        expect(values).not.toHaveTextContent('68%');
+        const reads = pb.send.mock.calls.length;
+        await user.click(within(values).getByRole('button', { name: 'Operator', exact: true }));
+        expect(within(values).getByRole('button', { name: 'Operator', exact: true })).toHaveAttribute('aria-pressed', 'true');
+        expect(values).toHaveTextContent('Work and blockers');
+        await user.click(within(values).getByRole('button', { name: 'Reviewer', exact: true }));
+        expect(values).toHaveTextContent('Trace each outcome');
+        expect(values).toHaveTextContent('Mission → action → evidence → reviewer → provider receipt → declared release.');
+        const title = backend.app.findRecordById('missions', 'mission1').getString('title');
+        await user.click(within(values).getByText(title, { exact: true }));
+        expect(values).toHaveTextContent('Unresolved; link this record through its canonical owner.');
+        expect(within(values).getAllByRole('link', { name: 'Open mission, evidence and replay export' })
+            .some((link) => link.getAttribute('href') === '/app/missions?mission=mission1')).toBe(true);
+        await user.click(within(values).getByRole('button', { name: 'Owner', exact: true }));
+        expect(values).toHaveTextContent('What needs attention');
+        expect(within(values).getAllByText('Not yet measured')).toHaveLength(4);
+        expect(pb.send).toHaveBeenCalledTimes(reads);
+        expect(pb.send.mock.calls.every(([, options]) => options.method === 'GET')).toBe(true);
+    });
+
+    it('clears value lineage when a refreshed workspace read loses access', async () => {
+        const user = setupUser(); renderPage();
+        await screen.findByRole('region', { name: 'Business value' });
+        backend.app.delete(backend.app.findRecordById('workspace_members', 'editormember'));
+        await user.click(screen.getByRole('button', { name: 'Refresh workspace state' }));
+        await waitFor(() => expect(screen.queryByRole('region', { name: 'Business value' })).not.toBeInTheDocument());
+        expect(pb.send.mock.calls.every(([, options]) => options.method === 'GET')).toBe(true);
+    });
+
     it('prioritizes actual human decisions and reads existing state without writing', async () => {
         const before = JSON.stringify(backend.data); const user = setupUser(); renderPage();
         const decisions = await screen.findByRole('region', { name: 'Human decisions' });
@@ -86,8 +125,8 @@ describe('OperatorPage', () => {
         expect(within(decisions).getAllByRole('link').map((link) => link.getAttribute('href'))).toContain('/app/missions?mission=planned');
         await user.click(screen.getByText('Work and active missions'));
         expect(screen.getByRole('region', { name: 'Work queue' })).toHaveTextContent('Incomplete plan');
-        expect(screen.getByRole('region', { name: 'Systems and evidence' })).toHaveTextContent('Rig2 / fleet');
-        expect(screen.getByRole('region', { name: 'Systems and evidence' })).toHaveTextContent('No runtime observation');
+        expect(screen.getByRole('region', { name: 'Systems and evidence' })).toHaveTextContent('Firecrawl');
+        expect(screen.getByRole('region', { name: 'Systems and evidence' })).toHaveTextContent('Configuration alone does not establish live health.');
         await user.click(screen.getByText('Recent changes and worker activity'));
         expect(screen.getByRole('region', { name: 'Worker activity' })).toHaveTextContent('Recorded activity does not establish available capacity.');
         expect(document.body).not.toHaveTextContent('Private source body');

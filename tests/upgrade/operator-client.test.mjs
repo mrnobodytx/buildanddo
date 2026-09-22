@@ -55,7 +55,8 @@ test('the projection separates actual approvals from ordinary research and missi
     assert.deepEqual(view.work_queue.map((row) => row.id).sort(), ['mission:draft', 'signal:signal1']);
     assert.equal(view.active_missions.length, 3);
     assert.ok(view.systems.every((row) => !['healthy', 'disabled'].includes(row.status)));
-    assert.equal(view.systems.find((row) => row.id === 'nxc').status, 'not_connected');
+    assert.deepEqual(view.systems.map((row) => row.id), snapshot.sources.integrations.items.map((row) => row.provider));
+    assert.equal(view.systems.find((row) => row.id === 'nxc'), undefined);
     assert.equal(view.workers[0].status, 'progress');
     assert.ok(!JSON.stringify(view).includes('idle')); assert.equal(view.readiness, undefined);
 });

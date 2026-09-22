@@ -462,7 +462,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-22T01:28:19.225925+00:00",
+  "generated_at": "2026-09-22T14:33:19.771130+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -943,12 +943,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 47,
-    "python_files": 317,
+    "python_files": 319,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1329,
-    "web_source_files": 345
+    "tracked_files": 1338,
+    "web_source_files": 347
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1004,13 +1004,13 @@
       },
       {
         "id": "HS-09",
-        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures.",
+        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review.",
         "owner": "BITS-CODEGEN / release owner",
         "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
@@ -1021,7 +1021,7 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "1974658e8fda002904b32cff21d1c98a75a550ee72fefc49d9d97175b0590d02",
+    "source_sha256": "b66df88deb2ba203c7eee6b5731d85530a77c27c26cdc9b95c82d5d721fa3921",
     "state": "PASS"
   },
   "summary": {

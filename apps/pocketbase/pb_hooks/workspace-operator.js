@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/workspace-administration.js, apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_hooks/mission-policy.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/workspace-administration.js, apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workspace-value.js
 // EnumType:    Service
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; CONSUMES apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_hooks/mission-policy.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; CONSUMES apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_hooks/mission-policy.js; CONSUMES apps/pocketbase/pb_hooks/workspace-value.js
 // DAG Node:    none
 // Intent:      Project bounded existing workspace observations without creating work, exposing source bodies or replacing current record authority.
 // ───────────────────────────────────────────────────────────────
@@ -20,6 +20,7 @@ const administration = require(`${__hooks}/workspace-administration.js`);
 const research = require(`${__hooks}/research-policy.js`);
 const missionPolicy = require(`${__hooks}/mission-policy.js`);
 const PAGE_SIZE = 20;
+const value = require(__hooks + '/workspace-value.js');
 
 function text(record, name, limit = 240) { return record.getString(name).slice(0, limit); }
 function summary(record, status = 'status', title = 'title') {
@@ -66,7 +67,8 @@ function snapshot(e) {
             return { ...summary(row), priority: text(row, 'priority', 32),
                 plan_complete: Boolean(plan && plan.version === 1 && ['A0', 'A1', 'A2'].includes(plan.risk) &&
                     missionPolicy.PLAN_FIELDS.every((field) => access.text(plan[field], 1200))),
-                approved: Boolean(row.getString('mission_approved_by') && row.getString('mission_approved_at')) };
+                approved: Boolean(row.getString('mission_approved_by') && row.getString('mission_approved_at')),
+                value: value.outcome(e, row) };
         }),
         signals: list('signals', ['title', 'state'], (row) => ({ ...summary(row, 'state'), severity: text(row, 'severity', 32) })),
         evidence: list('evidence', ['mission', 'type'], (row) => summary(row, 'type'), (row) => {

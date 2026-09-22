@@ -20,6 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Developmental Twin and value lenses — 2026-09-22
+
+The owner's ecosystem/progression and reviewer-dashboard request continues this
+existing A2 source dispatch. Semantic queries remain advisory; no external feed,
+workspace write, provider execution or authority promotion is authorized here.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| TV-1 | Reuse canonical identity, state, history and query contracts | Semantic-twin regression and new progression cases | source PASS — 19 progression cases; retained captures preserve identity conflicts, state and authority boundaries |
+| TV-2 | Connect permission-scoped outcomes to one value projection and three lenses | Connected operator/value and rendered page cases | source PASS — 12 value cases, 100 percent helper line coverage; rendered and native acceptance require absent packages/binary |
+| TV-3 | Add the continuous Gantt lane and blueprint to existing owners | Document/source contract review | PASS — existing development-loop, sprint and operator documents own the blueprint, continuous lane and economic measurement contract |
+| TV-4 | Retain evidence, memory and source bindings | Typing, source checks, readiness, boundary, context and memory | source regression complete — 580 Node passes, 770 Python passes and 32 skips; final checks and limitations retained in twin-value-report.md |
+
+Memory brief: Phase 1 ingestion, evolution promotion and native mission review
+already exist. The canonical authority vocabulary ends at A3; an A0–A5 model
+requires its actual owner's reference. The operator route currently returns
+bounded summaries rather than economic measurements. No authenticated workspace,
+business baseline, canonical identity resolver feed or private runtime is
+attached. Latest onboarding and paid-pilot source/evidence are preserved.
+
 ## Paid-pilot continuation — 2026-09-22
 
 | Phase | Task | Gate | Status |

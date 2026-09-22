@@ -530,7 +530,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 46831,
+      "lines": 47861,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -664,7 +664,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1499,
+      "lines": 1519,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -679,7 +679,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -983,7 +985,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1960,
+      "lines": 1996,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -998,7 +1000,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -19392,7 +19396,7 @@
         "apps/pocketbase/pb_hooks/operator.pb.js",
         "apps/pocketbase/pb_hooks/workspace-operator.js"
       ],
-      "lines": 570,
+      "lines": 574,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require native suite execution and scoped, read-only operator observations before accepting a box-worker runtime.",
@@ -19409,7 +19413,9 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "mission-suite",
         "government-learning",
-        "operator-acceptance"
+        "operator-acceptance",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -36109,9 +36115,10 @@
         "apps/pocketbase/pb_hooks/workspace-access.js",
         "apps/pocketbase/pb_hooks/workspace-administration.js",
         "apps/pocketbase/pb_hooks/research-policy.js",
-        "apps/pocketbase/pb_hooks/mission-policy.js"
+        "apps/pocketbase/pb_hooks/mission-policy.js",
+        "apps/pocketbase/pb_hooks/workspace-value.js"
       ],
-      "lines": 116,
+      "lines": 118,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Project bounded existing workspace observations without creating work, exposing source bodies or replacing current record authority.",
@@ -36126,7 +36133,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "operator-plane"
+        "operator-plane",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -36146,13 +36155,28 @@
         "blueprintShape",
         "planShape",
         "importOperatorBlueprint",
-        "createOperatorClient"
+        "createOperatorClient",
+        "stale",
+        "invalid",
+        "id",
+        "name",
+        "hash",
+        "text",
+        "list",
+        "unique",
+        "keys",
+        "stamp",
+        "freeze",
+        "requireValue",
+        "strings",
+        "relativePath"
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-operator.js",
         "apps/federal_foundry/operator.py",
         "apps/web/src/lib/missionResearch.js",
-        "apps/web/src/lib/policyIntelligence.js"
+        "apps/web/src/lib/policyIntelligence.js",
+        "apps/web/src/lib/workspaceValue.js"
       ],
       "lines": 316,
       "caps_grade": "pending",
@@ -36169,7 +36193,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "operator-plane"
+        "operator-plane",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -36186,14 +36212,18 @@
         "WorkList",
         "WorkspaceSnapshot",
         "ImportedPlan",
-        "OperatorDesk"
+        "OperatorDesk",
+        "OperatorPage",
+        "label"
       ],
       "dependencies": [
         "apps/web/src/lib/operatorPlane.js",
         "apps/web/src/contexts/WorkspaceAccessContext.jsx",
-        "apps/web/src/components/workspace/ControlPrimitives.jsx"
+        "apps/web/src/components/workspace/ControlPrimitives.jsx",
+        "apps/web/src/lib/workspaceValue.js",
+        "apps/web/src/components/workspace/ValueDashboard.jsx"
       ],
-      "lines": 317,
+      "lines": 323,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Surface observed workspace decisions and source coverage while keeping imported build plans separate from explicit review mission proposals.",
@@ -36208,7 +36238,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "operator-plane"
+        "operator-plane",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -36220,12 +36252,20 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [],
+      "functions": [
+        "page",
+        "renderPage",
+        "route",
+        "fileFor",
+        "load",
+        "deferred",
+        "readBlob"
+      ],
       "dependencies": [
         "apps/web/src/pages/workspace/OperatorPage.jsx",
         "tests/upgrade/operator-fixture.mjs"
       ],
-      "lines": 294,
+      "lines": 333,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise scoped operator reads, inert plan review, explicit proposal recovery and immediate removal of inaccessible workspace state.",
@@ -36240,7 +36280,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "operator-plane"
+        "operator-plane",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -36258,9 +36300,12 @@
         "apps/pocketbase/pb_hooks/workspace-operator.js",
         "apps/web/src/lib/operatorPlane.js",
         "apps/web/src/pages/workspace/OperatorPage.jsx",
-        "docs/blueprints.md"
+        "docs/blueprints.md",
+        "apps/web/src/lib/workspaceValue.js",
+        "apps/web/src/components/workspace/ValueDashboard.jsx",
+        "apps/pocketbase/pb_hooks/workspace-value.js"
       ],
-      "lines": 202,
+      "lines": 264,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the public operator review loop usable with explicit evidence, freshness, authority and private receiving boundaries.",
@@ -36276,7 +36321,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "operator-plane",
-        "operator-acceptance"
+        "operator-acceptance",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -36290,13 +36337,14 @@
       "enum_type": "Test",
       "functions": [
         "accepted",
-        "connected"
+        "connected",
+        "parse"
       ],
       "dependencies": [
         "apps/web/src/lib/operatorPlane.js",
         "tests/upgrade/operator-fixture.mjs"
       ],
-      "lines": 260,
+      "lines": 261,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify compiler/browser interoperability, inert imported content, truthful freshness and scoped durable review requests through real handlers.",
@@ -36311,7 +36359,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "operator-plane"
+        "operator-plane",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -36348,7 +36398,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "operator-plane"
+        "operator-plane",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -38611,7 +38663,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 541,
+      "lines": 547,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38626,7 +38678,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -38673,7 +38727,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1036,
+      "lines": 1043,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38688,7 +38742,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -38901,9 +38957,10 @@
         "scripts/ci/hostinger_replay.py",
         "tools/day21/day21_acceptance.py",
         ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md",
-        "docs/sprint-user-journey.md"
+        "docs/sprint-user-journey.md",
+        "docs/development-loop.md"
       ],
-      "lines": 347,
+      "lines": 401,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.",
@@ -38918,7 +38975,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -42686,9 +42745,11 @@
         "libs/evolution/review_packets.py",
         "docs/verified-evolution.md",
         "docs/capability-tokens.md",
-        "docs/submission-guide.md"
+        "docs/submission-guide.md",
+        "libs/semantic_twin/progression.py",
+        "docs/operator-plane.md"
       ],
-      "lines": 216,
+      "lines": 358,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make development observations, proposed work and independent grading operable without confusing source tests with competence or competition acceptance.",
@@ -42703,7 +42764,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "four-gap-closure"
+        "four-gap-closure",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -46009,9 +46072,11 @@
         "docs/workspace-assistant.md",
         "apps/web/src/pages/PricingPage.jsx",
         "apps/web/src/pages/ContactPage.jsx",
-        ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md"
+        ".bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md",
+        "docs/development-loop.md",
+        "docs/operator-plane.md"
       ],
-      "lines": 178,
+      "lines": 218,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define the receiving evidence and verified rollback postconditions that separate source onboarding completion from a deployed Day-21 outcome.",
@@ -46026,7 +46091,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "developmental-twin",
+        "evidence-backed-value"
       ],
       "tenant_id": null
     },
@@ -46814,12 +46881,975 @@
       "description": "CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md as declared by .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json",
+        "docs/development-loop.md",
+        "docs/operator-plane.md",
+        ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md"
+      ],
+      "lines": 197,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind developmental Twin and shared value-view claims to observed source checks while preserving missing runtime and economic evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json"
+      ],
+      "lines": 663,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind developmental and business-value source checks to exact observations without implying hosted, native or economic acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind developmental and business-value source checks to exact observations without implying hosted, native or economic acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/workspace-value.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "actions",
+        "outcome",
+        "id",
+        "stamp",
+        "hash",
+        "present"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_hooks/mission-policy.js",
+        "apps/pocketbase/pb_hooks/business-actions.js"
+      ],
+      "lines": 92,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Project retained mission review and readable action lineage into value facts without creating verification or exposing source bodies.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/ValueDashboard.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "OutcomeLineage",
+        "ValueDashboard",
+        "words"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceValue.js",
+        "apps/web/src/components/workspace/ControlPrimitives.jsx"
+      ],
+      "lines": 127,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Translate one scoped evidence projection into owner, operator and reviewer questions with drill-downs and honest unknowns.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/workspaceValue.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "valueSummaryShape",
+        "projectWorkspaceValue",
+        "id",
+        "text",
+        "keys",
+        "stamp",
+        "hash",
+        "freeze",
+        "unknown"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-value.js"
+      ],
+      "lines": 123,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give every dashboard lens the same scoped measurements, lineage and explicit economic gaps.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/phase1/compiler.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "Phase1Inputs",
+        "Phase1Compilation",
+        "_gap_object",
+        "_commit_from_base",
+        "_optional_graphs",
+        "compile_phase1"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/ingestion",
+        "libs/semantic_twin/phase1/release_state.py",
+        "libs/semantic_twin/phase1/history.py",
+        "libs/semantic_twin/phase1/sbom.py",
+        "libs/semantic_twin/phase1/providers.py",
+        "libs/semantic_twin/phase1/memory.py",
+        "libs/semantic_twin/phase1/claims.py",
+        "libs/semantic_twin/phase1/truth.py",
+        "libs/semantic_twin/phase1/merkle.py",
+        "libs/semantic_twin/phase1/context.py",
+        "libs/semantic_twin/progression.py"
+      ],
+      "lines": 306,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Join all ten local Phase 1 capabilities into one connected graph, release-truth matrix, semantic epoch and query proof bundle.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/semantic_twin/progression.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "_observations_before",
+        "Invitation",
+        "TwinCapture",
+        "Prerequisite",
+        "ProgressionTarget",
+        "_time",
+        "_conditions",
+        "_boundary",
+        "resolve_invitations",
+        "describe",
+        "progression",
+        "traverse",
+        "search",
+        "capture_at",
+        "compare"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/models.py",
+        "libs/semantic_twin/ingestion/graph.py",
+        "libs/semantic_twin/ingestion/serializer.py"
+      ],
+      "lines": 601,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain developmental prerequisites and historical change through existing owners without creating identities or granting authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_semantic_twin_phase1_complete.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "_write_json",
+        "_anchor",
+        "ReleaseStateTests",
+        "GitHistoryTests",
+        "SbomTests",
+        "ProviderExportTests",
+        "MemoryTests",
+        "ClaimIntelligenceTests",
+        "ReconciliationTests",
+        "MerkleEpochTests",
+        "ContextProofTests",
+        "CompleteCompilerTests"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/phase1",
+        "libs/semantic_twin/ingestion",
+        "libs/semantic_twin/progression.py"
+      ],
+      "lines": 662,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove all ten complete Phase 1 adapters, reconciliation, epoch and replay proof behaviors without live providers or deployment actions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_semantic_twin_progression.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "observed",
+        "verified",
+        "capture",
+        "target",
+        "InvitationTests",
+        "CaptureTests",
+        "ProgressionTests",
+        "QueryHistoryTests"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/progression.py",
+        "tests/upgrade/test_semantic_twin_contracts.py"
+      ],
+      "lines": 579,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Test invitation conflicts, exact evidence prerequisites, historical regressions and advisory impact without synthetic authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/workspace-value.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "reviewed",
+        "value",
+        "card",
+        "missionOutcome"
+      ],
+      "dependencies": [
+        "tests/upgrade/operator-fixture.mjs",
+        "apps/pocketbase/pb_hooks/workspace-value.js",
+        "apps/web/src/lib/workspaceValue.js"
+      ],
+      "lines": 215,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject unsupported economic and verification claims while checking one scoped value projection and its evidence lineage.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "developmental-twin",
+        "evidence-backed-value"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": "docs/development-loop.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md consumes docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "target": "docs/operator-plane.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md consumes docs/operator-plane.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-report.md",
+      "target": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-report.md consumes .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-report.md",
+      "target": "docs/development-loop.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-report.md consumes docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-report.md",
+      "target": "docs/operator-plane.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-report.md consumes docs/operator-plane.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/twin-value-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-value.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-operator.js consumes apps/pocketbase/pb_hooks/workspace-value.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-value.js",
+      "target": "apps/pocketbase/pb_hooks/business-actions.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-value.js consumes apps/pocketbase/pb_hooks/business-actions.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-value.js",
+      "target": "apps/pocketbase/pb_hooks/mission-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-value.js consumes apps/pocketbase/pb_hooks/mission-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-value.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-value.js consumes apps/pocketbase/pb_hooks/workspace-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ValueDashboard.jsx",
+      "target": "apps/web/src/components/workspace/ControlPrimitives.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/ValueDashboard.jsx consumes apps/web/src/components/workspace/ControlPrimitives.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ValueDashboard.jsx",
+      "target": "apps/web/src/lib/workspaceValue.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/ValueDashboard.jsx consumes apps/web/src/lib/workspaceValue.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/operatorPlane.js",
+      "target": "apps/web/src/lib/workspaceValue.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/operatorPlane.js consumes apps/web/src/lib/workspaceValue.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workspaceValue.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-value.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/workspaceValue.js consumes apps/pocketbase/pb_hooks/workspace-value.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/OperatorPage.jsx",
+      "target": "apps/web/src/components/workspace/ValueDashboard.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/OperatorPage.jsx consumes apps/web/src/components/workspace/ValueDashboard.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/OperatorPage.jsx",
+      "target": "apps/web/src/lib/workspaceValue.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/OperatorPage.jsx consumes apps/web/src/lib/workspaceValue.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "docs/operator-plane.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/development-loop.md consumes docs/operator-plane.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "libs/semantic_twin/progression.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/development-loop.md consumes libs/semantic_twin/progression.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/hostinger-sprint-closure.md",
+      "target": "docs/development-loop.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/hostinger-sprint-closure.md consumes docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/operator-plane.md",
+      "target": "apps/pocketbase/pb_hooks/workspace-value.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/operator-plane.md consumes apps/pocketbase/pb_hooks/workspace-value.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/operator-plane.md",
+      "target": "apps/web/src/components/workspace/ValueDashboard.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/operator-plane.md consumes apps/web/src/components/workspace/ValueDashboard.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/operator-plane.md",
+      "target": "apps/web/src/lib/workspaceValue.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/operator-plane.md consumes apps/web/src/lib/workspaceValue.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/ingestion",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py consumes libs/semantic_twin/ingestion.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/phase1/claims.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py consumes libs/semantic_twin/phase1/claims.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/phase1/history.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py consumes libs/semantic_twin/phase1/history.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/phase1/memory.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py consumes libs/semantic_twin/phase1/memory.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/phase1/providers.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py consumes libs/semantic_twin/phase1/providers.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/phase1/release_state.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py consumes libs/semantic_twin/phase1/release_state.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/phase1/sbom.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py consumes libs/semantic_twin/phase1/sbom.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/phase1/truth.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py consumes libs/semantic_twin/phase1/truth.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/progression.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py consumes libs/semantic_twin/progression.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/phase1/context.py",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py produces libs/semantic_twin/phase1/context.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/phase1/compiler.py",
+      "target": "libs/semantic_twin/phase1/merkle.py",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/phase1/compiler.py produces libs/semantic_twin/phase1/merkle.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/progression.py",
+      "target": "libs/semantic_twin/ingestion/graph.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/progression.py consumes libs/semantic_twin/ingestion/graph.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/progression.py",
+      "target": "libs/semantic_twin/ingestion/serializer.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/progression.py consumes libs/semantic_twin/ingestion/serializer.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/semantic_twin/progression.py",
+      "target": "libs/semantic_twin/models.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/semantic_twin/progression.py consumes libs/semantic_twin/models.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_phase1_complete.py",
+      "target": "tests/upgrade/test_semantic_twin_ingestion.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_phase1_complete.py extends tests/upgrade/test_semantic_twin_ingestion.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_phase1_complete.py",
+      "target": "libs/semantic_twin/phase1",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_phase1_complete.py validates libs/semantic_twin/phase1.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_phase1_complete.py",
+      "target": "libs/semantic_twin/progression.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_phase1_complete.py validates libs/semantic_twin/progression.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_progression.py",
+      "target": "tests/upgrade/test_semantic_twin_contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_progression.py consumes tests/upgrade/test_semantic_twin_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_semantic_twin_progression.py",
+      "target": "libs/semantic_twin/progression.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_semantic_twin_progression.py validates libs/semantic_twin/progression.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-value.test.mjs",
+      "target": "tests/upgrade/operator-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-value.test.mjs consumes tests/upgrade/operator-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-value.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-value.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-value.test.mjs validates apps/pocketbase/pb_hooks/workspace-value.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-value.test.mjs",
+      "target": "apps/web/src/lib/workspaceValue.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-value.test.mjs validates apps/web/src/lib/workspaceValue.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_semantic_twin_progression.py",
+      "description": "Python source discovery executed 802 cases: 770 passed, 32 skipped, no failures. The 19 progression cases passed with 99 percent stdlib trace line coverage; missing native and optional dependencies remain acceptance gaps.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T14:21:18.119061+00:00",
+      "commit_sha": "52ff911ab51288e2dd552e0b9903bb21832f3a29",
+      "smoke_result": "770/802"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/workspace-value.test.mjs",
+      "description": "All 580 connected Node source cases passed with the existing diagnostic module path supplied. Twelve value cases measure 100 percent helper line coverage; production helpers use explicit storage/transport doubles, not native or rendered acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T14:23:32.015512+00:00",
+      "commit_sha": "52ff911ab51288e2dd552e0b9903bb21832f3a29",
+      "smoke_result": "580/580"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "libs/semantic_twin/phase1/compiler.py",
+      "description": "Actual bounded repository capture retained 3373 connected objects and 7395 relations, deterministic round-trip digests, literal search and dependency traversal. Zero objects were VERIFIED; missing release, GitLab and Datadog evidence remained UNMEASURED. Scope and authority were unchanged.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T14:25:20.477060+00:00",
+      "commit_sha": "52ff911ab51288e2dd552e0b9903bb21832f3a29",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx",
+      "description": "Rendered tests, lint and build cannot complete without locked Vitest, eslint-plugin-import and Vite; offline provisioning lacks the zod archive. Required native operator acceptance refused to run without PocketBase. No browser, deployed or economic result is claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T14:27:55.001415+00:00",
+      "commit_sha": "52ff911ab51288e2dd552e0b9903bb21832f3a29",
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "commit",
+      "file_path": "libs/semantic_twin/progression.py",
+      "description": "Retain canonical invitations, developmental prerequisites, history and shared owner/operator/reviewer value views under the existing source dispatch. Queries remain advisory and unknown economics remain unmeasured.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T14:27:55Z",
+      "commit_sha": "52ff911ab51288e2dd552e0b9903bb21832f3a29",
+      "smoke_result": null
     }
   ],
   "summary": {
-    "type_a_count": 768,
-    "type_b_count": 1731,
-    "type_c_count": 187,
+    "type_a_count": 779,
+    "type_b_count": 1776,
+    "type_c_count": 192,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

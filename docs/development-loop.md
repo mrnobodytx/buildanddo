@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     libs/evolution/development.py, libs/evolution/development_sources.py, libs/evolution/intelligence.py, libs/evolution/review_packets.py, docs/verified-evolution.md, docs/capability-tokens.md, docs/submission-guide.md
+# Depends:     libs/evolution/development.py, libs/evolution/development_sources.py, libs/evolution/intelligence.py, libs/evolution/review_packets.py, docs/verified-evolution.md, docs/capability-tokens.md, docs/submission-guide.md, libs/semantic_twin/progression.py, docs/operator-plane.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES libs/evolution/development.py; CONSUMES libs/evolution/development_sources.py; CONSUMES libs/evolution/intelligence.py; CONSUMES libs/evolution/review_packets.py; EXTENDS docs/verified-evolution.md; EXTENDS docs/capability-tokens.md; CONSUMES docs/submission-guide.md
+# EnumEdges:   CONSUMES libs/evolution/development.py; CONSUMES libs/evolution/development_sources.py; CONSUMES libs/evolution/intelligence.py; CONSUMES libs/evolution/review_packets.py; EXTENDS docs/verified-evolution.md; EXTENDS docs/capability-tokens.md; CONSUMES docs/submission-guide.md; CONSUMES libs/semantic_twin/progression.py; CONSUMES docs/operator-plane.md
 # Intent:      Make development observations, proposed work and independent grading operable without confusing source tests with competence or competition acceptance.
 # ───────────────────────────────────────────────────────────────
 
@@ -30,6 +30,148 @@ Repository-authenticated GitHub observation
   → separately pinned independent outcome review
   → existing discovery / replay / shadow / PromotionProof gates
 ```
+
+## Blueprint: developmental Semantic Twin
+
+The primary purpose is developmental memory: where each participant is, what it
+can demonstrate, what blocks it, and which evidence would justify its next step.
+The Twin is **ecosystem-wide by invitation and discovery, not by a hard-coded
+integration list**. It is semantic connective tissue across existing owners.
+It does not become a second inventory, capability registry, policy engine,
+authority ledger or verification service.
+
+Inventory, identity, SBOM, DAG/DKG, repositories, telemetry, deployment evidence
+and future owners can supply their existing versioned identities and assertions.
+The operating loop is discover → understand → connect → observe → test → verify
+→ operate → delegate → automate → govern/advance. Those are questions to assess,
+not automatic promotions or definitions of authority tiers.
+
+```mermaid
+flowchart TD
+    O[Existing identity, inventory, SBOM, graphs and evidence owners] --> I[Identity resolution]
+    I --> C[Canonical captures and explicit unresolved invitations]
+    C --> R[Reconcile states, prerequisites and historical change]
+    R --> Q[Search, dependency impact and next evidence]
+    Q --> P[Existing operation proposal]
+    P --> G[Structural and integrity checks, identity, policy and authority]
+    G --> X[Existing governed execution boundary]
+    X --> E[Observation and independent verification]
+    E --> C
+```
+
+Discovery supplies a candidate fact. Evidence supplies evidentiary standing.
+Policy controls its use; authority controls execution. Representation supplies
+none of those permissions. Correlation and impact traversal are not causal proof.
+The causality owner still needs hypotheses, mechanism, temporal evidence,
+confounder assessment and an independent experiment.
+
+### Identity, assertions and state
+
+`libs.semantic_twin.progression` consumes the same immutable P0 v2 envelopes as
+Phase 1. `Invitation` retains its source revision, observed time, original
+locator, owner, proposed canonical IDs and open semantic-class labels. Identity
+mapping is supplied by the existing owner, not guessed from display names.
+Exactly one matching identity and owner produces a link. Missing mappings are
+`UNRESOLVED`; competing mappings or owners are `CONFLICTING`. Neither produces
+a new semantic entity or silently merges records. Repeating an identical
+invitation is idempotent. Receiving systems must authenticate mapping producers
+and enforce visibility before supplying captures; consistency is not authenticity.
+
+Canonical envelope types and the 62 predicates stay owned by Phase 0.
+Additional component classes are attributed labels, not newly minted ontology
+terms. Capability, ownership, authority, composition, deployment, data/control
+flow and evidence use existing canonical edges and owners. Future ontology
+extensions require the existing contract/versioning path, not an ingestion
+special case or a fixed per-system inclusion list.
+
+| Dimension | Representation and meaning |
+|---|---|
+| Declared | Original source claims and model-owner current/target labels, with attribution |
+| Discovered | Presence in the capture or invitation; no trust promotion |
+| Observed / inferred / verified | Original P0 evidence state, unchanged; VERIFIED retains the typed verifier/TEVV receipts |
+| Unknown / unmeasured / untargeted | Missing information, missing evidence or absent selection; never a healthy default |
+| Stale / conflicting | Derived freshness/validity conditions or retained competing mappings/evidence |
+| Degraded / failed / retired | Source lifecycle/runtime/evidence standing; no inferred removal or recovery |
+
+Every consequential assertion keeps its subject revision, source, provenance,
+evidence, observation time and validity. `describe` exposes the ten original
+state axes separately from these projection conditions. A recapture cannot
+renew an old observation. A successful producer receipt or source test cannot
+replace independent verification. There is no generic `ACTIVE=true` field.
+
+### Progression without increased authority
+
+`ProgressionTarget` references an exact participant revision, model revision,
+attributed declaration, current/target labels and exact evidence prerequisites.
+The model owner determines the meaning of those labels. Missing model or
+participant revisions, empty prerequisites, stale declarations, unavailable
+evidence and revision conflicts stay gaps. Each prerequisite names the measured
+states it accepts and the next evidence action. The default requires VERIFIED;
+an OBSERVED source or provider PASS does not satisfy it.
+
+When every declared prerequisite is supported, the projection returns
+`REVIEW_CANDIDATE`, never a promoted level. Labels such as A2 → A3 or A4 → A5
+remain owner declarations. This repository's authority vocabulary is A0–A3;
+it does not define A4/A5 authority or convert technical maturity into a grant.
+The required consequence tier remains separate, the actual authority ceiling
+is unknown without its owner, and every query result carries
+`authorized=false`. Existing evolution competence, independent review,
+qualification, promotion and demotion contracts remain unchanged.
+
+The resulting progression path is objective → required capability → existing
+capability → evidence/test history → dependency/blocker → governing model →
+review candidate → next milestone. It explains reuse, regressions and missing
+proof rather than scoring development by code volume.
+
+### Historical captures and advisory queries
+
+`TwinCapture` binds a scope, observation boundary, unchanged canonical graph
+and invitations. `Phase1Compilation.as_capture(scope_id)` reuses the compiled
+objects and capture time. No second extraction, object identity or verification
+is created. Each object retains its original SHA-256 leaf; the capture digest
+also binds scope and capture metadata. Neither digest authenticates its producer.
+
+`capture_at` selects an actually retained capture as of a time; it cannot
+reconstruct yesterday from today's files. It rejects cross-scope histories and
+different captures claiming the same time. `compare` retains before/after
+subjects, states, leaf digests and changed fields. Loss of verified evidence,
+new failures and stale evidence yield regression signals. Disappearance is
+UNTARGETED/UNMEASURED, not retirement. Prior envelopes are never overwritten.
+
+`search` finds literal capabilities, source assertions and gaps. `traverse`
+walks dependencies or reverse impact, preserving the evidence and validity on
+each returned edge. Bounded traversal reports truncation, and even an unmeasured
+edge remains visibly unmeasured. These are advisory paths, not causal conclusions,
+simulation validation, completeness claims or an execution API.
+
+```python
+from pathlib import Path
+from libs.semantic_twin.phase1 import Phase1Inputs, compile_phase1
+from libs.semantic_twin.progression import TwinCapture, describe, search, traverse
+
+compiled = compile_phase1(Path("."), inputs=Phase1Inputs(history_limit=20))
+capture = compiled.as_capture("buildanddo/public-release")
+facts = describe(capture, at=capture.captured_at)
+matches = search(capture, "verification", at=capture.captured_at)
+# Reuse a returned canonical ID when requesting an impact path.
+impact = traverse(capture, capture.objects[0].semantic_id, reverse=True)
+# Choose a new, appropriately scoped local destination. Never replace history.
+with Path("/tmp/buildanddo-twin-capture.json").open("x") as output:
+    output.write(capture.to_json())
+restored = TwinCapture.from_json(Path("/tmp/buildanddo-twin-capture.json").read_text())
+assert restored.digest == capture.digest
+```
+
+Synchronization means producing another retained capture on a relevant event,
+telemetry, deployment, inventory, SBOM or graph change. This implementation is a
+local stdlib projection; it launches no subscriber or hosted service. Each
+receiving owner still supplies authenticated observations, scope/tenant isolation,
+canonical mappings, retention and its existing event transport. Raw private
+evidence must not be copied into public exports.
+
+The sprint's continuous lane lives in `docs/hostinger-sprint-closure.md`.
+Business presentation and its current measurement limits live in
+`docs/operator-plane.md`. Those views do not maintain competing facts.
 
 ## Capture an actual development observation
 
