@@ -138,11 +138,51 @@ def start_once(binary, data_dir, hooks, migrations, seconds=25):
             "output": "".join(lines)[-900:]}
 
 
+def _twin_state(state, pending):
+    """Name this preflight's outcome on the twin's own axes, or say the vocabulary is absent.
+
+    The three states here were already the right distinctions - PASS, FAIL and UNMEASURED for a run
+    that never reached a serving backend. What they did not do is say WHICH axis each one is on, so
+    a reader had to infer it. On the twin's axes a timeout is NOT_TESTED and UNMEASURED, which is a
+    different thing from NOT_APPLICABLE, and a detector that reads the field no longer has to guess.
+
+    VERIFIED is never written. The preflight runs the pending set against a COPY of live data; that
+    is strong evidence and it is still not a verification receipt for the real deployment.
+    """
+    try:
+        import sys as _sys  # noqa: PLC0415
+        root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        if root not in _sys.path:
+            _sys.path.insert(0, root)
+        from libs.semantic_twin import EvidenceState, TevvState  # noqa: PLC0415
+    except Exception as exc:  # noqa: BLE001
+        return {"vocabulary": "ABSENT:%s" % type(exc).__name__}
+
+    if state == "PASS":
+        tevv, evidence = TevvState.PASS, EvidenceState.OBSERVED
+    elif state == "FAIL":
+        tevv, evidence = TevvState.FAIL, EvidenceState.OBSERVED
+    else:
+        # It was meant to run and did not reach a conclusion. Not a pass, and not a failure either.
+        tevv, evidence = TevvState.NOT_TESTED, EvidenceState.UNMEASURED
+    return {"vocabulary": "semantic_twin",
+            "tevv_state": tevv.value,
+            "evidence_state": evidence.value,
+            "counts_describe_this_run": state in ("PASS", "FAIL"),
+            "pending_tested": len(pending or []) if state in ("PASS", "FAIL") else 0,
+            "note": ("evidence is a serving run against a COPY of live data, not a verification "
+                     "receipt for the deployment itself")}
+
+
 def preflight(root, plant_broken=False, seconds=25):
     root = pathlib.Path(root)
     out = {"schema": "buildanddo.migration-preflight/v1", "root": str(root),
            "selftest": plant_broken}
-    binary = root / "pocketbase"
+    # The deploy target is Linux and the binary is "pocketbase" there. On Windows it carries .exe,
+    # and looking only for the bare name made this gate permanently UNMEASURED on the one machine
+    # an operator can run it from before touching staging - honest, and useless.
+    binary = next((c for c in (root / "pocketbase", root / "pocketbase.exe") if c.exists()),
+                  root / "pocketbase")
     live_db = root / "pb_data" / "data.db"
     mig_dir = root / "pb_migrations"
     hooks = root / "pb_hooks"
@@ -150,12 +190,14 @@ def preflight(root, plant_broken=False, seconds=25):
         if not path.exists():
             out["state"] = "UNMEASURED"
             out["reason"] = "%s not found at %s" % (label, path)
+            out["twin_state"] = _twin_state(out["state"], [])
             return out
 
     applied, err = applied_set(live_db)
     if applied is None:
         out["state"] = "UNMEASURED"
         out["reason"] = "cannot read the applied set: %s" % err
+        out["twin_state"] = _twin_state(out["state"], [])
         return out
     on_disk = sorted(p.name for p in mig_dir.glob("*.js"))
     # SET DIFFERENCE ON FILENAME - a lower-numbered file added later is still pending.
@@ -198,6 +240,7 @@ def preflight(root, plant_broken=False, seconds=25):
             out["verdict"] = result.get("reason", "could not run the binary")
     finally:
         shutil.rmtree(scratch, ignore_errors=True)
+    out["twin_state"] = _twin_state(out.get("state"), out.get("pending"))
     return out
 
 

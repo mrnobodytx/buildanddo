@@ -221,6 +221,51 @@ def test_counts(text: str, kind: str, root: Path) -> dict[str, int]:
     return counts
 
 
+
+def _twin_state(status, counts, artifacts):
+    """Semantic-twin state for one acceptance receipt, or a named reason it is absent.
+
+    Not an inference: each axis is set from something this run actually knows. A check that could
+    not start is NOT_TESTED and UNMEASURED - it did not run and we are saying so. A check that ran
+    with nothing of its kind to test is NOT_APPLICABLE, which is why a passing linter reporting zero
+    tests stops looking like a silent no-op. VERIFIED is never claimed here, because the twin
+    requires a verification receipt for it and this function has none to offer.
+    """
+    try:
+        import sys as _sys  # noqa: PLC0415
+        # os, not pathlib: this module does not import pathlib, and reaching for it produced a
+        # NameError the fail-closed path reported as ABSENT rather than crashing the check.
+        root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        if root not in _sys.path:
+            _sys.path.insert(0, root)
+        from libs.semantic_twin import EvidenceState, TevvState  # noqa: PLC0415
+    except Exception as exc:  # noqa: BLE001
+        return {"vocabulary": "ABSENT:%s" % type(exc).__name__}
+
+    ran = status in ("PASS", "FAIL")
+    tested = bool(counts.get("tests"))
+    if not ran:
+        tevv = TevvState.NOT_TESTED          # meant to run, did not
+        evidence = EvidenceState.UNMEASURED  # an honest declaration, not a failure
+    elif not tested:
+        tevv = TevvState.NOT_APPLICABLE      # ran; nothing of this kind to test
+        evidence = EvidenceState.OBSERVED
+    else:
+        tevv = TevvState.PASS if status == "PASS" else TevvState.FAIL
+        evidence = EvidenceState.OBSERVED
+
+    return {
+        "vocabulary": "semantic_twin",
+        "tevv_state": tevv.value,
+        "evidence_state": evidence.value,
+        # Counts describe THIS run only when it ran. Saying so stops a reader pairing a stale number
+        # with a status that means nothing happened.
+        "counts_describe_this_run": ran,
+        "artifacts_fresh": bool(artifacts),
+        "note": ("counts are carried from an earlier receipt and do not describe this run"
+                 if not ran and any(v for v in counts.values()) else ""),
+    }
+
 def run_check(
     root: Path,
     output: Path,
@@ -356,6 +401,9 @@ def run_check(
         "exit_code": exit_code,
         "argv": argv,
         "counts": counts,
+        # What this receipt MEANS, in the estate's own frozen vocabulary, so nobody has to infer it
+        # from the shape of the other fields.
+        "twin_state": _twin_state(status, counts, artifacts),
         "log": log.name,
         "log_sha256": hashlib.sha256(raw).hexdigest(),
         "artifacts": artifacts,
