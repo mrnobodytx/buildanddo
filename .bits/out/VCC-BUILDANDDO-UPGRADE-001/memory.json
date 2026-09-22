@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 1047,
+      "lines": 1050,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -40,7 +40,8 @@
         "hostinger-sprint-closure",
         "sprint-completion",
         "workspace-assistant",
-        "educational-collaboration"
+        "educational-collaboration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -59,7 +60,7 @@
         ".bits/srs_registry.yml",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 141,
+      "lines": 151,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "The durable brief an agent reads first; measured facts live in the lock beside it.",
@@ -75,7 +76,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-user-journey",
-        "educational-collaboration"
+        "educational-collaboration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -532,7 +534,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 48424,
+      "lines": 50668,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -548,7 +550,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "objective-first-onboarding",
-        "educational-collaboration"
+        "educational-collaboration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -667,7 +670,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1539,
+      "lines": 1571,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -685,7 +688,8 @@
         "objective-first-onboarding",
         "developmental-twin",
         "evidence-backed-value",
-        "educational-collaboration"
+        "educational-collaboration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -989,7 +993,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2027,
+      "lines": 2065,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1007,7 +1011,8 @@
         "objective-first-onboarding",
         "developmental-twin",
         "evidence-backed-value",
-        "educational-collaboration"
+        "educational-collaboration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -1314,7 +1319,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Define machine-facing governance for agents working in buildanddo.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1324,7 +1329,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -1773,14 +1779,18 @@
         "apps/federal_foundry/compiler.py",
         "apps/federal_foundry/evidence.py",
         "apps/federal_foundry/protocol.py",
-        "apps/federal_foundry/operator.py"
+        "apps/federal_foundry/operator.py",
+        "apps/decision/packages.py",
+        "apps/federal_foundry/sprint.py",
+        "apps/federal_foundry/episodes.py",
+        "apps/federal_foundry/polynomial.py"
       ],
-      "lines": 139,
+      "lines": 232,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose offline portfolio compilation and evidence verification to any authorized Bits or model runtime.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1791,7 +1801,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "federal-foundry",
-        "operator-plane"
+        "operator-plane",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -2284,14 +2295,15 @@
         "progress"
       ],
       "dependencies": [
-        "apps/pocketbase/pb_hooks/workflow-policy.js"
+        "apps/pocketbase/pb_hooks/workflow-policy.js",
+        "apps/pocketbase/pb_hooks/government-access.js"
       ],
-      "lines": 163,
+      "lines": 164,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve workspace relations and require attributed review before recording content publication.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -2303,7 +2315,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "business-learning",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -2356,6 +2369,7 @@
         "lessonBody",
         "lessonFor",
         "lessons",
+        "roomMembership",
         "memberFor",
         "fresh",
         "members",
@@ -2370,14 +2384,15 @@
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js",
-        "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js"
+        "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js",
+        "apps/pocketbase/pb_hooks/government-access.js"
       ],
-      "lines": 257,
+      "lines": 276,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make shared lessons, host lifecycle and expiring classroom presence authoritative to the current workspace account.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -2387,7 +2402,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
-        "classrooms"
+        "classrooms",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -2789,13 +2805,18 @@
         "receipt",
         "submissionInput",
         "execute",
-        "command"
+        "command",
+        "assign",
+        "now",
+        "leaseTime",
+        "schema"
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/suite-policy.js",
-        "apps/pocketbase/pb_migrations/1790300000_mission_suite.js"
+        "apps/pocketbase/pb_migrations/1790300000_mission_suite.js",
+        "apps/pocketbase/pb_hooks/government-access.js"
       ],
-      "lines": 252,
+      "lines": 255,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect one mission API to durable box-worker runs, current authorization and human-reviewed evidence.",
@@ -2811,7 +2832,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "mission-suite",
-        "government-learning"
+        "government-learning",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -3250,14 +3272,15 @@
         "audit"
       ],
       "dependencies": [
-        "apps/pocketbase/pb_hooks/workflow-policy.js"
+        "apps/pocketbase/pb_hooks/workflow-policy.js",
+        "apps/pocketbase/pb_hooks/government-access.js"
       ],
       "lines": 129,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Resolve current workspace authority and validate bounded commands without trusting client roles or historical authorship.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -3267,7 +3290,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -4650,9 +4674,10 @@
       ],
       "dependencies": [
         "apps/web/src/contexts/AuthContext.jsx",
-        "apps/web/src/components/ProtectedRoute.jsx"
+        "apps/web/src/components/ProtectedRoute.jsx",
+        "apps/web/src/pages/workspace/GovernmentPage.jsx"
       ],
-      "lines": 275,
+      "lines": 277,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Route public and workspace views only after native session validation.",
@@ -4667,7 +4692,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -6595,14 +6621,15 @@
       ],
       "dependencies": [
         "apps/web/src/components/site/ui.jsx",
-        ".gitlab/ci/day21-submission.yml"
+        ".gitlab/ci/day21-submission.yml",
+        ".gitlab/ci/source-validation.yml"
       ],
-      "lines": 313,
+      "lines": 315,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -6612,7 +6639,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "governance-repair"
+        "governance-repair",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -6660,13 +6688,14 @@
       "functions": [
         "CatalogView",
         "SignedInCatalog",
+        "GovernmentTutorialCatalog",
         "TutorialCatalog"
       ],
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/observability/mutations.js"
       ],
-      "lines": 168,
+      "lines": 174,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.",
@@ -6682,7 +6711,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "backend-reuse",
-        "interactive-learning"
+        "interactive-learning",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -6736,26 +6766,12 @@
         "WorkspaceLayout"
       ],
       "dependencies": [
-        "./WorkspaceNotices",
-        "./workspaceHelpers",
-        "@/components/ThemeControls",
-        "@/components/motion/MotionToggle",
-        "@/components/site/ui",
-        "@/components/ui/sheet",
-        "@/contexts/AuthContext",
-        "@/contexts/WorkspaceAccessContext",
-        "@/contexts/WorkspaceContext",
-        "@/hooks/useDemoMode",
-        "@/lib/utils",
-        "lucide-react",
-        "react",
-        "react-helmet",
-        "react-router-dom"
+        "apps/web/src/contexts/WorkspaceAccessContext.jsx"
       ],
-      "lines": 287,
+      "lines": 304,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Keep one correctly associated mobile navigation dialog and a persistent workspace shell.",
+      "intent_statement": "Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -6773,7 +6789,8 @@
         "operator-plane",
         "workspace-knowledge",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -6852,11 +6869,13 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [],
+      "functions": [
+        "read"
+      ],
       "dependencies": [
         "apps/web/src/components/workspace/TutorialCatalog.jsx"
       ],
-      "lines": 220,
+      "lines": 215,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise shared lesson progress across pages without anonymous reads, demo writes or duplicate retries.",
@@ -6871,7 +6890,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "backend-reuse"
+        "backend-reuse",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -6952,10 +6972,9 @@
         "MissionBuilder"
       ],
       "dependencies": [
-        "apps/web/src/lib/missionLearning.js",
-        "apps/pocketbase/pb_migrations/data/government-submissions.json"
+        "apps/web/src/lib/missionLearning.js"
       ],
-      "lines": 305,
+      "lines": 304,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Help operators author purpose, permission boundaries and TEVV methods while preserving incomplete drafts and rejected saves.",
@@ -6971,7 +6990,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "mission-learning",
-        "hostinger-sprint-closure"
+        "hostinger-sprint-closure",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -7084,7 +7104,11 @@
       ],
       "enum_type": "Test",
       "functions": [
-        "LearningHarness"
+        "LearningHarness",
+        "fullPlan",
+        "savedMission",
+        "savedReview",
+        "reviewProps"
       ],
       "dependencies": [
         "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
@@ -7092,7 +7116,7 @@
         "apps/web/src/components/workspace/missions/MissionLearning.jsx",
         "apps/web/src/components/workspace/missions/MissionGuide.jsx"
       ],
-      "lines": 446,
+      "lines": 447,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Test draft recovery, explicit TEVV review, real evidence writes and saved educational rewards through user interactions.",
@@ -7107,7 +7131,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -7443,12 +7468,13 @@
       ],
       "enum_type": "Service",
       "functions": [
-        "WorkspaceAccessProvider"
+        "WorkspaceAccessProvider",
+        "useWorkspaceAccess"
       ],
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceControl.js"
       ],
-      "lines": 34,
+      "lines": 42,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Share observed workspace capabilities across navigation and settings without treating the browser as an authorization authority.",
@@ -7463,7 +7489,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -7928,7 +7955,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Discard stale control responses and preserve failed form state while coordinating versioned saves and refreshed views.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -7938,7 +7965,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -8890,17 +8918,24 @@
         "contribution",
         "integration",
         "readShape",
-        "createWorkspaceControlClient"
+        "createWorkspaceControlClient",
+        "stale",
+        "validId",
+        "stable",
+        "revision",
+        "strings",
+        "page"
       ],
       "dependencies": [
-        "apps/pocketbase/pb_hooks/administration.pb.js"
+        "apps/pocketbase/pb_hooks/administration.pb.js",
+        "apps/pocketbase/pb_hooks/government.pb.js"
       ],
-      "lines": 141,
+      "lines": 145,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep administration and community requests bound to one account/workspace with stable recovery after uncertain saves.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -8910,7 +8945,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -9138,7 +9174,7 @@
         "apps/web/src/components/site/PublicPage.jsx",
         "apps/web/src/lib/commercialEnquiry.js"
       ],
-      "lines": 183,
+      "lines": 189,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Route real enquiries through existing public channels and an explicit user-sent email draft.",
@@ -9153,7 +9189,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -9416,7 +9453,7 @@
         "apps/web/src/components/site/PublicPage.jsx",
         "apps/web/src/lib/commercialEnquiry.js"
       ],
-      "lines": 152,
+      "lines": 153,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain access and commercial conversations without inventing prices or plan guarantees.",
@@ -9432,7 +9469,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "objective-first-onboarding",
-        "educational-collaboration"
+        "educational-collaboration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -9556,7 +9594,7 @@
         "apps/web/src/pages/PricingPage.jsx",
         "apps/web/src/pages/ContactPage.jsx"
       ],
-      "lines": 220,
+      "lines": 237,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise public navigation, metadata, documentation search, articles and email-draft behavior.",
@@ -9571,7 +9609,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -10340,19 +10379,21 @@
       "enum_type": "Widget",
       "functions": [
         "MissionDesk",
+        "SuiteDesk",
         "SuitePage"
       ],
       "dependencies": [
         "apps/web/src/hooks/useMissionSuite.js",
         "apps/web/src/components/workspace/suite/SuiteForms.jsx",
-        "apps/web/src/components/workspace/suite/SuiteResult.jsx"
+        "apps/web/src/components/workspace/suite/SuiteResult.jsx",
+        "apps/web/src/components/workspace/GovernmentGate.jsx"
       ],
-      "lines": 111,
+      "lines": 114,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make suite execution a saved BuildAndDo mission with actual worker states, review evidence and government-submission learning.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -10363,7 +10404,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "mission-suite",
-        "government-learning"
+        "government-learning",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -10424,7 +10466,7 @@
         "apps/web/src/components/workspace/ComponentCatalog.jsx",
         "apps/web/src/components/workspace/missions/MissionGuide.jsx"
       ],
-      "lines": 67,
+      "lines": 68,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Use the same saved lesson progress as Docs and the front page while loading the component reference separately.",
@@ -10440,7 +10482,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "interactive-learning"
+        "interactive-learning",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -10926,17 +10969,22 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [],
+      "functions": [
+        "call",
+        "renderPage",
+        "fillObservation",
+        "openRun"
+      ],
       "dependencies": [
         "apps/web/src/pages/workspace/SuitePage.jsx",
         "tests/upgrade/suite-fixture.mjs"
       ],
-      "lines": 104,
+      "lines": 106,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise rendered suite queue, review, access loss and recovery against actual command and computation source.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -10947,7 +10995,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "mission-suite",
-        "government-learning"
+        "government-learning",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -15534,12 +15583,12 @@
       "dependencies": [
         "foundry/shared/federal_foundry/validation.py"
       ],
-      "lines": 167,
+      "lines": 201,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide a replayable auction reference workload with explicit welfare denominators and scripted-agent limits.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -15549,7 +15598,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "federal-foundry-execution"
+        "federal-foundry-execution",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -17765,16 +17815,18 @@
       "dependencies": [
         "tests/upgrade/test_federal_foundry.py",
         "tests/upgrade/test_operator_compiler.py",
+        "tests/upgrade/test_research_sprint.py",
         "apps/federal_foundry/catalog.py",
         "apps/federal_foundry/evidence.py",
-        "apps/federal_foundry/compiler.py"
+        "apps/federal_foundry/compiler.py",
+        "apps/decision/packages.py"
       ],
-      "lines": 137,
+      "lines": 148,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require measured portable portfolio behavior and coverage independently of unavailable browser or hosted-model dependencies.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -17785,7 +17837,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "federal-foundry",
-        "operator-plane"
+        "operator-plane",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -18691,14 +18744,17 @@
       "enum_type": "Test",
       "functions": [
         "python",
-        "suiteFixture"
+        "suiteFixture",
+        "hash",
+        "compute"
       ],
       "dependencies": [
         "tests/upgrade/admin-fixture.mjs",
         "apps/pocketbase/pb_hooks/mission-suite.js",
-        "apps/mission_suite/engine.py"
+        "apps/mission_suite/engine.py",
+        "tests/upgrade/government-fixture.mjs"
       ],
-      "lines": 53,
+      "lines": 55,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect the real mission API and Python engine while identifying storage and native-auth doubles explicitly.",
@@ -18714,7 +18770,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "mission-suite",
-        "government-learning"
+        "government-learning",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -18939,7 +18996,7 @@
         "apps/pocketbase/pb_hooks/classrooms.js",
         "apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js"
       ],
-      "lines": 355,
+      "lines": 356,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require native classroom authentication, date serialization, concurrent receipt recovery and reversible schema before accepting an installed backend.",
@@ -18954,7 +19011,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
-        "classrooms"
+        "classrooms",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -19226,12 +19284,12 @@
         "apps/pocketbase/pb_hooks/research-policy.js",
         "apps/pocketbase/pb_migrations/1790200000_private_dossiers.js"
       ],
-      "lines": 450,
+      "lines": 451,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require real PocketBase authentication, native OAuth models, encrypted persistence and concurrent retry behavior in an isolated loopback database.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "stored",
+      "outcome": "partial",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -19241,7 +19299,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "private-dossiers"
+        "private-dossiers",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -19394,9 +19453,10 @@
         "apps/mission_suite/engine.py",
         "apps/pocketbase/pb_hooks/mission-suite.js",
         "apps/pocketbase/pb_hooks/operator.pb.js",
-        "apps/pocketbase/pb_hooks/workspace-operator.js"
+        "apps/pocketbase/pb_hooks/workspace-operator.js",
+        "tests/upgrade/government_fixture.py"
       ],
-      "lines": 574,
+      "lines": 580,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require native suite execution and scoped, read-only operator observations before accepting a box-worker runtime.",
@@ -19415,7 +19475,8 @@
         "government-learning",
         "operator-acceptance",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -25084,16 +25145,6 @@
     },
     {
       "type": "B",
-      "source": "apps/web/src/components/workspace/TutorialCatalog.jsx",
-      "target": "apps/pocketbase/pb_migrations/data/government-submissions.json",
-      "edge_type": "CONSUMES",
-      "weight": 1.0,
-      "description": "apps/web/src/components/workspace/TutorialCatalog.jsx consumes apps/pocketbase/pb_migrations/data/government-submissions.json.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
       "source": "apps/web/src/components/workspace/TutorialReader.jsx",
       "target": "apps/web/src/lib/tutorialCurriculum.js",
       "edge_type": "CONSUMES",
@@ -25209,16 +25260,6 @@
       "edge_type": "DEPENDS_ON",
       "weight": 1.0,
       "description": "apps/web/src/components/workspace/missions/MissionBuilder.jsx depends_on apps/web/src/lib/missionLearning.js.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
-      "target": "apps/pocketbase/pb_migrations/data/government-submissions.json",
-      "edge_type": "CONSUMES",
-      "weight": 1.0,
-      "description": "apps/web/src/components/workspace/missions/MissionBuilder.jsx consumes apps/pocketbase/pb_migrations/data/government-submissions.json.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -36112,14 +36153,15 @@
         "apps/pocketbase/pb_hooks/workspace-administration.js",
         "apps/pocketbase/pb_hooks/research-policy.js",
         "apps/pocketbase/pb_hooks/mission-policy.js",
-        "apps/pocketbase/pb_hooks/workspace-value.js"
+        "apps/pocketbase/pb_hooks/workspace-value.js",
+        "apps/pocketbase/pb_hooks/government-access.js"
       ],
       "lines": 118,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Project bounded existing workspace observations without creating work, exposing source bodies or replacing current record authority.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -36131,7 +36173,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "operator-plane",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -36377,14 +36420,15 @@
       "dependencies": [
         "tests/upgrade/research-fixture.mjs",
         "apps/pocketbase/pb_hooks/workspace-operator.js",
-        "apps/federal_foundry/operator.py"
+        "apps/federal_foundry/operator.py",
+        "tests/upgrade/government-fixture.mjs"
       ],
-      "lines": 66,
+      "lines": 68,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise the operator route and native proposal handlers with the existing explicit storage and transport doubles.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -36396,7 +36440,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "operator-plane",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -37835,14 +37880,15 @@
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js",
-        "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js"
+        "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+        "apps/pocketbase/pb_hooks/government-access.js"
       ],
-      "lines": 203,
+      "lines": 205,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -37852,7 +37898,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "interactive-learning"
+        "interactive-learning",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -38117,7 +38164,7 @@
         "apps/pocketbase/pb_hooks/tutorial-learning.js",
         "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js"
       ],
-      "lines": 312,
+      "lines": 313,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require real PocketBase auth, concurrent completion and migration retention before accepting installed interactive learning.",
@@ -38132,7 +38179,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "interactive-learning"
+        "interactive-learning",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -38659,7 +38707,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 553,
+      "lines": 566,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38677,7 +38725,8 @@
         "objective-first-onboarding",
         "developmental-twin",
         "evidence-backed-value",
-        "educational-collaboration"
+        "educational-collaboration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -38724,7 +38773,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1046,
+      "lines": 1073,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38742,7 +38791,8 @@
         "objective-first-onboarding",
         "developmental-twin",
         "evidence-backed-value",
-        "educational-collaboration"
+        "educational-collaboration",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -39237,7 +39287,7 @@
         "apps/pocketbase/pb_hooks/workflow-runs.js",
         "apps/pocketbase/pb_hooks/workspace-replay.js"
       ],
-      "lines": 847,
+      "lines": 850,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.",
@@ -39252,7 +39302,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -43738,12 +43789,12 @@
         "scripts/ci/verify_public_boundary.py",
         ".gitlab/ci/source-validation.yml"
       ],
-      "lines": 103,
+      "lines": 105,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Execute and retain one complete candidate-bound acceptance matrix on the GitLab shell runner before submission evidence review.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -43753,7 +43804,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "governance-repair"
+        "governance-repair",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -43814,12 +43866,12 @@
         "scripts/ci/submission_readiness.py",
         ".gitlab/ci/day21-submission.yml"
       ],
-      "lines": 362,
+      "lines": 364,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prevent GitHub configuration, unreachable jobs or incomplete artifacts from standing in for GitLab acceptance.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -43829,7 +43881,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -44269,14 +44322,15 @@
         "tests/upgrade/check_blueprint_pipeline.py",
         "tests/foundry/check_foundry.py",
         "tests/upgrade/check_federal_foundry.py",
-        "tests/upgrade/check_mission_suite.py"
+        "tests/upgrade/check_mission_suite.py",
+        "tests/assurance/run.py"
       ],
-      "lines": 122,
+      "lines": 181,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep native parser and portable coverage requirements executing on GitLab when duplicate GitHub scheduling is retired.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -44286,7 +44340,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "governance-repair"
+        "governance-repair",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -46545,14 +46600,15 @@
         "prepareCommercialEnquiry"
       ],
       "dependencies": [
-        "docs/business-execution.md"
+        "docs/business-execution.md",
+        "docs/research-sprint.md"
       ],
-      "lines": 76,
+      "lines": 84,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prepare bounded commercial email drafts without sending requests, granting authority or asserting payment.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -46562,7 +46618,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -46578,12 +46635,12 @@
       "dependencies": [
         "apps/web/src/lib/commercialEnquiry.js"
       ],
-      "lines": 121,
+      "lines": 135,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify complete, bounded and safely encoded pilot enquiries while preserving the existing commercial draft path.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -46593,7 +46650,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "government-research-assurance"
       ],
       "tenant_id": null
     },
@@ -48407,12 +48465,2198 @@
       "timestamp": "2026-09-22T16:05:12Z",
       "commit_sha": "6703a37cc5c138c78dc9c42a93515f491db188a3",
       "smoke_result": "4/7"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-22-bits-codegen-research-assurance.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/research-sprint.md",
+        "docs/test-assurance.md",
+        "apps/pocketbase/pb_migrations/1791200000_government_membership.js"
+      ],
+      "lines": 48,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Assign real runtime, payment, notice, model and GPU evidence to receiving owners without pretending local source work completed those gates.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/research-sprint.md",
+        "docs/test-assurance.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json",
+        ".bits/handoffs/2026-09-22-bits-codegen-research-assurance.md"
+      ],
+      "lines": 267,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the implemented research and membership contracts, observed assurance results and outstanding runtime evidence for review.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md",
+        "tests/assurance/run.py"
+      ],
+      "lines": 10880,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind the research assurance observations to their exact source and logs while retaining blocked and synthetic evidence states.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md",
+        "tests/assurance/run.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind the research assurance observations to their exact source and logs while retaining blocked and synthetic evidence states.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/decision/packages.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "fingerprint",
+        "require",
+        "_named",
+        "evidence_record",
+        "evaluate",
+        "verify",
+        "refresh",
+        "semantic_graph"
+      ],
+      "dependencies": [
+        "apps/decision/primitives.py",
+        "apps/mission_suite/engine.py",
+        "libs/semantic_twin/ingestion/drafts.py"
+      ],
+      "lines": 413,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve evidence-backed decision comparisons and refresh explanations without granting execution authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/episodes.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_dataset",
+        "_prompts",
+        "MarketAgent",
+        "episode",
+        "replay"
+      ],
+      "dependencies": [
+        "foundry/shared/federal_foundry/market.py",
+        "apps/decision/packages.py"
+      ],
+      "lines": 290,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain bounded black-box agent actions and replay comparable market episodes without inventing model behavior.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/polynomial.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "negacyclic_product",
+        "check_candidate",
+        "continuation_gate",
+        "doctor"
+      ],
+      "dependencies": [
+        "apps/federal_foundry/catalog.py"
+      ],
+      "lines": 167,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Check exact negacyclic products without confusing local CPU timing with official GPU qualification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/federal_foundry/sprint.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "load_plan",
+        "demo_input",
+        "release_input",
+        "market_dataset",
+        "scripted_agents",
+        "_header",
+        "_write",
+        "_package_parts",
+        "_export_package",
+        "_comparison",
+        "_summary",
+        "_proposal",
+        "compile_sprint",
+        "verify_sprint"
+      ],
+      "dependencies": [
+        "apps/decision/packages.py",
+        "apps/federal_foundry/episodes.py",
+        "apps/federal_foundry/polynomial.py",
+        "apps/pocketbase/pb_migrations/data/research-sprint.json"
+      ],
+      "lines": 709,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Export reproducible decision demonstrations and market controls alongside separate proposal gaps and GPU receiving prerequisites.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/government-access.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "timestamp",
+        "status",
+        "requireMember",
+        "read",
+        "lesson"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workflow-policy.js"
+      ],
+      "lines": 82,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require a current paid and approved membership before disclosing government work.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/government-desk.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "read"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/government-access.js",
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_migrations/data/research-sprint.json",
+        "apps/pocketbase/pb_migrations/data/government-submissions.json"
+      ],
+      "lines": 44,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Disclose research plans and government learning only to paid approved members in their current workspace.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/government.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/government-desk.js"
+      ],
+      "lines": 21,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Serve protected research content through native authentication without cacheable responses.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1791200000_government_membership.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/government-access.js"
+      ],
+      "lines": 56,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Store operator-owned membership receipts and remove government lessons from the general catalogue API.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/data/research-sprint.json",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/data/research-sprint.json"
+      ],
+      "lines": 251,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the research plan as an unverified owner lead shared by the protected desk and offline compiler.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/data/research-sprint.json.cgrf.yaml",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/data/research-sprint.json"
+      ],
+      "lines": 32,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve the research plan as an unverified owner lead shared by the protected desk and offline compiler.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/GovernmentGate.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "GovernmentGate"
+      ],
+      "dependencies": [
+        "apps/web/src/contexts/WorkspaceAccessContext.jsx"
+      ],
+      "lines": 39,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the paid approved government tier while withholding protected views until the server grants current access.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/GovernmentPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "GovernmentDesk",
+        "GovernmentPage"
+      ],
+      "dependencies": [
+        "apps/web/src/components/workspace/GovernmentGate.jsx",
+        "apps/web/src/hooks/useWorkspaceControl.js",
+        "apps/web/src/components/workspace/TutorialCatalog.jsx",
+        "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
+        "apps/web/src/hooks/useWorkspaceRecords.js"
+      ],
+      "lines": 63,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Organize approved members around measured research, existing learning and governed missions without claiming submission readiness.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/GovernmentPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "membership"
+      ],
+      "dependencies": [
+        "apps/web/src/pages/workspace/GovernmentPage.jsx",
+        "apps/web/src/components/workspace/GovernmentGate.jsx"
+      ],
+      "lines": 111,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep protected research out of denied or expired views and preserve explicit proposal-only mission creation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/research-sprint.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/decision/packages.py",
+        "apps/federal_foundry/sprint.py",
+        "apps/pocketbase/pb_hooks/government-access.js",
+        "docs/test-assurance.md"
+      ],
+      "lines": 196,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define the reproducible local research and paid-access contracts with explicit receiving gates for real execution.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/test-assurance.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "tests/assurance/run.py",
+        "tests/assurance/browser.py",
+        "tests/assurance/test_runtime.py",
+        ".gitlab/ci/source-validation.yml",
+        "docs/hostinger-sprint-closure.md"
+      ],
+      "lines": 122,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the eight requested test categories repeatable with explicit coverage limits and retained non-passing runtime prerequisites.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/assurance/__init__.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "tests/assurance/run.py"
+      ],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep runtime assurance separate from source-only checks so absent runtimes cannot become acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/assurance/browser.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "vite_entry",
+        "web",
+        "login",
+        "semantics",
+        "onboarding",
+        "learning_journey",
+        "paywall",
+        "accessibility",
+        "run",
+        "main"
+      ],
+      "dependencies": [
+        "tests/assurance/runtime.py",
+        "tests/assurance/test_runtime.py",
+        "apps/web/src/App.jsx"
+      ],
+      "lines": 400,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise actual learner views, keyboard access and browser sizes against an isolated backend with no external browser requests.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/assurance/requirements.txt",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "tests/assurance/browser.py"
+      ],
+      "lines": 16,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Pin the optional browser driver used only by isolated assurance execution.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/assurance/run.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "source_binding",
+        "missing",
+        "counts",
+        "runtime_probe",
+        "execute",
+        "run",
+        "main"
+      ],
+      "dependencies": [
+        "tests/assurance/browser.py",
+        "tests/assurance/test_runtime.py",
+        "tools/day21/day21_acceptance.py"
+      ],
+      "lines": 459,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain eight explicit assurance profiles with source binding and non-passing missing prerequisites beside the unchanged Day-21 gate.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/assurance/runtime.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "tree_hashes",
+        "AssuranceServer"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_workspace_native.py",
+        "tests/upgrade/government_fixture.py"
+      ],
+      "lines": 198,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise full public application policies on a disposable native backend with recoverable synthetic data.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/assurance/test_runtime.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "native_mission_journey",
+        "prepare_learning",
+        "classroom",
+        "NativeCase",
+        "SecurityTests",
+        "LoadTests",
+        "RecoveryTests"
+      ],
+      "dependencies": [
+        "tests/assurance/runtime.py",
+        "tests/upgrade/test_workspace_native.py"
+      ],
+      "lines": 374,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Measure concurrency and recovery against native auth, actual checkpoints and independent mission review in disposable databases.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/government-access.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "view",
+        "denied"
+      ],
+      "dependencies": [
+        "tests/upgrade/government-fixture.mjs",
+        "tests/upgrade/suite-fixture.mjs",
+        "apps/pocketbase/pb_hooks/government-desk.js"
+      ],
+      "lines": 127,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove role and payment spoofing, expiry, revocation, cache replay and worker completion cannot bypass government membership.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/government-client.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "clientFixture"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/workspaceControl.js",
+        "tests/upgrade/government-fixture.mjs",
+        "tests/upgrade/tutorial-learning-fixture.mjs",
+        "tests/upgrade/admin-fixture.mjs",
+        "tests/upgrade/classroom-fixture.mjs"
+      ],
+      "lines": 86,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject stale government responses and keep saved premium checkpoints behind current membership.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/government-fixture.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "installGovernment",
+        "membershipRecord"
+      ],
+      "dependencies": [
+        "tests/upgrade/admin-fixture.mjs",
+        "apps/pocketbase/pb_migrations/1791200000_government_membership.js"
+      ],
+      "lines": 28,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Install explicit synthetic membership receipts for tests without granting production accounts access.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/government_fixture.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "membership_seed",
+        "install_suite_membership"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1791200000_government_membership.js"
+      ],
+      "lines": 57,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Install real membership policy with synthetic receipts only in disposable native test databases.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_assurance_runner.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "AssuranceRunnerTests"
+      ],
+      "dependencies": [
+        "tests/assurance/run.py",
+        "tests/assurance/runtime.py"
+      ],
+      "lines": 267,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject empty, skipped, stale or unavailable assurance evidence and protect disposable backup boundaries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_research_sprint.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "fixture",
+        "reseal",
+        "DecisionPackageTests",
+        "MarketEpisodeTests",
+        "PolynomialTests",
+        "ResearchCliTests",
+        "SprintExportTests"
+      ],
+      "dependencies": [
+        "apps/decision/packages.py",
+        "apps/federal_foundry/sprint.py",
+        "apps/federal_foundry/episodes.py",
+        "apps/federal_foundry/polynomial.py"
+      ],
+      "lines": 608,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise reproducible research, missing evidence, tampering, agent isolation and exact polynomial correctness without claiming external qualification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "government-research-assurance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-research-assurance.md",
+      "target": "apps/pocketbase/pb_migrations/1791200000_government_membership.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-22-bits-codegen-research-assurance.md consumes apps/pocketbase/pb_migrations/1791200000_government_membership.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-research-assurance.md",
+      "target": "docs/research-sprint.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-22-bits-codegen-research-assurance.md consumes docs/research-sprint.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-22-bits-codegen-research-assurance.md",
+      "target": "docs/test-assurance.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-22-bits-codegen-research-assurance.md consumes docs/test-assurance.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md",
+      "target": ".bits/handoffs/2026-09-22-bits-codegen-research-assurance.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md consumes .bits/handoffs/2026-09-22-bits-codegen-research-assurance.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md",
+      "target": "docs/research-sprint.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md consumes docs/research-sprint.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md",
+      "target": "docs/test-assurance.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md consumes docs/test-assurance.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.cgrf.yaml",
+      "target": "tests/assurance/run.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.cgrf.yaml consumes tests/assurance/run.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/source-validation.yml",
+      "target": "tests/assurance/run.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".gitlab/ci/source-validation.yml consumes tests/assurance/run.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/packages.py",
+      "target": "apps/mission_suite/engine.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/decision/packages.py consumes apps/mission_suite/engine.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/packages.py",
+      "target": "libs/semantic_twin/ingestion/drafts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/decision/packages.py consumes libs/semantic_twin/ingestion/drafts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/decision/packages.py",
+      "target": "apps/decision/primitives.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "apps/decision/packages.py extends apps/decision/primitives.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/__main__.py",
+      "target": "apps/decision/packages.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/__main__.py consumes apps/decision/packages.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/__main__.py",
+      "target": "apps/federal_foundry/episodes.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/__main__.py consumes apps/federal_foundry/episodes.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/__main__.py",
+      "target": "apps/federal_foundry/polynomial.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/__main__.py consumes apps/federal_foundry/polynomial.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/__main__.py",
+      "target": "apps/federal_foundry/sprint.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/__main__.py consumes apps/federal_foundry/sprint.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/episodes.py",
+      "target": "apps/decision/packages.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/episodes.py consumes apps/decision/packages.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/episodes.py",
+      "target": "foundry/shared/federal_foundry/market.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/episodes.py extends foundry/shared/federal_foundry/market.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/polynomial.py",
+      "target": "apps/federal_foundry/catalog.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/polynomial.py depends_on apps/federal_foundry/catalog.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/sprint.py",
+      "target": "apps/decision/packages.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/sprint.py consumes apps/decision/packages.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/sprint.py",
+      "target": "apps/federal_foundry/episodes.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/sprint.py consumes apps/federal_foundry/episodes.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/sprint.py",
+      "target": "apps/federal_foundry/polynomial.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/sprint.py consumes apps/federal_foundry/polynomial.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/federal_foundry/sprint.py",
+      "target": "apps/pocketbase/pb_migrations/data/research-sprint.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/federal_foundry/sprint.py consumes apps/pocketbase/pb_migrations/data/research-sprint.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/business-policy.js",
+      "target": "apps/pocketbase/pb_hooks/government-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/business-policy.js consumes apps/pocketbase/pb_hooks/government-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/classrooms.js",
+      "target": "apps/pocketbase/pb_hooks/government-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/classrooms.js consumes apps/pocketbase/pb_hooks/government-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/government-access.js",
+      "target": "apps/pocketbase/pb_hooks/workflow-policy.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/government-access.js depends_on apps/pocketbase/pb_hooks/workflow-policy.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/government-desk.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/government-desk.js consumes apps/pocketbase/pb_hooks/workspace-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/government-desk.js",
+      "target": "apps/pocketbase/pb_migrations/data/government-submissions.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/government-desk.js consumes apps/pocketbase/pb_migrations/data/government-submissions.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/government-desk.js",
+      "target": "apps/pocketbase/pb_migrations/data/research-sprint.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/government-desk.js consumes apps/pocketbase/pb_migrations/data/research-sprint.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/government-desk.js",
+      "target": "apps/pocketbase/pb_hooks/government-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/government-desk.js depends_on apps/pocketbase/pb_hooks/government-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/government.pb.js",
+      "target": "apps/pocketbase/pb_hooks/government-desk.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/government.pb.js consumes apps/pocketbase/pb_hooks/government-desk.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/mission-suite.js",
+      "target": "apps/pocketbase/pb_hooks/government-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/mission-suite.js consumes apps/pocketbase/pb_hooks/government-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/tutorial-learning.js",
+      "target": "apps/pocketbase/pb_hooks/government-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/tutorial-learning.js consumes apps/pocketbase/pb_hooks/government-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "target": "apps/pocketbase/pb_hooks/government-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-access.js consumes apps/pocketbase/pb_hooks/government-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-operator.js",
+      "target": "apps/pocketbase/pb_hooks/government-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-operator.js consumes apps/pocketbase/pb_hooks/government-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1791200000_government_membership.js",
+      "target": "apps/pocketbase/pb_hooks/government-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1791200000_government_membership.js depends_on apps/pocketbase/pb_hooks/government-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/data/research-sprint.json.cgrf.yaml",
+      "target": "apps/pocketbase/pb_migrations/data/research-sprint.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/data/research-sprint.json.cgrf.yaml validates apps/pocketbase/pb_migrations/data/research-sprint.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/App.jsx",
+      "target": "apps/web/src/pages/workspace/GovernmentPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/App.jsx consumes apps/web/src/pages/workspace/GovernmentPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/GovernmentGate.jsx",
+      "target": "apps/web/src/contexts/WorkspaceAccessContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/GovernmentGate.jsx consumes apps/web/src/contexts/WorkspaceAccessContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ProgressionPipeline.jsx",
+      "target": ".gitlab/ci/source-validation.yml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/ProgressionPipeline.jsx consumes .gitlab/ci/source-validation.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "target": "apps/web/src/contexts/WorkspaceAccessContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/WorkspaceLayout.jsx consumes apps/web/src/contexts/WorkspaceAccessContext.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/commercialEnquiry.js",
+      "target": "docs/research-sprint.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/commercialEnquiry.js consumes docs/research-sprint.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/workspaceControl.js",
+      "target": "apps/pocketbase/pb_hooks/government.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/workspaceControl.js consumes apps/pocketbase/pb_hooks/government.pb.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/GovernmentPage.jsx",
+      "target": "apps/web/src/components/workspace/GovernmentGate.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/GovernmentPage.jsx consumes apps/web/src/components/workspace/GovernmentGate.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/GovernmentPage.jsx",
+      "target": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/GovernmentPage.jsx consumes apps/web/src/components/workspace/TutorialCatalog.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/GovernmentPage.jsx",
+      "target": "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/GovernmentPage.jsx consumes apps/web/src/components/workspace/missions/MissionBuilder.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/GovernmentPage.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceControl.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/GovernmentPage.jsx consumes apps/web/src/hooks/useWorkspaceControl.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/GovernmentPage.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceRecords.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/GovernmentPage.jsx consumes apps/web/src/hooks/useWorkspaceRecords.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/SuitePage.jsx",
+      "target": "apps/web/src/components/workspace/GovernmentGate.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/SuitePage.jsx consumes apps/web/src/components/workspace/GovernmentGate.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/GovernmentPage.test.jsx",
+      "target": "apps/web/src/components/workspace/GovernmentGate.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/GovernmentPage.test.jsx validates apps/web/src/components/workspace/GovernmentGate.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/GovernmentPage.test.jsx",
+      "target": "apps/web/src/pages/workspace/GovernmentPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/GovernmentPage.test.jsx validates apps/web/src/pages/workspace/GovernmentPage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/research-sprint.md",
+      "target": "apps/decision/packages.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/research-sprint.md consumes apps/decision/packages.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/research-sprint.md",
+      "target": "apps/federal_foundry/sprint.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/research-sprint.md consumes apps/federal_foundry/sprint.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/research-sprint.md",
+      "target": "apps/pocketbase/pb_hooks/government-access.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/research-sprint.md consumes apps/pocketbase/pb_hooks/government-access.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/research-sprint.md",
+      "target": "docs/test-assurance.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "docs/research-sprint.md depends_on docs/test-assurance.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/test-assurance.md",
+      "target": ".gitlab/ci/source-validation.yml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/test-assurance.md consumes .gitlab/ci/source-validation.yml.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/test-assurance.md",
+      "target": "tests/assurance/browser.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/test-assurance.md consumes tests/assurance/browser.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/test-assurance.md",
+      "target": "tests/assurance/run.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/test-assurance.md consumes tests/assurance/run.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/test-assurance.md",
+      "target": "tests/assurance/test_runtime.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/test-assurance.md consumes tests/assurance/test_runtime.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/test-assurance.md",
+      "target": "docs/hostinger-sprint-closure.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "docs/test-assurance.md extends docs/hostinger-sprint-closure.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/__init__.py",
+      "target": "tests/assurance/run.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/assurance/__init__.py consumes tests/assurance/run.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/browser.py",
+      "target": "tests/assurance/runtime.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/assurance/browser.py consumes tests/assurance/runtime.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/browser.py",
+      "target": "tests/assurance/test_runtime.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/assurance/browser.py consumes tests/assurance/test_runtime.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/browser.py",
+      "target": "apps/web/src/App.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/assurance/browser.py validates apps/web/src/App.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/requirements.txt",
+      "target": "tests/assurance/browser.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/assurance/requirements.txt depends_on tests/assurance/browser.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/run.py",
+      "target": "tests/assurance/browser.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/assurance/run.py consumes tests/assurance/browser.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/run.py",
+      "target": "tests/assurance/test_runtime.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/assurance/run.py consumes tests/assurance/test_runtime.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/run.py",
+      "target": "tools/day21/day21_acceptance.py",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "tests/assurance/run.py extends tools/day21/day21_acceptance.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/runtime.py",
+      "target": "tests/upgrade/government_fixture.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/assurance/runtime.py consumes tests/upgrade/government_fixture.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/runtime.py",
+      "target": "tests/upgrade/test_workspace_native.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/assurance/runtime.py consumes tests/upgrade/test_workspace_native.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/test_runtime.py",
+      "target": "tests/assurance/runtime.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/assurance/test_runtime.py consumes tests/assurance/runtime.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/assurance/test_runtime.py",
+      "target": "tests/upgrade/test_workspace_native.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/assurance/test_runtime.py consumes tests/upgrade/test_workspace_native.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_federal_foundry.py",
+      "target": "tests/upgrade/test_research_sprint.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_federal_foundry.py depends_on tests/upgrade/test_research_sprint.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_federal_foundry.py",
+      "target": "apps/decision/packages.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_federal_foundry.py validates apps/decision/packages.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-access.test.mjs",
+      "target": "tests/upgrade/government-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-access.test.mjs consumes tests/upgrade/government-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-access.test.mjs",
+      "target": "tests/upgrade/suite-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-access.test.mjs consumes tests/upgrade/suite-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-access.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/government-desk.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-access.test.mjs validates apps/pocketbase/pb_hooks/government-desk.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-client.test.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-client.test.mjs consumes tests/upgrade/admin-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-client.test.mjs",
+      "target": "tests/upgrade/classroom-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-client.test.mjs consumes tests/upgrade/classroom-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-client.test.mjs",
+      "target": "tests/upgrade/government-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-client.test.mjs consumes tests/upgrade/government-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-client.test.mjs",
+      "target": "tests/upgrade/tutorial-learning-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-client.test.mjs consumes tests/upgrade/tutorial-learning-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-client.test.mjs",
+      "target": "apps/web/src/lib/workspaceControl.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-client.test.mjs validates apps/web/src/lib/workspaceControl.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-fixture.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-fixture.mjs consumes tests/upgrade/admin-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government-fixture.mjs",
+      "target": "apps/pocketbase/pb_migrations/1791200000_government_membership.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government-fixture.mjs validates apps/pocketbase/pb_migrations/1791200000_government_membership.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/government_fixture.py",
+      "target": "apps/pocketbase/pb_migrations/1791200000_government_membership.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/government_fixture.py validates apps/pocketbase/pb_migrations/1791200000_government_membership.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/operator-fixture.mjs",
+      "target": "tests/upgrade/government-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/operator-fixture.mjs consumes tests/upgrade/government-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/suite-fixture.mjs",
+      "target": "tests/upgrade/government-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/suite-fixture.mjs consumes tests/upgrade/government-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_assurance_runner.py",
+      "target": "tests/assurance/run.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_assurance_runner.py validates tests/assurance/run.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_assurance_runner.py",
+      "target": "tests/assurance/runtime.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_assurance_runner.py validates tests/assurance/runtime.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_research_sprint.py",
+      "target": "apps/decision/packages.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_research_sprint.py validates apps/decision/packages.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_research_sprint.py",
+      "target": "apps/federal_foundry/episodes.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_research_sprint.py validates apps/federal_foundry/episodes.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_research_sprint.py",
+      "target": "apps/federal_foundry/polynomial.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_research_sprint.py validates apps/federal_foundry/polynomial.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_research_sprint.py",
+      "target": "apps/federal_foundry/sprint.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_research_sprint.py validates apps/federal_foundry/sprint.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_suite_native.py",
+      "target": "tests/upgrade/government_fixture.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_suite_native.py consumes tests/upgrade/government_fixture.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/government-access.test.mjs",
+      "description": "All 611 Node source cases passed, including paid/approved membership, price/profile spoofing, expiry, native-role boundaries, cached retries, worker sponsorship and existing learning/workspace behavior. Rendered and native execution remain separate.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T18:04:48.082193+00:00",
+      "commit_sha": null,
+      "smoke_result": "611/611"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_research_sprint.py",
+      "description": "Python upgrade discovery ran 866 cases: 834 passed and 32 existing PocketBase/PDF/Discord-dependent cases skipped, with no failures. These skips do not establish runtime acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T18:06:50.879304+00:00",
+      "commit_sha": null,
+      "smoke_result": "834/866"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_federal_foundry.py",
+      "description": "The 110-case portable portfolio coverage gate passed; Decision Packages reached 99.31 percent statement coverage, episodes/polynomial/sprint 100 percent and CLI 98.84 percent. Coverage is source-only and overlaps the broader regressions.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T18:08:34.212584+00:00",
+      "commit_sha": null,
+      "smoke_result": "110/110"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_assurance_runner.py",
+      "description": "All 64 research and recorder regressions passed on final bound source after a terminal-blank-line cleanup. Tests reject rehashed approval/output tampering, stale or foreign evidence, forged replay, malformed model actions and empty/skipped runner results.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T18:21:46.518541+00:00",
+      "commit_sha": null,
+      "smoke_result": "64/64"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "apps/web/src/pages/workspace/__tests__/GovernmentPage.test.jsx",
+      "description": "Rendered frontend tests, build and locked lint could not execute successfully because Vitest, Vite and eslint-plugin-import are absent. No package install, substitute gate, rendered pass or deployment was claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T18:04:35.567437+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/suite-system.test.mjs",
+      "description": "A restricted assurance rerun recorded Node test-file failures; the unchanged membership/client/retry sources then passed all 48 cases with approved local fixture subprocess permissions. The failed attempt and successful retest are retained.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T18:24:47.840282+00:00",
+      "commit_sha": null,
+      "smoke_result": "48/48"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "tests/assurance/run.py",
+      "description": "The complete eight-category assurance matrix records HOLD: evidence and request-failure profiles PASS, six native/browser profiles BLOCKED. Security source cases pass; missing PocketBase, locked frontend and Playwright prevent runtime acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T18:26:12.387048+00:00",
+      "commit_sha": null,
+      "smoke_result": "2/8"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "apps/federal_foundry/sprint.py",
+      "description": "The standalone research export verified 79 manifest entries, decision revision linkage and two 36-order market replays. Point/refresh controls are synthetic, real release readiness remains HOLD, FHERMA BLOCKED and independent review/authorization unmeasured.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T18:23:05.323911+00:00",
+      "commit_sha": null,
+      "smoke_result": "79/79"
+    },
+    {
+      "type": "C",
+      "event_type": "commit",
+      "file_path": "apps/pocketbase/pb_hooks/government-access.js",
+      "description": "Require current paid and operator-approved government membership and add advisory Army/market/polynomial research with eight repeatable assurance profiles under the existing owner dispatch; leave external activation and runtime acceptance to receiving owners.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T18:26:54Z",
+      "commit_sha": "6a829f33a6cd3504e83d9047986b83744f1a1169",
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 790,
-    "type_b_count": 1791,
-    "type_c_count": 196,
+    "type_a_count": 821,
+    "type_b_count": 1885,
+    "type_c_count": 205,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
