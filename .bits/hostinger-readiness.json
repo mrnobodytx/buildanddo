@@ -425,7 +425,7 @@
       "id": "HS-11",
       "day": 21,
       "title": "Sprint review - verified replay",
-      "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria.",
+      "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria.",
       "owner": "Repository owner / independent verifier",
       "sources": [
         "tests/upgrade",
@@ -438,7 +438,12 @@
         "apps/web/src/pages/workspace/ExecutionReplayPage.jsx",
         "apps/pocketbase/pb_hooks/workspace-replay.js",
         "apps/web/src/lib/missionReplay.js",
-        "apps/web/src/components/workspace/MissionReplayCapture.jsx"
+        "apps/web/src/components/workspace/MissionReplayCapture.jsx",
+        "README.md",
+        "apps/web/src/pages/HostingerChallengePage.jsx",
+        "apps/web/src/data/hostingerChallenge.js",
+        "docs/day21/JUDGE_STORY.md",
+        "docs/day21/VIDEO_SHOTLIST.md"
       ],
       "checks": [
         "source_node",
@@ -460,9 +465,10 @@
         "The ordered signal-to-action-to-verification replay binds one scope, candidate and artifact.",
         "The owner checks official judging, hosting and submission requirements against the final demonstration.",
         "The submission package includes the exact native business receipt, all six materials and an actual official-rule capture reviewed by the selected owner.",
-        "Complete bounded mission capture uses one native read transaction and the existing action read policy, checks content and record digests, and does not confer independent verification or submission admission."
+        "Complete bounded mission capture uses one native read transaction and the existing action read policy, checks content and record digests, and does not confer independent verification or submission admission.",
+        "Public and submission materials identify educational collaboration as the platform, show objective, learning, collaboration, work, evidence, verification and reflection, and retain business automation as one domain with its existing acceptance requirements."
       ],
-      "next_step": "Validate actual replay/native exports and all eleven owner decisions, supply six dated materials and captured official requirements, then have the owner perform submission."
+      "next_step": "Capture one actual objective-to-reflection journey on the accepted candidate, retaining the existing business/provider lane requirements. Validate replay/native exports and all eleven owner decisions, supply six dated materials and captured official requirements, then have the owner perform submission."
     }
   ],
   "external_requirements": [

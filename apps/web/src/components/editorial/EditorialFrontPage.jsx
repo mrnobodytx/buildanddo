@@ -206,7 +206,7 @@ export default function EditorialFrontPage({ sources = {}, workspaceControls, wo
                         <h2>{edition ? edition.title : <>Learn by doing.<br />Build something<br /><em>real. Together.</em></>}</h2>
                         <p className="frontpage-lead__summary">{edition
                             ? edition.summary || 'Read the published edition and inspect its supporting records in your workspace.'
-                            : 'See what changed, choose a next step, and inspect the evidence. Learn with people and AI. Build something real. Keep a record of what you discover.'}</p>
+                            : 'Choose something to build or accomplish. Learn with people and AI, work through a real project, inspect what happened, and share what you learned.'}</p>
                         <div className="frontpage-actions">
                             <a href="#challenge-desk" className="frontpage-button">Submit a challenge <ArrowRight size={14} aria-hidden="true" /></a>
                             <a href="#evidence-ledger" className="frontpage-button frontpage-button--outline">View evidence</a>

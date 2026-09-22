@@ -102,8 +102,11 @@ acceptance. The contract does not assert a percentage or rewrite sprint state.
    same-revision GitLab statuses on the public review before changing required
    checks. The source configuration cannot repair provider account settings or
    publish those statuses. See docs/hostinger-sprint-closure.md for that handoff.
-2. Complete one connected small-business journey: saved signal, bounded mission,
-   explicit approval, action, a different verifier, evidence and operator readback.
+2. Demonstrate educational collaboration through one real objective: a relevant
+   lesson or practice, collaborators, bounded work, observed evidence, a different
+   verifier and retained reflection. The existing business automation lane is
+   one application domain; it still requires its saved signal, explicit approval,
+   actual action and operator readback.
    The workflow desk now separates recorded procedures from frozen executable
    ERP, Firecrawl and registered n8n steps. The worker retains uncertain effects
    for reconciliation. Provider activation and current NXC context retain their

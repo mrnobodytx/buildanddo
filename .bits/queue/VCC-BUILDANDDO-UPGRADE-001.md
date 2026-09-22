@@ -20,6 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Educational collaboration framing — 2026-09-22
+
+The owner's product correction continues this A2 source dispatch. Learning
+through real objectives and shared evidence defines the platform; the existing
+business demonstration remains one application domain.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| PF-1 | Align public identity, project intake and homepage hierarchy | Existing homepage/challenge rendering and source/crawler checks | source PASS — 580 Node cases and 340-module diagnostic; rendered acceptance blocked by missing Vitest |
+| PF-2 | Align the README, evaluator story and video plan | Review the objective-to-reflection path and retained runtime requirements | PASS — educational identity and planned learner path aligned; all eleven checkpoint gates and prior acceptance conditions retained |
+| PF-3 | Retain validation, memory and source bindings | Dispatch smoke, readiness, submission, context, boundary and memory | source verification complete — 770 Python passes, 32 skips; web tests/lint/build unavailable; results in product-framing-report.md |
+
+Memory brief: the Twin/value implementation and its 192 historical events are
+the baseline. The homepage metadata already identifies an educational app,
+while the shared footer/FAQ, early-access categories and judge story still
+center small-business operations. Existing onboarding saves six intents and an
+objective; classes, lessons, practices and project evidence already exist.
+This continuation changes presentation, not operational acceptance. No live
+workspace, provider binding or independently accepted journey is attached.
+
 ## Developmental Twin and value lenses — 2026-09-22
 
 The owner's ecosystem/progression and reviewer-dashboard request continues this

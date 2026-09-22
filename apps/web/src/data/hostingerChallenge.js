@@ -1,26 +1,30 @@
-// // --- CGRF Header ------------------------------------------------
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/data/hostingerChallenge.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001
+// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001
+// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        CLA-INSTALLER
 // Owner:       Citadel Nexus Inc.
+// Depends:     docs/day21/JUDGE_STORY.md
+// EnumType:    ConfigDoc
+// EnumEdges:   CONSUMES docs/day21/JUDGE_STORY.md
 // Intent:      Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.
-// ----------------------------------------------------------------
+// ───────────────────────────────────────────────────────────────
 export const HOSTINGER_CHALLENGE = {
     campaign: 'Hostinger 21-Day Startup Challenge 2026',
     deadline: '2026-09-24',
     promise:
-        'BuildAndDo watches the important parts of a small business, explains what changed, and turns the next best action into a verified task.',
+        'BuildAndDo is an educational collaboration platform for turning an objective into real, evidence-backed experience. People learn with other people and AI, work on actual projects, preserve what they did, and build reusable knowledge from the result.',
     target:
-        'Small business owners and operators who have repetitive operational problems spread across too many tools.',
+        'Learners, educators, builders, researchers and teams with something they want to build or accomplish together.',
     problem:
-        'Business owners can see signals in many places, but diagnosis, coordination, follow-up, and proof of completion remain manual.',
+        'People need to connect lessons and shared methods to real projects, inspect what happened, and carry that experience into the next attempt.',
     solution:
-        'BuildAndDo converts one observed business problem into a bounded mission, preserves the source, requires approval, records the work, verifies the outcome, and keeps the evidence.',
+        'BuildAndDo connects objectives, lessons, classrooms, collaboration, bounded missions, evidence and reflection. Software, research, business, community, creative and proposal projects share that learning loop.',
     demo:
-        'A business challenge becomes a source-bound mission; a bounded action is performed; a separate verifier checks the result; the operator readback and Daily Edition explain what happened and what remains uncertain.',
+        'Planned walkthrough: choose a project objective, study a relevant method with a class or collaborator, carry out one approved mission, inspect the result with a separate reviewer, and retain a reflection with evidence. Record only steps actually completed on the accepted candidate.',
     products: [
         {
             name: 'Unlimited Web Hosting',
