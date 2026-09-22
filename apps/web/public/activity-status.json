@@ -36,7 +36,7 @@
    "last_activity_at": "2026-09-18T19:51:17Z",
    "count_24h": 131,
    "count_7d": 151,
-   "evidence": "https://gitlab.citadel-nexus.com/groups/guilds/-/pipelines",
+   "evidence": "private control plane (not published)",
    "reason": null
   },
   {
@@ -47,7 +47,7 @@
    "last_activity_at": "2026-09-18T19:45:37Z",
    "count_24h": 23,
    "count_7d": 36,
-   "evidence": "https://gitlab.citadel-nexus.com/groups/guilds/-/merge_requests",
+   "evidence": "private control plane (not published)",
    "reason": null
   },
   {
@@ -58,7 +58,7 @@
    "last_activity_at": "2026-09-18T19:45:37Z",
    "count_24h": 29,
    "count_7d": 29,
-   "evidence": "https://gitlab.citadel-nexus.com/groups/guilds/-/merge_requests",
+   "evidence": "private control plane (not published)",
    "reason": null,
    "note": "verdict notes posted by the guildmaster identities on merge requests (last 15 MRs per repo)"
   },
@@ -199,7 +199,7 @@
    "last_activity_at": null,
    "count_24h": null,
    "count_7d": null,
-   "evidence": "https://mcp.citadel-nexus.com/mcp",
+   "evidence": "private control plane (not published)",
    "reason": "not probed by this producer (use tools/cbf/_mcp_conn_probe.py)"
   }
  ]
