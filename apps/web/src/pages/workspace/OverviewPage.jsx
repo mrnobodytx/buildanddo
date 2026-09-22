@@ -186,7 +186,11 @@ export default function OverviewPage() {
             })),
         )
             .filter((item) => item.label)
-            .sort((a, b) => new Date(b.at) - new Date(a.at))
+            // Tie-break on id. Four collections are merged here and records created in the
+            // same second are ordinary, so comparing only on `at` leaves the surviving eight
+            // decided by whichever order the four loads happened to land in - the feed can
+            // then show a different eight on each render with no data having changed.
+            .sort((a, b) => new Date(b.at) - new Date(a.at) || a.id.localeCompare(b.id))
             .slice(0, 8);
     }, [signals.records, missions.records, evidence.records, editions.records]);
 
