@@ -307,6 +307,10 @@ class NativeSuiteTests(unittest.TestCase):
             snapshot = json.loads(raw)
         self.assertEqual(snapshot["schema_version"], "buildanddo.operator-snapshot/v1")
         self.assertEqual(snapshot["role"], "editor")
+        for mission in snapshot["sources"]["missions"]["items"]:
+            self.assertEqual(mission["value"]["state"], "UNMEASURED")
+            self.assertFalse(mission["value"]["independent"])
+            self.assertEqual(mission["value"]["evidence"], [])
         jobs = snapshot["sources"]["suite_runs"]
         self.assertEqual(jobs["state"], "available")
         self.assertEqual(len(jobs["items"]), 1)

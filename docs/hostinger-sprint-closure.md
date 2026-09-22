@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md
 # Intent:      Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.
 # ───────────────────────────────────────────────────────────────
 
@@ -31,6 +31,60 @@ no editable completion percentage. Its source binding is
 `.bits/hostinger-readiness.lock.json`. Exact bytes of the tested application,
 libraries, tests and script trees are covered so a changed helper invalidates
 earlier acceptance too. Generated reports and operational evidence are excluded.
+
+## Continuous Semantic Twin progression lane
+
+The Twin runs across the existing sprint rather than becoming another dated
+milestone or a second schedule. It is **ecosystem-wide by invitation and
+discovery, not by a hard-coded integration list**. Its principal benefit is a
+durable, evidence-backed account of developmental progression: current state,
+demonstrated capability, gaps, regressions and the next justified evidence.
+Dates, weights, dependencies and completion still belong to the existing sprint
+and readiness owners above. This lane adds no estimated completion percentage.
+
+| Existing program work | Continuous Twin work | Progression evidence |
+|---|---|---|
+| Foundations and identity | Discover and resolve canonical owners | Exact source and participant revisions; explicit conflicts |
+| Evidence and tests | Relate declarations, observations and verification | Provenance, retained failures, independent receipts |
+| Operations | Explain capability, dependencies and authority boundaries | Bounded effect, external observation and reviewed outcome |
+| Automation | Identify reuse, blockers and next evidence | Complete eligible-work population and measured repeat behavior |
+| Governance | Compare history and recommend review candidates | Canonical model, prerequisites, regression and recovery criteria |
+
+```mermaid
+flowchart TD
+    O[Inventory / Identity / SBOM / Graph / Evidence / Telemetry] --> F[Semantic Twin foundation]
+    F --> D[Discovery and invitation]
+    F --> R[Evidence reconciliation]
+    F --> T[Retained temporal state]
+    D --> G[Canonical semantic graph]
+    R --> G
+    T --> G
+    G --> Q[Search / reason / assess impact]
+    Q --> N[Current → blocker → required evidence → next action]
+    N --> V[Independent verification and progression review]
+    V --> A[Existing governed operations]
+    A --> O
+```
+
+The blueprint and local query contract are in `docs/development-loop.md`.
+Current/target development labels reference their canonical model; the Twin
+does not define A0–A5 or grant an A-level. Technical competence and the authority
+ceiling remain separate. Regression preserves earlier truth and its evidence
+rather than rewriting a milestone or silently demoting an operational grant.
+
+| Lane acceptance | Available evidence / remaining operational input |
+|---|---|
+| Open participation and identity resolution | Generic canonical captures/invitations; receiving identity owners authenticate mappings |
+| Attributed assertions and distinct state axes | P0 envelopes plus explicit stale/conflicting/unmeasured conditions |
+| Traversable dependency/impact and known gaps | Local queries retain edge states and report bounds |
+| Reconstructible historical changes | Retained captures and deltas; live synchronization/retention belongs to receiving owners |
+| Next justified development step | Exact model/prerequisite projections; independent review and promotion remain existing gates |
+| Commercial meaning without invented ROI | One workspace value projection; native review lineage and explicit missing economics |
+
+This lane is implemented locally and remains operationally unaccepted until
+the receiving owners supply real scoped feeds, independently verified outcomes,
+the canonical development model and any economic baselines. Compilation,
+dashboard presence and local tests cannot establish that acceptance.
 
 ## Mandatory review
 

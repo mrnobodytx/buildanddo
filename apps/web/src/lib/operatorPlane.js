@@ -8,20 +8,19 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/pocketbase/pb_hooks/workspace-operator.js, apps/federal_foundry/operator.py, apps/web/src/lib/missionResearch.js, apps/web/src/lib/policyIntelligence.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-operator.js, apps/federal_foundry/operator.py, apps/web/src/lib/missionResearch.js, apps/web/src/lib/policyIntelligence.js, apps/web/src/lib/workspaceValue.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-operator.js; CONSUMES apps/federal_foundry/operator.py; CONSUMES apps/web/src/lib/missionResearch.js; CONSUMES apps/web/src/lib/policyIntelligence.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-operator.js; CONSUMES apps/federal_foundry/operator.py; CONSUMES apps/web/src/lib/missionResearch.js; CONSUMES apps/web/src/lib/policyIntelligence.js; CONSUMES apps/web/src/lib/workspaceValue.js
 // DAG Node:    none
 // Intent:      Separate live workspace decisions from untrusted prepared plans while preserving freshness, unknown capacity and replayable review proposals.
 // ───────────────────────────────────────────────────────────────
 
 import { createResearchClient } from './missionResearch.js';
 import { canonicalPolicy as canonical } from './policyIntelligence.js';
+import { valueSummaryShape } from './workspaceValue.js';
 
 export const OPERATOR_MAX_BYTES = 750000;
 const SOURCES = ['missions', 'signals', 'evidence', 'workflow_runs', 'research', 'suite_runs', 'seat_events', 'integrations'];
-const SYSTEMS = { datadog: 'Datadog', posthog: 'PostHog', github: 'GitHub', nxc: 'NXC', supabase: 'Supabase',
-    n8n: 'n8n', cloudflare: 'Cloudflare', digitalocean: 'DigitalOcean', rig2: 'Rig2 / fleet', gpt: 'GPT workers' };
 const ROLES = ['owner', 'admin', 'editor', 'viewer'];
 const TTL = 15 * 60 * 1000;
 const imported = new WeakSet();
@@ -60,7 +59,8 @@ function snapshotShape(value, workspace) {
             typeof row.observation.current === 'boolean' && typeof row.observation.check_pending === 'boolean');
         return unique(source.items.map((row) => row.id)) && source.items.every((row) => id(row.id) && row.workspace === workspace &&
             ['title', 'status', 'owner', 'mission', 'created', 'updated'].every((field) => text(row[field], field === 'title' ? 240 : 80, true)) &&
-            (key !== 'missions' || typeof row.plan_complete === 'boolean' && typeof row.approved === 'boolean' && text(row.priority, 32, true)) &&
+            (key !== 'missions' || typeof row.plan_complete === 'boolean' && typeof row.approved === 'boolean' && text(row.priority, 32, true) &&
+                (row.value === undefined || valueSummaryShape(row.value) && (!row.value.independent || row.value.reviewer !== row.owner))) &&
             (!['research', 'suite_runs'].includes(key) || Number.isSafeInteger(row.attempt) && row.attempt >= 0 && row.attempt <= 100 &&
                 Number.isSafeInteger(row.revision) && row.revision >= 1 && text(row.lease_until, 80, true) && text(row.failure, 80, true)) &&
             (key !== 'seat_events' || text(row.seat, 80, true) && text(row.subject, 64, true) && text(row.subject_type, 32, true)));
@@ -98,8 +98,8 @@ export function projectOperator(snapshot, now = Date.now()) {
     }
     for (const row of rows('signals')) if (['new', 'untriaged'].includes(row.status))
         work_queue.push(entry('signal', row, 'Inspect the observation and existing capabilities before proposing a change.', '/app/signals'));
-    const systems = Object.entries(SYSTEMS).map(([key, label]) => {
-        const row = rows('integrations').find((item) => item.provider === key);
+    const systems = rows('integrations').map((row) => {
+        const key = row.provider; const label = row.label;
         let status = row ? 'unknown' : 'not_connected';
         let reason = row ? 'Configuration alone does not establish live health.' : 'No runtime observation is exposed by this workspace adapter.';
         let at = '';

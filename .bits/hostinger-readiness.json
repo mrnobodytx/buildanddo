@@ -340,7 +340,8 @@
         "apps/pocketbase/pb_hooks/business-actions.js",
         "apps/web/src/components/workspace/missions/MissionReview.jsx",
         "apps/web/src/components/workspace/EvidenceInspector.jsx",
-        "apps/web/src/lib/evidenceInspection.js"
+        "apps/web/src/lib/evidenceInspection.js",
+        "docs/development-loop.md"
       ],
       "checks": [
         "semantic_twin",
@@ -360,9 +361,10 @@
         "Release/provider exports reconcile to the expected SHA and artifact; missing evidence remains incomplete.",
         "Verified review snapshots retain exact source observations; referenced evidence cannot silently change or disappear.",
         "Native result bytes and release declaration agree with independent replay/deployment evidence.",
-        "The evidence inspector exposes the exact frozen reviewed observation, its author and reviewer, and differences from the current record."
+        "The evidence inspector exposes the exact frozen reviewed observation, its author and reviewer, and differences from the current record.",
+        "Semantic invitations retain unresolved or conflicting owner identities; exact evidence prerequisites and historical captures cannot grant or promote authority."
       ],
-      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures."
+      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review."
     },
     {
       "id": "HS-10",
@@ -388,7 +390,10 @@
         "docs/workspace-assistant.md",
         "apps/web/src/pages/workspace/OverviewPage.jsx",
         "apps/web/src/components/workspace/NextWorkspaceActions.jsx",
-        "apps/web/src/lib/workspaceJourney.js"
+        "apps/web/src/lib/workspaceJourney.js",
+        "apps/pocketbase/pb_hooks/workspace-value.js",
+        "apps/web/src/lib/workspaceValue.js",
+        "apps/web/src/components/workspace/ValueDashboard.jsx"
       ],
       "checks": [
         "source_node",
@@ -411,9 +416,10 @@
         "Verification totals use actual review times, reset at the local date boundary and distinguish failed reads from empty activity.",
         "Specialist desks open real tools; Living Rooms modes expose source inspection, operations, learning and retained replay.",
         "The existing agent performs one reviewed ordinary form action with native authority and personal, account/workspace-isolated session knowledge.",
-        "Overview next actions derive only from current readable records; missing reads and demo data do not imply completed or actionable work."
+        "Overview next actions derive only from current readable records; missing reads and demo data do not imply completed or actionable work.",
+        "Owner, Operator and Reviewer views consume one scoped value projection; current UTC-month counts retain exact readable native reviews and unknown economic baselines or denominators stay unmeasured."
       ],
-      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior."
+      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI."
     },
     {
       "id": "HS-11",

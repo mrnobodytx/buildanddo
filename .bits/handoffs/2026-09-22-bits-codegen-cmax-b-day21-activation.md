@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     docs/sprint-user-journey.md, docs/submission-guide.md, .gitlab/ci/day21-submission.yml, docs/business-execution.md, docs/workspace-assistant.md, apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/ContactPage.jsx, .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md
+# Depends:     docs/sprint-user-journey.md, docs/submission-guide.md, .gitlab/ci/day21-submission.yml, docs/business-execution.md, docs/workspace-assistant.md, apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/ContactPage.jsx, .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md, docs/development-loop.md, docs/operator-plane.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES docs/sprint-user-journey.md; CONSUMES docs/submission-guide.md; CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES docs/business-execution.md; CONSUMES docs/workspace-assistant.md; CONSUMES apps/web/src/pages/PricingPage.jsx; CONSUMES apps/web/src/pages/ContactPage.jsx; CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md
+# EnumEdges:   CONSUMES docs/sprint-user-journey.md; CONSUMES docs/submission-guide.md; CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES docs/business-execution.md; CONSUMES docs/workspace-assistant.md; CONSUMES apps/web/src/pages/PricingPage.jsx; CONSUMES apps/web/src/pages/ContactPage.jsx; CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md; CONSUMES docs/development-loop.md; CONSUMES docs/operator-plane.md
 # Intent:      Define the receiving evidence and verified rollback postconditions that separate source onboarding completion from a deployed Day-21 outcome.
 # ───────────────────────────────────────────────────────────────
 
@@ -176,3 +176,43 @@ The six dated materials are `product_summary`, `evaluator_journey`,
 observations above. Keep the final bundle HOLD while required evidence is
 missing. Private fleet/NXC, voice/video, automated social publishing and live
 policy delivery remain outside the active demo promise.
+
+## 5. Observe developmental progression and business value
+
+Use the same accepted mission and receipts from section 2 to validate the
+Owner, Operator and Reviewer lenses at `/app/operator`. Source contracts are
+in `docs/operator-plane.md`; the blueprint and capture/query APIs are in
+`docs/development-loop.md`. These additions create no second mission registry,
+verification service or provider binding.
+
+1. Run the authored rendered OperatorPage cases and native operator acceptance
+   on the reviewed candidate with the unchanged lock and disposable backend.
+   The public session lacks Vitest/Vite, the locked lint plugin and PocketBase;
+   fixture/source tests cannot substitute for these checks.
+2. Trace one real reviewed mission through its readable frozen evidence,
+   distinct reviewer, workflow/action, provider result digest and declared
+   release. Confirm changed/unreadable evidence cannot contribute to verified
+   counts, and revoked access immediately removes the old view. Page bounds,
+   the current UTC month and the independently reviewed subset must be visible.
+3. Supply canonical owner mappings through the existing identity mechanism.
+   Record unresolved/conflicting mappings explicitly and enforce tenant/data
+   visibility before providing any capture. Keep private records and tokens in
+   their receiving stores. No canonical resolver or authenticated feed was
+   supplied to this public session.
+4. Reference the actual owner of the development-level model and its exact
+   prerequisites. Keep required authority, current grants and authority ceiling
+   separate. A satisfied local prerequisite set is only a review candidate;
+   any promotion still needs existing independent review and governance.
+5. Retain at least two real, scoped captures from existing event/observation
+   transport. Compare state, evidence and invitation changes, including an
+   approved regression or stale observation. Do not backdate present files or
+   treat graph dependency/correlation as causal proof.
+6. Agree the business measurement owner, currency/window, attributable cost or
+   revenue, comparable effort baseline and complete eligible-work denominator.
+   Until actual evidence supplies them, keep value, hours, prevented risk,
+   automation rate, coverage and ROI unmeasured. An example number, provider
+   success, HOLD or subscription payment cannot establish those measurements.
+
+Receiving status remains unmeasured. The continuous Twin lane can be accepted
+only from these observed identity, history, scope, review and economic inputs;
+local source completion does not mean the ecosystem feed is operational.

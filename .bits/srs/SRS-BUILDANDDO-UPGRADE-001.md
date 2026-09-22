@@ -20,6 +20,42 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Developmental Twin and business-value continuation — 2026-09-22
+
+The owner requests ecosystem-wide semantic participation, predominantly for
+evidence-backed developmental progression, and Owner/Operator/Reviewer lenses
+over the same business facts. Continue the registered A2 public-source dispatch.
+The program is ecosystem-wide by invitation and discovery, not by a hard-coded
+integration list. Existing identity, authority, verification and mutation owners
+remain authoritative; this projection cannot register, promote or execute work.
+
+Acceptance:
+
+1. Extend the existing semantic package with generic owner-linked invitations,
+   explicit identity conflicts/gaps, dependency/impact queries, retained capture
+   history, deltas and evidence prerequisites. Reuse v2 envelopes, predicates,
+   provenance and leaf digests; require a canonical model reference for declared
+   progression labels. Preserve independent authority and competence axes.
+2. Record the supplied blueprint in the existing development-loop documentation
+   and a continuous progression lane in the sprint plan, without invented dates,
+   readiness percentages, A4/A5 authority definitions or operational acceptance.
+3. Project existing permission-scoped workspace evidence into one value view.
+   Use the existing operator route and mission verification owner. Show source,
+   action, evidence, reviewer, release and identity gaps through drill-downs;
+   never turn an evidence type, completed job or producer claim into verification.
+4. Render Owner, Operator and Reviewer lenses over those same measurements.
+   Keep absent money/time baselines, eligibility denominators, avoided losses,
+   rollback exercises and ecosystem coverage explicitly unmeasured. Preserve
+   paging, freshness, tenant isolation and account/workspace invalidation.
+5. Exercise conflict, regression, stale/future evidence, exact revisions,
+   partial reads and false-success cases. Retain observed results and unavailable
+   native/rendered checks separately. Continuous private feeds and real business
+   outcome measurement remain receiving-runtime work.
+
+Verify with the semantic-twin suite, connected operator/value tests, rendered
+operator tests where dependencies permit, strict Python typing, source lint,
+readiness/submission, context, boundary and dispatch-memory checks.
+
 ## Paid-pilot continuation — 2026-09-22
 
 The owner prioritizes a managed paid pilot and one real verified automation

@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-18
-# Depends:     apps/federal_foundry/operator.py, apps/pocketbase/pb_hooks/workspace-operator.js, apps/web/src/lib/operatorPlane.js, apps/web/src/pages/workspace/OperatorPage.jsx, docs/blueprints.md
+# Depends:     apps/federal_foundry/operator.py, apps/pocketbase/pb_hooks/workspace-operator.js, apps/web/src/lib/operatorPlane.js, apps/web/src/pages/workspace/OperatorPage.jsx, docs/blueprints.md, apps/web/src/lib/workspaceValue.js, apps/web/src/components/workspace/ValueDashboard.jsx, apps/pocketbase/pb_hooks/workspace-value.js
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/federal_foundry/operator.py; CONSUMES apps/pocketbase/pb_hooks/workspace-operator.js; CONSUMES apps/web/src/lib/operatorPlane.js; CONSUMES apps/web/src/pages/workspace/OperatorPage.jsx; CONSUMES docs/blueprints.md
+# EnumEdges:   CONSUMES apps/federal_foundry/operator.py; CONSUMES apps/pocketbase/pb_hooks/workspace-operator.js; CONSUMES apps/web/src/lib/operatorPlane.js; CONSUMES apps/web/src/pages/workspace/OperatorPage.jsx; CONSUMES docs/blueprints.md; CONSUMES apps/web/src/lib/workspaceValue.js; CONSUMES apps/web/src/components/workspace/ValueDashboard.jsx; CONSUMES apps/pocketbase/pb_hooks/workspace-value.js
 # DAG Node:    none
 # Intent:      Make the public operator review loop usable with explicit evidence, freshness, authority and private receiving boundaries.
 # ───────────────────────────────────────────────────────────────
@@ -141,10 +141,72 @@ minutes old and cannot be future-dated. Configuration alone does not establish
 health. Recent seat activity is historical activity, not available GPU capacity;
 completion remains terminal within the observed sample.
 
+## Business value: three lenses, one projection
+
+The cockpit's first five cards answer why an owner would pay: Value created,
+Hours returned, Work verified, Risk prevented and Automation rate. Owner,
+Operator and Reviewer select different explanations of the same immutable
+workspace snapshot. Selecting a lens creates no read, write, approval or
+alternative set of metrics.
+
+The owner sees a supported next action and measured value/cost/return gaps.
+The operator sees current work and blockers. The reviewer can inspect mission,
+required authority, recorded review, evidence, workflow run, provider receipt
+and declared release identity, then open the existing mission/replay export.
+Private source/result bodies stay in their existing permission-controlled desks.
+Unresolved semantic identities remain explicit until the canonical owner
+supplies a mapping; the UI never manufactures an estate identity from a row ID.
+
+Work verified counts distinct readable missions with a native retained review:
+four passing TEVV observations, an identified reviewer, a dated decision and
+exact frozen evidence still readable and unchanged. The independently reviewed
+subset additionally requires the mission policy's independence condition and a
+reviewer different from the proposer and every evidence author. Evidence
+`type=verified`, mission status alone and a successful job are insufficient.
+Changed evidence remains conflicting; unavailable evidence remains unmeasured.
+This projection reports recorded decisions; it performs no new verification.
+
+The period is the current UTC month, using review time. Counts apply to the
+visible page only. Additional pages and unresolved reviews produce an explicit
+partial count; a failed source or stale/future snapshot cannot produce a current
+zero. A complete empty visible sample may show zero recorded outcomes, not zero
+business activity. Old v1 snapshots without value fields remain readable, with
+outcome verification unmeasured.
+
+The existing action-history reader controls access to locked jobs and their
+linked missions, runs and evidence. Each mission adds at most 20 action summaries;
+more rows are flagged, and more than the owner's 200-row export bound remains
+unavailable. Matching result bytes establish an OBSERVED provider receipt, not
+an independent outcome. A declared release SHA is not deployment verification.
+The existing no-store endpoint and account/workspace change guards remain in
+force. There are no new collections, migrations or economic records.
+
+| Card or follow-on metric | Required measurement before showing a number |
+|---|---|
+| Value created / revenue protected | Attributable revenue or avoided cost, currency, period and supported outcome; no double counting |
+| Hours returned / human touches removed | Comparable before/after effort or handoff baseline including review/recovery cost |
+| Risk prevented / problems caught early | Intervention tied to a demonstrated counterfactual, incident or prevented effect; a HOLD alone is insufficient |
+| Automation rate | Complete owner-defined eligible-work denominator and measured automatic outcomes in the same window |
+| Time to resolution | Comparable start/end observations and prior baseline |
+| Cost per verified outcome / ROI | Attributable system cost and verified denominator; no division by missing/zero values |
+| Semantic coverage / automation readiness | Canonical in-scope population and development model; no invented percent or A-level |
+| Rollback ready | Actually exercised and independently verified recovery for the exact operation/release |
+
+Until those inputs exist, the card says **Not yet measured**. The illustrative
+dollars, hours and percentages in product planning are not seeded data.
+Provider health, recent changes, unknown observations and decision links remain
+available below the cards. Providers are discovered from the existing workspace
+integration reader; the cockpit no longer keeps its own fixed system list.
+
+The economic drill-down is business question → measurement → mission/action →
+evidence/reviewer → provider observation → declared release. Semantic identity,
+causality and value attribution remain visible gaps when their owners have not
+supplied them. Buying a pilot or improving competence cannot raise authority.
+
 ## Private receiving work
 
-The page lists the requested ten system categories, but this checkout does not
-provide the private NXC, Sentinel, cloud or fleet runtime. Their existing
+The page projects existing integration records; it does not claim a complete
+ecosystem inventory or provide the private NXC, Sentinel, cloud or fleet runtime. Their existing
 adapters must be identified before connection work. No private system is made
 writable by this change. See
 `.bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md`.

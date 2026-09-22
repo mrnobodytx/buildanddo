@@ -20,8 +20,8 @@ import { plain } from './admin-fixture.mjs';
 import { repoPath, pythonBin } from './admin-fixture.mjs';
 import { spawnSync } from 'node:child_process';
 
-export function operatorFixture() {
-    const f = researchFixture();
+export function operatorFixture(options = {}) {
+    const f = researchFixture(options);
     f.migration('apps/pocketbase/pb_migrations/1790300000_mission_suite.js').up();
     const Collection = f.collections.users.constructor;
     f.app.save(new Collection({ name: 'seat_events', fields: ['workspace', 'seat', 'event', 'subject', 'subject_type'].map((name) => ({ name, type: 'text' })) }));
