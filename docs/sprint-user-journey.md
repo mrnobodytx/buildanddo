@@ -16,6 +16,14 @@
 
 # The remaining sprint user journey
 
+BuildAndDo's product identity is educational collaboration: people and AI learn
+by doing real projects together. The journey begins with an objective and a
+relevant lesson or method, uses collaboration and bounded work, then retains
+observations, verification, reflection and reusable experience. Classes,
+tutorials, practices, evidence, replay and capability/progress views are core.
+The ERP/provider acceptance lane below is one business-project application;
+its required evidence does not define the platform's audience.
+
 The sprint already had native onboarding, mission approval, immutable reviewed
 evidence, executable workflows, connector workers, ERP records and strict
 submission validators. This continuation repairs the gaps between those pieces.

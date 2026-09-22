@@ -16,8 +16,11 @@
 
 # Hostinger sprint closure
 
-The demonstration is one small organization problem through observation,
-approved bounded work, an actual action, independent review and visible evidence.
+BuildAndDo is an educational collaboration platform: choose an objective, learn
+with people and AI, carry out real work, inspect and verify the result, then
+retain what was learned. The demonstration should make that loop visible through
+one project. Its existing business automation lane provides a bounded action,
+independent review and visible evidence within that broader product story.
 The owner requested closing the repository gaps and making next actions
 mandatory governance. This continues SRS-BUILDANDDO-UPGRADE-001 and
 VCC-BUILDANDDO-UPGRADE-001. Private runtime activation and deployment still need
@@ -115,7 +118,7 @@ update its presentation too.
 | Missions | Scope and approval must precede work | Bounded execution and a separate result reviewer |
 | Workflows | Ordered steps need durable observations and retry recovery | Native atomic receipts, plus the actual executor's result |
 | Connectors | Configuration is insufficient to establish a connection | Fresh readback for the current binding/revision |
-| ERP | The outcome must be useful to the business | Saved objectives, tasks and contacts with scoped links |
+| ERP | Business projects need useful planning and follow-up | Saved objectives, tasks and contacts with scoped links |
 | Evidence | The exact claim must be inspectable | Consistent SHA/artifact receipts and observed verification |
 | Edition and desks | Operators must see the actual result and uncertainty | Current mission/evidence readback and browser acceptance |
 | Replay | The complete story must survive inspection | A consistent captured chain and official submission review |

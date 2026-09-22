@@ -61,7 +61,7 @@ export function generatePublicAssets(directory) {
 # Intent:      Publish the same public route catalogue for text-based discovery.
 # ───────────────────────────────────────────────────────────────
 -->
-# BuildAndDo\n\nA daily learning edition built around sources, scoped missions and evidence.\n\n## Community and store\n\n- [r/buildanddo on Reddit](https://www.reddit.com/r/buildanddo): the public community.\n- [Playbooks and courses on Gumroad](https://citadelnexus.gumroad.com): the Citadel Nexus store.\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
+# BuildAndDo\n\nAn educational collaboration platform where people and AI learn by doing real work together, preserve evidence and share what they learned.\n\n## Community and store\n\n- [r/buildanddo on Reddit](https://www.reddit.com/r/buildanddo): the public community.\n- [Playbooks and courses on Gumroad](https://citadelnexus.gumroad.com): the Citadel Nexus store.\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
     );
 }
 
@@ -101,7 +101,7 @@ export function generatePageHeads(directory, release) {
                 'og:image': `${SITE_ORIGIN}/social-card.png`,
                 'og:image:width': '1200',
                 'og:image:height': '630',
-                'og:image:alt': 'BuildAndDo — your business, in evidence',
+                'og:image:alt': 'BuildAndDo — learn by doing, together',
             }).map(
                 ([property, value]) => `<meta property="${property}" content="${escape(value)}">`,
             ),
@@ -110,7 +110,7 @@ export function generatePageHeads(directory, release) {
                 'twitter:title': page.title,
                 'twitter:description': page.description,
                 'twitter:image': `${SITE_ORIGIN}/social-card.png`,
-                'twitter:image:alt': 'BuildAndDo — your business, in evidence',
+                'twitter:image:alt': 'BuildAndDo — learn by doing, together',
             }).map(([name, value]) => `<meta name="${name}" content="${escape(value)}">`),
             `<script id="static-page-schema" type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`,
         ].join('\n');

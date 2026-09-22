@@ -1,8 +1,10 @@
 # BuildAndDo
 
-Early-stage software that turns "I want X" into a bounded, verified next step —
-build, code, or a real-world objective. This repo is the public build-in-public
-source for [buildanddo.com](https://buildanddo.com).
+BuildAndDo is an early-stage educational collaboration platform where people
+and AI learn by doing real things together. Choose something to build or
+accomplish, work through it with others, preserve the evidence, check the result,
+and turn what you learned into the next person's starting point. This repo is
+the public build-in-public source for [buildanddo.com](https://buildanddo.com).
 
 - **Live site:** https://buildanddo.com
 - **Roadmap:** https://buildanddo.com/roadmap
@@ -10,6 +12,35 @@ source for [buildanddo.com](https://buildanddo.com).
 - **Wiki** (canonical development record): https://wiki.buildanddo.com
 - **Forum:** https://forum.buildanddo.com
 - **Discord:** https://discord.gg/vTDZxmpHHC
+
+## Learn by doing. Verify what you did. Do it together.
+
+The product loop is:
+
+```text
+objective → learn → collaborate → do → observe → verify → reflect → retain/reuse
+```
+
+| Part of the loop | Core product surfaces |
+|---|---|
+| Learn | Field Manual, tutorials, classrooms and the Practice Library |
+| Collaborate | People and AI in shared workspaces; Living Rooms, guilds, forums and Discord support the community |
+| Do | Projects, objectives, challenges, bounded missions and repeatable workflows |
+| Observe and verify | Evidence Ledger, review and replay of what actually happened |
+| Reflect and reuse | Daily Edition, personal progress/dossiers, capability passports and shared practices |
+
+Software, research, entrepreneurship, business operations, community projects,
+creative work and government/proposal work are application domains. ERP,
+Firecrawl and n8n support planning, research and execution within those projects;
+the managed business pilot is one offering. Citadel's graph and governance
+provide supporting infrastructure.
+
+These surfaces have different readiness and evidence requirements. Lesson
+completion, a saved receipt and independent verification remain distinct.
+Practices retain proposed, community-tested, verified or disputed states;
+capability claims require evidence and never grant operational authority.
+See [the submission guide](docs/submission-guide.md) for the proposed evaluator
+journey, acceptance checks and remaining runtime requirements.
 
 ## Quick start
 

@@ -11,37 +11,37 @@ export const FAQ_ITEMS = [
     {
         question: 'What is BuildAndDo?',
         answer:
-            'BuildAndDo is early-stage software for small-business owners. It helps you notice important changes in your business, understand them in plain language, approve a bounded mission, and verify what happened — so you get operational help without automation jargon.',
+            'BuildAndDo is an early-stage educational collaboration platform where people and AI learn by doing real things together. Choose an objective, explore a lesson or method, collaborate on the work, preserve the evidence, check the result, and share what you learned.',
     },
     {
         question: 'Is BuildAndDo a chatbot?',
         answer:
-            'No. You describe problems in plain English, but BuildAndDo is not an open-ended chatbot. It turns what you describe into a bounded mission with a clear goal and scope, and it shows you the evidence when the mission is done.',
+            'The assistant is one collaborator in a shared workspace. Lessons, classrooms, projects, missions and practices connect the conversation to real work. You can inspect the recorded actions and evidence, reflect on the result, and reuse a method with its review status attached.',
     },
     {
         question: 'Does it take actions automatically?',
         answer:
-            'Only within limits you approve. BuildAndDo separates observing information, simulating a possible action, and executing an approved action. You review the plan first, and the final say stays with you.',
+            'An executable workflow needs an approved scope and an available, authorized tool. You review the plan before effects occur. A saved objective, lesson completion or assistant suggestion does not grant execution authority or verify a result.',
     },
     {
         question: 'Who is BuildAndDo for?',
         answer:
-            'Primarily small-business owners and operators — especially appointment-based and service businesses like salons, consultants, and local providers. Beginners and vibe coders can also use the same loop to turn plain-English ideas into structured, testable workflows.',
+            'Learners, educators, builders, researchers and teams working toward a real objective. Projects can involve software, research, entrepreneurship, business operations, community work, creative work or proposal preparation. People, AI and community collaborators use the same learning and evidence loop.',
     },
     {
         question: 'Do I need technical skills?',
         answer:
-            'No. BuildAndDo is designed for nontechnical operators. You describe the problem in plain English and it handles the structure underneath. There is nothing to code and no AI terminology to learn.',
+            'You can start with a plain-language objective and a lesson or practice. The project determines which skills, tools and collaborators you need. Some projects involve code; others involve research, planning or hands-on work.',
     },
     {
-        question: 'What happens to my business data?',
+        question: 'What happens to my project data?',
         answer:
             'BuildAndDo is an early MVP and we are still finalizing our data practices, so we won\u2019t make claims we can\u2019t back up yet. The product is designed around observable state — you can see what it knows and what it did. We will publish full privacy details before launch, and early-access sign-ups are only used to contact you about the product.',
     },
     {
         question: 'Is BuildAndDo available now?',
         answer:
-            'BuildAndDo is in early access. We are working with a first group of small-business owners to shape the product around real problems. Join the early-access list and describe the repetitive task you would want help with.',
+            'BuildAndDo is in early access. Explore the public lessons and practices, or join the early-access list with something you want to learn, build or accomplish. A listed tool or proposed practice still needs its own availability and evidence checks.',
     },
 ];
 
@@ -55,7 +55,7 @@ export default function Faq() {
                         Direct answers, no hype
                     </h2>
                     <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                        The questions a first-time business owner would actually ask.
+                        A starting point for learners, collaborators and project teams.
                     </p>
                 </div>
 

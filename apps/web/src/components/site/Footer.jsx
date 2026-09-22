@@ -38,9 +38,9 @@ export default function Footer({
                             </span>
                         </a>
                         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                            Early-stage software that helps small-business owners notice changes,
-                            understand them in plain language, approve a bounded mission, and verify
-                            what happened.
+                            An educational collaboration platform where people and AI learn by
+                            doing real work together. Choose an objective, keep the evidence,
+                            and share what you learned.
                         </p>
                     </div>
 

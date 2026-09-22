@@ -1,0 +1,17 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON .bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json
+# Intent:      Retain exact source and validation observations for educational product framing without claiming unavailable rendered or deployed acceptance.
+# ───────────────────────────────────────────────────────────────
+file: .bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json
+purpose: Source fingerprints, command receipts, observed results and acceptance limits

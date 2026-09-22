@@ -462,7 +462,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-22T14:33:19.771130+00:00",
+  "generated_at": "2026-09-22T16:08:47.945854+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -947,7 +947,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1338,
+    "tracked_files": 1341,
     "web_source_files": 347
   },
   "schema_version": 1,
@@ -1016,12 +1016,12 @@
       },
       {
         "id": "HS-11",
-        "next_step": "Validate actual replay/native exports and all eleven owner decisions, supply six dated materials and captured official requirements, then have the owner perform submission.",
+        "next_step": "Capture one actual objective-to-reflection journey on the accepted candidate, retaining the existing business/provider lane requirements. Validate replay/native exports and all eleven owner decisions, supply six dated materials and captured official requirements, then have the owner perform submission.",
         "owner": "Repository owner / independent verifier",
-        "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
+        "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "b66df88deb2ba203c7eee6b5731d85530a77c27c26cdc9b95c82d5d721fa3921",
+    "source_sha256": "649795ee1f6fa256ec02e62b57b4657e35ce619ba9c9f7053a6aecdd99d6f27d",
     "state": "PASS"
   },
   "summary": {

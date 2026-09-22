@@ -1,13 +1,17 @@
-// // --- CGRF Header ------------------------------------------------
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/pages/HostingerChallengePage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001
+// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001
+// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        CLA-INSTALLER
 // Owner:       Citadel Nexus Inc.
+// Depends:     apps/web/src/data/hostingerChallenge.js, apps/web/src/components/site/Footer.jsx
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/data/hostingerChallenge.js; CONSUMES apps/web/src/components/site/Footer.jsx
 // Intent:      Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.
-// ----------------------------------------------------------------
+// ───────────────────────────────────────────────────────────────
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { ArrowRight, BadgeCheck, Box, Server, Sparkles, Target } from 'lucide-react';
@@ -32,21 +36,21 @@ export default function HostingerChallengePage() {
                 <title>BuildAndDo — Hostinger 21-Day Challenge</title>
                 <meta name="description" content={C.promise} />
             </Helmet>
-            <Header ctaHref="/#challenge-desk" ctaLabel="Try a business challenge" />
+            <Header ctaHref="/#challenge-desk" ctaLabel="Bring a project challenge" />
             <main id="main-content" tabIndex={-1}>
                 <Section className="pt-28 sm:pt-32">
                     <SectionLabel icon={Target}>{C.campaign}</SectionLabel>
                     <div className="mt-4 grid gap-8 lg:grid-cols-12 lg:items-end">
                         <div className="lg:col-span-8">
                             <h1 className="font-display text-4xl font-semibold tracking-tight sm:text-6xl">
-                                One business problem. One bounded mission. One verified outcome.
+                                Learn by doing. Verify what you did. Do it together.
                             </h1>
                             <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground">
                                 {C.promise}
                             </p>
                             <div className="mt-7 flex flex-wrap gap-3">
                                 <Button href="/#challenge-desk" size="lg">
-                                    Try a business challenge <ArrowRight className="h-4 w-4" />
+                                    Bring a project challenge <ArrowRight className="h-4 w-4" />
                                 </Button>
                                 <Button href="/signup" size="lg" variant="secondary">
                                     Create an account
@@ -90,10 +94,14 @@ export default function HostingerChallengePage() {
                     <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground">{C.demo}</p>
                     <ol className="mt-7 grid gap-4 md:grid-cols-4">
                         {[
-                            ['1', 'Observe', 'Save one real business challenge with its source.'],
-                            ['2', 'Bound', 'Turn it into a mission with scope and approval.'],
-                            ['3', 'Do', 'Perform one bounded action and record its receipt.'],
-                            ['4', 'Verify', 'Have a distinct verifier check the outcome and show the readback.'],
+                            ['1', 'Choose', 'Save something you want to build or accomplish.'],
+                            ['2', 'Learn', 'Read a relevant lesson, practice or method.'],
+                            ['3', 'Collaborate', 'Work through questions with people and AI in a class or project.'],
+                            ['4', 'Plan', 'Define one bounded mission, its evidence and required approval.'],
+                            ['5', 'Do', 'Carry out the approved work and retain its receipt.'],
+                            ['6', 'Observe', 'Inspect what actually happened, including failures and unknowns.'],
+                            ['7', 'Verify', 'Have a distinct reviewer check the exact result and evidence.'],
+                            ['8', 'Reflect and reuse', 'Record what worked, what failed and a method worth trying again.'],
                         ].map(([n, title, text]) => (
                             <li key={n} className="border border-border p-5">
                                 <p className="font-evidence text-xs text-primary">{n}</p>
@@ -102,6 +110,12 @@ export default function HostingerChallengePage() {
                             </li>
                         ))}
                     </ol>
+                    <p className="mt-5 max-w-3xl text-sm text-muted-foreground">
+                        Classrooms, the Field Manual, Practice Library, missions, evidence and
+                        replay support this loop. Progress and capability claims need their own
+                        evidence. Business operations is one project domain; ERP, Firecrawl and
+                        n8n provide planning, research and execution tools where available.
+                    </p>
                 </Section>
 
                 <Section className="border-t border-border bg-secondary/20">
@@ -128,11 +142,11 @@ export default function HostingerChallengePage() {
                                         <td className="p-3 font-semibold">{name}</td>
                                         <td className="p-3 font-evidence">{weight}%</td>
                                         <td className="p-3 text-muted-foreground">
-                                            {name === 'Product and user experience' && 'A public product, signup, challenge intake, workspace journey, evidence and operator readback.'}
-                                            {name === 'Business idea' && 'A specific operational problem for small-business owners rather than a generic assistant.'}
-                                            {name === 'Business potential' && 'Reusable mission, workflow, evidence and connector primitives that can expand across business operations.'}
+                                            {name === 'Product and user experience' && 'A connected objective, lesson, collaboration, mission, evidence, review and reflection journey.'}
+                                            {name === 'Business idea' && 'Learning through real projects, with evidence of the work and shared methods for the next learner.'}
+                                            {name === 'Business potential' && 'Applications across classes, project teams, research, community work and business operations; commercial outcomes require measurement.'}
                                             {name === 'Hostinger product usage' && 'Hosting, Agents, AI Builder and VPS each have a bounded role with separate submission evidence.'}
-                                            {name === 'Creativity and innovation' && 'Evidence-first agentic work: action is bounded, verification is independent, and uncertainty stays visible.'}
+                                            {name === 'Creativity and innovation' && 'People and AI learn through bounded work, inspect evidence and retain reusable experience with its review status.'}
                                         </td>
                                     </tr>
                                 ))}
@@ -145,7 +159,7 @@ export default function HostingerChallengePage() {
                     <div className="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-12 sm:px-6 md:flex-row md:items-center md:justify-between">
                         <div>
                             <p className="font-evidence text-[10px] uppercase tracking-[0.2em] text-background/60">BuildAndDo</p>
-                            <h2 className="mt-2 font-display text-3xl font-semibold">Bring one real business problem.</h2>
+                            <h2 className="mt-2 font-display text-3xl font-semibold">Bring something you want to build or accomplish.</h2>
                         </div>
                         <Button href="/#challenge-desk" variant="outlinePaper" size="lg">Try the challenge desk <ArrowRight className="h-4 w-4" /></Button>
                     </div>

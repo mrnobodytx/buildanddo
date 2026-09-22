@@ -15,7 +15,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -39,7 +39,8 @@
         "interactive-learning",
         "hostinger-sprint-closure",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -58,12 +59,12 @@
         ".bits/srs_registry.yml",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 138,
+      "lines": 141,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "The durable brief an agent reads first; measured facts live in the lock beside it.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -73,7 +74,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -530,12 +532,12 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 47861,
+      "lines": 48424,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -545,7 +547,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -664,12 +667,12 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1519,
+      "lines": 1539,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -681,7 +684,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "objective-first-onboarding",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -985,12 +989,12 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 1996,
+      "lines": 2027,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -1002,7 +1006,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "objective-first-onboarding",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -4462,7 +4467,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Publish the same public route catalogue for text-based discovery.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -4472,7 +4477,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -4874,9 +4880,9 @@
         "Seo"
       ],
       "dependencies": [
-        "@/lib/publicPages",
         "react-helmet",
-        "react-router-dom"
+        "react-router-dom",
+        "@/lib/publicPages"
       ],
       "lines": 83,
       "caps_grade": "pending",
@@ -4893,7 +4899,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -5622,10 +5629,10 @@
         "Footer"
       ],
       "dependencies": [
-        "@/lib/publicPages",
-        "lucide-react",
         "react",
-        "react-router-dom"
+        "react-router-dom",
+        "@/lib/publicPages",
+        "lucide-react"
       ],
       "lines": 175,
       "caps_grade": "pending",
@@ -5642,7 +5649,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -8672,7 +8680,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Keep public navigation, canonical metadata and crawler output on the same route catalogue.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -8682,7 +8690,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -9194,7 +9203,7 @@
         "countValue",
         "SourceState",
         "GlanceMetric",
-        "BusinessAtAGlance",
+        "WorkspaceAtAGlance",
         "ChallengeForm",
         "ChallengeDesk",
         "PreviewSection",
@@ -9209,32 +9218,16 @@
         "HomePage"
       ],
       "dependencies": [
-        "@/components/Seo",
-        "@/components/editorial/EditorialFrontPage",
-        "@/components/motion/EditorialStory",
-        "@/components/motion/ReadingProgress",
-        "@/components/site/EarlyAccess",
-        "@/components/site/Faq",
-        "@/components/site/Footer",
-        "@/components/site/Header",
-        "@/components/site/ui",
-        "@/components/workspace/TutorialCatalog",
-        "@/components/workspace/WorkspaceNotices",
-        "@/contexts/AuthContext",
-        "@/contexts/WorkspaceContext",
-        "@/hooks/useDemoMode",
-        "@/hooks/useMissionResearch",
-        "@/hooks/useWorkspaceRecords",
-        "@/lib/format",
-        "@/lib/workspaceSummary",
-        "apps/web/src/components/workspace/TutorialCatalog.jsx",
         "apps/web/src/hooks/useWorkspaceRecords.js",
+        "apps/web/src/components/workspace/TutorialCatalog.jsx",
         "apps/web/src/lib/workspaceSummary.js",
-        "lucide-react",
-        "react",
-        "react-helmet"
+        "apps/web/src/components/editorial/EditorialFrontPage.jsx",
+        "apps/web/src/hooks/useMissionResearch.js",
+        "apps/web/src/components/site/Faq.jsx",
+        "apps/web/src/components/site/Footer.jsx",
+        "apps/web/src/components/site/EarlyAccess.jsx"
       ],
-      "lines": 764,
+      "lines": 766,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Project authenticated workspace records onto the front page with provenance, recoverable intake and no anonymous private reads.",
@@ -9250,7 +9243,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -9437,7 +9431,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -9518,12 +9513,14 @@
       ],
       "enum_type": "Test",
       "functions": [
-        "Scene"
+        "Scene",
+        "section",
+        "now"
       ],
       "dependencies": [
         "apps/web/src/pages/HomePage.jsx"
       ],
-      "lines": 322,
+      "lines": 328,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify real home records, submission recovery, demo isolation and clearing on workspace or account changes.",
@@ -9538,7 +9535,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "backend-reuse"
+        "backend-reuse",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -11144,7 +11142,8 @@
       "enum_type": "Service",
       "functions": [
         "generatePublicAssets",
-        "generatePageHeads"
+        "generatePageHeads",
+        "escape"
       ],
       "dependencies": [
         "apps/web/src/lib/publicPages.js"
@@ -11154,7 +11153,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Generate canonical social metadata and crawler resources for every public route.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -11164,7 +11163,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -20508,15 +20508,10 @@
         "EditorialFrontPage"
       ],
       "dependencies": [
-        "./AndroidPhoneFrame",
-        "./VerticalNewsReel",
-        "./editorial.css",
-        "@/contexts/AuthContext",
-        "@/lib/editorialContent",
-        "@/lib/workspaceSummary",
-        "lucide-react",
-        "react",
-        "react-router-dom"
+        "apps/web/src/lib/editorialContent.js",
+        "apps/web/src/lib/workspaceSummary.js",
+        "apps/web/src/components/editorial/VerticalNewsReel.jsx",
+        "apps/web/src/components/editorial/AndroidPhoneFrame.jsx"
       ],
       "lines": 241,
       "caps_grade": "pending",
@@ -20533,7 +20528,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-frontpage"
+        "editorial-frontpage",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -38663,12 +38659,12 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 547,
+      "lines": 553,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -38680,7 +38676,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "objective-first-onboarding",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -38727,12 +38724,12 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1043,
+      "lines": 1046,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -38744,7 +38741,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "objective-first-onboarding",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -38960,12 +38958,12 @@
         "docs/sprint-user-journey.md",
         "docs/development-loop.md"
       ],
-      "lines": 401,
+      "lines": 404,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -38977,7 +38975,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-user-journey",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -41079,12 +41078,12 @@
         "docs/business-execution.md",
         "docs/workspace-assistant.md"
       ],
-      "lines": 242,
+      "lines": 274,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define provisional submission rules, exhaustive checkpoint acceptance and a verifiable owner-reviewed entry package.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -41094,7 +41093,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "gitlab-acceptance"
+        "gitlab-acceptance",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -45237,12 +45237,12 @@
         "tests/upgrade/sprint-journey.test.mjs",
         "tests/upgrade/test_workspace_native.py"
       ],
-      "lines": 149,
+      "lines": 157,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the ten source gaps closing the sprint's user journey and preserve the separate runtime acceptance obligations.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -45252,7 +45252,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "objective-first-onboarding"
+        "objective-first-onboarding",
+        "educational-collaboration"
       ],
       "tenant_id": null
     },
@@ -47844,12 +47845,574 @@
       "timestamp": "2026-09-22T14:27:55Z",
       "commit_sha": "52ff911ab51288e2dd552e0b9903bb21832f3a29",
       "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "README.md",
+        "docs/submission-guide.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json"
+      ],
+      "lines": 194,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the educational collaboration framing, its source checks and the remaining acceptance limits for reviewers.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json"
+      ],
+      "lines": 446,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact source and validation observations for educational product framing without claiming unavailable rendered or deployed acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json"
+      ],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact source and validation observations for educational product framing without claiming unavailable rendered or deployed acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "README.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [],
+      "lines": 168,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the educational collaboration product, its learning and evidence loop, and the application domains so contributors understand what BuildAndDo is for.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/__tests__/HostingerChallengePage.test.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/pages/HostingerChallengePage.jsx"
+      ],
+      "lines": 41,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/site/EarlyAccess.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "EarlyAccess"
+      ],
+      "dependencies": [
+        "react",
+        "lucide-react",
+        "@/components/site/ui",
+        "@/components/ui/input",
+        "@/components/ui/textarea",
+        "@/components/ui/label",
+        "@/components/ui/select",
+        "@/lib/pocketbaseClient"
+      ],
+      "lines": 285,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Invite learners and project teams to describe a real objective through the existing early-access record fields while retaining business enquiries.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/site/Faq.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "Faq"
+      ],
+      "dependencies": [
+        "react",
+        "@/components/site/ui",
+        "@/components/ui/accordion"
+      ],
+      "lines": 83,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain learning through real projects, collaborators and evidence without promising automatic verification or execution authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/data/hostingerChallenge.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "docs/day21/JUDGE_STORY.md"
+      ],
+      "lines": 53,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/HostingerChallengePage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "ProductCard",
+        "HostingerChallengePage"
+      ],
+      "dependencies": [
+        "apps/web/src/data/hostingerChallenge.js",
+        "apps/web/src/components/site/Footer.jsx"
+      ],
+      "lines": 171,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/day21/JUDGE_STORY.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "README.md",
+        "docs/submission-guide.md"
+      ],
+      "lines": 56,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Frame the evaluator story around educational collaboration and distinguish the proposed journey from observed acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/day21/VIDEO_SHOTLIST.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/day21/JUDGE_STORY.md",
+        "docs/submission-guide.md"
+      ],
+      "lines": 35,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "educational-collaboration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md",
+      "target": "README.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md consumes README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-report.md consumes docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.cgrf.yaml depends_on .bits/out/VCC-BUILDANDDO-UPGRADE-001/product-framing-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/__tests__/HostingerChallengePage.test.jsx",
+      "target": "apps/web/src/pages/HostingerChallengePage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/__tests__/HostingerChallengePage.test.jsx validates apps/web/src/pages/HostingerChallengePage.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/data/hostingerChallenge.js",
+      "target": "docs/day21/JUDGE_STORY.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/data/hostingerChallenge.js consumes docs/day21/JUDGE_STORY.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/HomePage.jsx",
+      "target": "apps/web/src/components/site/EarlyAccess.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/HomePage.jsx consumes apps/web/src/components/site/EarlyAccess.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/HomePage.jsx",
+      "target": "apps/web/src/components/site/Faq.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/HomePage.jsx consumes apps/web/src/components/site/Faq.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/HomePage.jsx",
+      "target": "apps/web/src/components/site/Footer.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/HomePage.jsx consumes apps/web/src/components/site/Footer.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/HostingerChallengePage.jsx",
+      "target": "apps/web/src/components/site/Footer.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/HostingerChallengePage.jsx consumes apps/web/src/components/site/Footer.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/HostingerChallengePage.jsx",
+      "target": "apps/web/src/data/hostingerChallenge.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/HostingerChallengePage.jsx consumes apps/web/src/data/hostingerChallenge.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/day21/JUDGE_STORY.md",
+      "target": "README.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/day21/JUDGE_STORY.md consumes README.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/day21/JUDGE_STORY.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/day21/JUDGE_STORY.md consumes docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/day21/VIDEO_SHOTLIST.md",
+      "target": "docs/day21/JUDGE_STORY.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/day21/VIDEO_SHOTLIST.md consumes docs/day21/JUDGE_STORY.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/day21/VIDEO_SHOTLIST.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/day21/VIDEO_SHOTLIST.md consumes docs/submission-guide.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/build.test.mjs",
+      "description": "All 580 existing Node source regressions passed under Node 22.17.0, including generated crawler resources, scoped workspace summaries, challenge storage and prior business/learning flows. Rendered acceptance is separate.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T15:58:12.858442+00:00",
+      "commit_sha": null,
+      "smoke_result": "580/580"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_submission_readiness.py",
+      "description": "Python source discovery ran 802 cases: 770 passed and 32 skipped, with no failures. Missing native and optional dependencies remain explicit acceptance gaps.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T16:00:08.965714+00:00",
+      "commit_sha": null,
+      "smoke_result": "770/802"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "apps/web/src/pages/__tests__/HomePage.test.jsx",
+      "description": "Rendered tests, the build and repository lint cannot complete: Vitest, Vite and eslint-plugin-import are absent. The sandbox subprocess restriction was resolved for the Node 22 retry; no rendered, native, deployed or learner outcome is claimed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T15:57:35.338369+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "commit",
+      "file_path": "apps/web/src/pages/HomePage.jsx",
+      "description": "Frame BuildAndDo as educational collaboration across the homepage, public entry points and submission materials; keep business tooling as one application and preserve existing authority and evidence gates.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-22T16:05:12Z",
+      "commit_sha": "6703a37cc5c138c78dc9c42a93515f491db188a3",
+      "smoke_result": "4/7"
     }
   ],
   "summary": {
-    "type_a_count": 779,
-    "type_b_count": 1776,
-    "type_c_count": 192,
+    "type_a_count": 790,
+    "type_b_count": 1791,
+    "type_c_count": 196,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

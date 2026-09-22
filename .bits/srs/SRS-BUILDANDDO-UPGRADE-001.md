@@ -20,6 +20,37 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Educational collaboration framing — 2026-09-22
+
+The owner clarifies the product identity: BuildAndDo is an educational
+collaboration platform where people and AI learn by doing real work together.
+Continue this registered A2 source dispatch for public copy and submission
+materials. The core loop is objective, learn, collaborate, do, observe, verify,
+reflect and retain/reuse. Business operations is one application domain beside
+software, research, community, creative and government/proposal projects.
+
+Acceptance:
+
+1. Align the README, homepage, shared public copy and challenge presentation
+   around that identity. Place lessons, classrooms and shared methods before
+   business reporting; retain the existing business tools and pilot offer.
+2. Use a general project challenge and recorded-work summary. Keep workspace
+   reads, challenge receipts, private-data boundaries and revenue provenance.
+   Early-access intake must accommodate learners and project teams through its
+   existing text fields without a schema or external-write change.
+3. Lead the judge story and video plan with “Learn by doing. Verify what you did.
+   Do it together.” Show the complete learning/work/reflection loop, distinguish
+   the existing business demonstration lane from platform identity, and retain
+   all native, browser, provider, independent-review and submission gates.
+4. Update affected existing rendering assertions and run the dispatch smoke
+   checks. Retain missing dependencies as unavailable acceptance; copy cannot
+   establish a completed journey, measured capability or economic outcome.
+
+Verify with the existing homepage/challenge tests, crawler generation checks,
+dispatch smoke commands, readiness/submission and memory validation. No new
+runtime, authority, certification, deployment or external communication is
+authorized. Preserve the 192 historical memory events.
+
 ## Developmental Twin and business-value continuation — 2026-09-22
 
 The owner requests ecosystem-wide semantic participation, predominantly for

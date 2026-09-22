@@ -29,7 +29,7 @@ export const PUBLIC_PAGES = [
         label: 'Home',
         title: 'BuildAndDo — learn by doing, together',
         description:
-            'Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.',
+            'BuildAndDo is an educational collaboration platform. Learn with people and AI through real projects, verify what happened, and share what you learned.',
         type: 'WebPage',
     },
     {
@@ -37,7 +37,7 @@ export const PUBLIC_PAGES = [
         label: 'Challenge',
         title: 'BuildAndDo — Hostinger 21-Day Challenge',
         description:
-            'See the focused business problem, verified mission story and Hostinger product roles behind the BuildAndDo challenge entry.',
+            'Learn by doing. Verify what you did. Do it together. Explore the proposed objective-to-evidence journey and Hostinger product roles for BuildAndDo.',
         type: 'WebPage',
     },
     {
@@ -77,7 +77,7 @@ export const PUBLIC_PAGES = [
         label: 'About',
         title: 'About & team | BuildAndDo',
         description:
-            'Meet the people and principles behind BuildAndDo, a Citadel Nexus Inc. product built around accountable work.',
+            'Meet the people and principles behind BuildAndDo, the educational collaboration platform from Citadel Nexus Inc.',
         type: 'AboutPage',
     },
     {

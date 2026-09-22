@@ -91,7 +91,7 @@ export default function PricingPage() {
                     </p>
                     <h2 className="mt-3 font-display text-3xl font-semibold">Early access</h2>
                     <p className="mt-4 leading-relaxed text-muted-foreground">
-                        Explore the workspace and help shape it around a real business problem.
+                        Explore the workspace and help shape it around something you want to learn, build or accomplish.
                     </p>
                     <ul className="my-8 space-y-4 text-sm">
                         {[
