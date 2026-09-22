@@ -1,48 +1,58 @@
 {
-  "schema": "buildanddo.hostinger-submission/v1",
-  "generated_at": "2026-09-20T17:46:55+00:00",
-  "campaign_id": "citadel-21-day-2026-09",
-  "competition_id": "hostinger-2026",
-  "product": "BuildAndDo",
-  "one_line": "A learning-by-doing platform where the work, the evidence for it, and the check on that evidence are the same object.",
-  "candidate": {
-    "commit": "07ac9afef41b861d332de953edaf69c3f8858f65",
-    "branch": "bits/SRS-BUILDANDDO-WORKSPACE-001-fleet-master-seat-gate",
-    "staging": "https://staging.buildanddo.com",
-    "production": "https://buildanddo.com"
+ "schema": "buildanddo.hostinger-submission/v1",
+ "generated_at": "2026-09-22T13:42:45.063425+00:00",
+ "campaign_id": "citadel-21-day-2026-09",
+ "competition_id": "hostinger-2026",
+ "product": "BuildAndDo",
+ "one_line": "A learning-by-doing platform where the work, the evidence for it, and the check on that evidence are the same object.",
+ "candidate": {
+  "commit": "0384cfd25667fe6096ba43dbce40727267d3303b",
+  "branch": "bits/SRS-BUILDANDDO-WORKSPACE-001-fleet-master-seat-gate",
+  "staging": "https://staging.buildanddo.com",
+  "production": "https://buildanddo.com"
+ },
+ "demonstrable": [
+  {
+   "claim": "Agent seats authenticate with Ed25519 CitadelKey envelopes, never a password",
+   "evidence": "POST /api/ocn/login returns 200 + session token for 8 guildmaster seats; password login is impossible by construction (random discarded password, no reset path)",
+   "verify": "GET /api/ocn/health -> registry_seats 37, sidecar_reachable true"
   },
-  "demonstrable": [
-    {
-      "claim": "Agent seats authenticate with Ed25519 CitadelKey envelopes, never a password",
-      "evidence": "POST /api/ocn/login returns 200 + session token for 8 guildmaster seats; password login is impossible by construction (random discarded password, no reset path)",
-      "verify": "GET /api/ocn/health -> registry_seats 37, sidecar_reachable true"
-    },
-    {
-      "claim": "Multi-user isolation is real, not asserted",
-      "evidence": "8 distinct seat identities; each sees exactly its own records because listRule is @request.auth.id = owner",
-      "verify": "authenticate as two seats, list signals, observe disjoint sets"
-    },
-    {
-      "claim": "The platform is exercised from machines that are not the developer workstation",
-      "evidence": "5 concurrent sessions from 5 distinct DigitalOcean hosts, 111-241ms",
-      "verify": "source IPs in the access log are not rig1"
-    },
-    {
-      "claim": "Progress cannot be asserted, only earned",
-      "evidence": "sprint_replay.py re-checks every milestone against its own evidence; a ledger of the letter x scores 0%, the real ledger scored 38%",
-      "verify": "py -3.13 scripts/ci/sprint_replay.py"
-    },
-    {
-      "claim": "What the site serves is scanned for disclosure, not just what git tracks",
-      "evidence": "verify_public_disclosure.py, 192 files, BLOCK/WARN split, wired into the timed systems report",
-      "verify": "py -3.13 scripts/ci/verify_public_disclosure.py"
-    }
-  ],
-  "known_gaps": [
-    "production runs 4 pb_hooks against staging's 13 - no OCN, workspace-access or classrooms in production",
-    "workflow_runs and research_uploads collections are absent; the web app reads them in 7 and 3 places",
-    "roadmap-status.json publishes controller-estate paths (state/tenant_rail, state/ocn_login, kvm1)",
-    "8 of 11 sprint milestones are unverified; 30 of 78 campaign criteria verified"
-  ],
-  "rule": "A gap listed here is a gap we found ourselves and can reproduce on demand."
+  {
+   "claim": "Multi-user isolation is real, not asserted",
+   "evidence": "8 distinct seat identities; each sees exactly its own records because listRule is @request.auth.id = owner",
+   "verify": "authenticate as two seats, list signals, observe disjoint sets"
+  },
+  {
+   "claim": "The platform is exercised from machines that are not the developer workstation",
+   "evidence": "5 concurrent sessions from 5 distinct DigitalOcean hosts, 111-241ms",
+   "verify": "source IPs in the access log are not rig1"
+  },
+  {
+   "claim": "Progress cannot be asserted, only earned",
+   "evidence": "sprint_replay.py re-checks every milestone against its own evidence and prints the gap between claimed and replayed; a ledger of the letter x scores 0%, the real ledger scores 82% with 10 holding, 0 rotted and an overstatement of 0.0%",
+   "verify": "py -3.13 scripts/ci/sprint_replay.py"
+  },
+  {
+   "claim": "What the site serves is scanned for disclosure, not just what git tracks",
+   "evidence": "verify_public_disclosure.py scans the built surface the site actually serves (201 files) and, separately, every tracked file the public mirror publishes (540); 0 BLOCK in both, and its selftest proves it can still fail",
+   "verify": "py -3.13 scripts/ci/verify_public_disclosure.py"
+  },
+  {
+   "claim": "A check that could not run is never reported as healthy",
+   "evidence": "every acceptance receipt carries semantic-twin state, so two receipts with identical counts {tests: 0, failures: 0} read as opposite things - a blocked check is NOT_TESTED/UNMEASURED, a linter with nothing to test is NOT_APPLICABLE/OBSERVED; VERIFIED is never written without a verification receipt",
+   "verify": "compare the twin_state field of any BLOCKED receipt with web_lint's in state/hostinger/acceptance"
+  },
+  {
+   "claim": "Classroom video is proven end to end, on the environment that has it",
+   "evidence": "453 frames pulled back through the platform route on staging with a control track returning zero; staging /api/classroom/health reports ok true with 6 publishers configured",
+   "verify": "curl https://staging.buildanddo.com/hcgi/platform/api/classroom/health"
+  }
+ ],
+ "known_gaps": [
+  "Classroom video is live on staging only. /api/classroom/health returns ok true with publishers_configured 6 on staging, and ok false with 'CLOUDFLARE_REALTIME_APP_ID absent' and publishers_configured 0 on production. The credential that would close it is disclosed in a systemd unit and must be rotated before it is deployed, not after.",
+  "6 of 14 acceptance checks fail: native_workspace 3/6, native_dossier 4/4, native_suite 1/8, source_python 30/596, source_node 1/509, web_tests 1 intermittent of 536. No check is BLOCKED - all fourteen produce a measured result, which they did not two days ago.",
+  "2 of 12 sprint milestones are unverified: day 5 (workspace collections live) and day 13 (service connectors and provider health). Both are recorded as planned rather than claimed.",
+  "Our working branch matches no GitLab CI job rule, so its pipelines contain zero jobs and report as failed. The local acceptance runner is the only gate evidence for that branch, and an empty pipeline is not a broken build."
+ ],
+ "rule": "A gap listed here is a gap we found ourselves and can reproduce on demand."
 }
