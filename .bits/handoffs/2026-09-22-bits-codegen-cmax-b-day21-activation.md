@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     docs/sprint-user-journey.md, docs/submission-guide.md, .gitlab/ci/day21-submission.yml
+# Depends:     docs/sprint-user-journey.md, docs/submission-guide.md, .gitlab/ci/day21-submission.yml, docs/business-execution.md, docs/workspace-assistant.md, apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/ContactPage.jsx, .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES docs/sprint-user-journey.md; CONSUMES docs/submission-guide.md; CONSUMES .gitlab/ci/day21-submission.yml
+# EnumEdges:   CONSUMES docs/sprint-user-journey.md; CONSUMES docs/submission-guide.md; CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES docs/business-execution.md; CONSUMES docs/workspace-assistant.md; CONSUMES apps/web/src/pages/PricingPage.jsx; CONSUMES apps/web/src/pages/ContactPage.jsx; CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md
 # Intent:      Define the receiving evidence and verified rollback postconditions that separate source onboarding completion from a deployed Day-21 outcome.
 # ───────────────────────────────────────────────────────────────
 
@@ -63,6 +63,68 @@ workspace-recovery and both native-runtime checks. The producer cannot author
 the independent verification, and reading a lesson cannot grant a capability.
 No authenticated workspace, approved runtime bindings, independent verifier or
 live replay was supplied to this coding session.
+
+### First paid-pilot lane
+
+The public Pricing CTA now opens `/contact?interest=pilot#commercial-enquiry`.
+It prepares a customer-reviewed email containing the recurring problem, desired
+result and optional restrictions. It neither sends mail nor creates a billing
+account, entitlement, approval or mission. Manual invoicing remains an operator
+process after a written scope. A prepared enquiry is not a customer, payment,
+booked pilot or accepted outcome.
+
+Receiving owners: CMAX-B/IDE1 for registered runtimes; the commercial operator
+for scope/payment/support/data terms; a separate native reviewer for acceptance.
+The owner previously supplied VCC-BUILDANDDO-OPERATOR-RUNTIME-001 and
+SRS-CN-BUILDANDDO-OPERATOR-RUNTIME-001 for discovery and one bounded staging loop,
+as retained in the 2026-09-18 operator-plane handoff. Their private registration,
+status and scope remain unmeasured; carry those identifiers forward when the
+receiving owner confirms coverage for this pilot. The target workspace, actual
+runtime access and independent verifier are still missing. No n8n, Firecrawl or
+inference management tool is attached to this public coding session. Resolve
+these inputs in the receiving plane; do not put tokens, private endpoints or
+customer records in this handoff.
+
+Use one workspace, one existing registered n8n operation and one bounded mission:
+
+1. Agree the customer's actual recurring task, successful result, allowed
+   input/output, duration, run ceiling and approval owner. Record the support
+   contact/hours/response target, cancellation/refund terms, permitted data and
+   providers, access, retention and deletion before accepting live inputs.
+   A fee is quoted and invoiced manually. Run ceilings are agreed and enforced
+   by the operator; this change adds no subscription or usage-limit mechanism.
+2. Bind that workspace/worker/operation using the existing contract in
+   `docs/business-execution.md`. Retain the approved operation alias, binding
+   revision and observed health. Confirm the n8n endpoint durably deduplicates
+   `effect_key` and that its reconciliation GET can only read an existing
+   receipt. A general webhook URL or a configured service name is insufficient.
+3. Capture the permitted real public source through registered Firecrawl.
+   Retain its exact text/digest and receipt. Recover the same capture after an
+   authorized response-loss test, and propose exactly one mission from it.
+4. Bind the existing inference endpoint under `docs/workspace-assistant.md`'s
+   data contract. Demonstrate a real scoped response, reviewed form action and
+   native save. Check the second account cannot read the first account's
+   personal conversation. The assistant cannot approve or verify the mission.
+5. Have the authorized person approve the bounded action and the existing
+   workflow run. Execute the registered worker once. Retain the mission, run,
+   job, effect key, provider execution ID, original reported-result digest and
+   actual business readback. An HTTP success alone does not prove the outcome.
+6. Exercise the approved uncertain-response case through the existing HOLD and
+   reconciliation path. Re-read that same effect; never reissue it to recover
+   a lost response. Preserve failed/uncertain results and the provider's
+   deduplication observation, rather than replacing them with a success fixture.
+7. A different authorized verifier inspects the original result and actual
+   outcome, then records the existing native review. Export the complete
+   mission at `/app/replay`. Recheck the exported result digest against native
+   evidence and retain the candidate/release identities. The producer's export
+   is not itself independent review or a capability grant.
+
+Keep customer/provider evidence in its authorized receiving store. Return
+sanitized receipt references, identities/digests and explicit PASS/FAIL/HOLD
+outcomes to the existing Day-21 evidence process. Run its original GitLab,
+browser/native and release checks; the commercial CTA changes none of them.
+Do not advertise this lane as live until its real result and independent replay
+exist. Official submission and the six materials still depend on sections 3–4.
 
 ## 3. Make rollback a verified release postcondition
 

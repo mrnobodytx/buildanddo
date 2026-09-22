@@ -20,6 +20,40 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Paid-pilot continuation — 2026-09-22
+
+The owner prioritizes a managed paid pilot and one real verified automation
+journey over additional platform architecture or self-service billing. Continue
+the existing A2 public-source scope: put a one-workspace, one-operation pilot
+offer on Pricing and route its request through the existing reviewed commercial
+email draft. Collect the recurring problem, desired result and optional data
+restrictions. Agree duration, run limits, invoice/payment terms, support,
+cancellation and data handling in writing before execution. Do not invent
+prices, entitlements, service availability, customer results or legal acceptance.
+
+Acceptance: preserve general licensing and early-access paths; validate and
+encode the pilot request, require explicit preparation and sending, retain a
+copyable preview, clear stale drafts after edits or enquiry changes, and keep
+contact details out of telemetry capture. Exercise the pure draft contract and
+extend the existing rendered public-page tests without treating missing browser
+dependencies as passing acceptance.
+
+Use the existing Day-21 receiving handoff for the first registered n8n lane,
+Firecrawl input and approved inference binding. Require a real workspace,
+bounded operation, authorized data and separate verifier. Carry exact provider
+effect/recovery receipts through the existing replay. Payment cannot authorize
+execution or grant verification. Actual activation needs the receiving runtime
+dispatch and access; this source continuation supplies neither credentials nor
+fabricated live evidence.
+
+Observed local results: ten commercial-draft cases pass with 100 percent V8
+line/branch coverage of the helper; all 568 Node regressions pass. Python
+discovers 782 cases with 750 passing and 32 explicit skips. Three rendered
+pilot cases are added to the existing public-page suite, but Vitest, repository
+lint and the Vite build cannot run with the installed dependencies. Source
+diagnostics parse 338 modules. The offer is implemented; no customer, payment,
+provider activation or independently accepted live replay is claimed.
+
 ## Objective-first Day-21 continuation — 2026-09-22
 
 The owner prioritizes one accepted journey over additional subsystems. Continue

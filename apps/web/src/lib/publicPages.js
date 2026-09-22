@@ -69,7 +69,7 @@ export const PUBLIC_PAGES = [
         label: 'Pricing',
         title: 'Pricing & early access | BuildAndDo',
         description:
-            'Explore BuildAndDo early access and discuss a team rollout. Public subscription pricing has not been announced.',
+            'Discuss a managed paid pilot for one workspace and one approved operation, or explore early access and team rollouts.',
         type: 'WebPage',
     },
     {
@@ -108,7 +108,7 @@ export const PUBLIC_PAGES = [
         label: 'Contact',
         title: 'Contact | BuildAndDo',
         description:
-            'Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.',
+            'Request a scoped paid pilot, discuss commercial licensing with Citadel Nexus Inc., or ask a product question.',
         type: 'ContactPage',
     },
 ];

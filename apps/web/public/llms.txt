@@ -32,9 +32,9 @@ A daily learning edition built around sources, scoped missions and evidence.
 - [MetaFunction Fabric Platform | BuildAndDo](https://buildanddo.com/platform): Explore the governed execution flow, capability mesh and illustrative monitoring of the MetaFunction Fabric.
 - [BuildAndDo — Practice library](https://buildanddo.com/practice): Community-audited methods for real objectives, with evidence, knowledge states and lessons from each attempt.
 - [BuildAndDo — Public roadmap](https://buildanddo.com/roadmap): Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.
-- [Pricing & early access | BuildAndDo](https://buildanddo.com/pricing): Explore BuildAndDo early access and discuss a team rollout. Public subscription pricing has not been announced.
+- [Pricing & early access | BuildAndDo](https://buildanddo.com/pricing): Discuss a managed paid pilot for one workspace and one approved operation, or explore early access and team rollouts.
 - [About & team | BuildAndDo](https://buildanddo.com/about): Meet the people and principles behind BuildAndDo, a Citadel Nexus Inc. product built around accountable work.
 - [Classrooms & shared lessons | BuildAndDo](https://buildanddo.com/classrooms): Learn together in workspace classrooms with host-led Field Manual lessons, attendance and saved discussion.
 - [Documentation | BuildAndDo](https://buildanddo.com/docs): Get started with workspaces, signals, missions, workflows and the evidence ledger. Learn what each state means.
 - [The BuildAndDo journal](https://buildanddo.com/blog): Field notes on learning by doing, bounded work and keeping a traceable record of what you built.
-- [Contact | BuildAndDo](https://buildanddo.com/contact): Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.
+- [Contact | BuildAndDo](https://buildanddo.com/contact): Request a scoped paid pilot, discuss commercial licensing with Citadel Nexus Inc., or ask a product question.

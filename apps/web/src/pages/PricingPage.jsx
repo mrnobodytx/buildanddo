@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
-// Depends:     apps/web/src/components/site/PublicPage.jsx
+// Depends:     apps/web/src/components/site/PublicPage.jsx, apps/web/src/lib/commercialEnquiry.js
 // EnumType:    Widget
-// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx
+// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx; CONSUMES apps/web/src/lib/commercialEnquiry.js
 // DAG Node:    none
 // Intent:      Explain access and commercial conversations without inventing prices or plan guarantees.
 // ───────────────────────────────────────────────────────────────
@@ -18,6 +18,7 @@
 import { ArrowRight, Check } from 'lucide-react';
 import PublicPage from '@/components/site/PublicPage';
 import { Button, Card } from '@/components/site/ui';
+import { PILOT_SCOPE } from '@/lib/commercialEnquiry';
 
 export default function PricingPage() {
     return (
@@ -27,6 +28,62 @@ export default function PricingPage() {
             title="Start with one useful outcome."
             intro="BuildAndDo is in early access. Public subscription prices have not been announced. Tell us what you need to run, and we can discuss the right scope together."
         >
+            <Card className="grid gap-8 border-primary p-6 sm:p-8 lg:grid-cols-2">
+                <div>
+                    <p className="font-evidence text-xs uppercase tracking-widest text-primary">
+                        A managed first engagement
+                    </p>
+                    <h2 className="mt-3 font-display text-3xl font-semibold">Paid pilot</h2>
+                    <p className="mt-4 leading-relaxed text-muted-foreground">
+                        Bring one recurring operational problem. We will scope a supported pilot
+                        around an approved action, its result and an independent review.
+                    </p>
+                    <Button href="/contact?interest=pilot#commercial-enquiry" className="mt-6">
+                        Discuss a paid pilot <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                </div>
+                <div>
+                    <h3 className="font-semibold">Proposed scope</h3>
+                    <ul className="mt-4 list-inside list-disc space-y-3 text-sm text-muted-foreground">
+                        {PILOT_SCOPE.map((item) => <li key={item}>{item}</li>)}
+                    </ul>
+                    <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
+                        We confirm the connector, authorized data and live acceptance with you
+                        before scheduling work. Requesting a pilot starts a scope conversation.
+                    </p>
+                </div>
+            </Card>
+            <section aria-labelledby="pilot-terms" className="space-y-5 border-t border-border pt-8">
+                <h2 id="pilot-terms" className="font-display text-2xl font-semibold">
+                    Agree the terms before work starts
+                </h2>
+                <dl className="grid gap-6 text-sm leading-relaxed md:grid-cols-3">
+                    <div>
+                        <dt className="font-semibold">Scope and payment</dt>
+                        <dd className="mt-2 text-muted-foreground">
+                            Set the operation, duration, run limit and success criteria in writing.
+                            Agree a quoted fee and manual invoice schedule. Further operations
+                            need a new scope and approval.
+                        </dd>
+                    </div>
+                    <div>
+                        <dt className="font-semibold">Support and recovery</dt>
+                        <dd className="mt-2 text-muted-foreground">
+                            Name the support contact, support hours and response target. Agree how
+                            to pause work, resolve uncertain results, cancel and handle refunds
+                            or remaining fees before starting.
+                        </dd>
+                    </div>
+                    <div>
+                        <dt className="font-semibold">Data and permissions</dt>
+                        <dd className="mt-2 text-muted-foreground">
+                            Agree the allowed inputs, providers and people with access, plus
+                            retention, deletion and any required data agreement before sharing
+                            live data. Payment does not approve an operation.
+                        </dd>
+                    </div>
+                </dl>
+            </section>
             <div className="grid gap-6 md:grid-cols-2">
                 <Card className="flex flex-col p-6 sm:p-8">
                     <p className="font-evidence text-xs uppercase tracking-widest text-primary">
