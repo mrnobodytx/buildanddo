@@ -29,8 +29,8 @@ read `CONTRIBUTING.md` first.
 - GitHub is the public collaboration plane; GitLab executes CI and holds
   golden, infrastructure, release and deployment authority. Inspect the root
   GitLab configuration and its reachable includes; GitHub job status does not
-  establish GitLab execution or acceptance. GitHub governance is an explicitly
-  dispatched fallback; automatic validation belongs to the GitLab jobs.
+  establish GitLab execution or acceptance. Automatic public PR governance and manual diagnostics remain enabled
+  alongside the required GitLab jobs. Gates must not be disabled to hide failures.
 
 ## Start here
 

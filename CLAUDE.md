@@ -59,7 +59,8 @@ job runs all eighteen acceptance profiles and retains the complete evidence
 export. The briefing distinguishes reachable GitLab wiring from GitHub
 definitions; neither source inventory nor a GitHub job failure establishes
 GitLab runtime acceptance.
-GitHub governance is a manual fallback pinned to one pull-request head. The
+GitHub governance runs automatically for public PR changes, with an explicit
+manual diagnostic also available. Both pin one reviewed head. The
 GitLab source-validation include preserves the separate coverage matrices;
 review pipelines require one actor label. Public GitHub review metadata and
 GitLab status publication must come from the receiving CI integration.
@@ -68,8 +69,8 @@ GitLab status publication must come from the receiving CI integration.
 
 - npm scripts must not use shell chaining. `apps/web/tools/build.mjs` documents
   the weeks of silently empty builds that taught this.
-- `npm test --if-present` currently passes because no test script exists. A green
-  pipeline is not evidence that anything was tested — see SRS-BUILDANDDO-TEST-001.
+- The root `npm test` and `npm run test:coverage` run the web Vitest suite.
+  Missing dependencies or skipped runtime tests cannot establish acceptance.
 - The Python evidence suites need a live PocketBase, which is why public CI does
   not run them yet. Do not "fix" that by mocking them out.
 - Datadog steps are deliberately no-ops without `DD_API_KEY`. A `SKIP:` line in

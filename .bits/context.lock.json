@@ -462,7 +462,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-21T23:20:27.964414+00:00",
+  "generated_at": "2026-09-22T00:09:01.291283+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -782,7 +782,7 @@
       "local_actions": [
         ".github/actions/datadog-ci-report"
       ],
-      "name": "BuildAndDo Manual Governance",
+      "name": "BuildAndDo PR Governance",
       "npm_scripts": [],
       "provider": "github",
       "scripts": [
@@ -794,6 +794,7 @@
         "scripts/ci/verify_public_boundary.py"
       ],
       "triggers": [
+        "pull_request",
         "workflow_dispatch"
       ]
     },
@@ -946,8 +947,8 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1301,
-    "web_source_files": 333
+    "tracked_files": 1315,
+    "web_source_files": 344
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1020,7 +1021,7 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "506b2da60aa06a6ae6323fac7f5aa0b80c9fded6386dee4421dfda08a01ed436",
+    "source_sha256": "90289e9d95be8f1b988de0f8eb4efe67e5bb6cd9e703b87b1ee1c633a4429eee",
     "state": "PASS"
   },
   "summary": {
@@ -1035,7 +1036,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 64,
+    "js_test_files": 65,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

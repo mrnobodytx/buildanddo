@@ -20,6 +20,32 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Ten critical sprint repairs authorized 2026-09-21
+
+Owner request: restore governance and build the ten most critical remaining
+site pieces under the existing sprint. The source audit identifies broken or
+missing handoffs in the saved-signal to independently reviewed outcome journey.
+
+| Phase | Sprint outcome | Gate | Status |
+|---|---|---|---|
+| ST-0 | Restore automatic PR governance while retaining GitLab gates | GitLab/governance regressions | source PASS: automatic and manual review checks; all GitLab jobs retained |
+| ST-1 | Validated session and selected onboarding workspace | Session/onboarding tests | source PASS: native-refresh controller; onboarding and rendered cases require frontend dependencies |
+| ST-2 | Current-scope collections and writes | Scope/record tests | source PASS: scoped read/write and OR-filter regressions; native rules remain required |
+| ST-3 | Exact capture recovery and safe cancellation | Business execution tests | source PASS: exact old-receipt lookup and ambiguous response recovery; rendered/native/provider checks remain |
+| ST-4 | Actionable independent mission review | Mission review tests | source PASS: explicit approval, role and independent reviewer prerequisites; native/backend policy retained |
+| ST-5 | Durable workflow run navigation and revision refresh | Workflow client/rendered tests | source implemented: current-revision deep link; source parser passes, rendered cases authored |
+| ST-6 | Current connector readiness in action forms | Connector tests | source PASS: configured binding and expiring health; real providers remain a receiving gate |
+| ST-7 | ERP task triage and scoped record links | Business planning tests | source PASS: task/objective/contact filters; durable UI links require browser acceptance |
+| ST-8 | Evidence inspection and frozen review provenance | Evidence tests | source PASS: exact snapshot comparison, safe URLs and local export; rendered inspector cases authored |
+| ST-9 | Observed next actions in the workspace overview | Journey projection tests | source PASS: dependency-ordered suggestions from actual records; missing reads and demo remain explicit |
+| ST-10 | Complete bounded mission replay export | Replay/backend/client tests | source PASS: executed ERP chain, native read policy, scope denial, limits and digests; required native run unavailable |
+
+Memory brief: PR 65 retained validation code but made automatic public PR checks
+manual before hosted replacement enforcement was observed. Restore automatic
+triggers without discarding GitLab checks. Existing backend commands, immutable
+review receipts and approval gates remain the implementation base. Prior source
+results do not establish native, rendered, hosted or deployed acceptance.
+
 ## Governance execution repair authorized 2026-09-21
 
 Owner request: all governance checks are failing. Continue the GitLab correction

@@ -20,6 +20,55 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Ten critical sprint repairs authorized 2026-09-21
+
+The owner requests restoration of automatic governance and implementation of
+the ten most critical remaining public site gaps. Continue this pre-existing
+A2 dispatch. Retain every GitLab gate, automatic public PR governance, actor
+attribution, exact candidate bindings and existing coverage requirements.
+
+The source audit selects these connected user outcomes, in sprint order:
+
+1. Day 3: revalidate saved sessions and recover onboarding into the workspace
+   actually created, retaining account changes and unavailable auth explicitly.
+2. Day 5: isolate collection reads, forms and write results across account,
+   workspace and demo changes; reject late responses and foreign records.
+3. Day 7: recover an exact source-capture receipt even beyond the first page,
+   expose retained failures and allow safe cancellation of queued captures.
+4. Day 9: show review prerequisites and reviewer independence before submission;
+   retain the server's approval and evidence-author constraints.
+5. Day 11: reopen a workflow run from its durable link and refresh its actual
+   revision before a decision, including unavailable or foreign run handling.
+6. Day 13: select current configured connections and explain stale, disabled or
+   unavailable health before requesting an effect; preserve runtime checks.
+7. Day 15: extend the existing ERP search, status and due-date triage with
+   objective/contact drilldowns and durable task links from execution receipts.
+   Task completion does not imply business-outcome verification.
+8. Day 17: inspect a selected evidence record, linked mission and frozen review
+   snapshot; keep unsafe source URLs inert and missing evidence explicit.
+9. Day 19: surface the next actionable step from actual workspace records,
+   including missing approval/evidence, incomplete reads and independent review.
+10. Day 21: export one bounded, complete mission history with exact source,
+    workflow, action and review records, content digests and explicit limits;
+    exporting observations cannot confer verification or submission authority.
+
+Acceptance: production-module Node tests and relevant existing suites cover
+these outcomes, scope changes, forbidden reads, concurrency and negative cases.
+Add rendered/native regressions where applicable and execute them if installed
+runtimes permit. Retain unavailable dependencies as unexecuted acceptance.
+No deployment, provider activation, external message or manufactured evidence
+is authorized. Record the ranked audit, exact tests and receiving gates.
+
+Observed source outcome: all ten pieces are implemented in the existing product
+flow and automatic public PR governance is restored alongside every GitLab job.
+The dedicated journey suite covers real production modules with explicit storage
+and transport fixtures, including a complete approved ERP workflow and native
+command read policy. Rendered cases and the existing native journey are extended;
+missing frontend packages and PocketBase runtimes keep their acceptance open.
+The ranked gap-to-outcome map and receiving obligations are in
+`docs/sprint-user-journey.md`. No provider activation, deployment, independent
+real grading, owner approval or competition submission is inferred.
+
 ## Governance execution repair authorized 2026-09-21
 
 The owner reports that all governance checks still fail after the GitLab

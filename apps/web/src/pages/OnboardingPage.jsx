@@ -70,6 +70,7 @@ function OnboardingDesk() {
     const [query, setQuery] = useState('');
     const [phase, setPhase] = useState('search'); // search | results | noresults | invalid | selected
     const [selected, setSelected] = useState(null);
+    const [name, setName] = useState('');
     const [creating, setCreating] = useState(false);
     const [createError, setCreateError] = useState('');
     const alive = useRef(true);
@@ -114,27 +115,29 @@ function OnboardingDesk() {
 
     const chooseDomain = (entry) => {
         setSelected(entry);
+        setName(entry.domain.split('.')[0].replace(/-/g, ' '));
         setPhase('selected');
     };
 
     const chooseNoWebsite = () => {
         setSelected({ domain: null, label: 'No website yet', hint: 'Continue without a website' });
+        setName('');
         setPhase('selected');
     };
 
     const createWorkspace = async () => {
         if (pending.current || !selected) return;
+        if (!name.trim() || name.trim().length > 120) { setCreateError('Name this workspace using 1–120 characters.'); return; }
         const account = pb.authStore.record?.id;
         pending.current = true;
         setCreating(true);
         setCreateError('');
-        const label = selected.domain ? selected.domain.split('.')[0].replace(/-/g, ' ') : 'My business';
         const result = await saveWorkspace(pb, account, {
-            name: label.charAt(0).toUpperCase() + label.slice(1), domain: selected.domain || '',
+            name: name.trim(), domain: selected.domain || '',
         });
         if (!alive.current || pb.authStore.record?.id !== account) { pending.current = false; return; }
         if (result.ok) {
-            await refresh();
+            await refresh(result.workspace);
             if (alive.current && pb.authStore.record?.id === account)
                 navigate(workspaceDestination(location.state?.returnTo), { replace: true });
         } else setCreateError(result.error || 'Workspace setup could not be confirmed. Retry the same details.');
@@ -275,6 +278,10 @@ function OnboardingDesk() {
 
                     {phase === 'selected' && (
                         <div className="mt-6">
+                            <div className="mb-4 space-y-2"><Label htmlFor="workspace-name">Workspace name</Label>
+                                <Input id="workspace-name" value={name} maxLength={120} required disabled={creating}
+                                    onChange={(event) => setName(event.target.value)} autoComplete="organization" />
+                                <p className="text-sm text-muted-foreground">Use a distinct name for each business or project. Retrying the same name and domain recovers the existing setup.</p></div>
                             <div className="flex items-start gap-3 rounded-md border border-[hsl(var(--teal))]/40 bg-[hsl(var(--teal))]/10 p-4">
                                 <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-teal" />
                                 <div className="text-sm">

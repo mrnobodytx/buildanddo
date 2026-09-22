@@ -11,12 +11,14 @@
 # Depends:     .gitlab/ci/day21-submission.yml, .gitlab/ci/source-validation.yml, scripts/ci/verify_public_boundary.py
 # EnumType:    Workflow
 # EnumEdges:   DEPENDS_ON .gitlab/ci/day21-submission.yml; DEPENDS_ON .gitlab/ci/source-validation.yml; CONSUMES scripts/ci/verify_public_boundary.py
-# Intent:      Preserve explicit GitHub diagnostics while GitLab owns automatic governance and required acceptance.
+# Intent:      Preserve automatic public review governance alongside the required GitLab acceptance jobs.
 # ───────────────────────────────────────────────────────────────
 
-name: BuildAndDo Manual Governance
+name: BuildAndDo PR Governance
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
   workflow_dispatch:
     inputs:
       pull_request_number:
@@ -30,7 +32,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: buildanddo-pr-${{ inputs.pull_request_number }}
+  group: buildanddo-pr-${{ github.event.pull_request.number || inputs.pull_request_number }}
   cancel-in-progress: true
 
 jobs:
@@ -45,11 +47,13 @@ jobs:
         id: review
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ inputs.pull_request_number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pull_request_number }}
+          EVENT_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           [[ "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]
           candidate_sha=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
           [[ "$candidate_sha" =~ ^[a-f0-9]{40}$ ]]
+          if [[ -n "$EVENT_SHA" ]]; then [[ "$candidate_sha" == "$EVENT_SHA" ]]; fi
           printf 'sha=%s\n' "$candidate_sha" >> "$GITHUB_OUTPUT"
 
   readiness:
@@ -76,7 +80,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: sprint-execution-${{ inputs.pull_request_number }}
+          name: sprint-execution-${{ github.event.pull_request.number || inputs.pull_request_number }}
           path: |
             reports/coverage/sprint-execution.json
             reports/junit/sprint-execution.xml
@@ -108,7 +112,7 @@ jobs:
       - name: Read the selected public review metadata
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ inputs.pull_request_number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pull_request_number }}
         run: gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '{pull_request:.}' > "$RUNNER_TEMP/governance-pr.json"
 
       - name: Enforce public/private boundary and contributor visibility
@@ -198,7 +202,7 @@ jobs:
           pipeline: pr
           base-ref: origin/main
           baseline-artifact: buildanddo-telemetry-main
-          artifact-name: buildanddo-telemetry-pr-${{ inputs.pull_request_number }}
+          artifact-name: buildanddo-telemetry-pr-${{ github.event.pull_request.number || inputs.pull_request_number }}
           job-status: ${{ job.status }}
           github-token: ${{ github.token }}
 
@@ -206,7 +210,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pr-governance-${{ inputs.pull_request_number }}
+          name: pr-governance-${{ github.event.pull_request.number || inputs.pull_request_number }}
           path: |
             .buildanddo/public/boundary-report.json
             reports/junit

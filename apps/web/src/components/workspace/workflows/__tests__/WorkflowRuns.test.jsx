@@ -49,6 +49,21 @@ beforeEach(() => { pb.__reset(); pb.send.mockReset(); setDemoMode(false); });
 afterEach(() => { setDemoMode(false); });
 
 describe('workflow run history and start', () => {
+    it('opens a linked run beyond the first page by reading its current revision', async () => {
+        const record = savedRun({ id: 'older-run', revision: 8, snapshot: { ...savedRun().snapshot, name: 'Current revision eight' } });
+        pb.__setRecords('workflow_runs', Array.from({ length: 21 }, (_, index) => savedRun({ id: `recent${index}` })).concat(record));
+        renderWithProviders(panel(), { route: '/app/workflows?run=older-run' });
+        expect(await screen.findByRole('heading', { name: 'Current revision eight' })).toBeVisible();
+        expect(pb.__collection('workflow_runs').getOne).toHaveBeenCalledWith('older-run', expect.any(Object));
+        expect(pb.send).not.toHaveBeenCalled();
+    });
+    it('does not open a linked run from another workspace', async () => {
+        pb.__collection('workflow_runs').getOne.mockResolvedValueOnce(savedRun({ workspace: 'foreign' }));
+        renderWithProviders(panel(), { route: '/app/workflows?run=run1' });
+        expect(await screen.findByRole('alert')).toHaveTextContent('unavailable in the current workspace');
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(pb.send).not.toHaveBeenCalled();
+    });
     it('updates the workflow card previous-work receipt after a successful start', async () => {
         const user = setupUser();
         pb.__setRecords('workflows', [workflow]);
@@ -113,6 +128,7 @@ describe('workflow run history and start', () => {
             mission_approved_at: '2026-09-15', mission_approved_by: 'user_test', workspace: 'ws_test' },
         { id: 'draft1', title: 'Unapproved proposal', status: 'proposed' }]);
         pb.send.mockResolvedValue({ record });
+        pb.__collection('workflow_runs').getOne.mockResolvedValue(record);
         renderWithProviders(panel({ onRecordsChanged }));
         await waitFor(() => expect(screen.getByRole('button', { name: 'Start a run' })).toBeEnabled());
         await user.click(screen.getByRole('button', { name: 'Start a run' }));
@@ -133,6 +149,7 @@ describe('workflow run history and start', () => {
         const user = setupUser();
         const onRecordsChanged = vi.fn();
         pb.send.mockRejectedValueOnce(new Error('response lost')).mockResolvedValueOnce({ record: savedRun(), replayed: true });
+        pb.__collection('workflow_runs').getOne.mockResolvedValue(savedRun());
         renderWithProviders(panel({ onRecordsChanged }));
         await waitFor(() => expect(screen.getByRole('button', { name: 'Start a run' })).toBeEnabled());
         await user.click(screen.getByRole('button', { name: 'Start a run' }));

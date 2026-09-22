@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js
+# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workspace-replay.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js
+# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js
 # Intent:      Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.
 # ───────────────────────────────────────────────────────────────
 
@@ -18,6 +18,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -108,6 +110,7 @@ class WorkspaceServer(NativeServer):
                 "business-action-policy.js",
                 "business-actions.js",
                 "business-execution.pb.js",
+                "workspace-replay.js",
                 "assistant-policy.js",
                 "workspace-assistant.js",
                 "assistant.pb.js",
@@ -409,7 +412,7 @@ class NativeWorkspaceTests(unittest.TestCase):
     def test_atomic_onboarding_concurrent_retries_and_restart(self) -> None:
         body = {"name": "Native new business", "domain": "shop.fixture"}
 
-        def create() -> tuple[int, dict]:
+        def create() -> tuple[int, dict[str, Any]]:
             return self.server.request(
                 "POST", "/api/buildanddo/onboarding", body, self.alice
             )
@@ -583,6 +586,43 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(
             verified["mission_review"]["evidence_snapshot"][0]["id"],
             receipt["evidence"],
+        )
+        capture_url = f"/api/buildanddo/workspaces/{WORKSPACE}/mission-replay/{mission}"
+        code, capture = self.server.request("GET", capture_url, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertTrue(capture["capture_complete"])
+        self.assertEqual(capture["integrity"], "consistent")
+        self.assertEqual(capture["captured_by"], BRAVO)
+        self.assertEqual(capture["evidence_state"], "recorded")
+        self.assertEqual(capture["content"]["jobs"][0]["id"], receipt["id"])
+        self.assertEqual(capture["content"]["tasks"][0]["id"], task)
+        self.assertEqual(capture["content"]["runs"][0]["status"], "completed")
+        self.assertNotIn("lease_id", capture["content"]["jobs"][0])
+        canonical = json.dumps(
+            capture["content"],
+            sort_keys=True,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode()
+        self.assertEqual(
+            hashlib.sha256(canonical).hexdigest(), capture["content_sha256"]
+        )
+        for leaf in capture["leaves"]:
+            rows = (
+                [capture["content"]["mission"]]
+                if leaf["kind"] == "mission"
+                else capture["content"][leaf["kind"]]
+            )
+            row = next(row for row in rows if row["id"] == leaf["id"])
+            encoded = json.dumps(
+                row, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+            ).encode()
+            self.assertEqual(hashlib.sha256(encoded).hexdigest(), leaf["sha256"])
+        self.assertEqual(
+            self.server.request("GET", capture_url, token=self.viewer)[0], 200
+        )
+        self.assertIn(
+            self.server.request("GET", capture_url, token=self.other)[0], (403, 404)
         )
         self.assertIn(
             self.server.request("GET", endpoint, token=self.other)[0], (403, 404)
