@@ -1,15 +1,67 @@
-# BuildAndDo
+<h1 align="center">BuildAndDo</h1>
 
-Early-stage software that turns "I want X" into a bounded, verified next step —
-build, code, or a real-world objective. This repo is the public build-in-public
-source for [buildanddo.com](https://buildanddo.com).
+<p align="center">
+  <strong>Learn by doing real work. Lessons lead into missions, and a mission isn't finished until somebody has checked it.</strong>
+</p>
 
-- **Live site:** https://buildanddo.com
-- **Roadmap:** https://buildanddo.com/roadmap
-- **Practice library** (community-audited evidence fabric): https://buildanddo.com/practice
-- **Wiki** (canonical development record): https://wiki.buildanddo.com
-- **Forum:** https://forum.buildanddo.com
-- **Discord:** https://discord.gg/vTDZxmpHHC
+<p align="center">
+  <a href="https://buildanddo.com"><img alt="Live site" src="https://img.shields.io/badge/live-buildanddo.com-b91c1c?style=flat-square"></a>
+  <a href="https://buildanddo.com/roadmap"><img alt="Roadmap" src="https://img.shields.io/badge/roadmap-public-18181b?style=flat-square"></a>
+  <a href="https://buildanddo.com/_version"><img alt="Deploy receipt" src="https://img.shields.io/badge/deploy-receipted-166534?style=flat-square"></a>
+  <a href="#license"><img alt="License" src="https://img.shields.io/badge/license-proprietary-71717a?style=flat-square"></a>
+</p>
+
+---
+
+### Watch the four-minute tour
+
+Four of the platform's own agents walk the whole site — the first half signed out,
+the second half signed in and working inside a real workspace. Recorded live against
+production, not a mockup.
+
+<p align="center">
+  <a href="https://youtu.be/ZEi06LLUvwQ">
+    <img src="https://img.youtube.com/vi/ZEi06LLUvwQ/maxresdefault.jpg" alt="BuildAndDo platform tour" width="640">
+  </a>
+</p>
+
+### Where things are
+
+| | |
+|---|---|
+| **Live site** | https://buildanddo.com |
+| **Public roadmap** | https://buildanddo.com/roadmap — dated checkpoints, outcomes recorded against them |
+| **Practice library** | https://buildanddo.com/practice — every lesson readable without an account |
+| **Classrooms** | https://buildanddo.com/classrooms — live shared lessons |
+| **Wiki** | https://wiki.buildanddo.com — canonical development record |
+| **Forum** | https://forum.buildanddo.com |
+| **Discord** | https://discord.gg/vTDZxmpHHC |
+| **Deploy receipt** | https://buildanddo.com/_version — the commit production is actually serving |
+
+## Why this repository is public
+
+Not for stars, and not because everything lives here.
+
+BuildAndDo's claim is that work should be checkable by someone who does not trust
+the person who did it. A project making that argument while keeping its own source,
+its deploy pipeline and its verification gates behind a curtain is arguing against
+itself. So the parts a skeptic would need in order to check us are here: the
+application, the real database migrations, the deploy rail that gates production,
+the CI checks that run on every push, and the evidence and witness architecture.
+
+Three consequences worth stating plainly:
+
+- **You can run it.** `docker compose up -d` gets you the same schema production
+  runs, with no credentials and no access to ours.
+- **You can check our claims rather than read them.** The roadmap is dated, the
+  deploy endpoint reports the live commit, and the evidence design is documented
+  including what it does *not* prove.
+- **It costs us something.** Public means our incomplete days are public too. The
+  roadmap shows what slipped. That is the point of publishing it.
+
+Infrastructure, deployment secrets and internal release tooling stay on a private
+mirror and are kept out by an automated scan on every push, not by a promise —
+see [Public/private boundary](#publicprivate-boundary).
 
 ## Quick start
 
