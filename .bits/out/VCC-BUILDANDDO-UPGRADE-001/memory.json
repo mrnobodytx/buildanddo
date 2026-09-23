@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 1050,
+      "lines": 1092,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -535,7 +535,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 52583,
+      "lines": 53308,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -672,7 +672,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1609,
+      "lines": 1630,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -996,7 +996,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2117,
+      "lines": 2152,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1033,7 +1033,7 @@
         ".bits/context.md",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 250,
+      "lines": 285,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
@@ -4682,7 +4682,7 @@
         "apps/web/src/pages/workspace/GovernmentPage.jsx",
         "apps/web/src/pages/workspace/CareerPage.jsx"
       ],
-      "lines": 279,
+      "lines": 284,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Route public and workspace views only after native session validation.",
@@ -4715,7 +4715,7 @@
       "dependencies": [
         "apps/web/src/App.jsx"
       ],
-      "lines": 111,
+      "lines": 112,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Load every real workspace route and the five public entries while preserving authentication gates.",
@@ -6622,15 +6622,13 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Widget",
-      "functions": [
-        "ProgressionPipeline"
-      ],
+      "functions": [],
       "dependencies": [
         "apps/web/src/components/site/ui.jsx",
         ".gitlab/ci/day21-submission.yml",
         ".gitlab/ci/source-validation.yml"
       ],
-      "lines": 315,
+      "lines": 316,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the contribution flow the repository actually enforces, one step at a time.",
@@ -6766,16 +6764,18 @@
       ],
       "enum_type": "Widget",
       "functions": [
+        "groupFor",
+        "NavItem",
         "NavList",
         "BrandMark",
         "WorkspaceSwitcher",
-        "WorkspaceLayout"
+        "WorkspacePages"
       ],
       "dependencies": [
         "apps/web/src/contexts/WorkspaceAccessContext.jsx",
         "apps/web/src/pages/workspace/CareerPage.jsx"
       ],
-      "lines": 305,
+      "lines": 366,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.",
@@ -10192,16 +10192,14 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Widget",
-      "functions": [
-        "OverviewPage"
-      ],
+      "functions": [],
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/workspaceActions.js",
         "apps/web/src/components/workspace/NextWorkspaceActions.jsx",
         "apps/web/src/lib/onboarding.js"
       ],
-      "lines": 517,
+      "lines": 515,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Answer \"what is happening in this workspace\" in one screen \u2014 one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
@@ -10466,15 +10464,13 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Widget",
-      "functions": [
-        "TutorialsPage"
-      ],
+      "functions": [],
       "dependencies": [
         "apps/web/src/components/workspace/TutorialCatalog.jsx",
         "apps/web/src/components/workspace/ComponentCatalog.jsx",
         "apps/web/src/components/workspace/missions/MissionGuide.jsx"
       ],
-      "lines": 68,
+      "lines": 73,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Use the same saved lesson progress as Docs and the front page while loading the component reference separately.",
@@ -38715,7 +38711,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 573,
+      "lines": 574,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38782,7 +38778,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1095,
+      "lines": 1164,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -39059,7 +39055,7 @@
       "dependencies": [
         "scripts/ci/hostinger_readiness.py"
       ],
-      "lines": 367,
+      "lines": 382,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Execute only reviewed local acceptance commands and retain observed failures, skips, runtime identity and exact log digests.",
@@ -39111,7 +39107,7 @@
         "scripts/ci/hostinger_checks.py",
         "scripts/ci/gitlab_ci.py"
       ],
-      "lines": 547,
+      "lines": 548,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep milestone rationale and next actions current while preventing missing, stale or skipped acceptance from becoming sprint completion.",
@@ -39223,7 +39219,7 @@
         "scripts/ci/hostinger_checks.py",
         "scripts/ci/hostinger_readiness.py"
       ],
-      "lines": 528,
+      "lines": 618,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject stale governance, tampered receipts, skipped acceptance and misleading runtime versions using real local subprocess outcomes.",
@@ -40055,7 +40051,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js"
       ],
-      "lines": 87,
+      "lines": 88,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Constrain inferred assistant plans to known routes and current nonsensitive controls while preserving human authority decisions.",
@@ -40535,7 +40531,7 @@
         "apps/web/src/lib/workspaceAssistant.js",
         "apps/web/src/contexts/WorkspaceAccessContext.jsx"
       ],
-      "lines": 187,
+      "lines": 198,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Offer a persistent account-scoped assistant with visible plans, form assistance, retryable outcomes and personal session history.",
@@ -41540,7 +41536,7 @@
         "apps/web/src/lib/workspaceAssistant.js",
         "tests/upgrade/admin-fixture.mjs"
       ],
-      "lines": 153,
+      "lines": 172,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Test tenant and account isolation, bounded inferred plans, revocation, retained personal patterns and unavailable inference.",
@@ -42942,13 +42938,14 @@
       ],
       "enum_type": "Test",
       "functions": [
+        "CaptureProducerTests",
         "CandidateEvidenceTests"
       ],
       "dependencies": [
         "scripts/ci/day21_submission.py",
         "tests/upgrade/test_day21_support.py"
       ],
-      "lines": 294,
+      "lines": 976,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject summary-only, stale, mismatched and tampered submission evidence before candidate packaging.",
@@ -43799,7 +43796,7 @@
         "scripts/ci/verify_public_boundary.py",
         ".gitlab/ci/source-validation.yml"
       ],
-      "lines": 105,
+      "lines": 107,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Execute and retain one complete candidate-bound acceptance matrix on the GitLab shell runner before submission evidence review.",
@@ -43874,9 +43871,10 @@
         "scripts/ci/agent_context.py",
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/submission_readiness.py",
-        ".gitlab/ci/day21-submission.yml"
+        ".gitlab/ci/day21-submission.yml",
+        ".gitlab/ci/source-validation.yml"
       ],
-      "lines": 364,
+      "lines": 406,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prevent GitHub configuration, unreachable jobs or incomplete artifacts from standing in for GitLab acceptance.",
@@ -44333,9 +44331,13 @@
         "tests/foundry/check_foundry.py",
         "tests/upgrade/check_federal_foundry.py",
         "tests/upgrade/check_mission_suite.py",
+        "tests/career/check_career.py",
+        "tests/knowledge_units/check_knowledge_units.py",
+        "tests/integrity/check_integrity.py",
+        "tests/world_twin/check_world_twin.py",
         "tests/assurance/run.py"
       ],
-      "lines": 181,
+      "lines": 210,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep native parser and portable coverage requirements executing on GitLab when duplicate GitHub scheduling is retired.",
@@ -46142,7 +46144,7 @@
         "docs/development-loop.md",
         "docs/operator-plane.md"
       ],
-      "lines": 218,
+      "lines": 253,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define the receiving evidence and verified rollback postconditions that separate source onboarding completion from a deployed Day-21 outcome.",
@@ -46208,7 +46210,7 @@
         "apps/web/src/pages/workspace/OverviewPage.jsx",
         "apps/web/src/test/utils.jsx"
       ],
-      "lines": 321,
+      "lines": 339,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the front page honest: counts must come from records, the domain banner must not imply authorisation, and empty means empty.",
@@ -50858,7 +50860,7 @@
         "apps/web/src/contexts/WorkspaceAccessContext.jsx",
         "apps/web/src/components/workspace/ControlPrimitives.jsx"
       ],
-      "lines": 178,
+      "lines": 211,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make personal work attribution, job coverage and application exclusions reviewable inside the existing authenticated workspace.",
@@ -52566,12 +52568,735 @@
       "timestamp": "2026-09-22T23:06:31Z",
       "commit_sha": "37e6d6f54d0c97f3730e5bb9da26516d60936252",
       "smoke_result": "3/7"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/hostinger_checks.py",
+        "tools/day21/day21_public_probe.py",
+        "tools/day21/day21_browser_capture.py",
+        "tests/upgrade/workspace-assistant.test.mjs",
+        "tests/upgrade/career-profile.test.mjs",
+        ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md"
+      ],
+      "lines": 133,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the connected-loop repairs and actual local limits without treating source tests as deployed acceptance. ----------------------------------------------------------------",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/contexts/CareerProfileContext.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "CareerProfileProvider"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/careerProfile.js",
+        "apps/web/src/contexts/AuthContext.jsx",
+        "apps/web/src/hooks/useDemoMode.js"
+      ],
+      "lines": 55,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Load the user's career profile from Citadel Nexus as soon as they sign in, and drop it the moment they sign out or switch account.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/contexts/__tests__/CareerProfileContext.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Wrapper"
+      ],
+      "dependencies": [
+        "apps/web/src/contexts/CareerProfileContext.jsx"
+      ],
+      "lines": 102,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the career profile loads when a user signs in and is cleared on sign-out, account change and demo mode.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/careerProfile.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "createCareerProfileClient"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/career-profile.pb.js"
+      ],
+      "lines": 59,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Request the signed-in user's Citadel-held career profile and accept it only for that account, keeping it in memory.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/JourneyPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "Question"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/journey.js",
+        "apps/web/src/hooks/useWorkspaceRecords.js",
+        "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+        "apps/web/src/components/workspace/WorkspaceLayout.jsx"
+      ],
+      "lines": 109,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Ask one choice at a time, then hand the person a first lesson and a proposed mission draft they can save, refine with the assistant, or discard.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "JourneyRoutes",
+        "answer"
+      ],
+      "dependencies": [
+        "apps/web/src/pages/workspace/JourneyPage.jsx",
+        "apps/web/src/components/workspace/WorkspaceLayout.jsx"
+      ],
+      "lines": 128,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the journey compiles and saves only a proposed draft, hands answers to the assistant unsent, and that navigation opens only the current category.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/day21/DAY21_SUBMISSION_RUNBOOK.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "tools/day21/day21_public_probe.py",
+        "tools/day21/day21_browser_capture.py",
+        "scripts/ci/day21_submission.py"
+      ],
+      "lines": 106,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Carry one accepted candidate through retained public and browser observations without implying deployment authority. ----------------------------------------------------------------",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/career-profile.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "envelope",
+        "fixture"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/career-profile.pb.js",
+        "apps/pocketbase/pb_hooks/career-profile.js",
+        "apps/career/profile.py",
+        "apps/web/src/lib/careerProfile.js"
+      ],
+      "lines": 191,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Run the real profile route against a Citadel double serving a Python-built envelope, proving auth, account binding, allow-listing, no-store and no persistence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tools/day21/day21_browser_capture.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "now",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/ci/day21_submission.py",
+        "tools/day21/day21_public_probe.py"
+      ],
+      "lines": 313,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority. ---------------------------------------------------------------- \"\"\"Optional Playwright browser evidence recorder for the Day-21 demo journey.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tools/day21/day21_public_probe.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "checked_url",
+        "prepare_output",
+        "retain",
+        "version_observation",
+        "NoRedirect",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/ci/day21_submission.py"
+      ],
+      "lines": 248,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority. ---------------------------------------------------------------- \"\"\"Capture public response bytes and same-origin version readback for Day-21.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "learning-loop-acceptance"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_gitlab_acceptance.py",
+      "target": ".gitlab/ci/source-validation.yml",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/test_gitlab_acceptance.py VALIDATES .gitlab/ci/source-validation.yml",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/source-validation.yml",
+      "target": "tests/career/check_career.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".gitlab/ci/source-validation.yml CONSUMES tests/career/check_career.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/source-validation.yml",
+      "target": "tests/knowledge_units/check_knowledge_units.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".gitlab/ci/source-validation.yml CONSUMES tests/knowledge_units/check_knowledge_units.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/source-validation.yml",
+      "target": "tests/integrity/check_integrity.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".gitlab/ci/source-validation.yml CONSUMES tests/integrity/check_integrity.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/source-validation.yml",
+      "target": "tests/world_twin/check_world_twin.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".gitlab/ci/source-validation.yml CONSUMES tests/world_twin/check_world_twin.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md",
+      "target": "scripts/ci/hostinger_checks.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md CONSUMES scripts/ci/hostinger_checks.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md",
+      "target": "tools/day21/day21_public_probe.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md CONSUMES tools/day21/day21_public_probe.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md",
+      "target": "tools/day21/day21_browser_capture.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md CONSUMES tools/day21/day21_browser_capture.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md",
+      "target": "tests/upgrade/workspace-assistant.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md VERIFIED_BY tests/upgrade/workspace-assistant.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md",
+      "target": "tests/upgrade/career-profile.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md VERIFIED_BY tests/upgrade/career-profile.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md",
+      "target": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md CONSUMES .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/learning-loop-acceptance-report.md CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/contexts/CareerProfileContext.jsx",
+      "target": "apps/web/src/lib/careerProfile.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/contexts/CareerProfileContext.jsx CONSUMES apps/web/src/lib/careerProfile.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/contexts/CareerProfileContext.jsx",
+      "target": "apps/web/src/contexts/AuthContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/contexts/CareerProfileContext.jsx CONSUMES apps/web/src/contexts/AuthContext.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/contexts/__tests__/CareerProfileContext.test.jsx",
+      "target": "apps/web/src/contexts/CareerProfileContext.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "apps/web/src/contexts/__tests__/CareerProfileContext.test.jsx VALIDATES apps/web/src/contexts/CareerProfileContext.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/careerProfile.js",
+      "target": "apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/lib/careerProfile.js CONSUMES apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/JourneyPage.jsx",
+      "target": "apps/web/src/lib/journey.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/JourneyPage.jsx CONSUMES apps/web/src/lib/journey.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/JourneyPage.jsx",
+      "target": "apps/web/src/hooks/useWorkspaceRecords.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/JourneyPage.jsx CONSUMES apps/web/src/hooks/useWorkspaceRecords.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/JourneyPage.jsx",
+      "target": "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/JourneyPage.jsx CONSUMES apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/JourneyPage.jsx",
+      "target": "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+      "edge_type": "TRIGGERS",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/JourneyPage.jsx TRIGGERS apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx",
+      "target": "apps/web/src/pages/workspace/JourneyPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx VALIDATES apps/web/src/pages/workspace/JourneyPage.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx",
+      "target": "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx VALIDATES apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/day21/DAY21_SUBMISSION_RUNBOOK.md",
+      "target": "tools/day21/day21_public_probe.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/day21/DAY21_SUBMISSION_RUNBOOK.md CONSUMES tools/day21/day21_public_probe.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/day21/DAY21_SUBMISSION_RUNBOOK.md",
+      "target": "tools/day21/day21_browser_capture.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/day21/DAY21_SUBMISSION_RUNBOOK.md CONSUMES tools/day21/day21_browser_capture.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/day21/DAY21_SUBMISSION_RUNBOOK.md",
+      "target": "scripts/ci/day21_submission.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/day21/DAY21_SUBMISSION_RUNBOOK.md CONSUMES scripts/ci/day21_submission.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/career-profile.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/career-profile.test.mjs VALIDATES apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/career-profile.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/career-profile.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/career-profile.test.mjs VALIDATES apps/pocketbase/pb_hooks/career-profile.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/career-profile.test.mjs",
+      "target": "apps/career/profile.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/upgrade/career-profile.test.mjs DEPENDS_ON apps/career/profile.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/career-profile.test.mjs",
+      "target": "apps/web/src/lib/careerProfile.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/career-profile.test.mjs VALIDATES apps/web/src/lib/careerProfile.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tools/day21/day21_browser_capture.py",
+      "target": "scripts/ci/day21_submission.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tools/day21/day21_browser_capture.py CONSUMES scripts/ci/day21_submission.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tools/day21/day21_browser_capture.py",
+      "target": "tools/day21/day21_public_probe.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tools/day21/day21_browser_capture.py CONSUMES tools/day21/day21_public_probe.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tools/day21/day21_public_probe.py",
+      "target": "scripts/ci/day21_submission.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tools/day21/day21_public_probe.py CONSUMES scripts/ci/day21_submission.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": null,
+      "description": "Provider inspection: PR 74 resolver check 106999882933 never started because the GitHub account is billing-locked; Cloudflare check 107000042333 separately failed without an error annotation.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T02:31:56.322118+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/career-profile.test.mjs",
+      "description": "Three connected Node regressions reproduced a rejected journey route and stale same-account/profile-session results before the fixes.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T02:31:56.322216+00:00",
+      "commit_sha": null,
+      "smoke_result": "21/24 before fixes"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/workspace-assistant.test.mjs",
+      "description": "The final targeted Node 22 run passes 38 route, client, journey compiler and scoped-value cases; the existing 125 focused Python governance/capture regressions also pass.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T02:31:56.322269+00:00",
+      "commit_sha": null,
+      "smoke_result": "38/38 Node; 125/125 Python"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx",
+      "description": "Locked offline npm installation failed ENOTCACHED; the Vitest command could not start. Rendered/build/native/hosted and live Citadel acceptance remain unverified.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T02:31:56.322298+00:00",
+      "commit_sha": null,
+      "smoke_result": null
     }
   ],
   "summary": {
-    "type_a_count": 847,
-    "type_b_count": 1967,
-    "type_c_count": 214,
+    "type_a_count": 857,
+    "type_b_count": 1999,
+    "type_c_count": 218,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

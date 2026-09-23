@@ -20,6 +20,41 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Connected learning-loop acceptance — 2026-09-23
+
+The owner prioritizes closing the source-to-deployment evidence gap before adding
+more independent subsystems. Continue this existing A2 acceptance and product
+integration dispatch. Reuse the current journey, native assistant, account-scoped
+Citadel profile, retained mission reviews and eighteen-profile Day-21 runner.
+
+Acceptance:
+
+1. Diagnose the reviewed candidate's hosted check from provider records before
+   changing source. A job that never starts is not a candidate-resolution defect.
+   Keep account billing, Cloudflare diagnostics, GitLab execution, provider
+   activation and deployed readback explicitly separate from local source tests.
+2. Include the career, Knowledge Unit, integrity and world-twin behavior suites
+   in existing source acceptance and their existing coverage gates in required
+   GitLab validation on both declared Python versions. Preserve all eighteen
+   profiles, coverage floors, empty/skip rejection and submission dependencies.
+3. Repair the existing public/browser capture producers to retain evidence the
+   unchanged submission validators can read. Bind explicit expected identities
+   to actual deployed-version observations and retained bytes. A mismatched
+   candidate, console error, missing artifact or changed capture cannot pass.
+4. Exercise the actual journey-to-assistant route, keep lesson navigation from
+   silently discarding the proposed mission draft, and fence profile responses
+   across reloads and account/session changes. Mission creation, approval and
+   independent review remain existing native commands, not compiler authority.
+5. Distinguish evidence records from independently reviewed outcomes in the home
+   view and link to the existing scoped proof inspection. Do not invent a live
+   semantic projection or reuse unverified event labels as capability proof.
+6. Run available source, rendered/build and native acceptance checks against one
+   final candidate; retain unavailable prerequisites and actual failures. Record
+   receiving owners and the exact remaining evidence without asserting deployment.
+
+No new truth store, private runtime, authentication scheme, certification,
+provider call, hosted CI trigger or deployment is authorized by this source pass.
+
 ## BuildAndDo Career Passport dogfood — 2026-09-22
 
 The owner requests BuildAndDo as the first verified career-evidence test case.

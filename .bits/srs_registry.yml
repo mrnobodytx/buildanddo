@@ -88,6 +88,20 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-KNOWLEDGE-UNIT-001.md
     notes: Agent self-authorized additive schema, validator, receipt and mastery computation; no CPE credit, certification, TEKS content or regulatory action
 
+  - code: SRS-BUILDANDDO-INTEGRITY-001
+    title: Epistemic Integrity Fabric slice 1
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-INTEGRITY-001.md
+    notes: Agent self-authorized additive intent contracts, hard-gate adjudication, verifier independence, disclosure-aware settlement, decision traces, sycophancy probe and audit revocation; no model calls, external effects or reward-code changes
+
+  - code: SRS-BUILDANDDO-WORLD-TWIN-001
+    title: Personal world twin projection slice 1
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-WORLD-TWIN-001.md
+    notes: Agent self-authorized additive typed world events, per-person twin projection with event drill-down, disputes, audience projections and suppressed aggregates; no storage, web, system-twin or reward changes
+
   - code: SRS-BUILDANDDO-UPGRADE-001
     title: BuildAndDo public, workspace and community upgrades
     status: in_progress

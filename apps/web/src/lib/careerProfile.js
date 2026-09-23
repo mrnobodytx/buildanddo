@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/careerProfile.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-CAREER-001
+// SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-CAREER-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -31,25 +31,29 @@ const profileShape = (profile) => profile && text(profile.person_id, 120) && tex
 
 /** Bind profile reads to the current native account.
  * @param {object} options Native client, account id and a scope guard.
- * @returns {{load: () => Promise<object>}} A loader whose result is dropped if the account changed.
+ * @returns {object} Current-session reads and lifecycle invalidation.
  */
 export function createCareerProfileClient({ client, accountId, isCurrent }) {
-    const current = () => Boolean(accountId) && isCurrent() && client.authStore.record?.id === accountId;
+    let generation = 0, active = true;
+    const current = () => active && Boolean(accountId) && isCurrent() && client.authStore.record?.id === accountId;
     return {
         async load() {
             if (!current()) return { ok: false, reason: 'scope_changed' };
+            const attempt = ++generation;
             try {
                 const data = await client.send('/api/buildanddo/career/profile', { method: 'GET', requestKey: null, cache: 'no-store' });
-                if (!current()) return { ok: false, reason: 'scope_changed' };
+                if (!current() || attempt !== generation) return { ok: false, reason: 'scope_changed' };
                 if (data?.subject_id !== accountId || !PROFILE_STATES.includes(data.state)
                     || (data.state === 'ready' && (!profileShape(data.profile) || !text(data.issued_at, 40))))
                     return { ok: false, reason: 'unavailable' };
                 return { ok: true, state: data.state, profile: data.state === 'ready' ? data.profile : null,
                     issuedAt: data.state === 'ready' ? data.issued_at : '' };
             } catch (error) {
-                if (!current()) return { ok: false, reason: 'scope_changed' };
+                if (!current() || attempt !== generation) return { ok: false, reason: 'scope_changed' };
                 return { ok: false, reason: [401, 403].includes(error?.status) ? 'forbidden' : 'unavailable' };
             }
         },
+        activate() { generation++; active = true; },
+        dispose() { generation++; active = false; },
     };
 }

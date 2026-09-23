@@ -56,7 +56,8 @@
         "Required native SDK/parser and portable-suite coverage checks execute in GitLab, retaining Python 3.11 and 3.12; manual submission waits for every required source job.",
         "Review pipelines retain exactly one actor label from the current provider context; GitHub exports bind repository, review number and exact tested head. Missing metadata cannot satisfy governance.",
         "Automatic public PR governance and required GitLab checks remain enabled; neither provider substitutes for observed candidate acceptance.",
-        "The supplemental assurance source job preserves evidence/authority and payment-boundary regressions; the opt-in full runtime matrix reports unavailable dependencies as non-passing and does not replace the eighteen-profile gate."
+        "The supplemental assurance source job preserves evidence/authority and payment-boundary regressions; the opt-in full runtime matrix reports unavailable dependencies as non-passing and does not replace the eighteen-profile gate.",
+        "Career, Knowledge Unit, integrity and world-twin behavior suites are included in source acceptance; their existing per-module coverage gates run on Python 3.11 and 3.12 and block submission when incomplete."
       ],
       "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic."
     },

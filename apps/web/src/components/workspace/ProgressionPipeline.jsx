@@ -102,6 +102,7 @@ export const PIPELINE_STEPS = [
             'GitLab runs source Node/Python, semantic-twin and web coverage suites',
             'Native Discord/PDF and CPU blueprint checks pass with required dependencies',
             'Foundry, federal portfolio and mission coverage passes on Python 3.11 and 3.12',
+            'Career, Knowledge Unit, integrity and world-twin coverage passes on Python 3.11 and 3.12',
             'Membership, evidence/authority and fault-handling source assurance runs on reviewed changes',
             'The separately requested full-assurance lane exercises browser journeys, accessibility, browser sizes, load and backup restoration',
             'Skipped or unavailable dependencies keep acceptance incomplete',

@@ -184,7 +184,7 @@ component says so rather than implying a check exists.
 
 | Tag                          | Step             | What it actually checks                                     |
 |------------------------------|------------------|-------------------------------------------------------------|
-| `ci:test`                    | Test             | GitLab source Node/Python and semantic-twin suites, membership/evidence/fault assurance, web coverage, native Discord/PDF and CPU blueprint checks, Python 3.11/3.12 foundry/portfolio/mission coverage, PocketBase workspace/suite/learning/classroom/dossier checks on both declared runtimes, and manifest/lock integrity; an explicit full-assurance lane adds browser/accessibility/compatibility/load/restore checks |
+| `ci:test`                    | Test             | GitLab source Node/Python and semantic-twin suites, membership/evidence/fault assurance, web coverage, native Discord/PDF and CPU blueprint checks, Python 3.11/3.12 foundry/portfolio/mission/career/knowledge-unit/integrity/world-twin coverage, PocketBase workspace/suite/learning/classroom/dossier checks on both declared runtimes, and manifest/lock integrity; an explicit full-assurance lane adds browser/accessibility/compatibility/load/restore checks |
 | `ci:build`                   | Pull request     | `npm run build` produces `dist/apps/web/index.html`         |
 | `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, exactly one actor label on the current review, `agent_context.py --check` |
 | `governance:readiness`       | Sprint readiness | All 11 milestones match reviewed source; acceptance, replay and provisional submission validators reject incomplete evidence and invented official rules |

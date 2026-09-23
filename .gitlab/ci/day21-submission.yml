@@ -89,6 +89,8 @@ day21_submission_bundle:
       artifacts: false
     - job: source_mission_suite
       artifacts: false
+    - job: source_behavior_coverage
+      artifacts: false
     - job: source_assurance
       artifacts: false
   script:

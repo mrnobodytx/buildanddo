@@ -1,16 +1,16 @@
 // ─── CGRF Header ──────────────────────────────
 // File:        tests/upgrade/career-profile.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-CAREER-001
+// SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-CAREER-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/pocketbase/pb_hooks/career-profile.pb.js, apps/pocketbase/pb_hooks/career-profile.js, apps/career/profile.py
+// Depends:     apps/pocketbase/pb_hooks/career-profile.pb.js, apps/pocketbase/pb_hooks/career-profile.js, apps/career/profile.py, apps/web/src/lib/careerProfile.js
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/career-profile.pb.js; VALIDATES apps/pocketbase/pb_hooks/career-profile.js; DEPENDS_ON apps/career/profile.py
+// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/career-profile.pb.js; VALIDATES apps/pocketbase/pb_hooks/career-profile.js; DEPENDS_ON apps/career/profile.py; VALIDATES apps/web/src/lib/careerProfile.js
 // DAG Node:    none
 // Intent:      Run the real profile route against a Citadel double serving a Python-built envelope, proving auth, account binding, allow-listing, no-store and no persistence.
 // ───────────────────────────────────────────────────────────
@@ -20,6 +20,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import vm from 'node:vm';
 import { repoPath, runPython } from './admin-fixture.mjs';
+import { createCareerProfileClient } from '../../apps/web/src/lib/careerProfile.js';
 
 const hooks = (name) => readFileSync(repoPath(`apps/pocketbase/pb_hooks/${name}`), 'utf8');
 const TOKEN = 'test-service-token-not-a-secret';
@@ -154,4 +155,37 @@ test('an insecure endpoint or a missing token is refused before any request', ()
     const loopback = fixture({ env: { ...live, BUILDANDDO_CAREER_PROFILE_URL: 'http://127.0.0.1:8095/career' },
         answer: () => ({ statusCode: 200, json: envelope() }) });
     assert.equal(loopback.request().body.state, 'ready');
+});
+
+test('an older profile cannot replace a newer same-account result', async () => {
+    const requests = [];
+    const client = { authStore: { record: { id: 'u_person01' } },
+        send: () => new Promise((resolve) => requests.push(resolve)) };
+    const api = createCareerProfileClient({ client, accountId: 'u_person01', isCurrent: () => true });
+    const older = api.load(), newer = api.load();
+    requests[1]({ state: 'no_profile', subject_id: 'u_person01' });
+    assert.equal((await newer).state, 'no_profile');
+    requests[0]({ state: 'not_configured', subject_id: 'u_person01' });
+    assert.deepEqual(await older, { ok: false, reason: 'scope_changed' });
+});
+
+test('disposing a profile session fences responses even when the same account returns', async () => {
+    const requests = [];
+    let current = true;
+    const client = { authStore: { record: { id: 'u_person01' } },
+        send: () => new Promise((resolve) => requests.push(resolve)) };
+    const api = createCareerProfileClient({ client, accountId: 'u_person01', isCurrent: () => current });
+    const oldSession = api.load();
+    current = false;
+    api.dispose();
+    current = true;
+    api.activate();
+    requests[0]({ state: 'no_profile', subject_id: 'u_person01' });
+    assert.deepEqual(await oldSession, { ok: false, reason: 'scope_changed' });
+    const newSession = api.load();
+    requests[1]({ state: 'no_profile', subject_id: 'u_person01' });
+    assert.equal((await newSession).ok, true);
+    api.dispose();
+    assert.deepEqual(await api.load(), { ok: false, reason: 'scope_changed' });
+    assert.equal(requests.length, 2);
 });
