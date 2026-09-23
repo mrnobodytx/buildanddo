@@ -537,7 +537,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-23T19:46:43.075643+00:00",
+  "generated_at": "2026-09-23T20:31:28.210798+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -697,6 +697,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-PUBLIC-REDACTION-001.md",
         "status": "in_progress",
         "title": "No fleet machine name or IP address in the generated JSON or the site bundle"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PURPOSE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PURPOSE-001.md",
+        "status": "in_progress",
+        "title": "Every public page says BuildAndDo is an educational, collaborative platform"
       },
       {
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
@@ -925,8 +932,8 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1293,
-    "web_source_files": 349
+    "tracked_files": 1297,
+    "web_source_files": 351
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1005,22 +1012,22 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "2c41a36ea593764b6192f786f792dad426952e51d38eacd9d3d4462f85d4a885",
+    "source_sha256": "44a5e19bb8a09315e722e90f4f4356114cf9a16ea0820283e5074665397df554",
     "state": "PASS"
   },
   "summary": {
     "findings": 37,
     "findings_high": 37,
     "pipelines": 7,
-    "srs_open": 28,
-    "srs_total": 32,
+    "srs_open": 29,
+    "srs_total": 33,
     "unwired_gates": 33
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 70,
+    "js_test_files": 71,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

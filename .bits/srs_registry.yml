@@ -250,3 +250,11 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-BUDDI-003.md
     owner: C-ONE
     notes: Operator direction 2026-09-23 (the embedded session, not a link); the operator approved adding @elevenlabs/react. Deployment, the production and edge headers, and any change to the live ElevenLabs agent are operator steps; this entry does not self-authorize A2
+
+  - code: SRS-BUILDANDDO-PURPOSE-001
+    title: Every public page says BuildAndDo is an educational, collaborative platform
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-PURPOSE-001.md
+    owner: C-ONE
+    notes: Operator decision 2026-09-11 (educational platform, not small-business software) and direction 2026-09-23 ("fix the page, we're an educational platform"), after a live audio check found Buddi repeating the FAQ's retired pitch. The workspace model, the Hostinger challenge entry, the Buddi agent and deployment are excluded

@@ -1,7 +1,8 @@
-// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001 | CAPS=B | Seat=C-ONE
+// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-PURPOSE-001 | CAPS=B | Seat=C-ONE
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { PUBLIC_NAV } from '@/lib/publicPages';
+import { PURPOSE } from '@/lib/purpose';
 import {
     COMMUNITY_LINKS,
     GUILD_PATH,
@@ -65,9 +66,7 @@ export default function Footer({
                             </span>
                         </a>
                         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                            Early-stage software that helps small-business owners notice changes,
-                            understand them in plain language, approve a bounded mission, and verify
-                            what happened.
+                            {PURPOSE.summary}
                         </p>
                     </div>
 

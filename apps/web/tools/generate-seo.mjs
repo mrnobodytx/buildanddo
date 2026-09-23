@@ -1,18 +1,18 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/tools/generate-seo.mjs
 // Stage:       11_COMMIT
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-PURPOSE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
-// Seat:        BITS-CODEGEN, C-ONE (community links, sameAs, guildmaster profiles)
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001, VCC-BUILDANDDO-PURPOSE-001
+// Seat:        BITS-CODEGEN, C-ONE (community links, sameAs, guildmaster profiles, share-image description)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
 // Depends:     apps/web/src/lib/publicPages.js, apps/web/src/lib/communityLinks.js,
-//              apps/web/src/data/personas.js
+//              apps/web/src/data/personas.js, apps/web/src/lib/purpose.js
 // EnumType:    Service
 // EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js; DEPENDS_ON apps/web/src/lib/communityLinks.js;
-//              DEPENDS_ON apps/web/src/data/personas.js
+//              DEPENDS_ON apps/web/src/data/personas.js; DEPENDS_ON apps/web/src/lib/purpose.js
 // DAG Node:    none
 // Intent:      Generate canonical social metadata and crawler resources for every public route.
 // ───────────────────────────────────────────────────────────────
@@ -22,6 +22,7 @@ import { resolve } from 'node:path';
 import { PUBLIC_PAGES, SITE_ORIGIN } from '../src/lib/publicPages.js';
 import { COMMUNITY_LINKS, SAME_AS, STORE_LINK } from '../src/lib/communityLinks.js';
 import { PERSONA_PAGES } from '../src/data/personas.js';
+import { PURPOSE } from '../src/lib/purpose.js';
 
 const escape = (value) =>
     String(value).replace(
@@ -157,7 +158,7 @@ export function generatePageHeads(directory, release) {
                 'og:image': `${SITE_ORIGIN}/social-card.png`,
                 'og:image:width': '1200',
                 'og:image:height': '630',
-                'og:image:alt': 'BuildAndDo — your business, in evidence',
+                'og:image:alt': PURPOSE.shareImageAlt,
             }).map(
                 ([property, value]) => `<meta property="${property}" content="${escape(value)}">`,
             ),
@@ -166,7 +167,7 @@ export function generatePageHeads(directory, release) {
                 'twitter:title': page.title,
                 'twitter:description': page.description,
                 'twitter:image': `${SITE_ORIGIN}/social-card.png`,
-                'twitter:image:alt': 'BuildAndDo — your business, in evidence',
+                'twitter:image:alt': PURPOSE.shareImageAlt,
             }).map(([name, value]) => `<meta name="${name}" content="${escape(value)}">`),
             `<script id="static-page-schema" type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`,
         ].join('\n');
