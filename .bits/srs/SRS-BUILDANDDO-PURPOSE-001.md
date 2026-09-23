@@ -73,14 +73,27 @@ page, we're an educational platform". Where it still appears:
    - "first-time business owner".
    The test proves itself by failing on a planted phrase.
 
+## Continuation (2026-09-23): the challenge entry
+
+The first pull request left the Hostinger 21-Day Startup Challenge entry out, as the operator's call. The
+operator then chose "Reframe it too". The entry still pitched "BuildAndDo watches the important parts of a small
+business", which is the sentence Buddi repeats almost word for word. Its submission compiler wrote the same pitch
+into the judges' bundle.
+
+6. **R6 - the challenge entry describes the educational platform.**
+   - `data/hostingerChallenge.js` takes its promise from `purpose.js` and states a learning audience, problem,
+     solution and demo.
+   - The page's headline, calls to action, demo step and "Business idea" / "Business potential" rows follow.
+   - `scripts/ci/day21_submission.py` carries the same four texts as its defaults for the judge bundle. A test
+     fails when the page and the bundle drift apart; the compiler's own checklist asks that they match.
+   - The challenge's structure, products, criteria and weights are unchanged.
+
 ## Non-goals
 
 - The workspace's own model: onboarding's optional website domain, signals that describe "your business",
   and the small-business policy walkthrough. They describe the product as it works today.
-- The Hostinger 21-Day Challenge entry and its data. Whether its business idea is reframed is the operator's
-  call.
 - Buddi's agent configuration, which is a separate, operator-approved lane.
-- Deployment.
+- Deployment. The challenge deadline is 2026-09-24, so the deploy is time-critical, and it is the operator's.
 
 ## Verification
 

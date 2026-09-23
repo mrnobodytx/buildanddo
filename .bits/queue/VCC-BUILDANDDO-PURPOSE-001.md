@@ -33,6 +33,8 @@ where people learn by doing real work together, with people and AI, and keep the
 | 3 | Early-access form asks about learning; stored field names unchanged | the whole web suite | done |
 | 4 | Share image: live domain, re-rendered PNG proven against a render of the unchanged SVG; alt text | `npm run build`; pixel comparison | done |
 | 5 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `verify_public_boundary.py` | done |
+| 6 | Continuation R6: the challenge entry, its page and the judge-bundle defaults describe the educational platform | `vitest run src/lib/__tests__/purpose.test.js src/__tests__/HostingerChallengePage.test.jsx` | done |
+| 7 | Give jsdom `URL.revokeObjectURL`, so a loaded run cannot fail on the blueprint download timer | the whole web suite, twice | done |
 
 ## Constraints
 
@@ -43,6 +45,13 @@ where people learn by doing real work together, with people and AI, and keep the
   - `apps/web/src/components/Seo.jsx`;
   - `apps/web/tools/generate-seo.mjs`;
   - `apps/web/public/social-card.{svg,png}`;
+  - for the continuation:
+    - `apps/web/src/data/hostingerChallenge.js`;
+    - `apps/web/src/pages/HostingerChallengePage.jsx` and its test;
+    - `apps/web/src/lib/publicPages.js` (the page's description);
+    - the regenerated `apps/web/public/llms.txt`;
+    - `scripts/ci/day21_submission.py` (defaults and demo line only);
+    - `apps/web/src/test/setup.js` (one jsdom stand-in);
   - this bookkeeping and the readiness and context locks.
 - The backend and the stored early-access field names do not change.
 - No real machine name or address may enter this repository, including test fixtures.
@@ -88,12 +97,30 @@ where people learn by doing real work together, with people and AI, and keep the
   - `submission_readiness.py --check`
   - `verify_public_boundary.py`
 
+## Continuation evidence (2026-09-23, R6)
+
+- **Tests:** `purpose.test.js` 6 of 6 and `HostingerChallengePage.test.jsx` 3 of 3. The new test compares the
+  compiler's `--pitch`, `--problem`, `--solution` and `--target-audience` defaults with the page's data, and the
+  promise with `purpose.js`.
+- **Controls:** each change was undone once and the tests were run again. All 6 were caught, and they were
+  green again after each restore.
+  - The base versions of `hostingerChallenge.js`, `HostingerChallengePage.jsx`, `publicPages.js` and
+    `day21_submission.py` were put back one at a time.
+  - The judge bundle's pitch was allowed to drift from the page.
+  - The page's problem was allowed to drift from the judge bundle.
+- **Build:** `npm run build` passes and regenerates `llms.txt`, so the page's description there changes too.
+  The guard caught the stale committed copy first.
+- **The whole web suite passes 615 of 615, and `npm run lint` is clean.**
+- **The flaky run** came from a jsdom gap, not from this change.
+  - Before the stand-in, three full runs under load all ended with exit 1 and 2 unhandled
+    `URL.revokeObjectURL is not a function` errors, although every test passed. Two runs were on this branch
+    and one on the base commit.
+  - The source is BlueprintSavedPage's download timer. Its test file alone passes on both trees.
+  - With the stand-in in `src/test/setup.js`, two full runs under the same load exit 0.
+
 ## Findings, not fixed here
 
-- **The Hostinger 21-Day Challenge entry still describes the small-business idea.** In
-  `data/hostingerChallenge.js` and `HostingerChallengePage.jsx` it says "BuildAndDo watches the important
-  parts of a small business…". This is the pitch Buddi repeats almost word for word. Reframing a
-  competition entry is the operator's call.
+- **The Hostinger challenge entry is reframed** by this continuation (R6), on the operator's direction.
 - **The workspace keeps its business framing:**
   - onboarding defaults a workspace to "My business";
   - Signals say "Observed changes in your business";

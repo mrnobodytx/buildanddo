@@ -16,8 +16,8 @@ import { renderWithProviders, screen } from '@/test/utils';
 describe('HostingerChallengePage', () => {
     it('states the focused judge story and exposes the real CTAs', async () => {
         renderWithProviders(<HostingerChallengePage />);
-        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('One business problem');
-        expect(screen.getAllByRole('link', { name: /Try a business challenge/i }).length).toBeGreaterThan(0);
+        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('One real project');
+        expect(screen.getAllByRole('link', { name: /Try the challenge desk/i }).length).toBeGreaterThan(0);
         expect(screen.getByRole('link', { name: /Create an account/i })).toHaveAttribute('href', '/signup');
     });
 
