@@ -1,0 +1,19 @@
+<!--
+─── CGRF Header ───────────────────────────────────────────────
+ File:        apps/web/public/favicon.svg
+ Stage:       07_BUILD
+ SRS:         SRS-BUILDANDDO-BUDDI-001
+ CAPS:        pending
+ CK:          pending
+ Dispatch:    VCC-BUILDANDDO-BUDDI-001
+ Seat:        C-ONE
+ Owner:       Citadel Nexus Inc.
+ Created:     2026-09-22
+ Depends:     apps/web/index.html
+ EnumType:    Widget
+ EnumEdges:   CONSUMED_BY apps/web/index.html
+ DAG Node:    none
+ Intent:      Serve the BuildAndDo mark (red square, paper pulse line) as the site icon in place of the missing /vite.svg.
+ ───────────────────────────────────────────────────────────────
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><rect width="64" height="64" fill="#AD1F1F"/><path d="M52 32h-8l-6 18L26 14l-6 18h-8" fill="none" stroke="#F4F2EB" stroke-width="4.5" stroke-linecap="square" stroke-linejoin="miter"/></svg>

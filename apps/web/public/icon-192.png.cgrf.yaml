@@ -1,0 +1,24 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/web/public/icon-192.png.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-BUDDI-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-BUDDI-001
+# Seat:        C-ONE
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     apps/web/public/favicon.svg
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON apps/web/public/favicon.svg; CONSUMED_BY apps/web/public/manifest.webmanifest
+# DAG Node:    none
+# Intent:      Record the provenance of the 192 px install icon.
+# ───────────────────────────────────────────────────────────────
+
+file: apps/web/public/icon-192.png
+source: BuildAndDo community brand kit, brand/mark-192.png (rendered by brand/build_brand.py from the same geometry as favicon.svg)
+width: 192
+height: 192
+color_type: RGB, no alpha
+asset_sha256: 4ddeff1e77ce3fad52f53a9c8c9ad2cb7890d6729b3e1a034b99a8c6a5ef57a8
+purpose: Install manifest icon (any)

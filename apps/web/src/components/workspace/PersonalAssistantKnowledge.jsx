@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:         apps/web/src/components/workspace/PersonalAssistantKnowledge.jsx
 // Stage:        07_BUILD
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-001
 // CAPS:         pending
 // CK:           pending
 // Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -37,14 +37,14 @@ function PersonalKnowledge({ accountId, workspaceId, demo, renderGraph }) {
     };
     const download = () => {
         if (!data) return; const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
-        const link = document.createElement('a'); link.href = url; link.download = `my-assistant-knowledge-${page}.json`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+        const link = document.createElement('a'); link.href = url; link.download = `my-buddi-knowledge-${page}.json`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
-    return <section className="space-y-4" aria-label="My assistant knowledge"><Card className="space-y-3 p-5">
-        <h2 className="font-display text-xl">My assistant knowledge</h2><p className="text-sm text-muted-foreground">Only your account can read these session patterns. Field values are excluded from patterns; conversation messages remain in your private session. Observed interactions are not verified business outcomes.</p>
+    return <section className="space-y-4" aria-label="My Buddi knowledge"><Card className="space-y-3 p-5">
+        <h2 className="font-display text-xl">My Buddi knowledge</h2><p className="text-sm text-muted-foreground">Only your account can read these session patterns. Field values are excluded from patterns; conversation messages remain in your private session. Observed interactions are not verified business outcomes.</p>
         <div className="flex flex-wrap gap-2"><Button size="sm" variant="secondary" disabled={demo} onClick={() => setRefresh((value) => value + 1)}>Refresh my patterns</Button>
             <Button size="sm" disabled={!data} onClick={download}>Export this knowledge page</Button></div>
         {demo ? <p>Personal sessions are unavailable in demo mode.</p> : error ? <p role="alert">{error}</p> : !data ? <p role="status">Loading personal patterns…</p> : <>
-            {!data.patterns.length && <p>No recorded assistant interactions on this page.</p>}
+            {!data.patterns.length && <p>No recorded Buddi interactions on this page.</p>}
             <ul className="space-y-3 text-sm">{data.patterns.map((pattern) => <li key={pattern.id} className="border-t border-border pt-3"><p>{pattern.title} · {pattern.route}</p>
                 <p className="text-xs text-muted-foreground">Session {pattern.session} · {pattern.state}</p><Button size="sm" variant="ghost" onClick={() => setForget(pattern.session)}>Forget this session and its patterns</Button></li>)}</ul>
             {forget && <div className="space-y-2 border border-border p-3"><p>Delete this personal conversation and all its learned patterns? Business records and evidence remain in their native desks.</p>

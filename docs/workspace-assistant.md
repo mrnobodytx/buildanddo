@@ -1,7 +1,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:         docs/workspace-assistant.md
 # Stage:        06_PLAN
-# SRS:          SRS-BUILDANDDO-UPGRADE-001
+# SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-001
 # CAPS:         pending
 # CK:           pending
 # Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -15,9 +15,13 @@
 # Intent:       Explain personal assistant isolation, inferred browser actions, scoped context and receiving acceptance without granting model authority.
 # ───────────────────────────────────────────────────────────────
 
-# Workspace assistant and personal knowledge
+# Buddi, the workspace assistant, and personal knowledge
 
-The persistent Assistant panel uses the existing BuildAndDo pages as its action
+Buddi is the name members see for the workspace assistant. The rename is
+presentation only: routes, collections, environment variables and code
+identifiers keep the `assistant` name used below.
+
+The persistent Buddi panel uses the existing BuildAndDo pages as its action
 surface. It can navigate to each registered workspace desk, propose values for
 visible ordinary fields, and activate a supported control after the user reviews
 the plan. It uses the existing authenticated application paths to save records.
@@ -25,7 +29,7 @@ It does not receive a superuser client or a separate authorization path.
 
 ## Conversation to observed pattern
 
-1. Open a desk and ask the assistant for help. The browser sends the route and
+1. Open a desk and ask Buddi for help. The browser sends the route and
    bounded metadata for visible controls. Existing field values stay in the
    browser; password, credential, payment and human-authority controls are excluded.
 2. The backend authenticates the user, checks current workspace membership, loads
@@ -57,7 +61,7 @@ history/model responses. Demo mode performs no private read or write.
 | Surface | Effective authority |
 |---|---|
 | Native workspace records | Existing PocketBase user auth, workspace roles and collection rules |
-| Assistant sessions, turns and patterns | Locked collection CRUD; custom routes require both owner account and current workspace membership |
+| Buddi sessions, turns and patterns | Locked collection CRUD; custom routes require both owner account and current workspace membership |
 | Personal knowledge | Same owner/workspace filters, even when the reader is a workspace administrator |
 | Viewer assistance | Navigation and explanations; no inferred form writes |
 | Editor/administrator/owner assistance | Ordinary permitted form assistance; native backend permissions still decide each save |
