@@ -1,3 +1,4 @@
+# CGRF: SRS=SRS-BUILDANDDO-AGENTCTX-001,SRS-BUILDANDDO-UPGRADE-001,SRS-BUILDANDDO-BUDDI-002 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        .bits/srs_registry.yml
 # Stage:       04_HYPOTHESIZE

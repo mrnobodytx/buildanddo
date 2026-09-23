@@ -29,11 +29,25 @@ its authority, source and time, and the three write tools leave a receipt a pers
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | Server-only intake collection with a reversible migration | `python tests/upgrade/test_public_api_native.py --require-binary` | in_progress |
-| 2 | Five A0 read routes over authored lessons and public evidence | `python tests/upgrade/test_public_api_native.py --require-binary` | in_progress |
-| 3 | Three A2 routes: secret, schema, rate limits, receipts, handoff notice | `python tests/upgrade/test_public_api_native.py --require-binary` | in_progress |
-| 4 | Pure validation and drift checks against the site's own sources | `node --test tests/upgrade/public-api.test.mjs` | in_progress |
-| 5 | Edge proxy `/api/v1/public/*`, leaving `/api/webhooks/*` alone | `npm --prefix apps/edge test` | in_progress |
+| 1 | Server-only intake collection with a reversible migration | `python tests/upgrade/test_public_api_native.py --require-binary` | done - PASS on 2026-09-22, see below |
+| 2 | Five A0 read routes over authored lessons and public evidence | `python tests/upgrade/test_public_api_native.py --require-binary` | done - PASS on 2026-09-22, see below |
+| 3 | Three A2 routes: secret, schema, rate limits, receipts, handoff notice | `python tests/upgrade/test_public_api_native.py --require-binary` | done - PASS on 2026-09-22, see below |
+| 4 | Pure validation and drift checks against the site's own sources | `node --test tests/upgrade/public-api.test.mjs` | done - PASS on 2026-09-22, see below |
+| 5 | Edge proxy `/api/v1/public/*`, leaving `/api/webhooks/*` alone | `npm --prefix apps/edge test` | done - PASS on 2026-09-22, see below |
+
+## Recorded results (2026-09-22, branch c-one/SRS-BUILDANDDO-BUDDI-002-platform-tools)
+
+- Native, PocketBase 0.39.8, whole migration set: 12 tests OK (reads 6, writes 6).
+- `node --test tests/upgrade/public-api.test.mjs`: 5 pass.
+- `npm --prefix apps/edge test`: 55 pass (31 imported, 24 new).
+- Mutation controls, each restored from git afterwards: secret check disabled -> the wrong-secret
+  test fails `(201, 'RECEIVED') != (401, 'UNAUTHORIZED')`; authored-lesson filter reduced to `slug
+  != ''` -> a planted draft lesson leaks and two tests fail; public-rule gate removed -> a locked
+  audit is served `200 != 404`; edge segment check removed -> 7 tests fail; edge JSON-only check
+  removed -> the HTML-shell test fails.
+- Not run here: deployment, a `wrangler deploy --dry-run` bundle check, and any change to the live
+  ElevenLabs agent. The three write tools must be given the `x-buddi-tool-secret` header by the
+  agent's owner before they can succeed.
 
 ## Constraints
 
