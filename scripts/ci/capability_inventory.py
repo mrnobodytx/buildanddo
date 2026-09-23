@@ -3,7 +3,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/capability_inventory.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-ROADMAP-001
+# SRS:         SRS-BUILDANDDO-ROADMAP-001, SRS-BUILDANDDO-PUBLIC-REDACTION-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        C-ONE
@@ -63,6 +63,11 @@ import json
 import re
 import subprocess
 from pathlib import Path
+
+try:  # imported as part of the repository (the tests), or run as a script from scripts/ci (the build)
+    from scripts.ci import public_redaction
+except ImportError:
+    import public_redaction  # type: ignore[no-redef]
 
 ROOT = Path(__file__).resolve().parents[2]
 APP = ROOT / "apps" / "web" / "src" / "App.jsx"
@@ -300,6 +305,10 @@ def main(argv: list[str] | None = None) -> int:
     report = build_report(offline=args.offline)
     print(json.dumps(report, indent=2) if args.json else render(report))
     if args.write:
+        # capabilities.json is public, so it passes the rule on the way out.
+        rule = public_redaction.Rule()
+        report, withheld = rule.redact_document(report)
+        public_redaction.report_withheld(rule, withheld, OUT.name)
         OUT.parent.mkdir(parents=True, exist_ok=True)
         OUT.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(f"\nwrote {OUT.relative_to(ROOT)}")
