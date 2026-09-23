@@ -41,6 +41,9 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
 | 11 | Continuation R9: a scan reads `.jsx`, `.ts`, `.tsx` and `.cjs`, states the files read, and never passes having read nothing | `python -m unittest tests.upgrade.test_public_redaction -k read` (fails on `ff7b865`) | done |
 | 12 | Continuation R10: test files may plant only the made-up names and documentation addresses; a fleet-map name fails even there | `python -m unittest tests.upgrade.test_public_redaction -k fixture` (fails on `ff7b865`) | done |
 | 13 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`, `verify_public_boundary.py` | done |
+| 14 | Continuation R11: the four test files name no real machine | `public_redaction.py scan apps/web/src tests/upgrade` with the private fleet map (fails on `ab9999c`, 4 files) | done |
+| 15 | The affected tests still pass | `npx vitest run` on the two login tests; `node --test tests/upgrade/*.test.mjs` | done |
+| 16 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`, `verify_public_boundary.py` | done |
 
 ## Constraints
 
@@ -51,6 +54,9 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
   `tests/upgrade/test_public_redaction.py`, and this bookkeeping. The continuation adds the header of
   `apps/web/src/hooks/useRoomsLive.js` and the readiness and context locks. Continuations R7-R8 and R9-R10
   touch only `scripts/ci/public_redaction.py`, its test, this bookkeeping and the two locks.
+- Continuation R11 touches four test files, the two locks and this bookkeeping:
+  `apps/web/src/components/auth/__tests__/LoginPage.ocn.test.jsx`, `apps/web/src/lib/__tests__/ocnLogin.test.js`,
+  `apps/web/src/test/select-testable.jsx` and `tests/upgrade/admin-fixture.mjs`.
 - Files it must not touch: the other files that name a machine (a separate dispatch),
   `scripts/publish/activity_publish.py` and the Buddi work (SRS-BUILDANDDO-BUDDI-001), the
   community work (SRS-BUILDANDDO-COMMUNITY-WEB-001), and `apps/web/public/activity-status.json`.
@@ -125,6 +131,25 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
   `LoginPage.ocn.test.jsx`, `ocnLogin.test.js`, `src/test/select-testable.jsx` and
   `tests/upgrade/admin-fixture.mjs`. A scan of `apps/web/src` therefore fails on the three under it, as it
   should.
+- **Gates:** `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`
+  and `verify_public_boundary.py` pass, also in a fresh LF checkout.
+
+## Evidence, continuation R11 (2026-09-23, local run on Windows, LF checkout)
+
+- **Before** (`ab9999c`): `public_redaction.py scan apps/web/src tests/upgrade` with the private fleet map reads
+  426 files and fails on the four, with one machine name each (exit 1).
+- **After:** the same scan reads 426 files and passes (exit 0).
+- **How the name was replaced without being written down:**
+  - A helper loaded the names from the private fleet map and printed each line of context with every name
+    masked.
+  - It replaced names only on the four known lines. It refused if a line's count differed from the count
+    measured, or if a replacement was itself a fleet name.
+  - The name never appeared in a command, an output, a commit message or this text.
+- **Tests:**
+  - the two login tests pass 15 of 15;
+  - the whole web suite passes 637 of 637; `select-testable.jsx` is loaded for every web test through
+    `vitest.config.js`;
+  - the whole Node suite, which loads `admin-fixture.mjs`, passes 519 of 519.
 - **Gates:** `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`
   and `verify_public_boundary.py` pass, also in a fresh LF checkout.
 

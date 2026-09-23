@@ -105,6 +105,23 @@ having read no file at all. That line looks exactly like a clean result.
    even if it is listed. Skipping test directories outright was rejected, because it would hide real names
    in public test files; measured 2026-09-23, four such files exist.
 
+## Continuation (2026-09-23): the four test files that name a real machine
+
+Once a scan read test files (R10), a scan of `apps/web/src` and `tests/upgrade` with the private fleet map found
+four files naming a real fleet machine:
+- two OCN login tests use it as the seat of a fixture account;
+- two comments name it as the machine a measurement was taken on.
+
+Test files are public text in this public repository, so these are leaks, like the ones the first dispatch
+removed from shipping source.
+
+11. **R11 - the tests name no real machine.**
+    - The two login fixtures use a made-up seat in the style of a persona, which follows no machine family.
+      Neither test asserts anything about the seat's text beyond passing the same record through, so each
+      keeps its meaning.
+    - The two comments name the seat's role, the operator workstation, instead of the machine.
+    - A scan of `apps/web/src` and `tests/upgrade` with the private fleet map passes.
+
 ## Non-goals
 
 - The 33 tracked files that name a machine in scripts, docs, migrations or test fixtures, and the
