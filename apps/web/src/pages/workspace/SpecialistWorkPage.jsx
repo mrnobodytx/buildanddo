@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:         apps/web/src/pages/workspace/SpecialistWorkPage.jsx
 // Stage:        07_BUILD
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:         pending
 // CK:           pending
 // Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -38,6 +38,7 @@ function WorkDesks() {
     const control = useWorkspaceRecords('specialist_desks'), missions = useWorkspaceRecords('missions');
     const { demo } = useDemoMode();
     const access = useWorkspaceAccess(), canWrite = !demo && access.data?.can_write === true;
+    const { user } = useAuth(), mine = (record) => !record || access.data?.can_admin === true || record.owner === user?.id;
     const [editing, setEditing] = useState(''), [scope, setScope] = useState(''), [status, setStatus] = useState('idle'), [error, setError] = useState(''), [busy, setBusy] = useState(false);
     const save = async (event) => {
         event.preventDefault(); if (busy || !canWrite) return; setBusy(true); setError('');
@@ -55,7 +56,7 @@ function WorkDesks() {
                     <p className="text-sm">{records.length > 1 ? 'Duplicate records: review required' : record ? `Recorded status: ${record.status}` : 'Scope not assigned'}</p>
                     <p className="whitespace-pre-wrap text-sm text-muted-foreground">{record?.scope}</p>
                     <div className="flex gap-3"><Link to={href} className="self-center text-sm underline">Open {label.toLowerCase()} tools</Link>
-                        <Button size="sm" variant="secondary" disabled={!canWrite || busy || records.length > 1} onClick={() => { setEditing(id); setScope(record?.scope || ''); setStatus(record?.status || 'idle'); }}>Edit scope</Button></div>
+                        <Button size="sm" variant="secondary" disabled={!canWrite || busy || records.length > 1 || !mine(record)} onClick={() => { setEditing(id); setScope(record?.scope || ''); setStatus(record?.status || 'idle'); }}>Edit scope</Button></div>
                 </Card>;
             })}</div>}
         {editing && <form onSubmit={save} className="space-y-3 border border-border p-4"><h2 className="font-semibold">{DESKS[editing][0]} scope</h2>
