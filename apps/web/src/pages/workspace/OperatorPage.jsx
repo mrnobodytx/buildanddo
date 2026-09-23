@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/OperatorPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
 // Depends:     apps/web/src/lib/operatorPlane.js, apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/components/workspace/ControlPrimitives.jsx
@@ -27,6 +27,7 @@ import { useDemoMode } from '@/hooks/useDemoMode';
 import pb from '@/lib/pocketbaseClient';
 import { observeMutation } from '@/lib/observability/mutations';
 import { createOperatorClient, importOperatorBlueprint, OPERATOR_MAX_BYTES, projectOperator } from '@/lib/operatorPlane';
+import { STATUS_PATH } from '@/lib/communityLinks';
 
 const EMPTY_WRITE = { busy: false, uncertain: false, error: '', receipt: null };
 const label = (value) => typeof value === 'string' ? value.replaceAll('_', ' ') : 'Unknown';
@@ -312,6 +313,6 @@ export default function OperatorPage() {
         <PageHeader title="Operator cockpit" description="See the decisions that need you, the work already underway, and the evidence still missing." />
         {content}
         <footer className="border-t border-border pt-4 text-xs text-muted-foreground">Powered by Citadel Nexus Inc. ·{' '}
-            <a href="https://citadel-nexus.com/status" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Public status</a></footer>
+            <a href={STATUS_PATH} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Public status</a></footer>
     </div>;
 }

@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/ClassroomLandingPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
 // Depends:     apps/web/src/components/site/PublicPage.jsx, apps/web/src/components/workspace/TutorialCatalog.jsx
@@ -20,6 +20,7 @@ import { BookOpen, MessageCircle, Users } from 'lucide-react';
 import PublicPage from '@/components/site/PublicPage';
 import { Button, Card } from '@/components/site/ui';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
+import { STATUS_PATH } from '@/lib/communityLinks';
 
 export default function ClassroomLandingPage() {
     return <PublicPage path="/classrooms" eyebrow="Learn together" title="A classroom for the work ahead."
@@ -39,6 +40,6 @@ export default function ClassroomLandingPage() {
             <p className="text-sm leading-6 text-muted-foreground">Business planning, accountable missions and government-submission learning use the same curriculum inside and outside a classroom.</p>
             <TutorialCatalog limit={4} />
         </section>
-        <p className="text-xs text-muted-foreground">Powered by Citadel Nexus Inc. · <a className="underline underline-offset-4" href="https://citadel-nexus.com/status">Service status</a></p>
+        <p className="text-xs text-muted-foreground">Powered by Citadel Nexus Inc. · <a className="underline underline-offset-4" href={STATUS_PATH}>Service status</a></p>
     </PublicPage>;
 }
