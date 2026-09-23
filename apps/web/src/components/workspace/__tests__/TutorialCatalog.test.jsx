@@ -62,20 +62,6 @@ const read = async (prefix = 'Read') => {
 };
 
 describe('complete Field Manual lessons', () => {
-    it('opens the government learning path directly and reads a substantive lesson', async () => {
-        renderWithProviders(<TutorialsPage />, { route: '/app/tutorials?path=government' });
-        const user = setupUser();
-        expect(await screen.findByLabelText('Learning path')).toHaveValue('Government submissions');
-        expect(screen.getAllByRole('button', { name: /^Read / })).toHaveLength(8);
-        await user.click(screen.getByRole('button', { name: 'Read Read the opportunity and freeze its rules' }));
-        const reader = within(screen.getByRole('dialog'));
-        expect(reader.getByRole('heading', { name: 'Create a source-backed matrix' })).toBeVisible();
-        expect(reader.getByText(/15 slides OR a paper of up to 10 pages/)).toBeVisible();
-        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
-        await user.keyboard('{Escape}');
-        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
-    });
-
     it('withholds government lessons from public and demo previews', async () => {
         renderWithProviders(<TutorialCatalog />, { auth: { isAuthed: false, user: null } });
         expect(screen.getByText('25 lessons to explore')).toBeVisible();

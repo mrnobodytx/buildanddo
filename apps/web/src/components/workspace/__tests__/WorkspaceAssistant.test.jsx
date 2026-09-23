@@ -204,7 +204,7 @@ it('does not move focus from a native field when permission polling recovers', a
     expect(field).toHaveFocus();
     scope.access = { ...scope.access, loading: false, data: { ...scope.access.data } }; view.rerender(<Page />);
     expect(field).toHaveFocus(); expect(field).toHaveValue('Keep editing the native desk');
-    await user.click(screen.getByRole('button', { name: 'Close assistant' }));
+    await user.click(screen.getByRole('button', { name: 'Close Buddi' }));
     await user.click(screen.getByRole('button', { name: 'Buddi', exact: true }));
     expect(screen.getByLabelText('What would you like to do?')).toHaveFocus();
 });
