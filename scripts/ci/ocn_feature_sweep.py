@@ -53,6 +53,8 @@ from typing import Any
 
 REPO = Path(__file__).resolve().parents[2]
 FLEET = REPO.parent.parent / "config" / "master_citadel.fleet.json"
+# sites/buildanddo — scripts/ci/<this file> -> scripts -> buildanddo
+ROOT = Path(__file__).resolve().parents[2]
 ENVS = {"staging": "https://staging.buildanddo.com", "production": "https://buildanddo.com"}
 BACKEND = "/hcgi/platform"
 CBF = "/opt/citadel/cbf"
@@ -192,8 +194,27 @@ def encode_plan(rows) -> str:
     return base64.b64encode(("\n".join(lines) + "\n").encode()).decode()
 
 
-def classify(code: int, expect: tuple[int, ...]) -> tuple[str, bool]:
-    """Returns (state, alive). `alive` is whether this feature functions for this seat."""
+# PocketBase's own router emits this when nothing is registered for a path. An application
+# handler that ran and then could not find a RECORD says something else entirely.
+_ROUTER_404 = "file not found"
+
+
+def classify(code: int, expect: tuple[int, ...], body: str = "") -> tuple[str, bool]:
+    """Returns (state, alive). `alive` is whether this feature functions for this seat.
+
+    A 404 HAS TWO CAUSES AND THEY NEED OPPOSITE REPAIRS. Measured against production
+    2026-09-21 (seat VCC): this function mapped every 404 to ROUTE_ABSENT from the status code
+    alone, and reported 18 features as missing hooks. They were not missing. Probed
+    unauthenticated, 12 of 13 answered 401 "requires valid record authorization token" -- the
+    hook is registered and enforcing auth. The authenticated 404 body said "The requested
+    workspace record is unavailable": the ROUTE exists, the seat's WORKSPACE does not.
+
+    One data gap read as eighteen deployment gaps, and the repair list it produced pointed at a
+    code deploy that could not have fixed any of them. So the body is now read: PocketBase's
+    router 404 is ROUTE_ABSENT, and a handled 404 is RECORD_MISSING.
+    """
+    if code == 404 and body and _ROUTER_404 not in body.lower():
+        return "RECORD_MISSING", code in expect
     return STATE.get(code, "HTTP_%d" % code), code in expect
 
 
@@ -252,7 +273,7 @@ def sweep(box: str, env: str) -> dict[str, Any]:
     controls = {}
     for index, (name, method, path, _body, expect) in enumerate(PROBES):
         code, body = answer["results"].get(index, (0, ""))
-        state, alive = classify(code, expect)
+        state, alive = classify(code, expect, body)
         row = {"feature": name, "method": method, "path": path.replace("/W/", "/<workspace>/"),
                "http": code, "state": state, "alive": alive, "expected": list(expect)}
         if not alive and body:
@@ -277,9 +298,13 @@ def sweep(box: str, env: str) -> dict[str, Any]:
             continue
         if row["state"] == "ROUTE_ABSENT":
             out["broken"].append(row["feature"])
+        elif row["state"] == "RECORD_MISSING":
+            # Not a deploy defect: the route answered. This seat has no record to read.
+            out.setdefault("record_missing", []).append(row["feature"])
         else:
             out["degraded"].append(row["feature"])
-    out["state"] = "PASS" if not out["broken"] and not out["degraded"] else "REPAIR_NEEDED"
+    out["state"] = ("PASS" if not out["broken"] and not out["degraded"]
+                    and not out.get("record_missing") else "REPAIR_NEEDED")
     return out
 
 
@@ -289,6 +314,9 @@ def table(result: dict[str, Any]) -> str:
     if result.get("measured_from_ip"):
         lines.append("  measured from %s as seat %s"
                      % (result["measured_from_ip"], result.get("seat_uid", "")))
+    if result.get("record_missing"):
+        lines.append("  RECORD MISSING (route answered; this seat has no such record - a "
+                     "PROVISIONING fix, not a deploy): " + ", ".join(result["record_missing"]))
     if result.get("reason"):
         lines.append("  " + result["reason"])
     for row in result.get("checks", []):
@@ -313,6 +341,15 @@ def selftest() -> dict[str, Any]:
     record("both controls are present",
            {"control.absent-route", "control.unauthenticated"} <= {p[0] for p in PROBES})
     record("404 where 200 was required reads as absent", classify(404, (200,))[0] == "ROUTE_ABSENT")
+    record("a router 404 is still ROUTE_ABSENT",
+           classify(404, (200,), '{"message":"File not found.","status":404}')[0] == "ROUTE_ABSENT")
+    record("a HANDLED 404 is RECORD_MISSING, not a missing route",
+           classify(404, (200,), '{"message":"The requested workspace record is unavailable."}')[0]
+           == "RECORD_MISSING")
+    record("and a body-less 404 stays ROUTE_ABSENT rather than guessing",
+           classify(404, (200,), "")[0] == "ROUTE_ABSENT")
+    record("the distinction does not change aliveness",
+           classify(404, (404,), '{"message":"workspace record is unavailable."}')[1] is True)
     record("403 is working software, not a break", classify(403, (200, 403))[1] is True)
     record("a 200 where 404 was required fails", classify(200, (404,))[1] is False)
     record("503 separates from 404", classify(503, (200,))[0] == "DEPENDENCY_MISSING")
@@ -338,6 +375,8 @@ def main() -> int:
     sw.add_argument("--box", default="mesh-control", choices=sorted(SSH_KEYS))
     sw.add_argument("--env", default="staging", choices=sorted(ENVS))
     sw.add_argument("--json", action="store_true")
+    sw.add_argument("--write", action="store_true",
+                    help="persist the receipt so other tools can CITE this sweep")
     sub.add_parser("routes")
     sub.add_parser("selftest")
     args = ap.parse_args()
@@ -351,6 +390,13 @@ def main() -> int:
         print(json.dumps(result, indent=2))
         return 0 if result["state"] == "PASS" else 1
     result = sweep(args.box, args.env)
+    if getattr(args, "write", False) and result.get("env"):
+        # A sweep that only prints cannot be cited. The known-gaps synthesizer needs a receipt
+        # on disk naming the environment, the box it was measured FROM, and the seat it ran as.
+        dest = ROOT / "state" / "ocn_feature_sweep" / ("%s.latest.json" % result["env"])
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(json.dumps(result, indent=2) + chr(10), encoding="utf-8")
+        print("RECEIPT  %s" % dest)
     print(json.dumps(result, indent=2) if args.json else table(result))
     return 0 if result.get("state") == "PASS" else 1
 
