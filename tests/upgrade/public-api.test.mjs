@@ -67,9 +67,13 @@ test('mirrored public text still matches the files it cites', () => {
         assert.ok(flat(pages).includes(page.description), `description of ${page.path} changed`);
     }
     assert.ok(pages.includes(api.BOUNDARIES.pricing), 'pricing statement changed');
-    const footer = source('apps/web/src/components/site/Footer.jsx');
-    for (const [key, name] of [['discord', 'DISCORD_INVITE_URL'], ['wiki', 'WIKI_URL'], ['forum', 'FORUM_URL'], ['reddit', 'REDDIT_URL']]) {
-        assert.ok(footer.includes(`const ${name} = '${api.COMMUNITY[key]}';`), `${key} link changed`);
+    // One source for community links since SRS-BUILDANDDO-COMMUNITY-WEB-001; the footer reads from it.
+    assert.equal(api.COMMUNITY.source, 'apps/web/src/lib/communityLinks.js');
+    const links = flat(source(api.COMMUNITY.source));
+    for (const key of ['discord', 'wiki', 'forum', 'reddit']) {
+        const entry = links.slice(links.indexOf(`id: '${key}'`));
+        assert.ok(links.includes(`id: '${key}'`) && entry.slice(0, entry.indexOf('}')).includes(`url: '${api.COMMUNITY[key]}'`),
+            `${key} link changed`);
     }
     assert.ok(flat(source('apps/web/src/pages/HomePage.jsx')).includes('Submitting a challenge does not start an automation or create a verified result.'));
     assert.ok(api.OPERATING_MODEL.flow.some((line) => line.includes('Submitting a challenge does not start an automation or create a verified result.')));

@@ -97,7 +97,7 @@ const COMMUNITY = {
     wiki: 'https://wiki.buildanddo.com',
     discord: 'https://discord.gg/vTDZxmpHHC',
     reddit: 'https://www.reddit.com/r/buildanddo',
-    source: 'apps/web/src/components/site/Footer.jsx',
+    source: 'apps/web/src/lib/communityLinks.js',
 };
 const PAGES = [
     { path: '/', label: 'Home', description: 'Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.' },

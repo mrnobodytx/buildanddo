@@ -49,6 +49,26 @@ its authority, source and time, and the three write tools leave a receipt a pers
   ElevenLabs agent. The three write tools must be given the `x-buddi-tool-secret` header by the
   agent's owner before they can succeed.
 
+## Re-run on the integration branch (2026-09-23)
+
+The six commits were replayed onto `bits/SRS-BUILDANDDO-WORKSPACE-001-fleet-master-seat-gate` at
+`07ca653`, which now carries the Buddi rename (#78), the public redaction rule (#79) and the community
+links (#77). The replay had no conflicts. Local run on Windows, from a checkout with LF line endings.
+
+- Native, PocketBase 0.39.8, whole migration set: 12 tests OK.
+- `npm --prefix apps/edge test`: 55 pass.
+- `node --test tests/upgrade/public-api.test.mjs`: 4 pass, 1 fail before the fix. The community links
+  moved from `Footer.jsx` into `apps/web/src/lib/communityLinks.js` (#77), so the drift check looked in
+  the wrong file. The four links themselves are unchanged. The mirror now names that file as its source,
+  and the check reads each link from its own entry there: 5 pass. Mutation control: a wrong Discord invite
+  in the hook fails the check (`discord link changed`); restored, 5 pass.
+- The estate's public rule, now counting a hyphen as a separator (#82), finds no machine name in the 21
+  files. It finds addresses only in the two compose files, and those are the bind-all and loopback
+  addresses already on the branch; this dispatch adds three variable names and no values there.
+- `apps/edge/wrangler.toml` carries the Cloudflare account id and one D1 database id, imported as the
+  deployed Worker had them. Neither grants access alone; they are recorded here so their presence in a
+  public repository is a decision, not an accident.
+
 ## Constraints
 
 - Files this dispatch may touch: the new hooks, migration and tests named in the SRS,
