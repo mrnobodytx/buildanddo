@@ -463,7 +463,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-22T23:13:13.676175+00:00",
+  "generated_at": "2026-09-23T00:39:47.395369+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -616,6 +616,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md",
         "status": "proposed",
         "title": "Semantic ISR research"
+      },
+      {
+        "code": "SRS-BUILDANDDO-JOURNEY-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-JOURNEY-001.md",
+        "status": "in_progress",
+        "title": "Build and Do navigation and guided first-mission journey"
       },
       {
         "code": "SRS-BUILDANDDO-PB-METRICS-001",
@@ -954,12 +961,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 50,
-    "python_files": 347,
+    "python_files": 376,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1398,
-    "web_source_files": 353
+    "tracked_files": 1472,
+    "web_source_files": 360
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1032,22 +1039,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "1b6a054ff39549e085181dd8afdc249856be3678c69eab4ac35d7a15fc1511af",
+    "source_sha256": "5b69d81a29bd988313a38a62e6e325f01aad3c2544afdbe14b3f248bad362eb7",
     "state": "PASS"
   },
   "summary": {
     "findings": 24,
     "findings_high": 24,
     "pipelines": 10,
-    "srs_open": 29,
-    "srs_total": 33,
+    "srs_open": 30,
+    "srs_total": 34,
     "unwired_gates": 22
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 67,
+    "js_test_files": 70,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
