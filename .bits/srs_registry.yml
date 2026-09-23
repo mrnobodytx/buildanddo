@@ -234,3 +234,11 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md
     owner: C-ONE
     notes: Additive closure lane over existing acceptance/replay receipts; blocks on one canonical origin because buildanddo.tech has no DNS while README and SITE_ORIGIN disagree
+
+  - code: SRS-BUILDANDDO-COMMUNITY-WEB-001
+    title: One source for community links, public persona profiles, honest community health, no machine names in seat identity
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-COMMUNITY-WEB-001.md
+    owner: C-ONE
+    notes: Operator direction 2026-09-22 relayed by the C-ONE dispatch; this entry records that dispatch and does not self-authorize A2. Deployment, pushing, live community probes and activity-status.json excluded
