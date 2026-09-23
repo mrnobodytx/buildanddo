@@ -5,7 +5,7 @@
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN, C-ONE (broadcaster names)
+// Seat:        BITS-CODEGEN, C-ONE (broadcaster names and profile links)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
 // Depends:     apps/web/src/components/broadcast/LiveBroadcast.jsx, apps/web/src/hooks/useClassroomMedia.js
@@ -115,6 +115,25 @@ describe('live broadcast in the classroom', () => {
         expect(screen.getByText('Guildmaster')).toBeVisible();
         expect(screen.getByText(`OCN seat: ${WITHHELD}`)).toBeVisible();
         expect(document.body.textContent).not.toMatch(/gm:forge|ray-xyz0-0|rig0/);
+    });
+
+    it('links a known guildmaster to its profile in a new tab and still names one the canon does not know', async () => {
+        realtime.joinClassroom.mockResolvedValue(handle());
+        const user = userEvent.setup();
+        render(<LiveBroadcast room={live} membership={member} media={{ available: true }} />);
+        await user.click(screen.getByRole('button', { name: 'Join broadcast' }));
+        await waitFor(() => expect(tracker.start).toHaveBeenCalledWith(5000));
+        act(() => onChange({ live: [
+            { id: 'p1', session_id: 'sess-a', persona_id: 'gm-forge', state: 'LIVE', tracks: [] },
+            { id: 'p2', session_id: 'sess-b', persona_id: 'gm-zeta', state: 'LIVE', tracks: [] },
+        ], pulled: [], unreadable: [] }));
+        const forge = screen.getByRole('link', { name: 'Forge (opens in a new tab)' });
+        expect(forge).toHaveAttribute('href', '/guild/forge');
+        expect(forge).toHaveAttribute('target', '_blank');
+        expect(forge).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(screen.getByText('Zeta')).toBeVisible();
+        expect(screen.getAllByRole('link')).toHaveLength(1);
+        expect(document.body.textContent).not.toMatch(/gm-forge|gm-zeta/);
     });
 
     it('shows receiving only after packets are measured', async () => {
