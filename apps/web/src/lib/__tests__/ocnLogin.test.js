@@ -36,7 +36,7 @@ describe('ocnLogin', () => {
 
     it('posts the runtime header to the PocketBase route and saves the session on 200', async () => {
         const client = fakeClient();
-        const record = { id: 'seat_rig1', email: 'rig1@ocn.buildanddo.invalid', name: 'OCN seat: rig1' };
+        const record = { id: 'seat_scholar', email: 'scholar@ocn.buildanddo.invalid', name: 'OCN seat: scholar' };
         const fetchImpl = vi.fn().mockResolvedValue(jsonResponse(200, { token: 'tok', record }));
 
         const got = await ocnLogin({ header: HEADER, fetchImpl, client });
