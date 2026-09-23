@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/__tests__/AppRoutes.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (guild and status entries)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
 // Depends:     apps/web/src/App.jsx
@@ -37,7 +37,8 @@ afterEach(() => vi.unstubAllGlobals());
 const LAZY_ROUTE_TIMEOUT = 20000;
 
 describe('lazy route entry points', () => {
-    it.each(['/hostinger-challenge', '/pricing', '/about', '/docs', '/classrooms', '/blog', '/contact'])(
+    it.each(['/hostinger-challenge', '/pricing', '/about', '/docs', '/classrooms', '/blog', '/contact',
+        '/guild', '/guild/forge', '/status'])(
         'loads %s without an authenticated account',
         async (route) => {
             renderWithProviders(<AppRoutes />, { route, auth: { isAuthed: false, user: null } });

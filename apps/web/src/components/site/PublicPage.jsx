@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/site/PublicPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (route metadata for pages outside the catalogue)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
 // Depends:     apps/web/src/lib/publicPages.js
@@ -23,14 +23,16 @@ import { MotionReveal } from '@/components/motion/MotionPrimitives';
 import { SectionLabel } from '@/components/site/ui';
 import { PUBLIC_PAGES } from '@/lib/publicPages';
 
-export default function PublicPage({ path, eyebrow, title, intro, children, structuredData }) {
-    const page = PUBLIC_PAGES.find((entry) => entry.path === path);
+export default function PublicPage({ path, eyebrow, title, intro, children, structuredData, route }) {
+    // A route outside PUBLIC_PAGES (a persona profile) supplies its own metadata as `route`.
+    const page = PUBLIC_PAGES.find((entry) => entry.path === path) || route;
     return (
         <div className="min-h-screen bg-background text-foreground">
             <Seo
                 title={page.title}
                 description={page.description}
                 path={path}
+                route={route}
                 structuredData={structuredData}
             />
             <Header />

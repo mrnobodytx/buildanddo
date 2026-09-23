@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/ContactPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (community links from the one source)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
 // Depends:     apps/web/src/components/site/PublicPage.jsx
@@ -20,8 +20,13 @@ import PublicPage from '@/components/site/PublicPage';
 import { Button, Card } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { communityLink } from '@/lib/communityLinks';
 
 const LICENSING_EMAIL = 'licensing@citadel-nexus.com';
+// Both links come from communityLinks.js: this page used to carry its own copy of the Discord
+// invite, and only one invite may ever be published.
+const DISCORD_URL = communityLink('discord').url;
+const ISSUES_URL = `${communityLink('github').url}/issues`;
 
 export default function ContactPage() {
     const [draft, setDraft] = useState('');
@@ -48,7 +53,7 @@ export default function ContactPage() {
                             Discuss your use case and ask how the workspace fits your work.
                         </p>
                         <a
-                            href="https://discord.gg/vTDZxmpHHC"
+                            href={DISCORD_URL}
                             className="font-semibold text-primary underline underline-offset-4"
                         >
                             Join the Discord conversation
@@ -62,7 +67,7 @@ export default function ContactPage() {
                             data.
                         </p>
                         <a
-                            href="https://github.com/mrnobodytx/buildanddo/issues"
+                            href={ISSUES_URL}
                             className="font-semibold text-primary underline underline-offset-4"
                         >
                             Open the issue tracker

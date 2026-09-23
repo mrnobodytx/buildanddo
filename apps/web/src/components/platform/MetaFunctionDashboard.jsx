@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/platform/MetaFunctionDashboard.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-PLATFORM-001
+// SRS:         SRS-BUILDANDDO-PLATFORM-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    USO-BUILDANDDO-PLATFORM-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    USO-BUILDANDDO-PLATFORM-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-13
 // Depends:     apps/web/src/components/site/ui.jsx,
@@ -35,6 +35,7 @@ import {
     INVOCATIONS,
     PROVIDER_HEALTH,
 } from '@/components/platform/platformData';
+import { STATUS_PATH } from '@/lib/communityLinks';
 
 const PROVIDER_TONES = {
     Datadog: {
@@ -328,7 +329,7 @@ export default function MetaFunctionDashboard({
                     <Activity className="h-3 w-3" /> Demonstration data only
                 </span>
                 <a
-                    href="https://citadel-nexus.com/status"
+                    href={STATUS_PATH}
                     target="_blank"
                     rel="noreferrer"
                     className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"

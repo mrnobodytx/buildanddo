@@ -1,3 +1,4 @@
+// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001 | CAPS=B | Seat=C-ONE
 import React, { lazy, Suspense } from 'react';
 import { MotionProvider } from '@/contexts/MotionContext';
 import { MotionEntrance } from '@/components/motion/MotionPrimitives';
@@ -64,6 +65,9 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const DocsPage = lazy(() => import('./pages/DocsPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const GuildPage = lazy(() => import('./pages/GuildPage'));
+const PersonaProfilePage = lazy(() => import('./pages/PersonaProfilePage'));
+const StatusPage = lazy(() => import('./pages/StatusPage'));
 const RoomsPage = lazy(() => import('./pages/workspace/RoomsPage'));
 const SystemsRoomPage = lazy(() => import('./pages/workspace/SystemsRoomPage'));
 const LiveExperimentRoomPage = lazy(() => import('./pages/workspace/LiveExperimentRoomPage'));
@@ -164,6 +168,9 @@ export function AppRoutes() {
                 <Route path="/classrooms" element={<ClassroomLandingPage />} />
                 <Route path="/blog" element={<BlogPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/guild" element={<GuildPage />} />
+                <Route path="/guild/:slug" element={<PersonaProfilePage />} />
+                <Route path="/status" element={<StatusPage />} />
 
                 {/* Authentication */}
                 <Route

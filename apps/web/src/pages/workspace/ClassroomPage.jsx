@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/ClassroomPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-CN-PERSONA-RUNTIME-001
+// SRS:         SRS-CN-PERSONA-RUNTIME-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    C-ONE-20260918-PERSONA-RUNTIME-001
+// Dispatch:    C-ONE-20260918-PERSONA-RUNTIME-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
@@ -51,9 +51,10 @@
 //      surfaced with a button rather than left as a silent element above a green
 //      badge.
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { Card } from '@/components/site/ui';
+import { personaForPresence, personaPath } from '@/data/personas';
 import pocketbaseClient from '@/lib/pocketbaseClient';
 import {
     joinClassroom,
@@ -69,6 +70,20 @@ const AUDIO_STATS_MS = 2000;
 
 function shortId(value) {
     return String(value || '').slice(0, 12);
+}
+
+// A guildmaster row names its persona by presence id (gm-forge, gm:forge, gm-builder-forge). The
+// reader gets the persona's name and its public profile rather than the raw id; an id the canon
+// does not know is still shown, unlinked, so an unexpected publisher is never hidden.
+function PresencePersona({ id }) {
+    const persona = personaForPresence(id);
+    if (!persona) return <>{`${id} (guildmaster)`}</>;
+    return (
+        <>
+            <Link to={personaPath(persona)} className="underline underline-offset-4">{persona.name}</Link>
+            {' (guildmaster)'}
+        </>
+    );
 }
 
 export default function ClassroomPage() {
@@ -413,7 +428,7 @@ export default function ClassroomPage() {
                     {presence.map((row) => (
                         <li key={row.id} className="flex flex-wrap items-center gap-3 rounded border p-3 text-sm">
                             <span className="font-evidence">
-                                {row.persona_id ? `${row.persona_id} (guildmaster)` : row.display_name}
+                                {row.persona_id ? <PresencePersona id={row.persona_id} /> : row.display_name}
                             </span>
                             <span className="text-xs text-muted-foreground">
                                 session {shortId(row.session_id)}… · {row.tracks.map((t) => t.trackName).join(', ')}

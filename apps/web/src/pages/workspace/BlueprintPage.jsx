@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/BlueprintPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-17
 // Depends:     apps/web/src/pages/workspace/BlueprintSavedPage.jsx, apps/web/src/lib/blueprints.js
@@ -26,6 +26,7 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import pb from '@/lib/pocketbaseClient';
 import { createBlueprintClient, exportMissionPlan } from '@/lib/blueprints';
+import { STATUS_PATH } from '@/lib/communityLinks';
 
 const percent = (value) => Number.isFinite(value) ? Math.round(value * 100) + '%' : 'Unavailable';
 const warningLabel = (value) => value.replaceAll('_', ' ').replaceAll(':', ' — ');
@@ -158,7 +159,7 @@ function BlueprintDesk({ accountId, workspaceId, demo }) {
             <Button type="submit" disabled={!enabled || !file || state.busy}>{state.busy ? 'Analyzing…' : 'Analyze blueprint'}</Button>
         </form>{state.busy && <p role="status">Processing the PDF and its review plan…</p>}{state.error && <p role="alert">{state.error}</p>}</Card>
         {state.data && <BlueprintResults data={state.data} busy={state.busy} generate={() => analyze(true)} />}
-        <footer className="text-xs text-muted-foreground">Powered by Citadel Nexus Inc. · <a href="https://citadel-nexus.com/status" className="underline">Service status</a></footer>
+        <footer className="text-xs text-muted-foreground">Powered by Citadel Nexus Inc. · <a href={STATUS_PATH} className="underline">Service status</a></footer>
     </div>;
 }
 
