@@ -87,12 +87,14 @@ export function useClassrooms(roomId = '', page = 1, status = 'all') {
         if (result.ok || ['conflict', 'forbidden'].includes(result.reason)) await reload.current();
         return result;
     }, [scope]);
+    const readRecord = useCallback(() => api.record(roomId), [api, roomId]);
     const current = snapshot.key === key;
     const progress = write.scope === scope ? write : { saving: false, error: '', uncertain: false, saved: null };
     return { data, loading: !current || snapshot.loading, error: current ? snapshot.error : '', demo, scope,
         connected: current && Boolean(data) && !snapshot.error,
         presenceError: presence.scope === scope ? presence.error : '',
         saving: progress.saving, writeError: progress.error, uncertain: progress.uncertain, saved: progress.saved,
-        refresh: () => load(), mutate: (action, payload, revision) => perform(() => api.command(action, payload, revision)),
+        refresh: () => load(), readRecord,
+        mutate: (action, payload, revision) => perform(() => api.command(action, payload, revision)),
         retry: () => perform(() => api.retry()) };
 }

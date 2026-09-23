@@ -444,7 +444,8 @@ test('the hook reaches no network and holds no credential', () => {
 
 test('the lane owned files are LF only', () => {
     for (const path of [HOOK, MIGRATION, 'tests/upgrade/classroom-presence.test.mjs',
-        'apps/web/src/lib/classroomRealtime.js', 'apps/web/src/pages/workspace/ClassroomPage.jsx',
+        'apps/web/src/lib/classroomRealtime.js', 'apps/web/src/hooks/useClassroomMedia.js',
+        'apps/web/src/components/broadcast/LiveBroadcast.jsx',
         'apps/web/src/lib/__tests__/classroomRealtime.presence.test.js']) {
         assert.equal(source(path).includes('\r'), false, `${path} must be LF only`);
     }

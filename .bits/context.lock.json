@@ -537,7 +537,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-23T21:20:43.218205+00:00",
+  "generated_at": "2026-09-23T21:51:41.009879+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -927,13 +927,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 56,
+    "migrations": 58,
     "python_files": 298,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1299,
-    "web_source_files": 352
+    "tracked_files": 1314,
+    "web_source_files": 364
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1012,7 +1012,7 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "46a888bb4b739e820d06caa3435c123d01c0777c88db31cbde87bd10f9880dcb",
+    "source_sha256": "6d3681bea0f23dd210f21e7155ae7613c7de662c44c5d2a1cbff446e5f9616fe",
     "state": "PASS"
   },
   "summary": {
@@ -1027,7 +1027,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 72,
+    "js_test_files": 75,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
