@@ -44,7 +44,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/fleet_report.py is never executed by GitHub Actions"
@@ -184,6 +184,13 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/public_redaction.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
@@ -212,7 +219,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/deploy/roadmap_status.py",
+      "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/verify_public_disclosure.py is never executed by GitHub Actions"
@@ -223,6 +230,13 @@
       "severity": "high",
       "srs": "SRS-BUILDANDDO-EVIDENCE-CI-001",
       "statement": "services/praxis_evidence/run_all_tests.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md is unregistered, so no branch may claim it",
+      "severity": "high",
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-BUDDI-001 has a spec but is not in the registry"
     },
     {
       "area": "governance",
@@ -319,7 +333,9 @@
     },
     {
       "path": "scripts/ci/fleet_report.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_public_redaction.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -436,6 +452,13 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/public_redaction.py",
+      "referenced_by": [
+        "tests/upgrade/test_public_redaction.py"
+      ],
+      "wired_into_ci": false
+    },
+    {
       "path": "scripts/ci/selftest_sprint_replay.py",
       "referenced_by": [],
       "wired_into_ci": false
@@ -496,9 +519,7 @@
     },
     {
       "path": "scripts/ci/verify_public_disclosure.py",
-      "referenced_by": [
-        "scripts/deploy/roadmap_status.py"
-      ],
+      "referenced_by": [],
       "wired_into_ci": false
     },
     {
@@ -507,7 +528,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-22T10:56:44.735963+00:00",
+  "generated_at": "2026-09-23T17:14:20.573588+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -653,6 +674,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-PLATFORM-001.md",
         "status": "in_progress",
         "title": "MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PUBLIC-REDACTION-001.md",
+        "status": "in_progress",
+        "title": "No fleet machine name or IP address in the generated JSON or the site bundle"
       },
       {
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
@@ -876,12 +904,12 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 55,
-    "python_files": 294,
+    "migrations": 56,
+    "python_files": 297,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1247,
+    "tracked_files": 1271,
     "web_source_files": 333
   },
   "schema_version": 1,
@@ -961,16 +989,16 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "c2a9106cdf33b54666233ce73e58028de3f0ecb7cfae1ba8ee4282f678b9ca62",
+    "source_sha256": "6665fd30b9194c02e3b8075aae829c89d6c64e8adfe198b7b4cb7788a84a2464",
     "state": "PASS"
   },
   "summary": {
-    "findings": 34,
-    "findings_high": 34,
+    "findings": 36,
+    "findings_high": 36,
     "pipelines": 7,
-    "srs_open": 26,
-    "srs_total": 30,
-    "unwired_gates": 32
+    "srs_open": 27,
+    "srs_total": 31,
+    "unwired_gates": 33
   },
   "tests": {
     "js_runners": [
