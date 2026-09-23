@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/operatorPlane.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PUBLIC-REDACTION-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -21,7 +21,7 @@ import { canonicalPolicy as canonical } from './policyIntelligence.js';
 export const OPERATOR_MAX_BYTES = 750000;
 const SOURCES = ['missions', 'signals', 'evidence', 'workflow_runs', 'research', 'suite_runs', 'seat_events', 'integrations'];
 const SYSTEMS = { datadog: 'Datadog', posthog: 'PostHog', github: 'GitHub', nxc: 'NXC', supabase: 'Supabase',
-    n8n: 'n8n', cloudflare: 'Cloudflare', digitalocean: 'DigitalOcean', rig2: 'Rig2 / fleet', gpt: 'GPT workers' };
+    n8n: 'n8n', cloudflare: 'Cloudflare', digitalocean: 'DigitalOcean', fleet: 'Fleet workers', gpt: 'GPT workers' };
 const ROLES = ['owner', 'admin', 'editor', 'viewer'];
 const TTL = 15 * 60 * 1000;
 const imported = new WeakSet();

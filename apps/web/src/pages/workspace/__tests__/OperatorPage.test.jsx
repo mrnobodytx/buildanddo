@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PUBLIC-REDACTION-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -86,7 +86,7 @@ describe('OperatorPage', () => {
         expect(within(decisions).getAllByRole('link').map((link) => link.getAttribute('href'))).toContain('/app/missions?mission=planned');
         await user.click(screen.getByText('Work and active missions'));
         expect(screen.getByRole('region', { name: 'Work queue' })).toHaveTextContent('Incomplete plan');
-        expect(screen.getByRole('region', { name: 'Systems and evidence' })).toHaveTextContent('Rig2 / fleet');
+        expect(screen.getByRole('region', { name: 'Systems and evidence' })).toHaveTextContent('Fleet workers');
         expect(screen.getByRole('region', { name: 'Systems and evidence' })).toHaveTextContent('No runtime observation');
         await user.click(screen.getByText('Recent changes and worker activity'));
         expect(screen.getByRole('region', { name: 'Worker activity' })).toHaveTextContent('Recorded activity does not establish available capacity.');
