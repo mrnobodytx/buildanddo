@@ -64,3 +64,15 @@ release stays beside it.
   the same.
 - **Gates:** `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`
   and `verify_public_boundary.py` pass, also in a fresh LF checkout.
+
+## The context lock after the merge (2026-09-23)
+
+A handoff note was pushed directly to the integration branch (`d928cfd`, merged at `9d476d6`) while #98 was
+open. It added a tracked file without regenerating `.bits/context.lock.json`, so the head failed
+`agent_context.py --check` with "changed section: repo". The head before it, `230d2b8`, passed. #98 merged cleanly
+on top and carried the same stale context lock.
+
+The readiness check still passed, and it was the only lock the pre-merge trial checked. The context lock is
+regenerated on the head, with LF line endings. The readiness binding needed no change.
+
+**How to apply:** a trial merge before merging checks both locks, not the readiness lock alone.
