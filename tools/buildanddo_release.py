@@ -2039,11 +2039,15 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     args = parser().parse_args(argv)
     root = root_path(args.root)
-    secret = Path(args.secret_env) if args.secret_env else Path(os.environ.get("BUILDANDDO_RELEASE_SECRET_ENV") or DEFAULT_SECRET)
-    load_env_file(secret)
-    # Make the chosen external secret path available to GitLab as a reference.
-    # The value is a path only; secret values are never copied into receipts.
-    os.environ.setdefault("BUILDANDDO_RELEASE_SECRET_ENV", str(secret))
+    # No release env NAMED anywhere is a HOLD the doctor must be able to report, not a crash:
+    # DEFAULT_SECRET is None when neither CITADEL_RELEASE_ENV nor the local settings name one.
+    named = os.environ.get("BUILDANDDO_RELEASE_SECRET_ENV", "").strip()
+    secret = Path(args.secret_env) if args.secret_env else (Path(named) if named else DEFAULT_SECRET)
+    if secret is not None:
+        load_env_file(secret)
+        # Make the chosen external secret path available to GitLab as a reference.
+        # The value is a path only; secret values are never copied into receipts.
+        os.environ.setdefault("BUILDANDDO_RELEASE_SECRET_ENV", str(secret))
     try:
         repo = find_repo(root, args.repo or None)
         # Public config is applied AFTER the secrets file, and only fills keys still unset, so the
