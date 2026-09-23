@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/classroom-presence.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-CN-PERSONA-RUNTIME-001
+// SRS:         SRS-CN-PERSONA-RUNTIME-001, SRS-BUILDANDDO-PRESENCE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    C-ONE-20260918-PERSONA-RUNTIME-001
+// Dispatch:    C-ONE-20260918-PERSONA-RUNTIME-001, VCC-BUILDANDDO-PRESENCE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
@@ -28,11 +28,13 @@
 //   against it here.
 //
 // OFFLINE
-//   Nothing in this file opens a socket. $http is not provided to the hook at all:
-//   the presence route must never call Cloudflare, and a handler that tried would
-//   fail with ReferenceError rather than silently reaching the network. The publish
-//   allowlist is read from an injected $os.getenv, never from the real environment,
-//   and no credential NAME is read from the process.
+//   Nothing in this file opens a socket. The write path never calls the SFU. Since
+//   d91a5f9 the read path asks the SFU, through the shared lib, which tracks each
+//   session really holds. Here no realtime app is configured and $http is not
+//   provided at all, so every echo answers SFU_UNREACHABLE, and a call that tried
+//   the network would fail with ReferenceError rather than silently reaching it.
+//   The publish allowlist is read from an injected $os.getenv, never from the real
+//   environment, and no credential NAME is read from the process.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
@@ -298,11 +300,14 @@ test('the route never claims the advertisement was verified against the SFU', ()
     const room = seedRoom(f);
     const wrote = f.request('POST', '/api/classroom/presence',
         { actor: 'owner', body: { room, session_id: 's1', tracks: ['seat:o/mic'], expires_at: future() } });
+    // The write path does not wait on the SFU, so all it can say is that the advertisement is not echoed yet.
     assert.equal(wrote.body.verified, false);
-    assert.equal(wrote.body.verification, 'NOT_ECHOED_BY_SFU');
+    assert.equal(wrote.body.verification, 'NOT_YET_ECHOED');
+    // The read path asks the SFU, and only ECHOED_BY_SFU is verified. With no realtime app configured it
+    // cannot ask, and the answer names why.
     const read = f.request('GET', '/api/classroom/presence', { actor: 'owner', query: { room } });
     assert.equal(read.body.items[0].verified, false);
-    assert.equal(read.body.items[0].verification, 'NOT_ECHOED_BY_SFU');
+    assert.equal(read.body.items[0].verification, 'SFU_UNREACHABLE:CLOUDFLARE_REALTIME_APP_ID absent');
 });
 
 test('an expired or ENDED row is not served, and an expired row is eventually collected', () => {
@@ -427,7 +432,8 @@ test('the migration does not reuse a taken prefix and keeps its own index names'
     assert.equal(/idx_classroom_presence\s+on/.test(text), false, 'must not reuse classroom_members index name');
 });
 
-test('the hook reaches no network and holds no credential', () => {
+test('the route file makes no network call and holds no credential of its own', () => {
+    // The read path reaches the SFU only through the shared lib's echoSession, required inside the handler.
     const text = source(HOOK);
     for (const forbidden of ['$http', 'fetch(', 'CLOUDFLARE_REALTIME_APP_SECRET', 'callRealtime']) {
         assert.equal(text.includes(forbidden), false, `${forbidden} must not appear in the presence route`);
