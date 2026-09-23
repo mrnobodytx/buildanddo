@@ -28,12 +28,12 @@ in words, and get the talk-to link whenever the page cannot use their microphone
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | Add `@elevenlabs/react` (operator approved 2026-09-23: MIT, about 16 MB unpacked with its dependencies) | `npm ci` from the updated lock | pending |
-| 2 | Agent id from the one source; microphone policy check | `vitest run src/components/voice/__tests__/TalkToBuddi.test.jsx` | pending |
-| 3 | "Talk to Buddi" section, lazy session, fallback link | same test | pending |
-| 4 | Staging nginx sends `microphone=(self)` | `grep Permissions-Policy apps/web/nginx.conf` | pending |
-| 5 | Build splits the SDK into its own chunk; no leak in the build | `npm run build`, `public_redaction.py scan dist/apps/web` | pending |
-| 6 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `verify_public_boundary.py` | pending |
+| 1 | Add `@elevenlabs/react` (operator approved 2026-09-23: MIT, about 16 MB unpacked with its dependencies) | `npm ci` from the updated lock | done |
+| 2 | Agent id from the one source; microphone policy check | `vitest run src/components/voice` | done |
+| 3 | "Talk to Buddi" section, lazy session, fallback link | same tests | done |
+| 4 | Staging nginx sends `microphone=(self)` | `node --test tests/upgrade/staging-contract.test.mjs` | done |
+| 5 | Build splits the SDK into its own chunk; no leak in the build | `npm run build`, `public_redaction.py scan dist/apps/web` | done, one explained match |
+| 6 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `verify_public_boundary.py` | done |
 
 ## Operator steps (not performed here)
 
@@ -48,14 +48,67 @@ in words, and get the talk-to link whenever the page cannot use their microphone
 ## Constraints
 
 - Files this dispatch may touch: `apps/web/package.json`, `package-lock.json`, `apps/web/src/lib/voiceAgent.js`,
-  `apps/web/src/components/voice/*` and its tests, `apps/web/src/pages/HomePage.jsx`, `apps/web/nginx.conf`,
-  this bookkeeping and the readiness and context locks.
+  `apps/web/src/components/voice/*` and its tests, `apps/web/src/pages/HomePage.jsx`, `apps/web/nginx.conf` and
+  its check in `tests/upgrade/staging-contract.test.mjs`, this bookkeeping and the readiness and context locks.
 - No key, token or secret in the page or the repository; the agent is public.
 - No real machine name or address may enter this repository, including test fixtures.
 - Raises the tier: deploy, push, any change to the live agent or to production headers. None is performed here.
 
+## Evidence (2026-09-23, local run on Windows, LF checkout)
+
+- **Tests:** `vitest run src/components/voice` 15 of 15 (`TalkToBuddi.test.jsx` 13, `VoiceChunk.test.jsx` 2).
+  `staging-contract.test.mjs` 4 of 4. The whole web suite: 609 of 609 in 70 files. `npm run lint` clean.
+- **Controls:** each behaviour was broken once and the tests were run again. All 11 breaks were caught, and
+  the tests were green again after each restore:
+  - the policy check removed;
+  - a different agent id;
+  - the SDK imported eagerly;
+  - a failed start not reported;
+  - End that does not end the session;
+  - a chunk failure not caught;
+  - Buddi's hang-up not said;
+  - the microphone test stream left open;
+  - the policy header removed;
+  - `microphone=*`;
+  - an `add_header` in the document location, which drops the policy.
+- **Build:** the SDK is in `VoiceSession-*.js` alone (630 KB, 167 KB gzip). A control build with the base
+  home page puts the other two chunks side by side:
+  - the entry chunk is 763,185 bytes before and 763,202 after, the 17 bytes being the new chunk's name;
+  - the home chunk grows from 59,916 to 65,559 bytes;
+  - `index.html` preloads nothing from the voice chunk;
+  - a clean rebuild reproduces the same file names.
+- **Served build** (vite preview): the section renders right after the front page and fetches no voice code
+  before the click.
+  - **Refused microphone** (stubbed in the page): the section gives the reason, Try again and the talk-to
+    link, and still fetches no voice code.
+  - **Granted, with every route to the provider blocked:** the click fetched the voice chunk and nothing
+    else. The SDK's only outbound call was the conversation-token request for the published agent, which
+    was blocked. The section then said "The voice session could not start." with the SDK's reason and the
+    link.
+  - No console errors. At 375 px there is no horizontal overflow.
+- **No live session was opened.** Every check refused the microphone or blocked the provider. A real
+  conversation is the operator's check after steps 1 and 2.
+- **Redaction:** the changed sources PASS. The build has one match: the unspecified (all-zeros) IPv4
+  address inside the SDK chunk's WebRTC session-description code. It names no machine. The scanner exempts
+  loopback but not the unspecified address, and no CI job scans the build.
+- **Gates:** all pass.
+  - `hostinger_readiness.py --check`: all 12 milestones current.
+  - `agent_context.py --check`: the lock matches.
+  - `submission_readiness.py --check` passes.
+  - `verify_public_boundary.py`: 1,293 files, no failures.
+
+## Findings, not fixed here
+
+- **`/assets/` responses carry none of the server's security headers.** nginx drops every server-level
+  `add_header` in a location that declares its own, and `location /assets/` declares `Cache-Control`. So
+  scripts and styles are served without `X-Content-Type-Options: nosniff` or `Referrer-Policy`.
+  Pre-existing; the document location is unaffected, and the new test pins that.
+- **The redaction scanner counts the unspecified (all-zeros) address as an address.** It identifies a
+  machine no more than loopback does. Exempting it belongs with the scanner's owner, beside the loopback
+  rule.
+
 ## Definition of done
 
-- [ ] Every gate command passes and the output is in the PR.
-- [ ] The built page loads no voice code before Start.
-- [ ] Anything discovered but out of scope is recorded as a finding, not fixed.
+- [x] Every gate command passes and the output is in the PR.
+- [x] The built page loads no voice code before Start.
+- [x] Anything discovered but out of scope is recorded as a finding, not fixed.

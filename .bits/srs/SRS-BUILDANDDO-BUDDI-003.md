@@ -48,7 +48,9 @@ no Content-Security-Policy, so nothing else stands in the way.
    - the session starts with the published agent id;
    - a blocked microphone shows the link and starts nothing;
    - a failed start shows the link;
-   - End stops the session.
+   - End stops the session;
+   - a voice chunk that cannot load is reported, not thrown at the page;
+   - the staging nginx sends the policy, and the document location does not drop it.
 
 ## Non-goals
 
@@ -63,7 +65,8 @@ no Content-Security-Policy, so nothing else stands in the way.
 ## Verification
 
 ```bash
-npm --prefix apps/web exec -- vitest run src/components/voice/__tests__/TalkToBuddi.test.jsx
+npm --prefix apps/web exec -- vitest run src/components/voice
+node --test tests/upgrade/staging-contract.test.mjs
 npm run lint
 npm run build
 python scripts/ci/public_redaction.py scan dist/apps/web
