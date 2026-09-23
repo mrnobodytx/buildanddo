@@ -34,6 +34,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.ci.hostinger_checks import (  # noqa: E402
     CHECKS,
+    SOURCE_PYTHON_SUITES,
     command,
     run_check,
     runtime_version,
@@ -264,7 +265,7 @@ def source_snapshot(root: Path, contract: dict[str, object]) -> dict[str, object
             "apps",
             "libs",
             "foundry",
-            "tests/upgrade",
+            *(f"tests/{suite}" for suite in SOURCE_PYTHON_SUITES),
             "scripts",
             "CLAUDE.md",
             "docker-compose.yml",

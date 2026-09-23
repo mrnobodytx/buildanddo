@@ -17,7 +17,6 @@
 import {
     ArrowRight,
     Boxes,
-    CheckCircle2,
     FileSearch,
     GraduationCap,
     Info,
@@ -30,7 +29,7 @@ import {
     Workflow,
 } from 'lucide-react';
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Button, Card } from '@/components/site/ui';
 import EmptyState from '@/components/workspace/EmptyState';
@@ -54,15 +53,15 @@ import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
-import { activeMissions as selectActiveMissions, verifiedEvidence } from '@/lib/workspaceSummary';
+import { activeMissions as selectActiveMissions } from '@/lib/workspaceSummary';
 import { recommendedPath } from '@/lib/onboarding';
 
 const QUICK_ACTIONS = [
     {
         icon: Target,
-        label: 'Start a mission',
-        hint: 'Turn a signal into a bounded, approved task.',
-        to: '/app/missions',
+        label: 'Start a journey',
+        hint: 'Choose an objective, a lesson and a proposed mission.',
+        to: '/app/journey',
     },
     {
         icon: Plus,
@@ -160,11 +159,6 @@ export default function OverviewPage() {
         [signals.records],
     );
 
-    const verifiedCount = useMemo(
-        () => verifiedEvidence(evidence.records).length,
-        [evidence.records],
-    );
-
     // One merged feed rather than four lists: the operator's question is "what
     // happened here", and the answer is chronological across collections.
     const feed = useMemo(() => {
@@ -178,7 +172,8 @@ export default function OverviewPage() {
             (byKey[source.key] || []).map((record) => ({
                 id: `${source.key}:${record.id}`,
                 icon: source.icon,
-                route: source.route,
+                route: source.key === 'missions' ? `/app/missions?mission=${encodeURIComponent(record.id)}`
+                    : source.key === 'evidence' ? `/app/evidence?evidence=${encodeURIComponent(record.id)}` : source.route,
                 label: source.label(record),
                 detail: source.detail(record),
                 at: record.created,
@@ -298,13 +293,16 @@ export default function OverviewPage() {
                     tone="neutral"
                 />
                 <StatCard
-                    icon={CheckCircle2}
-                    label="Verified outcomes"
-                    value={verifiedCount}
-                    hint={verifiedCount ? 'Evidence checked against a source' : 'Nothing verified yet'}
-                    tone="teal"
+                    icon={FileSearch}
+                    label="Evidence recorded"
+                    value={evidence.loading ? 'Loading' : evidence.degraded ? 'Unavailable' : evidence.records.length}
+                    hint="Recording evidence is not independent verification"
+                    tone="neutral"
                 />
             </div>
+            <p className="text-sm text-muted-foreground">Activity and evidence labels do not establish successful work.{' '}
+                <Link to="/app/operator" className="underline">Inspect reviewed outcomes and their evidence</Link>{' '}
+                through the existing permission-scoped review view.</p>
 
             <div className="grid gap-6 lg:grid-cols-12">
                 <section className="lg:col-span-7">

@@ -42,6 +42,9 @@ class Check:
     artifacts: tuple[str, ...] = ()
 
 
+SOURCE_PYTHON_SUITES = ("upgrade", "career", "knowledge_units", "integrity", "world_twin")
+
+
 CHECKS = {
     "boundary": Check(("python", "scripts/ci/verify_public_boundary.py"), "source"),
     "dependency_lock": Check(
@@ -131,9 +134,10 @@ def command(root: Path, check: Check) -> list[str]:
             )
         elif part == "@python_tests":
             result.extend(
-                "tests.upgrade." + path.stem
-                for path in sorted((root / "tests/upgrade").glob("test_*.py"))
-                if not path.stem.endswith("_native")
+                f"tests.{suite}.{path.stem}"
+                for suite in SOURCE_PYTHON_SUITES
+                for path in sorted((root / "tests" / suite).glob("test_*.py"))
+                if path.is_file() and not path.stem.endswith("_native")
             )
         else:
             result.append(part)
@@ -255,6 +259,17 @@ def run_check(
     status, reason, exit_code = "FAIL", "", -1
     expected = runtime_version(root, profile) if check.level == "native" else ""
     observed = ""
+    if name == "source_python":
+        missing = [
+            "tests/" + suite
+            for suite in SOURCE_PYTHON_SUITES
+            if not any(part.startswith(f"tests.{suite}.") for part in argv)
+        ]
+        if missing:
+            status, reason = (
+                "BLOCKED",
+                "No source Python tests found in: " + ", ".join(missing),
+            )
     if check.level == "native":
         binary = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
         try:

@@ -20,6 +20,27 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Connected learning-loop acceptance — 2026-09-23
+
+Continue the existing source-acceptance and user-journey scope. The current owner
+request prioritizes a single observed loop and one candidate identity, not more
+standalone modules. Do not alter the public/private ownership boundary.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| LC-1 | Diagnose the reported resolver failure and capture prerequisites | Provider annotations and installed-runtime inspection | observed: GitHub job 106999882933 did not start because of an account billing lock; separate Cloudflare diagnostic remains unavailable |
+| LC-2 | Connect all four portable suites to required acceptance | Existing readiness/GitLab regressions and all four coverage gates | source PASS: 125 focused regressions; 102 portable cases per Python version; hosted execution unobserved |
+| LC-3 | Make existing deployment/browser capture producers admissible | Existing Day-21 producer/validator negative controls | source PASS: synthetic producer/validator regressions; actual deployed captures still required |
+| LC-4 | Repair journey, assistant and profile lifecycle integration | Connected Node regressions and existing rendered suites | PARTIAL: 38 focused Node cases pass; rendered suites cannot start without locked frontend dependencies |
+| LC-5 | Retain candidate-bound validation and receiving obligations | Full offline acceptance, source bindings, boundary and memory | local report and receiving runbook prepared; full-matrix results are retained for the frozen candidate in ignored Day-21 evidence |
+
+Memory brief: the career, journey and Knowledge Unit work is merged at 768e578;
+the current source also contains the local integrity/world-twin packages. Earlier
+statement coverage did not run the frontend or either native PocketBase version.
+The locked frontend install is unavailable from the local cache (ENOTCACHED),
+so missing rendered acceptance cannot be converted into PASS. Citadel remains
+canonical; no authenticated live workspace or external seat event is fabricated.
+
 ## Career Passport dogfood authorized 2026-09-22
 
 The owner selects BuildAndDo as the first career-evidence instance. This

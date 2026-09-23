@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     tests/upgrade/check_discordbot.py, tests/upgrade/check_blueprint_pipeline.py, tests/foundry/check_foundry.py, tests/upgrade/check_federal_foundry.py, tests/upgrade/check_mission_suite.py, tests/assurance/run.py
+# Depends:     tests/upgrade/check_discordbot.py, tests/upgrade/check_blueprint_pipeline.py, tests/foundry/check_foundry.py, tests/upgrade/check_federal_foundry.py, tests/upgrade/check_mission_suite.py, tests/career/check_career.py, tests/knowledge_units/check_knowledge_units.py, tests/integrity/check_integrity.py, tests/world_twin/check_world_twin.py, tests/assurance/run.py
 # EnumType:    Workflow
-# EnumEdges:   CONSUMES tests/upgrade/check_discordbot.py; CONSUMES tests/upgrade/check_blueprint_pipeline.py; CONSUMES tests/foundry/check_foundry.py; CONSUMES tests/upgrade/check_federal_foundry.py; CONSUMES tests/upgrade/check_mission_suite.py; CONSUMES tests/assurance/run.py
+# EnumEdges:   CONSUMES tests/upgrade/check_discordbot.py; CONSUMES tests/upgrade/check_blueprint_pipeline.py; CONSUMES tests/foundry/check_foundry.py; CONSUMES tests/upgrade/check_federal_foundry.py; CONSUMES tests/upgrade/check_mission_suite.py; CONSUMES tests/career/check_career.py; CONSUMES tests/knowledge_units/check_knowledge_units.py; CONSUMES tests/integrity/check_integrity.py; CONSUMES tests/world_twin/check_world_twin.py; CONSUMES tests/assurance/run.py
 # Intent:      Keep native parser and portable coverage requirements executing on GitLab when duplicate GitHub scheduling is retired.
 # ───────────────────────────────────────────────────────────────
 
@@ -115,6 +115,35 @@ source_mission_suite:
     expire_in: 30 days
     paths:
       - state/ci/mission-suite.tgz
+  rules:
+    - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - when: never
+
+source_behavior_coverage:
+  stage: test
+  tags: [buildanddo]
+  timeout: 10m
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.11", "3.12"]
+  before_script:
+    - python${PYTHON_VERSION} -m venv state/ci/behavior-venv
+  script:
+    - state/ci/behavior-venv/bin/python tests/career/check_career.py
+    - state/ci/behavior-venv/bin/python tests/knowledge_units/check_knowledge_units.py
+    - state/ci/behavior-venv/bin/python tests/integrity/check_integrity.py
+    - state/ci/behavior-venv/bin/python tests/world_twin/check_world_twin.py
+  artifacts:
+    name: "source-behavior-coverage-${PYTHON_VERSION}"
+    when: always
+    expire_in: 30 days
+    paths:
+      - reports/coverage/career.json
+      - reports/coverage/knowledge-units.json
+      - reports/coverage/integrity.json
+      - reports/coverage/world-twin.json
   rules:
     - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'

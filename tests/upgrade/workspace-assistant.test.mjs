@@ -20,6 +20,25 @@ import test from 'node:test';
 import { plain } from './admin-fixture.mjs';
 import { assistantFixture as setup, assistantSurface as surface, assistantMigration as migration } from './assistant-fixture.mjs';
 import { createAssistantClient } from '../../apps/web/src/lib/workspaceAssistant.js';
+import { assistantDraft, compileJourney } from '../../apps/web/src/lib/journey.js';
+
+test('the compiled journey can be sent from its actual route without granting approval authority', () => {
+    const f = setup(), session = f.start('editor');
+    const compiled = compileJourney({ mode: 'build', area: 'software', experience: 'some', time: 'day', proof: 'reviewer' });
+    f.agentConfig.reply = { reply: 'Measure the baseline before setting a target.', steps: [] };
+    assert.equal(f.agentConfig.calls.length, 0);
+    for (const route of ['/app/journey', '/app/career']) {
+        const turn = f.chat(session, 'editor', { message: assistantDraft(compiled), surface: { ...surface, route, controls: [] } });
+        assert.equal(turn.status, 'ready');
+        assert.equal(turn.plan.route, route);
+        assert.deepEqual(turn.plan.steps, []);
+        assert.throws(() => f.chat(session, 'editor', { surface: { ...surface, route,
+            controls: [{ ...surface.controls[0], label: 'Approve mission' }] } }), /direct user/);
+    }
+    assert.equal(f.agentConfig.calls.length, 2);
+    assert.equal(f.data.missions.some((mission) => mission.title === compiled.mission.title), false);
+});
+
 test('assistant sessions and messages are isolated from every other account including workspace admins', () => {
     const f = setup(), session = f.start('editor'); const turn = f.chat(session, 'editor');
     assert.equal(turn.status, 'ready'); assert.equal(turn.owner, 'editor');

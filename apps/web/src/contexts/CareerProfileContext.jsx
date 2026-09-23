@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/contexts/CareerProfileContext.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-CAREER-001
+// SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-CAREER-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -28,19 +28,27 @@ const CareerProfileContext = createContext({ ...SIGNED_OUT, reload: async () => 
 export function CareerProfileProvider({ children }) {
     const { user, isAuthed } = useAuth(); const { demo } = useDemoMode();
     const accountId = isAuthed && !demo ? user?.id || '' : '';
-    const scope = useRef(accountId); scope.current = accountId;
-    const [value, setValue] = useState(SIGNED_OUT);
+    const live = useRef({ accountId, mounted: true }); live.current.accountId = accountId;
+    const api = useMemo(() => createCareerProfileClient({ client: pb, accountId,
+        isCurrent: () => live.current.mounted && live.current.accountId === accountId }), [accountId]);
+    const [value, setValue] = useState({ ...SIGNED_OUT, accountId: '' });
     const reload = useCallback(async () => {
-        if (!accountId) { setValue(demo && isAuthed ? { ...SIGNED_OUT, status: 'demo' } : SIGNED_OUT); return; }
-        setValue({ status: 'loading', profile: null, issuedAt: '' });
-        const client = createCareerProfileClient({ client: pb, accountId, isCurrent: () => scope.current === accountId });
-        const result = await client.load();
-        if (scope.current !== accountId || result.reason === 'scope_changed') return;
-        setValue(result.ok ? { status: result.state, profile: result.profile, issuedAt: result.issuedAt }
-            : { status: result.reason, profile: null, issuedAt: '' });
-    }, [accountId, demo, isAuthed]);
-    useEffect(() => { reload(); }, [reload]);
-    const context = useMemo(() => ({ ...value, reload }), [value, reload]);
+        if (!live.current.mounted || live.current.accountId !== accountId) return;
+        if (!accountId) { setValue({ ...SIGNED_OUT, accountId: '' }); return; }
+        setValue({ accountId, status: 'loading', profile: null, issuedAt: '' });
+        const result = await api.load();
+        if (!live.current.mounted || live.current.accountId !== accountId || result.reason === 'scope_changed') return;
+        setValue(result.ok ? { accountId, status: result.state, profile: result.profile, issuedAt: result.issuedAt }
+            : { accountId, status: result.reason, profile: null, issuedAt: '' });
+    }, [accountId, api]);
+    useEffect(() => {
+        live.current.mounted = true; api.activate(); void reload();
+        return () => { live.current.mounted = false; api.dispose(); };
+    }, [api, reload]);
+    // Hide the previous account during render, before effect cleanup can run.
+    const visible = !accountId ? { ...SIGNED_OUT, status: demo && isAuthed ? 'demo' : 'signed_out' }
+        : value.accountId === accountId ? value : { ...SIGNED_OUT, status: 'loading' };
+    const context = { ...visible, reload };
     return <CareerProfileContext.Provider value={context}>{children}</CareerProfileContext.Provider>;
 }
 

@@ -150,25 +150,24 @@ describe('OverviewPage', () => {
             expect(
                 within(statCard('Workflows active')).getByText('3 workflows defined'),
             ).toBeInTheDocument();
-            expect(within(statCard('Verified outcomes')).getByText('3')).toBeInTheDocument();
+            expect(within(statCard('Evidence recorded')).getByText('3')).toBeInTheDocument();
+            expect(screen.queryByText('Verified outcomes')).not.toBeInTheDocument();
         });
     });
 
-    it('reads evidence scoped to the workspace and counts the verified ones', async () => {
-        seed({ evidence: [createMockEvidence()] });
+    it('keeps evidence labels separate from reviewed outcomes and links to existing proof inspection', async () => {
+        seed({ evidence: [createMockEvidence({ type: 'verified' }), createMockEvidence({ type: 'observed' })] });
         renderWithProviders(<OverviewPage />);
 
-        // This asked for `type = "verified"` server-side until the activity feed started
-        // carrying evidence. The feed needs every kind, so one read now serves both and the
-        // verified count is taken from it. The half that mattered is still asserted: the read
-        // is scoped to the workspace, so a user with several workspaces cannot be shown another
-        // one's records. The dropped half is a scaling cost, not a privacy one, and it is
-        // recorded as a finding rather than left implied by a deleted assertion.
         await waitFor(() =>
             expect(pb.__collection('evidence').getFullList).toHaveBeenCalledWith(
                 expect.objectContaining({ filter: 'workspace = "ws_test"' }),
             ),
         );
+        expect(within(statCard('Evidence recorded')).getByText('2')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Inspect reviewed outcomes and their evidence' }))
+            .toHaveAttribute('href', '/app/operator');
+        expect(screen.queryByText('Evidence checked against a source')).not.toBeInTheDocument();
     });
 
     it('shows zero-state hints instead of blank stat cards', async () => {
@@ -183,7 +182,7 @@ describe('OverviewPage', () => {
                 within(statCard('Active missions')).getByText('No missions running'),
             ).toBeInTheDocument();
             expect(
-                within(statCard('Verified outcomes')).getByText('Nothing verified yet'),
+                within(statCard('Evidence recorded')).getByText('0'),
             ).toBeInTheDocument();
         });
     });
@@ -289,10 +288,10 @@ describe('OverviewPage', () => {
 
         await user.click(
             await screen.findByRole('button', {
-                name: /Turn a signal into a bounded, approved task/,
+                name: /Choose an objective, a lesson and a proposed mission/,
             }),
         );
-        expect(navigateMock).toHaveBeenCalledWith('/app/missions');
+        expect(navigateMock).toHaveBeenCalledWith('/app/journey');
 
         // The activity feed's "View all" opens evidence, not signals: the feed carries
         // signals, missions, evidence and editions, so there is no single collection to send
@@ -301,6 +300,25 @@ describe('OverviewPage', () => {
             within(panel('Recent activity')).getByRole('button', { name: 'View the ledger' }),
         );
         expect(navigateMock).toHaveBeenCalledWith('/app/evidence');
+    });
+
+    it('opens the exact mission and evidence behind an activity entry', async () => {
+        const user = setupUser();
+        seed({ missions: [createMockMission({ id: 'm1', title: 'Reviewed learning mission' })],
+            evidence: [createMockEvidence({ id: 'e1', content: 'Retained observation' })] });
+        renderWithProviders(<OverviewPage />);
+        const activity = within(panel('Recent activity'));
+        await user.click(await activity.findByRole('button', { name: /Reviewed learning mission/ }));
+        expect(navigateMock).toHaveBeenCalledWith('/app/missions?mission=m1');
+        await user.click(activity.getByRole('button', { name: /Retained observation/ }));
+        expect(navigateMock).toHaveBeenCalledWith('/app/evidence?evidence=e1');
+    });
+
+    it('does not report unreadable evidence as zero recorded work', async () => {
+        seed(); pb.__setError('evidence');
+        renderWithProviders(<OverviewPage />);
+        await waitFor(() => expect(within(statCard('Evidence recorded')).getByText('Unavailable')).toBeInTheDocument());
+        expect(within(statCard('Evidence recorded')).queryByText('0')).not.toBeInTheDocument();
     });
 
     it('still renders the page when a collection fails to load', async () => {

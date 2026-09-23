@@ -226,7 +226,9 @@
       "referenced_by": [
         "tests/upgrade/test_day21_submission.py",
         "tests/upgrade/test_day21_support.py",
-        "tests/upgrade/test_gitlab_acceptance.py"
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tools/day21/day21_browser_capture.py",
+        "tools/day21/day21_public_probe.py"
       ],
       "wired_into_ci": true
     },
@@ -463,7 +465,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-23T01:16:31.840742+00:00",
+  "generated_at": "2026-09-23T02:32:59.828585+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -943,6 +945,7 @@
         "source_foundry",
         "source_federal_portfolio",
         "source_mission_suite",
+        "source_behavior_coverage",
         "source_assurance",
         "assurance_full_runtime"
       ],
@@ -989,7 +992,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1510,
+    "tracked_files": 1511,
     "web_source_files": 360
   },
   "schema_version": 1,
@@ -1063,7 +1066,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "3582efde8badcf58c2cd53661105c7366c681d790931fa4698f77ca4b61f34b5",
+    "source_sha256": "fc601daa4ff8423711ed0ef17cad4c43e5c65bf9be43b6c35fd88d03a25c9857",
     "state": "PASS"
   },
   "summary": {

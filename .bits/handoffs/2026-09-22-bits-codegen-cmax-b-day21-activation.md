@@ -21,6 +21,41 @@ This file records requested work. No external notification, provider binding,
 reviewer assignment or deployment occurred in the public coding session.
 Continue the existing lanes; do not create another verifier or release system.
 
+## Current evidence gap — 2026-09-23
+
+The GitHub annotation for PR 74's check run `106999882933` states that the job
+did not start because the account is locked for billing. The failed name is
+`Resolve reviewed candidate`, but none of its steps executed. The account owner
+must remove that provider block; no source repair can certify the skipped jobs.
+Cloudflare check `107000042333` separately reports a failed build with no error
+annotation. Its owner must supply that build's diagnostic. Neither observation
+establishes GitLab runner status.
+
+The source continuation keeps the existing eighteen-profile gate and adds the
+four portable behavior suites to its source selection. Required GitLab
+`source_behavior_coverage` runs career, Knowledge Unit, integrity and world-twin
+coverage on Python 3.11 and 3.12; submission depends on that matrix too. Retain
+each matrix artifact independently, including failed outputs.
+
+The public/browser capture helpers now require all three expected identities
+and read the actual deployed candidate from `/version.json`. Their complete
+commands are in `docs/day21/DAY21_SUBMISSION_RUNBOOK.md`. They retain the response,
+console and screenshot bytes expected by the existing validators. Matching a
+version file proves only that readback; source and artifact digests still need
+the receiving controller's actual artifact and release evidence.
+
+The frontend fixes connect the existing Journey to the assistant policy, keep a
+draft through a lesson visit without browser persistence, and invalidate late
+career-profile responses. The home page separates recorded evidence from
+reviewed outcomes and links to the existing operator proof view. Validate these
+on the final accepted candidate, including account A -> B -> A, logout/login,
+demo mode, uncertain saves and a lesson-return route.
+
+The local locked frontend installation failed offline with ENOTCACHED; Vitest
+cannot start. Both native PocketBase runtimes and Playwright acceptance still
+require the receiving runner. Do not convert source-double tests into rendered,
+native, hosted, Citadel or deployment acceptance.
+
 The public change supplies objective-first onboarding: six explicit choices,
 one saved ERP objective, optional context and an existing starting lesson.
 The source is based on the owner's audited public revision `5077a96`.

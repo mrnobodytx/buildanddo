@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/contexts/__tests__/CareerProfileContext.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-CAREER-001
+// SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-CAREER-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -68,4 +68,35 @@ it('reports not_configured and unavailable without blocking, and skips demo mode
     pb.send.mockClear(); act(() => setDemoMode(true));
     await waitFor(() => expect(view.result.current.status).toBe('demo'));
     expect(pb.send).not.toHaveBeenCalled();
+});
+
+it('keeps the newest same-account result when refreshes finish out of order', async () => {
+    signIn('u1');
+    const view = renderHook(() => useCareerProfile(), { wrapper: Wrapper });
+    await waitFor(() => expect(view.result.current.status).toBe('ready'));
+    const older = deferred(); pb.send.mockImplementationOnce(() => older.promise);
+    let waiting;
+    act(() => { waiting = view.result.current.reload(); });
+    pb.send.mockResolvedValue({ state: 'no_profile', subject_id: 'u1' });
+    await act(async () => view.result.current.reload());
+    expect(view.result.current.status).toBe('no_profile');
+    await act(async () => { older.resolve(ready('u1')); await waiting; });
+    expect(view.result.current.status).toBe('no_profile');
+    expect(view.result.current.profile).toBeNull();
+});
+
+it.each(['logout', 'account', 'demo'])('does not restore a prior profile after a %s round-trip', async (transition) => {
+    signIn('u1'); const older = deferred(); pb.send.mockImplementation(() => older.promise);
+    const view = renderHook(() => useCareerProfile(), { wrapper: Wrapper });
+    await waitFor(() => expect(view.result.current.status).toBe('loading'));
+    if (transition === 'demo') act(() => setDemoMode(true));
+    else { signIn(transition === 'account' ? 'u2' : null); view.rerender(); }
+    expect(view.result.current.profile).toBeNull();
+    pb.send.mockResolvedValue({ state: 'no_profile', subject_id: 'u1' });
+    if (transition === 'demo') act(() => setDemoMode(false));
+    else { signIn('u1'); view.rerender(); }
+    await waitFor(() => expect(view.result.current.status).toBe('no_profile'));
+    await act(async () => older.resolve(ready('u1')));
+    expect(view.result.current.status).toBe('no_profile');
+    expect(view.result.current.profile).toBeNull();
 });

@@ -218,6 +218,13 @@ function WorkspaceSwitcher() {
     );
 }
 
+function WorkspacePages() {
+    // This subtree is remounted for account/workspace/demo changes, but not when
+    // a learner visits a lesson and returns. No private draft is persisted.
+    const [journey, setJourney] = useState({ answers: {}, step: 0, saved: null, saveState: 'idle' });
+    return <Outlet context={{ journey, setJourney }} />;
+}
+
 export default function WorkspaceLayout() {
     const { user, logout } = useAuth();
     const { active, loading } = useWorkspace();
@@ -347,7 +354,7 @@ export default function WorkspaceLayout() {
                             that forgets it cannot present demonstration data
                             as the operator's own. */}
                             <DemoModeBanner />
-                            <Outlet />
+                            <WorkspacePages />
                         </div>
                     </main>
                 </div>

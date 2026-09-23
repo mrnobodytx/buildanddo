@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     scripts/ci/agent_context.py, scripts/ci/hostinger_readiness.py, scripts/ci/submission_readiness.py, .gitlab/ci/day21-submission.yml
+# Depends:     scripts/ci/agent_context.py, scripts/ci/hostinger_readiness.py, scripts/ci/submission_readiness.py, .gitlab/ci/day21-submission.yml, .gitlab/ci/source-validation.yml
 # EnumType:    Test
-# EnumEdges:   VALIDATES scripts/ci/agent_context.py; VALIDATES scripts/ci/hostinger_readiness.py; VALIDATES scripts/ci/submission_readiness.py; VALIDATES .gitlab/ci/day21-submission.yml
+# EnumEdges:   VALIDATES scripts/ci/agent_context.py; VALIDATES scripts/ci/hostinger_readiness.py; VALIDATES scripts/ci/submission_readiness.py; VALIDATES .gitlab/ci/day21-submission.yml; VALIDATES .gitlab/ci/source-validation.yml
 # Intent:      Prevent GitHub configuration, unreachable jobs or incomplete artifacts from standing in for GitLab acceptance.
 # ───────────────────────────────────────────────────────────────
 
@@ -268,6 +268,10 @@ class GitLabAcceptanceTests(unittest.TestCase):
             ("tests/foundry/check_foundry.py",),
             ("tests/upgrade/check_federal_foundry.py",),
             ("tests/upgrade/check_mission_suite.py",),
+            ("tests/career/check_career.py",),
+            ("tests/knowledge_units/check_knowledge_units.py",),
+            ("tests/integrity/check_integrity.py",),
+            ("tests/world_twin/check_world_twin.py",),
         )
         for script, *args in commands:
             with self.subTest(script=script):
@@ -295,6 +299,7 @@ class GitLabAcceptanceTests(unittest.TestCase):
             "source_foundry",
             "source_federal_portfolio",
             "source_mission_suite",
+            "source_behavior_coverage",
             "source_assurance",
         ):
             with self.subTest(job=name):
@@ -315,6 +320,42 @@ class GitLabAcceptanceTests(unittest.TestCase):
             sections["source_mission_suite"],
         )
 
+    def test_behavior_coverage_keeps_all_gates_and_reports_reachable(self) -> None:
+        config = gitlab_ci.collect(ROOT)
+        self.assertEqual(config.errors, ())
+        job = next(job for job in config.jobs if job.name == "source_behavior_coverage")
+        self.assertEqual(job.file, ".gitlab/ci/source-validation.yml")
+        self.assertTrue(job.required)
+        suites = ("career", "knowledge_units", "integrity", "world_twin")
+        self.assertEqual(
+            job.commands,
+            ("python${PYTHON_VERSION} -m venv state/ci/behavior-venv",)
+            + tuple(
+                f"state/ci/behavior-venv/bin/python tests/{suite}/check_{suite}.py"
+                for suite in suites
+            ),
+        )
+        sections = {
+            name: body
+            for name, _inline, body in gitlab_ci._sections((ROOT / job.file).read_text())
+        }
+        body = sections[job.name]
+        self.assertIn("tags: [buildanddo]", body)
+        self.assertIn('name: "source-behavior-coverage-${PYTHON_VERSION}"', body)
+        self.assertIn("expire_in: 30 days", body)
+        for suite in suites:
+            with self.subTest(suite=suite):
+                self.assertIn(
+                    "      - reports/coverage/" + suite.replace("_", "-") + ".json\n",
+                    body,
+                )
+        for rule in (
+            '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"',
+            '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"',
+            '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\\//',
+        ):
+            self.assertIn("    - if: '" + rule + "'\n", body)
+
     def test_submission_waits_for_all_required_source_jobs(self) -> None:
         sections = {
             name: body
@@ -330,6 +371,7 @@ class GitLabAcceptanceTests(unittest.TestCase):
             "source_foundry",
             "source_federal_portfolio",
             "source_mission_suite",
+            "source_behavior_coverage",
             "source_assurance",
         ):
             with self.subTest(job=name):
