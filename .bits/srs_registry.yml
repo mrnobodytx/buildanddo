@@ -234,3 +234,11 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md
     owner: C-ONE
     notes: Additive closure lane over existing acceptance/replay receipts; blocks on one canonical origin because buildanddo.tech has no DNS while README and SITE_ORIGIN disagree
+
+  - code: SRS-BUILDANDDO-BUDDI-001
+    title: Buddi presentation rename, brand icons and install manifest, no addresses in published release text
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-BUDDI-001.md
+    owner: C-ONE
+    notes: Operator direction 2026-09-22 relayed by the C-ONE dispatch; this entry records that dispatch and does not self-authorize A2. Routes, collections, CSP, Permissions-Policy and deployment excluded
