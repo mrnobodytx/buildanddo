@@ -119,8 +119,9 @@ function validateLearning(learning) {
     }
 }
 function validateReview(review) {
-    if (!keys(review, TEVV.concat(['reflection', 'evidence_snapshot'])) || !text(review.reflection, 1200, false))
-        invalid('Use the four TEVV review sections and a reflection.');
+    if (!keys(review, TEVV.concat(['version', 'reflection', 'evidence_snapshot'])) ||
+        (Object.hasOwn(review, 'version') && review.version !== 1) || !text(review.reflection, 1200, false))
+        invalid('Use review version 1, the four TEVV review sections and a reflection.');
     TEVV.forEach((id) => {
         const item = review[id];
         if (
@@ -297,6 +298,7 @@ function enforce(e, creating) {
         record.set('mission_approved_at', new Date().toISOString());
     }
     if (changedReview && review && ['running', 'needs_attention', 'failed'].includes(after)) {
+        record.set('mission_review', { ...review, version: 1 });
         record.set('mission_reviewed_by', e.auth.id);
         record.set('mission_reviewed_at', new Date().toISOString());
     }
@@ -313,7 +315,7 @@ function enforce(e, creating) {
         const snapshots = passingReview(e, review, plan?.independent_review === true);
         // Freeze the exact observations reviewed; later record changes cannot
         // silently change what this decision actually evaluated.
-        record.set('mission_review', { ...review, evidence_snapshot: snapshots });
+        record.set('mission_review', { ...review, version: 1, evidence_snapshot: snapshots });
         record.set('mission_reviewed_by', e.auth.id);
         record.set('mission_reviewed_at', new Date().toISOString());
         record.set('progress', 100);
@@ -324,6 +326,17 @@ function enforce(e, creating) {
         (!review || !text(review.reflection, 1200, true))
     )
         invalid('Record the failure and what to try next in the review reflection.');
+    // Measure the final JSONField bytes, including server metadata and snapshots.
+    // Unchanged historical reviews are neither upgraded nor re-sized on unrelated edits.
+    if (review && (changedReview || (after === 'verified' && before !== after))) {
+        let bytes = 0;
+        for (const character of record.getString('mission_review')) {
+            const code = character.codePointAt(0);
+            bytes += code <= 0x7f ? 1 : code <= 0x7ff ? 2 : code <= 0xffff ? 3 : 4;
+        }
+        if (bytes > 24000)
+            invalid('The complete review, including evidence snapshots, must fit within 24,000 UTF-8 bytes. Shorten observations or select smaller evidence records.');
+    }
     return e.next();
 }
 module.exports = { PLAN_FIELDS, TEVV, ANSWERS, TRANSITIONS, enforce };

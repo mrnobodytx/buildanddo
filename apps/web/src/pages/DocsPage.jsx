@@ -34,14 +34,14 @@ export const GUIDES = [
     {
         id: 'classrooms',
         title: 'Host or join a classroom',
-        text: 'Open Classrooms in your workspace. An editor or administrator can schedule a lesson and start the session. Members join the shared reading, post questions with editor access, and revisit the discussion after it ends. Voice and video are not connected.',
+        text: 'Open Classrooms in your workspace. An editor or administrator can schedule a lesson and start the session. Members join the shared reading, post questions with editor access, and revisit the discussion after it ends. Where the workspace has live broadcasting set up, the host can stream voice and video during the session.',
         link: '/classrooms',
         action: 'Explore Classrooms',
     },
     {
         id: 'get-started',
         title: 'Create your first workspace',
-        text: 'Create an account, then follow onboarding to name a workspace and select your business domain. Selecting a domain records your choice; it does not verify ownership.',
+        text: 'Create an account, choose an intent and objective, then name your workspace. Your starting path links to a lesson and your saved objective. Business and domain context are optional; saving a domain does not verify ownership.',
         link: '/signup',
         action: 'Create an account',
     },

@@ -1,0 +1,369 @@
+{
+  "schema_version": "buildanddo.development-dogfood/v1",
+  "captured_at": "2026-09-21T17:59:11.280299+00:00",
+  "scope_id": "buildanddo/public-development",
+  "source_sha": "3aea1500d957803f62d5a04c69749b2c6cdeb383",
+  "source_scope": "Git HEAD context plus separately captured working-tree byte digests; not final candidate acceptance.",
+  "provider": {
+    "repository": "mrnobodytx/buildanddo",
+    "run_id": 35621244782,
+    "attempt": 1,
+    "observed_at": "2026-09-21T17:38:41.951769+00:00",
+    "source_sha": "3aea1500d957803f62d5a04c69749b2c6cdeb383",
+    "status": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/mrnobodytx/buildanddo/actions/runs/35621244782",
+    "capture_id": "cni://observation/evolution/4b69d9294d901185cec206a7a19c7d78873be196b540de750a477c4e28d28c4e",
+    "run_response_sha256": "d5ed94a43313946e6c1318193f9e9c891a5d957100786ea684e3d00cf6a7ce93",
+    "jobs_response_sha256": "6ca178db8659894507ef5a972243ab0068bf936a05b528026301a8b13af6995a",
+    "assurance": "Repository CLI authenticated acquisition; saved bytes do not reauthenticate themselves. No test truth inferred."
+  },
+  "prediction": {
+    "id": "cni://decision/evolution/7d5515a7388e653dcb1a29e3475af6ae50c5ccb60699bcbbafc35262f3fc0a26",
+    "actor_id": "cni://agent/bits-codegen",
+    "mission_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+    "observation": {
+      "scope_id": "buildanddo/public-development",
+      "correlation_id": "cni://context/evolution/f157ad6197884d0c19f06c8080d5c614e8367c814ed3d8eb77b5029d42b3ec07",
+      "authority": "A1",
+      "risk": "bounded_source_test_selection",
+      "decision_at": "2026-09-21T17:58:52.601808+00:00",
+      "features_observed_at": "2026-09-21T17:58:52.601808+00:00",
+      "features": {
+        "target_0": "cni://module/buildanddo/7dd880bf0abdb0ea1d524b15065dfd844e7d63344024764368c86a0d0cf331f0",
+        "target_1": "cni://module/buildanddo/bb7d01b5364b1a1d212e496b2285805850028f9129195048e9ad61e02c874bd7",
+        "target_2": "cni://module/buildanddo/855c850903c5bd867b799e9c0af52f60ef93a2eee235607b5824cc4cd38c67d7",
+        "task": "change-impact-test-selection"
+      },
+      "allowed_targets": [
+        "cni://module/buildanddo/7dd880bf0abdb0ea1d524b15065dfd844e7d63344024764368c86a0d0cf331f0",
+        "cni://module/buildanddo/bb7d01b5364b1a1d212e496b2285805850028f9129195048e9ad61e02c874bd7",
+        "cni://module/buildanddo/855c850903c5bd867b799e9c0af52f60ef93a2eee235607b5824cc4cd38c67d7"
+      ],
+      "allowed_operations": [
+        "select_tests"
+      ]
+    },
+    "rule": {
+      "features": {
+        "task": "change-impact-test-selection"
+      },
+      "response": {
+        "diagnosis": "Run source suites connected by captured static imports; sufficiency requires independent review.",
+        "operation": "select_tests",
+        "targets": [
+          "$target_0",
+          "$target_1",
+          "$target_2"
+        ],
+        "parameters": {},
+        "tests": [],
+        "reverse_tests_for": [
+          "$target_0",
+          "$target_1",
+          "$target_2"
+        ]
+      },
+      "relations": [],
+      "lookups": []
+    },
+    "file_digests": {
+      "libs/capability_tokens/__init__.py": "4168d41d807ec3b6a119698094ac2db907fc829eaa683dc936f0ea383c54f092",
+      "libs/capability_tokens/__main__.py": "887aa08afa3dde6c8265f43e9285a6945dcb3fdbe8d7d923c0b1e1ddb309eb05",
+      "libs/capability_tokens/cli.py": "7deb8b9cbc87501c8d2f4489cb0fd9ccb9bdf5c37dfa41dd338bad89ede5c03e",
+      "libs/capability_tokens/composition.py": "5b9b6ef80bc90fa56ecaf341cd84dba6dfd7f9e1ef438316a796cf7b23fdaaf9",
+      "libs/capability_tokens/conformance.py": "9ebb7d3788485e81ed50c8ac864a0a1b7d252102ea66829b7b856fa293b7a0c1",
+      "libs/capability_tokens/economics.py": "22f2fe0b2d2c7169951a87f2847f0b067f0f34556eed556e64217400968dd50f",
+      "libs/capability_tokens/interop.py": "92e792ce6f05ffd39fa989a7a1535cbc36f49a9b8db4932c371e345283f484eb",
+      "libs/capability_tokens/models.py": "ccb8ec99eb0d9e0fada5ce15a650cbf9fdfe1a2c8e1a3f8d2e371b626e194fbb",
+      "libs/capability_tokens/passport.py": "22fcc3566b7f3e759a6b54273c696a127ccc57d4ceba9c141391a1a4090b8b3d",
+      "libs/capability_tokens/registry.py": "4e1c57b9df75f5caece247c2225fa2e791b6761af94150118287006cfc156bd2",
+      "libs/capability_tokens/schema.py": "9169b101327cbb1509b01e88d9e1db5a35914f33aed35b3dd39e3668ebd3c53b",
+      "libs/capability_tokens/sharing.py": "b3da9cd27fc067022b3e9175f78f4e968d8951832967bb2d2ae6553323e954ec",
+      "libs/capability_tokens/verification.py": "9d899391696b3bf04d3b77524a053c5df51196894726fac81e74b35b1abe1be6",
+      "libs/evolution/__init__.py": "37f84db85de3c8b54398de47f62c025a567c43083c432c44824202df8f93eed0",
+      "libs/evolution/__main__.py": "95e6f7440dc90b8b2c2e1395380b49f55b1221366c409a2585ff94b7c6e990be",
+      "libs/evolution/adapters.py": "17178d80b5a77a404f7bbd2f9cccd126cdc0d9c2c7be0bec8c96cea4a33916c2",
+      "libs/evolution/benchmark.py": "26c20d79658c7b0343e3b83567fcfc2ae9e7077ced72d906e71fb150a5593305",
+      "libs/evolution/candidate.py": "9d436c88334e306a7a87e5051be96dec8779837f1978e711f3f1a896510826b0",
+      "libs/evolution/cli.py": "abc6c1a41aed4aa4776e6a4c338c2dd540abc9ab68d572de5617e6a3e0a6492c",
+      "libs/evolution/common.py": "87f33c118f4953a21b7df0df0d57dfc319cc5a89173b96315911adc44ee07cea",
+      "libs/evolution/compiler.py": "9bada6c53f59b5d620c38af49243c157c6a8b974b5c92ebd59826325273971c9",
+      "libs/evolution/development.py": "bf5eb995fe4f0673d0bf9bf6bacab4229c38cb3623f3cbdfd72c864d61792382",
+      "libs/evolution/development_sources.py": "78188870f11b9f55df3adfdbb01d2eaeba80d03c99c55f38bac2431f6c5a5076",
+      "libs/evolution/episode.py": "3f83e33f8db81a8d3f77e9cb6a0e19c760eb602034e61f9470d5254dac7f71d5",
+      "libs/evolution/event.py": "6c163aaac1fb8c09ac67463f0056936566e1afdc55fc22a79efb7ea5f56c01b8",
+      "libs/evolution/intelligence.py": "5bcc852b435a42fdba7be3434c6d77b52af6560addd32eb043db04317088c71c",
+      "libs/evolution/loop.py": "aa2d16e83597985b824711f7ca1b74bd9a65e80d7da91413735b7fea2ec90d40",
+      "libs/evolution/promotion.py": "82acb8d874a68b22aaa157843ac3f571008e900e6058239a11d8704d21a8f26a",
+      "libs/evolution/registry.py": "3b492ef8d995aa659b947b86e75fc3fe2953ae1de8645b6b71a0965e25c7f243",
+      "libs/evolution/replay.py": "29cdb51fb4f24e1022db29b51ec3ec9285e0cbe6dd67adce3806546bb5deee18",
+      "libs/evolution/scorer.py": "f96623b467e2d7ef220bd678fb473a9db26e594368069b5576a10c558f8aebdf",
+      "libs/evolution/store.py": "4bc826c3af9208bb5bb3032836ec6794c374ea35acbf41ed10243f8bf721b1e8",
+      "libs/semantic_twin/__init__.py": "90d469a839852ae9f3fe32f79ea1988dd6849c088a3e6b29de9b6866a52ffb8f",
+      "libs/semantic_twin/contracts.py": "62785bf20efdcc37f364a4f36c9816404a144efa9e69ea363eb50a20fa547a46",
+      "libs/semantic_twin/identity.py": "c684b62d1906dd2017ab110b112888728ab256ebab285e494ae47daef1b9c4b1",
+      "libs/semantic_twin/ingestion/__init__.py": "9b1cd080162e9c51860019867faa6937100c938325357804822ef032bd34e227",
+      "libs/semantic_twin/ingestion/__main__.py": "f9ab01c4f77799be026cde84a826075287a0c6cccd57d0a08c2a1c16bf63f2c8",
+      "libs/semantic_twin/ingestion/builder.py": "94a70199619f170d6b2d2092e8f5e06260618b61ea6f34609eb9ef1e16293477",
+      "libs/semantic_twin/ingestion/claims.py": "89f9173ff2a5dfbc9bb418d619907300e081b16a18c9e48b6cf2e4379a4492cf",
+      "libs/semantic_twin/ingestion/drafts.py": "4aa79eae9a38b8b4cbaf4ccf37bdbe90c92c5b094aac5355ad32b9e4b99fb4aa",
+      "libs/semantic_twin/ingestion/graph.py": "8597f0c8de90ea3de5d547ee606d1886a3a2da1f3526c64b37751a9a92fdc282",
+      "libs/semantic_twin/ingestion/inputs.py": "dc3a10079f973a91e6ce90ec028910c5fe5028d5f48179e5df6493283d89c7d5",
+      "libs/semantic_twin/ingestion/pipeline.py": "17fe8b8c722f94857a047c381d953342b7ad4adf4e727883bdb18e964fd7f852",
+      "libs/semantic_twin/ingestion/receipts.py": "a659cbd253741498db69dce152d0350a1e3277e3baaf65830491e21255a1dd92",
+      "libs/semantic_twin/ingestion/release.py": "90f14321da5056cf52b2549c33e925b8057346be67036be00c73a4b2809f8859",
+      "libs/semantic_twin/ingestion/serializer.py": "4cc2fc4a0145a80346ea9978119677a609604dfe5dc0dc04bc801f44616a0664",
+      "libs/semantic_twin/ingestion/source.py": "9e96494b8e3407b0b6df8e7ee93642e8dda8c3c9497ec02e2052862d686159f6",
+      "libs/semantic_twin/merkle.py": "e834058f177da054641652347109bc8ad01f790743c459dcd6d4c66ba4b2e371",
+      "libs/semantic_twin/models.py": "276a1af84e97041c781d99aba7d970a5a9210b18d04830b6098ac303c2b4e46c",
+      "libs/semantic_twin/phase1/__init__.py": "a184bd5a1d01860eb7df7b8183d731d7ddbefa1ef10c1e531f90489ed9c3ee7e",
+      "libs/semantic_twin/phase1/__main__.py": "4a3e9db94e5b0ed7c82a489ff37cd391f8003844c778bc8f18d7b4468488a385",
+      "libs/semantic_twin/phase1/claims.py": "dac4c5a1af4bcb26385607c545aa193536fda75a6348bc4d1eca5047c82ad5c1",
+      "libs/semantic_twin/phase1/common.py": "26921e7ebc8d7ed6c343fcf003b8191b06405406453b74b0854b1c4d7eada020",
+      "libs/semantic_twin/phase1/compat.py": "cf1bdd0113bb5c6689dee16fcecb531962ac51001f0706ab1c962a18f22e1448",
+      "libs/semantic_twin/phase1/compiler.py": "9a1709bebe8e44e403030b4c6f380b4f61ae485fa3d5d6a74c740d3712f5fb4f",
+      "libs/semantic_twin/phase1/context.py": "a9d8e782d69877dc4e8fec0e29026c64f241d6e81476565fe3413bd95d93b1a0",
+      "libs/semantic_twin/phase1/history.py": "7e8a7ffe78e89722e59eed3b5d929e6a887fd7985f73d2dc88bcdda8a15d093f",
+      "libs/semantic_twin/phase1/memory.py": "46dd7aef77fd5b60917d60b983381899aa323d24179da988ec404b0b62c0e059",
+      "libs/semantic_twin/phase1/merkle.py": "29c511d99100ffccee1e4e76d3a108c6591e5a286920fac571c041055b24a2e7",
+      "libs/semantic_twin/phase1/providers.py": "ad4d521bc188babefbac096ebf8637924b4c1d5f27b7b98716086540916afc3b",
+      "libs/semantic_twin/phase1/release_state.py": "9f61284c2ee40043de4d297d57e74ca6bafc54e63ee531081ea02f9c7be27b7b",
+      "libs/semantic_twin/phase1/sbom.py": "04156e1d773b45db0393ccdcb21c39097e872c70b00c33e0e3a02fd74a85d806",
+      "libs/semantic_twin/phase1/truth.py": "d8d9b91f85aeb01fdbcae9d0a23478f513790eaf6819a20b3585886559071ec4",
+      "libs/semantic_twin/promotions.py": "c2743ebc000214f7ca169751af9c98bfe91b112ba77404511eba9f32eafe68d0",
+      "libs/semantic_twin/receipts.py": "f7537fc9c5b1230dbe115f60fc119ca342a3479caf35b2b324cc3ab1b4857c00",
+      "libs/semantic_twin/relations.py": "45fe18e5aa57cf48a446290d0d55c2b002b81b332eac58f6e13709638536ed79",
+      "libs/semantic_twin/schema.py": "513bb6894a04935e11e7eb5597b1d777f1a4d121e76097d5cb63c239be9f9e9b",
+      "libs/semantic_twin/transactions.py": "10e98c4f2930e345e96a50694872f8121023591a7bb22f56160b74cc966aa18e",
+      "libs/semantic_twin/transitions.py": "4c67196fe843b92ec59d59caa708dc78138bc8b69048c206e6da9aef82db697f",
+      "libs/semantic_twin/vocabulary.py": "376cc1cfe20a52257d8a73a31e0a8220b659cd1df450d371445402aa0b0975e4",
+      "tests/upgrade/test_capability_token_cli.py": "75539712044c03074a671edc35c9bd96dfe5aa0bc25d2791c9ca33d94089a022",
+      "tests/upgrade/test_capability_token_contracts.py": "60645728cc2924a85ac347d3a17cad6fa5e27b4701c09f52050774403e876ecb",
+      "tests/upgrade/test_capability_token_records.py": "77317b057ba591bf8b710b426a12fc2d11801f8f75fdb5484ab93f6a247c798f",
+      "tests/upgrade/test_capability_token_registry.py": "c06e8b16794bd3b6b2bf3f647915966a76ef8bd27eefce2e5daa9210e61d1b91",
+      "tests/upgrade/test_capability_token_support.py": "73418c69696e36fa3e4be257354a781a7df1168829cffee7fb4c06346036d343",
+      "tests/upgrade/test_development_intelligence.py": "0817d0de4e467f78f447ecd5c5ecf3bae951ad2f958071e107829fcf616773f4",
+      "tests/upgrade/test_development_loop.py": "129c317d6fe9f0bba4cf64bbc1d56b453d6daee1a9977260b1820995fa9bdf03",
+      "tests/upgrade/test_development_sources.py": "4d08e95ae9dd9b1a6ca06319ad2e97702e0a0cfbadb435ed9621a81a739128cd",
+      "tests/upgrade/test_development_support.py": "ea1d1575f4d9252ec6fa1843e1af255f282dfc9cc52ed2143e6b9b41464d53db",
+      "tests/upgrade/test_evolution_cli.py": "fee3ec751410168004e96ab6dae857e0b8f2dd5a85c2513b2f674ad8675c1ed9",
+      "tests/upgrade/test_evolution_events.py": "770b0463d444a0b1705a3b8eaf26f96338a3e591e3db40a1179b2aa8c4fa3503",
+      "tests/upgrade/test_evolution_learning.py": "ff72d6af69467af71a7eb2feda1384f012ed7395a18a4ab0d3b88bb0ebd15bbe",
+      "tests/upgrade/test_evolution_support.py": "0b3a35f4b10df86948ed0317d6826dff0cf30ca98fc26640e44877f08bea7de9",
+      "tests/upgrade/test_semantic_twin.py": "d2ebedb71eb4cc8faf06e4c154f283d741de4611312b04c544468a2099e2f279",
+      "tests/upgrade/test_semantic_twin_contracts.py": "a1aa709dab60ee5a9fe7cbf7bd2ffb83b018641ecc5cde9f2810f47db7177aaa",
+      "tests/upgrade/test_semantic_twin_ingestion.py": "4895adebaefa10c181039b78074bc11c8e99a17cdbb635e583a34d307aa7820e",
+      "tests/upgrade/test_semantic_twin_integration.py": "79f5db22068a35092e2f1ec7e3b56c4c48290959cebabb116ad074b694e9d0e1",
+      "tests/upgrade/test_semantic_twin_integration_v2.py": "a7d42af0628682b1a8fdfac07f144b36f966199956698ff99dfb23dacab4a0a5",
+      "tests/upgrade/test_semantic_twin_phase1_complete.py": "a1ff4fa9a7c8ae7af3df268b839a60e0fb475842d965f021de2108f5535c5bb2"
+    },
+    "context_root": "1c88bb1f87f3be66f09bd69faa1fd2fcda71817c088b7b0140e782b33f77ebea",
+    "graph_objects": 105,
+    "source_digest": "31417751d4454554e21a88a31db07e97ba6a4e7b93cf259bd0974a4313e85c2e",
+    "changed_paths": [
+      "libs/evolution/development_sources.py",
+      "libs/evolution/intelligence.py",
+      "libs/evolution/development.py"
+    ],
+    "selected_tests": [
+      "tests/upgrade/test_development_intelligence.py",
+      "tests/upgrade/test_development_loop.py",
+      "tests/upgrade/test_development_sources.py"
+    ]
+  },
+  "run": {
+    "prediction_id": "cni://decision/evolution/7d5515a7388e653dcb1a29e3475af6ae50c5ccb60699bcbbafc35262f3fc0a26",
+    "source_sha": "3aea1500d957803f62d5a04c69749b2c6cdeb383",
+    "source_digest": {
+      "value": "31417751d4454554e21a88a31db07e97ba6a4e7b93cf259bd0974a4313e85c2e",
+      "algorithm": "sha256"
+    },
+    "selected_tests": [
+      "tests/upgrade/test_development_intelligence.py",
+      "tests/upgrade/test_development_loop.py",
+      "tests/upgrade/test_development_sources.py"
+    ],
+    "started_at": "2026-09-21T17:59:01.463594+00:00",
+    "completed_at": "2026-09-21T17:59:07.471529+00:00",
+    "exit_code": 0,
+    "counts": {
+      "tests_run": 42,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "expected_failures": 0,
+      "unexpected_successes": 0,
+      "failed_tests": []
+    },
+    "log": "test_common_origin_transitivity_does_not_inflate_corroboration (tests.upgrade.test_development_intelligence.InformationTests.test_common_origin_transitivity_does_not_inflate_corroboration) ... ok\ntest_marketing_claim_is_not_verified_by_repetition (tests.upgrade.test_development_intelligence.InformationTests.test_marketing_claim_is_not_verified_by_repetition) ... ok\ntest_scope_future_duplicate_and_source_credential_denials (tests.upgrade.test_development_intelligence.InformationTests.test_scope_future_duplicate_and_source_credential_denials) ... ok\ntest_stale_conflicting_and_instruction_content_remains_ineligible (tests.upgrade.test_development_intelligence.InformationTests.test_stale_conflicting_and_instruction_content_remains_ineligible) ... ok\ntest_external_text_cannot_become_an_executable_task (tests.upgrade.test_development_intelligence.MissionCompilerTests.test_external_text_cannot_become_an_executable_task) ... ok\ntest_graph_preserves_canonical_vocabulary_and_unknown_claims (tests.upgrade.test_development_intelligence.MissionCompilerTests.test_graph_preserves_canonical_vocabulary_and_unknown_claims) ... ok\ntest_invalid_estimates_and_cross_scope_do_not_rank (tests.upgrade.test_development_intelligence.MissionCompilerTests.test_invalid_estimates_and_cross_scope_do_not_rank) ... ok\ntest_packet_identity_separation_and_safe_names (tests.upgrade.test_development_intelligence.MissionCompilerTests.test_packet_identity_separation_and_safe_names) ... ok\ntest_packet_keeps_authority_and_requires_distinct_receiving_review (tests.upgrade.test_development_intelligence.MissionCompilerTests.test_packet_keeps_authority_and_requires_distinct_receiving_review) ... ok\ntest_priority_is_explicit_estimate_and_architecture_is_deferred (tests.upgrade.test_development_intelligence.MissionCompilerTests.test_priority_is_explicit_estimate_and_architecture_is_deferred) ... ok\ntest_quality_and_a3_block_packets_even_with_high_estimated_impact (tests.upgrade.test_development_intelligence.MissionCompilerTests.test_quality_and_a3_block_packets_even_with_high_estimated_impact) ... ok\ntest_cli_compiles_observed_workflow_to_mission_without_manual_translation (tests.upgrade.test_development_loop.DevelopmentCliTests.test_cli_compiles_observed_workflow_to_mission_without_manual_translation) ... ok\ntest_cli_compiles_proposed_mission_and_rejects_missing_inputs (tests.upgrade.test_development_loop.DevelopmentCliTests.test_cli_compiles_proposed_mission_and_rejects_missing_inputs) ... ok\ntest_cli_prepares_and_admits_only_separately_pinned_review (tests.upgrade.test_development_loop.DevelopmentCliTests.test_cli_prepares_and_admits_only_separately_pinned_review) ... ok\ntest_cli_records_before_running_and_retains_unknown_grading (tests.upgrade.test_development_loop.DevelopmentCliTests.test_cli_records_before_running_and_retains_unknown_grading) ... ok\ntest_cli_run_capture_and_offline_retry_use_selected_repository (tests.upgrade.test_development_loop.DevelopmentCliTests.test_cli_run_capture_and_offline_retry_use_selected_repository) ... ok\ntest_admitted_cases_reach_existing_competence_ladder_with_fixture_proofs (tests.upgrade.test_development_loop.IntegratedLoopTests.test_admitted_cases_reach_existing_competence_ladder_with_fixture_proofs)\nTest API composition with synthetic identities; do not claim real certification. ... ok\ntest_changed_labels_logs_and_rule_do_not_inherit_review (tests.upgrade.test_development_loop.OutcomeAdmissionTests.test_changed_labels_logs_and_rule_do_not_inherit_review) ... ok\ntest_failed_and_skipped_execution_is_retained_without_passing_labels (tests.upgrade.test_development_loop.OutcomeAdmissionTests.test_failed_and_skipped_execution_is_retained_without_passing_labels) ... ok\ntest_pinned_independent_review_produces_existing_replay_case (tests.upgrade.test_development_loop.OutcomeAdmissionTests.test_pinned_independent_review_produces_existing_replay_case) ... ok\ntest_prediction_must_precede_process_and_journal_admission (tests.upgrade.test_development_loop.OutcomeAdmissionTests.test_prediction_must_precede_process_and_journal_admission) ... ok\ntest_process_pass_alone_has_no_truth_or_competence (tests.upgrade.test_development_loop.OutcomeAdmissionTests.test_process_pass_alone_has_no_truth_or_competence) ... ok\ntest_scope_source_stale_and_foreign_reviewer_denials (tests.upgrade.test_development_loop.OutcomeAdmissionTests.test_scope_source_stale_and_foreign_reviewer_denials) ... ok\ntest_unpinned_receipt_does_not_mutate_journal (tests.upgrade.test_development_loop.OutcomeAdmissionTests.test_unpinned_receipt_does_not_mutate_journal) ... ok\ntest_capture_bytes_not_only_head_define_prediction (tests.upgrade.test_development_loop.PredictionTests.test_capture_bytes_not_only_head_define_prediction) ... ok\ntest_git_revision_is_returned_as_exact_sha (tests.upgrade.test_development_loop.PredictionTests.test_git_revision_is_returned_as_exact_sha) ... ok\ntest_missing_invalid_and_escaping_source_fails_closed (tests.upgrade.test_development_loop.PredictionTests.test_missing_invalid_and_escaping_source_fails_closed) ... ok\ntest_no_tests_empty_skips_and_timeout_never_pass (tests.upgrade.test_development_loop.PredictionTests.test_no_tests_empty_skips_and_timeout_never_pass) ... ok\ntest_real_disposable_unittest_process_is_observed_not_verified (tests.upgrade.test_development_loop.PredictionTests.test_real_disposable_unittest_process_is_observed_not_verified) ... ok\ntest_source_and_authority_tampering_rejected_on_decode (tests.upgrade.test_development_loop.PredictionTests.test_source_and_authority_tampering_rejected_on_decode) ... ok\ntest_source_change_and_head_change_prevent_posthoc_execution (tests.upgrade.test_development_loop.PredictionTests.test_source_change_and_head_change_prevent_posthoc_execution) ... ok\ntest_test_counts_and_selection_validation (tests.upgrade.test_development_loop.PredictionTests.test_test_counts_and_selection_validation) ... ok\ntest_transitive_test_selection_uses_canonical_tested_by_edges (tests.upgrade.test_development_loop.PredictionTests.test_transitive_test_selection_uses_canonical_tested_by_edges) ... ok\ntest_bad_steps_and_future_steps_are_rejected (tests.upgrade.test_development_sources.ProviderCaptureTests.test_bad_steps_and_future_steps_are_rejected) ... ok\ntest_collector_uses_only_explicit_attempt_relative_get_paths (tests.upgrade.test_development_sources.ProviderCaptureTests.test_collector_uses_only_explicit_attempt_relative_get_paths) ... ok\ntest_incomplete_duplicate_and_foreign_jobs_are_rejected (tests.upgrade.test_development_sources.ProviderCaptureTests.test_incomplete_duplicate_and_foreign_jobs_are_rejected) ... ok\ntest_missing_jobs_preserves_observation_with_explicit_gap (tests.upgrade.test_development_sources.ProviderCaptureTests.test_missing_jobs_preserves_observation_with_explicit_gap) ... ok\ntest_reader_rejects_writes_options_urls_and_unsafe_ids (tests.upgrade.test_development_sources.ProviderCaptureTests.test_reader_rejects_writes_options_urls_and_unsafe_ids) ... ok\ntest_retry_deduplicates_without_crossing_repository_or_journal_scope (tests.upgrade.test_development_sources.ProviderCaptureTests.test_retry_deduplicates_without_crossing_repository_or_journal_scope) ... ok\ntest_source_identity_and_chronology_fail_closed (tests.upgrade.test_development_sources.ProviderCaptureTests.test_source_identity_and_chronology_fail_closed) ... ok\ntest_statuses_never_become_test_truth_or_authority (tests.upgrade.test_development_sources.ProviderCaptureTests.test_statuses_never_become_test_truth_or_authority) ... ok\ntest_transport_failures_do_not_expose_stderr (tests.upgrade.test_development_sources.ProviderCaptureTests.test_transport_failures_do_not_expose_stderr) ... ok\n\n----------------------------------------------------------------------\nRan 42 tests in 5.240s\n\nOK\nCITADEL_DEVELOPMENT_TEST_RESULT={\"errors\": 0, \"expected_failures\": 0, \"failed_tests\": [], \"failures\": 0, \"skipped\": 0, \"tests_run\": 42, \"unexpected_successes\": 0}\n",
+    "source_unchanged": true
+  },
+  "run_id": "cni://test-run/evolution/03387914ce03de2bf5e76f28e395e75b4c06f2e312d55491b10823b8945af84a",
+  "mission": {
+    "status": "proposed",
+    "authority": "A1",
+    "rank": {
+      "priority": "P0",
+      "numerator": 352,
+      "denominator": 25,
+      "reasons": [
+        "Rubric weights and all gain/confidence/effort inputs are planning estimates."
+      ],
+      "assessment": {
+        "state": "UNMEASURED",
+        "disposition": "ELIGIBLE_HYPOTHESIS",
+        "distinct_origins": 1,
+        "reasons": [
+          "Source identity and corroboration are attributed; no independent fact verification is implied."
+        ]
+      },
+      "meaning": "heuristic_estimate_only"
+    },
+    "proposed_verifier": "cni://agent/cmax-b",
+    "verifier_assignment": "Proposed receiving seat only; no authenticated review or assignment is implied.",
+    "files": {
+      "SRS.md": "36cb196b41b4d9e21901caa64e5d41fe4589ede7a8073d2783137cd0897322a4",
+      "dispatch.md": "efd30d4c14358b7c794f170eeb8968fd230d59f042bc93abbdb973f42035d568",
+      "graph.json": "4105af1a9b94f2a9152cd41deee56c6798a84044a9b09193db7a77bef46b5a0e",
+      "graph.json.cgrf.yaml": "1f8cfc67e1720117c5b7fdf1ecfe6b946c52f09722a47e854cca70e9406bb5ac",
+      "mission.json": "b5ced5bd0efcbc700649b71d1757d5a8088a9b22bd861ac7a33a748538b4e6c0",
+      "mission.json.cgrf.yaml": "1127bd8c394271b4d7a632aee60b4221d0daab26c01652cd4b1a4070b4fc90ca",
+      "registry-proposal.yml": "477e85da6fce7061a882f7d791f4c10b361861a5a677e1371257b14c4e6bbeb2"
+    }
+  },
+  "qualification": {
+    "state": "HOLD",
+    "independently_graded_pairs": 0,
+    "discovered_candidates": 0,
+    "registered_capabilities": 0,
+    "route": "UNRESOLVED",
+    "reasons": [
+      "no eligible rule matched",
+      "local_model is not configured",
+      "frontier_model is not configured"
+    ],
+    "accuracy": "UNMEASURED",
+    "policy": {
+      "replay_cases": 10,
+      "shadow_cases": 5,
+      "discovery_successes": 2,
+      "precision": 0.95,
+      "recall": 0.8,
+      "action_selection": 0.9,
+      "test_recall": 0.8
+    },
+    "gaps": [
+      "independently authenticated reviewer labels and exact receipt pins",
+      "repeated successful discovery and disjoint replay/shadow cases",
+      "retained teacher predictions and independent TEVV/PromotionProof",
+      "known source/schema/SBOM compatibility"
+    ]
+  },
+  "commands": [
+    {
+      "name": "predict",
+      "argv": [
+        "/root/.pyenv/versions/3.12.13/bin/python",
+        "-m",
+        "libs.evolution.development",
+        "--scope",
+        "buildanddo/public-development",
+        "--state",
+        "/tmp/buildanddo-development-live.sqlite",
+        "predict",
+        "--root",
+        "/workspace/repo",
+        "--changed",
+        "libs/evolution/development_sources.py",
+        "--changed",
+        "libs/evolution/intelligence.py",
+        "--changed",
+        "libs/evolution/development.py",
+        "--mission",
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "--output",
+        "/tmp/buildanddo-development-dogfood-final/prediction.json"
+      ],
+      "started_at": "2026-09-21T17:58:52.048772+00:00",
+      "completed_at": "2026-09-21T17:58:57.504183+00:00",
+      "exit_code": 0,
+      "output": "{\"prediction\": \"cni://decision/evolution/7d5515a7388e653dcb1a29e3475af6ae50c5ccb60699bcbbafc35262f3fc0a26\", \"tests\": [\"tests/upgrade/test_development_intelligence.py\", \"tests/upgrade/test_development_loop.py\", \"tests/upgrade/test_development_sources.py\"], \"competence\": \"HYPOTHESIS\", \"scope\": \"Static import selection; source bytes are captured independently of Git HEAD.\"}\n",
+      "output_sha256": "18fb601eceaf591a989d9bfc6ef2f3a493f5d6617e14dc397f1dcc3dae8005de"
+    },
+    {
+      "name": "mission",
+      "argv": [
+        "/root/.pyenv/versions/3.12.13/bin/python",
+        "-m",
+        "libs.evolution.development",
+        "--scope",
+        "buildanddo/public-development",
+        "--state",
+        "/tmp/buildanddo-development-live.sqlite",
+        "mission-from-run",
+        "/tmp/buildanddo-development-dogfood-final/prediction.json",
+        "/tmp/buildanddo-development-provider-capture.json",
+        "--repository",
+        "mrnobodytx/buildanddo",
+        "--srs",
+        "SRS-BUILDANDDO-DEVELOPMENT-ACCEPTANCE-001",
+        "--dispatch",
+        "VCC-BUILDANDDO-DEVELOPMENT-ACCEPTANCE-001",
+        "--builder",
+        "cni://agent/bits-codegen",
+        "--verifier",
+        "cni://agent/cmax-b",
+        "--output",
+        "/tmp/buildanddo-development-dogfood-final/mission-packet"
+      ],
+      "started_at": "2026-09-21T17:58:57.504524+00:00",
+      "completed_at": "2026-09-21T17:58:58.789714+00:00",
+      "exit_code": 0,
+      "output": "{\"status\": \"proposed\", \"srs\": \"SRS-BUILDANDDO-DEVELOPMENT-ACCEPTANCE-001\", \"authority\": \"A1\"}\n",
+      "output_sha256": "b17f364aec23bcbaf97069f4dcf5e592a2d32da81bf433775ab374cd1c149666"
+    },
+    {
+      "name": "test",
+      "argv": [
+        "/root/.pyenv/versions/3.12.13/bin/python",
+        "-m",
+        "libs.evolution.development",
+        "--scope",
+        "buildanddo/public-development",
+        "--state",
+        "/tmp/buildanddo-development-live.sqlite",
+        "test",
+        "/tmp/buildanddo-development-dogfood-final/prediction.json",
+        "--root",
+        "/workspace/repo",
+        "--output",
+        "/tmp/buildanddo-development-dogfood-final/test-run.json"
+      ],
+      "started_at": "2026-09-21T17:58:58.789826+00:00",
+      "completed_at": "2026-09-21T17:59:09.250339+00:00",
+      "exit_code": 0,
+      "output": "{\"status\": \"PASS\", \"counts\": {\"tests_run\": 42, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"expected_failures\": 0, \"unexpected_successes\": 0, \"failed_tests\": []}, \"grading\": \"UNMEASURED\", \"run_id\": \"cni://test-run/evolution/03387914ce03de2bf5e76f28e395e75b4c06f2e312d55491b10823b8945af84a\"}\n",
+      "output_sha256": "5ffc4d2d152f300bf2d4106d8b989bf4862349a7475b4c83de0fe3172648966e"
+    },
+    {
+      "name": "status",
+      "argv": [
+        "/root/.pyenv/versions/3.12.13/bin/python",
+        "-m",
+        "libs.evolution.development",
+        "--scope",
+        "buildanddo/public-development",
+        "--state",
+        "/tmp/buildanddo-development-live.sqlite",
+        "status"
+      ],
+      "started_at": "2026-09-21T17:59:09.250412+00:00",
+      "completed_at": "2026-09-21T17:59:10.211966+00:00",
+      "exit_code": 0,
+      "output": "{\"observations\": 6, \"episodes\": 2, \"verified_episodes\": 0, \"next_actions\": [\"Capture independently reviewed episodes before discovering capabilities.\"]}\n",
+      "output_sha256": "b999a253634e9ed32303881cf0efa1a6f2b598a96370cc6c094b81f3a51c0d3e"
+    }
+  ],
+  "external_writes": 0
+}

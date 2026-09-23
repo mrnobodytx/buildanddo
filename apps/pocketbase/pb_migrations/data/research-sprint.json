@@ -1,0 +1,251 @@
+{
+  "schema_version": "buildanddo.research-sprint/v1",
+  "title": "Decision and experiment sprint",
+  "source_status": "OWNER_SUPPLIED_UNVERIFIED",
+  "source_note": "Research leads supplied by the owner on 2026-09-22. Official notices, eligibility, deadlines, rules and benchmark parameters must be captured and reviewed before submission.",
+  "authority": "A0",
+  "authorized": false,
+  "allocation": {
+    "army": 60,
+    "influence": 25,
+    "fherma": 15
+  },
+  "lanes": [
+    {
+      "id": "army",
+      "title": "Army decision packages",
+      "priority": "Primary",
+      "reported_topics": [
+        "ARM26BX06-NV012",
+        "ARM26TX06-NV003"
+      ],
+      "source_url": "https://armysbir.army.mil/topics/agentic-ai-schema-driven-decision-management/",
+      "reported_open": "2026-09-23",
+      "reported_close": "2026-10-21",
+      "official_notice": null,
+      "eligibility": "UNMEASURED",
+      "gate": "Two reproducible decision demonstrations, an evidence crosswalk, independent review and a proposal draft.",
+      "requirements": [
+        {
+          "id": "schema",
+          "requirement": "Objectives, options, constraints, assumptions, risks and bias checks are explicit.",
+          "owner": "apps/decision/packages.py",
+          "evidence": "Package replay and negative contract tests",
+          "gap": "Domain-expert review and official requirement confirmation"
+        },
+        {
+          "id": "refresh",
+          "requirement": "Retain changed evidence and explain a changed or unchanged decision.",
+          "owner": "apps/decision/packages.py",
+          "evidence": "Point decision and longitudinal refresh exports",
+          "gap": "Real stakeholder evidence and independent verification"
+        },
+        {
+          "id": "governance",
+          "requirement": "Separate agent proposals, independent review and human authorization.",
+          "owner": "apps/decision/contract.py",
+          "evidence": "Advisory outputs retain UNMEASURED review and PENDING approval",
+          "gap": "Named receiving reviewers and approval records"
+        },
+        {
+          "id": "semantic",
+          "requirement": "Keep traceable relationships to the evidence used.",
+          "owner": "libs/semantic_twin",
+          "evidence": "Canonical decision/observation graph with source digests",
+          "gap": "External owner resolution and retained operational captures"
+        }
+      ]
+    },
+    {
+      "id": "influence",
+      "title": "DARPA market experiments",
+      "priority": "Supporting research",
+      "reported_topics": [
+        "DPA26BZ06-DV026"
+      ],
+      "source_url": "https://www.darpa.mil/research/programs/influence-benchmarks-ai-systems",
+      "reported_open": "2026-09-23",
+      "reported_close": "2026-10-21",
+      "official_notice": null,
+      "eligibility": "UNMEASURED",
+      "gate": "A replayable market experiment, quantitative results and a separate proposal hypothesis.",
+      "requirements": [
+        {
+          "id": "market",
+          "requirement": "Multiple agents trade in a changing simulated market.",
+          "owner": "foundry/shared/federal_foundry/market.py",
+          "evidence": "Two assets, a public news feed, bids, uniform clearing and utility",
+          "gap": "Independent experiment review and confirmed official evaluation design"
+        },
+        {
+          "id": "black_box",
+          "requirement": "Use model queries and responses without internal model access.",
+          "owner": "apps/federal_foundry/episodes.py",
+          "evidence": "Scoped prompts, provider/model/version identities and replayable action receipts",
+          "gap": "Authorized cross-model runs; scripted agents are synthetic controls"
+        },
+        {
+          "id": "behavior",
+          "requirement": "Measure collaboration, deception and bias with repeatable comparisons.",
+          "owner": "apps/federal_foundry/episodes.py",
+          "evidence": "Raw action history and explicit UNMEASURED behavioral classification",
+          "gap": "Labeled controls, classifier validation and broader stock-agent suite"
+        }
+      ]
+    },
+    {
+      "id": "fherma",
+      "title": "FHERMA polynomial experiment",
+      "priority": "Three-day continuation gate",
+      "reported_topics": [],
+      "source_url": "https://www.fherma.io/kernels/polynomial-multiplication/challenges/polynomial-multiplication-2025",
+      "reported_open": null,
+      "reported_close": "2026-11-29",
+      "official_notice": null,
+      "eligibility": "UNMEASURED",
+      "reported_parameters": {
+        "degree": 32768,
+        "coefficient_bits": 868,
+        "prize_usd": 5000,
+        "leader_us": 260
+      },
+      "gate": "Official correctness and benchmark receipt. Internal GO at <=2x verified leader; WATCH to 1 ms; otherwise PIVOT.",
+      "requirements": [
+        {
+          "id": "correctness",
+          "requirement": "Compute an exact negacyclic polynomial product.",
+          "owner": "apps/federal_foundry/polynomial.py",
+          "evidence": "Carry-free integer reference and every-coefficient candidate checks",
+          "gap": "Official coefficient ring, SDK and candidate interface"
+        },
+        {
+          "id": "performance",
+          "requirement": "Submit a correct cuPQC GPU candidate for official timing.",
+          "owner": "apps/federal_foundry/polynomial.py",
+          "evidence": "Prerequisite doctor and supplied-timing continuation calculator",
+          "gap": "GPU/cuPQC implementation, authorized official submission and timing receipts"
+        }
+      ]
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "date": "2026-09-23",
+      "title": "Freeze the sources",
+      "army": "Capture the exact notice and map requirements to existing owners and measured evidence.",
+      "influence": "Confirm the topic and requirements; retain a separate matrix.",
+      "fherma": "Capture live rules and starter interface; provision cuPQC and the official CLI on an authorized GPU runner.",
+      "output": "Reviewed source captures and requirements crosswalk",
+      "depends_on": []
+    },
+    {
+      "day": 2,
+      "date": "2026-09-24",
+      "title": "Build the decision primitive",
+      "army": "Run the strict Decision Package evaluator over one bounded comparison.",
+      "influence": "Reuse the existing market contract and document measurement gaps.",
+      "fherma": "Check exact CPU-reference correctness, then implement the GPU adapter against the captured official interface.",
+      "output": "Replayable package and coefficient correctness records",
+      "depends_on": [
+        1
+      ]
+    },
+    {
+      "day": 3,
+      "date": "2026-09-25",
+      "title": "Demonstrate and refresh",
+      "army": "Retain a point decision and a changed-evidence refresh with both revisions.",
+      "influence": "Review how independent evidence and human authority remain separate.",
+      "fherma": "Owner submits the first correct candidate; decide GO/WATCH/PIVOT from official timing.",
+      "output": "Two demo records and FHERMA continuation decision",
+      "depends_on": [
+        2
+      ]
+    },
+    {
+      "day": 4,
+      "date": "2026-09-26",
+      "title": "Use it on BuildAndDo",
+      "army": "Evaluate release readiness from retained acceptance evidence; hold when runtime evidence is missing.",
+      "influence": "Define independent trial seeds, baselines and private information boundaries.",
+      "fherma": "Continue only if the benchmark gate justifies it.",
+      "output": "Actual repository decision package with explicit evidence gaps",
+      "depends_on": [
+        3
+      ]
+    },
+    {
+      "day": 5,
+      "date": "2026-09-27",
+      "title": "Export and review",
+      "army": "Export decision, evidence, assumptions, risk, dependency graph, source manifest, verification, approval and HTML.",
+      "influence": "Review experimental controls before model runs.",
+      "fherma": "Retain all attempted candidates, failures and measurements.",
+      "output": "Replayable evidence package with review and approval gaps",
+      "depends_on": [
+        4
+      ]
+    },
+    {
+      "day": 6,
+      "date": "2026-09-28",
+      "title": "Run the market seed",
+      "army": "Resolve review findings without expanding authority.",
+      "influence": "Run five to ten agents, two assets, private values, public news and uniform clearing.",
+      "fherma": "Profile only on the official-compatible runner.",
+      "output": "Synthetic baseline episodes and quantitative comparison",
+      "depends_on": [
+        5
+      ]
+    },
+    {
+      "day": 7,
+      "date": "2026-09-29",
+      "title": "Compare models",
+      "army": "Reproduce the decision demos independently.",
+      "influence": "Run authorized model bindings on identical frozen datasets and seeds; retain prompts, actions, failures and identities.",
+      "fherma": "Submit revisions only with owner authorization.",
+      "output": "Real model receipts or explicit BLOCKED status",
+      "depends_on": [
+        6
+      ]
+    },
+    {
+      "day": 8,
+      "date": "2026-09-30",
+      "title": "Challenge the evidence",
+      "army": "Test tenant swaps, stale support, missing evidence, changed hashes, bias conflicts and self-approval attempts.",
+      "influence": "Test malformed actions, private-information leaks, timeouts and replay tampering.",
+      "fherma": "Test wraparound, maximum coefficients and wrong candidate outputs.",
+      "output": "Negative-test results and retained failed experiments",
+      "depends_on": [
+        7
+      ]
+    },
+    {
+      "day": 9,
+      "date": "2026-10-01",
+      "title": "Write separate proposals",
+      "army": "Draft schema, governance, evidence, demos, milestones and commercial transition against confirmed requirements.",
+      "influence": "Draft market, black-box interface, metrics, controls, reproducibility and scaling.",
+      "fherma": "Describe only measured correctness and timing.",
+      "output": "Separate Army and DARPA skeletons with unsupported claims withheld",
+      "depends_on": [
+        8
+      ]
+    },
+    {
+      "day": 10,
+      "date": "2026-10-02",
+      "title": "Gate continuation",
+      "army": "Owner reviews two demos, crosswalk, independent review and proposal gaps.",
+      "influence": "Owner reviews experimental results and the next research hypothesis.",
+      "fherma": "Owner reviews official performance trajectory.",
+      "output": "Evidence-backed continuation or hold for each lane",
+      "depends_on": [
+        9
+      ]
+    }
+  ]
+}

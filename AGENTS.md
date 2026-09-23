@@ -26,13 +26,16 @@ read `CONTRIBUTING.md` first.
 - `apps/pocketbase` — PocketBase backend, schema shipped via `pb_migrations/`.
 - `services/praxis_evidence` — evidence fabric, tested against a live backend.
 - `scripts/ci`, `scripts/deploy` — boundary scan and the real ship pipeline.
-- GitHub is the public collaboration plane; the private GitLab mirror holds
-  golden, infrastructure, release and deployment authority.
+- GitHub is the public collaboration plane; GitLab executes CI and holds
+  golden, infrastructure, release and deployment authority. Inspect the root
+  GitLab configuration and its reachable includes; GitHub job status does not
+  establish GitLab execution or acceptance. Automatic public PR governance and manual diagnostics remain enabled
+  alongside the required GitLab jobs. Gates must not be disabled to hide failures.
 
 ## Start here
 
 Run `python scripts/ci/agent_context.py`. It reports which pipelines exist,
-which gate scripts CI actually runs, the real test surface, the open SRS codes
+which gate scripts are configured for GitLab, the real test surface, the open SRS codes
 and every current finding with its evidence — measured from the repository, not
 remembered. Then read `.bits/context.md` for intent, invariants and the current
 plan, and `.bits/srs/<CODE>.md` for the spec your dispatch names.
@@ -181,9 +184,9 @@ component says so rather than implying a check exists.
 
 | Tag                          | Step             | What it actually checks                                     |
 |------------------------------|------------------|-------------------------------------------------------------|
-| `ci:test`                    | Test             | Lint, web coverage, public adapters, native Discord/research parser and CPU blueprint pipeline, PocketBase dossier/suite/operator/classroom and tutorial certificate checks, portable suite and federal portfolio coverage, foundry execution/replay/export coverage, and manifest/lock integrity |
+| `ci:test`                    | Test             | GitLab source Node/Python and semantic-twin suites, membership/evidence/fault assurance, web coverage, native Discord/PDF and CPU blueprint checks, Python 3.11/3.12 foundry/portfolio/mission/career/knowledge-unit/integrity/world-twin coverage, PocketBase workspace/suite/learning/classroom/dossier checks on both declared runtimes, and manifest/lock integrity; an explicit full-assurance lane adds browser/accessibility/compatibility/load/restore checks |
 | `ci:build`                   | Pull request     | `npm run build` produces `dist/apps/web/index.html`         |
-| `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, one actor label, `agent_context.py --check` |
+| `governance:boundary-scan`   | Governance check | `verify_public_boundary.py`, secret scan, exactly one actor label on the current review, `agent_context.py --check` |
 | `governance:readiness`       | Sprint readiness | All 11 milestones match reviewed source; acceptance, replay and provisional submission validators reject incomplete evidence and invented official rules |
 | `deploy:staging-probe`       | Staging deploy   | Candidate mirror to the private plane succeeds on `main`    |
 | `deploy:production`          | Production       | Release visible in RUM, no new error signature from the deploy |

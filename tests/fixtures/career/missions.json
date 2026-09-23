@@ -1,0 +1,19 @@
+{"note": "Synthetic PocketBase export for tests.",
+ "missions": [
+   {"id": "m1", "title": "Harden the CI pipeline", "description": "Add CI/CD quality gates", "status": "verified", "owner": "u_person"},
+   {"id": "m2", "title": "Observability rollout", "description": "Datadog telemetry for the worker", "status": "running", "owner": "u_other"},
+   {"id": "m3", "title": "Tidy the office", "description": "", "status": "running", "owner": "u_person"}
+ ],
+ "evidence": [
+   {"id": "e1", "mission": "m1", "owner": "u_person", "type": "verified", "content": "Gate wired", "created": "2026-09-10T00:00:00Z", "source": "manual"},
+   {"id": "e2", "mission": "m2", "owner": "u_other", "type": "observed", "content": "Dashboards", "created": "2026-09-11T00:00:00Z"},
+   {"id": "e3", "mission": "m1", "owner": "u_person", "type": "observed", "content": "review", "created": "2026-09-12T00:00:00Z", "source": "Suite run r1; v1"},
+   {"id": "e4", "mission": "m3", "owner": "u_person", "type": "observed", "content": "Chairs moved", "created": "2026-09-12T00:00:00Z"}
+ ],
+ "suite_runs": [
+   {"id": "r1", "mission": "m1", "owner": "u_person", "suite": "ci", "status": "attached", "reviewed_by": "u_reviewer", "reviewed_at": "2026-09-12T00:00:00Z", "result_sha256": "abc123"},
+   {"id": "r2", "mission": "m1", "owner": "u_person", "suite": "ci", "status": "attached", "reviewed_by": "u_person", "reviewed_at": "2026-09-13T00:00:00Z", "result_sha256": "def456"},
+   {"id": "r3", "mission": "m2", "owner": "u_other", "suite": "telemetry", "status": "attached", "reviewed_by": "u_person", "reviewed_at": "2026-09-14T00:00:00Z", "result_sha256": "0a0b"},
+   {"id": "r4", "mission": "m2", "owner": "u_other", "suite": "telemetry", "status": "ready", "reviewed_by": "", "result_sha256": ""},
+   {"id": "r5", "mission": "m2", "owner": "u_other", "suite": "telemetry", "status": "attached", "reviewed_by": "u_third", "reviewed_at": "2026-09-14T00:00:00Z", "result_sha256": "0c"}
+ ]}

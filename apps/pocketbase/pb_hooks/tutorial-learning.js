@@ -8,14 +8,15 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
 // Intent:      Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
+const government = require(`${__hooks}/government-access.js`);
 const FIELDS = ['owner', 'tutorial', 'snapshot', 'content_digest', 'next_section', 'practiced', 'completed_at', 'certificate', 'protocol_version'];
 const POINTS = 100;
 
@@ -68,8 +69,9 @@ function snapshot(record) {
 }
 function lessonFor(app, e, record) {
     const tutorial = access.find(app, 'tutorials', access.id(e.request.pathValue('id')));
-    access.readable(app, tutorial, e.requestInfo());
+    if (!government.lesson(app, e.auth, tutorial)) access.readable(app, tutorial, e.requestInfo());
     const body = record ? access.json(record, 'snapshot') : snapshot(tutorial);
+    if (body?.category === 'Government submissions') government.requireMember(app, e.auth);
     const digest = $security.sha256(access.canonical(body));
     if (!supported(body?.lesson) || record && record.getString('content_digest') !== digest)
         throw new ApiError(503, 'The saved lesson needs an operator review.');

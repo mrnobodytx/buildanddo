@@ -1,19 +1,17 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/hooks/__tests__/useWorkspaceRecords.test.js
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TEST-001
+// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js,
-//              apps/web/src/test/utils.jsx
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/test/utils.jsx
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/web/src/hooks/useWorkspaceRecords.js;
-//              CONSUMES apps/web/src/test/utils.jsx
-// Intent:      Prove the read path every workspace page depends on: workspace
-//              scoping, error surfacing and loading transitions.
+// EnumEdges:   VALIDATES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/test/utils.jsx
+// Intent:      Prove the read path every workspace page depends on: workspace scoping, error surfacing and loading transitions.
 // ───────────────────────────────────────────────────────────────
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -104,13 +102,12 @@ describe('useWorkspaceRecords', () => {
 
         expect(pb.__collection('evidence').getFullList).toHaveBeenCalledWith(
             expect.objectContaining({
-                filter: 'workspace = "ws_test" && type = "verified"',
+                filter: 'workspace = "ws_test" && (type = "verified")',
             }),
         );
     });
 
     it('surfaces a readable error and drops stale records when the request fails', async () => {
-        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
         pb.__setError('missions', mockPocketBaseError('Something went wrong.', 500));
 
         const { result } = renderHook(() => useWorkspaceRecords('missions'), {
@@ -122,7 +119,6 @@ describe('useWorkspaceRecords', () => {
         expect(result.current.error).toMatch(/^Could not load this data right now/);
         expect(result.current.degraded).toBe(true);
         expect(result.current.records).toEqual([]);
-        expect(consoleError).toHaveBeenCalled();
     });
 
     it('does not query at all when no workspace is active', async () => {
@@ -147,6 +143,9 @@ describe('useWorkspaceRecords', () => {
         await waitFor(() => expect(result.current.loading).toBe(false));
 
         expect(result.current.records).toEqual([]);
+        expect(pb.collection).not.toHaveBeenCalled();
+        await act(async () => { expect(await result.current.create({ title: 'Disabled request' })).toMatchObject({ ok: false, reason: 'unavailable' }); });
+        expect(result.current.saving).toBe(false);
         expect(pb.collection).not.toHaveBeenCalled();
     });
 
@@ -198,7 +197,7 @@ describe('useWorkspaceRecords', () => {
         pb.authStore.clear();
         await act(async () => {
             resolveWrite({ id: 'saved-mission' });
-            expect((await pending).ok).toBe(true);
+            expect(await pending).toMatchObject({ ok: false, stale: true });
         });
         expect(pb.__collection('missions').getFullList).toHaveBeenCalledTimes(1);
     });

@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/administration.pb.js
+// Depends:     apps/pocketbase/pb_hooks/administration.pb.js, apps/pocketbase/pb_hooks/government.pb.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js; CONSUMES apps/pocketbase/pb_hooks/government.pb.js
 // DAG Node:    none
 // Intent:      Keep administration and community requests bound to one account/workspace with stable recovery after uncertain saves.
 // ───────────────────────────────────────────────────────────────
@@ -25,6 +25,37 @@ const revision = (value, min = 0) => Number.isSafeInteger(value) && value >= min
 const strings = (value, names) => names.every((name) => typeof value?.[name] === 'string');
 const page = (value) => Array.isArray(value?.items) && value.items.length <= 20 && revision(value.page, 1) && typeof value.has_more === 'boolean';
 const PROVIDERS = ['discord', 'reddit', 'datadog', 'posthog', 'firecrawl', 'n8n', 'supabase', 'mautic', 'twenty'];
+
+/** Key private UI work by identity and granted capabilities, not polling activity.
+ * This is a retention boundary, never permission to read or write while loading.
+ * @param {object} scope Current identity, session lifetime and optional workspace access.
+ * @returns {string} React lifecycle key.
+ */
+export function workspaceLifecycleKey({ accountId = '', workspaceId = '', demo = false, sessionEpoch = 0, access } = {}) {
+    const data = access?.error ? null : access?.data;
+    return JSON.stringify([accountId, workspaceId, demo, sessionEpoch, access ? [access.accessEpoch || 0, Boolean(data), data?.role || '',
+        data?.can_write === true, data?.can_admin === true, data?.can_grant_admin === true, data?.government?.allowed === true] : null]);
+}
+
+/** Coalesce access reads through publication, so a later poll cannot hide a denial.
+ * @returns {{load: Function, invalidate: Function}} One flight per current scope.
+ */
+export function createWorkspaceAccessLoader() {
+    let pending = null;
+    return {
+        load(key, operation) {
+            if (pending?.key === key) return pending.promise;
+            const job = { key, promise: null };
+            pending = job;
+            job.promise = (async () => {
+                try { return await operation(); }
+                finally { if (pending === job) pending = null; }
+            })();
+            return job.promise;
+        },
+        invalidate() { pending = null; },
+    };
+}
 
 function contribution(item, workspace, kind) {
     return item && validId(item.id) && item.workspace === workspace && validId(item.owner) && revision(item.revision, 1) &&
@@ -57,6 +88,10 @@ function readShape(value, workspace, section) {
         value.audit.items.every((item) => validId(item.id) && validId(item.actor) && validId(item.target) && ACTIONS.includes(item.action) && revision(item.revision, 1) && strings(item, ['created']));
     if (value.can_admin !== admin || value.can_write !== (value.role !== 'viewer') || value.can_grant_admin !== (value.role === 'owner')) return false;
     if (section === 'access') return true;
+    if (section === 'government') return value.government?.allowed === true && value.government?.tier === 'government' &&
+        value.plan?.schema_version === 'buildanddo.research-sprint/v1' && Array.isArray(value.plan.lanes) && Array.isArray(value.plan.days) &&
+        Array.isArray(value.lessons) && value.lessons.every((item) => validId(item.id) && item.category === 'Government submissions') &&
+        Boolean(value.starter?.mission_plan);
     if (section === 'integrations') return Array.isArray(value.items) && value.items.length === PROVIDERS.length &&
         new Set(value.items.map((item) => item?.provider)).size === PROVIDERS.length && value.items.every(integration);
     if (!page(value)) return false;
@@ -108,12 +143,12 @@ export function createWorkspaceControlClient({ client, workspaceId, accountId, d
     return {
         async read(section, query = {}) {
             if (!current()) return stale();
-            if (!['access', 'admin', 'integrations', 'wiki', 'forums'].includes(section) &&
+            if (!['access', 'admin', 'integrations', 'wiki', 'forums', 'government'].includes(section) &&
                 !(section.startsWith('forums/') && validId(section.slice(7)))) return { ok: false, reason: 'invalid', error: 'Choose a supported workspace view.' };
             try {
                 const data = await client.send(`${prefix}/${section}`, { method: 'GET', query, requestKey: null, cache: 'no-store' });
                 if (!current()) return stale();
-                return readShape(data, workspaceId, section) ? { ok: true, data } : message(null);
+                return readShape(data, workspaceId, section) && (section !== 'government' || data.account_id === accountId) ? { ok: true, data } : message(null);
             } catch (error) { return current() ? message(error) : stale(); }
         },
         async command(action, payload, revision) {

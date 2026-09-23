@@ -1,18 +1,18 @@
 // ─── CGRF Header ───────────────────────────────────────────────
-// File:         apps/web/src/components/workspace/missions/MissionReview.jsx
-// Stage:        07_BUILD
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
-// CAPS:         pending
-// CK:           pending
-// Dispatch:     VCC-BUILDANDDO-UPGRADE-001
-// Seat:         BITS-CODEGEN
-// Owner:        Citadel Nexus Inc.
-// Created:      2026-09-15
-// Depends:      apps/web/src/lib/missionLearning.js
-// EnumType:     Widget
-// EnumEdges:    DEPENDS_ON apps/web/src/lib/missionLearning.js
-// DAG Node:     none
-// Intent:       Record TEVV observations and mission-scoped evidence with explicit review, retry handling and honest failure outcomes.
+// File:        apps/web/src/components/workspace/missions/MissionReview.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-15
+// Depends:     apps/web/src/lib/missionLearning.js, apps/web/src/contexts/WorkspaceAccessContext.jsx
+// EnumType:    Widget
+// EnumEdges:   DEPENDS_ON apps/web/src/lib/missionLearning.js; CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx
+// DAG Node:    none
+// Intent:      Record TEVV observations and mission-scoped evidence with explicit review, retry handling and honest failure outcomes.
 // ───────────────────────────────────────────────────────────────
 
 import React, { useId, useRef, useState } from 'react';
@@ -20,12 +20,14 @@ import { Button } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import {
     TEVV,
     emptyReview,
     missionEvidence,
     planIssues,
-    reviewIssues,
+    verificationIssues,
 } from '@/lib/missionLearning';
 
 /** Record observed TEVV outcomes and real evidence before changing the mission outcome. */
@@ -40,6 +42,8 @@ export default function MissionReview({
     disabled = false,
 }) {
     const uid = useId();
+    const { user } = useAuth() || {};
+    const access = useWorkspaceAccess();
     const [review, setReview] = useState(() => ({ ...emptyReview(), ...mission.mission_review }));
     const [progress, setProgress] = useState(mission.progress ?? 0);
     const [attested, setAttested] = useState(false);
@@ -49,9 +53,10 @@ export default function MissionReview({
     const [saving, setSaving] = useState(false);
     const pending = useRef(false);
     const terminal = ['verified', 'failed'].includes(mission.status);
-    const locked = disabled || saving || terminal;
+    const locked = disabled || saving || terminal || !access.data?.can_write;
     const records = missionEvidence(mission, evidence);
-    const issues = reviewIssues(mission, review, evidence);
+    const issues = verificationIssues({ mission, review, evidence, actorId: user?.id,
+        canWrite: access.data?.can_write === true, evidenceAvailable: !evidenceLoading && !evidenceDegraded });
     const approvedPlan =
         mission.mission_approved_by &&
         mission.mission_approved_at &&
@@ -157,9 +162,17 @@ export default function MissionReview({
             {terminal && (
                 <p className="border border-border p-3 text-sm">
                     This outcome is final. Start a new mission for another attempt. Evidence
-                    references remain inspectable records, not signed or immutable proof.
+                    and the exact reviewed evidence snapshot remain available for inspection.
                 </p>
             )}
+            {!terminal && mission.mission_plan?.independent_review && <p className="border border-border p-3 text-sm">
+                Independent review required: the reviewer must differ from the proposer and every selected evidence author.
+                {mission.owner === user?.id && ' Ask another workspace editor or administrator to review this mission.'}
+            </p>}
+            {!terminal && issues.length > 0 && <details className="border border-border p-3 text-sm" open>
+                <summary>Before this outcome can be verified ({issues.length})</summary>
+                <ul className="mt-2 list-disc pl-5">{issues.map((issue) => <li key={issue}>{issue}</li>)}</ul>
+            </details>}
             {evidenceDegraded ? (
                 <div role="alert" className="space-y-2 text-sm">
                     <p>Evidence is unavailable. Verification is disabled until it can be read.</p>

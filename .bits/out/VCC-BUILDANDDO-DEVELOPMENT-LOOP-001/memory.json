@@ -1,0 +1,1628 @@
+{
+  "vectors": [
+    {
+      "type": "A",
+      "file_path": ".bits/context.lock.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [],
+      "lines": 843,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain reviewed source metadata for the development-loop dispatch.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-development-loop.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/development-loop.md",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+        ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-capability-runtime.md",
+        "docs/submission-guide.md"
+      ],
+      "lines": 106,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give receiving owners exact missing runtime, review and submission inputs after the local development connections have been exercised.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/hostinger-readiness.lock.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/hostinger-readiness.lock.json"
+      ],
+      "lines": 1005,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py"
+      ],
+      "lines": 369,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the actual provider observation, frozen prediction, measured test result and unqualified registry route.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the actual provider observation, frozen prediction, measured test result and unqualified registry route.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "libs/evolution/development.py",
+        "libs/evolution/development_sources.py",
+        "libs/evolution/candidate.py",
+        "libs/evolution/registry.py"
+      ],
+      "lines": 269,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reproduce one actual development observation and source-test experiment while preserving the absence of independent qualification.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py"
+      ],
+      "lines": 1628,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain file intent, declared graph relationships and real development experiment events for post-merge ingest.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain file intent, declared graph relationships and real development experiment events for post-merge ingest.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+        "docs/development-loop.md",
+        ".bits/context.lock.json",
+        ".bits/hostinger-readiness.lock.json",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 161,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Report the implemented local connections and the actual independent-review and submission boundaries that remain unsatisfied.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/submission-draft.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/day21/JUDGE_STORY.md",
+        "docs/submission-guide.md",
+        "docs/workspace-assistant.md",
+        "docs/hostinger-sprint-closure.md",
+        "README.md"
+      ],
+      "lines": 135,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prepare concrete reviewer-facing submission copy while keeping missing walkthrough, product proofs and final-candidate acceptance explicit.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py"
+      ],
+      "lines": 1471,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain source-bound checks, full-acceptance limits and actual submission-audit results for review.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py"
+      ],
+      "lines": 20,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain source-bound checks, full-acceptance limits and actual submission-audit results for review.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "checked_file",
+        "sha256",
+        "secret_scan",
+        "coverage",
+        "validate",
+        "main"
+      ],
+      "dependencies": [
+        "libs/evolution/development.py",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+        ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json"
+      ],
+      "lines": 342,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Check exact source and retained experimental evidence without elevating artifact consistency to independent qualification.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/queue/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+        ".bits/srs_registry.yml"
+      ],
+      "lines": 72,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound the requested integration to existing evidence, proposal and authority contracts with retained operational gaps.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "AGENTS.md",
+        "libs/evolution",
+        "libs/capability_tokens/verification.py"
+      ],
+      "lines": 74,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Connect existing learning and mission boundaries to actual development evidence without manufacturing qualification or submission readiness.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/srs_registry.yml",
+      "cket_stage": "04_HYPOTHESIZE",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        ".bits/context.md",
+        "scripts/ci/agent_context.py"
+      ],
+      "lines": 250,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/development-loop.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "libs/evolution/development.py",
+        "libs/evolution/development_sources.py",
+        "libs/evolution/intelligence.py",
+        "docs/verified-evolution.md",
+        "docs/capability-tokens.md",
+        "docs/submission-guide.md"
+      ],
+      "lines": 175,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make development observations, proposed work and independent grading operable without confusing source tests with competence or competition acceptance.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/development.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_test_path",
+        "source_bytes",
+        "_file_digests",
+        "_head",
+        "test_graph",
+        "_claim_path",
+        "FrozenPrediction",
+        "freeze_prediction",
+        "_event",
+        "prediction_events",
+        "TestCounts",
+        "MeasuredTestRun",
+        "run_source_tests",
+        "_bind_run",
+        "observe_test_run",
+        "OutcomeReviewRequest",
+        "admit_reviewed_outcome",
+        "_write_new",
+        "main"
+      ],
+      "dependencies": [
+        "libs/evolution/compiler.py",
+        "libs/evolution/benchmark.py",
+        "libs/evolution/replay.py",
+        "libs/evolution/store.py",
+        "libs/capability_tokens/verification.py",
+        "libs/evolution/development_sources.py",
+        "libs/evolution/intelligence.py"
+      ],
+      "lines": 1075,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record predictions before actual source tests and admit independently reviewed outcomes into existing replay without changing competence or execution authority.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/development_sources.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "SourceUnavailable",
+        "repository_name",
+        "repository_read",
+        "_payload",
+        "_integer",
+        "GitHubRunCapture",
+        "collect_github_run",
+        "ingest_run"
+      ],
+      "dependencies": [
+        "libs/evolution/event.py",
+        "libs/evolution/common.py",
+        "libs/evolution/store.py"
+      ],
+      "lines": 321,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Feed repository-authenticated development observations into the existing journal without treating workflow status as test truth.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/intelligence.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "IntelligenceSignal",
+        "InformationAssessment",
+        "assess_information",
+        "DevelopmentOpportunity",
+        "opportunity_from_workflow",
+        "SprintRank",
+        "rank_opportunity",
+        "opportunity_graph",
+        "_header",
+        "write_mission_packet"
+      ],
+      "dependencies": [
+        "libs/evolution/compiler.py",
+        "libs/evolution/common.py",
+        "libs/evolution/event.py",
+        "libs/semantic_twin/ingestion/drafts.py"
+      ],
+      "lines": 577,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Turn attributed information into bounded sprint proposals and reviewable work packets while preserving uncertainty and authority.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_development_intelligence.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "InformationTests",
+        "MissionCompilerTests"
+      ],
+      "dependencies": [
+        "libs/evolution/intelligence.py",
+        "tests/upgrade/test_development_support.py"
+      ],
+      "lines": 267,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove that uncertain or hostile source claims cannot become trusted facts, authority or automatically executable sprint work.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_development_loop.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "PredictionTests",
+        "OutcomeAdmissionTests",
+        "IntegratedLoopTests",
+        "DevelopmentCliTests"
+      ],
+      "dependencies": [
+        "libs/evolution/development.py",
+        "tests/upgrade/test_development_support.py"
+      ],
+      "lines": 718,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify real process recording, source/temporal binding and independently pinned outcome admission without granting capability or action authority.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_development_sources.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "capture",
+        "ProviderCaptureTests"
+      ],
+      "dependencies": [
+        "libs/evolution/development_sources.py"
+      ],
+      "lines": 288,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject cross-source and incomplete CI evidence while proving authenticated-reader observations cannot mint test truth.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_development_support.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "source_fixture",
+        "prediction",
+        "measured",
+        "review_request",
+        "pinned_review",
+        "signal",
+        "opportunity"
+      ],
+      "dependencies": [
+        "libs/evolution/development.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 174,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep synthetic source, reviewer and grading fixtures separate from actual development acceptance.",
+      "objective_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "BITS-CODEGEN",
+        "srs-buildanddo-development-loop-001",
+        "development-loop"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-development-loop.md",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-development-loop.md",
+      "target": "docs/development-loop.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes docs/development-loop.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-development-loop.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes docs/submission-guide.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-development-loop.md",
+      "target": ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-capability-runtime.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: extends .bits/handoffs/2026-09-21-bits-codegen-cmax-b-capability-runtime.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/hostinger-readiness.lock.json.cgrf.yaml",
+      "target": ".bits/hostinger-readiness.lock.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates .bits/hostinger-readiness.lock.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.py",
+      "target": "libs/evolution/candidate.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/candidate.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.py",
+      "target": "libs/evolution/registry.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/registry.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.py",
+      "target": "libs/evolution/development.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates libs/evolution/development.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.py",
+      "target": "libs/evolution/development_sources.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates libs/evolution/development_sources.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "target": ".bits/context.lock.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/context.lock.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "target": ".bits/hostinger-readiness.lock.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/hostinger-readiness.lock.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/srs_registry.yml",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/report.md",
+      "target": "docs/development-loop.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes docs/development-loop.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/submission-draft.md",
+      "target": "README.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes README.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/submission-draft.md",
+      "target": "docs/day21/JUDGE_STORY.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes docs/day21/JUDGE_STORY.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/submission-draft.md",
+      "target": "docs/hostinger-sprint-closure.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes docs/hostinger-sprint-closure.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/submission-draft.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes docs/submission-guide.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/submission-draft.md",
+      "target": "docs/workspace-assistant.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes docs/workspace-assistant.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/dogfood.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "target": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates .bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/validation.json",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001/verify.py",
+      "target": "libs/evolution/development.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates libs/evolution/development.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: depends on .bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/queue/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+      "target": ".bits/srs_registry.yml",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: depends on .bits/srs_registry.yml",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+      "target": "AGENTS.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes AGENTS.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+      "target": "libs/evolution",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: extends libs/evolution",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": "bits/SRS-* branches",
+      "edge_type": "GATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: gates bits/SRS-* branches",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/srs_registry.yml",
+      "target": ".bits/srs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates .bits/srs",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "docs/submission-guide.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes docs/submission-guide.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "libs/evolution/development.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/development.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "libs/evolution/development_sources.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/development_sources.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "libs/evolution/intelligence.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/intelligence.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "docs/capability-tokens.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: extends docs/capability-tokens.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "docs/verified-evolution.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: extends docs/verified-evolution.md",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development.py",
+      "target": "libs/evolution/benchmark.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/benchmark.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development.py",
+      "target": "libs/evolution/development_sources.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/development_sources.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development.py",
+      "target": "libs/evolution/intelligence.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/intelligence.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development.py",
+      "target": "libs/evolution/replay.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/replay.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development.py",
+      "target": "libs/evolution/store.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/store.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development_sources.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development_sources.py",
+      "target": "libs/evolution/event.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/event.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/development_sources.py",
+      "target": "libs/evolution/store.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/store.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/intelligence.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/intelligence.py",
+      "target": "libs/evolution/compiler.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/intelligence.py",
+      "target": "libs/evolution/event.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/evolution/event.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/intelligence.py",
+      "target": "libs/semantic_twin/ingestion/drafts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes libs/semantic_twin/ingestion/drafts.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_intelligence.py",
+      "target": "tests/upgrade/test_development_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes tests/upgrade/test_development_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_intelligence.py",
+      "target": "libs/evolution/intelligence.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates libs/evolution/intelligence.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_loop.py",
+      "target": "tests/upgrade/test_development_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes tests/upgrade/test_development_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_loop.py",
+      "target": "libs/evolution/development.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates libs/evolution/development.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_sources.py",
+      "target": "libs/evolution/development_sources.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates libs/evolution/development_sources.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_support.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: consumes tests/upgrade/test_evolution_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_support.py",
+      "target": "libs/evolution/development.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "Declared CGRF relationship: validates libs/evolution/development.py",
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": null,
+      "description": "Observed candidate workflow failed before job execution; subsequent exact-job annotation identifies the account billing lock.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "timestamp": "2026-09-21T17:38:41.951769+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "libs/evolution/development.py",
+      "description": "Canonical depends_on excludes Test endpoints; now each suite has a separate Test object and tested_by edge.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "timestamp": "2026-09-21T17:29:07.442666+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "libs/evolution/development.py",
+      "description": "Despite the historical filename this run FAILED: extraction aliases rewrote literal path claims. Module/suite keys now have explicit prefixes.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "timestamp": "2026-09-21T17:30:00.809412+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "libs/evolution/development.py",
+      "description": "All 42 focused tests passed with at least 99.14 percent executable-line coverage per new production module.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "timestamp": "2026-09-21T17:59:32.604737+00:00",
+      "commit_sha": null,
+      "smoke_result": "42/42"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": null,
+      "description": "Existing evolution, capability-token and semantic-twin suites passed; no independent runtime qualification inferred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "timestamp": "2026-09-21T17:49:04.791407+00:00",
+      "commit_sha": null,
+      "smoke_result": "235/235"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "libs/evolution/development.py",
+      "description": "Real source prediction selected three suites; 42 tests passed, no independent labels were present and registry routing remained UNRESOLVED.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "timestamp": "2026-09-21T17:59:07.471529+00:00",
+      "commit_sha": null,
+      "smoke_result": "42/42"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "scripts/ci/hostinger_readiness.py",
+      "description": "Full acceptance retained 3 PASS, 4 FAIL, 1 HOLD and 10 BLOCKED profiles; no readiness asserted.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "timestamp": "2026-09-21T18:16:01.040995+00:00",
+      "commit_sha": null,
+      "smoke_result": "3/18"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "scripts/ci/submission_readiness.py",
+      "description": "The existing submission auditor retained HOLD after five written draft materials; walkthrough, real replay/owner review and official requirements are absent.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "timestamp": "2026-09-21T18:16:56.861786+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    }
+  ],
+  "summary": {
+    "type_a_count": 24,
+    "type_b_count": 65,
+    "type_c_count": 8,
+    "ioo_compliance": true,
+    "dkg_orphans": 0,
+    "dispatch_id": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001",
+    "srs_codes": [
+      "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001"
+    ],
+    "seat": "BITS-CODEGEN"
+  }
+}

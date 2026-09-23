@@ -32,6 +32,20 @@
 schema_version: 1
 
 srs:
+  - code: SRS-BUILDANDDO-DEVELOPMENT-LOOP-001
+    title: Connect development observations, sprint missions and reviewed outcomes
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md
+    notes: Owner-requested additive adapters over evolution, capability review and semantic contracts; authenticated repository reads, local proposals and measured tests only; deployment, remote writes and self-certification excluded
+
+  - code: SRS-BUILDANDDO-CAPABILITY-TOKEN-001
+    title: CNWB Capability Token Protocol v1
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md
+    notes: Owner-requested additive portable contracts, conformance, local federation, passports, reviewed sharing and settlement calculations; no external effects or authority expansion
+
   - code: SRS-BUILDANDDO-EVOLUTION-001
     title: Citadel Verified Evolution Fabric v1
     status: in_progress
@@ -52,6 +66,41 @@ srs:
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-DECISION-001.md
     notes: Agent self-authorized additive runtime, trial workloads, structured benchmark capture and authenticated PocketBase adapter; no actions, verification minting, external model calls or policy changes
+
+  - code: SRS-BUILDANDDO-CAREER-001
+    title: Career evidence engine vertical slice 1
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-CAREER-001.md
+    notes: Agent self-authorized additive local passport, requirement coverage, dossier and application-package compiler over git history and supplied postings; discovery, network, submission and reserved attestations excluded
+
+  - code: SRS-BUILDANDDO-JOURNEY-001
+    title: Build and Do navigation and guided first-mission journey
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-JOURNEY-001.md
+    notes: Owner-directed 2026-09-23; grouped workspace navigation, multiple-choice journey compiling a lesson and proposed mission draft, assistant draft hand-off and Career Passport profile card; no schema, hooks or private runtime
+
+  - code: SRS-BUILDANDDO-KNOWLEDGE-UNIT-001
+    title: Knowledge Unit contract, receipt and evidence-based mastery ladder
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-KNOWLEDGE-UNIT-001.md
+    notes: Agent self-authorized additive schema, validator, receipt and mastery computation; no CPE credit, certification, TEKS content or regulatory action
+
+  - code: SRS-BUILDANDDO-INTEGRITY-001
+    title: Epistemic Integrity Fabric slice 1
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-INTEGRITY-001.md
+    notes: Agent self-authorized additive intent contracts, hard-gate adjudication, verifier independence, disclosure-aware settlement, decision traces, sycophancy probe and audit revocation; no model calls, external effects or reward-code changes
+
+  - code: SRS-BUILDANDDO-WORLD-TWIN-001
+    title: Personal world twin projection slice 1
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-WORLD-TWIN-001.md
+    notes: Agent self-authorized additive typed world events, per-person twin projection with event drill-down, disputes, audience projections and suppressed aggregates; no storage, web, system-twin or reward changes
 
   - code: SRS-BUILDANDDO-UPGRADE-001
     title: BuildAndDo public, workspace and community upgrades

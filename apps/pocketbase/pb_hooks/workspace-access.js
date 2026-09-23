@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js
+// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
 // Intent:      Resolve current workspace authority and validate bounded commands without trusting client roles or historical authorship.
 // ───────────────────────────────────────────────────────────────
@@ -86,7 +86,7 @@ function access(e) {
     const scope = requireRole(e.app, e.auth, workspace);
     return { workspace, role: scope.role, settings: settings(controls(e.app, workspace)),
         can_admin: ['owner', 'admin'].includes(scope.role), can_grant_admin: scope.role === 'owner',
-        can_write: scope.role !== 'viewer' };
+        can_write: scope.role !== 'viewer', government: require(`${__hooks}/government-access.js`).status(e.app, e.auth) };
 }
 function envelope(e) {
     base.authenticated(e);

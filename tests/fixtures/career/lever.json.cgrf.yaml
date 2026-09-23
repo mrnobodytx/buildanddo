@@ -1,0 +1,20 @@
+# ─── CGRF Header ──────────────────────────────
+# File:        tests/fixtures/career/lever.json.cgrf.yaml
+# Stage:       08_TEST
+# SRS:         SRS-BUILDANDDO-CAREER-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-CAREER-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     apps/career/sources.py
+# EnumType:    Test
+# EnumEdges:   VALIDATES apps/career/sources.py
+# DAG Node:    none
+# Intent:      Provide a synthetic lever public job-board payload covering extractable, empty and duplicate postings.
+# ───────────────────────────────────────────────────────────
+
+artifact: lever.json
+encoding: utf-8
+synthetic: true

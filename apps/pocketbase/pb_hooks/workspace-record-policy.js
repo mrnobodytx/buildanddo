@@ -74,6 +74,8 @@ function enforce(e, operation) {
 function workspaceCreate(e) {
     access.authenticated(e);
     if (e.record.getString('owner') !== e.auth.id) throw new ForbiddenError('Create a workspace under your own account.');
+    if (['onboarding_intent', 'onboarding_objective', 'business_context'].some((field) => e.record.getString(field)))
+        access.invalid('Use workspace onboarding to save an intent and objective together.');
     const domainId = e.record.getString('domain');
     if (domainId) {
         const domain = access.find(e.app, 'domains', domainId);

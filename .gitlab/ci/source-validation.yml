@@ -1,0 +1,210 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .gitlab/ci/source-validation.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-21
+# Depends:     tests/upgrade/check_discordbot.py, tests/upgrade/check_blueprint_pipeline.py, tests/foundry/check_foundry.py, tests/upgrade/check_federal_foundry.py, tests/upgrade/check_mission_suite.py, tests/career/check_career.py, tests/knowledge_units/check_knowledge_units.py, tests/integrity/check_integrity.py, tests/world_twin/check_world_twin.py, tests/assurance/run.py
+# EnumType:    Workflow
+# EnumEdges:   CONSUMES tests/upgrade/check_discordbot.py; CONSUMES tests/upgrade/check_blueprint_pipeline.py; CONSUMES tests/foundry/check_foundry.py; CONSUMES tests/upgrade/check_federal_foundry.py; CONSUMES tests/upgrade/check_mission_suite.py; CONSUMES tests/career/check_career.py; CONSUMES tests/knowledge_units/check_knowledge_units.py; CONSUMES tests/integrity/check_integrity.py; CONSUMES tests/world_twin/check_world_twin.py; CONSUMES tests/assurance/run.py
+# Intent:      Keep native parser and portable coverage requirements executing on GitLab when duplicate GitHub scheduling is retired.
+# ───────────────────────────────────────────────────────────────
+
+# The buildanddo shell runner supplies Node from .nvmrc and Python 3.11/3.12.
+# Every job uses its own ignored environment; no shared Python install changes.
+# The full Day-21 job separately runs web and both disposable PocketBase profiles.
+source_discord:
+  stage: test
+  tags: [buildanddo]
+  timeout: 10m
+  before_script:
+    - node --eval "require('node:assert/strict').equal(process.versions.node.split('.')[0], require('node:fs').readFileSync('.nvmrc', 'utf8').trim())"
+    - python3.12 -m venv state/ci/discord-venv
+  script:
+    - state/ci/discord-venv/bin/python -m pip install -r scripts/discordbot/requirements.txt -r apps/research/requirements.txt
+    - state/ci/discord-venv/bin/python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf
+    - state/ci/discord-venv/bin/python tests/upgrade/check_blueprint_pipeline.py --require-pdf
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - reports/coverage/
+  rules:
+    - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - when: never
+
+source_foundry:
+  stage: test
+  tags: [buildanddo]
+  # Measured local trace coverage takes nearly nine minutes before packaging.
+  timeout: 20m
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.11", "3.12"]
+  before_script:
+    - python${PYTHON_VERSION} -m venv state/ci/foundry-venv
+  script:
+    - state/ci/foundry-venv/bin/python -m pip install -r foundry/shared/requirements.txt mypy==1.13.0 ruff==0.14.8
+    - state/ci/foundry-venv/bin/python tests/foundry/check_foundry.py
+    - state/ci/foundry-venv/bin/python -m mypy --strict --follow-imports=silent foundry/shared/federal_foundry
+    - state/ci/foundry-venv/bin/python -m ruff check foundry/shared/federal_foundry tests/foundry
+    - state/ci/foundry-venv/bin/python -m ruff format --check foundry/shared/federal_foundry tests/foundry
+    - state/ci/foundry-venv/bin/python -m foundry.shared.federal_foundry run --all --output state/ci/foundry-runs
+    - state/ci/foundry-venv/bin/python -m foundry.shared.federal_foundry verify state/ci/foundry-runs
+    - state/ci/foundry-venv/bin/python -m foundry.shared.federal_foundry compile --runs state/ci/foundry-runs --output state/ci/foundry-review --archive state/ci/foundry-review.zip
+    - state/ci/foundry-venv/bin/python -m foundry.shared.federal_foundry verify state/ci/foundry-review
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - state/ci/foundry-runs/
+      - state/ci/foundry-review.zip
+  rules:
+    - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - when: never
+
+source_federal_portfolio:
+  stage: test
+  tags: [buildanddo]
+  timeout: 10m
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.11", "3.12"]
+  before_script:
+    - python${PYTHON_VERSION} -m venv state/ci/portfolio-venv
+  script:
+    - state/ci/portfolio-venv/bin/python tests/upgrade/check_federal_foundry.py
+    - state/ci/portfolio-venv/bin/python -m apps.federal_foundry compile --output state/ci/federal-portfolio
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - state/ci/federal-portfolio/
+      - reports/junit/federal-foundry.xml
+      - reports/coverage/federal-foundry.json
+  rules:
+    - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - when: never
+
+source_mission_suite:
+  stage: test
+  tags: [buildanddo]
+  timeout: 10m
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.11", "3.12"]
+  before_script:
+    - node --eval "require('node:assert/strict').equal(process.versions.node.split('.')[0], require('node:fs').readFileSync('.nvmrc', 'utf8').trim())"
+    - python${PYTHON_VERSION} -m venv state/ci/mission-venv
+  script:
+    - state/ci/mission-venv/bin/python tests/upgrade/check_mission_suite.py
+    - node --test tests/upgrade/suite-system.test.mjs tests/upgrade/suite-client.test.mjs tests/upgrade/government-learning.test.mjs
+    - state/ci/mission-venv/bin/python -m apps.mission_suite package state/ci/mission-suite.tgz
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - state/ci/mission-suite.tgz
+  rules:
+    - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - when: never
+
+source_behavior_coverage:
+  stage: test
+  tags: [buildanddo]
+  timeout: 10m
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.11", "3.12"]
+  before_script:
+    - python${PYTHON_VERSION} -m venv state/ci/behavior-venv
+  script:
+    - state/ci/behavior-venv/bin/python tests/career/check_career.py
+    - state/ci/behavior-venv/bin/python tests/knowledge_units/check_knowledge_units.py
+    - state/ci/behavior-venv/bin/python tests/integrity/check_integrity.py
+    - state/ci/behavior-venv/bin/python tests/world_twin/check_world_twin.py
+  artifacts:
+    name: "source-behavior-coverage-${PYTHON_VERSION}"
+    when: always
+    expire_in: 30 days
+    paths:
+      - reports/coverage/career.json
+      - reports/coverage/knowledge-units.json
+      - reports/coverage/integrity.json
+      - reports/coverage/world-twin.json
+  rules:
+    - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - when: never
+
+# Membership, evidence/authority and fault handling run on every reviewed head.
+# Their source-only receipt is explicit; it cannot replace runtime acceptance.
+source_assurance:
+  stage: test
+  tags: [buildanddo]
+  timeout: 15m
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.11", "3.12"]
+  before_script:
+    - node --eval "require('node:assert/strict').equal(process.versions.node.split('.')[0], require('node:fs').readFileSync('.nvmrc', 'utf8').trim())"
+    - python${PYTHON_VERSION} -m venv state/ci/assurance-venv
+  script:
+    - state/ci/assurance-venv/bin/python -m unittest tests.upgrade.test_assurance_runner
+    - state/ci/assurance-venv/bin/python -m tests.assurance.run --source-only --profiles security,evidence,failure --output state/ci/assurance/$CI_JOB_ID/source
+    - state/ci/assurance-venv/bin/python -m apps.federal_foundry sprint --output state/ci/assurance/$CI_JOB_ID/research
+    - state/ci/assurance-venv/bin/python -m apps.federal_foundry verify-sprint state/ci/assurance/$CI_JOB_ID/research
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - state/ci/assurance/$CI_JOB_ID/
+  rules:
+    - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1" || $BUILDANDDO_ASSURANCE_FULL == "1"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - when: never
+
+# Explicit receiving-runner lane: downloads locked frontend packages, pinned
+# Playwright browsers and the two declared disposable PocketBase versions.
+# Runner OS browser libraries and Docker must already be provisioned by its owner.
+# No shared backend, payments, hosted models or deployments are exercised here.
+assurance_full_runtime:
+  stage: test
+  tags: [buildanddo]
+  timeout: 45m
+  parallel:
+    matrix:
+      - POCKETBASE_PROFILE: ["package", "compose"]
+  variables:
+    PLAYWRIGHT_BROWSERS_PATH: "$CI_PROJECT_DIR/state/ci/assurance-browsers/$CI_JOB_ID"
+  before_script:
+    - node --eval "require('node:assert/strict').equal(process.versions.node.split('.')[0], require('node:fs').readFileSync('.nvmrc', 'utf8').trim())"
+    - python3.12 -m venv state/ci/assurance-runtime-venv
+  script:
+    - npm ci --include=dev
+    - state/ci/assurance-runtime-venv/bin/python -m pip install -r tests/assurance/requirements.txt
+    - state/ci/assurance-runtime-venv/bin/python -m playwright install chromium firefox webkit
+    - state/ci/assurance-runtime-venv/bin/python -m tests.assurance.run --provision-profile $POCKETBASE_PROFILE --output state/ci/assurance/$CI_JOB_ID/runtime
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - state/ci/assurance/$CI_JOB_ID/
+  rules:
+    - if: '$BUILDANDDO_ASSURANCE_FULL == "1"'
+      allow_failure: false
+    - when: never

@@ -307,6 +307,26 @@ export function reviewIssues(mission, review, evidence, passing = true) {
     return issues;
 }
 
+/** Explain the same prerequisites a reviewer must satisfy at the native boundary.
+ * @param {object} options Saved mission, draft review, readable evidence and current actor.
+ * @returns {string[]} Blocking prerequisites; never an authorization grant.
+ */
+export function verificationIssues({ mission, review, evidence, actorId, canWrite, evidenceAvailable = true }) {
+    const issues = reviewIssues(mission, review, evidence);
+    if (!actorId || !canWrite) issues.unshift('A current owner, administrator or editor must record the review.');
+    if (mission.status !== 'running') issues.push('Record work started or resumed before verifying the outcome.');
+    if (!mission.mission_approved_by || !mission.mission_approved_at || planIssues(mission.mission_plan).length)
+        issues.push('Complete and approve the saved mission plan first.');
+    if (!evidenceAvailable) issues.push('Reload the mission evidence before verifying.');
+    if (mission.mission_plan?.independent_review) {
+        if (mission.owner === actorId) issues.push('A different member must review this mission; you proposed it.');
+        const selected = new Set(TEVV.map(({ id }) => review?.[id]?.evidence).filter(Boolean));
+        if (evidence.some((record) => selected.has(record.id) && (!record.owner || record.owner === actorId)))
+            issues.push('Choose evidence authored by someone other than the independent reviewer.');
+    }
+    return [...new Set(issues)];
+}
+
 /** @param {object} mission Persisted mission. @param {object[]} evidence Source evidence. @returns {object} Bounded, derived educational rewards. */
 export function learningRewards(mission, evidence = []) {
     const plan = mission.mission_plan;

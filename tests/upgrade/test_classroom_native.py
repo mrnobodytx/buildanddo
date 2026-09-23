@@ -107,6 +107,7 @@ class ClassroomServer(NativeServer):
                 "classrooms.pb.js",
                 "classrooms.js",
                 "workspace-access.js",
+                "government-access.js",
                 "workflow-policy.js",
             ):
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)

@@ -1,19 +1,17 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/EvidencePage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js,
-//              apps/web/src/lib/workspaceActions.js
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/workspaceActions.js, apps/web/src/components/workspace/EvidenceInspector.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.evidence.create
-// Intent:      Make the evidence trail searchable and linkable, so a ledger
-//              stays a ledger past its first thirty entries.
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; PRODUCES workspace.evidence.create; CONSUMES apps/web/src/components/workspace/EvidenceInspector.jsx
+// Intent:      Make the evidence trail searchable and linkable, so a ledger stays a ledger past its first thirty entries.
 // ───────────────────────────────────────────────────────────────
 
 import { ExternalLink, FileSearch, Info, Link2, Loader2, Plus, Tag } from 'lucide-react';
@@ -39,7 +37,10 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
+import EvidenceInspector from '@/components/workspace/EvidenceInspector';
+import { safeEvidenceUrl } from '@/lib/evidenceInspection';
 import ListToolbar from '@/components/workspace/ListToolbar';
 import {
     EVIDENCE_TYPE,
@@ -75,6 +76,10 @@ const splitTags = (value) =>
         .filter(Boolean);
 
 export default function EvidencePage() {
+    const [params, setParams] = useSearchParams();
+    const { active } = useWorkspace();
+    const selectedId = params.get('evidence') || '';
+    const selectEvidence = (id) => { const next = new URLSearchParams(params); if (id) next.set('evidence', id); else next.delete('evidence'); setParams(next); };
     const {
         records,
         loading,
@@ -251,9 +256,11 @@ export default function EvidencePage() {
                                     />
                                 </div>
 
-                                {entry.url && (
+                                <Button size="sm" variant="ghost" onClick={() => selectEvidence(entry.id)}>Inspect evidence</Button>
+                                <Link className="ml-3 text-sm underline" to={`/app/evidence?evidence=${encodeURIComponent(entry.id)}`}>Evidence link</Link>
+                                {safeEvidenceUrl(entry.url) && (
                                     <a
-                                        href={entry.url}
+                                        href={safeEvidenceUrl(entry.url)}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="mt-3 inline-flex max-w-full items-center gap-1.5 text-sm text-primary underline-offset-4 hover:underline"
@@ -294,6 +301,8 @@ export default function EvidencePage() {
                 </ol>
             )}
 
+            <EvidenceInspector id={selectedId} records={records} missions={missions.records} workspace={active?.id}
+                loading={loading || missions.loading} unavailable={degraded || missions.degraded} onClose={() => selectEvidence('')} />
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-card sm:max-w-2xl">
                     <DialogHeader>

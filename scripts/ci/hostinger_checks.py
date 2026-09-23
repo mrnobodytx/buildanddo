@@ -43,6 +43,9 @@ class Check:
     artifacts: tuple[str, ...] = ()
 
 
+SOURCE_PYTHON_SUITES = ("upgrade", "career", "knowledge_units", "integrity", "world_twin")
+
+
 CHECKS = {
     "boundary": Check(("python", "scripts/ci/verify_public_boundary.py"), "source"),
     "dependency_lock": Check(
@@ -156,9 +159,10 @@ def command(root: Path, check: Check) -> list[str]:
             )
         elif part == "@python_tests":
             result.extend(
-                "tests.upgrade." + path.stem
-                for path in sorted((root / "tests/upgrade").glob("test_*.py"))
-                if not path.stem.endswith("_native")
+                f"tests.{suite}.{path.stem}"
+                for suite in SOURCE_PYTHON_SUITES
+                for path in sorted((root / "tests" / suite).glob("test_*.py"))
+                if path.is_file() and not path.stem.endswith("_native")
             )
         else:
             result.append(part)
@@ -265,6 +269,33 @@ def _twin_state(status, counts, artifacts):
         "note": ("counts are carried from an earlier receipt and do not describe this run"
                  if not ran and any(v for v in counts.values()) else ""),
     }
+def candidate_binding(root: Path) -> tuple[str | None, bool]:
+    """Observe the local revision and whether its source has uncommitted changes."""
+    try:
+        revision = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=True,
+        ).stdout.strip()
+        status = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=normal"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=True,
+        ).stdout
+    except (OSError, subprocess.SubprocessError):
+        return None, False
+    return (
+        (revision, not status)
+        if re.fullmatch(r"[a-f0-9]{40}", revision)
+        else (None, False)
+    )
+
 
 def run_check(
     root: Path,
@@ -276,6 +307,7 @@ def run_check(
 ) -> Path:
     """Capture one real process outcome with source binding and bounded runtime."""
     check = CHECKS[name]
+    candidate, candidate_clean = candidate_binding(root)
     argv = command(root, check)
     environment = os.environ.copy()
     if name == "source_python":
@@ -296,6 +328,17 @@ def run_check(
     status, reason, exit_code = "FAIL", "", -1
     expected = runtime_version(root, profile) if check.level == "native" else ""
     observed = ""
+    if name == "source_python":
+        missing = [
+            "tests/" + suite
+            for suite in SOURCE_PYTHON_SUITES
+            if not any(part.startswith(f"tests.{suite}.") for part in argv)
+        ]
+        if missing:
+            status, reason = (
+                "BLOCKED",
+                "No source Python tests found in: " + ", ".join(missing),
+            )
     if check.level == "native":
         binary = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
         try:
@@ -386,6 +429,7 @@ def run_check(
             "HOLD",
             "Tests were empty, failing or skipped; acceptance is incomplete.",
         )
+    final_candidate, final_clean = candidate_binding(root)
     receipt = {
         "schema_version": "buildanddo.acceptance/v1",
         "check": name,
@@ -394,6 +438,12 @@ def run_check(
         "runtime_expected": expected,
         "runtime_observed": observed,
         "source_sha256": source_digest,
+        "candidate_sha": candidate,
+        "candidate_clean": candidate_clean,
+        "candidate_unchanged": candidate is not None
+        and candidate == final_candidate
+        and candidate_clean
+        and final_clean,
         "started_at": started.isoformat(),
         "finished_at": datetime.now(timezone.utc).isoformat(),
         "status": status,

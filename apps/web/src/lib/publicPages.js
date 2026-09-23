@@ -29,7 +29,7 @@ export const PUBLIC_PAGES = [
         label: 'Home',
         title: 'BuildAndDo — learn by doing, together',
         description:
-            'Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.',
+            'BuildAndDo is an educational collaboration platform. Learn with people and AI through real projects, verify what happened, and share what you learned.',
         type: 'WebPage',
     },
     {
@@ -37,7 +37,7 @@ export const PUBLIC_PAGES = [
         label: 'Challenge',
         title: 'BuildAndDo — Hostinger 21-Day Challenge',
         description:
-            'See the focused business problem, verified mission story and Hostinger product roles behind the BuildAndDo challenge entry.',
+            'Learn by doing. Verify what you did. Do it together. Explore the proposed objective-to-evidence journey and Hostinger product roles for BuildAndDo.',
         type: 'WebPage',
     },
     {
@@ -69,7 +69,7 @@ export const PUBLIC_PAGES = [
         label: 'Pricing',
         title: 'Pricing & early access | BuildAndDo',
         description:
-            'Explore BuildAndDo early access and discuss a team rollout. Public subscription pricing has not been announced.',
+            'Discuss a managed paid pilot for one workspace and one approved operation, or explore early access and team rollouts.',
         type: 'WebPage',
     },
     {
@@ -77,7 +77,7 @@ export const PUBLIC_PAGES = [
         label: 'About',
         title: 'About & team | BuildAndDo',
         description:
-            'Meet the people and principles behind BuildAndDo, a Citadel Nexus Inc. product built around accountable work.',
+            'Meet the people and principles behind BuildAndDo, the educational collaboration platform from Citadel Nexus Inc.',
         type: 'AboutPage',
     },
     {
@@ -108,7 +108,7 @@ export const PUBLIC_PAGES = [
         label: 'Contact',
         title: 'Contact | BuildAndDo',
         description:
-            'Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.',
+            'Request a scoped paid pilot, discuss commercial licensing with Citadel Nexus Inc., or ask a product question.',
         type: 'ContactPage',
     },
     // nav false keeps a page in the sitemap, llms.txt and the prerendered heads while leaving the

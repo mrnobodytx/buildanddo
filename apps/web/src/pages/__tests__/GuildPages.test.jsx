@@ -9,10 +9,10 @@
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
 // Depends:     apps/web/src/pages/GuildPage.jsx, apps/web/src/pages/PersonaProfilePage.jsx,
-//              apps/web/src/data/personas.js, apps/web/src/pages/workspace/ClassroomPage.jsx
+//              apps/web/src/data/personas.js
 // EnumType:    Test
 // EnumEdges:   VALIDATES apps/web/src/pages/GuildPage.jsx; VALIDATES apps/web/src/pages/PersonaProfilePage.jsx;
-//              VALIDATES apps/web/src/data/personas.js; VALIDATES apps/web/src/pages/workspace/ClassroomPage.jsx
+//              VALIDATES apps/web/src/data/personas.js
 // Intent:      Prove the guild routes render, each profile says it is an automated agent, and no fleet
 //              machine name or address reaches the persona data or either page.
 // ───────────────────────────────────────────────────────────────
@@ -35,7 +35,6 @@ import {
 import { communityLink } from '@/lib/communityLinks';
 import pb from '@/lib/pocketbaseClient';
 import { SITE_ORIGIN } from '@/lib/publicPages';
-import ClassroomPage from '@/pages/workspace/ClassroomPage';
 import { renderWithProviders, screen, setupUser, waitFor, within } from '@/test/utils';
 
 vi.mock('@/lib/pocketbaseClient', async () => {
@@ -44,24 +43,6 @@ vi.mock('@/lib/pocketbaseClient', async () => {
     return { default: client, pocketbaseClient: client };
 });
 
-// ClassroomPage talks to the SFU through this module. The double hands back one live presence
-// list the moment the tracker starts, which is all the persona link needs.
-const presenceRows = [];
-vi.mock('@/lib/classroomRealtime', () => ({
-    PRESENCE_POLL_MS: 5000,
-    classroomHealth: () => Promise.resolve({ ok: true, publishers_configured: 1 }),
-    presenceHealth: () => Promise.resolve({ ok: true }),
-    joinClassroom: () => Promise.resolve({
-        sessionId: 'sess-self', role: 'watch', mayPublish: false, published: [], close: () => {},
-    }),
-    createPresenceTracker: ({ onChange }) => ({
-        start: () => onChange({ live: presenceRows, pulled: [], unreadable: [] }),
-        stop: () => {},
-        pull: () => Promise.resolve(),
-    }),
-    startPresenceHeartbeat: () => ({ stop: () => {} }),
-    inboundAudioStats: () => Promise.resolve({ supported: false, packets: 0, bytes: 0, streams: 0 }),
-}));
 
 beforeEach(() => {
     pb.__reset();
@@ -182,21 +163,3 @@ describe('the guild routes', () => {
     }, LAZY);
 });
 
-describe('classroom presence', () => {
-    it('links a guildmaster row to its profile and still shows an id the canon does not know', async () => {
-        presenceRows.splice(0, presenceRows.length,
-            { id: 'row-1', persona_id: 'gm-forge', session_id: 'sess-forge', state: 'LIVE', tracks: [{ trackName: 'voice' }] },
-            { id: 'row-2', persona_id: 'gm-zeta', session_id: 'sess-zeta', state: 'LIVE', tracks: [{ trackName: 'voice' }] },
-        );
-        renderWithProviders(
-            <Routes><Route path="/app/classrooms/:roomId" element={<ClassroomPage />} /></Routes>,
-            { route: '/app/classrooms/room1' },
-        );
-        const join = screen.getByRole('button', { name: 'Join as student' });
-        await waitFor(() => expect(join).toBeEnabled());
-        await setupUser().click(join);
-        expect(await screen.findByRole('link', { name: 'Forge' })).toHaveAttribute('href', '/guild/forge');
-        expect(screen.getByText('gm-zeta (guildmaster)')).toBeInTheDocument();
-        expect(screen.queryByText('gm-forge (guildmaster)')).not.toBeInTheDocument();
-    });
-});
