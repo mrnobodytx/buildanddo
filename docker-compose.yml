@@ -81,6 +81,13 @@ services:
       BUILDER_MAILER_SENDER_ADDRESS: ${BUILDER_MAILER_SENDER_ADDRESS:-}
       REACH_API_URL: ${REACH_API_URL:-}
       REACH_API_TOKEN: ${REACH_API_TOKEN:-}
+      # Live classroom media (pb_hooks/classroom-realtime.pb.js). Values come from
+      # your shell or an untracked .env, never this file. Unset, the classroom
+      # reports "not configured on this server" and keeps shared lessons and text.
+      # An empty publisher list means nobody may broadcast, deliberately.
+      CLOUDFLARE_REALTIME_APP_ID: ${CLOUDFLARE_REALTIME_APP_ID:-}
+      CLOUDFLARE_REALTIME_APP_SECRET: ${CLOUDFLARE_REALTIME_APP_SECRET:-}
+      BUILDANDDO_CLASSROOM_PUBLISHERS: ${BUILDANDDO_CLASSROOM_PUBLISHERS:-}
     ports:
       - "${POCKETBASE_PORT:-8090}:8090"
     volumes:
