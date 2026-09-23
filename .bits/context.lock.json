@@ -537,7 +537,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-23T22:13:55.263190+00:00",
+  "generated_at": "2026-09-23T22:30:30.032434+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1019,7 +1019,7 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "4cb75f9db5eeb9dc58836b81e98136840a1da9a16868d2f89fad74033ca2c16b",
+    "source_sha256": "d535c1358c7796d8d9e8f09c58428c483ea7c1e2231219f2e962de0428b7587e",
     "state": "PASS"
   },
   "summary": {

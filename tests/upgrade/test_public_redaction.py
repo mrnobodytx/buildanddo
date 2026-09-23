@@ -146,6 +146,21 @@ class ControlTests(unittest.TestCase):
         with mock.patch.dict(os.environ, {redaction.FLEET_MAP_ENV: str(Path(tmp) / "gone.json")}):
             self.assertIn("could not be read", redaction.Rule().source)
 
+    def test_a_name_joined_into_a_slug_or_a_file_name_is_caught(self):
+        # A machine joined to other words by hyphens is still that machine. The first version of this rule
+        # counted "-" as part of a name, and a handoff file named after the release machine passed it.
+        rig = "rig0"                     # follows a machine family; no machine carries it
+        rule = redaction.Rule("")
+        for text in (f"2026-09-23-bits-codegen-{rig}-broadcast-classroom.md", f"handoff-to-{rig}",
+                     f"{rig}-release", f"codegen-{FAMILY_NAME}-broadcast", f"seat-{FAMILY_NAME}"):
+            self.assertTrue(rule.find_machines(text), text)
+        with tempfile.TemporaryDirectory() as tmp:
+            fleet = Path(tmp) / "fleet.json"
+            fleet.write_text(json.dumps({"boxes": {"box-quartz-7": {}}}), encoding="utf-8")
+            self.assertEqual(redaction.Rule(fleet).find_machines("deploy-box-quartz-7-now"), ["box-quartz-7"])
+        # The broad mesh family keeps its word boundary: a compound word that merely contains it is no machine.
+        self.assertEqual(rule.find_machines("capability-mesh-fallback, service-mesh-sidecar"), [])
+
     def test_addresses_are_caught_and_loopback_becomes_localhost(self):
         rule = redaction.Rule("")
         self.assertEqual(rule.find_ips(f"Served from {DOC_IP}."), [DOC_IP])

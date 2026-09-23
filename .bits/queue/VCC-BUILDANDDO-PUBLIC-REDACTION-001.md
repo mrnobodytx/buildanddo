@@ -33,6 +33,8 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
 | 3 | Generators publish nothing that matches (`fleet_report.py`, `capability_inventory.py`, `roadmap_status.py`) | same test, platform-health case | done |
 | 4 | Neutral system id on the Operator page; no machine in `publicPages.js` | `npm --prefix apps/web exec -- vitest run src/pages/workspace/__tests__/OperatorPage.test.jsx` | done |
 | 5 | Whole suite, production build and a scan of `dist/apps/web` | `npm test`, `npm run build`, then the test again with `dist/apps/web` present | done |
+| 6 | Continuation R5: a name joined into a slug is caught; the mesh family keeps its word boundary | `python -m unittest tests.upgrade.test_public_redaction -k slug` (fails on `46ced1b`) | done |
+| 7 | Continuation R6: the shipping header the stricter rule catches names its seat | `python -m unittest tests.upgrade.test_public_redaction` with `dist/apps/web` present | done |
 
 ## Constraints
 
@@ -40,7 +42,8 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
   `scripts/ci/capability_inventory.py`, `scripts/deploy/roadmap_status.py`,
   `apps/web/src/lib/operatorPlane.js`, `apps/web/src/lib/publicPages.js`,
   `apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx`,
-  `tests/upgrade/test_public_redaction.py`, and this bookkeeping.
+  `tests/upgrade/test_public_redaction.py`, and this bookkeeping. The continuation adds the header of
+  `apps/web/src/hooks/useRoomsLive.js` and the readiness and context locks.
 - Files it must not touch: the other files that name a machine (a separate dispatch),
   `scripts/publish/activity_publish.py` and the Buddi work (SRS-BUILDANDDO-BUDDI-001), the
   community work (SRS-BUILDANDDO-COMMUNITY-WEB-001), and `apps/web/public/activity-status.json`.
@@ -65,6 +68,24 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
   linked worktree. Node `tests/upgrade`: no new failure.
 - `verify_public_boundary.py` PASS. `verify_public_disclosure.py --strict`: 0 block, 1 warning (a
   public contact mailbox). Its two machine-name warnings are gone.
+
+## Evidence, continuation (2026-09-23, local run on Windows, LF checkout)
+
+- **Found by:** a handoff file whose name joined the release machine into a slug reached a public pull
+  request past this rule; the first version counted a hyphen as part of a name.
+- **Before** (`46ced1b` with only the new test): the test fails on a handoff-style file name. With the
+  new rule and nothing else, the web-source test fails on one shipping header that names a machine.
+- **After:** with the private fleet map and `dist/apps/web` present, 11 of 11 pass; families only, 9 pass
+  and 2 skip (exact names, and no build). `public_redaction.py scan dist/apps/web` PASS. The near-name
+  control (`capability-mesh-fallback`) still holds.
+- **Across tracked files** (findings for the separate dispatch, not fixed here): the rule now finds 39
+  files that name a machine, up from 32. It newly catches 7 and loses none: five under `.bits` (two
+  handoffs, a dispatch, and that dispatch's report and memory), a provenance file at the root, and one
+  module under `apps/federal_foundry`.
+- **Readiness lock:** 900 of its 1000 hashes had been taken from a Windows checkout, so a Linux checkout
+  read the review as stale. Rebound from an LF checkout in its own commit, which also acknowledges 33
+  sources changed since the last refresh, all by this seat's reviewed and merged work. No acceptance
+  state changed.
 
 ## Definition of done
 
