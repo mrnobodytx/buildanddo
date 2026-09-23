@@ -72,6 +72,14 @@ def families_only() -> dict[str, str]:
     return {redaction.FLEET_MAP_ENV: ""}
 
 
+def run_scan(*paths: Path) -> tuple[int, str]:
+    """Run the scan command as a shell would, families only; return its exit status and what it printed."""
+    out = io.StringIO()
+    with mock.patch.dict(os.environ, families_only()), contextlib.redirect_stdout(out):
+        status = redaction.main(["scan", *map(str, paths)])
+    return status, out.getvalue()
+
+
 def ships(path: Path) -> bool:
     """Web source that can end up in the bundle: not tests, not test helpers."""
     text = path.as_posix()
@@ -211,6 +219,57 @@ class ControlTests(unittest.TestCase):
             self.assertEqual(redaction.scan_tree(site, redaction.Rule("")),
                              {"assets/OperatorPage-x.js": {"ips": 0, "machines": 2},
                               "platform-health.json": {"ips": 1, "machines": 0}})
+
+    def test_a_scan_reads_react_and_typescript_sources_and_says_how_many_files_it_read(self):
+        # The scanned types were built for dist/, so a scan of React sources read nothing and printed a PASS
+        # (measured 2026-09-23). A name planted in a .jsx file must now fail, and the verdict counts the reads.
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp)
+            (src / "Panel.jsx").write_text(f'export const seat = "{FAMILY_NAME}";', encoding="utf-8")
+            (src / "Clean.tsx").write_text('export const seat = "Forge";', encoding="utf-8")
+            (src / "types.ts").write_text("export type Seat = string;", encoding="utf-8")
+            (src / "nginx.conf").write_text("server_tokens off;", encoding="utf-8")
+            status, out = run_scan(src)
+            self.assertEqual(status, 1, out)
+            self.assertIn("Panel.jsx: 0 address(es), 1 machine name(s)", out)
+            self.assertIn("read 3 file(s)", out)
+            self.assertEqual(redaction.scan_files(src, redaction.Rule("")),
+                             ({"Panel.jsx": {"ips": 0, "machines": 1}}, 3))
+
+    def test_a_scan_that_reads_nothing_says_so_instead_of_passing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            conf = Path(tmp) / "nginx.conf"
+            conf.write_text("server_tokens off;", encoding="utf-8")
+            status, out = run_scan(conf)
+            self.assertEqual(status, 2, out)
+            self.assertIn("read 0 files", out)
+            self.assertNotIn("PASS", out)
+
+    def test_a_fixture_in_a_test_file_may_be_only_a_made_up_name_or_a_documentation_address(self):
+        # Tests are public text too, so a scan reads them; they plant names and addresses on purpose. In a test
+        # file, and only there, a scan lets through the made-up names and documentation-range addresses.
+        planted = f'const seat = "{FAMILY_NAME}"; const at = "{DOC_IP}";'
+        # Neither a documentation address nor any machine's (RFC 2544 benchmarking); built here, so no fixture
+        # in this repository holds an address the rule would let through.
+        elsewhere = ".".join(("198", "18", "0", "7"))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tests = root / "src" / "__tests__"
+            tests.mkdir(parents=True)
+            (tests / "Panel.test.jsx").write_text(planted, encoding="utf-8")
+            (root / "src" / "Panel.jsx").write_text(planted, encoding="utf-8")
+            (tests / "Other.test.jsx").write_text('const seat = "rig9";', encoding="utf-8")
+            (tests / "Address.test.jsx").write_text(f'const at = "{elsewhere}";', encoding="utf-8")
+            self.assertEqual(redaction.scan_tree(root, redaction.Rule("")), {
+                "src/Panel.jsx": {"ips": 1, "machines": 1},
+                "src/__tests__/Address.test.jsx": {"ips": 1, "machines": 0},
+                "src/__tests__/Other.test.jsx": {"ips": 0, "machines": 1},
+            })
+            # A made-up name that the private fleet map lists is a machine, even in a test.
+            fleet = root / "fleet.json"
+            fleet.write_text(json.dumps({"boxes": {FAMILY_NAME: {}}}), encoding="utf-8")
+            self.assertEqual(redaction.scan_tree(tests, redaction.Rule(fleet)).get("Panel.test.jsx"),
+                             {"ips": 0, "machines": 1})
 
 
 if __name__ == "__main__":

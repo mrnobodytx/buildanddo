@@ -37,11 +37,16 @@ becomes the bar, so a reader sees that something was withheld. A scan does not c
 unspecified address, since neither identifies a machine.
 
     python scripts/ci/public_redaction.py scan <file or directory>...
-        report counts per file (never the values found) and exit 1 when anything matched
+        report counts per file (never the values found) and how many files were read; exit 1 when anything
+        matched, and 2 when no file of a scanned type was read, because a scan that read nothing checked nothing
+
+A scan reads the site's built types and the sources that produce them (React, TypeScript). It reads tests
+too, because this repository is public; see "test fixtures" below for what a test may plant.
 """
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
 import os
 import re
@@ -52,8 +57,10 @@ from typing import Any
 BAR = "█" * 8
 FLEET_MAP_ENV = "CITADEL_FLEET_MAP"
 FLEET_NAME_FIELDS = ("aka", "datadog_host", "provider_name", "hostname")
-TEXT_SUFFIXES = {".html", ".js", ".mjs", ".css", ".json", ".txt", ".xml", ".svg", ".webmanifest", ".md",
-                 ".yaml", ".yml", ".map"}
+# The built site's types, and the sources that produce it. The list was first written for dist/ only, so a scan
+# of React sources read no file and still printed PASS (measured 2026-09-23).
+TEXT_SUFFIXES = {".html", ".js", ".mjs", ".cjs", ".jsx", ".ts", ".tsx", ".css", ".json", ".txt", ".xml", ".svg",
+                 ".webmanifest", ".md", ".yaml", ".yml", ".map"}
 
 # ── IP addresses (the estate's boundaries) ───────────────────────────────────────────────────
 # Bounded by "not part of a longer dotted number", not by "no dot at all", so an address that ends a
@@ -128,6 +135,32 @@ def _machine_pattern(names: set[str]) -> re.Pattern[str]:
                       re.IGNORECASE)
 
 
+# ── test fixtures ────────────────────────────────────────────────────────────────────────────
+# This repository is public, so its tests are public text and a scan reads them. Tests plant names and
+# addresses on purpose, to prove the rule catches them, and they plant only made-up names that follow a
+# machine family and documentation-range addresses (RFC 5737, RFC 3849). In a test file, and only there, a
+# scan lets exactly those through. Any other name or address in a test fails as it would anywhere, and a name
+# the private fleet map lists fails even if it is listed here. Skipping test directories outright was
+# rejected: it would hide the real machine names already in public tests (four files, measured 2026-09-23).
+FIXTURE_NAMES = frozenset({"ray-xyz0-0", "rig0", "kvm0", "mesh-sample"})
+DOCUMENTATION_NETS = tuple(ipaddress.ip_network(net)
+                           for net in ("192.0.2.0/24", "198.51.100.0/24", "203.0.113.0/24", "2001:db8::/32"))
+# A directory named __tests__, test or tests, or a file named *.test.* or *.spec.* (JavaScript or TypeScript).
+_TEST_PATH = re.compile(r"(?:^|/)(?:__tests__|tests?)/|[.](?:test|spec)[.][cm]?[jt]sx?$")
+
+
+def is_test_file(path: str | Path) -> bool:
+    return bool(_TEST_PATH.search(Path(path).as_posix()))
+
+
+def documentation_address(address: str) -> bool:
+    try:
+        parsed = ipaddress.ip_address(address)
+    except ValueError:
+        return False
+    return any(parsed in net for net in DOCUMENTATION_NETS if net.version == parsed.version)
+
+
 class Rule:
     """The rule, bound to one fleet map (or to none).
 
@@ -145,6 +178,7 @@ class Rule:
         else:
             self.source = "families only: CITADEL_FLEET_MAP is not set"
         self.machine = _machine_pattern(self.names)
+        self._exact = {name.lower() for name in self.names}
 
     def find_ips(self, text: str | None, allow_loopback: bool = False) -> list[str]:
         """Addresses in the text. A scan allows loopback, which code compares a hostname against, and the
@@ -158,6 +192,13 @@ class Rule:
 
     def find_leaks(self, text: str | None, allow_loopback: bool = False) -> dict[str, list[str]]:
         return {"ips": self.find_ips(text, allow_loopback), "machines": self.find_machines(text)}
+
+    def without_fixtures(self, leaks: dict[str, list[str]]) -> dict[str, list[str]]:
+        """A test file's leaks, minus what a test may plant: the made-up names, unless the private fleet map
+        lists one, and documentation-range addresses."""
+        return {"ips": [address for address in leaks["ips"] if not documentation_address(address)],
+                "machines": [name for name in leaks["machines"]
+                             if name.lower() not in FIXTURE_NAMES or name.lower() in self._exact]}
 
     def redact(self, text: str | None) -> str:
         text = LOOPBACK_V4.sub("localhost", text or "")
@@ -198,20 +239,34 @@ def strip_svg_geometry(text: str) -> str:
     return _SVG_GEOMETRY.sub('d:""', text)
 
 
-def scan_tree(root: Path, rule: Rule, allow_loopback: bool = True) -> dict[str, dict[str, int]]:
-    """Scan every text file under root (or root itself); return {relative path: counts} for files that match."""
+def scan_files(root: Path, rule: Rule, allow_loopback: bool = True) -> tuple[dict[str, dict[str, int]], int]:
+    """Scan every file of a scanned type under root (or root itself).
+
+    Returns {relative path: counts} for the files that match, and how many files were read, so a caller can
+    tell a clean result from a scan that read nothing. A test file is held to the fixture rule above.
+    """
     root = Path(root)
     files = [root] if root.is_file() else sorted(p for p in root.rglob("*") if p.is_file())
     found: dict[str, dict[str, int]] = {}
+    read = 0
     for path in files:
         if path.suffix.lower() not in TEXT_SUFFIXES:
             continue
+        read += 1
         text = strip_svg_geometry(path.read_text(encoding="utf-8", errors="replace"))
         leaks = rule.find_leaks(text, allow_loopback=allow_loopback)
+        if is_test_file(path):
+            leaks = rule.without_fixtures(leaks)
         if leaks["ips"] or leaks["machines"]:
             relative = path.name if root.is_file() else path.relative_to(root).as_posix()
             found[relative] = {"ips": len(leaks["ips"]), "machines": len(leaks["machines"])}
-    return found
+    return found, read
+
+
+def scan_tree(root: Path, rule: Rule, allow_loopback: bool = True) -> dict[str, dict[str, int]]:
+    """Scan every file of a scanned type under root (or root itself); return {relative path: counts} for the
+    files that match. Use scan_files when it matters how many files were read."""
+    return scan_files(root, rule, allow_loopback)[0]
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -221,12 +276,20 @@ def main(argv: list[str] | None = None) -> int:
     scan.add_argument("paths", nargs="+", type=Path)
     args = parser.parse_args(argv)
     rule = Rule()
-    total = 0
+    total = read = 0
     for path in args.paths:
-        for relative, counts in scan_tree(path, rule).items():
+        found, count = scan_files(path, rule)
+        read += count
+        if not count:
+            print(f"NOT READ {path}: no file of a scanned type")
+        for relative, counts in found.items():
             total += 1
             print(f"LEAK {path}/{relative}: {counts['ips']} address(es), {counts['machines']} machine name(s)")
-    print(f"{'FAIL' if total else 'PASS'}: {total} file(s) carry an address or a machine name ({rule.source})")
+    if not read:
+        print(f"UNMEASURED: read 0 files, so nothing was checked ({rule.source})")
+        return 2
+    carry = "none carries" if not total else f"{total} {'carries' if total == 1 else 'carry'}"
+    print(f"{'FAIL' if total else 'PASS'}: read {read} file(s); {carry} an address or a machine name ({rule.source})")
     return 1 if total else 0
 
 
