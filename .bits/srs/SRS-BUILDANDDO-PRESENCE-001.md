@@ -64,3 +64,29 @@ contract, and the test and the documentation are what is stale.
 
 `node --test tests/upgrade/classroom-presence.test.mjs` passes 21 of 21 and fails under each control in R3. The
 repository gates pass.
+
+## Continuation (2026-09-23): the echo outcomes, against a stand-in SFU
+
+The first increment recorded that only the unconfigured case, `SFU_UNREACHABLE`, had a test. That leaves the
+property that matters most untested: only a session whose every advertised track the SFU really holds is
+verified. This continuation tests the other outcomes.
+
+5. **R5 - every echo outcome has a test.** The test double gets obviously fake realtime credentials through its
+   injected `$os.getenv`, and an in-memory `$http.send` that answers the SFU's session read from a table. Nothing
+   opens a socket. With that stand-in:
+   - every advertised track held gives `ECHOED_BY_SFU` and `verified: true`, from one read without a body;
+   - one advertised track missing gives `NOT_HELD_BY_SFU:<name>` and `verified: false`;
+   - a track the SFU reports `inactive` does not count as held;
+   - a row that advertises no tracks gives `NO_TRACKS_ADVERTISED`;
+   - an SFU answering 500 gives `SFU_UNREACHABLE:sfu_http_500`.
+6. **R6 - the stand-in lives only in the test.** The route file still holds no network call and no credential of
+   its own; the existing test that reads its source keeps passing. The default test double still provides no
+   `$http` and no realtime credentials.
+7. **R7 - a control.** Breaking the route so it verifies a session whose tracks are not all held fails the new
+   tests. The route is then restored byte for byte.
+8. **R8 - the route compares track names (found by R5, fixed on the operator's decision of 2026-09-23).**
+   `tracksOf()` hands back `{trackName, kind}` objects, and the read path turned each one into text with
+   `String()`, which reads `"[object Object]"`. No advertised track could ever match what the SFU holds, so no row
+   could ever be verified; d91a5f9 recorded that a positive verification had not yet been shown. The read path
+   now compares each advertised track's name. This is the only change to the route. Its behaviour on the staging
+   backend changes after the next staging-only backend sync.
