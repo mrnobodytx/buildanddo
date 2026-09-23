@@ -102,6 +102,18 @@ function members(app, workspace, room) {
         '-last_seen,-id', CAPACITY + 1, 0, { workspace, room, active: true }).filter(fresh);
 }
 function assign(record, values) { Object.entries(values).forEach(([key, value]) => record.set(key, value)); return record; }
+// Attendance history is written in the command's own transaction, so a replayed
+// receipt never writes twice. A backend without the attendance migration keeps
+// working exactly as before; its class record reports the history as absent.
+function attendanceCollection(app) {
+    try { return app.findCollectionByNameOrId('classroom_attendance'); }
+    catch (error) { if (String(error.message).includes('no rows in result set')) return null; throw error; }
+}
+function attend(app, room, owner, event) {
+    const collection = attendanceCollection(app);
+    if (!collection) return;
+    app.save(assign(new Record(collection), { workspace: room.getString('workspace'), room: room.id, owner, event, at: new Date().toISOString() }));
+}
 function present(app, e, room, joining) {
     const workspace = room.getString('workspace');
     let member = memberFor(app, workspace, room.id, e.auth.id);
@@ -118,6 +130,7 @@ function present(app, e, room, joining) {
         assign(member, { active: false, revision: Number(member.get('revision')) + 1 });
     }
     app.save(member);
+    attend(app, room, e.auth.id, joining ? 'join' : 'leave');
 }
 function draft(app, body, e) {
     const { title, description, tutorial, starts_at } = body.payload;
@@ -204,9 +217,11 @@ function command(e) {
                     if (status !== 'scheduled') access.conflict('This class has already started.');
                     lessonFor(app, room.getString('tutorial'), e.requestInfo());
                     assign(room, { status: 'live', started_at: new Date().toISOString() });
+                    attend(app, room, e.auth.id, 'start');
                     present(app, e, room, true);
                 } else if (body.action === 'room.end') {
                     assign(room, { status: 'ended', ended_at: new Date().toISOString() });
+                    attend(app, room, e.auth.id, 'end');
                 } else {
                     if (status !== 'live') access.conflict('Start the class before changing the shared lesson.');
                     const lesson = lessonFor(app, body.payload.tutorial, e.requestInfo());
@@ -235,6 +250,21 @@ function list(e) {
         page: result.page, has_more: result.has_more, lessons: lessons(e.app, e.requestInfo()) };
 }
 
+/**
+ * Whether live voice and video can be offered in this room. It reads the same
+ * configuration the /api/classroom signalling routes use and returns no value
+ * from it: availability is a fact about this server, never a credential.
+ * @param {boolean} live Room is in session.
+ * @returns {{available: boolean, reason?: string}}
+ */
+function mediaStatus(live) {
+    if (!live) return { available: false };
+    let config;
+    try { config = require(`${__hooks}/classroom-realtime-lib.js`).realtimeConfig(); }
+    catch (_) { config = { reason: 'unreadable' }; }
+    return config && !config.reason ? { available: true } : { available: false, reason: 'not configured on this server' };
+}
+
 /** @param {object} e Authenticated native request. @returns {object} Current shared lesson, presence and discussion. */
 function detail(e) {
     access.authenticated(e);
@@ -253,7 +283,7 @@ function detail(e) {
         participants: live ? members(e.app, workspace, room.id).map((row) => ({ id: row.id, name: row.getString('name'), is_host: row.getString('owner') === room.getString('host') })) : [],
         messages: { items: discussion.rows.map((row) => ({ id: row.id, room: room.id, name: row.getString('name'), body: row.getString('body'),
             own: row.getString('owner') === e.auth.id, created: row.getString('created') })), page: discussion.page, has_more: discussion.has_more },
-        media: { available: false } };
+        media: mediaStatus(live) };
 }
 
 /** @param {object} e Authenticated native request. @returns {object} Confirmation for the current attendance generation. */
@@ -274,4 +304,56 @@ function heartbeat(e) {
     return result;
 }
 
-module.exports = { command, list, detail, heartbeat };
+const HOUR = 3600000;
+const RECORD_HOURS = 48;
+const RECORD_ROWS = 5000;
+function stamp(value) {
+    const ms = Date.parse(String(value || '').replace(' ', 'T'));
+    return Number.isFinite(ms) ? ms : 0;
+}
+
+/**
+ * The host's aggregate class record: attendees, minutes and people present per
+ * hour. It returns counts only; who attended stays in the live attendance list.
+ * @param {object} e Authenticated native request.
+ * @returns {object} Aggregate attendance for one room.
+ */
+function record(e) {
+    access.authenticated(e);
+    const workspace = access.workspaceId(e);
+    const scope = scopeFor(e.app, e, workspace);
+    const room = roomFor(e.app, workspace, e.request.pathValue('id'));
+    if (!canManage(scope, e.auth, room)) throw new ForbiddenError('Only this room\'s host or a workspace administrator may read its class record.');
+    const base = { room: room.id, status: room.getString('status'), started_at: room.getString('started_at'), ended_at: room.getString('ended_at') };
+    if (!attendanceCollection(e.app)) return { ...base, installed: false };
+    const started = stamp(base.started_at);
+    if (!started) return { ...base, installed: true, attendees: 0, minutes: 0, hours: [], truncated: false };
+    const stop = stamp(base.ended_at) || Date.now();
+    const rows = e.app.findRecordsByFilter('classroom_attendance', 'workspace = {:workspace} && room = {:room}', 'at,id',
+        RECORD_ROWS + 1, 0, { workspace, room: room.id });
+    const truncated = rows.length > RECORD_ROWS;
+    const open = {}, intervals = [];
+    for (const row of rows.slice(0, RECORD_ROWS)) {
+        const owner = row.getString('owner'), at = Math.min(stamp(row.getString('at')), stop), event = row.getString('event');
+        if (event === 'join' && open[owner] === undefined) open[owner] = at;
+        else if (event === 'leave' && open[owner] !== undefined) { intervals.push([owner, open[owner], at]); delete open[owner]; }
+    }
+    // Someone still marked present ends at their last heartbeat, or now while still fresh.
+    for (const [owner, from] of Object.entries(open)) {
+        const member = memberFor(e.app, workspace, room.id, owner);
+        const until = fresh(member) ? stop : Math.min(stop, Math.max(from, stamp(member?.getString('last_seen'))));
+        intervals.push([owner, from, until]);
+    }
+    const first = Math.max(Math.floor(started / HOUR) * HOUR, Math.floor(stop / HOUR) * HOUR - (RECORD_HOURS - 1) * HOUR);
+    const hours = [];
+    for (let t = first; t <= stop; t += HOUR) {
+        const present = new Set(intervals.filter(([, from, until]) => from < t + HOUR && until >= t).map(([owner]) => owner));
+        hours.push({ t: new Date(t).toISOString(), people: present.size });
+    }
+    return { ...base, installed: true, truncated,
+        attendees: new Set(intervals.map(([owner]) => owner)).size,
+        minutes: Math.round(intervals.reduce((total, [, from, until]) => total + Math.max(0, until - from), 0) / 60000),
+        hours };
+}
+
+module.exports = { command, list, detail, heartbeat, record };

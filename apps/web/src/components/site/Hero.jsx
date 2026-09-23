@@ -17,8 +17,9 @@ import {
     PaperCard,
     EvidenceChip,
 } from '@/components/site/ui';
+import { PURPOSE } from '@/lib/purpose';
 
-const fade = (delay = 0, reduce, policy) => ({
+const fade =(delay = 0, reduce, policy) => ({
     initial: { opacity: reduce ? 1 : 0.65, y: reduce ? 0 : policy.distance },
     animate: { opacity: 1, y: 0 },
     transition: { duration: reduce ? 0 : policy.duration.reveal / 1000, delay: reduce ? 0 : Math.min(delay, 0.2), ease: policy.curve },
@@ -221,7 +222,7 @@ export default function Hero() {
                     <motion.div {...fade(0, reduce, policy)}>
                         <Badge tone="violet">
                             <StatusDot tone="violet" pulse={!reduce} />
-                            Early access · small-business operating help
+                            Early access · learning by doing
                         </Badge>
                     </motion.div>
 
@@ -229,16 +230,14 @@ export default function Hero() {
                         {...fade(0.08, reduce, policy)}
                         className="mt-5 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl"
                     >
-                        Turn a business problem into a verified next step.
+                        {PURPOSE.line}
                     </motion.h1>
 
                     <motion.p
                         {...fade(0.16, reduce, policy)}
                         className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
                     >
-                        BuildAndDo helps small-business owners notice important changes,
-                        understand them in plain language, create a bounded mission, and verify
-                        what happened. You approve every step before anything runs.
+                        {PURPOSE.summary} You approve every step before anything runs.
                     </motion.p>
 
                     <motion.div

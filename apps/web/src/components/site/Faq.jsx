@@ -6,17 +6,18 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
+import { PURPOSE } from '@/lib/purpose';
 
 export const FAQ_ITEMS = [
     {
         question: 'What is BuildAndDo?',
         answer:
-            'BuildAndDo is early-stage software for small-business owners. It helps you notice important changes in your business, understand them in plain language, approve a bounded mission, and verify what happened — so you get operational help without automation jargon.',
+            `${PURPOSE.summary} Eight guilds, each led by an automated guildmaster agent, cover fields from building and research to writing and commerce.`,
     },
     {
         question: 'Is BuildAndDo a chatbot?',
         answer:
-            'No. You describe problems in plain English, but BuildAndDo is not an open-ended chatbot. It turns what you describe into a bounded mission with a clear goal and scope, and it shows you the evidence when the mission is done.',
+            'No. You can describe what you want to learn or build in plain English, but BuildAndDo is not an open-ended chatbot. It turns what you describe into a bounded mission with a clear goal and scope, and it shows you the evidence when the mission is done.',
     },
     {
         question: 'Does it take actions automatically?',
@@ -26,22 +27,22 @@ export const FAQ_ITEMS = [
     {
         question: 'Who is BuildAndDo for?',
         answer:
-            'Primarily small-business owners and operators — especially appointment-based and service businesses like salons, consultants, and local providers. Beginners and vibe coders can also use the same loop to turn plain-English ideas into structured, testable workflows.',
+            'People who learn best by doing: learners, teams and builders who want to work through a real project together, with other people and with AI agents. Beginners are welcome, and so are experienced builders who want a verified record of what they made. One real question is enough to start.',
     },
     {
         question: 'Do I need technical skills?',
         answer:
-            'No. BuildAndDo is designed for nontechnical operators. You describe the problem in plain English and it handles the structure underneath. There is nothing to code and no AI terminology to learn.',
+            'No. BuildAndDo is designed for beginners. You describe what you want in plain English and it handles the structure underneath. There is nothing to code and no AI terminology to learn.',
     },
     {
-        question: 'What happens to my business data?',
+        question: 'What happens to my data?',
         answer:
-            'BuildAndDo is an early MVP and we are still finalizing our data practices, so we won\u2019t make claims we can\u2019t back up yet. The product is designed around observable state — you can see what it knows and what it did. We will publish full privacy details before launch, and early-access sign-ups are only used to contact you about the product.',
+            'BuildAndDo is in early access and we are still finalizing our data practices, so we won’t make claims we can’t back up yet. The platform is designed around observable state — you can see what it knows and what it did. Talking to Buddi, our voice agent, sends what you say to ElevenLabs, our voice provider, where it may be recorded. We will publish full privacy details before launch, and early-access sign-ups are only used to contact you about BuildAndDo.',
     },
     {
         question: 'Is BuildAndDo available now?',
         answer:
-            'BuildAndDo is in early access. We are working with a first group of small-business owners to shape the product around real problems. Join the early-access list and describe the repetitive task you would want help with.',
+            'BuildAndDo is in early access. We are working with a first group of learners and builders to shape the platform around real projects. Join the early-access list and tell us what you want to learn or build first.',
     },
 ];
 
@@ -55,7 +56,7 @@ export default function Faq() {
                         Direct answers, no hype
                     </h2>
                     <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                        The questions a first-time business owner would actually ask.
+                        The questions a first-time member would actually ask.
                     </p>
                 </div>
 

@@ -495,7 +495,7 @@ def compile_bundle(root: Path, evidence: Path, output: Path, *, title: str, targ
     judge += "## Verification boundary\n\nPrepared evidence is not self-certification. Runtime receipts, producer/verifier separation, and evidence hashes remain inspectable in `submission.json` and `evidence/`.\n"
     (output / "README_FOR_JUDGES.md").write_text(judge, encoding="utf-8")
 
-    demo = f"""# 90-second demo script\n\n1. **0-15s - Problem:** {manifest['problem']}\n2. **15-30s - Product:** Open {manifest['public_url']} and show the challenge desk.\n3. **30-50s - Bounded work:** Submit one real business challenge and open the resulting mission with its scope and approval state.\n4. **50-70s - Proof:** Show the distinct action receipt and independent verification in the Evidence Ledger / Operator readback.\n5. **70-85s - Learning:** Show the Daily Edition or correction/provenance surface explaining what changed and what is still uncertain.\n6. **85-90s - Hostinger:** Close with the four Hostinger product roles listed in this bundle.\n\nDo not claim automation, deployment, provider health, or verification unless the corresponding captured receipt is in this exact bundle.\n"""
+    demo = f"""# 90-second demo script\n\n1. **0-15s - Problem:** {manifest['problem']}\n2. **15-30s - Product:** Open {manifest['public_url']} and show the challenge desk.\n3. **30-50s - Bounded work:** Submit one real project or question and open the resulting mission with its scope and approval state.\n4. **50-70s - Proof:** Show the distinct action receipt and independent verification in the Evidence Ledger / Operator readback.\n5. **70-85s - Learning:** Show the Daily Edition or correction/provenance surface explaining what changed and what is still uncertain.\n6. **85-90s - Hostinger:** Close with the four Hostinger product roles listed in this bundle.\n\nDo not claim automation, deployment, provider health, or verification unless the corresponding captured receipt is in this exact bundle.\n"""
     (output / "DEMO_SCRIPT.md").write_text(demo, encoding="utf-8")
 
     matrix = ["# Submission evidence matrix", "", "| Area | Weight | Coverage | Missing |", "|---|---:|---:|---|"]
@@ -641,10 +641,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--evidence", type=Path, default=Path("state/day21/evidence"))
     parser.add_argument("--output", type=Path, default=Path("state/day21/submission"))
     parser.add_argument("--title", default="BuildAndDo")
-    parser.add_argument("--target-audience", default="Small business owners and operators")
-    parser.add_argument("--problem", default="Operational work is scattered across tools, making it hard to know what changed and what to do next.")
-    parser.add_argument("--solution", default="BuildAndDo turns an observed business problem into a bounded mission, verifies the result, and keeps the evidence.")
-    parser.add_argument("--pitch", default="BuildAndDo watches the important parts of a small business, explains what changed, and turns the next best action into a verified task.")
+    # The same four texts as apps/web/src/data/hostingerChallenge.js (and the pitch is purpose.js's summary), so the
+    # judge bundle describes the product the public page does; apps/web/src/lib/__tests__/purpose.test.js checks it.
+    parser.add_argument("--target-audience", default="People who learn best by doing: learners, teams and builders, beginners included, who want to work through a real project together with other people and AI agents, and keep proof of what they built.")
+    parser.add_argument("--problem", default="Online learning mostly stops at watching and reading. People rarely work through a real project with guidance and with others, and when they do, little records what they actually built or whether it worked.")
+    parser.add_argument("--solution", default="BuildAndDo turns one real question or project into a bounded mission: it keeps the sources, asks for approval before anything runs, records the work, verifies the outcome and keeps the evidence, with classrooms, guilds and AI guildmaster agents to learn alongside.")
+    parser.add_argument("--pitch", default="BuildAndDo is a learning platform for building real things together: bring a question or a project, work through it with people and AI, verify what happened, and keep the evidence.")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
     root = args.root.resolve()

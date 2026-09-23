@@ -34,14 +34,14 @@ export const GUIDES = [
     {
         id: 'classrooms',
         title: 'Host or join a classroom',
-        text: 'Open Classrooms in your workspace. An editor or administrator can schedule a lesson and start the session. Members join the shared reading, post questions with editor access, and revisit the discussion after it ends. Voice and video are not connected.',
+        text: 'Open Classrooms in your workspace. An editor or administrator can schedule a lesson and start the session. Members join the shared reading, post questions with editor access, and revisit the discussion after it ends. Where the workspace has live broadcasting set up, the host can stream voice and video during the session.',
         link: '/classrooms',
         action: 'Explore Classrooms',
     },
     {
         id: 'get-started',
         title: 'Create your first workspace',
-        text: 'Create an account, then follow onboarding to name a workspace and select your business domain. Selecting a domain records your choice; it does not verify ownership.',
+        text: 'Create an account, then follow onboarding to name a workspace and, if it has a website, select its domain. Selecting a domain records your choice; it does not verify ownership.',
         link: '/signup',
         action: 'Create an account',
     },
@@ -92,7 +92,7 @@ export default function DocsPage() {
             path="/docs"
             eyebrow="The field guide"
             title="From the first signal to the final receipt."
-            intro="A practical guide to the workspace. Start with one business question, keep the source visible, and verify the result before calling the work done."
+            intro="A practical guide to the workspace. Start with one real question, keep the source visible, and verify the result before calling the work done."
         >
             <div className="grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
                 <aside className="space-y-6">

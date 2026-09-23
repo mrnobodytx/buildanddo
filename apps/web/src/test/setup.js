@@ -78,6 +78,14 @@ if (!Element.prototype.releasePointerCapture) {
     Element.prototype.releasePointerCapture = function releasePointerCapture() {};
 }
 
+// BlueprintSavedPage revokes its download link's object URL one second after the click. jsdom has no
+// URL.revokeObjectURL, so whenever a loaded run keeps that test file alive past the second, the timer
+// throws an unhandled TypeError and fails the whole run (measured 2026-09-23 on the base commit: every
+// test passed, exit 1, 2 errors).
+if (typeof URL.revokeObjectURL !== 'function') {
+    URL.revokeObjectURL = function revokeObjectURL() {};
+}
+
 /* Per-test isolation ------------------------------------------------------ */
 
 beforeEach(() => {

@@ -537,7 +537,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-23T17:27:48.638072+00:00",
+  "generated_at": "2026-09-23T22:30:30.032434+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -564,6 +564,13 @@
         "spec": "",
         "status": "delivered",
         "title": "Machine-facing governance bootstrap"
+      },
+      {
+        "code": "SRS-BUILDANDDO-BUDDI-003",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-003.md",
+        "status": "in_progress",
+        "title": "Talk to Buddi on the home page - an in-page voice session with the official ElevenLabs SDK"
       },
       {
         "code": "SRS-BUILDANDDO-CHANGELOG-001",
@@ -671,6 +678,13 @@
         "title": "Semantic ISR research"
       },
       {
+        "code": "SRS-BUILDANDDO-HEADERS-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-HEADERS-001.md",
+        "status": "in_progress",
+        "title": "Every location in the staging web container sends the server's security headers, built assets included"
+      },
+      {
         "code": "SRS-BUILDANDDO-PB-METRICS-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md",
@@ -690,6 +704,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-PUBLIC-REDACTION-001.md",
         "status": "in_progress",
         "title": "No fleet machine name or IP address in the generated JSON or the site bundle"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PURPOSE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PURPOSE-001.md",
+        "status": "in_progress",
+        "title": "Every public page says BuildAndDo is an educational, collaborative platform"
       },
       {
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
@@ -913,13 +934,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 56,
+    "migrations": 58,
     "python_files": 298,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1286,
-    "web_source_files": 344
+    "tracked_files": 1316,
+    "web_source_files": 364
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -998,22 +1019,22 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "495e2e010d217646ee25c75b4e657625cacaaa3fccc46c2c46f2df344c5873c6",
+    "source_sha256": "d535c1358c7796d8d9e8f09c58428c483ea7c1e2231219f2e962de0428b7587e",
     "state": "PASS"
   },
   "summary": {
     "findings": 37,
     "findings_high": 37,
     "pipelines": 7,
-    "srs_open": 27,
-    "srs_total": 31,
+    "srs_open": 30,
+    "srs_total": 34,
     "unwired_gates": 33
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 68,
+    "js_test_files": 75,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

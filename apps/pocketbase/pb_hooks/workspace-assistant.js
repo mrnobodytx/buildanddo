@@ -131,6 +131,23 @@ function command(e) {
     });
     return result;
 }
+/**
+ * Provider usage exactly as reported: the answering model and the token counts
+ * the provider returned. A count the provider did not report stays absent; it is
+ * never filled in as zero, and no cost is estimated here.
+ * @param {object} envelope Parsed provider response.
+ * @param {string} configured Configured model name.
+ * @returns {{model: string, input_tokens?: number, output_tokens?: number}}
+ */
+function usageOf(envelope, configured) {
+    const reported = envelope.usage || envelope.result?.usage || {};
+    const count = (value) => Number.isSafeInteger(value) && value >= 0 && value <= 100000000 ? value : null;
+    const usage = { model: access.text(envelope.model, 120) && envelope.model.trim() ? envelope.model : configured };
+    const input = count(reported.prompt_tokens ?? reported.input_tokens), output = count(reported.completion_tokens ?? reported.output_tokens);
+    if (input !== null) usage.input_tokens = input;
+    if (output !== null) usage.output_tokens = output;
+    return usage;
+}
 function infer(message, captured, history, context, patterns, packet) {
     const url = $os.getenv('BUILDANDDO_ASSISTANT_URL') || '', model = $os.getenv('BUILDANDDO_ASSISTANT_MODEL') || '';
     if (!/^https:\/\/[a-z0-9.-]+(?::443)?\/[^\s?#@]*$/i.test(url) || !access.text(model, 120))
@@ -152,7 +169,7 @@ function infer(message, captured, history, context, patterns, packet) {
         ] }) });
     if (response.statusCode !== 200 || typeof response.raw !== 'string' || response.raw.length > 40000)
         throw new ApiError(503, 'The configured assistant did not return a usable response.');
-    let value;
+    let value, usage = null;
     try {
         const envelope = JSON.parse(response.raw);
         // Supports the existing agent gateway's chat envelope and Cloudflare's
@@ -160,12 +177,13 @@ function infer(message, captured, history, context, patterns, packet) {
         const content = envelope.choices?.[0]?.message?.content ?? envelope.result?.response;
         if (typeof content !== 'string' || content.length > 24000) throw new Error('format');
         value = JSON.parse(content);
+        usage = usageOf(envelope, model);
     } catch { throw new ApiError(503, 'The assistant response format is unsupported.'); }
-    return { ...policy.plan(value, captured, context.role), context: { assembled_at: packet.assembled_at, complete: !packet.context.truncated,
+    return { usage, proposal: { ...policy.plan(value, captured, context.role), context: { assembled_at: packet.assembled_at, complete: !packet.context.truncated,
         citations: packet.context.citations.map((citation) => {
             const node = packet.nodes.find((item) => item.id === citation);
             return { citation, title: node.title, collection: node.source.collection, record: node.source.record_id, updated_at: node.source.updated_at };
-        }) } };
+        }) } } };
 }
 /** Request one bounded inferred plan; recheck tenant access before retaining its response. */
 function chat(e) {
@@ -201,14 +219,14 @@ function chat(e) {
         session.set('last_route', captured.route); session.set('revision', Number(session.get('revision')) + 1); app.save(session);
     });
     if (already) return turnOut(turn);
-    const claimedRevision = Number(turn.get('revision')); let proposal, failure = '';
+    const claimedRevision = Number(turn.get('revision')); let proposal, usage = null, failure = '';
     try {
         const history = e.app.findRecordsByFilter('assistant_turns', 'session = {:session} && owner = {:owner} && workspace = {:workspace}', '-created', 6, 0,
             { ...context, session: body.session }).filter((record) => record.id !== turn.id).reverse().map((record) => ({ message: record.getString('message'), reply: record.getString('reply').slice(0, 1500), status: record.getString('status') }));
         const patterns = e.app.findRecordsByFilter('assistant_patterns', 'workspace = {:workspace} && owner = {:owner}', '-created', 8, 0, context)
             .map((record) => ({ route: record.getString('route'), steps: access.json(record, 'steps'), outcome: record.getString('outcome') }));
         const packet = knowledgeSource.assembleFor(e, { query: message.slice(0, 1000), mission: '', max_chars: 6000, max_sources: 6 });
-        proposal = infer(message, captured, history, context, patterns, packet);
+        ({ proposal, usage } = infer(message, captured, history, context, patterns, packet));
     } catch { failure = 'inference_unavailable'; }
     const finalScope = scope(e);
     if (finalScope.role !== context.role) throw new ForbiddenError('Workspace authority changed during this response. Inspect the current page again.');
@@ -218,7 +236,10 @@ function chat(e) {
         turn = owned(app, 'assistant_turns', turn.id, context);
         if (Number(turn.get('revision')) !== claimedRevision || turn.getString('status') !== 'pending') access.conflict('A newer response already owns this turn.');
         set(turn, { status: failure ? 'unavailable' : 'ready', failure, reply: proposal?.reply || 'Buddi is unavailable. Your message is retained for retry.',
-            plan: proposal || null, revision: claimedRevision + 1 }); app.save(turn);
+            plan: proposal || null, revision: claimedRevision + 1 });
+        // Usage is recorded where the usage migration is applied; older servers keep working without it.
+        if (app.findCollectionByNameOrId('assistant_turns').fields.getByName('usage')) turn.set('usage', failure ? null : usage);
+        app.save(turn);
     });
     return turnOut(turn);
 }

@@ -36,6 +36,14 @@ function roomShape(value, workspace, account, role) {
         STATUSES.includes(value.status) && ['starts_at', 'started_at', 'ended_at', 'created'].every((name) => text(value[name], 50)) &&
         value.can_manage === (['owner', 'admin'].includes(role) || (role === 'editor' && value.host === account));
 }
+// Media availability is a server fact: a boolean, offered only while live, with at
+// most a short reason. Any other key (a token, a session id) is refused outright.
+function mediaShape(media, status) {
+    if (!media || typeof media.available !== 'boolean') return false;
+    if (!Object.keys(media).every((key) => key === 'available' || key === 'reason')) return false;
+    if (media.reason !== undefined && !text(media.reason, 200)) return false;
+    return !media.available || status === 'live';
+}
 function readShape(value, workspace, account, roomId, page) {
     if (!value || value.workspace !== workspace || !ROLES.includes(value.role) || !lessonsShape(value.lessons)) return false;
     if (!roomId) return value.can_host === (value.role !== 'viewer') && pageShape(value, page) &&
@@ -49,7 +57,20 @@ function readShape(value, workspace, account, roomId, page) {
         Array.isArray(participants) && participants.length <= 100 && participants.every((item) => id(item?.id) && text(item.name, 120) && typeof item.is_host === 'boolean') &&
         new Set(participants.map((item) => item.id)).size === participants.length && pageShape(messages, page) &&
         messages.items.every((item) => id(item?.id) && item.room === roomId && text(item.name, 120) && text(item.body, 2000) &&
-            text(item.created, 50) && typeof item.own === 'boolean') && media?.available === false;
+            text(item.created, 50) && typeof item.own === 'boolean') && mediaShape(media, room.status);
+}
+
+// The class record is aggregate by contract: counts per hour and totals, never
+// an identity. Anything else in the response is treated as a broken read.
+function recordShape(value, roomId) {
+    if (!value || value.room !== roomId || !STATUSES.includes(value.status) || typeof value.installed !== 'boolean') return false;
+    if (!['started_at', 'ended_at'].every((name) => text(value[name], 50))) return false;
+    const base = ['room', 'status', 'started_at', 'ended_at', 'installed'];
+    if (!value.installed) return Object.keys(value).every((key) => base.includes(key));
+    return Object.keys(value).every((key) => [...base, 'attendees', 'minutes', 'hours', 'truncated'].includes(key)) &&
+        integer(value.attendees) && integer(value.minutes) && typeof value.truncated === 'boolean' &&
+        Array.isArray(value.hours) && value.hours.length <= 48 &&
+        value.hours.every((hour) => hour && Object.keys(hour).length === 2 && text(hour.t, 40) && Number.isFinite(Date.parse(hour.t)) && integer(hour.people));
 }
 
 /** @param {string} roomId Saved room. @param {string} workspaceId Current workspace. @returns {string} Local shareable classroom path. */
@@ -101,6 +122,15 @@ export function createClassroomClient({ client, workspaceId, accountId, demo = f
                 });
                 if (!current()) return stale();
                 return readShape(data, workspaceId, accountId, roomId, page) ? { ok: true, data } : failure(null);
+            } catch (error) { return current() ? failure(error) : stale(); }
+        },
+        async record(roomId) {
+            if (!current()) return stale();
+            if (!id(roomId)) return { ok: false, reason: 'invalid', error: 'Choose a classroom.' };
+            try {
+                const data = await client.send(`${prefix}/${encodeURIComponent(roomId)}/record`, { method: 'GET', requestKey: null, cache: 'no-store' });
+                if (!current()) return stale();
+                return recordShape(data, roomId) ? { ok: true, data } : failure(null);
             } catch (error) { return current() ? failure(error) : stale(); }
         },
         async command(action, payload, revision) {
