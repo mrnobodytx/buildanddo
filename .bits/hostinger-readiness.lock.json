@@ -912,7 +912,7 @@
     "scripts/citadel-evolve": "767edf22d0f46357e7021d7a8111393dcbe9be2d726887a754fe88402a0d2e46",
     "scripts/crawl_check.py": "cef4f29687f4532b584f02f4a181f9b5d57afa05339164c077f05aca5da3651b",
     "scripts/deploy/roadmap_status.py": "40b79086ceb0d373797a28ff2045572b0b43aabfd2a65a85ecaf010d42c66e43",
-    "scripts/deploy/ship.py": "e47f9ecce54fcc84dfce65dcea7757c031990073943eaf7c6af088697975daa7",
+    "scripts/deploy/ship.py": "a07c11079e038662e51f662b731b5ef67cd9a74fd688c4af5e3d4192e05f6179",
     "scripts/deploy/staging-readback.sh": "366b7343e9d088e8134375f1e168bd8a9f937815714f6e31f5cb1af0d049f4c6",
     "scripts/dev-seed.mjs": "77dd355bdf4e3862dab451d16d1895407277a69cbd0363ddf0f024d5020c87f2",
     "scripts/dev-setup.ps1": "25524e9c8ad271980bd204234193390075fa687a0485125b39a6eef7c63fd2eb",
