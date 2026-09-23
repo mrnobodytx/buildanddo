@@ -2,14 +2,15 @@
 # ─── CGRF Header ─────────────────────────────────────────────────────────────
 # File:        scripts/ci/ocn_seat_session.py
 # Stage:       09_VERIFY
-# SRS:         SRS-BUILDANDDO-LIVE-UTILIZATION-001
+# SRS:         SRS-BUILDANDDO-LIVE-UTILIZATION-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 # CAPS:        B
 # CK:          pending
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
 # Depends:     scripts/ci/ocn_rbac_probe.py (same CitadelKey login path);
-#              apps/web/src/lib/telemetry.js (the event contract this mirrors)
+#              apps/web/src/lib/telemetry.js (the event contract this mirrors);
+#              the box's own /opt/citadel/node.json and its CBF blueprints/FLEET_PLACEMENT.json
 # EnumType:    Verifier
 # EnumEdges:   PRODUCES PostHog person + session + events for an OCN seat;
 #              PRODUCES a persona perception record for the systems report
@@ -22,7 +23,17 @@
 RUNS ON A FLEET BOX. The seat signs in with the CitadelKey only that box holds, walks a journey,
 and emits the events a browser would, plus one persona perception record.
 
-    ocn_seat_session.py <seat> [--env staging|production] [--no-capture]
+    ocn_seat_session.py [<seat>] [--env staging|production] [--no-capture]
+
+THE SEAT LEARNS WHO IT IS ON ITS OWN BOX. This repository is public, so it carries no table of
+which machine holds which guildmaster (operator rule, 2026-09-22: no public surface names a fleet
+machine or carries an address). The box already knows: /opt/citadel/node.json names its seat_id and,
+in its persona block, its guild; the CBF copy of blueprints/FLEET_PLACEMENT.json names the guild and
+persona placed on that seat. The guild is the join key to the guildmaster canon below - the persona
+NAME in node.json is a seat-label vocabulary (Warden, Archivist, Herald, Steward) and is not
+consulted. When the identity is missing, contradicts itself, names a guild with no guildmaster, or
+belongs to a different seat than the one asked for, the session REFUSES before any network call or
+telemetry and says why. It never guesses a persona, and never falls back to the hostname.
 
 AGENTS ARE MARKED, NOT DISGUISED. Every person and every event carries `is_ocn_agent: true`,
 `ocn_seat`, `ocn_persona` and `ocn_guild`. That is the point rather than a caveat: analytics that
@@ -65,19 +76,23 @@ PH_HOST = "https://us.i.posthog.com"
 CBF = "/opt/citadel/cbf"
 UA = {"User-Agent": "Mozilla/5.0 (compatible; bnd-ocn-seat/1.0)", "Content-Type": "application/json"}
 
-# Box -> GUILDMASTER, joined on guild. The box's guild comes from blueprints/FLEET_PLACEMENT.json;
-# the guildmaster for that guild is the canon in cbf/configs/discord_fleet/personas.yaml, where each
-# gm-* entry carries role: guildmaster. Joining on GUILD rather than on FLEET_PLACEMENT's own
-# `persona` label matters: that label is a different vocabulary (Herald, Steward, Archivist, Warden)
-# and five of six of its names are not guildmasters at all. Five rosters disagree across this estate,
-# so the join key is the one thing they agree on.
-SEATS = {
-    "ray-tor1-1":   {"persona": "Oracle",   "guild": "intelligence", "lens": "pattern-first, forecast-minded"},
-    "ray-tor1-2":   {"persona": "Alex",     "guild": "commerce",     "lens": "customer-first, offer-minded"},
-    "ray-tor1-3":   {"persona": "Sterling", "guild": "finance",      "lens": "cost-aware, conservative, risk-first"},
-    "ray-tor1-4":   {"persona": "Muse",     "guild": "creator",      "lens": "playful, vivid, image-rich"},
-    "mesh-memory":  {"persona": "Scholar",  "guild": "research",     "lens": "academic, thorough, evidence-first"},
-    "mesh-control": {"persona": "Forge",    "guild": "builder",      "lens": "operational, safety-first"},
+# Where the box keeps its own identity. Both are written on the box by the fleet installer.
+NODE_JSON = "/opt/citadel/node.json"
+PLACEMENT = CBF + "/blueprints/FLEET_PLACEMENT.json"
+
+# Guild -> GUILDMASTER: the estate's canonical naming, which is public by design - the website
+# publishes every guildmaster with its guild. What must NOT live here is which machine holds which
+# seat; that is read from the box at run time (resolve_identity). Joining on GUILD matters because
+# five rosters disagree across this estate and the guild is the one thing they agree on.
+GUILDMASTERS = {
+    "intelligence":  {"persona": "Oracle",         "lens": "pattern-first, forecast-minded"},
+    "commerce":      {"persona": "Alex",           "lens": "customer-first, offer-minded"},
+    "finance":       {"persona": "Sterling",       "lens": "cost-aware, conservative, risk-first"},
+    "creator":       {"persona": "Muse",           "lens": "playful, vivid, image-rich"},
+    "research":      {"persona": "Scholar",        "lens": "academic, thorough, evidence-first"},
+    "builder":       {"persona": "Forge",          "lens": "operational, safety-first"},
+    "writers":       {"persona": "Quill",          "lens": "literate, wry, economical"},
+    "entertainment": {"persona": "Director Nexus", "lens": "theatrical, crowd-aware, content-safety-first"},
 }
 # What each persona exists to care about. Presence of this vocabulary in what is actually served is
 # the measurable part of "does this page speak to me".
@@ -88,6 +103,8 @@ LEXICON = {
     "Muse":     ["create", "design", "story", "studio", "craft", "imagine", "build"],
     "Scholar":  ["research", "method", "citation", "evidence", "verify", "source", "claim"],
     "Forge":    ["build", "deploy", "operate", "status", "health", "secure", "uptime"],
+    "Quill":    ["write", "draft", "edit", "read", "story", "publish", "guide"],
+    "Director Nexus": ["play", "event", "live", "show", "watch", "community", "join"],
 }
 ROUTES = ["/", "/roadmap", "/app", "/practice", "/login"]
 DATA = ["/roadmap-status.json", "/_version", "/capabilities.json"]
@@ -111,6 +128,82 @@ def http(url, data=None, headers=None, method=None, timeout=25):
     except Exception as exc:  # noqa: BLE001 - a dead hop is a measurement, not a crash
         return {"status": 0, "body": b"", "ms": int((datetime.datetime.now() - started).total_seconds() * 1000),
                 "ctype": "", "error": type(exc).__name__}
+
+
+class IdentityRefused(Exception):
+    """The box could not say which guildmaster it is. Raised before any network call."""
+
+    def __init__(self, code, detail, sources):
+        super().__init__(detail)
+        self.code, self.detail, self.sources = code, detail, sources
+
+
+def _read_json(path):
+    """Returns (document, None), or (None, reason). An absent file and a broken one are different findings."""
+    try:
+        with open(path, encoding="utf-8") as handle:
+            return json.load(handle), None
+    except FileNotFoundError:
+        return None, "absent"
+    except (OSError, ValueError) as exc:
+        return None, type(exc).__name__
+
+
+def resolve_identity(seat_arg, node_path, placement_path):
+    """Learn this seat's guildmaster from the box's own identity files, or refuse.
+
+    Args:
+        seat_arg: The seat named on the command line, or None to take the box's own.
+        node_path: The box identity file (node.json).
+        placement_path: The box-local FLEET_PLACEMENT.json.
+
+    Returns:
+        {"seat", "persona", "guild", "lens", "identity"} for a seat whose identity is complete and
+        consistent.
+
+    Raises:
+        IdentityRefused: with a code naming the first thing that was missing or contradictory.
+    """
+    node, node_error = _read_json(node_path)
+    sources = {"node.json": node_error or "read"}
+    if not isinstance(node, dict):
+        raise IdentityRefused("IDENTITY_UNREADABLE", "%s is %s" % (node_path, node_error or "not a JSON object"),
+                              sources)
+    seat = str(node.get("seat_id") or node.get("node_id") or "").strip()
+    if not seat:
+        raise IdentityRefused("IDENTITY_NO_SEAT", "%s names no seat_id" % node_path, sources)
+    if seat_arg and seat_arg != seat:
+        raise IdentityRefused("IDENTITY_MISMATCH", "asked to run as %s, but this box is %s" % (seat_arg, seat),
+                              sources)
+    claims = {}
+    block = node.get("persona") if isinstance(node.get("persona"), dict) else {}
+    if block.get("guild") or node.get("guild"):
+        claims["node.json"] = str(block.get("guild") or node.get("guild")).strip().lower()
+    placement, placement_error = _read_json(placement_path)
+    sources["FLEET_PLACEMENT.json"] = placement_error or "read"
+    boxes = placement.get("boxes") if isinstance(placement, dict) else None
+    entry = boxes.get(seat) if isinstance(boxes, dict) else None
+    declared = ""
+    if isinstance(entry, dict):
+        if entry.get("guild"):
+            claims["FLEET_PLACEMENT.json"] = str(entry["guild"]).strip().lower()
+        declared = str(entry.get("persona") or "").strip()
+    if not claims:
+        raise IdentityRefused("IDENTITY_NO_GUILD", "neither identity source names this seat's guild", sources)
+    if len(set(claims.values())) > 1:
+        raise IdentityRefused("IDENTITY_CONFLICT", "the identity sources disagree on the guild: %s"
+                              % json.dumps(claims, sort_keys=True), sources)
+    guild = next(iter(claims.values()))
+    canon = GUILDMASTERS.get(guild)
+    if canon is None:
+        raise IdentityRefused("NO_GUILDMASTER", "guild %r has no guildmaster in the canon" % guild, sources)
+    # A placement that names a persona must name THIS guild's guildmaster. A box placed as another
+    # persona (not a guildmaster seat, or a roster still being reconciled) is refused, not relabelled.
+    if declared and declared.lower() != canon["persona"].lower():
+        raise IdentityRefused("PERSONA_CONFLICT", "the placement names %r, but the %s guildmaster is %s"
+                              % (declared, guild, canon["persona"]), sources)
+    return {"seat": seat, "persona": canon["persona"], "guild": guild, "lens": canon["lens"],
+            "identity": {"state": "RESOLVED", "guild_from": sorted(claims), "sources": sources}}
 
 
 class Telemetry:
@@ -225,24 +318,36 @@ def perceive(seat, meta, pages, data_docs):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("seat")
+    ap.add_argument("seat", nargs="?", default=None,
+                    help="this box's seat id; defaults to the one in node.json and must match it when given")
     ap.add_argument("--env", default="staging", choices=sorted(ENVS))
     ap.add_argument("--ph-key", default="")
     ap.add_argument("--no-capture", action="store_true")
     args = ap.parse_args()
-    meta = dict(SEATS.get(args.seat) or {"persona": "Unknown", "guild": "unknown", "lens": "unspecified"})
+    try:
+        meta = resolve_identity(args.seat, NODE_JSON, PLACEMENT)
+    except IdentityRefused as refused:
+        # Nothing has touched the network: no egress lookup, no login, no telemetry under a guess.
+        print(json.dumps({"schema": "buildanddo.ocn-seat-session/v1", "seat": args.seat, "env": args.env,
+                          "at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                          "identity": {"state": "REFUSED", "code": refused.code, "detail": refused.detail,
+                                       "sources": refused.sources},
+                          "login": "NOT_ATTEMPTED", "replay": []}))
+        return 2
+    seat = meta["seat"]
     base = ENVS[args.env]
 
     ip = http("https://api.ipify.org", timeout=12)
     meta["egress_ip"] = ip["body"].decode("utf-8", "replace").strip() if ip["status"] == 200 else None
 
-    tel = Telemetry(args.ph_key, args.seat, meta, enabled=not args.no_capture)
-    out = {"schema": "buildanddo.ocn-seat-session/v1", "seat": args.seat, "env": args.env,
+    tel = Telemetry(args.ph_key, seat, meta, enabled=not args.no_capture)
+    out = {"schema": "buildanddo.ocn-seat-session/v1", "seat": seat, "env": args.env,
            "persona": meta["persona"], "guild": meta["guild"], "egress_ip": meta["egress_ip"],
+           "identity": meta["identity"],
            "session_id": tel.session_id, "distinct_id": tel.distinct_id,
            "at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "replay": []}
 
-    token, uid, state = login(args.seat, base)
+    token, uid, state = login(seat, base)
     out["login"] = state
     tel.identify()
     tel.event("ocn_session_start", {"env": args.env, "login_state": state})
@@ -290,7 +395,7 @@ def main() -> int:
         out["replay"].append({"step": "api_read", "collection": coll, "http": res["status"], "items": total})
     out["authenticated_reads"] = api
 
-    perception = perceive(args.seat, meta, pages, data_docs)
+    perception = perceive(seat, meta, pages, data_docs)
     out["perception"] = perception
     tel.event("ocn_perception", {"persona": perception["persona"], "guild": perception["guild"],
                                  **{("perc_" + k): v for k, v in perception["score"].items()},
