@@ -74,6 +74,20 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-CAREER-001.md
     notes: Agent self-authorized additive local passport, requirement coverage, dossier and application-package compiler over git history and supplied postings; discovery, network, submission and reserved attestations excluded
 
+  - code: SRS-BUILDANDDO-JOURNEY-001
+    title: Build and Do navigation and guided first-mission journey
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-JOURNEY-001.md
+    notes: Owner-directed 2026-09-23; grouped workspace navigation, multiple-choice journey compiling a lesson and proposed mission draft, assistant draft hand-off and Career Passport profile card; no schema, hooks or private runtime
+
+  - code: SRS-BUILDANDDO-KNOWLEDGE-UNIT-001
+    title: Knowledge Unit contract, receipt and evidence-based mastery ladder
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-KNOWLEDGE-UNIT-001.md
+    notes: Agent self-authorized additive schema, validator, receipt and mastery computation; no CPE credit, certification, TEKS content or regulatory action
+
   - code: SRS-BUILDANDDO-UPGRADE-001
     title: BuildAndDo public, workspace and community upgrades
     status: in_progress

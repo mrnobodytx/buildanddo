@@ -69,6 +69,7 @@ const SpecialistWorkPage = lazy(() => import('./pages/workspace/SpecialistWorkPa
 const ExecutionReplayPage = lazy(() => import('./pages/workspace/ExecutionReplayPage'));
 const CapabilityPassportPage = lazy(() => import('./pages/workspace/SpecialistDeskPage'));
 const CareerPage = lazy(() => import('./pages/workspace/CareerPage'));
+const JourneyPage = lazy(() => import('./pages/workspace/JourneyPage'));
 const CorrectionsPage = lazy(() => import('./pages/workspace/CorrectionsPage'));
 const SupportRevenuePage = lazy(() => import('./pages/workspace/SupportRevenuePage'));
 const CommunitySocialPage = lazy(() => import('./pages/workspace/CommunitySocialPage'));
@@ -101,6 +102,7 @@ function EstateOnly({ enabled, children }) {
 
 const WORKSPACE_ROUTES = [
     { index: true, label: 'Front Page', element: OverviewPage },
+    { path: 'journey', label: 'Start a journey', element: JourneyPage },
     { path: 'operator', label: 'Operator cockpit', element: OperatorPage },
     { path: 'signals', label: 'Signals', element: SignalsPage },
     { path: 'missions', label: 'Challenge Desk', element: MissionsPage },

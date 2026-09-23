@@ -8,7 +8,7 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/web/src/lib/careerPassport.js, apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/components/workspace/ControlPrimitives.jsx
+// Depends:     apps/web/src/lib/careerPassport.js, apps/web/src/contexts/CareerProfileContext.jsx, apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/components/workspace/ControlPrimitives.jsx
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/lib/careerPassport.js; CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx
 // Intent:      Make personal work attribution, job coverage and application exclusions reviewable inside the existing authenticated workspace.
@@ -20,6 +20,7 @@ import { Button, Card } from '@/components/site/ui';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { controlInput, dateLabel, PlainArticle } from '@/components/workspace/ControlPrimitives';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCareerProfile } from '@/contexts/CareerProfileContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
@@ -160,6 +161,37 @@ function CareerDesk({ accountId, workspaceId }) {
     </div>;
 }
 
+const PROFILE_MESSAGES = {
+    signed_out: 'Sign in to load your career profile.',
+    demo: 'Demonstration mode does not load a personal career profile.',
+    loading: 'Loading your career profile from Citadel Nexus…',
+    not_configured: 'Your Citadel Nexus career profile is not connected on this server yet.',
+    no_profile: 'Citadel Nexus holds no career profile for this account yet.',
+    forbidden: 'Sign in again to load your career profile.',
+    unavailable: 'Your career profile is unavailable right now. Retry in a moment.',
+};
+
+/** The profile Citadel Nexus holds for this account, loaded at sign-in and kept in memory only. */
+function CitadelProfile() {
+    const { status, profile, issuedAt, reload } = useCareerProfile();
+    return <Card className="space-y-4 p-5" aria-label="Citadel career profile">
+        <h2 className="font-headline text-2xl">Your career profile</h2>
+        {status !== 'ready' || !profile ? <>
+            <p role={status === 'loading' ? 'status' : undefined} className="text-sm">{PROFILE_MESSAGES[status] || PROFILE_MESSAGES.unavailable}</p>
+            {['unavailable', 'forbidden'].includes(status) && <Button variant="secondary" onClick={reload}>Retry</Button>}
+        </> : <>
+            <p className="text-sm">{profile.person_id} · as of {dateLabel(profile.as_of)} · issued {dateLabel(issuedAt)}</p>
+            <p className="text-xs text-muted-foreground">OBSERVED means a record shows the work. VERIFIED means someone other than you checked it. Nothing here states employment years.</p>
+            {!profile.capabilities.length && <p className="text-sm">No capability is evidenced yet.</p>}
+            <ul className="space-y-2">{profile.capabilities.map((row) => <li key={row.capability_id} className="rounded-md border border-border p-3">
+                <p className="text-sm font-semibold">{row.label}</p>
+                <p className="text-sm">{row.claim_verb.replace(/:$/, '')} · {label(row.state)} · {row.records} record{row.records === 1 ? '' : 's'}</p>
+            </li>)}</ul>
+            <p className="break-all text-xs text-muted-foreground">Passport {profile.digest}</p>
+        </>}
+    </Card>;
+}
+
 export default function CareerPage() {
     const { user, isAuthed } = useAuth(); const { active } = useWorkspace(); const { demo } = useDemoMode();
     const access = useWorkspaceAccess();
@@ -171,6 +203,7 @@ export default function CareerPage() {
     else content = <CareerDesk key={`${user.id}:${active.id}`} accountId={user.id} workspaceId={active.id} />;
     return <div className="space-y-6 ph-no-capture" data-dd-privacy="mask">
         <PageHeader title="Career Passport" description="Turn evidenced work into an honest account of what you can do, then compare it with real job requirements." />
+        <CitadelProfile />
         {content}
         <footer className="border-t border-border pt-4 text-xs text-muted-foreground">Powered by Citadel Nexus Inc. ·{' '}
             <a href="https://citadel-nexus.com/status" target="_blank" rel="noopener noreferrer" className="underline">Public status</a></footer>

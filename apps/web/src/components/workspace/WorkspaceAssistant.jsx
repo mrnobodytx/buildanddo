@@ -8,7 +8,7 @@
 // Seat:         BITS-CODEGEN
 // Owner:        Citadel Nexus Inc.
 // Created:      2026-09-20
-// Depends:      apps/web/src/lib/workspaceAssistant.js, apps/web/src/contexts/WorkspaceAccessContext.jsx
+// Depends:     apps/web/src/pages/workspace/JourneyPage.jsx, apps/web/src/lib/workspaceAssistant.js, apps/web/src/contexts/WorkspaceAccessContext.jsx
 // EnumType:     Widget
 // EnumEdges:    DEPENDS_ON apps/web/src/lib/workspaceAssistant.js; DEPENDS_ON apps/web/src/contexts/WorkspaceAccessContext.jsx
 // DAG Node:     none
@@ -37,6 +37,17 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
     const selectedSession = useRef(session), historyRequest = useRef(0);
     selectedSession.current = session;
     route.current = location.pathname;
+    // The journey page hands over its compiled answers. Open the panel and fill an
+    // empty composer only; the person still decides whether to send it.
+    useEffect(() => {
+        const draft = (event) => {
+            const text = typeof event.detail?.message === 'string' ? event.detail.message.slice(0, 4000) : '';
+            setOpen(true);
+            if (text) setMessage((current) => (current.trim() ? current : text));
+        };
+        window.addEventListener('buildanddo:assistant-draft', draft);
+        return () => window.removeEventListener('buildanddo:assistant-draft', draft);
+    }, []);
     const current = () => alive.current && !demo && pb.authStore.record?.id === accountId;
     const api = useMemo(() => createAssistantClient({ client: pb, workspaceId, accountId, isCurrent: () => alive.current && !demo }), [workspaceId, accountId, demo]);
     useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
