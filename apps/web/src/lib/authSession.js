@@ -20,12 +20,14 @@
  * @returns {object} Lifecycle and explicit retry operations.
  */
 export function createAuthSession(client, changed) {
-    let epoch = 0, stopped = true, ownSave = false, pending = null, validated = '', unsubscribe = () => {};
-    const publish = (status, error = '') => changed({ status, error, user: client.authStore.record });
+    let epoch = 0, sessionEpoch = 0, status = 'checking', stopped = true, ownSave = false, pending = null, validated = '', unsubscribe = () => {};
+    const publish = (next, error = '') => { status = next; changed({ status, error, user: client.authStore.record, sessionEpoch }); };
     const refresh = () => {
         if (stopped) return Promise.resolve(false);
         if (!client.authStore.isValid || !client.authStore.record?.id) {
             epoch += 1;
+            if (client.authStore.record || validated) sessionEpoch += 1;
+            validated = '';
             ownSave = true;
             if (client.authStore.record) client.authStore.clear();
             ownSave = false;
@@ -52,6 +54,7 @@ export function createAuthSession(client, changed) {
                 ownSave = true;
                 try { client.authStore.save(result.token, result.record); } finally { ownSave = false; }
                 if (!client.authStore.isValid) {
+                    sessionEpoch += 1;
                     ownSave = true;
                     try { client.authStore.clear(); } finally { ownSave = false; }
                     validated = ''; publish('anonymous'); return false;
@@ -62,6 +65,7 @@ export function createAuthSession(client, changed) {
             } catch (error) {
                 if (!current()) return false;
                 if ([401, 403].includes(error?.status)) {
+                    sessionEpoch += 1; validated = '';
                     ownSave = true;
                     try { client.authStore.clear(); } finally { ownSave = false; }
                     publish('anonymous');
@@ -73,16 +77,20 @@ export function createAuthSession(client, changed) {
     };
     return {
         refresh,
+        isCurrent: (expectedEpoch) => !stopped && status === 'ready' && expectedEpoch === sessionEpoch &&
+            client.authStore.isValid && Boolean(client.authStore.record?.id) && client.authStore.token === validated,
         start() {
             stopped = false;
             unsubscribe();
             unsubscribe = client.authStore.onChange(() => {
                 if (ownSave) return;
-                epoch += 1; pending = null; validated = '';
+                // Native refresh saves retain this lifetime. An externally saved
+                // login, replacement or clear must fence even the same account.
+                epoch += 1; sessionEpoch += 1; pending = null; validated = '';
                 void refresh();
             });
             return refresh();
         },
-        stop() { stopped = true; epoch += 1; pending = null; unsubscribe(); },
+        stop() { stopped = true; epoch += 1; sessionEpoch += 1; pending = null; validated = ''; unsubscribe(); },
     };
 }

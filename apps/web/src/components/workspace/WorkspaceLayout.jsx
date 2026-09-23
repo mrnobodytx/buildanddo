@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/pages/workspace/CareerPage.jsx
+// Depends:     apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/pages/workspace/CareerPage.jsx, apps/web/src/lib/workspaceControl.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx
+// EnumEdges:   CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx; CONSUMES apps/web/src/lib/workspaceControl.js
 // Intent:      Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.
 // ───────────────────────────────────────────────────────────────
 
@@ -48,6 +48,7 @@ import { Helmet } from 'react-helmet';
 import { ThemeToggle } from '@/components/ThemeControls';
 import { useAuth } from '@/contexts/AuthContext';
 import { isMasterSeat } from '@/lib/estateAccess';
+import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { WorkspaceAccessProvider, useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
@@ -219,18 +220,25 @@ function WorkspaceSwitcher() {
 }
 
 function WorkspacePages() {
-    // This subtree is remounted for account/workspace/demo changes, but not when
-    // a learner visits a lesson and returns. No private draft is persisted.
-    const [journey, setJourney] = useState({ answers: {}, step: 0, saved: null, saveState: 'idle' });
-    return <Outlet context={{ journey, setJourney }} />;
+    const access = useWorkspaceAccess();
+    const key = workspaceLifecycleKey({ access });
+    const [draft, setDraft] = useState({ key, epoch: 0, value: { answers: {}, step: 0, saved: null, saveState: 'idle' } });
+    // Reset only the journey, not every routed desk. Polling leaves this key
+    // unchanged; each changed grant fences old save callbacks, even on return.
+    if (draft.key !== key) setDraft({ key, epoch: draft.epoch + 1, value: { answers: {}, step: 0, saved: null, saveState: 'idle' } });
+    const setJourney = (update) => setDraft((current) => current.epoch !== draft.epoch || current.key !== key ? current : {
+        ...current, value: typeof update === 'function' ? update(current.value) : update,
+    });
+    return <Outlet context={{ journey: draft.value, setJourney, journeyEpoch: draft.epoch }} />;
 }
 
 export default function WorkspaceLayout() {
-    const { user, logout } = useAuth();
+    const { user, logout, sessionEpoch } = useAuth();
     const { active, loading } = useWorkspace();
     const { demo } = useDemoMode();
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const scope = workspaceLifecycleKey({ accountId: user?.id, workspaceId: active?.id, demo, sessionEpoch });
 
     const handleLogout = () => {
         logout();
@@ -242,7 +250,7 @@ export default function WorkspaceLayout() {
     const domainStatus = domainRecord?.status || (active && !active.domain ? 'selected' : null);
 
     return (
-        <WorkspaceAccessProvider key={`${user?.id}:${active?.id}:${demo}`}>
+        <WorkspaceAccessProvider key={scope}>
         <div className="min-h-screen bg-background text-foreground">
             <Helmet>
                 <meta name="robots" content="noindex,nofollow" />
@@ -349,7 +357,7 @@ export default function WorkspaceLayout() {
                         tabIndex={-1}
                         className="workspace-content px-4 py-8 sm:px-6 lg:px-8"
                     >
-                        <div key={`${user?.id}:${active?.id}:${demo}`} className="mx-auto max-w-6xl space-y-6">
+                        <div key={scope} className="mx-auto max-w-6xl space-y-6">
                             {/* Rendered by the shell, not by each page, so a page
                             that forgets it cannot present demonstration data
                             as the operator's own. */}

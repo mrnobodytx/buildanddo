@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/web/src/lib/careerPassport.js, apps/web/src/contexts/CareerProfileContext.jsx, apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/components/workspace/ControlPrimitives.jsx
+// Depends:     apps/web/src/lib/careerPassport.js, apps/web/src/lib/workspaceControl.js, apps/web/src/contexts/CareerProfileContext.jsx, apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/components/workspace/ControlPrimitives.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/lib/careerPassport.js; CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx
+// EnumEdges:   CONSUMES apps/web/src/lib/careerPassport.js; CONSUMES apps/web/src/lib/workspaceControl.js; CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx
 // Intent:      Make personal work attribution, job coverage and application exclusions reviewable inside the existing authenticated workspace.
 // ───────────────────────────────────────────────────────────────
 
@@ -26,6 +26,7 @@ import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import pb from '@/lib/pocketbaseClient';
 import { CAREER_MAX_BYTES, careerJobUrl, createCareerClient } from '@/lib/careerPassport';
+import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 
 const label = (value) => value.replaceAll('_', ' ').toLowerCase();
 
@@ -91,40 +92,68 @@ function CareerReview({ packet, stale }) {
     </section>;
 }
 
-function CareerDesk({ accountId, workspaceId }) {
+function CareerDesk({ accountId, workspaceId, authorized, sessionEpoch, isSessionCurrent }) {
     const live = useRef(true); const sequence = useRef(0); const urls = useRef(new Set());
+    const permission = useRef(authorized); const started = useRef(false); permission.current = authorized;
     const [state, setState] = useState({ loading: true, snapshot: null, error: '' });
     const [review, setReview] = useState(null); const [importing, setImporting] = useState(false);
+    const [pendingImport, setPendingImport] = useState(null);
     const [error, setError] = useState('');
-    const api = useMemo(() => createCareerClient({ client: pb, accountId, workspaceId, isCurrent: () => live.current }), [accountId, workspaceId]);
+    const api = useMemo(() => createCareerClient({ client: pb, accountId, workspaceId,
+        isCurrent: () => live.current && permission.current && isSessionCurrent(sessionEpoch) }), [accountId, workspaceId, isSessionCurrent, sessionEpoch]);
     const refresh = useCallback(async () => {
+        if (!live.current || !permission.current || !isSessionCurrent(sessionEpoch)) return;
+        started.current = true;
         const attempt = ++sequence.current;
-        setReview(null); setImporting(false); setError(''); setState({ loading: true, snapshot: null, error: '' });
+        setReview(null); setImporting(false); setPendingImport(null); setError(''); setState({ loading: true, snapshot: null, error: '' });
         const result = await api.read();
-        if (live.current && attempt === sequence.current) setState({ loading: false, snapshot: result.ok ? result.snapshot : null,
-            error: result.error || (result.ok ? '' : 'Your account or workspace changed. Refresh access.') });
-    }, [api]);
+        if (live.current && attempt === sequence.current) {
+            if (result.reason === 'scope_changed') started.current = false;
+            setState({ loading: false, snapshot: result.ok ? result.snapshot : null,
+                error: result.error || (result.ok ? '' : 'Your account or workspace changed. Refresh access.') });
+        }
+    }, [api, isSessionCurrent, sessionEpoch]);
     useEffect(() => {
-        live.current = true; api.activate(); refresh();
+        live.current = true; started.current = false; api.activate();
         const downloads = urls.current;
         return () => { live.current = false; ++sequence.current; api.dispose(); downloads.forEach((url) => URL.revokeObjectURL(url)); downloads.clear(); };
     }, [api, refresh]);
+    useEffect(() => { if (authorized && !started.current) void refresh(); }, [authorized, refresh]);
+    // Keep selected bytes while polling, but validate and publish them only
+    // under current authority. A lifecycle change disposes the whole import.
+    useEffect(() => {
+        if (!authorized || !pendingImport) return undefined;
+        let cancelled = false;
+        const current = () => !cancelled && live.current && permission.current && isSessionCurrent(sessionEpoch) && pendingImport.attempt === sequence.current;
+        const finish = async () => {
+            try {
+                const result = await api.importReview(pendingImport.raw);
+                if (!current()) return;
+                if (result.ok) setReview(result);
+                else setError(result.error || 'Current workspace access is required to load this review.');
+            } catch { if (current()) setError('The career review could not be read. Check its format and file size.'); }
+            finally { if (current()) { setPendingImport(null); setImporting(false); } }
+        };
+        void finish();
+        return () => { cancelled = true; };
+    }, [api, authorized, pendingImport, isSessionCurrent, sessionEpoch]);
     const upload = async (event) => {
         const file = event.target.files?.[0]; event.target.value = '';
-        if (!file) return;
-        const attempt = ++sequence.current; setReview(null); setError(''); setImporting(true);
+        if (!file || !live.current || !permission.current || !isSessionCurrent(sessionEpoch)) return;
+        const attempt = ++sequence.current; setReview(null); setPendingImport(null); setError(''); setImporting(true);
         try {
             if (file.size > CAREER_MAX_BYTES) throw new Error('The career review exceeds the supported file size.');
             const raw = await file.text();
-            if (!live.current || attempt !== sequence.current) return;
-            const result = await api.importReview(raw);
-            if (!live.current || attempt !== sequence.current) return;
-            if (result.ok) setReview(result);
-            else setError(result.error || 'Current workspace access is required to load this review.');
-        } catch { if (live.current && attempt === sequence.current) setError('The career review could not be read. Check its format and file size.'); }
-        finally { if (live.current && attempt === sequence.current) setImporting(false); }
+            if (!live.current || !isSessionCurrent(sessionEpoch) || attempt !== sequence.current) return;
+            setPendingImport({ raw, attempt });
+        } catch {
+            if (live.current && attempt === sequence.current) {
+                setError('The career review could not be read. Check its format and file size.'); setImporting(false);
+            }
+        }
     };
     const download = () => {
+        if (!live.current || !permission.current || !isSessionCurrent(sessionEpoch)) return;
         const capture = api.exportWork();
         if (!capture) { setError('Refresh current work history before exporting.'); return; }
         try {
@@ -135,13 +164,13 @@ function CareerDesk({ accountId, workspaceId }) {
         } catch { setError('This browser could not prepare the private work export.'); }
     };
     const source = state.snapshot?.sources.missions;
-    return <div className="space-y-5">
+    return <div className="space-y-5" hidden={!authorized}>
         <Card className="space-y-4 p-5">
             <h2 className="font-headline text-2xl">Start with work you can prove</h2>
             <p className="text-sm">BuildAndDo is the first test case. Your work history supplies evidence; an independent review establishes what you personally implemented, operated, designed, directed or verified.</p>
             <p className="text-sm text-muted-foreground">Team and agent work retain their own attribution. A course certificate or a completed mission alone does not establish employment history.</p>
-            <div className="flex flex-wrap gap-3"><Button variant="secondary" onClick={refresh} disabled={state.loading}>Refresh work history</Button>
-                <Button variant="secondary" onClick={download} disabled={state.loading || !state.snapshot}>Export private work capture</Button>
+            <div className="flex flex-wrap gap-3"><Button variant="secondary" onClick={refresh} disabled={!authorized || state.loading}>Refresh work history</Button>
+                <Button variant="secondary" onClick={download} disabled={!authorized || state.loading || !state.snapshot}>Export private work capture</Button>
                 <Link to="/app/missions" className="self-center text-sm underline">Inspect missions and reviews</Link></div>
             {state.loading && <p role="status">Reading current work history…</p>}
             {state.error && <p role="alert">{state.error}</p>}
@@ -152,7 +181,7 @@ function CareerDesk({ accountId, workspaceId }) {
             <h2 className="font-headline text-2xl">Inspect your career review</h2>
             <p className="text-sm">Load the review generated from your work capture and job sources. Inspect contribution attribution, each job requirement and the proposed application documents.</p>
             <label className="block text-sm">Career review file<input type="file" accept=".json,application/json" className={'mt-2 ' + controlInput}
-                onChange={upload} disabled={state.loading || !state.snapshot || importing} /></label>
+                onChange={upload} disabled={!authorized || state.loading || !state.snapshot || importing} /></label>
             {importing && <p role="status">Checking the career review…</p>}
             {error && <p role="alert">{error}</p>}
             <p className="text-xs text-muted-foreground">The review stays in this view and clears when your account or workspace changes. Importing does not approve or send an application.</p>
@@ -193,14 +222,17 @@ function CitadelProfile() {
 }
 
 export default function CareerPage() {
-    const { user, isAuthed } = useAuth(); const { active } = useWorkspace(); const { demo } = useDemoMode();
+    const { user, isAuthed, sessionEpoch, isSessionCurrent } = useAuth(); const { active } = useWorkspace(); const { demo } = useDemoMode();
     const access = useWorkspaceAccess();
     let content;
     if (!isAuthed || !user?.id || !active?.id) content = <Card className="p-5">Sign in and choose a workspace to inspect your work.</Card>;
     else if (demo) content = <Card className="p-5">Demonstration mode has no personal career evidence. Turn it off to inspect your current workspace.</Card>;
     else if (access.error) content = <Card className="space-y-3 p-5"><p role="alert">{access.error}</p><Button onClick={access.refresh}>Refresh workspace access</Button></Card>;
-    else if (access.loading || !access.data) content = <p role="status">Checking workspace access…</p>;
-    else content = <CareerDesk key={`${user.id}:${active.id}`} accountId={user.id} workspaceId={active.id} />;
+    else if (!access.data) content = <p role="status">Checking workspace access…</p>;
+    else content = <>{access.loading && <p role="status">Checking workspace access…</p>}
+        <CareerDesk key={workspaceLifecycleKey({ accountId: user.id, workspaceId: active.id, demo, sessionEpoch, access })}
+            accountId={user.id} workspaceId={active.id} authorized={!access.loading}
+            sessionEpoch={sessionEpoch} isSessionCurrent={isSessionCurrent} /></>;
     return <div className="space-y-6 ph-no-capture" data-dd-privacy="mask">
         <PageHeader title="Career Passport" description="Turn evidenced work into an honest account of what you can do, then compare it with real job requirements." />
         <CitadelProfile />

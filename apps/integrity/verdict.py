@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        apps/integrity/verdict.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-INTEGRITY-001
+# SRS:         SRS-BUILDANDDO-INTEGRITY-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-INTEGRITY-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
@@ -62,11 +62,17 @@ def adjudicate(contract: dict[str, Any], evidence: list[dict[str, Any]], reports
     dims: dict[str, str] = {}
     disagreements: dict[str, dict[str, str]] = {}
     for dim in REPORTED:
-        votes = {r["verifier"]: r["results"][dim] for r in counted if dim in r["results"]}
+        votes: dict[str, str] = {}
+        for report in counted:
+            if dim in report["results"]:
+                verifier, result = report["verifier"], report["results"][dim]
+                # Reports have no revision order; PASS and FAIL from one identity remain contested.
+                votes[verifier] = result if votes.get(verifier, result) == result else "CONTESTED"
         if not votes:
             dims[dim] = "UNKNOWN"
-        elif len(set(votes.values())) > 1:
-            dims[dim], disagreements[dim] = "CONTESTED", votes
+        elif "CONTESTED" in votes.values() or len(set(votes.values())) > 1:
+            dims[dim] = "CONTESTED"
+            disagreements[dim] = {verifier: votes[verifier] for verifier in sorted(votes)}
         else:
             dims[dim] = next(iter(votes.values()))
     world = {item.get("kind") for item in evidence if isinstance(item, dict) and item.get("source") == "world"

@@ -20,6 +20,36 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Evidence and handoff repairs - 2026-09-23
+
+The owner approves fixing the completed audit's defects in dependency order.
+Continue this pre-existing A2 source dispatch; do not expand discovery, submission,
+private ingestion or deployment. Repair existing evidence admission before its
+native and browser consumers.
+
+Acceptance:
+
+1. Bind assessment results to their unique issued attempt, candidate, capability,
+   bank, timing and grading context. Reject malformed or self-proctored results
+   before evidence conversion. Keep local consistency distinct from authenticated
+   proctor identity. Passport headline wording, verification and retained support
+   must describe the same participation, not independent aggregate maxima.
+2. Preserve integrity disagreements under reordering and stale replay. Bind
+   Knowledge Unit mastery to the assessed unit revision and strict booleans.
+   Exclude action/result lineage participants from independent world review,
+   admit externally pinned reviews without depending on a producer's status
+   label, and avoid repeated event hashing while preserving exact-content checks.
+3. Connect the actual native mission-review producer to its value consumer using
+   the existing versioned contract. Enforce the persisted review byte limit after
+   evidence snapshots are embedded, without truncation or a schema-limit increase.
+4. Preserve local career review imports, journey drafts and assistant work across
+   same-identity refreshes. Continue clearing/fencing private work on account,
+   workspace, session or permission changes; do not reuse stale authorization.
+5. Add adversarial red/green and connected producer/consumer regressions. Run the
+   existing coverage and source gates without weakening the eighteen-profile
+   acceptance matrix. Retain missing native/rendered prerequisites and external
+   receiving work explicitly; source fixes do not establish deployed acceptance.
+
 ## World-event interoperability continuation - 2026-09-23
 
 The owner requests one interoperable world-event envelope, a joined episode/replay

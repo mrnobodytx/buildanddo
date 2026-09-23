@@ -42,7 +42,8 @@
         "workspace-assistant",
         "educational-collaboration",
         "government-research-assurance",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -535,7 +536,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 54301,
+      "lines": 55641,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -672,7 +673,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1652,
+      "lines": 1673,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -692,7 +693,8 @@
         "evidence-backed-value",
         "educational-collaboration",
         "government-research-assurance",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -996,7 +998,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2194,
+      "lines": 2224,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1016,7 +1018,8 @@
         "evidence-backed-value",
         "educational-collaboration",
         "government-research-assurance",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -2713,7 +2716,7 @@
       "dependencies": [
         "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js"
       ],
-      "lines": 329,
+      "lines": 342,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Enforce persisted mission boundaries, lifecycle transitions and evidence requirements independently of the browser.",
@@ -2731,7 +2734,8 @@
         "mission-learning",
         "hostinger-sprint-closure",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -6773,9 +6777,10 @@
       ],
       "dependencies": [
         "apps/web/src/contexts/WorkspaceAccessContext.jsx",
-        "apps/web/src/pages/workspace/CareerPage.jsx"
+        "apps/web/src/pages/workspace/CareerPage.jsx",
+        "apps/web/src/lib/workspaceControl.js"
       ],
-      "lines": 366,
+      "lines": 374,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.",
@@ -6798,7 +6803,8 @@
         "sprint-completion",
         "workspace-assistant",
         "government-research-assurance",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -7718,7 +7724,7 @@
         "apps/web/src/hooks/useWorkspaceControl.js",
         "apps/web/src/contexts/WorkspaceAccessContext.jsx"
       ],
-      "lines": 133,
+      "lines": 181,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify response isolation, capability refresh and retry recovery across account, workspace, query and demonstration changes.",
@@ -7733,7 +7739,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -7950,7 +7957,7 @@
       "srs_codes": [
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
-      "enum_type": "Service",
+      "enum_type": "Adapter",
       "functions": [
         "useWorkspaceControl"
       ],
@@ -7958,7 +7965,7 @@
         "apps/web/src/lib/workspaceControl.js",
         "apps/web/src/contexts/WorkspaceContext.jsx"
       ],
-      "lines": 73,
+      "lines": 86,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Discard stale control responses and preserve failed form state while coordinating versioned saves and refreshed views.",
@@ -7974,7 +7981,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "workspace-administration",
-        "government-research-assurance"
+        "government-research-assurance",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -8921,24 +8929,20 @@
       "srs_codes": [
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
-      "enum_type": "Service",
+      "enum_type": "Adapter",
       "functions": [
+        "workspaceLifecycleKey",
+        "createWorkspaceAccessLoader",
         "contribution",
         "integration",
         "readShape",
-        "createWorkspaceControlClient",
-        "stale",
-        "validId",
-        "stable",
-        "revision",
-        "strings",
-        "page"
+        "createWorkspaceControlClient"
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/administration.pb.js",
         "apps/pocketbase/pb_hooks/government.pb.js"
       ],
-      "lines": 145,
+      "lines": 176,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep administration and community requests bound to one account/workspace with stable recovery after uncertain saves.",
@@ -8954,7 +8958,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "workspace-administration",
-        "government-research-assurance"
+        "government-research-assurance",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -9899,7 +9904,7 @@
       "lines": 400,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Show the day the edition is about \u2014 today's priorities, what was completed, what is blocked \u2014 beside the editions themselves.",
+      "intent_statement": "Show the day the edition is about — today's priorities, what was completed, what is blocked — beside the editions themselves.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10126,7 +10131,7 @@
       "lines": 718,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make a list of missions triageable \u2014 priority, progress, due dates, editing and deletion \u2014 instead of an append-only stack.",
+      "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10167,7 +10172,7 @@
       "lines": 617,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give the operations surface the two things it was missing \u2014 the runbook text and the record of each time a human ran it.",
+      "intent_statement": "Give the operations surface the two things it was missing — the runbook text and the record of each time a human ran it.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10202,7 +10207,7 @@
       "lines": 515,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Answer \"what is happening in this workspace\" in one screen \u2014 one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
+      "intent_statement": "Answer \"what is happening in this workspace\" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10277,7 +10282,7 @@
       "lines": 625,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" \u2014 a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
+      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" — a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10547,7 +10552,7 @@
       "lines": 733,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give a workflow the sequence that makes it one \u2014 ordered, editable steps \u2014 so activating it says what would run.",
+      "intent_statement": "Give a workflow the sequence that makes it one — ordered, editable steps — so activating it says what would run.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -11072,6 +11077,7 @@
       "file_path": "apps/web/src/test/utils.jsx",
       "cket_stage": "08_TEST",
       "srs_codes": [
+        "SRS-BUILDANDDO-TEST-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
@@ -11088,17 +11094,16 @@
         "createWorkspaceValue",
         "renderWithProviders",
         "workspaceWrapper",
-        "setupUser"
+        "setupUser",
+        "scriptsCarrying"
       ],
       "dependencies": [
-        "apps/web/src/contexts/AuthContext.jsx",
-        "apps/web/src/contexts/WorkspaceContext.jsx",
-        "apps/web/src/test/pocketbaseMock.js"
+        "apps/web/src/contexts/AuthContext.jsx"
       ],
-      "lines": 312,
+      "lines": 316,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Render workspace UI under the real Auth and Workspace contexts so tests exercise production components, not test-only replicas.",
+      "intent_statement": "Render workspace UI under the real Auth and Workspace contexts so",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -11110,7 +11115,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -18404,6 +18410,7 @@
       ],
       "enum_type": "Test",
       "functions": [
+        "reviewAtBytes",
         "runtime"
       ],
       "dependencies": [
@@ -18412,7 +18419,7 @@
         "apps/pocketbase/pb_migrations/1789500000_add_mission_learning.js",
         "apps/web/src/lib/missionLearning.js"
       ],
-      "lines": 668,
+      "lines": 781,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise actual mission policy, migration and reward selectors across invalid transitions, permission boundaries, evidence failures and repeatable educational credit.",
@@ -18427,7 +18434,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "mission-learning"
+        "mission-learning",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -19744,7 +19752,7 @@
         "apps/web/src/lib/workspaceControl.js",
         "tests/upgrade/admin-fixture.mjs"
       ],
-      "lines": 150,
+      "lines": 203,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise the browser-to-command connection with stale scopes, lost responses, duplicate submissions and safe retry reconciliation.",
@@ -19759,7 +19767,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -34861,7 +34870,7 @@
       "type": "C",
       "event_type": "smoke_run",
       "file_path": "apps/mission_suite/bundle.py",
-      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96\u201399.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
+      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96–99.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -35017,7 +35026,7 @@
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/check_blueprint_pipeline.py",
-      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17\u2013100% statement coverage per new Python module. Strict source typing and Ruff pass.",
+      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17–100% statement coverage per new Python module. Strict source typing and Ruff pass.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -38711,7 +38720,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 578,
+      "lines": 586,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38731,7 +38740,8 @@
         "evidence-backed-value",
         "educational-collaboration",
         "government-research-assurance",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -38798,7 +38808,8 @@
         "evidence-backed-value",
         "educational-collaboration",
         "government-research-assurance",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -39282,18 +39293,16 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [
-        "WorkspaceServer",
-        "NativeWorkspaceTests"
-      ],
+      "functions": [],
       "dependencies": [
         "tests/upgrade/test_dossier_native.py",
         "apps/pocketbase/pb_hooks/mission-research.js",
         "apps/pocketbase/pb_hooks/mission-policy.js",
         "apps/pocketbase/pb_hooks/workflow-runs.js",
-        "apps/pocketbase/pb_hooks/workspace-replay.js"
+        "apps/pocketbase/pb_hooks/workspace-replay.js",
+        "apps/pocketbase/pb_hooks/workspace-value.js"
       ],
-      "lines": 850,
+      "lines": 943,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.",
@@ -39309,7 +39318,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "objective-first-onboarding",
-        "government-research-assurance"
+        "government-research-assurance",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -40524,14 +40534,15 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "AssistantDesk",
-        "WorkspaceAssistant"
+        "AssistantDesk"
       ],
       "dependencies": [
+        "apps/web/src/pages/workspace/JourneyPage.jsx",
         "apps/web/src/lib/workspaceAssistant.js",
+        "apps/web/src/lib/workspaceControl.js",
         "apps/web/src/contexts/WorkspaceAccessContext.jsx"
       ],
-      "lines": 198,
+      "lines": 217,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Offer a persistent account-scoped assistant with visible plans, form assistance, retryable outcomes and personal session history.",
@@ -40547,7 +40558,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -40602,7 +40614,7 @@
         "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
         "tests/upgrade/assistant-fixture.mjs"
       ],
-      "lines": 98,
+      "lines": 238,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require rendered conversation recovery, reviewed form effects, current-account isolation and honest unavailable-provider states.",
@@ -40618,7 +40630,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -40853,7 +40866,7 @@
         "apps/pocketbase/pb_hooks/assistant-policy.js",
         "apps/pocketbase/pb_hooks/workspace-assistant.js"
       ],
-      "lines": 146,
+      "lines": 150,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Constrain assistant form assistance to current visible controls and account-bound native conversations.",
@@ -40869,7 +40882,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -41530,13 +41544,16 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [],
+      "functions": [
+        "delayedCommand"
+      ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-assistant.js",
         "apps/web/src/lib/workspaceAssistant.js",
+        "apps/web/src/lib/workspaceControl.js",
         "tests/upgrade/admin-fixture.mjs"
       ],
-      "lines": 172,
+      "lines": 272,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Test tenant and account isolation, bounded inferred plans, revocation, retained personal patterns and unavailable inference.",
@@ -41552,7 +41569,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -45068,7 +45086,7 @@
         "apps/web/src/lib/authSession.js",
         "apps/web/src/lib/pocketbaseClient.js"
       ],
-      "lines": 67,
+      "lines": 69,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose native session readiness and recovery while excluding stale account responses.",
@@ -45083,7 +45101,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -45101,7 +45120,7 @@
       "dependencies": [
         "apps/web/src/lib/pocketbaseClient.js"
       ],
-      "lines": 88,
+      "lines": 96,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Revalidate native sessions without letting an old refresh overwrite a different signed-in account.",
@@ -45116,7 +45135,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -47372,16 +47392,17 @@
       "enum_type": "Test",
       "functions": [
         "reviewed",
-        "value",
-        "card",
-        "missionOutcome"
+        "value"
       ],
       "dependencies": [
         "tests/upgrade/operator-fixture.mjs",
+        "apps/pocketbase/pb_hooks/missions.pb.js",
         "apps/pocketbase/pb_hooks/workspace-value.js",
+        "apps/pocketbase/pb_hooks/workspace-replay.js",
+        "apps/web/src/lib/missionLearning.js",
         "apps/web/src/lib/workspaceValue.js"
       ],
-      "lines": 215,
+      "lines": 264,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject unsupported economic and verification claims while checking one scoped value projection and its evidence lineage.",
@@ -47397,7 +47418,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -50852,15 +50874,16 @@
       "functions": [
         "CareerReview",
         "CareerDesk",
-        "CareerPage",
-        "label"
+        "CitadelProfile"
       ],
       "dependencies": [
         "apps/web/src/lib/careerPassport.js",
+        "apps/web/src/lib/workspaceControl.js",
+        "apps/web/src/contexts/CareerProfileContext.jsx",
         "apps/web/src/contexts/WorkspaceAccessContext.jsx",
         "apps/web/src/components/workspace/ControlPrimitives.jsx"
       ],
-      "lines": 211,
+      "lines": 243,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make personal work attribution, job coverage and application exclusions reviewable inside the existing authenticated workspace.",
@@ -50875,7 +50898,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -50887,17 +50911,13 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [
-        "page",
-        "fileFor",
-        "load"
-      ],
+      "functions": [],
       "dependencies": [
         "apps/web/src/pages/workspace/CareerPage.jsx",
         "tests/upgrade/career-fixture.mjs",
         "tests/upgrade/operator-fixture.mjs"
       ],
-      "lines": 118,
+      "lines": 178,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise private career review, actual compiler output, inert imported text and scope changes in the rendered workspace.",
@@ -50912,7 +50932,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -50927,11 +50948,12 @@
       "functions": [],
       "dependencies": [
         "libs/career_passport",
+        "apps/career",
         "apps/web/src/pages/workspace/CareerPage.jsx",
         "libs/capability_tokens/verification.py",
         "docs/development-loop.md"
       ],
-      "lines": 232,
+      "lines": 253,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the BuildAndDo career dogfood workflow, contribution attribution and receiving evidence needed before one real application.",
@@ -50946,7 +50968,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -51383,15 +51406,15 @@
       ],
       "enum_type": "Test",
       "functions": [
-        "connected",
-        "parse"
+        "connected"
       ],
       "dependencies": [
         "apps/web/src/lib/careerPassport.js",
+        "apps/web/src/lib/workspaceControl.js",
         "tests/upgrade/career-fixture.mjs",
         "tests/upgrade/operator-fixture.mjs"
       ],
-      "lines": 127,
+      "lines": 152,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify compiler interoperability, scoped native reads and invalidated career imports without external applications.",
@@ -51406,7 +51429,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "career-passport"
+        "career-passport",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -52711,19 +52735,23 @@
       "file_path": "apps/web/src/pages/workspace/JourneyPage.jsx",
       "cket_stage": "07_BUILD",
       "srs_codes": [
+        "SRS-BUILDANDDO-JOURNEY-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Widget",
       "functions": [
-        "Question"
+        "Question",
+        "JourneyDesk"
       ],
       "dependencies": [
         "apps/web/src/lib/journey.js",
         "apps/web/src/hooks/useWorkspaceRecords.js",
+        "apps/web/src/contexts/AuthContext.jsx",
+        "apps/web/src/contexts/WorkspaceAccessContext.jsx",
         "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
         "apps/web/src/components/workspace/WorkspaceLayout.jsx"
       ],
-      "lines": 109,
+      "lines": 121,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Ask one choice at a time, then hand the person a first lesson and a proposed mission draft they can save, refine with the assistant, or discard.",
@@ -52738,7 +52766,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "learning-loop-acceptance"
+        "learning-loop-acceptance",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -52747,18 +52776,22 @@
       "file_path": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx",
       "cket_stage": "08_TEST",
       "srs_codes": [
+        "SRS-BUILDANDDO-JOURNEY-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
       "functions": [
         "JourneyRoutes",
+        "NativeSessionJourney",
         "answer"
       ],
       "dependencies": [
         "apps/web/src/pages/workspace/JourneyPage.jsx",
-        "apps/web/src/components/workspace/WorkspaceLayout.jsx"
+        "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+        "apps/web/src/contexts/AuthContext.jsx",
+        "apps/web/src/components/ProtectedRoute.jsx"
       ],
-      "lines": 128,
+      "lines": 236,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prove the journey compiles and saves only a proposed draft, hands answers to the assistant unsent, and that navigation opens only the current category.",
@@ -52773,7 +52806,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "learning-loop-acceptance"
+        "learning-loop-acceptance",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -53453,7 +53487,6 @@
       "enum_type": "Service",
       "functions": [
         "review_states",
-        "WorldEpisode",
         "world_episodes"
       ],
       "dependencies": [
@@ -53461,7 +53494,7 @@
         "libs/evolution/episode.py",
         "libs/capability_tokens/verification.py"
       ],
-      "lines": 204,
+      "lines": 227,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Join scoped world observations through existing episode and review contracts without inferring causation or trusting self-reported verification.",
@@ -53476,7 +53509,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "world-event-interoperability"
+        "world-event-interoperability",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -53531,11 +53565,11 @@
       "file_path": "apps/world_twin/projection.py",
       "cket_stage": "07_BUILD",
       "srs_codes": [
+        "SRS-BUILDANDDO-WORLD-TWIN-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Service",
       "functions": [
-        "ProjectionScope",
         "compile_projection",
         "project",
         "world_state"
@@ -53546,7 +53580,7 @@
         "libs/semantic_twin/ingestion/builder.py",
         "libs/semantic_twin/ingestion/graph.py"
       ],
-      "lines": 262,
+      "lines": 263,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the private twin private: community and public views are narrower projections, and minors get no public graph.",
@@ -53561,7 +53595,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "world-event-interoperability"
+        "world-event-interoperability",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -53695,13 +53730,7 @@
         "pins",
         "history",
         "obj",
-        "rows",
-        "WorldContractTests",
-        "WorldIngestionTests",
-        "WorldEpisodeTests",
-        "WorldReviewTests",
-        "WorldProjectionTests",
-        "WorldSeamTests"
+        "rows"
       ],
       "dependencies": [
         "apps/world_twin/events.py",
@@ -53709,7 +53738,7 @@
         "apps/world_twin/projection.py",
         "tests/upgrade/test_evolution_support.py"
       ],
-      "lines": 907,
+      "lines": 1192,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Challenge world-event identity, lineage, privacy and receiving-pinned review boundaries with explicitly synthetic evidence.",
@@ -53724,7 +53753,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "world-event-interoperability"
+        "world-event-interoperability",
+        "audited-evidence-repairs"
       ],
       "tenant_id": null
     },
@@ -54284,12 +54314,1322 @@
       "timestamp": "2026-09-23T04:25:17.427379+00:00",
       "commit_sha": null,
       "smoke_result": "125/125; 92/92"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "tests/career/check_career.py",
+        "tests/integrity/check_integrity.py",
+        "tests/knowledge_units/check_knowledge_units.py",
+        "tests/world_twin/check_world_twin.py",
+        "tests/upgrade/mission-system.test.mjs",
+        "tests/upgrade/workspace-value.test.mjs",
+        "tests/upgrade/workspace-assistant.test.mjs",
+        "docs/career-passport.md"
+      ],
+      "lines": 168,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain adversarial repair evidence, compatibility boundaries and receiving validation still needed for the audited career-to-workflow chain.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/assessments.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "load_bank",
+        "_rng",
+        "issue_attempt",
+        "_responses",
+        "score",
+        "_validate_proctor",
+        "_bound_results",
+        "grade_attempt",
+        "regrade",
+        "_require_regrade",
+        "assessment_evidence",
+        "pending"
+      ],
+      "dependencies": [
+        "apps/career/evidence.py",
+        "apps/career/ledger.py",
+        "apps/career/passport.py",
+        "apps/career/taxonomy.py"
+      ],
+      "lines": 351,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Test an imported or claimed capability with timed, limited, re-gradable quizzes whose answers the candidate never receives.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/cli.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "_read_json",
+        "_fresh_directory",
+        "load_identity",
+        "cmd_passport",
+        "cmd_evaluate",
+        "cmd_discover",
+        "cmd_outcome",
+        "cmd_fill_plan",
+        "cmd_verify",
+        "cmd_import",
+        "cmd_profile",
+        "_need",
+        "cmd_assess",
+        "build_parser",
+        "main"
+      ],
+      "dependencies": [
+        "apps/career/history.py",
+        "apps/career/passport.py",
+        "apps/career/match.py",
+        "apps/career/dossier.py",
+        "apps/career/compiler.py",
+        "apps/career/missions.py",
+        "apps/career/sources.py",
+        "apps/career/outcomes.py",
+        "apps/career/packages.py",
+        "apps/career/fill.py",
+        "apps/career/imports.py",
+        "apps/career/assessments.py",
+        "apps/career/ledger.py",
+        "apps/career/profile.py"
+      ],
+      "lines": 419,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Run the passport, match, dossier and package stages locally, writing only to a new output directory.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/compiler.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_breakdown",
+        "_claims",
+        "_answers",
+        "_markdown_list",
+        "compile_application",
+        "canonical_json",
+        "validate_package"
+      ],
+      "dependencies": [
+        "apps/career/authority.py",
+        "apps/career/dossier.py",
+        "apps/career/jobs.py",
+        "apps/career/passport.py",
+        "apps/career/taxonomy.py"
+      ],
+      "lines": 301,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Compile an application package in which every claim traces to passport evidence and every reserved answer stays with the human.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/career/passport.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "parse_instant",
+        "recency_weight",
+        "confidence",
+        "claim_participation",
+        "_sample",
+        "build_passport",
+        "passport_from_history",
+        "entry_by_id"
+      ],
+      "dependencies": [
+        "apps/career/evidence.py",
+        "apps/career/history.py",
+        "apps/career/missions.py",
+        "apps/career/taxonomy.py"
+      ],
+      "lines": 399,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Aggregate participation-classified evidence into a per-capability Career Passport that states its own limits.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/integrity/verdict.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-INTEGRITY-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_report",
+        "independent",
+        "adjudicate",
+        "check_verdict"
+      ],
+      "dependencies": [
+        "apps/integrity/contract.py"
+      ],
+      "lines": 108,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Adjudicate a claimed success dimension by dimension from independent verifiers only, keeping disagreement instead of averaging it away.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/knowledge_units/mastery.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-KNOWLEDGE-UNIT-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "record_assessment",
+        "record_transfer",
+        "_bound_events",
+        "rung",
+        "mastery"
+      ],
+      "dependencies": [
+        "apps/knowledge_units/units.py",
+        "apps/career/ledger.py"
+      ],
+      "lines": 99,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Place each learner on the KNOW to VERIFIED ladder from recorded evidence only, so reading or watching never earns a rung.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/knowledge_units/receipt.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-KNOWLEDGE-UNIT-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "compile_receipt"
+      ],
+      "dependencies": [
+        "apps/knowledge_units/units.py",
+        "apps/knowledge_units/mastery.py"
+      ],
+      "lines": 66,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Publish a knowledge receipt whose every number is counted from the unit and its evidence, including what is not yet established.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/career/test_assessments.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "bank",
+        "correct_responses"
+      ],
+      "dependencies": [
+        "apps/career/imports.py",
+        "apps/career/assessments.py",
+        "apps/career/ledger.py",
+        "tests/career/test_career.py"
+      ],
+      "lines": 471,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove imported claims stay self-reported until assessed, and that assessments are hidden-key, limited, timed and re-gradable.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/career/test_career.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "git",
+        "commit",
+        "build_repo",
+        "load_jobs"
+      ],
+      "dependencies": [
+        "apps/career",
+        "tests/fixtures/career/jobs.json",
+        "tests/fixtures/career/questions.json"
+      ],
+      "lines": 706,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove participation-honest attribution, requirement coverage, mandatory do-not-claim lists, reserved-answer handling and claim provenance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/integrity/test_integrity.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-INTEGRITY-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "contract",
+        "report",
+        "passing"
+      ],
+      "dependencies": [
+        "apps/integrity"
+      ],
+      "lines": 318,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove each gaming route in the brief fails: rubric rewrite, missing evidence, leaked answers, self or same-model review, averaged disagreement, concealed failure, stance-following and unreproduced passes.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/knowledge_units/test_units.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-KNOWLEDGE-UNIT-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "raw"
+      ],
+      "dependencies": [
+        "apps/knowledge_units"
+      ],
+      "lines": 379,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove uncited claims fail, state follows review and dates, history survives, CPE is never issued, and mastery rungs need evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/journey.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-JOURNEY-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "sessionFixture"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/journey.js",
+        "apps/web/src/lib/authSession.js",
+        "apps/web/src/lib/workspaceControl.js",
+        "apps/web/src/lib/workspaceAssistant.js",
+        "apps/pocketbase/pb_migrations/data/starter-tutorials.json"
+      ],
+      "lines": 145,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove every answer combination compiles to a shipped lesson and a proposed draft that still needs the person's own baseline and target.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "audited-evidence-repairs"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "target": "docs/career-passport.md",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md CONSUMES docs/career-passport.md",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "target": "tests/career/check_career.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md VERIFIED_BY tests/career/check_career.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "target": "tests/integrity/check_integrity.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md VERIFIED_BY tests/integrity/check_integrity.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "target": "tests/knowledge_units/check_knowledge_units.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md VERIFIED_BY tests/knowledge_units/check_knowledge_units.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "target": "tests/upgrade/mission-system.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md VERIFIED_BY tests/upgrade/mission-system.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "target": "tests/upgrade/workspace-assistant.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md VERIFIED_BY tests/upgrade/workspace-assistant.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "target": "tests/upgrade/workspace-value.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md VERIFIED_BY tests/upgrade/workspace-value.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "target": "tests/world_twin/check_world_twin.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md VERIFIED_BY tests/world_twin/check_world_twin.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/assessments.py",
+      "target": "apps/career/imports.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/career/assessments.py CONSUMES apps/career/imports.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/assessments.py",
+      "target": "apps/career/ledger.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/assessments.py DEPENDS_ON apps/career/ledger.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/assessments.py",
+      "target": "apps/career/taxonomy.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/assessments.py DEPENDS_ON apps/career/taxonomy.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/assessments.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/assessments.py PRODUCES apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/assessments.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/assessments.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/compiler.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/dossier.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/dossier.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/fill.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/fill.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/history.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/history.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/imports.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/imports.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/ledger.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/ledger.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/match.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/missions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/missions.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/outcomes.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/outcomes.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/packages.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/packages.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/profile.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/profile.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/sources.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/sources.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/compiler.py",
+      "target": "apps/career/authority.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/compiler.py DEPENDS_ON apps/career/authority.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/compiler.py",
+      "target": "apps/career/dossier.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/compiler.py DEPENDS_ON apps/career/dossier.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/compiler.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/compiler.py DEPENDS_ON apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/compiler.py",
+      "target": "application package",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/compiler.py PRODUCES application package",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/passport.py",
+      "target": "apps/career/evidence.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/passport.py DEPENDS_ON apps/career/evidence.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/passport.py",
+      "target": "apps/career/history.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/passport.py DEPENDS_ON apps/career/history.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/passport.py",
+      "target": "apps/career/missions.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/passport.py DEPENDS_ON apps/career/missions.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/passport.py",
+      "target": "apps/career/taxonomy.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/passport.py DEPENDS_ON apps/career/taxonomy.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/passport.py",
+      "target": "apps/career/match.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/passport.py PRODUCES apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/integrity/verdict.py",
+      "target": "apps/integrity/contract.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/integrity/verdict.py DEPENDS_ON apps/integrity/contract.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/integrity/verdict.py",
+      "target": "apps/integrity/settlement.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/integrity/verdict.py PRODUCES apps/integrity/settlement.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/knowledge_units/mastery.py",
+      "target": "apps/career/ledger.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/knowledge_units/mastery.py DEPENDS_ON apps/career/ledger.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/knowledge_units/mastery.py",
+      "target": "apps/knowledge_units/units.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/knowledge_units/mastery.py DEPENDS_ON apps/knowledge_units/units.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/knowledge_units/mastery.py",
+      "target": "apps/knowledge_units/receipt.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/knowledge_units/mastery.py PRODUCES apps/knowledge_units/receipt.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/knowledge_units/receipt.py",
+      "target": "apps/knowledge_units/mastery.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/knowledge_units/receipt.py DEPENDS_ON apps/knowledge_units/mastery.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/knowledge_units/receipt.py",
+      "target": "apps/knowledge_units/units.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/knowledge_units/receipt.py DEPENDS_ON apps/knowledge_units/units.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+      "target": "apps/web/src/lib/workspaceControl.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/components/workspace/WorkspaceAssistant.jsx CONSUMES apps/web/src/lib/workspaceControl.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/WorkspaceLayout.jsx",
+      "target": "apps/web/src/lib/workspaceControl.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/components/workspace/WorkspaceLayout.jsx CONSUMES apps/web/src/lib/workspaceControl.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/CareerPage.jsx",
+      "target": "apps/web/src/lib/workspaceControl.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/CareerPage.jsx CONSUMES apps/web/src/lib/workspaceControl.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/JourneyPage.jsx",
+      "target": "apps/web/src/contexts/AuthContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/JourneyPage.jsx CONSUMES apps/web/src/contexts/AuthContext.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/JourneyPage.jsx",
+      "target": "apps/web/src/contexts/WorkspaceAccessContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/JourneyPage.jsx CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx",
+      "target": "apps/web/src/components/ProtectedRoute.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx VALIDATES apps/web/src/components/ProtectedRoute.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx",
+      "target": "apps/web/src/contexts/AuthContext.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/__tests__/JourneyPage.test.jsx VALIDATES apps/web/src/contexts/AuthContext.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/career-passport.md",
+      "target": "apps/career",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/career-passport.md CONSUMES apps/career",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_assessments.py",
+      "target": "apps/career/assessments.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_assessments.py VALIDATES apps/career/assessments.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_assessments.py",
+      "target": "apps/career/cli.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_assessments.py VALIDATES apps/career/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_assessments.py",
+      "target": "apps/career/imports.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_assessments.py VALIDATES apps/career/imports.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_assessments.py",
+      "target": "apps/career/ledger.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_assessments.py VALIDATES apps/career/ledger.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/authority.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/authority.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/cli.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/compiler.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/compiler.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/dossier.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/dossier.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/history.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/history.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/match.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/match.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_career.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_career.py VALIDATES apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/integrity/test_integrity.py",
+      "target": "apps/integrity",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/integrity/test_integrity.py VALIDATES apps/integrity",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/knowledge_units/test_units.py",
+      "target": "apps/knowledge_units",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/knowledge_units/test_units.py VALIDATES apps/knowledge_units",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/career-passport.test.mjs",
+      "target": "apps/web/src/lib/workspaceControl.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/career-passport.test.mjs VALIDATES apps/web/src/lib/workspaceControl.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/journey.test.mjs",
+      "target": "apps/web/src/lib/authSession.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/journey.test.mjs VALIDATES apps/web/src/lib/authSession.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/journey.test.mjs",
+      "target": "apps/web/src/lib/journey.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/journey.test.mjs VALIDATES apps/web/src/lib/journey.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/journey.test.mjs",
+      "target": "apps/web/src/lib/workspaceAssistant.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/journey.test.mjs VALIDATES apps/web/src/lib/workspaceAssistant.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/journey.test.mjs",
+      "target": "apps/web/src/lib/workspaceControl.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/journey.test.mjs VALIDATES apps/web/src/lib/workspaceControl.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_workspace_native.py",
+      "target": "apps/pocketbase/pb_hooks/workspace-value.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/test_workspace_native.py VALIDATES apps/pocketbase/pb_hooks/workspace-value.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-assistant.test.mjs",
+      "target": "apps/web/src/lib/workspaceControl.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tests/upgrade/workspace-assistant.test.mjs CONSUMES apps/web/src/lib/workspaceControl.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-value.test.mjs",
+      "target": "apps/web/src/lib/missionLearning.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tests/upgrade/workspace-value.test.mjs CONSUMES apps/web/src/lib/missionLearning.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-value.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/missions.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/workspace-value.test.mjs VALIDATES apps/pocketbase/pb_hooks/missions.pb.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-value.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-replay.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/workspace-value.test.mjs VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/career/test_assessments.py",
+      "description": "Audited repair regressions reproduced reassigned assessment context, incompatible passport support, stale PASS replay, cross-revision mastery, lineage self-review, native review handoff and refresh lifetime failures before their source corrections. Follow-up review also reproduced unchecked answer admission and polling races.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T15:36:56.649557+00:00",
+      "commit_sha": null,
+      "smoke_result": "Red regressions observed; individual counts and controls are retained in evidence-repairs-report.md"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/career/check_career.py",
+      "description": "All 222 focused career, integrity, Knowledge Unit and world-twin cases pass on Python 3.11.15 and 3.12.13 with unchanged coverage floors. All 672 Node source cases pass on Node 22.17.0 after selecting the existing local ESLint prefix for the source diagnostic. No private or live input was used.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T15:36:56.649641+00:00",
+      "commit_sha": null,
+      "smoke_result": "222/222 per Python version; 672/672 Node; zero focused skips"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/evidence-repairs-report.md",
+      "description": "Broad Python ran 1174 cases with zero failures and six missing pypdf/Discord.py skips. Vitest, concurrently, eslint-plugin-import and disposable PocketBase runtimes remain unavailable. Rendered/native and deployed acceptance are unexecuted; local hashes and structural proctor checks are not authentication.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T15:36:56.649647+00:00",
+      "commit_sha": null,
+      "smoke_result": "PARTIAL: 1168/1174 Python passed; six skips; native/rendered prerequisites missing"
     }
   ],
   "summary": {
-    "type_a_count": 869,
-    "type_b_count": 2046,
-    "type_c_count": 222,
+    "type_a_count": 882,
+    "type_b_count": 2120,
+    "type_c_count": 225,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

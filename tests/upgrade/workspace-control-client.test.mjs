@@ -17,8 +17,9 @@
 
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createWorkspaceControlClient } from '../../apps/web/src/lib/workspaceControl.js';
+import * as controls from '../../apps/web/src/lib/workspaceControl.js';
 import { fixture, plain } from './admin-fixture.mjs';
+const { createWorkspaceControlClient } = controls;
 const read = { workspace: 'ws1', role: 'owner', settings: { revision: 0, description: '', wiki_enabled: false, forum_enabled: false, forum_moderation: true },
     can_admin: true, can_write: true, can_grant_admin: true };
 const result = (body) => ({ workspace: 'ws1', id: 'record1', action: body.action, revision: 1, replayed: false });
@@ -30,6 +31,58 @@ function clientFixture(extra = {}) {
     return { api, client, calls, changeScope: () => { current = false; } };
 }
 const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
+
+test('overlapping access polls retain a denial before the same grant can be observed again', async () => {
+    const loader = controls.createWorkspaceAccessLoader();
+    const f = clientFixture({ accountId: 'editor' }), denied = deferred(), granted = deferred(), received = deferred(), publish = deferred();
+    f.client.authStore.record = { id: 'editor' };
+    const grant = { ...read, role: 'editor', can_admin: false, can_grant_admin: false };
+    const observed = [], calls = [];
+    f.client.send = () => { const reply = calls.length ? granted : denied; calls.push(reply); return reply.promise; };
+    const older = loader.load('editor:ws1:access', async () => {
+        const result = await f.api.read('access');
+        received.resolve(); await publish.promise;
+        observed.push(result); return result;
+    });
+    const overlap = loader.load('editor:ws1:access', () => { throw new Error('Duplicate access request'); });
+    assert.equal(overlap, older); assert.equal(calls.length, 1);
+    denied.reject({ status: 403, response: { message: 'Membership revoked' } });
+    await received.promise;
+    assert.equal(loader.load('editor:ws1:access', () => f.api.read('access')), older);
+    assert.equal(calls.length, 1); assert.equal(observed.length, 0);
+    publish.resolve();
+    assert.equal((await older).reason, 'forbidden');
+    assert.equal((await overlap).reason, 'forbidden');
+    assert.equal(observed.length, 1);
+    const newer = loader.load('editor:ws1:access', async () => {
+        const result = await f.api.read('access'); observed.push(result); return result;
+    });
+    assert.equal(calls.length, 2); granted.resolve(grant);
+    assert.equal((await newer).ok, true);
+    assert.deepEqual(observed.map((result) => result.reason || result.data.role), ['forbidden', 'editor']);
+});
+
+test('an obsolete access flight cannot release another scope or an invalidated mount', async () => {
+    const loader = controls.createWorkspaceAccessLoader(), old = deferred(), next = deferred(), remounted = deferred();
+    const first = loader.load('owner:ws1:access', () => old.promise);
+    const second = loader.load('owner:ws2:access', () => next.promise);
+    old.resolve(false); await first;
+    assert.equal(loader.load('owner:ws2:access', () => { throw new Error('Duplicate new scope'); }), second);
+    loader.invalidate();
+    const third = loader.load('owner:ws2:access', () => remounted.promise);
+    assert.notEqual(third, second);
+    next.resolve(false); await second;
+    assert.equal(loader.load('owner:ws2:access', () => { throw new Error('Duplicate remount'); }), third);
+    remounted.resolve(true); assert.equal(await third, true);
+});
+
+test('failed access flights release their slot without an automatic retry', async () => {
+    const loader = controls.createWorkspaceAccessLoader(); let calls = 0;
+    await assert.rejects(loader.load('owner:ws1:access', () => { calls++; throw new Error('Synchronous read failure'); }), /Synchronous/);
+    assert.equal(calls, 1);
+    assert.equal(await loader.load('owner:ws1:access', async () => { calls++; return true; }), true);
+    assert.equal(calls, 2);
+});
 
 test('demo, anonymous and changed scopes make no private control requests', async () => {
     for (const options of [{ demo: true }, { accountId: '' }, { workspaceId: '' }]) {

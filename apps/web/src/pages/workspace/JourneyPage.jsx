@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/web/src/lib/journey.js, apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/WorkspaceAssistant.jsx, apps/web/src/components/workspace/WorkspaceLayout.jsx
+// Depends:     apps/web/src/lib/journey.js, apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/contexts/AuthContext.jsx, apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/components/workspace/WorkspaceAssistant.jsx, apps/web/src/components/workspace/WorkspaceLayout.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/lib/journey.js; CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/components/workspace/WorkspaceLayout.jsx; TRIGGERS apps/web/src/components/workspace/WorkspaceAssistant.jsx
+// EnumEdges:   CONSUMES apps/web/src/lib/journey.js; CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/components/workspace/WorkspaceLayout.jsx; TRIGGERS apps/web/src/components/workspace/WorkspaceAssistant.jsx
 // DAG Node:    none
 // Intent:      Ask one choice at a time, then hand the person a first lesson and a proposed mission draft they can save, refine with the assistant, or discard.
 // ───────────────────────────────────────────────────────────────
@@ -20,6 +20,8 @@ import { Link, useOutletContext } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { JOURNEY_QUESTIONS, assistantDraft, compileJourney, journeyComplete } from '@/lib/journey';
 
 /** The event the workspace assistant listens for; it only fills the composer. */
@@ -40,7 +42,15 @@ function Question({ index, question, value, onChoose }) {
 }
 
 export default function JourneyPage() {
+    const { journeyEpoch } = useOutletContext();
+    return <JourneyDesk key={journeyEpoch} />;
+}
+
+function JourneyDesk() {
     const { create, demo, degraded, loading } = useWorkspaceRecords('missions', { sort: '-created' });
+    const { sessionEpoch, isSessionCurrent } = useAuth();
+    const access = useWorkspaceAccess();
+    const canSave = !access.loading && !access.error && access.data?.can_write === true && isSessionCurrent(sessionEpoch);
     const { journey, setJourney } = useOutletContext();
     const { answers, step, saved, saveState } = journey;
     const [error, setError] = useState('');
@@ -56,17 +66,19 @@ export default function JourneyPage() {
     };
     const restart = () => { setJourney({ answers: {}, step: 0, saved: null, saveState: 'idle' }); setError(''); };
     const save = async () => {
-        if (pending.current || saveState !== 'idle' || !compiled || demo || degraded || loading || saved) return;
+        if (pending.current || saveState !== 'idle' || !compiled || demo || degraded || loading || saved || !canSave || !isSessionCurrent(sessionEpoch)) return;
         pending.current = true;
         setJourney((current) => ({ ...current, saveState: 'saving' })); setError('');
         try {
             const result = await create(compiled.mission);
+            if (!isSessionCurrent(sessionEpoch)) return;
             if (result.ok && result.record?.id) setJourney((current) => ({ ...current, saved: result.record, saveState: 'saved' }));
             else {
                 setJourney((current) => ({ ...current, saveState: 'uncertain' }));
                 if (!result.stale) setError(result.error || 'The draft save could not be confirmed.');
             }
         } catch {
+            if (!isSessionCurrent(sessionEpoch)) return;
             setJourney((current) => ({ ...current, saveState: 'uncertain' }));
             setError('The draft save could not be confirmed.');
         } finally { pending.current = false; }
@@ -93,7 +105,7 @@ export default function JourneyPage() {
                 <ul className="list-disc pl-5 text-sm">{compiled.remaining.map((item) => <li key={item}>{item}</li>)}</ul>
                 <p className="text-xs text-muted-foreground">Saving creates a proposed draft. It is not approved and nothing runs until you finish the plan and approve it on the Challenge Desk.</p>
                 <div className="flex flex-wrap gap-3">
-                    <Button onClick={save} disabled={demo || degraded || loading || saveState !== 'idle' || Boolean(saved)}>Save mission draft</Button>
+                    <Button onClick={save} disabled={demo || degraded || loading || !canSave || saveState !== 'idle' || Boolean(saved)}>Save mission draft</Button>
                     <Button variant="secondary" onClick={talk}>Talk it through with the Guildmaster</Button>
                     <Button variant="secondary" onClick={restart} disabled={saving}>Start over</Button>
                 </div>

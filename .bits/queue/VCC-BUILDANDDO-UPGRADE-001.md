@@ -20,28 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
-## Broadcast classroom - 2026-09-23
+## Audited evidence and handoff repairs - 2026-09-23
 
-Owner-authorized continuation of the classroom scope: connect the existing
-Cloudflare Realtime client and hooks to the routed live room, port the
-Broadcast Classroom design, and add the attendance and usage ledgers the
-broadcaster and agent stats need. No provider, secret or deployment change.
+The owner requests fixing the completed audit in logical dependency order under
+this existing A2 dispatch. Preserve the merged source and prior evidence. Local
+synthetic tests are authorized; external writes, credentials, provider activation
+and deployment remain outside this continuation.
 
 | Phase | Task | Gate | Status |
 |---|---|---|---|
-| BC-1 | Port stage, chart and amber-text tokens; broadcast components on site/ui primitives | Rendered component tests in both states | source PASS: 12 broadcast Vitest cases; build and lint pass |
-| BC-2 | Live media in the routed room; retire the unrouted page | Media hook and room flow tests with a signalling double | source PASS against a signalling double; real SFU and two-browser audio UNMEASURED (no realtime credentials in this session) |
-| BC-3 | Media availability from realtime configuration | Classroom node suites | source PASS: configured, unconfigured and not-live cases; no value exposed |
-| BC-4 | Append-only attendance history and host class record | Migration up/down, command and stats node tests | source PASS: 48 classroom node cases, 11 classroom flow cases; migration not applied to any hosted backend |
-| BC-5 | Assistant turn model and token usage | Assistant node tests | source PASS: 19 assistant node cases; provider-reported counts only |
-| BC-6 | Agent activity from seat_events | Rendered empty and populated states | source PASS: 3 rendered cases; realtime subscription unobserved |
-| BC-7 | Compose variable names; private-plane handoffs | Boundary scan; handoff file | PASS: boundary scan 1518 files; handoff 2026-09-23-bits-codegen-rig1-broadcast-classroom |
+| ER-1 | Bind assessment results and passport claims to their actual support | Adversarial career regressions and existing coverage gate | source PASS: 86 cases on both declared Python versions; bank replay is required before evidence admission |
+| ER-2 | Preserve conflicts, revision-bound mastery and independent world review | Integrity, Knowledge Unit and world-twin negative controls and coverage | source PASS: 19 integrity, 20 Knowledge Unit and 97 world-twin cases per Python version; unchanged coverage floors |
+| ER-3 | Repair native review propagation and browser work preservation | Connected producer/consumer tests and rendered lifecycle regressions | source PASS: 47 native-policy/value and 80 focused UI/client cases; native/rendered runtime acceptance remains unavailable |
+| ER-4 | Review source, retain validation and receiving blockers | Source/type/lint, readiness, boundary, context and memory checks | PARTIAL: 672 Node passes; 1,174 Python cases with zero failures and six dependency skips; source review follow-ups repaired; native/rendered and actual deployment acceptance remain open |
 
-Observed: all 643 Node upgrade cases pass. The full web Vitest run has 27
-failures in 19 files, all present in the 28-failure baseline recorded on the
-unchanged tree in this environment (wait-for timing in unrelated flows), so no
-new failure. Readiness, submission, context and boundary gates pass. Native
-PocketBase profiles, hosted media and deployed behaviour were not run.
+Memory brief: the audited merged revision is 1bb22896eb1e78704d12c20b0d85c58f22e568c6.
+The assessment found reproducible evidence-binding, stale replay, review-lineage,
+mastery-version and native review-format defects despite passing earlier suites.
+UI lifecycle failures were source-traced, not rendered acceptance. The earlier
+eighteen-profile result remains historical HOLD, not evidence for this repair.
+No authenticated workspace session is attached; no seat event is fabricated.
 
 ## World-event interoperability - 2026-09-23
 

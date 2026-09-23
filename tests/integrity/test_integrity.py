@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        tests/integrity/test_integrity.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-INTEGRITY-001
+# SRS:         SRS-BUILDANDDO-INTEGRITY-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-INTEGRITY-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
@@ -24,6 +24,7 @@ import io
 import json
 import tempfile
 import unittest
+from itertools import permutations
 from pathlib import Path
 from typing import Any
 
@@ -130,6 +131,70 @@ class VerdictTests(unittest.TestCase):
         self.assertEqual(v["disagreements"]["GENERALIZATION"],
                          {"kestrel": "PASS", "nemesis": "FAIL", "reviewer": "PASS"})
         self.assertEqual(v["final"], "CONTESTED")
+
+    def test_same_reviewer_conflict_survives_permutations(self) -> None:
+        c = contract()
+        for dim in REPORTED:
+            reports = passing(c) + [report("nemesis", "frontier-b", "different_model", c,
+                                          results={dim: "FAIL"})]
+            expected = adjudicate(c, EVIDENCE, reports)
+            for ordered in permutations(reports):
+                verdict = adjudicate(c, EVIDENCE, list(ordered))
+                self.assertEqual((verdict["dimensions"][dim], verdict["final"]), ("CONTESTED", "CONTESTED"))
+                self.assertEqual(verdict["disagreements"][dim], {"kestrel": "PASS", "nemesis": "CONTESTED"})
+                self.assertEqual(json.dumps(verdict), json.dumps(expected))
+                check_verdict(verdict)
+
+    def test_stale_pass_replay_cannot_enable_competence(self) -> None:
+        c = contract()
+        reports = passing(c)
+        disputed = reports + [report("nemesis", "frontier-b", "different_model", c, results={"OUTCOME": "FAIL"})]
+        expected = adjudicate(c, EVIDENCE, disputed)
+        for replays in (1, 2, 5):
+            verdict = adjudicate(c, EVIDENCE, disputed + [reports[1]] * replays)
+            settlement = settle(verdict, claimed_success=True)
+            self.assertEqual(settlement["competence"], 0)
+            self.assertEqual(verdict, expected)
+            self.assertTrue(settlement["investigate"])
+
+    def test_single_reviewer_contradiction_is_not_a_revision(self) -> None:
+        c = freeze({**RAW, "min_independent": 1})
+        passed = report("kestrel", "deterministic", "deterministic", c)
+        failed = report("kestrel", "deterministic", "deterministic", c, result="FAIL")
+        verdict = adjudicate(c, EVIDENCE, [passed, failed, passed])
+        self.assertEqual(verdict["final"], "CONTESTED")
+        self.assertEqual(verdict["disagreements"], {dim: {"kestrel": "CONTESTED"} for dim in REPORTED})
+        self.assertEqual(settle(verdict, claimed_success=True)["competence"], 0)
+
+    def test_duplicate_and_partial_reports_do_not_add_votes(self) -> None:
+        c = contract()
+        reports = passing(c)
+        expected = adjudicate(c, EVIDENCE, reports)
+        partial = {**reports[0], "results": {"OUTCOME": "PASS"}}
+        self.assertEqual(adjudicate(c, EVIDENCE, reports * 3 + [partial]), expected)
+        verdict = adjudicate(c, EVIDENCE, [reports[0]] * 3)
+        self.assertEqual((verdict["dimensions"]["INDEPENDENCE"], verdict["final"]), ("FAIL", "FAIL"))
+        failed = [report(r["verifier"], r["family"], r["kind"], c, result="FAIL") for r in reports]
+        self.assertEqual(adjudicate(c, EVIDENCE, failed * 3), adjudicate(c, EVIDENCE, failed))
+
+    def test_conflicts_do_not_override_hard_failures(self) -> None:
+        c = contract()
+        reports = passing(c) + [report("nemesis", "frontier-b", "different_model", c, results={"OUTCOME": "FAIL"})]
+        for evidence, extra in ((EVIDENCE[:1], []), (EVIDENCE, [report("kestrel", "deterministic", "deterministic", c,
+                                                                     shortcuts=["answer_revealed"])])):
+            verdict = adjudicate(c, evidence, reports + extra)
+            self.assertEqual(verdict["dimensions"]["OUTCOME"], "CONTESTED")
+            self.assertEqual(verdict["final"], "FAIL")
+            self.assertLessEqual(settle(verdict, claimed_success=True)["competence"], 0)
+
+    def test_ignored_and_rejected_conflicts_carry_no_weight(self) -> None:
+        c = contract()
+        rejected = amend(c, {"min_independent": 3})
+        reports = passing(c) + [report("nemesis", "qwen", "same_model", c, result="FAIL"),
+                                report("kestrel", "deterministic", "deterministic", rejected, result="FAIL")]
+        verdict = adjudicate(c, EVIDENCE, reports)
+        self.assertEqual((verdict["final"], verdict["disagreements"]), ("PASS", {}))
+        self.assertEqual((verdict["ignored_reports"], verdict["rejected_reports"]), (["nemesis"], ["kestrel"]))
 
     def test_malformed_reports_and_edits(self) -> None:
         c = contract()

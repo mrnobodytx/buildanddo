@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        apps/career/cli.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-CAREER-001
+# SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-CAREER-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
@@ -97,6 +97,8 @@ def load_identity(raw: Any) -> tuple[Identity, list[dict[str, Any]]]:
 
 def cmd_passport(args: argparse.Namespace) -> dict[str, Any]:
     """Build a passport from local git history plus attestations."""
+    if bool(args.bank) != bool(args.assessments):
+        raise CareerError("--bank and --assessments are required together to regrade assessment evidence")
     raw_identity = _read_json(Path(args.identity))
     identity, attestations = load_identity(raw_identity)
     as_of = parse_instant(args.as_of) if args.as_of else datetime.now(timezone.utc)
@@ -110,7 +112,8 @@ def cmd_passport(args: argparse.Namespace) -> dict[str, Any]:
             raise CareerError("imported claims belong to a different person_id")
         additional.append(import_evidence(inventory))
     if args.assessments:
-        additional.append(assessment_evidence(read_chain(Path(args.assessments)), identity.person_id))
+        additional.append(assessment_evidence(read_chain(Path(args.assessments)), identity.person_id,
+                                              bank=load_bank(_read_json(Path(args.bank)))))
     missions = None
     if args.missions:
         user_ids = raw_identity.get("person_user_ids", [])
@@ -336,6 +339,7 @@ def build_parser() -> argparse.ArgumentParser:
     passport.add_argument("--max-count", type=int)
     passport.add_argument("--imports", help="imported_claims.json from the import command")
     passport.add_argument("--assessments", help="assessment ledger")
+    passport.add_argument("--bank", help="issuing question bank required with --assessments for regrading")
     passport.add_argument("--missions", help="exported BuildAndDo missions/evidence/suite_runs JSON")
     passport.set_defaults(handler=cmd_passport)
     run = sub.add_parser("evaluate", help="match supplied jobs and compile packages")

@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        apps/knowledge_units/receipt.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-KNOWLEDGE-UNIT-001
+# SRS:         SRS-BUILDANDDO-KNOWLEDGE-UNIT-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-KNOWLEDGE-UNIT-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
@@ -22,7 +22,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Any
 
-from apps.knowledge_units.units import unit_digest, unit_state
+from apps.knowledge_units.units import UnitError, unit_digest, unit_state
 
 
 def compile_receipt(unit: dict[str, Any], today: date, learning: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -56,6 +56,9 @@ def compile_receipt(unit: dict[str, Any], today: date, learning: dict[str, Any] 
         ],
     }
     if learning is not None:
+        if (learning.get("unit_id"), learning.get("version"), learning.get("unit_digest")) != \
+                (unit["unit_id"], unit["version"], receipt["unit_digest"]):
+            raise UnitError("mastery must match the unit revision and content")
         receipt["learners"] = len(learning["learners"])
         receipt["mastery_attempts"] = learning["attempts"]
         receipt["verified_mastery"] = learning["counts"]["VERIFIED"]

@@ -77,6 +77,27 @@ const receipt = (overrides = {}) => ({
     content: 'Procedure and observed result.',
     ...overrides,
 });
+function reviewAtBytes(bytes, token = 'x') {
+    const input = review();
+    input.reflection = '\u6f22'.repeat(1050);
+    const receipts = TEVV.map(({ id }, index) => {
+        input[id] = { outcome: 'pass', observation: '\u6f22'.repeat(1050), evidence: `receipt${index + 1}` };
+        return receipt({ id: input[id].evidence, content: '', type: 'observed', title: 'Synthetic receipt', url: '',
+            created: '2026-09-15T01:00:00Z', updated: '2026-09-15T01:00:00Z' });
+    });
+    const expected = { ...input, version: 1, evidence_snapshot: structuredClone(receipts) };
+    let remaining = bytes - Buffer.byteLength(JSON.stringify(expected), 'utf8');
+    const unit = Buffer.byteLength(JSON.stringify(token), 'utf8') - 2;
+    receipts.forEach((row, index) => {
+        const share = Math.floor(remaining / (receipts.length - index));
+        row.content = token.repeat(Math.floor(share / unit)) + 'x'.repeat(share % unit);
+        assert.ok(row.content.length > 0 && row.content.length <= 2000);
+        expected.evidence_snapshot[index].content = row.content;
+        remaining -= share;
+    });
+    assert.equal(Buffer.byteLength(JSON.stringify(expected), 'utf8'), bytes);
+    return { input, receipts, expected };
+}
 const approved = (overrides = {}) =>
     mission({
         status: 'approved',
@@ -528,6 +549,98 @@ test('review drafts and honest failures preserve observations without declaring 
     });
     failed.run();
     assert.equal(failed.event.record.data.status, 'failed');
+});
+test('new review writes persist version 1 for current and unversioned clients', () => {
+    for (const status of ['running', 'needs_attention', 'failed']) {
+        for (const version of [undefined, 1]) {
+            const input = review('fail');
+            if (version !== undefined) input.version = version;
+            const env = runtime({ original: approved({ status: 'running' }),
+                patch: { status, mission_review: input } });
+            assert.equal(env.run(), 'saved');
+            assert.deepEqual(JSON.parse(env.event.record.getString('mission_review')), { ...input, version: 1 });
+            assert.equal(env.event.record.data.status, status);
+            assert.equal(env.event.record.data.mission_reviewed_by, 'user1');
+            assert.equal(Object.hasOwn(input, 'version'), version !== undefined);
+        }
+    }
+});
+test('unsupported review versions fail closed before persistence', () => {
+    for (const version of [null, 0, 2, '1', true, false, [], {}]) {
+        for (const status of ['running', 'verified']) {
+            rejects({ original: approved({ status: 'running' }),
+                patch: { status, mission_review: { ...review(), version } } }, /version|TEVV|review/i);
+        }
+    }
+});
+test('unchanged historical reviews retain their exact bytes and review metadata', () => {
+    for (const status of ['verified', 'failed', 'running']) {
+        for (const version of [undefined, 1]) {
+            const frozen = status === 'verified' ? reviewAtBytes(24000).expected : review('fail');
+            if (version === undefined) delete frozen.version;
+            else frozen.version = version;
+            const original = approved({ status, mission_review: frozen,
+                mission_reviewed_by: 'user1', mission_reviewed_at: '2026-09-15T01:00:00Z' });
+            const env = runtime({ original, receipts: [], patch: { mission_learning: answers(),
+                mission_reviewed_by: 'forged', mission_reviewed_at: 'forged' } });
+            const before = env.event.record.getString('mission_review');
+            assert.equal(env.run(), 'saved');
+            assert.equal(env.event.record.getString('mission_review'), before);
+            assert.equal(env.event.record.data.mission_reviewed_by, original.mission_reviewed_by);
+            assert.equal(env.event.record.data.mission_reviewed_at, original.mission_reviewed_at);
+            assert.ok(!env.lookups.some(([collection]) => collection === 'evidence'));
+            if (status !== 'running' && version === undefined)
+                rejects({ original, patch: { mission_review: { ...frozen, version: 1 } } }, /finished mission/);
+        }
+    }
+});
+for (const [name, token] of [
+    ['ASCII', 'x'], ['two-byte', '\u00e9'], ['three-byte', '\u6f22'], ['astral', '\u{1f680}'],
+    ['JSON-escaped', '\u0000'], ['lone-surrogate', '\ud800'],
+]) {
+    test(`final review size uses serialized UTF-8 bytes with ${name} evidence`, () => {
+        for (const bytes of [24564, 24001, 24000, 23999]) {
+            const { input, receipts, expected } = reviewAtBytes(bytes, token);
+            assert.ok(Buffer.byteLength(JSON.stringify(input), 'utf8') < 24000);
+            const env = runtime({ original: approved({ status: 'running' }), receipts,
+                patch: { status: 'verified', mission_review: input } });
+            if (bytes > 24000) {
+                assert.throws(env.run, /24,000.*bytes/i);
+                assert.equal(env.calls(), 0);
+            } else {
+                assert.equal(env.run(), 'saved');
+                const raw = env.event.record.getString('mission_review');
+                assert.equal(Buffer.byteLength(raw, 'utf8'), bytes);
+                assert.deepEqual(JSON.parse(raw), expected);
+                assert.equal(env.calls(), 1);
+            }
+        }
+    });
+}
+test('size validation measures the JSONField serialization after server enrichment', () => {
+    const { input, receipts, expected } = reviewAtBytes(23999, '<');
+    const env = runtime({ original: approved({ status: 'running' }), receipts,
+        patch: { status: 'verified', mission_review: input } });
+    // Native JSONRaw may HTML-escape a Go map even when JSON.stringify does not.
+    const escape = (raw) => raw.replaceAll('<', '\\u003c');
+    assert.ok(Buffer.byteLength(escape(JSON.stringify(expected)), 'utf8') > 24000);
+    const getString = env.event.record.getString.bind(env.event.record);
+    env.event.record.getString = (name) => name === 'mission_review' ? escape(getString(name)) : getString(name);
+    assert.throws(env.run, /24,000.*bytes/i);
+    assert.equal(env.calls(), 0);
+});
+test('verification checks newly embedded snapshots even when the saved draft is unchanged', () => {
+    const { input, receipts } = reviewAtBytes(24564);
+    rejects({ original: approved({ status: 'running', mission_review: input }), receipts,
+        patch: { status: 'verified' } }, /24,000.*bytes/i);
+});
+test('oversized escaped draft JSON is rejected without freezing evidence or persisting', () => {
+    const input = review('fail');
+    input.reflection = '\u0000'.repeat(1200);
+    for (const { id } of TEVV) input[id].observation = '\u0000'.repeat(1200);
+    assert.ok(Buffer.byteLength(JSON.stringify(input), 'utf8') > 24000);
+    const env = rejects({ original: approved({ status: 'running' }), patch: { mission_review: input } }, /24,000.*bytes/i);
+    assert.ok(!env.lookups.some(([collection]) => collection === 'evidence'));
 });
 test('verification rejects missing, failing, foreign or unreadable evidence', () => {
     const original = approved({ status: 'running' });
