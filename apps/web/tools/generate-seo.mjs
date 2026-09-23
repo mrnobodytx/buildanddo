@@ -1,16 +1,18 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/tools/generate-seo.mjs
 // Stage:       11_COMMIT
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (community links, sameAs, guildmaster profiles)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
-// Depends:     apps/web/src/lib/publicPages.js
+// Depends:     apps/web/src/lib/publicPages.js, apps/web/src/lib/communityLinks.js,
+//              apps/web/src/data/personas.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js
+// EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js; DEPENDS_ON apps/web/src/lib/communityLinks.js;
+//              DEPENDS_ON apps/web/src/data/personas.js
 // DAG Node:    none
 // Intent:      Generate canonical social metadata and crawler resources for every public route.
 // ───────────────────────────────────────────────────────────────
@@ -18,6 +20,8 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PUBLIC_PAGES, SITE_ORIGIN } from '../src/lib/publicPages.js';
+import { COMMUNITY_LINKS, SAME_AS, STORE_LINK } from '../src/lib/communityLinks.js';
+import { PERSONA_PAGES } from '../src/data/personas.js';
 
 const escape = (value) =>
     String(value).replace(
@@ -27,10 +31,21 @@ const escape = (value) =>
     );
 const stamp = `CGRF: SRS-BUILDANDDO-UPGRADE-001 | VCC-BUILDANDDO-UPGRADE-001 | BITS-CODEGEN | Citadel Nexus Inc. | CK: pending | CAPS: pending`;
 
+// Every route a crawler may index: the catalogue plus one profile per guildmaster. The profiles are
+// not in PUBLIC_PAGES because that list also drives navigation and the Discord page catalogue.
+export const INDEXED_PAGES = [...PUBLIC_PAGES, ...PERSONA_PAGES];
+
+// llms.txt lines for the places BuildAndDo lives outside this site, from the one list in
+// communityLinks.js, so this file cannot drift from the footer the way it did before.
+const communityLines = () =>
+    [...COMMUNITY_LINKS, STORE_LINK]
+        .map((link) => `- [${link.label}](${link.url}): ${link.summary}`)
+        .join('\n');
+
 /** Write crawler resources from the public route catalogue. */
 export function generatePublicAssets(directory) {
     mkdirSync(directory, { recursive: true });
-    const urls = PUBLIC_PAGES.map(
+    const urls = INDEXED_PAGES.map(
         (page) => `  <url><loc>${escape(SITE_ORIGIN + page.path)}</loc></url>`,
     ).join('\n');
     writeFileSync(
@@ -47,21 +62,21 @@ export function generatePublicAssets(directory) {
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        apps/web/public/llms.txt
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-# Seat:        BITS-CODEGEN
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+# Seat:        BITS-CODEGEN, C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-14
-# Depends:     apps/web/src/lib/publicPages.js
+# Depends:     apps/web/src/lib/publicPages.js, apps/web/src/lib/communityLinks.js, apps/web/src/data/personas.js
 # EnumType:    Doc
-# EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js
+# EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js; DEPENDS_ON apps/web/src/lib/communityLinks.js
 # DAG Node:    none
 # Intent:      Publish the same public route catalogue for text-based discovery.
 # ───────────────────────────────────────────────────────────────
 -->
-# BuildAndDo\n\nA daily learning edition built around sources, scoped missions and evidence.\n\n## Community and store\n\n- [r/buildanddo on Reddit](https://www.reddit.com/r/buildanddo): the public community.\n- [Playbooks and courses on Gumroad](https://citadelnexus.gumroad.com): the Citadel Nexus store.\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
+# BuildAndDo\n\nA daily learning edition built around sources, scoped missions and evidence.\n\n## Community and store\n\n${communityLines()}\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n\n## Guildmaster agents\n\nEach guildmaster is an automated agent, not a person.\n\n${PERSONA_PAGES.map((page) => `- [${page.label}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
     );
 }
 
@@ -114,7 +129,7 @@ export function generatePageHeads(directory, release) {
         // "empty div" match would find nothing, the replace would silently no-op, and every route
         // would ship the HOME page's prose. Emptying it first makes the pass idempotent.
         .replace(/<div id="root">[\s\S]*?<\/div>\s*(?=<script|<\/body)/i, '<div id="root"></div>');
-    for (const page of PUBLIC_PAGES) {
+    for (const page of INDEXED_PAGES) {
         const canonical = SITE_ORIGIN + page.path;
         const schema = {
             '@context': 'https://schema.org',
@@ -122,6 +137,8 @@ export function generatePageHeads(directory, release) {
             name: page.title,
             description: page.description,
             url: canonical,
+            // Same list as Seo.jsx, so a crawler that never runs JavaScript sees the profiles too.
+            isPartOf: { '@type': 'WebSite', name: 'BuildAndDo', url: SITE_ORIGIN, sameAs: [...SAME_AS] },
             publisher: { '@type': 'Organization', name: 'Citadel Nexus Inc.' },
         };
         const tags = [

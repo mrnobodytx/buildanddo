@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/PolicyPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
 // Depends:     apps/web/src/lib/policyIntelligence.js, apps/web/src/data/policy-demo.json, apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/components/workspace/ControlPrimitives.jsx
@@ -29,6 +29,7 @@ import { observeMutation } from '@/lib/observability/mutations';
 import { canonicalPolicy, configurePolicyWatch, createPolicyClient, importPolicy, POLICY_AREAS, POLICY_KINDS,
     POLICY_MAX_BYTES, POLICY_STATES, policyProposal, projectPolicy, searchPolicy } from '@/lib/policyIntelligence';
 import demoPacket from '@/data/policy-demo.json';
+import { STATUS_PATH } from '@/lib/communityLinks';
 
 const VIEWS = ['Feed', 'Legislation', 'Hearings', 'Committees', 'Appropriations', 'Executive Policy',
     'Stakeholders', 'Watchlists', 'Alerts', 'Daily Brief', 'Evidence / Sources'];
@@ -195,7 +196,7 @@ function PolicyDesk({ accountId, workspaceId, demo }) {
             </section>}
         </>}
         <footer className="flex flex-wrap gap-3 text-xs text-muted-foreground"><span>Powered by Citadel Nexus Inc.</span>
-            <a href="https://citadel-nexus.com/status" target="_blank" rel="noopener noreferrer" className="underline">Public status</a></footer>
+            <a href={STATUS_PATH} target="_blank" rel="noopener noreferrer" className="underline">Public status</a></footer>
     </div>;
 }
 

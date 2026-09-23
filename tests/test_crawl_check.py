@@ -1,7 +1,7 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        tests/test_crawl_check.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-CRAWL-001
+# SRS:         SRS-BUILDANDDO-CRAWL-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    USO-BUILDANDDO-CRAWL-001
@@ -66,9 +66,10 @@ class CrawlCheckTests(unittest.IsolatedAsyncioTestCase):
     def test_canonical_inventory_is_read_from_public_pages(self) -> None:
         origin, pages = crawl_check.load_public_pages()
         self.assertEqual(origin, self.origin)
-        # 11, not 10: the Day-21 closure pack added the public /hostinger-challenge judge page
-        # to PUBLIC_PAGES. This asserts the count of canonical public pages, so it moves with them.
-        self.assertEqual(len(pages), 11)
+        # 13: the Day-21 closure pack added /hostinger-challenge (10 -> 11), and
+        # SRS-BUILDANDDO-COMMUNITY-WEB-001 added /guild and /status (11 -> 13). This asserts the
+        # count of canonical public pages, so it moves with them.
+        self.assertEqual(len(pages), 13)
         self.assertEqual(pages[0].path, "/")
         self.assertEqual(
             next(page for page in pages if page.path == "/classrooms").title,
@@ -253,9 +254,9 @@ class CrawlCheckTests(unittest.IsolatedAsyncioTestCase):
                 code = crawl_check.main(["--output", str(output)])
             report = json.loads(output.read_text(encoding="utf-8"))
             self.assertEqual(code, 1)
-            self.assertEqual(report["summary"]["total"], 11)
-            self.assertEqual(report["summary"]["failed"], 11)
-            self.assertEqual(client.json.await_count, 11)
+            self.assertEqual(report["summary"]["total"], 13)
+            self.assertEqual(report["summary"]["failed"], 13)
+            self.assertEqual(client.json.await_count, 13)
             client.close.assert_awaited_once()
 
 

@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/publicPages.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (guild directory and status routes)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
 // Depends:     .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md
@@ -111,9 +111,31 @@ export const PUBLIC_PAGES = [
             'Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.',
         type: 'ContactPage',
     },
+    // nav false keeps a page in the sitemap, llms.txt and the prerendered heads while leaving the
+    // header and the product list of the footer alone; the footer links these two from its
+    // community column instead. No quote marks in comments inside this array: crawl_check.py
+    // scans it with a string-aware but comment-blind parser.
+    {
+        path: '/guild',
+        label: 'Guildmasters',
+        title: 'The guildmasters | BuildAndDo',
+        description:
+            'Eight automated agents, one per guild. Each profile says what the agent does, where it posts, and that it is software, not a person.',
+        type: 'CollectionPage',
+        nav: false,
+    },
+    {
+        path: '/status',
+        label: 'Status',
+        title: 'Service status | BuildAndDo',
+        description:
+            'Platform health and community reachability, each with the time it was measured and its age. Nothing is shown as up without a fresh reading.',
+        type: 'WebPage',
+        nav: false,
+    },
 ];
 
-export const PUBLIC_NAV = PUBLIC_PAGES.filter((page) => page.path !== '/');
+export const PUBLIC_NAV = PUBLIC_PAGES.filter((page) => page.path !== '/' && page.nav !== false);
 
 // Header grouping: product routes carry the primary weight; company/editorial routes
 // (About, Blog, Contact) sit in a small secondary cluster. Footer and crawlers keep the flat list.

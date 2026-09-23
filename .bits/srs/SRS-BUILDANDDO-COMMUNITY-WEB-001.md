@@ -65,14 +65,14 @@ Measured 2026-09-22 at `da1b57f`, relayed by the C-ONE dispatch:
 
 ## Non-goals
 
-Deployment, pushing, writing `community-status.json` from a live probe (an operator-side tool owns that),
+Deployment, pushing, writing `community-status.json` from a live probe (a separate probe owns that),
 changing `activity-status.json` or its publisher, the PostHog event contract of
 `ocn_seat_session.py`, and machine names in other files (recorded as findings).
 
 ## Verification
 
 ```bash
-npm --prefix apps/web exec -- vitest run src/lib/__tests__/communityLinks.test.js src/lib/__tests__/communityStatus.test.js src/pages/__tests__/GuildPages.test.jsx src/pages/__tests__/StatusPage.test.jsx
+npm --prefix apps/web exec -- vitest run src/lib/__tests__/communityLinks.test.jsx src/lib/__tests__/communityStatus.test.js src/pages/__tests__/GuildPages.test.jsx src/pages/__tests__/StatusPage.test.jsx
 npm test
 npm run build
 python -m unittest tests.upgrade.test_ocn_seat_session

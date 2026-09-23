@@ -29,7 +29,7 @@ the seat session script no longer publishes which machine each persona runs on.
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | Single source for community links (footer, contact, llms.txt, sameAs) | `npm --prefix apps/web exec -- vitest run src/lib/__tests__/communityLinks.test.js` | in_progress |
+| 1 | Single source for community links (footer, contact, llms.txt, sameAs) | `npm --prefix apps/web exec -- vitest run src/lib/__tests__/communityLinks.test.jsx` | in_progress |
 | 2 | Persona directory and profiles, classroom presence links | `npm --prefix apps/web exec -- vitest run src/pages/__tests__/GuildPages.test.jsx` | in_progress |
 | 3 | Community status schema, roadmap group and same-domain status page | `npm --prefix apps/web exec -- vitest run src/lib/__tests__/communityStatus.test.js src/pages/__tests__/StatusPage.test.jsx` | in_progress |
 | 4 | Seat identity from the box, refusal instead of a guess | `python -m unittest tests.upgrade.test_ocn_seat_session` | in_progress |

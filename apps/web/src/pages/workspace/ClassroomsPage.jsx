@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/ClassroomsPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
 // Depends:     apps/web/src/hooks/useClassrooms.js, apps/web/src/lib/classrooms.js
@@ -25,6 +25,7 @@ import { PageControls, controlInput, dateLabel } from '@/components/workspace/Co
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useClassrooms } from '@/hooks/useClassrooms';
 import { classroomHref } from '@/lib/classrooms';
+import { STATUS_PATH } from '@/lib/communityLinks';
 
 const statusLabel = { scheduled: 'Scheduled', live: 'Live lesson', ended: 'Ended' };
 const frozen = (control) => control.saving || control.uncertain || !control.connected;
@@ -184,7 +185,7 @@ function ClassroomDesk({ roomId }) {
         {control.loading && !control.data && <p role="status" className="text-sm text-muted-foreground">Loading classrooms…</p>}
         {control.error && <Card className="space-y-3 p-5"><p role="alert" className="text-sm">{control.error}</p>{!control.demo && <Button variant="secondary" onClick={control.refresh}>Retry connection</Button>}</Card>}
         {control.data && (roomId ? <Room control={control} onPage={setPage} /> : <ClassroomList control={control} onPage={setPage} status={status} onStatus={(value) => { setPage(1); setStatus(value); }} />)}
-        <p className="text-xs text-muted-foreground">Powered by Citadel Nexus Inc. · <a href="https://citadel-nexus.com/status" className="underline underline-offset-4">Service status</a></p>
+        <p className="text-xs text-muted-foreground">Powered by Citadel Nexus Inc. · <a href={STATUS_PATH} className="underline underline-offset-4">Service status</a></p>
     </div>;
 }
 
