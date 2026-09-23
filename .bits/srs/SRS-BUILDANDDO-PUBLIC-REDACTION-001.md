@@ -84,6 +84,27 @@ fails on every build teaches everyone to ignore it.
 8. **R8 - every other address is still caught.** The documentation address 203.0.113.9, in the same place,
    still fails the scan. The new test fails on the previous rule and passes now.
 
+## Continuation (2026-09-23): a scan reads the sources it is given
+
+The scan's file types were built for `dist/`, so it silently skipped React sources. On 2026-09-23 a scan
+of `apps/web/src/components/broadcast/*.jsx` printed "PASS: 0 file(s) carry an address or a machine name"
+having read no file at all. That line looks exactly like a clean result.
+
+9. **R9 - a scan reads React and TypeScript sources and says how many files it read.** `.jsx`, `.ts`,
+   `.tsx` and `.cjs` are scanned types (the tree has `.jsx`, `.ts` and `.cjs` files). The verdict line
+   states how many files were read. A path that yields no file of a scanned type is reported by name. When
+   nothing at all was read, the verdict is UNMEASURED with exit code 2, never PASS.
+10. **R10 - test files are scanned, and may plant only made-up names and documentation addresses.** The
+   repository is public, so its tests are public text. Tests plant names and addresses on purpose, to prove
+   the rule catches them. In a test file (under `__tests__/`, `test/` or `tests/`, or named `*.test.*` or
+   `*.spec.*`), and only there, a scan lets through two things:
+   - the made-up names the tests use: `ray-xyz0-0`, `rig0`, `kvm0` and `mesh-sample`;
+   - documentation-range addresses (RFC 5737, RFC 3849).
+
+   Any other name or address in a test fails as it would anywhere. A name on the private fleet map fails
+   even if it is listed. Skipping test directories outright was rejected, because it would hide real names
+   in public test files; measured 2026-09-23, four such files exist.
+
 ## Non-goals
 
 - The 33 tracked files that name a machine in scripts, docs, migrations or test fixtures, and the
