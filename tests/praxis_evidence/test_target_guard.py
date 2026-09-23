@@ -48,7 +48,7 @@ class TargetGuardTests(unittest.TestCase):
     def test_production_hosts_are_refused_on_any_path(self):
         for url in ("https://buildanddo.com/hcgi/platform", "https://buildanddo.com",
                     "http://www.buildanddo.com/anything/", "https://WWW.BuildAndDo.com./hcgi/platform",
-                    "https://buildanddo.com:443/hcgi/platform"):
+                    "https://buildanddo.com:443/hcgi/platform", "http://45.82.75.40:8090/"):
             with self.subTest(url=url), self.assertRaises(client.UnsafeTargetError):
                 client.require_test_target(url)
 

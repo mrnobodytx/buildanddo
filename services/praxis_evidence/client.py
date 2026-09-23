@@ -34,7 +34,8 @@ _SECRETS = _load_secrets()
 # No default target. An unset PB_API_URL used to fall back to production, so a
 # CI job missing its variable ran the suites - which create users - against it.
 PB_API_URL = _SECRETS.get("PB_API_URL", "").strip().rstrip("/")
-PRODUCTION_HOSTS = frozenset({"buildanddo.com", "www.buildanddo.com"})
+# The production VM is also reachable by address (scripts/deploy/ship.py default host).
+PRODUCTION_HOSTS = frozenset({"buildanddo.com", "www.buildanddo.com", "45.82.75.40"})
 
 
 class PocketBaseError(RuntimeError):
