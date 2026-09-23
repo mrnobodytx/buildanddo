@@ -44,6 +44,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import subprocess
 import sys
 import urllib.error
@@ -52,7 +53,11 @@ from pathlib import Path
 from typing import Any
 
 BASE = "https://staging.buildanddo.com/hcgi/platform"
-CNWB = Path(r"D:\citadel_websites\Citadel-nexus\projects\guilds\CNWB")
+# Located by NAME, not by a literal path: this file is published to the public mirror and the
+# CNWB checkout is part of the private estate's layout. The report at the bottom already emits
+# `signer_present: CNWB.is_dir()`, so an unset root degrades into an honest "signer absent"
+# rather than a crash.
+CNWB = Path(os.environ.get("CITADEL_CNWB_ROOT", ""))
 UA = {"User-Agent": "Mozilla/5.0 (compatible; bnd-ocn-classroom/1.0)",
       "Content-Type": "application/json"}
 SCHEMA = "buildanddo.ocn-classroom-live/v1"

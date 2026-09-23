@@ -231,7 +231,9 @@ def run() -> dict[str, Any]:
     host_gm = boxes[HOST_BOX]["guildmaster"]
     answer = command(HOST_BOX, "room.create", {
         "title": f"Fleet guildmaster class ({stamp})",
-        "description": f"Hosted by {host_gm} on {HOST_BOX}; each guildmaster acts from its own box.",
+        # NEVER name the machine here. This string is stored in the product and shown to every
+        # member; which box a guildmaster signs from is infrastructure, not classroom content.
+        "description": f"Hosted by {host_gm}. Each guildmaster signs from its own seat.",
         "tutorial": lesson, "starts_at": "",
     }, 0)
     if not note(checks, f"{host_gm} schedules the class", HOST_BOX, answer, "200",
@@ -255,7 +257,7 @@ def run() -> dict[str, Any]:
         note(checks, f"{gm} joins from {box}", box, answer, "200", answer.get("http") == 200)
         answer = command(box, "room.message",
                          {"id": room,
-                          "body": f"{gm} of the {boxes[box].get('guild')} guild, joining from {box}."},
+                          "body": f"{gm} of the {boxes[box].get('guild')} guild, joining the class."},
                          revision_from(box, room))
         note(checks, f"{gm} speaks from {box}", box, answer, "200", answer.get("http") == 200)
 
