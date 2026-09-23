@@ -25,16 +25,16 @@ export default function PricingPage() {
             path="/pricing"
             eyebrow="Access & pricing"
             title="Start with one useful outcome."
-            intro="BuildAndDo is in early access. Public subscription prices have not been announced. Tell us what you need to run, and we can discuss the right scope together."
+            intro="BuildAndDo is in early access. Public subscription prices have not been announced. Tell us what you want to learn or build, and we can discuss the right scope together."
         >
             <div className="grid gap-6 md:grid-cols-2">
                 <Card className="flex flex-col p-6 sm:p-8">
                     <p className="font-evidence text-xs uppercase tracking-widest text-primary">
-                        For individual operators
+                        For individuals
                     </p>
                     <h2 className="mt-3 font-display text-3xl font-semibold">Early access</h2>
                     <p className="mt-4 leading-relaxed text-muted-foreground">
-                        Explore the workspace and help shape it around a real business problem.
+                        Explore the workspace and help shape it around a real project.
                     </p>
                     <ul className="my-8 space-y-4 text-sm">
                         {[

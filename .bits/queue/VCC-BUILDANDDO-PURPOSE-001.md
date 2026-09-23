@@ -28,11 +28,11 @@ where people learn by doing real work together, with people and AI, and keep the
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | `purpose.js`, the one source, and a guard test that fails on a planted phrase | `vitest run src/lib/__tests__/purpose.test.js` | pending |
-| 2 | FAQ, About intro, footer, unused Hero, sign-up, pricing and docs intros | the whole web suite | pending |
-| 3 | Early-access form asks about learning; stored field names unchanged | the whole web suite | pending |
-| 4 | Share image: live domain, re-rendered PNG proven against a render of the unchanged SVG; alt text | `npm run build`; pixel comparison | pending |
-| 5 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `verify_public_boundary.py` | pending |
+| 1 | `purpose.js`, the one source, and a guard test that fails on a planted phrase | `vitest run src/lib/__tests__/purpose.test.js` | done |
+| 2 | FAQ, About intro, footer, unused Hero, sign-up, pricing and docs intros | the whole web suite | done |
+| 3 | Early-access form asks about learning; stored field names unchanged | the whole web suite | done |
+| 4 | Share image: live domain, re-rendered PNG proven against a render of the unchanged SVG; alt text | `npm run build`; pixel comparison | done |
+| 5 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `verify_public_boundary.py` | done |
 
 ## Constraints
 
@@ -48,8 +48,62 @@ where people learn by doing real work together, with people and AI, and keep the
 - No real machine name or address may enter this repository, including test fixtures.
 - Raises the tier: deploy, push. Neither is performed without the operator.
 
+## Evidence (2026-09-23, local run on Windows, LF checkout)
+
+- **Guard:** `purpose.test.js` 5 of 5. It scans 30+ public sources: site components, editorial, auth, public
+  pages, `Seo.jsx`, `publicPages.js`, `index.html`, the manifest, the share SVG, `llms.txt` and the SEO
+  generator.
+- **Controls:** each change was undone once and the guard was run again. All 12 were caught, and it was
+  green again after each restore.
+  - The base versions of `Faq.jsx`, `AboutPage.jsx`, `Footer.jsx`, `Hero.jsx`, `EarlyAccess.jsx`,
+    `SignupPage.jsx`, `Seo.jsx` and `generate-seo.mjs` were put back one at a time.
+  - The share image was set back to the domain with no DNS record.
+  - The SVG was edited without re-rendering the PNG.
+  - The manifest was allowed to drift from the one source.
+  - A retired phrase was planted in the page head.
+- **Suite:** the whole web suite passes 614 of 614 in 71 files. `npm run lint` is clean.
+- **Build:** `npm run build` passes, and every generated page carries the new share-image description.
+  - None of the retired phrases appears in the generated home or About pages.
+  - `llms.txt`, `robots.txt` and `sitemap.xml` came out byte-identical.
+- **Redaction:** the changed sources PASS. The build's only match is the voice SDK's unspecified
+  (all-zeros) address, a known finding of SRS-BUILDANDDO-BUDDI-003.
+- **Served build** (vite preview):
+  - The home page shows the new FAQ, the footer description, the early-access questions ("Where are you
+    starting from?", "What do you want to learn or build first?") and both alt tags.
+  - `/about`, `/signup`, `/pricing` and `/docs` show the new intros.
+  - No retired phrase appears in any rendered page body. There are no console errors.
+  - `/social-card.png` serves the new image.
+- **Share image:**
+  - **The committed PNG was stale.** It still showed "THE BUSINESS NEWSPAPER FOR YOUR OWN OPERATIONS" and
+    "Your business, in evidence." Four commits on 2026-09-18 had rebranded the SVG without re-rendering it.
+  - **The renderer changes fonts, not layout.** The 2026-09-14 PNG came from an unknown renderer with a
+    fallback serif. A headless-Chromium render of that same SVG differs only in text rasterization (5.97% of
+    pixels, all within text), because Chromium uses the Georgia the SVG names.
+  - **Only the domain changed.** A Chromium render of today's SVG and the corrected SVG differ in 329
+    pixels, all inside the domain line (x 185-229, y 540-553).
+  - `social-card.png.cgrf.yaml` records the SVG's SHA-256, and the guard fails when they diverge.
+- **Gates:** all pass.
+  - `hostinger_readiness.py --check`
+  - `agent_context.py --check`
+  - `submission_readiness.py --check`
+  - `verify_public_boundary.py`
+
+## Findings, not fixed here
+
+- **The Hostinger 21-Day Challenge entry still describes the small-business idea.** In
+  `data/hostingerChallenge.js` and `HostingerChallengePage.jsx` it says "BuildAndDo watches the important
+  parts of a small business…". This is the pitch Buddi repeats almost word for word. Reframing a
+  competition entry is the operator's call.
+- **The workspace keeps its business framing:**
+  - onboarding defaults a workspace to "My business";
+  - Signals say "Observed changes in your business";
+  - the policy walkthrough is a "small-business demo".
+  These describe the product as it works today.
+- **The early-access record still names its field `business_type`.** Only its visible question and options
+  changed.
+
 ## Definition of done
 
-- [ ] Every gate command passes and the output is in the PR.
-- [ ] The guard test fails on a planted retired phrase and passes without it.
-- [ ] Anything discovered but out of scope is recorded as a finding, not fixed.
+- [x] Every gate command passes and the output is in the PR.
+- [x] The guard test fails on a planted retired phrase and passes without it.
+- [x] Anything discovered but out of scope is recorded as a finding, not fixed.

@@ -13,12 +13,13 @@ import {
 } from '@/components/ui/select';
 import pb from '@/lib/pocketbaseClient';
 
-const BUSINESS_TYPES = [
-    'Nail or beauty salon',
-    'Appointment-based service',
-    'Consulting or freelance',
-    'Local service business',
-    'Retail or online shop',
+// Where the person is starting from. Saved in the early-access record's `business_type` field, a free text
+// field whose name predates the learning framing (SRS-BUILDANDDO-PURPOSE-001), so older sign-ups stay valid.
+const STARTING_POINTS = [
+    'Learning on my own',
+    'With a team or a class',
+    'Building a project or a product',
+    'Running a business',
     'Just an idea for now',
     'Something else',
 ];
@@ -42,11 +43,11 @@ export default function EarlyAccess() {
         if (!form.email.trim()) next.email = 'Please enter your email address.';
         else if (!EMAIL_RE.test(form.email.trim()))
             next.email = 'That email address doesn\u2019t look right.';
-        if (!form.businessType) next.businessType = 'Please pick the closest business type.';
+        if (!form.businessType) next.businessType = 'Please pick the closest match.';
         if (!form.task.trim())
-            next.task = 'Describe the repetitive task you\u2019d want help with.';
+            next.task = 'Tell us what you want to learn or build first.';
         else if (form.task.trim().length < 10)
-            next.task = 'A short sentence helps us understand the task.';
+            next.task = 'A short sentence helps us understand what you have in mind.';
         setErrors(next);
         return Object.keys(next).length === 0;
     };
@@ -83,11 +84,11 @@ export default function EarlyAccess() {
                 <div className="lg:col-span-5">
                     <SectionLabel>Early access</SectionLabel>
                     <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                        Describe the task you want help with
+                        Tell us what you want to learn or build
                     </h2>
                     <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                        BuildAndDo is an early MVP. The people on this list aren&rsquo;t just
-                        waiting — their real problems decide what gets built first.
+                        BuildAndDo is in early access. The people on this list aren&rsquo;t just
+                        waiting — what they want to learn and build decides what comes first.
                     </p>
 
                     <div className="mt-6 rounded-[var(--radius)] border border-border bg-card p-5">
@@ -120,15 +121,15 @@ export default function EarlyAccess() {
                                 </h3>
                                 <p className="mt-2 max-w-sm text-sm leading-relaxed text-paper-muted">
                                     Thanks, {form.name.split(' ')[0] || 'there'} — we saved your
-                                    task and we&rsquo;ll reach out as early access opens. Your input
-                                    directly shapes what BuildAndDo learns to do next.
+                                    answer and we&rsquo;ll reach out as early access opens. Your input
+                                    directly shapes what BuildAndDo builds next.
                                 </p>
                                 <button
                                     type="button"
                                     onClick={reset}
                                     className="mt-6 inline-flex h-10 items-center rounded-md border border-paper px-5 text-sm font-semibold text-paper-fg transition-colors hover:bg-[hsl(var(--paper-subtle))]"
                                 >
-                                    Submit another task
+                                    Send another answer
                                 </button>
                             </div>
                         ) : (
@@ -170,7 +171,7 @@ export default function EarlyAccess() {
                                             type="email"
                                             value={form.email}
                                             onChange={(e) => setField('email', e.target.value)}
-                                            placeholder="maya@lunastudio.com"
+                                            placeholder="maya@example.com"
                                             autoComplete="email"
                                             aria-invalid={Boolean(errors.email)}
                                             className="h-11 border-paper bg-paper-subtle text-paper-fg placeholder:text-paper-muted/70 focus-visible:border-[hsl(var(--paper-foreground)/0.4)]"
@@ -184,7 +185,7 @@ export default function EarlyAccess() {
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="ea-business-type" className="text-paper-fg">
-                                            Business type
+                                            Where are you starting from?
                                         </Label>
                                         <Select
                                             value={form.businessType}
@@ -200,7 +201,7 @@ export default function EarlyAccess() {
                                                 <SelectValue placeholder="Pick the closest match" />
                                             </SelectTrigger>
                                             <SelectContent className="border-paper bg-paper text-paper-fg">
-                                                {BUSINESS_TYPES.map((type) => (
+                                                {STARTING_POINTS.map((type) => (
                                                     <SelectItem key={type} value={type}>
                                                         {type}
                                                     </SelectItem>
@@ -216,14 +217,13 @@ export default function EarlyAccess() {
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="ea-task" className="text-paper-fg">
-                                            What repetitive task would you like BuildAndDo to handle
-                                            or clarify?
+                                            What do you want to learn or build first?
                                         </Label>
                                         <Textarea
                                             id="ea-task"
                                             value={form.task}
                                             onChange={(e) => setField('task', e.target.value)}
-                                            placeholder="e.g. Every Friday I manually text reminders to next week's clients, and I still get no-shows."
+                                            placeholder="e.g. I want to plan and launch a small online shop, and learn each step with people who have done it."
                                             rows={4}
                                             aria-invalid={Boolean(errors.task)}
                                             className="border-paper bg-paper-subtle text-paper-fg placeholder:text-paper-muted/70 focus-visible:border-[hsl(var(--paper-foreground)/0.4)]"
