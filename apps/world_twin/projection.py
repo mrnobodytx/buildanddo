@@ -118,7 +118,8 @@ def compile_projection(
         if matches[scope.view]:
             selected.append(event)
     visible = tuple(selected)
-    standing = review_states(visible, reviews, review_policy, at=scope.as_of)
+    captured_standing = review_states(admitted, reviews, review_policy, at=scope.as_of)
+    standing = {event.event_id: captured_standing[event.event_id] for event in visible}
     episodes = [(episode, tuple(event for event in episode.events if event.event_id in standing))
                 for episode in captured_episodes if any(event.event_id in standing for event in episode.events)]
     available_at = {event.event_id: max(event.observation.observed_at,

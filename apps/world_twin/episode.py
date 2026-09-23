@@ -47,38 +47,61 @@ def review_states(
 
     Policy pins must be authenticated by the receiving process. No pin is taken
     from an event, file signature claim, transport label or provider status.
-    Negative or disagreeing admitted reviews block positive verification.
+    Supply full captured lineage before narrowing to an audience. Negative or
+    disagreeing admitted reviews block positive verification.
     """
     require(len(receipts) <= 4000, "too many world reviews")
+    lineage_actors: dict[str, set[SemanticId]] = {}
+    for episode in world_episodes(events):
+        # Collect every wrapper; the same core ID can recur in another release.
+        attribution: dict[str, set[SemanticId]] = defaultdict(set)
+        for event in episode.events:
+            attribution[event.observation.event_id].update((event.observation.actor_id, *event.participants))
+            if event.guildmaster_id is not None:
+                attribution[event.observation.event_id].add(event.guildmaster_id)
+        producers: dict[str, set[SemanticId]] = {}
+        for lineage in episode.lineages:
+            for attempt in lineage.attempts:
+                actors = {actor for part in (attempt.action, attempt.result) if part is not None
+                          for actor in attribution[part.event_id]}
+                for part in (attempt.action, attempt.result, attempt.review):
+                    if part is not None:
+                        producers[part.event_id] = actors
+        for event in episode.events:
+            lineage_actors[event.event_id] = producers.get(event.observation.event_id, set())
+    by_subject: dict[SemanticId, list[VerificationReceipt]] = defaultdict(list)
+    for receipt in receipts:
+        by_subject[receipt.subject.semantic_id].append(receipt)
     result: dict[str, dict[str, object]] = {}
     for event in events:
+        subject = event.review_subject
         admitted: dict[str, VerificationReceipt] = {}
         rejected = False
-        for receipt in receipts:
-            if receipt.subject.semantic_id != event.review_subject.semantic_id:
-                continue
+        for receipt in by_subject[subject.semantic_id]:
             if policy is None:
                 rejected = True
                 continue
             try:
-                require(receipt.subject == event.review_subject, "changed reviewed event")
-                require(ContentDigest(digest(receipt)) in policy.receipt_digests, "unpinned world review")
+                require(receipt.subject == subject, "changed reviewed event")
+                receipt_digest = digest(receipt)
+                require(ContentDigest(receipt_digest) in policy.receipt_digests, "unpinned world review")
                 require(receipt.result.verifier_id in policy.verifiers, "untrusted world reviewer")
                 require(receipt.policy.policy_id == policy.policy_id and receipt.policy.policy_version == policy.policy_version,
                         "world review policy mismatch")
                 require(receipt.result.actor_id == event.observation.actor_id, "world review producer mismatch")
-                require(receipt.result.verifier_id not in (event.observation.actor_id, event.guildmaster_id, *event.participants),
-                        "world reviewer participated in the observation")
+                require(receipt.result.verifier_id not in (event.observation.actor_id, event.guildmaster_id, *event.participants)
+                        and receipt.result.verifier_id not in lineage_actors[event.event_id],
+                        "world reviewer participated in the observation or its attempt")
                 # These are read-only assertions, not admission to execute the
                 # actor's operation (which may have a different authority tier).
-                receipt.policy.require_allow(event.review_subject, event.observation.actor_id,
-                                             AuthorityTier.A0, (event.review_subject.semantic_id,))
+                receipt.policy.require_allow(subject, event.observation.actor_id,
+                                             AuthorityTier.A0, (subject.semantic_id,))
                 require(event.observation.observed_at <= receipt.result.evaluated_at <= at
                         and (at - receipt.result.evaluated_at).total_seconds() <= policy.max_age_seconds,
                         "premature, future or stale world review")
                 checks = (*REVIEW_CHECKS, *(("world.capability",) if event.capabilities else ()))
                 if receipt.result.state is TevvState.PASS:
-                    require_review(receipt, event.review_subject, policy, at=at, tier=AuthorityTier.A0,
+                    require_review(receipt, subject, policy, at=at, tier=AuthorityTier.A0,
                                    checks=checks, sources=(SemanticId(event.observation.event_id),),
                                    since=event.observation.observed_at)
                 else:
@@ -88,7 +111,7 @@ def review_states(
                             for ref in receipt.result.evidence), "negative review evidence is not current")
                     require(any(ref.source == SemanticId(event.observation.event_id) for ref in receipt.result.evidence),
                             "negative review omits exact observation")
-                admitted[digest(receipt)] = receipt
+                admitted[receipt_digest] = receipt
             except ContractError:
                 rejected = True
         states = {receipt.result.state for receipt in admitted.values()}
@@ -97,9 +120,9 @@ def review_states(
             status = "CONTESTED"
         elif states:
             status = next(iter(states)).value
-        # An inferred observation does not become an observed fact by getting
-        # reviewed. A PASS can support that inference, not relabel its source.
-        supported = status == "PASS" and event.observation.evidence_state is EvidenceState.OBSERVED
+        # Receiving pins can support observed or structurally verified sources;
+        # a PASS cannot relabel an inference or another non-observation state.
+        supported = status == "PASS" and event.observation.evidence_state in (EvidenceState.OBSERVED, EvidenceState.VERIFIED)
         result[event.event_id] = {
             "status": status,
             "independently_reviewed": supported,

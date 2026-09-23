@@ -27,6 +27,7 @@ from dataclasses import FrozenInstanceError, replace
 from datetime import datetime, timedelta, timezone
 from itertools import permutations
 from typing import cast
+from unittest.mock import patch
 
 from apps.world_twin.episode import WorldEpisode, review_states, world_episodes
 from apps.world_twin.events import (
@@ -694,6 +695,104 @@ class WorldReviewTests(unittest.TestCase):
         self.assertEqual(rows(rows(output["episodes"])[0]["timeline"])[0]["reported_evidence_state"], "INFERRED")
         self.assertEqual(obj(obj(output["capabilities"])[str(CAPABILITY)])["state"], "NOT_ESTABLISHED")
 
+    def test_exact_receiving_pins_support_verified_source_observations(self) -> None:
+        original = event()
+        embedded = verification(original.observation.subject, ("cni://event/synthetic-upstream",),
+                                when=at(10), actor=HUMAN, tier=AuthorityTier.A1)
+        verified = replace(original, event_id="", observation=replace(
+            original.observation, event_id="", evidence_state=EvidenceState.VERIFIED, verification=embedded,
+        ))
+        receipt = review(verified)
+        for policy in (None, pins(), pins(embedded), pins(review(original))):
+            with self.subTest(unaccepted_policy=policy):
+                status = review_states((verified,), (receipt, embedded), policy, at=at(120))[verified.event_id]
+                self.assertEqual(status["status"], "UNREVIEWED")
+                self.assertFalse(status["independently_reviewed"])
+        status = review_states((verified,), (receipt,), pins(receipt), at=at(120))[verified.event_id]
+        self.assertEqual(status["status"], "PASS")
+        self.assertTrue(status["independently_reviewed"])
+        output = compile_projection((verified,), scope((verified,)), reviews=(receipt,), review_policy=pins(receipt))
+        self.assertEqual(obj(output["measures"])["reviewed_observations"], {"value": 1, "event_ids": [verified.event_id]})
+        self.assertEqual(obj(obj(output["capabilities"])[str(CAPABILITY)])["state"], "REVIEWED_EVIDENCE")
+        self.assertEqual(rows(rows(output["episodes"])[0]["timeline"])[0]["reported_evidence_state"], "VERIFIED")
+        self.assertTrue(all(CanonicalObjectEnvelope.from_dict(row).state.evidence_state is EvidenceState.OBSERVED
+                            for row in rows(obj(output["graph"])["objects"])))
+        self.assertFalse(output["authority_granted"])
+
+    def test_other_source_states_are_not_observed_facts_even_with_exact_pins(self) -> None:
+        original = event(data={"status": "PASS", "state": "VERIFIED", "verified_by": [str(REVIEWER)]})
+        for state in EvidenceState:
+            if state in (EvidenceState.OBSERVED, EvidenceState.VERIFIED):
+                continue
+            value = replace(original, event_id="", observation=replace(original.observation, event_id="", evidence_state=state))
+            receipt = review(value)
+            with self.subTest(state=state):
+                status = review_states((value,), (receipt,), pins(receipt), at=at(120))[value.event_id]
+                self.assertEqual(status["status"], "PASS")
+                self.assertFalse(status["independently_reviewed"])
+                output = compile_projection((value,), scope((value,)), reviews=(receipt,), review_policy=pins(receipt))
+                self.assertEqual(obj(output["measures"])["reviewed_observations"], {"value": 0, "event_ids": []})
+                self.assertEqual(rows(rows(output["episodes"])[0]["timeline"])[0]["reported_evidence_state"], state.value)
+        for invalid_state in ("DECLARED", "VERIFIED"):
+            wire = original.to_dict()
+            wire["event_id"] = ""
+            wire["observation"].update(event_id="", evidence_state=invalid_state)
+            with self.subTest(invalid_state=invalid_state), self.assertRaises(ContractError):
+                WorldEvent.from_dict(wire)
+
+    def test_receipt_identity_collisions_preserve_conflicting_content(self) -> None:
+        value = event()
+        positive = review(value)
+        negative = replace(review(value, state=TevvState.FAIL), receipt_id=positive.receipt_id)
+        wrong_revision = verification(replace(value.review_subject, version="synthetic-wrong-revision"),
+                                      (value.observation.event_id,), when=at(30), actor=HUMAN, tier=AuthorityTier.A0)
+        for ordered in permutations((positive, negative, wrong_revision)):
+            with self.subTest(order=[digest(receipt) for receipt in ordered]):
+                status = review_states((value,), (*ordered, positive), pins(*ordered), at=at(120))[value.event_id]
+                self.assertEqual(status["status"], "CONTESTED")
+                self.assertFalse(status["independently_reviewed"])
+                self.assertEqual(status["receipt_ids"], [str(positive.receipt_id)])
+                self.assertEqual(status["receipt_digests"], sorted((digest(positive), digest(negative))))
+                self.assertTrue(status["unaccepted_review"])
+        for ordered in ((positive, negative), (negative, positive)):
+            status = review_states((value,), ordered, pins(positive), at=at(120))[value.event_id]
+            self.assertEqual(status["status"], "PASS")
+            self.assertEqual(status["receipt_digests"], [digest(positive)])
+            self.assertTrue(status["unaccepted_review"])
+
+    def test_review_matching_hashes_each_event_once(self) -> None:
+        values = tuple(event(f"hash-{index}", second=10 + index) for index in range(3))
+        positive = tuple(review(value) for value in values)
+        negative = review(values[0], state=TevvState.FAIL)
+        unrelated = review(event("unrelated-review", second=20))
+        for receipts in (positive, (*positive, negative, unrelated, positive[0])):
+            policy = pins(*receipts)
+            with self.subTest(receipts=len(receipts)):
+                with patch("apps.world_twin.events.digest", wraps=digest) as hashed:
+                    states = review_states(values, receipts, policy, at=at(120))
+                self.assertEqual(hashed.call_count, len(values))
+                self.assertCountEqual([call.args[0] for call in hashed.call_args_list], [value.stable_body for value in values])
+                self.assertEqual(states[values[0].event_id]["status"], "PASS" if receipts == positive else "CONTESTED")
+
+    def test_review_subjects_keep_boolean_integer_and_float_content_distinct(self) -> None:
+        original = event(data={"measurement": True})
+        receipt = review(original)
+        subjects = {original.review_subject}
+        for measurement in (1, 1.0):
+            changed = replace(original, event_id="", observation=replace(
+                original.observation, event_id="", data={"synthetic": True, "measurement": measurement},
+            ))
+            with self.subTest(measurement=type(measurement).__name__):
+                self.assertEqual(original.observation.data, changed.observation.data)
+                self.assertNotIn(changed.review_subject, subjects)
+                subjects.add(changed.review_subject)
+                status = review_states((changed,), (receipt,), pins(receipt), at=at(120))[changed.event_id]
+                self.assertFalse(status["independently_reviewed"])
+                current = review(changed)
+                self.assertTrue(review_states((changed,), (current,), pins(current), at=at(120))[changed.event_id]["independently_reviewed"])
+                with self.assertRaisesRegex(ContractError, "conflicting observations"):
+                    world_events((original, changed), TENANT, at(120))
+
     def test_disagreement_is_retained_as_contested_and_is_order_independent(self) -> None:
         value = event()
         positive, negative = review(value), review(value, state=TevvState.FAIL)
@@ -720,6 +819,192 @@ class WorldReviewTests(unittest.TestCase):
                 output = compile_projection((value,), scope((value,)), reviews=(receipt,), review_policy=pins(receipt))
                 self.assertEqual(obj(output["measures"])["reviewed_observations"], {"value": 1, "event_ids": [value.event_id]})
                 self.assertEqual(obj(output["capabilities"])[str(CAPABILITY)], {"state": "NOT_ESTABLISHED", "event_ids": [], "contexts": [], "promoted": False})
+
+
+class WorldReviewLineageTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.action = event("linked-action", phase=Phase.ACTION, actor=HUMAN, second=1, data={"attempt_id": "attempt"})
+        self.result = event("linked-result", actor=AGENT, second=2, inputs=(self.action.observation.event_id,), data={"attempt_id": "attempt"})
+        self.values = (self.action, self.result)
+
+    def test_action_and_result_authors_are_excluded_without_optional_participants(self) -> None:
+        recorded_review = event("linked-review", phase=Phase.VERIFICATION, actor=PEER, second=3,
+                                inputs=(self.result.observation.event_id,), data={"attempt_id": "attempt"})
+        values = (*self.values, recorded_review)
+        self.assertTrue(all(not value.participants for value in values))
+        for value, reviewer in ((self.result, HUMAN), (self.action, AGENT), (recorded_review, HUMAN), (recorded_review, AGENT)):
+            for state in (TevvState.PASS, TevvState.FAIL):
+                receipt = review(value, reviewer=reviewer, state=state)
+                with self.subTest(phase=value.observation.phase, reviewer=reviewer, state=state):
+                    status = review_states(values, (receipt,), pins(receipt), at=at(120))[value.event_id]
+                    self.assertEqual(status["status"], "UNREVIEWED")
+                    self.assertFalse(status["independently_reviewed"])
+                    self.assertTrue(status["unaccepted_review"])
+        independent = review(self.result)
+        self.assertTrue(review_states(values, (independent,), pins(independent), at=at(120))[self.result.event_id]["independently_reviewed"])
+
+    def test_hidden_action_authors_cannot_review_agent_results(self) -> None:
+        result = replace(self.result, event_id="", visibility="PUBLIC")
+        values = (self.action, result)
+        receipt = review(result, reviewer=HUMAN)
+        selections = (
+            scope(values), scope(values, view="agent", subject_id=AGENT), scope((result,)),
+            scope(values, audience="public", share_profile=True, adult_confirmed=True,
+                  shared_entity_ids=(AGENT, PROJECT, GUILD, GUILDMASTER)),
+        )
+        for selection in selections:
+            with self.subTest(view=selection.view, audience=selection.audience, grants=len(selection.allowed_event_ids)):
+                output = compile_projection(values, selection, reviews=(receipt,), review_policy=pins(receipt))
+                self.assertEqual(obj(output["measures"])["reviewed_observations"], {"value": 0, "event_ids": []})
+                self.assertEqual(obj(obj(output["capabilities"])[str(CAPABILITY)])["state"], "NOT_ESTABLISHED")
+                if selection != selections[0]:
+                    self.assertEqual(output["events"], [result.event_id])
+                    for hidden in (self.action.event_id, self.action.observation.event_id, str(HUMAN)):
+                        self.assertNotIn(hidden, json.dumps(output))
+
+    def test_linked_wrapper_participants_and_guildmasters_are_not_independent(self) -> None:
+        for attributed_phase in (Phase.ACTION, Phase.RESULT):
+            action = replace(self.action, event_id="", guildmaster_id=None)
+            result = replace(self.result, event_id="", guildmaster_id=None)
+            if attributed_phase is Phase.ACTION:
+                action = replace(action, event_id="", participants=(PEER,), guildmaster_id=GUILDMASTER)
+            else:
+                result = replace(result, event_id="", participants=(PEER,), guildmaster_id=GUILDMASTER)
+            recorded_review = event("linked-review", phase=Phase.VERIFICATION, actor=HUMAN, second=3,
+                                    inputs=(result.observation.event_id,), data={"attempt_id": "attempt"}, guildmaster_id=None)
+            values = (action, result, recorded_review)
+            targets = (result if attributed_phase is Phase.ACTION else action, recorded_review)
+            for target in targets:
+                for reviewer in (PEER, GUILDMASTER):
+                    for state in (TevvState.PASS, TevvState.FAIL):
+                        receipt = review(target, reviewer=reviewer, state=state)
+                        with self.subTest(attributed=attributed_phase, target=target.observation.phase, reviewer=reviewer, state=state):
+                            status = review_states(values, (receipt,), pins(receipt), at=at(120))[target.event_id]
+                            self.assertEqual(status["status"], "UNREVIEWED")
+                            self.assertFalse(status["independently_reviewed"])
+                            self.assertTrue(status["unaccepted_review"])
+                independent = review(target)
+                self.assertTrue(review_states(values, (independent,), pins(independent), at=at(120))[target.event_id]["independently_reviewed"])
+
+    def test_hidden_predecessor_wrapper_attribution_cannot_support_result_review(self) -> None:
+        action = replace(self.action, event_id="", participants=(PEER,), guildmaster_id=GUILDMASTER)
+        result = replace(self.result, event_id="", visibility="PUBLIC", guildmaster_id=None)
+        values = (action, result)
+        selections = (
+            scope(values, view="agent", subject_id=AGENT), scope((result,)),
+            scope(values, audience="public", share_profile=True, adult_confirmed=True,
+                  shared_entity_ids=(AGENT, PROJECT, GUILD)),
+        )
+        for reviewer in (PEER, GUILDMASTER):
+            receipt = review(result, reviewer=reviewer)
+            for selection in selections:
+                with self.subTest(reviewer=reviewer, view=selection.view, audience=selection.audience):
+                    output = compile_projection(values, selection, reviews=(receipt,), review_policy=pins(receipt))
+                    self.assertEqual(output["events"], [result.event_id])
+                    self.assertEqual(obj(output["measures"])["reviewed_observations"], {"value": 0, "event_ids": []})
+                    self.assertEqual(obj(obj(output["capabilities"])[str(CAPABILITY)])["state"], "NOT_ESTABLISHED")
+                    status = obj(rows(rows(output["episodes"])[0]["timeline"])[0]["review"])
+                    self.assertEqual(status["status"], "UNREVIEWED")
+                    self.assertTrue(status["unaccepted_review"])
+                    for hidden in (action.event_id, action.observation.event_id, str(HUMAN), str(PEER), str(GUILDMASTER)):
+                        self.assertNotIn(hidden, json.dumps(output))
+
+    def test_shared_core_wrapper_attribution_stays_with_its_release(self) -> None:
+        action = replace(self.action, event_id="", guildmaster_id=None)
+        result = replace(self.result, event_id="", guildmaster_id=None)
+        other_action = replace(action, event_id="", release_sha="b" * 40, participants=(PEER,), guildmaster_id=GUILDMASTER)
+        other_result = replace(result, event_id="", release_sha="b" * 40)
+        self.assertEqual(action.observation.event_id, other_action.observation.event_id)
+        self.assertEqual(result.observation.event_id, other_result.observation.event_id)
+        values = (action, result, other_action, other_result)
+        for reviewer in (PEER, GUILDMASTER):
+            receipts = (review(result, reviewer=reviewer), review(other_result, reviewer=reviewer))
+            for ordered in (values, tuple(reversed(values))):
+                with self.subTest(reviewer=reviewer, reversed=ordered != values):
+                    statuses = review_states(ordered, receipts, pins(*receipts), at=at(120))
+                    self.assertTrue(statuses[result.event_id]["independently_reviewed"])
+                    self.assertFalse(statuses[result.event_id]["unaccepted_review"])
+                    self.assertEqual(statuses[other_result.event_id]["status"], "UNREVIEWED")
+
+    def test_all_wrappers_of_a_linked_core_event_retain_their_exclusions(self) -> None:
+        participant_action = replace(self.action, event_id="", participants=(PEER,), guildmaster_id=None)
+        guide_action = self.action
+        result = replace(self.result, event_id="", guildmaster_id=None)
+        self.assertEqual(participant_action.observation.event_id, guide_action.observation.event_id)
+        for values in ((participant_action, guide_action, result), (guide_action, participant_action, result)):
+            with self.assertRaisesRegex(ContractError, "conflicting observations"):
+                world_events(values, TENANT, at(120))
+            for reviewer in (PEER, GUILDMASTER):
+                receipt = review(result, reviewer=reviewer)
+                with self.subTest(reviewer=reviewer, first_wrapper=values[0].event_id):
+                    status = review_states(values, (receipt,), pins(receipt), at=at(120))[result.event_id]
+                    self.assertEqual(status["status"], "UNREVIEWED")
+                    self.assertTrue(status["unaccepted_review"])
+
+    def test_review_admission_validates_attempt_predecessors_and_scope(self) -> None:
+        bad_input = replace(self.result, event_id="", observation=replace(
+            self.result.observation, event_id="", inputs=(self.action.event_id,),
+        ))
+        wrong_authority = replace(self.result, event_id="", observation=replace(
+            self.result.observation, event_id="", authority=AuthorityTier.A2,
+        ))
+        wrong_release = replace(self.result, event_id="", release_sha="b" * 40)
+        for values in ((self.result,), (self.action, bad_input), (self.action, wrong_authority), (self.action, wrong_release)):
+            receipt = review(values[-1])
+            with self.subTest(events=[value.event_id for value in values]), self.assertRaises(ContractError):
+                review_states(values, (receipt,), pins(receipt), at=at(120))
+
+    def test_unrelated_events_and_attempts_do_not_exclude_a_reviewer(self) -> None:
+        context = event("unrelated-context", phase=Phase.CONTEXT, actor=PEER, second=0, participants=(REVIEWER,))
+        guide = SemanticId("cni://guildmaster/synthetic-unrelated-guide")
+        other_action = event("other-action", phase=Phase.ACTION, actor=PEER, second=3, data={"attempt_id": "other"},
+                             participants=(REVIEWER,), guildmaster_id=guide)
+        other_result = event("other-result", actor=AGENT, second=4, inputs=(other_action.observation.event_id,), data={"attempt_id": "other"})
+        for reviewer in (PEER, REVIEWER, guide):
+            receipt = review(self.result, reviewer=reviewer)
+            with self.subTest(reviewer=reviewer):
+                status = review_states((*self.values, context, other_action, other_result), (receipt,), pins(receipt), at=at(120))[self.result.event_id]
+                self.assertTrue(status["independently_reviewed"])
+                self.assertFalse(status["unaccepted_review"])
+
+    def test_reused_attempt_names_do_not_cross_world_scope_boundaries(self) -> None:
+        guide = SemanticId("cni://guildmaster/synthetic-unrelated-guide")
+        other = event("other-action", phase=Phase.ACTION, actor=PEER, second=1, data={"attempt_id": "attempt"},
+                      participants=(REVIEWER,), guildmaster_id=guide)
+        actions = (
+            replace(other, event_id="", tenant_id="synthetic-foreign", observation=replace(other.observation, event_id="", scope_id="synthetic-foreign")),
+            replace(other, event_id="", observation=replace(other.observation, event_id="", mission_id="synthetic-other-mission")),
+            replace(other, event_id="", observation=replace(other.observation, event_id="", correlation_id="synthetic-other-correlation")),
+            replace(other, event_id="", release_sha="b" * 40),
+            replace(other, event_id="", observation=replace(other.observation, event_id="", authority=AuthorityTier.A2)),
+        )
+        receipts = tuple(review(self.result, reviewer=reviewer) for reviewer in (PEER, REVIEWER, guide))
+        for action in actions:
+            result = replace(self.result, event_id="", tenant_id=action.tenant_id, release_sha=action.release_sha,
+                             observation=replace(self.result.observation, event_id="", scope_id=action.tenant_id,
+                                 mission_id=action.observation.mission_id, correlation_id=action.observation.correlation_id,
+                                 authority=action.observation.authority, source_ref="synthetic:other-result", inputs=(action.observation.event_id,)))
+            values = (*self.values, action, result)
+            for ordered in (values, tuple(reversed(values))):
+                with self.subTest(action=action.event_id, reversed=ordered != values):
+                    status = review_states(ordered, receipts, pins(*receipts), at=at(120))[self.result.event_id]
+                    self.assertTrue(status["independently_reviewed"])
+                    self.assertFalse(status["unaccepted_review"])
+                    self.assertEqual(status["verifier_ids"], sorted((str(PEER), str(REVIEWER), str(guide))))
+            if action.tenant_id != TENANT:
+                with self.assertRaisesRegex(ContractError, "foreign tenant"):
+                    compile_projection(values, scope(self.values), reviews=receipts, review_policy=pins(*receipts))
+
+    def test_shared_core_event_does_not_import_another_release_result_author(self) -> None:
+        other_action = replace(self.action, event_id="", release_sha="b" * 40)
+        other_result = event("other-release-result", actor=PEER, second=2, release_sha="b" * 40,
+                             inputs=(other_action.observation.event_id,), data={"attempt_id": "attempt"})
+        self.assertEqual(self.action.observation.event_id, other_action.observation.event_id)
+        values = (self.action, other_action, other_result)
+        receipts = (review(self.action, reviewer=PEER), review(other_action, reviewer=PEER))
+        statuses = review_states(values, receipts, pins(*receipts), at=at(120))
+        self.assertTrue(statuses[self.action.event_id]["independently_reviewed"])
+        self.assertEqual(statuses[other_action.event_id]["status"], "UNREVIEWED")
 
 
 class WorldProjectionTests(unittest.TestCase):

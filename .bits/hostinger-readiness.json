@@ -102,7 +102,8 @@
         "All six intents are explicit choices; the saved workspace reopens its readable objective and a starting path into existing lessons and planning. Legacy setup receipts and existing workspaces remain usable.",
         "Rollback of the objective migration disables new objective setup while retaining existing goals, workspace links and receipts. Failure to load a confirmed workspace can be retried without resubmitting setup.",
         "Persisted sessions require native refresh; delayed account responses cannot restore old identity. Named onboarding selects the exact returned readable workspace.",
-        "Government content and tools require current operator-approved paid membership in addition to native account and workspace access; account changes and expiry cannot reuse a stale grant."
+        "Government content and tools require current operator-approved paid membership in addition to native account and workspace access; account changes and expiry cannot reuse a stale grant.",
+        "Controller-owned same-account authentication refresh preserves in-progress work; actual session replacement, logout/relogin and identity changes fence old responses and clear private drafts."
       ],
       "next_step": "Execute rendered objective-first onboarding and both native profiles, then demonstrate signup, an explicit intent/objective, the saved workspace's first lesson, setup recovery, password recovery and return navigation on the accepted candidate."
     },
@@ -222,7 +223,8 @@
         "Actual ERP and registered external actions bind frozen inputs, release declarations and current authority before effect.",
         "Dispatched work is never blindly reissued after timeout or response loss.",
         "Verification controls explain current membership, approved plan, proposer and evidence-author separation without replacing native review policy.",
-        "Government suite reads, commands, cached retries and worker completion recheck current sponsoring membership without changing ordinary mission review authority."
+        "Government suite reads, commands, cached retries and worker completion recheck current sponsoring membership without changing ordinary mission review authority.",
+        "New native reviews persist version 1 and reach the existing value consumer. Final snapshot-enriched serialized reviews must fit the unchanged 24,000-byte field limit; historical terminal reviews are not silently rewritten or upgraded."
       ],
       "next_step": "Use the receiving dispatch to run the native ERP effect and the registered bounded n8n operation; retain current release identity and a distinct result verifier."
     },
@@ -354,6 +356,9 @@
         "apps/web/src/lib/evidenceInspection.js",
         "docs/development-loop.md",
         "libs/career_passport",
+        "apps/career",
+        "apps/knowledge_units",
+        "apps/integrity",
         "docs/career-passport.md",
         "apps/world_twin",
         "docs/world-events.md"
@@ -380,7 +385,9 @@
         "The evidence inspector exposes the exact frozen reviewed observation, its author and reviewer, and differences from the current record.",
         "Semantic invitations retain unresolved or conflicting owner identities; exact evidence prerequisites and historical captures cannot grant or promote authority.",
         "Career facts preserve personal, team and agent participation; only exact independently pinned reviews support application claims, while employment duration, personal attestations and operational authority remain separate.",
-        "Complete mission exports retain original canonical content and leaf bytes for world-event interoperability. Scoped world projections deduplicate observations, preserve missing replay layers and use receiving-authenticated review pins; supplied status, trace correlation and local hashes cannot confer capability or authority."
+        "Complete mission exports retain original canonical content and leaf bytes for world-event interoperability. Scoped world projections deduplicate observations, preserve missing replay layers and use receiving-authenticated review pins; supplied status, trace correlation and local hashes cannot confer capability or authority.",
+        "Assessment evidence replays answers against its issuing bank and unique candidate/capability context. Passport headline wording, verification, dates and application references use compatible support; unchecked bank revisions and contradictory serialized headlines fail closed.",
+        "Integrity disagreement survives stale replay and ordering changes. Knowledge Unit mastery binds exact version/content and boolean outcomes. World review excludes known action/result actors, participants and guildmasters, including hidden predecessors, without excluding unrelated attempts."
       ],
       "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection."
     },
@@ -442,7 +449,8 @@
         "Overview next actions derive only from current readable records; missing reads and demo data do not imply completed or actionable work.",
         "Owner, Operator and Reviewer views consume one scoped value projection; current UTC-month counts retain exact readable native reviews and unknown economic baselines or denominators stay unmeasured.",
         "The government desk is restricted to paid approved members and labels supplied research leads, synthetic demonstrations and absent model/GPU verification explicitly.",
-        "The Career Passport desk reads current scoped work and shows imported verification as reported; account/workspace changes or revocation clear private reviews, DO NOT CLAIM gaps remain visible, and imports cannot approve or submit applications."
+        "The Career Passport desk reads current scoped work and shows imported verification as reported; account/workspace changes or revocation clear private reviews, DO NOT CLAIM gaps remain visible, and imports cannot approve or submit applications.",
+        "Same-grant permission polling preserves career imports, journey drafts and assistant work while pausing new requests. Observed denial/regrant boundaries invalidate old work; already-issued command receipts may settle only in the same lifetime, and private reads/chat remain permission-gated. Polling cannot steal keyboard focus."
       ],
       "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt."
     },

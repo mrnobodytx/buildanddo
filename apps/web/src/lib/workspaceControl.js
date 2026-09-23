@@ -26,6 +26,37 @@ const strings = (value, names) => names.every((name) => typeof value?.[name] ===
 const page = (value) => Array.isArray(value?.items) && value.items.length <= 20 && revision(value.page, 1) && typeof value.has_more === 'boolean';
 const PROVIDERS = ['discord', 'reddit', 'datadog', 'posthog', 'firecrawl', 'n8n', 'supabase', 'mautic', 'twenty'];
 
+/** Key private UI work by identity and granted capabilities, not polling activity.
+ * This is a retention boundary, never permission to read or write while loading.
+ * @param {object} scope Current identity, session lifetime and optional workspace access.
+ * @returns {string} React lifecycle key.
+ */
+export function workspaceLifecycleKey({ accountId = '', workspaceId = '', demo = false, sessionEpoch = 0, access } = {}) {
+    const data = access?.error ? null : access?.data;
+    return JSON.stringify([accountId, workspaceId, demo, sessionEpoch, access ? [access.accessEpoch || 0, Boolean(data), data?.role || '',
+        data?.can_write === true, data?.can_admin === true, data?.can_grant_admin === true, data?.government?.allowed === true] : null]);
+}
+
+/** Coalesce access reads through publication, so a later poll cannot hide a denial.
+ * @returns {{load: Function, invalidate: Function}} One flight per current scope.
+ */
+export function createWorkspaceAccessLoader() {
+    let pending = null;
+    return {
+        load(key, operation) {
+            if (pending?.key === key) return pending.promise;
+            const job = { key, promise: null };
+            pending = job;
+            job.promise = (async () => {
+                try { return await operation(); }
+                finally { if (pending === job) pending = null; }
+            })();
+            return job.promise;
+        },
+        invalidate() { pending = null; },
+    };
+}
+
 function contribution(item, workspace, kind) {
     return item && validId(item.id) && item.workspace === workspace && validId(item.owner) && revision(item.revision, 1) &&
         strings(item, ['body', 'created', 'updated']) &&

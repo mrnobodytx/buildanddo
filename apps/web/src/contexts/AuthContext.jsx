@@ -22,7 +22,7 @@ import { createAuthSession } from '@/lib/authSession';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    const [session, setSession] = useState({ user: null, status: 'checking', error: '' });
+    const [session, setSession] = useState({ user: null, status: 'checking', error: '', sessionEpoch: 0 });
     const controller = useMemo(() => createAuthSession(pb, setSession), []);
     const user = session.status === 'ready' ? session.user : null;
     useEffect(() => {
@@ -38,6 +38,8 @@ export const AuthProvider = ({ children }) => {
     const value = useMemo(
         () => ({
             user,
+            sessionEpoch: session.sessionEpoch,
+            isSessionCurrent: controller.isCurrent,
             isAuthed: session.status === 'ready' && pb.authStore.isValid && user?.id === pb.authStore.record?.id,
             loading: session.status === 'checking',
             sessionError: session.error,
@@ -56,7 +58,7 @@ export const AuthProvider = ({ children }) => {
             },
             logout: () => pb.authStore.clear(),
         }),
-        [user, session.status, session.error, controller],
+        [user, session.status, session.error, session.sessionEpoch, controller],
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

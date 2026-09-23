@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     libs/career_passport, apps/web/src/pages/workspace/CareerPage.jsx, libs/capability_tokens/verification.py, docs/development-loop.md
+# Depends:     libs/career_passport, apps/career, apps/web/src/pages/workspace/CareerPage.jsx, libs/capability_tokens/verification.py, docs/development-loop.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES libs/career_passport; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx; CONSUMES libs/capability_tokens/verification.py; EXTENDS docs/development-loop.md
+# EnumEdges:   CONSUMES libs/career_passport; CONSUMES apps/career; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx; CONSUMES libs/capability_tokens/verification.py; EXTENDS docs/development-loop.md
 # Intent:      Explain the BuildAndDo career dogfood workflow, contribution attribution and receiving evidence needed before one real application.
 # ───────────────────────────────────────────────────────────────
 
@@ -30,6 +30,27 @@ authenticated personal attribution, jobs, applications or outcome receipts;
 it correctly remains HOLD. See the career report in the upgrade dispatch output.
 
 ## Work capture and personal attribution
+
+The separate `apps.career` local history/assessment compiler also supplies the
+login profile envelope. Its assessment ledger must be regraded against the
+issuing question bank before results can enter a passport:
+
+```bash
+python -m apps.career passport --repo . --identity /private/identity.json --assessments /private/assessment.jsonl --bank /private/question-bank.json --output state/career/passport-002
+```
+
+`--bank` and `--assessments` are required together. Wrong bank revisions, mismatched
+candidate/capability context, duplicate attempts and inconsistent answers or
+grades fail closed. Keep question keys and assessment histories private. This is
+local consistency checking, not authentication of a supplied proctor or receipt.
+Receiving owners must still establish identity and independent review.
+
+Headline wording comes from evidence at the selected claim state. A verified
+assessment cannot turn observed implementation into verified authorship. Draft
+claim references, counts and dates describe compatible support only; contradictory
+older passport summaries must be regenerated, not silently upgraded. The login
+profile and the independently reviewed `libs.career_passport` import below remain
+separate contracts. Importing a review does not replace an account's login profile.
 
 `python -m libs.career_passport` uses only Python's standard library and existing
 repository contracts. Run outputs are private: choose a new directory under

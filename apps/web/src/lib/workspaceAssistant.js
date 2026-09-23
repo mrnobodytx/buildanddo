@@ -21,21 +21,25 @@ const KINDS = ['text', 'textarea', 'select', 'checkbox', 'number', 'date', 'emai
 const safeId = (value) => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(value);
 
 /** Bind assistant requests to one mounted account/workspace and discard late responses.
- * @param {object} options Scoped native client and liveness guard.
+ * @param {object} options Native client, request admission and immutable scope guards.
  * @returns {object} Authenticated conversation operations.
  */
-export function createAssistantClient({ client, workspaceId, accountId, isCurrent }) {
-    const current = () => Boolean(safeId(workspaceId) && safeId(accountId) && isCurrent() && client.authStore.record?.id === accountId);
+export function createAssistantClient({ client, workspaceId, accountId, isCurrent, isScopeCurrent = isCurrent }) {
+    const scoped = () => Boolean(safeId(workspaceId) && safeId(accountId) && isScopeCurrent() && client.authStore.record?.id === accountId);
+    const current = () => scoped() && isCurrent();
     const base = `/api/buildanddo/workspaces/${encodeURIComponent(workspaceId)}/assistant`;
     const request = async (suffix, method, body, query) => {
         if (!current()) return { ok: false, stale: true };
+        // Only command receipts can settle during polling; chat and private
+        // reads still require current permission. Every response keeps its scope.
+        const canSettle = method === 'POST' && suffix === '' ? scoped : current;
         try {
             const data = await client.send(base + suffix, { method, body, query, requestKey: null });
-            if (!current()) return { ok: false, stale: true };
+            if (!canSettle()) return { ok: false, stale: true };
             if (data?.workspace !== workspaceId || data?.owner !== accountId) return { ok: false, error: 'The assistant response does not belong to this account and workspace.' };
             return { ok: true, data };
         } catch (error) {
-            return current() ? { ok: false, error: error?.response?.message || 'Could not confirm the assistant response. Reload the session or retry the same message.' } : { ok: false, stale: true };
+            return canSettle() ? { ok: false, error: error?.response?.message || 'Could not confirm the assistant response. Reload the session or retry the same message.' } : { ok: false, stale: true };
         }
     };
     return {

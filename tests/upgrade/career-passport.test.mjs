@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/web/src/lib/careerPassport.js, tests/upgrade/career-fixture.mjs, tests/upgrade/operator-fixture.mjs
+// Depends:     apps/web/src/lib/careerPassport.js, apps/web/src/lib/workspaceControl.js, tests/upgrade/career-fixture.mjs, tests/upgrade/operator-fixture.mjs
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/web/src/lib/careerPassport.js; CONSUMES tests/upgrade/career-fixture.mjs; CONSUMES tests/upgrade/operator-fixture.mjs
+// EnumEdges:   VALIDATES apps/web/src/lib/careerPassport.js; VALIDATES apps/web/src/lib/workspaceControl.js; CONSUMES tests/upgrade/career-fixture.mjs; CONSUMES tests/upgrade/operator-fixture.mjs
 // Intent:      Verify compiler interoperability, scoped native reads and invalidated career imports without external applications.
 // ───────────────────────────────────────────────────────────────
 
@@ -18,6 +18,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { webcrypto } from 'node:crypto';
 import { CAREER_MAX_BYTES, careerJobUrl, createCareerClient, importCareerReview } from '../../apps/web/src/lib/careerPassport.js';
+import { workspaceLifecycleKey } from '../../apps/web/src/lib/workspaceControl.js';
 import { careerPacket, sealCareer } from './career-fixture.mjs';
 import { operatorFixture } from './operator-fixture.mjs';
 import { plain } from './admin-fixture.mjs';
@@ -25,13 +26,13 @@ import { plain } from './admin-fixture.mjs';
 const parse = (packet = careerPacket(), scope = {}) => importCareerReview(JSON.stringify(packet), {
     person: 'cni://person/pocketbase/editor', workspace: 'ws1', crypto: webcrypto, ...scope,
 });
-function connected({ demo = false, crypto = webcrypto } = {}) {
+function connected({ demo = false, crypto = webcrypto, isCurrent = () => true } = {}) {
     const f = operatorFixture(); let current = true; const sent = [];
     const client = { authStore: { record: { id: 'editor' } }, async send(path, options) {
         sent.push({ path, options }); return plain(f.operator.snapshot(f.event(client.authStore.record.id, {},
             { workspace: path.split('/')[4], query: options.query })));
     } };
-    const api = createCareerClient({ client, accountId: 'editor', workspaceId: 'ws1', demo, crypto, isCurrent: () => current });
+    const api = createCareerClient({ client, accountId: 'editor', workspaceId: 'ws1', demo, crypto, isCurrent: () => current && isCurrent() });
     return { f, api, client, sent, change: () => { current = false; } };
 }
 
@@ -119,6 +120,30 @@ test('disposal fences prior reads and effect reactivation still requires fresh a
     const c = connected(); await c.api.read(); c.api.dispose(); assert.equal(c.api.exportWork(), null);
     assert.equal((await c.api.read()).ok, false); c.api.activate(); assert.equal(c.api.exportWork(), null);
     assert.equal((await c.api.read()).ok, true);
+});
+
+test('a stable career lifecycle does not authorize imports or exports during a permission poll', async () => {
+    const scope = { accountId: 'editor', workspaceId: 'ws1', sessionEpoch: 1, demo: false,
+        access: { data: { role: 'editor', can_write: true }, loading: false, error: '' } };
+    const lifetime = workspaceLifecycleKey(scope);
+    const c = connected({ isCurrent: () => workspaceLifecycleKey(scope) === lifetime && !scope.access.loading });
+    assert.equal((await c.api.read()).ok, true);
+    assert.equal((await c.api.importReview(JSON.stringify(careerPacket()))).ok, true);
+    const snapshot = c.api.exportWork().snapshot;
+    scope.access = { ...scope.access, loading: true };
+    assert.equal(workspaceLifecycleKey(scope), lifetime);
+    assert.equal(c.api.exportWork(), null);
+    assert.equal((await c.api.importReview(JSON.stringify(careerPacket()))).ok, false);
+    scope.access = { ...scope.access, loading: false, data: { ...scope.access.data } };
+    c.client.authStore.record = { id: 'editor', name: 'Fresh same-account record' };
+    assert.equal(c.api.exportWork().snapshot, snapshot);
+    assert.equal(c.sent.length, 1);
+    scope.access = { data: null, loading: false, error: 'Membership revoked' };
+    assert.notEqual(workspaceLifecycleKey(scope), lifetime);
+    assert.equal(c.api.exportWork(), null);
+    c.api.dispose();
+    scope.access = { data: { role: 'editor', can_write: true }, loading: false, error: '' };
+    assert.equal(c.api.exportWork(), null);
 });
 
 test('HTML in a reviewed source remains ordinary text without execution', async () => {

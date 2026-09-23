@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        tests/career/test_career.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-CAREER-001
+# SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-CAREER-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
@@ -28,6 +28,7 @@ import tempfile
 import unittest
 from dataclasses import replace
 from datetime import datetime, timezone
+from itertools import permutations
 from pathlib import Path
 
 from apps.career import (
@@ -45,7 +46,7 @@ from apps.career import (
 from apps.career.authority import AuthorityGrant, Decision, JobTier, authorize, reserved_class
 from apps.career.cli import load_identity, main
 from apps.career.compiler import Package
-from apps.career.evidence import EvidenceRef, attestation_evidence, best_state, strongest
+from apps.career.evidence import EvidenceRef, attestation_evidence, best_state, canonical_digest, strongest
 from apps.career.history import Identity, attribute, parse_git_log, read_git_history
 from apps.career.jobs import RequirementKind, classify, extract_requirements
 from apps.career.match import Coverage
@@ -271,6 +272,74 @@ class AttestationTests(unittest.TestCase):
 
 
 class PassportTests(RepoCase):
+    def test_verified_assessment_cannot_verify_observed_implementation(self) -> None:
+        implemented = EvidenceRef("commit", "c1", "python", Participation.PERSONALLY_IMPLEMENTED,
+                                  ClaimState.OBSERVED, "2026-09-20T00:00:00Z", "recorded code")
+        assessed = EvidenceRef("assessment", "assessment:a1", "python", Participation.ASSESSED,
+                               ClaimState.VERIFIED, "2026-08-01T00:00:00Z", "proctored assessment")
+        refs = [implemented, replace(implemented, ref="c2"), assessed]
+        digests = set()
+        for ordered in permutations(refs):
+            passport = build_passport("p", ordered, as_of=AS_OF)
+            entry = passport.entry("python")
+            assert entry is not None
+            self.assertEqual((entry.claim_participation, entry.state),
+                             (Participation.ASSESSED, ClaimState.VERIFIED))
+            self.assertEqual(entry.claim_verb, "Passed an assessment in")
+            self.assertEqual(entry.participation_counts, {"ASSESSED": 1, "PERSONALLY_IMPLEMENTED": 2})
+            self.assertEqual(entry.strongest_participation, Participation.PERSONALLY_IMPLEMENTED)
+            digests.add(passport.digest)
+        self.assertEqual(len(digests), 1)
+
+    def test_claim_sample_and_package_retain_only_compatible_support(self) -> None:
+        implemented = EvidenceRef("commit", "c0", "python", Participation.PERSONALLY_IMPLEMENTED,
+                                  ClaimState.OBSERVED, "2026-09-20T00:00:00Z", "recorded code")
+        assessed = EvidenceRef("assessment", "assessment:a1", "python", Participation.ASSESSED,
+                               ClaimState.VERIFIED, "2026-08-01T00:00:00Z", "proctored assessment")
+        passport = build_passport("p", [*[replace(implemented, ref=f"c{i}") for i in range(20)], assessed],
+                                  as_of=AS_OF)
+        entry = passport.entry("python")
+        assert entry is not None
+        self.assertIn("assessment:a1", entry.refs())
+        self.assertEqual(entry.confidence, confidence(1, 52, Participation.ASSESSED, ClaimState.VERIFIED))
+        self.assertEqual(Passport.from_dict(passport.to_dict()), passport)
+        job = normalize_job({"job_id": "j", "company": "c", "role": "r", "source": "synthetic",
+                             "requirements": ["Python"]})
+        dossier = build_dossier(evaluate(job, passport), passport)
+        package = compile_application(job, dossier, passport)
+        manifest = json.loads(package.files["evidence_manifest.json"])
+        [claim] = manifest["claims"]
+        self.assertEqual(claim["evidence_refs"], ["assessment:a1"])
+        self.assertEqual(claim["claim_state"], "VERIFIED")
+        self.assertTrue(claim["claim"].startswith("Passed an assessment in "))
+        self.assertNotIn("authored", claim["claim"])
+        self.assertIn("2026-08 to 2026-08", claim["claim"])
+        for change in ({"evidence_refs": ["c0"]}, {"claim_state": "OBSERVED"}):
+            with self.subTest(change=change):
+                altered = json.loads(json.dumps(manifest))
+                altered["claims"][0].update(change)
+                invalid = Package(package.manifest, {**package.files, "evidence_manifest.json": json.dumps(altered)})
+                self.assertTrue(validate_package(invalid, passport, dossier))
+
+    def test_imported_wording_cannot_borrow_observed_state(self) -> None:
+        declared = EvidenceRef("profile", "d1", "python", Participation.PERSONALLY_IMPLEMENTED,
+                               ClaimState.DECLARED, "2026-09-20T00:00:00Z", "self-reported")
+        observed = replace(declared, kind="mission", ref="o1", participation=Participation.PERSONALLY_OPERATED,
+                           state=ClaimState.OBSERVED)
+        passport = build_passport("p", [declared, replace(declared, ref="d2"), observed], as_of=AS_OF)
+        entry = passport.entry("python")
+        assert entry is not None
+        self.assertEqual((entry.claim_verb, entry.state), ("Operated", ClaimState.OBSERVED))
+
+    def test_serialized_headline_needs_matching_retained_support(self) -> None:
+        raw = self.passport().to_dict()
+        for change in ({"state": "VERIFIED", "verified": True}, {"claim_verb": "Invented"}):
+            altered = json.loads(json.dumps(raw))
+            altered["capabilities"][0].update(change)
+            altered["digest"] = canonical_digest({key: value for key, value in altered.items() if key != "digest"})
+            with self.subTest(change=change), self.assertRaises(CareerError):
+                Passport.from_dict(altered)
+
     def test_passport_capabilities_and_limits(self) -> None:
         passport = self.passport()
         ci = passport.entry("ci_cd")

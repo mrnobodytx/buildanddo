@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        apps/career/passport.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-CAREER-001
+# SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-CAREER-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
@@ -122,12 +122,17 @@ class CapabilityEntry:
 
     @property
     def verified(self) -> bool:
-        """Return whether the best evidence was settled by an independent verifier."""
+        """Return whether the headline participation has verified support."""
         return self.state is ClaimState.VERIFIED
 
     def refs(self) -> set[str]:
         """Return the evidence references retained in this entry."""
         return {item["ref"] for item in self.evidence}
+
+    def claim_evidence(self) -> tuple[dict[str, str], ...]:
+        """Return support for this exact headline participation and claim state."""
+        return tuple(item for item in self.evidence if item["capability_id"] == self.capability_id
+                     and item["participation"] == self.claim_participation.value and item["state"] == self.state.value)
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize to plain JSON values."""
@@ -153,7 +158,7 @@ class CapabilityEntry:
     def from_dict(cls, raw: dict[str, Any]) -> CapabilityEntry:
         """Rebuild an entry from its serialized form."""
         try:
-            return cls(
+            entry = cls(
                 capability_id=str(raw["capability_id"]),
                 label=str(raw["label"]),
                 records=int(raw["records"]),
@@ -169,6 +174,9 @@ class CapabilityEntry:
                 confidence=float(raw["confidence"]),
                 evidence=tuple({str(k): str(v) for k, v in item.items()} for item in raw["evidence"]),
             )
+            if entry.claim_verb != CLAIM_VERBS[entry.claim_participation] or not entry.claim_evidence():
+                raise CareerError("passport headline lacks matching participation and state evidence; regenerate it")
+            return entry
         except (KeyError, TypeError, ValueError, AttributeError) as error:
             raise CareerError("malformed passport capability entry") from error
 
@@ -251,9 +259,12 @@ def claim_participation(counts: Counter[str], records: int) -> Participation:
     return Participation(top[0])
 
 
-def _sample(refs: list[EvidenceRef]) -> tuple[dict[str, str], ...]:
-    ordered = sorted(refs, key=lambda item: item.observed_at, reverse=True)
-    ordered.sort(key=lambda item: PARTICIPATION_ORDER.index(item.participation))
+def _sample(refs: list[EvidenceRef], headline: Participation, state: ClaimState) -> tuple[dict[str, str], ...]:
+    ordered = sorted(refs, key=lambda item: (
+        (item.participation, item.state) != (headline, state),
+        PARTICIPATION_ORDER.index(item.participation), -parse_instant(item.observed_at).timestamp(),
+        item.ref, item.kind, item.state.value, item.detail,
+    ))
     chosen: list[EvidenceRef] = []
     seen: set[str] = set()
     for item in ordered:
@@ -293,7 +304,11 @@ def build_passport(
         state = best_state([item.state for item in refs])
         records = len({item.ref for item in refs})
         days_since = max(0, (as_of - last).days)
-        headline = claim_participation(counts, records)
+        established = [item for item in refs if item.state is state]
+        headline = claim_participation(Counter(item.participation.value for item in established),
+                                       len({item.ref for item in established}))
+        support = [item for item in established if item.participation is headline]
+        claim_age = max(0, (as_of - max(parse_instant(item.observed_at) for item in support)).days)
         verb = CLAIM_VERBS[headline]
         if verb is None:  # pragma: no cover - rejected above
             raise CareerError("unclaimable participation")
@@ -311,8 +326,8 @@ def build_passport(
                 last_seen=last.isoformat(),
                 observed_span_days=(last - first).days,
                 days_since_last=days_since,
-                confidence=confidence(records, days_since, headline, state),
-                evidence=_sample(refs),
+                confidence=confidence(len({item.ref for item in support}), claim_age, headline, state),
+                evidence=_sample(refs, headline, state),
             )
         )
     return Passport(

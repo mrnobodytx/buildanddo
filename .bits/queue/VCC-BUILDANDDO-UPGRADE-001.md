@@ -20,6 +20,27 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Audited evidence and handoff repairs - 2026-09-23
+
+The owner requests fixing the completed audit in logical dependency order under
+this existing A2 dispatch. Preserve the merged source and prior evidence. Local
+synthetic tests are authorized; external writes, credentials, provider activation
+and deployment remain outside this continuation.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| ER-1 | Bind assessment results and passport claims to their actual support | Adversarial career regressions and existing coverage gate | source PASS: 86 cases on both declared Python versions; bank replay is required before evidence admission |
+| ER-2 | Preserve conflicts, revision-bound mastery and independent world review | Integrity, Knowledge Unit and world-twin negative controls and coverage | source PASS: 19 integrity, 20 Knowledge Unit and 97 world-twin cases per Python version; unchanged coverage floors |
+| ER-3 | Repair native review propagation and browser work preservation | Connected producer/consumer tests and rendered lifecycle regressions | source PASS: 47 native-policy/value and 80 focused UI/client cases; native/rendered runtime acceptance remains unavailable |
+| ER-4 | Review source, retain validation and receiving blockers | Source/type/lint, readiness, boundary, context and memory checks | PARTIAL: 672 Node passes; 1,174 Python cases with zero failures and six dependency skips; source review follow-ups repaired; native/rendered and actual deployment acceptance remain open |
+
+Memory brief: the audited merged revision is 1bb22896eb1e78704d12c20b0d85c58f22e568c6.
+The assessment found reproducible evidence-binding, stale replay, review-lineage,
+mastery-version and native review-format defects despite passing earlier suites.
+UI lifecycle failures were source-traced, not rendered acceptance. The earlier
+eighteen-profile result remains historical HOLD, not evidence for this repair.
+No authenticated workspace session is attached; no seat event is fabricated.
+
 ## World-event interoperability - 2026-09-23
 
 Continue the existing A2 semantic/evidence integration scope for the owner's
