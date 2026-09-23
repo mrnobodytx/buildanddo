@@ -1,7 +1,8 @@
+# CGRF: SRS=SRS-BUILDANDDO-UPGRADE-001,SRS-BUILDANDDO-BUDDI-002 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ──────────────────────────────
 # File:        docker-compose.staging.yml
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-002
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -60,6 +61,11 @@ services:
       BUILDER_MAILER_SENDER_ADDRESS: ${BUILDER_MAILER_SENDER_ADDRESS:-}
       REACH_API_URL: ${REACH_API_URL:-}
       REACH_API_TOKEN: ${REACH_API_TOKEN:-}
+      # Buddi's public tool routes (pb_hooks/public-api.pb.js). Empty closes the three
+      # write routes with a 503; the read routes need nothing. See .env.example.
+      BUDDI_TOOL_SECRET: ${BUDDI_TOOL_SECRET:-}
+      BUDDI_HANDOFF_DISCORD_WEBHOOK: ${BUDDI_HANDOFF_DISCORD_WEBHOOK:-}
+      BUILDANDDO_PUBLIC_ORIGIN: ${BUILDANDDO_PUBLIC_ORIGIN:-}
     volumes:
       - pocketbase_staging_data:/pb/pb_data
     healthcheck:

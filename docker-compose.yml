@@ -1,7 +1,8 @@
+# CGRF: SRS=SRS-BUILDANDDO-DEVENV-001,SRS-BUILDANDDO-BUDDI-002 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docker-compose.yml
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-DEVENV-001
+# SRS:         SRS-BUILDANDDO-DEVENV-001, SRS-BUILDANDDO-BUDDI-002
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -81,6 +82,11 @@ services:
       BUILDER_MAILER_SENDER_ADDRESS: ${BUILDER_MAILER_SENDER_ADDRESS:-}
       REACH_API_URL: ${REACH_API_URL:-}
       REACH_API_TOKEN: ${REACH_API_TOKEN:-}
+      # Buddi's public tool routes (pb_hooks/public-api.pb.js). Empty closes the three
+      # write routes with a 503; the read routes need nothing. See .env.example.
+      BUDDI_TOOL_SECRET: ${BUDDI_TOOL_SECRET:-}
+      BUDDI_HANDOFF_DISCORD_WEBHOOK: ${BUDDI_HANDOFF_DISCORD_WEBHOOK:-}
+      BUILDANDDO_PUBLIC_ORIGIN: ${BUILDANDDO_PUBLIC_ORIGIN:-}
     ports:
       - "${POCKETBASE_PORT:-8090}:8090"
     volumes:

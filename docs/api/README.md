@@ -1,7 +1,8 @@
+# CGRF: SRS=SRS-BUILDANDDO-DEVENV-001,SRS-BUILDANDDO-BUDDI-002 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/api/README.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-DEVENV-001
+# SRS:         SRS-BUILDANDDO-DEVENV-001, SRS-BUILDANDDO-BUDDI-002
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -481,6 +482,7 @@ everywhere as `owner`, `user`, `actor`, `auditor`, `submitted_by`.
 | `1788900000_create_workspace_members_rbac.js` | `workspace_members` (+ re-scopes 15 collections) |
 | `1788920000_add_claim_authorship_and_reputation.js` | `contributor_reputation` (+ `knowledge_claims.submitted_by`) |
 | `1789600000_create_workflow_runs.js` | `workflow_runs` with workspace reads, locked direct writes and request-key uniqueness |
+| `1792100000_buddi_intake.js` | `buddi_intake`, superuser-only; down keeps every row |
 | PocketBase built-ins | `users`, `_superusers` |
 
 The remaining migrations change settings, data or individual fields rather
@@ -520,6 +522,74 @@ an edit takes effect on `docker compose restart pocketbase`.
 | `builder-mailer.pb.js` | Intercepts outgoing mail and posts it to an external mail API. The guard is `smtp.enabled` in PocketBase settings, **not** the environment variables. | With SMTP disabled and `BUILDER_MAILER_*` unset, anything that sends mail (password reset, verification) fails with a 500. Nothing in a normal local flow sends mail; if you need it, enable SMTP in the admin UI. |
 | `reach-contact-sync.pb.js` | Fires after every `early_access` record is created and posts the contact to an external CRM. No environment guard. | The request fails and the error is logged and swallowed, so the `early_access` record is still saved. Submitting the early-access form locally is safe. |
 | `custom-migrations-cmd.pb.js` | Adds `pocketbase horizons migrations:up` and `migrations:revert <file>` | Available inside the container |
+| `public-api.pb.js` | Mounts Buddi's eight tool routes under `/api/v1/public` (see below). | Reads work as-is. Writes answer `503` until `BUDDI_TOOL_SECRET` is set in `.env`; product-context reads its published files from `https://buildanddo.com` unless `BUILDANDDO_PUBLIC_ORIGIN` says otherwise. |
+
+## Public tool API (`/api/v1/public`)
+
+Eight routes answer the tools of Buddi, the public ElevenLabs voice agent. The
+tools call `https://buildanddo.com/api/v1/public/...`; the `buildanddo-edge`
+worker (`apps/edge/src/public-api.js`) forwards that to
+`/hcgi/platform/api/v1/public/...` with the method, query, body and headers
+intact, refuses malformed paths itself, and turns any non-JSON answer into a
+JSON `502` so the site shell can never answer in the backend's place. Routes:
+`apps/pocketbase/pb_hooks/public-api.pb.js`.
+
+Every response carries `schema`, `authority` (`A0` or `A2`), `source` and
+`as_of`.
+
+| Route | Authority | Answers from |
+|---|---|---|
+| `GET product-context?section=` | A0 | reviewed repository statements, the live lesson catalogue, and `capabilities.json` / `roadmap-status.json` / `platform-health.json` fetched from `BUILDANDDO_PUBLIC_ORIGIN` (cached 5 minutes; a non-JSON answer is reported `UNAVAILABLE`) |
+| `GET challenges/demo?problem_category=&business_type=&objective=&limit=` | A0 | authored lessons; `limit` 1-10 (larger is capped); no match is an `EMPTY` list with the reason |
+| `GET challenges/{challenge_id}/state?mission_id=` | A0 | one authored lesson: steps, verifier, content digest |
+| `GET evidence?challenge_id=&mission_id=&evidence_id=&evidence_type=` | A0 | lesson references and digests; fabric records only while their list and view rules are `""` |
+| `GET replay/{challenge_id}?mission_id=` | A0 | the lesson's public history; runs are private |
+| `POST challenges/request` | A2 | `buddi_intake` |
+| `POST feedback` | A2 | `buddi_intake` |
+| `POST support/handoff` | A2 | `buddi_intake`, plus a moderator notice |
+
+**What a challenge is.** An authored lesson: a `tutorials` record with both a
+`slug` and a `curriculum_version`, which only the curriculum migrations set.
+The lessons are public by design (the site bundles them for anonymous readers),
+so they are served even though the collection's own rule asks for sign-in; any
+other `tutorials` record is not. The knowledge check's answer is never
+returned. `challenge_id` is the slug or the record id.
+
+**What is never returned.** Runs. A lesson run is a learner's own
+`tutorial_learning` record and a Challenge Desk run is a workspace mission;
+neither is read by these routes, so any `mission_id` answers the same
+`404 {"state":"UNKNOWN"}` whether or not it exists. An id that exists but is not
+public answers exactly like one that never existed.
+
+**Writes** are refused in this order: `503 CLOSED` while `BUDDI_TOOL_SECRET` is
+unset or shorter than 32 characters; `401` unless `x-buddi-tool-secret` matches
+(compared as SHA-256 digests in constant time); `400` without a valid
+`x-conversation-id` or for a body outside the tool schema (unknown field,
+missing required field, over-length or control characters, `rating` outside
+1-5); `413` over 16000 characters; `404` for a demo-challenge request naming a
+challenge that is not public; `429` after 5 stored requests in one conversation
+or 200 across all conversations in an hour. Otherwise `201` with
+`receipt_id`, the new row's id. An identical retry in the same conversation gets
+`200` and the same receipt. A handoff posts to `BUDDI_HANDOFF_DISCORD_WEBHOOK`
+when set (`allowed_mentions` none, embeds suppressed) and reports
+`notification: sent | not_configured | failed:<status>`.
+
+### `buddi_intake` — rules: superuser only
+
+| Field | Type | Notes |
+|---|---|---|
+| `kind` | select, required | `feedback`, `handoff`, `challenge_request` |
+| `payload` | json, required | the validated tool body |
+| `payload_digest` | text, required | SHA-256 of kind and payload; unique with `conversation_id` |
+| `conversation_id` | text, required | from `x-conversation-id` |
+| `trace_id`, `campaign_id` | text | from `x-trace-id`, `x-campaign-id`; dropped if malformed |
+| `status` | select, required | `received`, `reviewed`, `closed` |
+| `notification` | text | handoffs only |
+| `protocol_version` | number | the marker the routes require; the down migration removes only this, keeping every request |
+
+Acceptance: `python tests/upgrade/test_public_api_native.py --require-binary`
+with `BUILDANDDO_TEST_POCKETBASE` set, `node --test tests/upgrade/public-api.test.mjs`
+and `npm --prefix apps/edge test`.
 
 ## Changing the schema
 
