@@ -133,7 +133,7 @@ srs:
     status: in_progress
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-ROADMAP-001.md
-    notes: Fixes the missing scripts/ci/sprint_cycle.py import on clean checkouts
+    notes: Fixes the missing scripts/ci/sprint_cycle.py import on clean checkouts. Continuation R7-R8 (2026-09-23, VCC-BUILDANDDO-ROADMAP-001) puts the guildmasters' own missions and evidence into the public activity projection and renders non-address evidence as text
 
   - code: SRS-BUILDANDDO-TEST-001
     title: Web test runner emitting JUnit, with workspace component suites
