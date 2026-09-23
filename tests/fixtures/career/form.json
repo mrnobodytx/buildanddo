@@ -1,0 +1,11 @@
+{"application_system": "lever",
+ "fields": [
+   {"id": "f1", "label": "Full name", "type": "text", "required": true},
+   {"id": "f2", "label": "Email", "type": "text", "required": true},
+   {"id": "f3", "label": "Resume/CV", "type": "file", "required": true},
+   {"id": "f4", "label": "Cover letter", "type": "file", "required": false},
+   {"id": "f5", "label": "Describe your experience with CI/CD and observability.", "type": "textarea", "required": false},
+   {"id": "f6", "label": "Are you legally authorized to work in the United States?", "type": "select", "required": true},
+   {"id": "f7", "label": "What are your salary expectations?", "type": "text", "required": true},
+   {"id": "f8", "label": "GitHub", "type": "text", "required": false}
+ ]}

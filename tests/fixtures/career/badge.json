@@ -1,0 +1,7 @@
+[{"@context": "https://w3id.org/openbadges/v2", "type": "Assertion", "id": "https://badges.example.invalid/a/1",
+  "recipient": {"type": "email", "hashed": true, "salt": "s4lt", "identity": "sha256$36b1df4a47eda46475713e3f42e12431826ead12634027288e398d6c377cec47"},
+  "badge": {"name": "Observability Practitioner", "description": "Datadog monitoring and tracing", "tags": ["telemetry"],
+            "issuer": {"name": "Example Academy"}},
+  "issuedOn": "2026-05-01T00:00:00Z", "verification": {"type": "hosted"}},
+ {"type": "Assertion", "recipient": {"type": "url", "identity": "https://example.invalid/me"},
+  "badge": "https://badges.example.invalid/b/2", "issuedOn": "2026-06-01T00:00:00Z"}]
