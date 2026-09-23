@@ -23,9 +23,15 @@
 Operator direction (2026-09-23): wire the ElevenLabs agent, Buddi, into the main page as the embedded,
 professional setup rather than a link to ElevenLabs' own talk page. Today the site only links out
 ("Talk to our agent", SRS-BUILDANDDO-COMMUNITY-WEB-001), and an in-page session could not work anyway:
-the live site sends `Permissions-Policy: camera=(), microphone=(), geolocation=()`. The edge Worker
-sets that default when the origin sends none, and the staging container's nginx sends none. The site sends
-no Content-Security-Policy, so nothing else stands in the way.
+the live site sends `Permissions-Policy: camera=(), microphone=(), geolocation=()`.
+
+Measured 2026-09-23:
+- On the production host, one shared nginx snippet sets that header for production, staging, the forum
+  and the wiki. The snippet is not in this repository.
+- The edge Worker passes the origin's header through, and would set the same default if the origin sent
+  none.
+- The repository's staging container nginx sends none.
+- The live Content-Security-Policy is report-only, so it blocks nothing.
 
 ## Requirements
 

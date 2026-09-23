@@ -103,8 +103,8 @@ export default function TalkToBuddi() {
             <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">Ask Buddi, out loud.</h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
                 Buddi is BuildAndDo's voice agent: an automated assistant, not a person. Ask about a lesson, a
-                challenge or how the platform works. What you say goes to ElevenLabs, our voice provider, and your
-                browser asks before it uses the microphone.
+                challenge or how the platform works. What you say goes to ElevenLabs, our voice provider, and may be
+                recorded. Your browser asks before it uses the microphone.
             </p>
             <Rule className="my-6" />
             <Card className="p-5">

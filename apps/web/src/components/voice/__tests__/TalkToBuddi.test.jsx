@@ -95,6 +95,8 @@ describe('talk to Buddi', () => {
     it('asks for nothing and starts nothing before the visitor presses Start', () => {
         render(<TalkToBuddi />);
         expect(screen.getByRole('heading', { name: 'Ask Buddi, out loud.' })).toBeVisible();
+        // The agent keeps recordings (its privacy settings, read 2026-09-23), so the visitor is told first.
+        expect(screen.getByText(/an automated assistant, not a person.*may be recorded/s)).toBeVisible();
         expect(screen.getByRole('button', { name: 'Start talking' })).toBeVisible();
         expect(navigator.mediaDevices.getUserMedia).not.toHaveBeenCalled();
         expect(sdk.options).toBeNull();

@@ -31,16 +31,25 @@ in words, and get the talk-to link whenever the page cannot use their microphone
 | 1 | Add `@elevenlabs/react` (operator approved 2026-09-23: MIT, about 16 MB unpacked with its dependencies) | `npm ci` from the updated lock | done |
 | 2 | Agent id from the one source; microphone policy check | `vitest run src/components/voice` | done |
 | 3 | "Talk to Buddi" section, lazy session, fallback link | same tests | done |
-| 4 | Staging nginx sends `microphone=(self)` | `node --test tests/upgrade/staging-contract.test.mjs` | done |
+| 4 | The repository's staging container nginx sends `microphone=(self)` (the live hosts: operator step 1) | `node --test tests/upgrade/staging-contract.test.mjs` | done |
 | 5 | Build splits the SDK into its own chunk; no leak in the build | `npm run build`, `public_redaction.py scan dist/apps/web` | done, one explained match |
 | 6 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `verify_public_boundary.py` | done |
 
 ## Operator steps (not performed here)
 
-1. **Production header:** the production host's nginx sends `Permissions-Policy: camera=(), microphone=(self),
-   geolocation=()`. Alternatively, the edge Worker's default changes the same way once SRS-BUILDANDDO-BUDDI-002
-   puts its source in this repository and it is redeployed.
-2. **Allowed origins:** the ElevenLabs agent accepts sessions from `https://buildanddo.com` (and staging).
+1. **Production header.** The production host's nginx serves both production and staging. One shared snippet,
+   `snippets/security-headers.conf`, sends `microphone=()` for them and for the forum and the wiki. A prepared
+   operator script makes the three BuildAndDo hosts send `microphone=(self)` through a map on the Host header,
+   and leaves the forum and the wiki as they are.
+   - It has a read-only plan mode. The plan ran on 2026-09-23 and nginx accepted the change on a scratch copy.
+   - `-Apply` restores the old configuration by itself if any check fails.
+   - `-Revert` undoes it.
+   - The edge Worker passes the origin's header through, so it needs no change. Its own default still says
+     `microphone=()`, which matters only if the origin ever stops sending the header.
+2. **Allowed origins: none needed.** The agent has authentication off and an empty allowlist (read
+   2026-09-23), so it accepts sessions from any site. That was already true through the public talk-to link.
+   Restricting the allowlist to BuildAndDo's hosts is optional hardening. If it is done, test that the
+   ElevenLabs talk-to page, which is the section's fallback, still works.
 3. **Deploy:** the web build, through the release rail.
 4. **Buddi v2:** switch the agent to its v2 workflow after SRS-BUILDANDDO-BUDDI-002 is deployed and its tool
    secret is set.
@@ -106,6 +115,16 @@ in words, and get the talk-to link whenever the page cannot use their microphone
 - **The redaction scanner counts the unspecified (all-zeros) address as an address.** It identifies a
   machine no more than loopback does. Exempting it belongs with the scanner's owner, beside the loopback
   rule.
+- **The production host's security headers are not under version control.** `snippets/security-headers.conf`
+  sets the headers for four sites and exists only on that host, next to a hand-made backup from 2026-09-22.
+  A change there is invisible to review and to this repository's tests. `apps/web/nginx.conf` describes the
+  container, not what serves the live sites.
+- **Enforcing either CSP would stop the voice session.** The two report-only policies are the edge Worker's
+  on the apex and the nginx snippet's on staging. Neither allows `https://api.elevenlabs.io` or
+  `wss://livekit.rtc.elevenlabs.io` in `connect-src`. Neither allows the SDK's audio worklet, which loads from
+  a `data:` or `blob:` URL. Until they do, voice sessions show up as violations in the report-only stream.
+- **The agent keeps recordings.** Its privacy settings, read 2026-09-23, record voice and keep transcripts,
+  with zero-retention off. The section says so: "may be recorded".
 
 ## Definition of done
 
