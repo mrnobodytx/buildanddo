@@ -21,7 +21,7 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import pb from '@/lib/pocketbaseClient';
 import { observeMutation } from '@/lib/observability/mutations';
-import { createWorkspaceControlClient } from '@/lib/workspaceControl';
+import { createWorkspaceAccessLoader, createWorkspaceControlClient, workspaceLifecycleKey } from '@/lib/workspaceControl';
 
 /** Load a command-backed view for the current account and workspace.
  * @param {string} section Supported endpoint suffix.
@@ -36,24 +36,36 @@ export function useWorkspaceControl(section, query = {}) {
     const key = `${scope}:${section}:${queryKey}`;
     const live = useRef({ scope, key, mounted: true }); live.current.scope = scope; live.current.key = key;
     const request = useRef(0);
-    const [snapshot, setSnapshot] = useState({ key: '', loading: true, data: null, error: '' });
+    const accessLoader = useMemo(() => createWorkspaceAccessLoader(), []);
+    const [snapshot, setSnapshot] = useState({ key: '', loading: true, data: null, error: '', accessEpoch: 0 });
     const [write, setWrite] = useState({ scope, saving: false, error: '', uncertain: false, saved: null });
     const api = useMemo(() => createWorkspaceControlClient({ client: pb, accountId, workspaceId: active?.id,
         demo, isCurrent: () => live.current.mounted && live.current.scope === scope, observe: observeMutation }), [accountId, active?.id, demo, scope]);
-    const load = useCallback(async () => {
+    const read = useCallback(async () => {
         const attempt = ++request.current;
         if (demo || !accountId || !active?.id) {
             setSnapshot({ key, loading: false, data: null, error: demo ? 'Turn off demonstration mode to use workspace controls.' : 'Sign in and select a workspace.' });
             return false;
         }
-        setSnapshot((before) => ({ key, loading: true, data: section === 'access' && before.key === key ? before.data : null, error: '' }));
+        setSnapshot((before) => ({ key, loading: true, data: section === 'access' && before.key === key ? before.data : null,
+            error: '', accessEpoch: before.accessEpoch || 0 }));
         const result = await api.read(section, JSON.parse(queryKey));
         if (!live.current.mounted || live.current.key !== key || attempt !== request.current) return false;
-        setSnapshot({ key, loading: false, data: result.ok ? result.data : null, error: result.error || '' });
+        setSnapshot((before) => {
+            const next = { key, loading: false, data: result.ok ? result.data : null, error: result.error || '' };
+            // Count observed grant boundaries, not reads. A revoke/regrant pair
+            // must still fence old work when React batches both responses.
+            const changed = section === 'access' && workspaceLifecycleKey({ access: { data: before.data, error: before.error } }) !== workspaceLifecycleKey({ access: next });
+            return { ...next, accessEpoch: (before.accessEpoch || 0) + Number(changed) };
+        });
         return result.ok;
     }, [api, section, queryKey, key, demo, accountId, active?.id]);
+    const load = useCallback(() => section === 'access' ? accessLoader.load(key, read) : read(), [accessLoader, key, read, section]);
     const reload = useRef(load); reload.current = load;
-    useEffect(() => { live.current.mounted = true; load(); return () => { live.current.mounted = false; request.current++; }; }, [load]);
+    useEffect(() => {
+        live.current.mounted = true; load();
+        return () => { live.current.mounted = false; request.current++; accessLoader.invalidate(); };
+    }, [accessLoader, load]);
     const perform = useCallback(async (operation) => {
         if (!live.current.mounted || live.current.key !== key) return { ok: false };
         setWrite({ scope, saving: true, error: '', uncertain: false, saved: null });
@@ -67,6 +79,7 @@ export function useWorkspaceControl(section, query = {}) {
     const current = snapshot.key === key;
     const writing = write.scope === scope ? write : { saving: false, error: '', uncertain: false, saved: null };
     return { data: current ? snapshot.data : null, loading: !current || snapshot.loading, error: current ? snapshot.error : '',
+        accessEpoch: current ? snapshot.accessEpoch || 0 : 0,
         demo, scope, refresh: load, saving: writing.saving, writeError: writing.error, uncertain: writing.uncertain, saved: writing.saved,
         mutate: (action, payload, revision) => perform(() => api.command(action, payload, revision)),
         retry: () => perform(() => api.retry()) };

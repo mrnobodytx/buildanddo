@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     tests/upgrade/operator-fixture.mjs, apps/pocketbase/pb_hooks/workspace-value.js, apps/web/src/lib/workspaceValue.js
+// Depends:     tests/upgrade/operator-fixture.mjs, apps/pocketbase/pb_hooks/missions.pb.js, apps/pocketbase/pb_hooks/workspace-value.js, apps/pocketbase/pb_hooks/workspace-replay.js, apps/web/src/lib/missionLearning.js, apps/web/src/lib/workspaceValue.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/operator-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/workspace-value.js; VALIDATES apps/web/src/lib/workspaceValue.js
+// EnumEdges:   CONSUMES tests/upgrade/operator-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/missions.pb.js; VALIDATES apps/pocketbase/pb_hooks/workspace-value.js; VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js; CONSUMES apps/web/src/lib/missionLearning.js; VALIDATES apps/web/src/lib/workspaceValue.js
 // Intent:      Reject unsupported economic and verification claims while checking one scoped value projection and its evidence lineage.
 // ───────────────────────────────────────────────────────────────
 
@@ -20,25 +20,38 @@ import { createHash } from 'node:crypto';
 import { operatorFixture } from './operator-fixture.mjs';
 import { projectOperator } from '../../apps/web/src/lib/operatorPlane.js';
 import { projectWorkspaceValue, valueSummaryShape } from '../../apps/web/src/lib/workspaceValue.js';
+import { emptyReview } from '../../apps/web/src/lib/missionLearning.js';
 
-const snapshotFields = ['id', 'workspace', 'mission', 'owner', 'type', 'title', 'source', 'content', 'url', 'created', 'updated'];
 const TEVV = ['test', 'evaluate', 'verify', 'validate'];
 const card = (view, id) => view.metrics.find((item) => item.id === id);
 const missionOutcome = (view) => view.outcomes.find((item) => item.id === 'mission1');
-function reviewed({ independent = true } = {}) {
-    const f = operatorFixture({ runtime: { $security: { sha256: (input) => createHash('sha256').update(input).digest('hex') } } });
+function reviewed({ independent = true, version } = {}) {
+    let update;
+    const f = operatorFixture({ runtime: {
+        $security: { sha256: (input) => createHash('sha256').update(input).digest('hex') },
+        onRecordCreateRequest: () => {},
+        onRecordUpdateRequest: (callback, collection) => { assert.equal(collection, 'missions'); update = callback; },
+    } });
+    f.load('missions.pb.js');
     const proof = f.app.findRecordById('evidence', 'proof1');
     proof.set('source', 'Synthetic source receipt'); f.app.save(proof);
-    const snapshot = Object.fromEntries(snapshotFields.map((key) => [key, key === 'id' ? proof.id : proof.getString(key)]));
+    const running = f.app.findRecordById('missions', 'mission1');
+    running.set('mission_plan', { ...f.plan, risk: 'A1', independent_review: independent });
+    running.set('mission_approved_by', 'owner');
+    running.set('mission_approved_at', new Date().toISOString());
+    f.app.save(running);
     const mission = f.app.findRecordById('missions', 'mission1');
     mission.set('status', 'verified');
-    mission.set('mission_plan', { ...f.plan, risk: 'A1', independent_review: independent });
-    mission.set('mission_review', { version: 1, reflection: 'Synthetic review', evidence_snapshot: [snapshot],
-        ...Object.fromEntries(TEVV.map((key) => [key, { outcome: 'pass', observation: 'Synthetic observed result', evidence: proof.id }])) });
-    mission.set('mission_reviewed_by', independent ? 'viewer' : 'editor');
-    mission.set('mission_reviewed_at', new Date().toISOString());
-    f.app.save(mission);
-    return { ...f, mission, proof, get data() { return f.data; } };
+    const review = emptyReview();
+    review.reflection = 'Synthetic review';
+    for (const key of TEVV) review[key] = { outcome: 'pass', observation: 'Synthetic observed result', evidence: proof.id };
+    if (version !== undefined) review.version = version;
+    mission.set('mission_review', review);
+    let saves = 0;
+    update({ ...f.event(independent ? 'admin' : 'editor'), record: mission,
+        next: () => { saves++; f.app.save(mission); } });
+    assert.equal(saves, 1);
+    return { ...f, mission: f.app.findRecordById('missions', mission.id), proof, get data() { return f.data; } };
 }
 function value(f, now) {
     const snapshot = f.read(); const at = now ?? Date.parse(snapshot.observed_at);
@@ -63,13 +76,49 @@ test('money, time, avoided loss and automation rate require actual baselines and
 test('recorded verified work binds four review observations to readable unchanged evidence', () => {
     const f = reviewed(); const view = value(f); const outcome = missionOutcome(view);
     assert.equal(outcome.state, 'VERIFIED');
-    assert.equal(outcome.reviewer, 'viewer');
+    assert.equal(outcome.reviewer, 'admin');
     assert.deepEqual(outcome.evidence.map((row) => row.id), ['proof1']);
     assert.equal(outcome.evidence[0].source_ref, 'evidence/proof1');
     assert.equal(outcome.actions.state, 'unavailable');
     assert.ok(!JSON.stringify(view).includes('Private source body'));
     assert.ok(!JSON.stringify(view).includes('Synthetic observed result'));
     assert.ok(valueSummaryShape(f.read().sources.missions.items.find((row) => row.id === 'mission1').value));
+});
+
+test('current review input passes the real request hook and value consumer without inventing snapshots', () => {
+    const f = reviewed({ version: 1 });
+    assert.equal(f.mission.get('mission_review').version, 1);
+    assert.equal(f.mission.get('mission_review').evidence_snapshot[0].content, f.proof.getString('content'));
+    assert.equal(missionOutcome(value(f)).state, 'VERIFIED');
+    assert.equal(card(value(f), 'verified').independent, 1);
+});
+
+test('native-produced versioned reviews survive exact mission replay capture', () => {
+    const f = reviewed();
+    f.migration('apps/pocketbase/pb_migrations/1790800000_business_execution.js').up();
+    const before = JSON.stringify(f.data);
+    const capture = f.load('workspace-replay.js').capture(f.event('admin', {}, { id: f.mission.id }));
+    const retained = capture.content.mission.mission_review;
+    assert.equal(retained.version, 1);
+    assert.deepEqual(JSON.parse(JSON.stringify(retained)), f.mission.get('mission_review'));
+    assert.equal(capture.integrity, 'consistent');
+    assert.equal(capture.independent_verification, 'not_conferred_by_export');
+    assert.equal(JSON.stringify(f.data), before);
+    assert.equal(missionOutcome(value(f)).state, 'VERIFIED');
+});
+
+test('unversioned and unsupported persisted reviews remain unmeasured without rewriting history', () => {
+    for (const version of [undefined, null, 0, 2, '1', true, {}]) {
+        const f = reviewed();
+        const review = f.mission.get('mission_review');
+        if (version === undefined) delete review.version;
+        else review.version = version;
+        f.mission.set('mission_review', review); f.app.save(f.mission);
+        const before = JSON.stringify(f.data);
+        assert.equal(missionOutcome(value(f)).state, 'UNMEASURED');
+        assert.equal(card(value(f), 'verified').value, null);
+        assert.equal(JSON.stringify(f.data), before);
+    }
 });
 
 test('an evidence type or mission status alone cannot manufacture verified work', () => {

@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        tests/career/test_assessments.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-CAREER-001
+# SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-CAREER-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 import contextlib
+import copy
 import io
 import json
 import tempfile
@@ -164,7 +165,7 @@ class AssessmentTests(unittest.TestCase):
         grade_attempt(self.bank, self.ledger, attempt_id=proctored["attempt_id"],
                       responses=correct_responses(proctored, self.bank, wrong=1), at="2026-09-22T11:10:00Z",
                       proctor_id="proctor.a", proctor_receipt="session-42")
-        summary, evidence = assessment_evidence(read_chain(self.ledger), "human.test")
+        summary, evidence = assessment_evidence(read_chain(self.ledger), "human.test", bank=self.bank)
         self.assertEqual([item.state for item in evidence], [ClaimState.OBSERVED, ClaimState.VERIFIED])
         self.assertEqual((summary["passed"], summary["proctored_passes"]), (2, 1))
         self.assertEqual(regrade(self.bank, read_chain(self.ledger))["state"], "PASS")
@@ -183,7 +184,7 @@ class AssessmentTests(unittest.TestCase):
             self.issue(at="2026-09-23T10:00:00Z")
         self.assertEqual(MAX_ATTEMPTS, 3)
         self.issue(at="2026-10-30T10:00:00Z")
-        summary, evidence = assessment_evidence(read_chain(self.ledger), "human.test")
+        summary, evidence = assessment_evidence(read_chain(self.ledger), "human.test", bank=self.bank)
         self.assertEqual((summary["failed"], summary["issued_ungraded"], evidence), (2, 2, []))
 
     def test_grading_rules(self) -> None:
@@ -226,6 +227,118 @@ class AssessmentTests(unittest.TestCase):
         with self.assertRaises(CareerError):
             self.ledger.write_text(self.ledger.read_text().replace('"correct": 2', '"correct": 5'))
             read_chain(self.ledger)
+
+    def passing_events(self) -> list[dict[str, Any]]:
+        form = self.issue()
+        grade_attempt(self.bank, self.ledger, attempt_id=form["attempt_id"],
+                      responses=correct_responses(form, self.bank), at="2026-09-22T10:05:00Z",
+                      proctor_id="proctor.a", proctor_receipt="session-42")
+        return read_chain(self.ledger)
+
+    def test_result_cannot_be_reassigned_to_another_issued_context(self) -> None:
+        original = self.passing_events()
+        changes = [
+            {"person_id": "human.other", "capability": "kubernetes"},
+            {"capability": "python"},
+            {"bank_digest": "sha256:" + "0" * 64},
+            {"attempt_number": 2},
+            {"attempt_number": True},
+        ]
+        for change in changes:
+            events = copy.deepcopy(original)
+            events[-1].update(change)
+            with self.subTest(change=change):
+                self.assertEqual(regrade(self.bank, events)["state"], "MISMATCH")
+                with self.assertRaises(CareerError):
+                    assessment_evidence(events, events[-1]["person_id"], bank=self.bank)
+                with self.assertRaises(CareerError):
+                    pending({"person_id": events[-1]["person_id"], "claims": []}, self.bank, events)
+
+    def test_proctor_must_be_complete_and_distinct_at_every_boundary(self) -> None:
+        original = self.passing_events()
+        for change in (
+            {"proctor_id": "human.test"}, {"proctor_id": " human.test "},
+            {"proctor_id": " "}, {"proctor_id": 1}, {"proctor_id": None},
+            {"proctor_receipt": None}, {"proctor_receipt": " "}, {"proctor_receipt": True},
+        ):
+            events = copy.deepcopy(original)
+            events[-1].update(change)
+            with self.subTest(change=change):
+                self.assertEqual(regrade(self.bank, events)["state"], "MISMATCH")
+                with self.assertRaises(CareerError):
+                    assessment_evidence(events, "human.test", bank=self.bank)
+        form = self.issue(at="2026-09-22T11:00:00Z")
+        for proctor, receipt in ((" ", "r"), (" human.test ", "r"), ("p", " ")):
+            with self.subTest(proctor=proctor, receipt=receipt), self.assertRaises(CareerError):
+                grade_attempt(self.bank, self.ledger, attempt_id=form["attempt_id"],
+                              responses=correct_responses(form, self.bank), at="2026-09-22T11:05:00Z",
+                              proctor_id=proctor, proctor_receipt=receipt)
+
+    def test_duplicate_or_unordered_attempts_do_not_produce_evidence(self) -> None:
+        issued, graded = self.passing_events()
+        for events in ([graded], [graded, issued], [issued, issued, graded], [issued, graded, graded]):
+            with self.subTest(types=[row["type"] for row in events]):
+                self.assertEqual(regrade(self.bank, events)["state"], "MISMATCH")
+                with self.assertRaises(CareerError):
+                    assessment_evidence(events, "human.test", bank=self.bank)
+
+    def test_grade_summary_is_typed_and_bound_to_its_timing_and_responses(self) -> None:
+        original = self.passing_events()
+        for change in (
+            {"score": 0.2}, {"score": True}, {"passed": "false"}, {"within_time": 1},
+            {"total": 0}, {"correct": True}, {"responses": {}},
+            {"submitted_at": "2026-09-22T11:00:00Z"}, {"submitted_at": "yesterday"},
+        ):
+            events = copy.deepcopy(original)
+            events[-1].update(change)
+            with self.subTest(change=change):
+                self.assertEqual(regrade(self.bank, events)["state"], "MISMATCH")
+                with self.assertRaises(CareerError):
+                    assessment_evidence(events, "human.test", bank=self.bank)
+        invalid = copy.deepcopy(original)
+        invalid[-1]["responses"][next(iter(invalid[-1]["responses"]))] = [True]
+        self.assertEqual(regrade(self.bank, invalid)["state"], "MISMATCH")
+        with self.assertRaises(CareerError):
+            assessment_evidence(invalid, "human.test", bank=self.bank)
+
+    def test_regrade_checks_issued_items_against_the_capability_and_bank(self) -> None:
+        original = self.passing_events()
+        for change in ({"capability": "kubernetes"}, {"bank_id": "other-bank"}):
+            events = copy.deepcopy(original)
+            events[0].update(change)
+            if "capability" in change:
+                events[-1].update(change)
+            with self.subTest(change=change):
+                self.assertEqual(regrade(self.bank, events)["state"], "MISMATCH")
+        malformed = copy.deepcopy(original)
+        malformed[0]["items"][0]["order"] = [0, 0]
+        self.assertEqual(regrade(self.bank, malformed)["state"], "MISMATCH")
+        with self.assertRaises(CareerError):
+            assessment_evidence(malformed, "human.test", bank=self.bank)
+
+    def test_assessment_admission_requires_replaying_the_answers(self) -> None:
+        original = self.passing_events()
+        changed_answers = copy.deepcopy(original)
+        changed_answers[-1]["responses"] = {item: [] for item in original[-1]["responses"]}
+        changed_capability = copy.deepcopy(original)
+        for event in changed_capability:
+            event["capability"] = "kubernetes"
+        for events in (changed_answers, changed_capability):
+            with self.subTest(capability=events[-1]["capability"]):
+                self.assertEqual(regrade(self.bank, events)["state"], "MISMATCH")
+                with self.assertRaises(CareerError):
+                    assessment_evidence(events, "human.test", bank=self.bank)
+
+    def test_assessment_admission_requires_the_issuing_bank(self) -> None:
+        events = self.passing_events()
+        with self.assertRaises(CareerError):
+            assessment_evidence(events, "human.test")
+        changed = json.loads((FIX / "bank.json").read_text())
+        changed["items"][0]["answer"] = [1]
+        with self.assertRaises(CareerError):
+            assessment_evidence(events, "human.test", bank=load_bank(changed))
+        with self.assertRaises(CareerError):
+            pending({"person_id": "human.test", "claims": []}, load_bank(changed), events)
 
     def test_issue_and_bank_rules(self) -> None:
         with self.assertRaises(CareerError):
@@ -306,7 +419,7 @@ class ImportCliTests(base.RepoCase):
             code, result = self.run_cli("assess", "regrade", "--bank", bank_path, "--ledger", ledger)
             self.assertEqual(result["state"], "PASS")
             code, result = self.run_cli("passport", "--repo", str(self.repo), *common, "--imports", imports,
-                                        "--assessments", ledger, "--output", str(root / "pp"))
+                                        "--assessments", ledger, "--bank", bank_path, "--output", str(root / "pp"))
             self.assertEqual(code, 0, result)
             self.assertEqual(result["capabilities"]["kubernetes"]["participation"], "SELF_REPORTED")
             self.assertEqual(result["capabilities"]["ci_cd"]["state"], "VERIFIED")
@@ -324,12 +437,18 @@ class ImportCliTests(base.RepoCase):
             Path(ledger).write_text("".join(json.dumps(e, sort_keys=True) + "\n" for e in [*events[:-1], forged]))
             code, result = self.run_cli(*verify, "--bank", bank_path, "--assessments", ledger)
             self.assertEqual((code, result["state"]), (2, "MISMATCH"), result)
+            code, result = self.run_cli("passport", "--repo", str(self.repo), *common,
+                                        "--assessments", ledger, "--bank", bank_path, "--output", str(root / "bad-passport"))
+            self.assertEqual((code, result["state"]), (1, "FAIL"), result)
+            self.assertFalse((root / "bad-passport").exists())
             failures = [
                 ("verify", "--passport", str(root / "pp/passport.json"), "--repo", str(self.repo),
                  "--identity", str(identity), "--bank", bank_path),
                 ("assess", "issue", "--bank", bank_path, "--ledger", ledger),
                 ("assess", "pending", "--bank", bank_path, "--ledger", ledger),
                 ("assess", "regrade", "--bank", bank_path),
+                ("passport", "--identity", str(identity), "--assessments", ledger, "--output", str(root / "no-bank")),
+                ("passport", "--identity", str(identity), "--bank", bank_path, "--output", str(root / "no-ledger")),
             ]
             for args in failures:
                 with self.subTest(args=args[:2]):

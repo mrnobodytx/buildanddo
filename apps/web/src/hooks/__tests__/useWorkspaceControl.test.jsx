@@ -31,7 +31,7 @@ const response = (workspace = 'ws1', role = 'owner', description = '') => ({ wor
     settings: { revision: 0, description, wiki_enabled: true, forum_enabled: true, forum_moderation: true },
     can_admin: ['owner', 'admin'].includes(role), can_write: role !== 'viewer', can_grant_admin: role === 'owner' });
 const receipt = { workspace: 'ws1', id: 'ws1', revision: 1, action: 'settings.save', replayed: false };
-const pending = () => { let resolve; const promise = new Promise((yes) => { resolve = yes; }); return { promise, resolve }; };
+const pending = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
 let account; let workspace; let authenticated;
 function Wrapper({ children }) {
     return <AuthContext.Provider value={{ user: account ? { id: account } : null, isAuthed: authenticated }}>
@@ -118,6 +118,54 @@ describe('scoped workspace controls', () => {
 });
 
 describe('workspace capability context', () => {
+    it('coalesces overlapping focus and visibility polls so a denial cannot disappear behind a regrant', async () => {
+        vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
+        account = 'editor'; pb.authStore.record = { id: account };
+        pb.send.mockResolvedValue(response('ws1', 'editor'));
+        function AccessWrapper({ children }) { return <Wrapper><WorkspaceAccessProvider>{children}</WorkspaceAccessProvider></Wrapper>; }
+        const view = renderHook(() => useWorkspaceAccess(), { wrapper: AccessWrapper });
+        await waitFor(() => expect(view.result.current.data?.can_write).toBe(true));
+        const epoch = view.result.current.accessEpoch, calls = pb.send.mock.calls.length;
+        const denied = pending(), regrant = pending();
+        pb.send.mockImplementationOnce(() => denied.promise).mockImplementationOnce(() => regrant.promise);
+        act(() => {
+            window.dispatchEvent(new Event('focus'));
+            document.dispatchEvent(new Event('visibilitychange'));
+        });
+        expect(pb.send).toHaveBeenCalledTimes(calls + 1);
+        await act(async () => { denied.reject({ status: 403, response: { message: 'Membership revoked' } }); });
+        await waitFor(() => expect(view.result.current.error).toBe('Membership revoked'));
+        expect(view.result.current.data).toBeNull(); expect(view.result.current.accessEpoch).toBe(epoch + 1);
+        act(() => window.dispatchEvent(new Event('focus')));
+        expect(pb.send).toHaveBeenCalledTimes(calls + 2);
+        expect(view.result.current.data).toBeNull();
+        await act(async () => { regrant.resolve(response('ws1', 'editor')); });
+        await waitFor(() => expect(view.result.current.data?.can_write).toBe(true));
+        expect(view.result.current.data.role).toBe('editor');
+        expect(view.result.current.accessEpoch).toBe(epoch + 2);
+    });
+
+    it('retains a permission epoch during polls and advances it across a batched revoke/regrant', async () => {
+        function AccessWrapper({ children }) { return <Wrapper><WorkspaceAccessProvider>{children}</WorkspaceAccessProvider></Wrapper>; }
+        const view = renderHook(() => useWorkspaceAccess(), { wrapper: AccessWrapper });
+        await waitFor(() => expect(view.result.current.data?.can_write).toBe(true));
+        const epoch = view.result.current.accessEpoch;
+        const poll = pending(); pb.send.mockImplementationOnce(() => poll.promise);
+        let request; act(() => { request = view.result.current.refresh(); });
+        expect(view.result.current.loading).toBe(true);
+        expect(view.result.current.accessEpoch).toBe(epoch);
+        expect(view.result.current.data.can_write).toBe(true);
+        await act(async () => { poll.resolve(response()); await request; });
+        expect(view.result.current.accessEpoch).toBe(epoch);
+        pb.send.mockRejectedValueOnce({ status: 403, response: { message: 'Membership revoked' } }).mockResolvedValueOnce(response());
+        await act(async () => {
+            await view.result.current.refresh();
+            await view.result.current.refresh();
+        });
+        expect(view.result.current.data.can_write).toBe(true);
+        expect(view.result.current.accessEpoch).toBe(epoch + 2);
+    });
+
     it('denies capabilities without a provider and refreshes observed role changes on focus', async () => {
         const empty = renderHook(() => useWorkspaceAccess()); expect(empty.result.current.data).toBeNull();
         expect(await empty.result.current.refresh()).toBe(false); empty.unmount();

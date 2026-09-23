@@ -8,9 +8,9 @@
 // Seat:         BITS-CODEGEN
 // Owner:        Citadel Nexus Inc.
 // Created:      2026-09-20
-// Depends:      apps/pocketbase/pb_hooks/workspace-assistant.js, apps/web/src/lib/workspaceAssistant.js, tests/upgrade/admin-fixture.mjs
+// Depends:      apps/pocketbase/pb_hooks/workspace-assistant.js, apps/web/src/lib/workspaceAssistant.js, apps/web/src/lib/workspaceControl.js, tests/upgrade/admin-fixture.mjs
 // EnumType:     Test
-// EnumEdges:    DEPENDS_ON apps/pocketbase/pb_hooks/workspace-assistant.js; DEPENDS_ON apps/web/src/lib/workspaceAssistant.js; DEPENDS_ON tests/upgrade/admin-fixture.mjs
+// EnumEdges:    DEPENDS_ON apps/pocketbase/pb_hooks/workspace-assistant.js; DEPENDS_ON apps/web/src/lib/workspaceAssistant.js; CONSUMES apps/web/src/lib/workspaceControl.js; DEPENDS_ON tests/upgrade/admin-fixture.mjs
 // DAG Node:     none
 // Intent:       Test tenant and account isolation, bounded inferred plans, revocation, retained personal patterns and unavailable inference.
 // ───────────────────────────────────────────────────────────────
@@ -20,7 +20,107 @@ import test from 'node:test';
 import { plain } from './admin-fixture.mjs';
 import { assistantFixture as setup, assistantSurface as surface, assistantMigration as migration } from './assistant-fixture.mjs';
 import { createAssistantClient } from '../../apps/web/src/lib/workspaceAssistant.js';
+import { workspaceLifecycleKey } from '../../apps/web/src/lib/workspaceControl.js';
 import { assistantDraft, compileJourney } from '../../apps/web/src/lib/journey.js';
+
+function delayedCommand(action) {
+    const f = setup(), session = f.start('editor'), turn = action === 'chat' ? null : f.chat(session, 'editor');
+    const scope = { accountId: 'editor', workspaceId: 'ws1', sessionEpoch: 1, demo: false,
+        access: { data: { role: 'editor', can_write: true }, accessEpoch: 1, loading: false, error: '' } };
+    const lifetime = workspaceLifecycleKey(scope), calls = [];
+    let release;
+    const delay = new Promise((resolve) => { release = resolve; });
+    const client = { authStore: { record: { id: 'editor' } }, async send(path, options) {
+        calls.push({ path, options });
+        const event = f.event(client.authStore.record.id, options.body || {}, { workspace: path.split('/')[4], query: options.query || {} });
+        const result = plain(path.endsWith('/chat') ? f.service.chat(event) : options.method === 'GET' ? f.service.snapshot(event) : f.service.command(event));
+        if (action === 'chat' && path.endsWith('/chat') || options.body?.action === action) await delay;
+        return result;
+    } };
+    const api = createAssistantClient({ client, workspaceId: 'ws1', accountId: 'editor',
+        isCurrent: () => !scope.access.loading && !scope.access.error && Boolean(scope.access.data),
+        isScopeCurrent: () => workspaceLifecycleKey(scope) === lifetime });
+    const payload = action === 'chat' ? { session: session.id, message: 'Help with the customer task', surface, request_key: 'synthetic-delayed-chat' }
+        : action === 'plan.record' ? { turn: turn.id, outcome: 'applied', completed_steps: 1,
+        observation: 'Synthetic browser interaction; not independent verification.' } : { session: session.id };
+    return { f, scope, client, api, calls, release, payload };
+}
+
+for (const action of ['session.forget', 'session.close', 'plan.record']) {
+    test(`a persisted ${action} receipt settles during polling without admitting another request`, async () => {
+        const f = delayedCommand(action);
+        const pending = f.api.command(action, f.payload, 'synthetic-delayed-receipt');
+        if (action === 'session.forget') assert.equal(f.f.data.assistant_sessions.length, 0);
+        if (action === 'session.close') assert.equal(f.f.data.assistant_sessions[0].status, 'closed');
+        if (action === 'plan.record') assert.equal(f.f.data.assistant_patterns.length, 1);
+        f.scope.access.loading = true;
+        assert.equal((await f.api.command('session.start', { title: 'Not yet authorized' }, 'synthetic-blocked-start')).stale, true);
+        assert.equal((await f.api.snapshot()).stale, true);
+        f.release();
+        assert.equal((await pending).ok, true);
+        assert.equal(f.calls.length, 1);
+        f.scope.access.loading = false;
+        assert.equal((await f.api.snapshot()).ok, true);
+        if (action === 'session.forget') {
+            assert.equal((await f.api.command('session.start', { title: 'A new conversation' }, 'synthetic-next-conversation')).ok, true);
+            assert.equal(f.f.data.assistant_sessions.length, 1);
+        }
+        assert.equal(f.calls.filter((call) => call.options.body?.action === action).length, 1);
+    });
+}
+
+for (const boundary of ['account', 'workspace', 'session', 'permission', 'demo']) {
+    test(`a delayed Forget receipt is discarded after a ${boundary} lifetime change`, async () => {
+        const f = delayedCommand('session.forget');
+        const pending = f.api.command('session.forget', f.payload, 'synthetic-forget-old-lifetime');
+        if (boundary === 'account') { f.scope.accountId = 'owner'; f.client.authStore.record = { id: 'owner' }; }
+        if (boundary === 'workspace') f.scope.workspaceId = 'ws2';
+        if (boundary === 'session') f.scope.sessionEpoch++;
+        if (boundary === 'permission') f.scope.access.accessEpoch++;
+        if (boundary === 'demo') f.scope.demo = true;
+        f.release();
+        assert.equal((await pending).stale, true);
+        assert.equal((await f.api.command('session.start', { title: 'Old lifetime' }, 'synthetic-old-lifetime-start')).stale, true);
+        assert.equal(f.calls.length, 1);
+    });
+}
+
+test('permission polling still fences delayed private reads, not just new requests', async () => {
+    const f = delayedCommand('session.forget');
+    let release;
+    f.client.send = () => new Promise((resolve) => { release = resolve; });
+    const reading = f.api.snapshot(); f.scope.access.loading = true;
+    release({ workspace: 'ws1', owner: 'editor' });
+    assert.equal((await reading).stale, true);
+});
+
+test('delayed chat content requires a manual same-key retry after permission regrant', async () => {
+    const f = delayedCommand('chat'), pending = f.api.chat(f.payload);
+    const turnId = f.f.data.assistant_turns[0].id;
+    f.scope.access.loading = true;
+    f.release();
+    assert.deepEqual(await pending, { ok: false, stale: true });
+    assert.deepEqual(await f.api.chat(f.payload), { ok: false, stale: true });
+    assert.equal(f.calls.length, 1); assert.equal(f.f.agentConfig.calls.length, 1);
+    f.scope.access.loading = false;
+    await Promise.resolve();
+    assert.equal(f.calls.length, 1);
+    const retried = await f.api.chat(f.payload);
+    assert.equal(retried.ok, true); assert.equal(retried.data.id, turnId);
+    assert.deepEqual(f.calls[1].options.body, f.calls[0].options.body);
+    assert.equal(f.f.data.assistant_turns.length, 1); assert.equal(f.f.agentConfig.calls.length, 1);
+});
+
+test('a delayed chat cannot publish or retry after permission denial', async () => {
+    const f = delayedCommand('chat'), pending = f.api.chat(f.payload);
+    f.scope.access.loading = true;
+    f.f.app.delete(f.f.app.findRecordById('workspace_members', 'editormember'));
+    f.scope.access = { data: null, loading: false, error: 'Membership revoked', accessEpoch: 2 };
+    f.release();
+    assert.deepEqual(await pending, { ok: false, stale: true });
+    assert.deepEqual(await f.api.chat(f.payload), { ok: false, stale: true });
+    assert.equal(f.calls.length, 1); assert.equal(f.f.agentConfig.calls.length, 1);
+});
 
 test('the compiled journey can be sent from its actual route without granting approval authority', () => {
     const f = setup(), session = f.start('editor');

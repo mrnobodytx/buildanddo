@@ -1,10 +1,10 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        apps/career/compiler.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-CAREER-001
+# SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-CAREER-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
@@ -95,16 +95,19 @@ def _claims(dossier: Dossier, passport: Passport) -> list[dict[str, Any]]:
     claims: list[dict[str, Any]] = []
     for item in dossier.body["strong_evidence"]:
         entry = entries[item["capability_id"]]
-        refs = [ref["ref"] for ref in entry.evidence[:REFS_PER_CLAIM]]
-        first = parse_instant(entry.first_seen).strftime("%Y-%m")
-        last = parse_instant(entry.last_seen).strftime("%Y-%m")
+        support = entry.claim_evidence()[:REFS_PER_CLAIM]
+        if not support:
+            raise CareerError(f"{entry.capability_id}: headline has no compatible evidence")
+        refs = [ref["ref"] for ref in support]
+        instants = [parse_instant(ref["observed_at"]) for ref in support]
+        first, last = min(instants).strftime("%Y-%m"), max(instants).strftime("%Y-%m")
         claims.append(
             {
                 "claim_id": f"C{len(claims) + 1}",
                 "capability_id": entry.capability_id,
                 "claim": (
                     f"{entry.claim_verb} {BY_ID[entry.capability_id].claim_object} "
-                    f"({_breakdown(entry.participation_counts)}; {first} to {last})"
+                    f"({_breakdown({entry.claim_participation.value: len(refs)})}; {first} to {last})"
                 ),
                 "participation": entry.claim_participation.value,
                 "claim_state": entry.state.value,
@@ -278,6 +281,10 @@ def validate_package(package: Package, passport: Passport, dossier: Dossier) -> 
             errors.append(f"{claim['claim_id']}: claim has no evidence")
         if not set(refs) <= entry.refs():
             errors.append(f"{claim['claim_id']}: evidence reference not in passport")
+        if not set(refs) <= {item["ref"] for item in entry.claim_evidence()}:
+            errors.append(f"{claim['claim_id']}: evidence does not support the headline state and participation")
+        if claim.get("claim_state") != entry.state.value:
+            errors.append(f"{claim['claim_id']}: claim state mismatch")
         if not str(claim.get("claim", "")).startswith(entry.claim_verb + " "):
             errors.append(f"{claim['claim_id']}: wording exceeds recorded participation")
         if claim.get("participation") != entry.claim_participation.value:
