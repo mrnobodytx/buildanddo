@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-09-21T14:21:33+00:00",
+  "generated_at": "2026-09-22T16:14:42+00:00",
   "state": "MEASURED",
   "deployed": {
-    "production": "c46e28d",
-    "staging": "c46e28d",
+    "production": "12d5833",
+    "staging": "12d5833",
     "source": {
       "production": "_version",
       "staging": "_version"
@@ -205,7 +205,7 @@
       "component": "RoadmapPage",
       "import": "./pages/RoadmapPage",
       "file": "apps/web/src/pages/RoadmapPage.jsx",
-      "lines": 967,
+      "lines": 979,
       "tests": 4,
       "test_files": [
         "apps/web/src/pages/__tests__/RoadmapPage.capabilities.test.jsx",
