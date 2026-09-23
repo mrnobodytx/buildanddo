@@ -55,6 +55,20 @@ machine name. Measured 2026-09-23 with the estate's redaction rule over the live
    and an IP address, and prove each is caught. SVG geometry, and a loopback hostname comparison in
    code, are not flagged.
 
+## Continuation (2026-09-23): a name joined into a slug
+
+The first version of the rule counted a hyphen as part of a name, so a machine name joined into a slug
+passed it. A handoff file named `...-codegen-<machine>-broadcast-...`, and a shipping source header naming
+its seat `<machine>-release`, both went unflagged.
+
+5. **R5 - a name joined into a slug is still that machine.** For the specific families (`ray-`, `kvm`,
+   `rig`, `srv`, `DESKTOP-`, `CNI-SERVICE-BOX-`) and for every exact name from the private fleet map, a
+   hyphen separates the name from the words around it. The broad `mesh-` family keeps the hyphen as part
+   of the word, so a compound word that merely contains it (`capability-mesh-fallback`) is not flagged.
+   A test fails on the previous rule and passes now, and the near-name control still holds.
+6. **R6 - the shipping source that the stricter rule catches is corrected.** `useRoomsLive.js` names its
+   seat, not a machine, in its header.
+
 ## Non-goals
 
 - The 33 tracked files that name a machine in scripts, docs, migrations or test fixtures, and the

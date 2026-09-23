@@ -106,11 +106,20 @@ def fleet_names(path: Path) -> set[str]:
     return {name for name in names if len(name) >= 4}
 
 
+# Families broad enough to occur inside ordinary compound words ("capability-mesh-fallback"). For these a
+# hyphen still counts as part of the word.
+WORD_BOUND_FAMILIES = (r"mesh-[a-z]+",)
+
+
 def _machine_pattern(names: set[str]) -> re.Pattern[str]:
-    # Bounded by letters, digits and hyphens only - not by \w, which includes "_": a name glued into a
-    # file name ("<machine>_install.sh") slipped past the first version of the estate's rule.
+    # Bounded by letters and digits only. "_" is a boundary: a name glued into a file name
+    # ("<machine>_install.sh") slipped past the first version of the estate's rule. So is "-": a name joined
+    # into a slug ("codegen-<machine>-broadcast") slipped past the next one. Only the broad families above keep
+    # "-" as part of the word.
     exact = sorted((re.escape(name) for name in names), key=len, reverse=True)
-    return re.compile(r"(?<![A-Za-z0-9-])(?:" + "|".join(exact + list(FAMILIES)) + r")(?![A-Za-z0-9-])",
+    specific = exact + [family for family in FAMILIES if family not in WORD_BOUND_FAMILIES]
+    return re.compile(r"(?<![A-Za-z0-9])(?:" + "|".join(specific) + r")(?![A-Za-z0-9])"
+                      r"|(?<![A-Za-z0-9-])(?:" + "|".join(WORD_BOUND_FAMILIES) + r")(?![A-Za-z0-9-])",
                       re.IGNORECASE)
 
 

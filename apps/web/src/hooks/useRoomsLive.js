@@ -5,7 +5,7 @@
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    OPERATOR-PLANE-UNLOCK-001
-// Seat:        rig1-release
+// Seat:        C-ONE (release)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
 // Depends:     /room-projections/utilization.json (runtime file published by tools/citadel_buildanddo_rooms.py)
