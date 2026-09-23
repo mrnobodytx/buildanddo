@@ -1020,6 +1020,7 @@
     "tests/upgrade/test_operator_compiler.py": "95ab0ca96f9462d42530fecffa5e5db18ea043ec76f29a7b9d29774ef2bcdf2f",
     "tests/upgrade/test_policy_intelligence.py": "babc8abed252fd685d576bc76517a509525385f4865c82b7a9af529841bb341e",
     "tests/upgrade/test_public_redaction.py": "00e2078d96fee1792f5812bd2301a96a19b747fa7b46fa7c57677ab1a7dcd3c5",
+    "tests/upgrade/test_release_p0_guard_list.py": "e2ace9df435dbb96049eb77cdd97b447c1a59b3bff34b0bd78182dd1b08f8104",
     "tests/upgrade/test_research_runtime.py": "a4dae1066b9c271382abb52ccd13ed38e07ed6b8821e4b4dc1a8c2e66dd870b7",
     "tests/upgrade/test_semantic_twin.py": "d2ebedb71eb4cc8faf06e4c154f283d741de4611312b04c544468a2099e2f279",
     "tests/upgrade/test_semantic_twin_contracts.py": "a1aa709dab60ee5a9fe7cbf7bd2ffb83b018641ecc5cde9f2810f47db7177aaa",
