@@ -55,6 +55,35 @@ machine name. Measured 2026-09-23 with the estate's redaction rule over the live
    and an IP address, and prove each is caught. SVG geometry, and a loopback hostname comparison in
    code, are not flagged.
 
+## Continuation (2026-09-23): a name joined into a slug
+
+The first version of the rule counted a hyphen as part of a name, so a machine name joined into a slug
+passed it. A handoff file named `...-codegen-<machine>-broadcast-...`, and a shipping source header naming
+its seat `<machine>-release`, both went unflagged.
+
+5. **R5 - a name joined into a slug is still that machine.** For the specific families (`ray-`, `kvm`,
+   `rig`, `srv`, `DESKTOP-`, `CNI-SERVICE-BOX-`) and for every exact name from the private fleet map, a
+   hyphen separates the name from the words around it. The broad `mesh-` family keeps the hyphen as part
+   of the word, so a compound word that merely contains it (`capability-mesh-fallback`) is not flagged.
+   A test fails on the previous rule and passes now, and the near-name control still holds.
+6. **R6 - the shipping source that the stricter rule catches is corrected.** `useRoomsLive.js` names its
+   seat, not a machine, in its header.
+
+## Continuation (2026-09-23): the unspecified address
+
+PR #85 (SRS-BUILDANDDO-BUDDI-003) added the ElevenLabs voice SDK. Its session-description code carries the
+unspecified IPv4 address, the all-zeros one, which a WebRTC offer uses before any candidate is known. A scan
+of the built site therefore failed on one address in the voice chunk, where the build had been clean before.
+The all-zeros address means "no particular address": like loopback, it identifies no machine. A scan that
+fails on every build teaches everyone to ignore it.
+
+7. **R7 - a scan lets the unspecified address through, as it does loopback.** With the scan allowance,
+   `find_ips` reports neither loopback nor the all-zeros IPv4 address, and neither do `scan_tree` and the
+   `scan` command. The exemption is named for what it is (`UNSPECIFIED`). Without the allowance both are still
+   reported, and `redact()` is unchanged, so a published document still withholds the address.
+8. **R8 - every other address is still caught.** The documentation address 203.0.113.9, in the same place,
+   still fails the scan. The new test fails on the previous rule and passes now.
+
 ## Non-goals
 
 - The 33 tracked files that name a machine in scripts, docs, migrations or test fixtures, and the
