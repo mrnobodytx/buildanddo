@@ -2,7 +2,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/deploy/roadmap_status.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-ROADMAP-001
+# SRS:         SRS-BUILDANDDO-ROADMAP-001, SRS-BUILDANDDO-PUBLIC-REDACTION-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -40,6 +40,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]  # sites/buildanddo/
 sys.path.insert(0, str(ROOT / "scripts" / "ci"))
 import sprint_cycle  # noqa: E402 - path inserted above
+import public_redaction  # noqa: E402 - same path; applies the no-address, no-machine-name rule
 
 OUT_PATH = ROOT / "apps" / "web" / "public" / "roadmap-status.json"
 GITHUB_API = "https://api.github.com/repos/mrnobodytx/buildanddo/commits?per_page=8"
@@ -190,6 +191,10 @@ def main() -> int:
         # destroy the only comparison that makes either number meaningful.
         "replay": _replay(),
     }
+    # roadmap-status.json is public, so it passes the rule on the way out.
+    rule = public_redaction.Rule()
+    report, withheld = rule.redact_document(report)
+    public_redaction.report_withheld(rule, withheld, OUT_PATH.name)
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(report, indent=2, default=str), encoding="utf-8")
     print(json.dumps({k: v for k, v in report.items() if k != "milestones"}, indent=2, default=str))

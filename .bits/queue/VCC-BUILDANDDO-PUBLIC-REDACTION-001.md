@@ -28,11 +28,11 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | Failing-before test and controls | `python -m unittest tests.upgrade.test_public_redaction` (fails on `da1b57f`) | in_progress |
-| 2 | One rule in the product: `scripts/ci/public_redaction.py` | same test, control cases | in_progress |
-| 3 | Generators publish nothing that matches (`fleet_report.py`, `capability_inventory.py`, `roadmap_status.py`) | same test, platform-health case | in_progress |
-| 4 | Neutral system id on the Operator page; no machine in `publicPages.js` | `npm --prefix apps/web exec -- vitest run src/pages/workspace/__tests__/OperatorPage.test.jsx` | in_progress |
-| 5 | Whole suite, production build and a scan of `dist/apps/web` | `npm test`, `npm run build`, then the test again with `dist/apps/web` present | in_progress |
+| 1 | Failing-before test and controls | `python -m unittest tests.upgrade.test_public_redaction` (fails on `da1b57f`) | done |
+| 2 | One rule in the product: `scripts/ci/public_redaction.py` | same test, control cases | done |
+| 3 | Generators publish nothing that matches (`fleet_report.py`, `capability_inventory.py`, `roadmap_status.py`) | same test, platform-health case | done |
+| 4 | Neutral system id on the Operator page; no machine in `publicPages.js` | `npm --prefix apps/web exec -- vitest run src/pages/workspace/__tests__/OperatorPage.test.jsx` | done |
+| 5 | Whole suite, production build and a scan of `dist/apps/web` | `npm test`, `npm run build`, then the test again with `dist/apps/web` present | done |
 
 ## Constraints
 
@@ -46,6 +46,25 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
   community work (SRS-BUILDANDDO-COMMUNITY-WEB-001), and `apps/web/public/activity-status.json`.
 - No real machine name or address may enter this repository, including test fixtures.
 - Raises the tier above A2: any deploy, push or external write. None is performed here.
+
+## Evidence (2026-09-23, local run on Windows)
+
+- **Before** (`da1b57f` with only the rule and the test added): families only, 3 failures and 1 skip;
+  with the private fleet map, 4 failures. `platform-health.json` carried 1 exact fleet name. The built
+  site carried 3 machine names: 2 in the Operator page chunk and 1 in `platform-health.json`. The web
+  source carried 3: 2 in `operatorPlane.js` and 1 in `publicPages.js`. The generator wrote a planted
+  name and address unchanged.
+- **After:** families only, 9 pass and 1 skip (the exact-name test states why); with the private
+  fleet map, 10 of 10 pass. The build prints `0 value(s) withheld from platform-health.json`.
+- **Built site:** `public_redaction.py scan dist/apps/web` PASS with the private fleet map. The
+  estate's stricter rule finds 0 machine names, down from 3 on the live build. What it still reports
+  (SVG geometry, and a loopback hostname check) is identical to the live build.
+- **Suites:** `npm test` 536 of 536. One earlier full run had one MissionsPage timeout; the file alone
+  passes 13 of 13 twice, and the rerun passed in full. Python `tests/upgrade`: failures and errors
+  identical to `da1b57f`, except one semantic-twin test that fails only on a branch checked out in a
+  linked worktree. Node `tests/upgrade`: no new failure.
+- `verify_public_boundary.py` PASS. `verify_public_disclosure.py --strict`: 0 block, 1 warning (a
+  public contact mailbox). Its two machine-name warnings are gone.
 
 ## Definition of done
 
