@@ -64,6 +64,10 @@ Slice 2 (same SRS, same PR):
   refusal, reserved-class and tenure parsing fixes, negated requirements, a
   hash-chained outcome ledger, and `verify`, which lets a reviewer re-derive a
   passport's repository claims from a clone. `passport` also writes a shareable card.
+- Portable claims and assessments (slice 4): import skills, certifications,
+  positions and badges from a LinkedIn data export, JSON Resume or Open Badges
+  2.0 assertions as SELF_REPORTED claims; issue, grade and re-grade capability
+  quizzes from a grader-held bank; list which imported claims are assessed.
 - A J3 fill plan mapping an employer form's fields to profile, package or human
   sources, with fill and submit authority decisions. It is a plan, not a runner.
 
@@ -72,6 +76,9 @@ Slice 2 (same SRS, same PR):
 - Network access other than an explicit `--allow-network` GET to the three public
   posting endpoints; authenticated ATS APIs.
 - Browser automation, form filling, application submission or any external write (A3).
+- Checking Open Badges issuer signatures or hosted assertions (needs network);
+  a production question bank (a real bank's answer key must stay with the grader
+  and out of this public repository; the committed bank is a sample).
 - Encrypted storage of reserved answers: no encryption dependency is declared and
   the slice does not implement its own cryptography. Stored answers remain a
   human-supplied local input.
@@ -94,6 +101,13 @@ Slice 2 (same SRS, same PR):
   person identity may not include recognisable bot or agent addresses.
 - A passport's repository claims are accepted only when `verify` re-derives them;
   a self-consistent digest is not evidence.
+- Imported claims are `SELF_REPORTED` and `DECLARED`; endorsement counts never
+  change a state. A badge whose recipient does not match the person is rejected.
+  Declared employment is shown beside tenure requirements but never satisfies them.
+- Assessment forms never carry answer keys. Attempts are limited per window,
+  timed, recorded whether passed or failed in a hash-chained ledger, and
+  re-gradable from the bank. An unproctored pass is `OBSERVED`; `VERIFIED`
+  needs a proctor other than the candidate with a receipt.
 - Git evidence is `OBSERVED`, never `VERIFIED`: a repository record shows work
   occurred, not that an independent party verified it.
 - Claim wording is bounded by participation: reviewed work is never phrased as
@@ -121,6 +135,8 @@ Slice 2 (same SRS, same PR):
    authority, package validation, board normalization, mission verification,
    package tamper detection, the outcome ledger and fill plans.
    `tests.career.test_redteam` holds every adversarial failure as a regression.
+   `tests.career.test_assessments` covers imports, hidden keys, limits, lateness,
+   proctoring, re-grading and forged results.
 3. `python -m apps.career passport --repo . --identity <file> --output <new-dir>`
    runs against this repository's own history.
 4. `python scripts/ci/verify_public_boundary.py` reports `PASS`.

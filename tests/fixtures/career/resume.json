@@ -1,0 +1,5 @@
+{"basics": {"name": "Synthetic Person"},
+ "skills": [{"name": "Backend", "keywords": ["REST APIs", "PocketBase"]}, {"name": "Woodworking"}],
+ "certificates": [{"name": "Security Fundamentals", "date": "2025-02-01", "issuer": "Example Institute"}],
+ "work": [{"name": "Example Co", "position": "Engineer", "startDate": "2019-01-01", "endDate": "2019-12-31",
+           "highlights": ["Wrote Python services"]}]}

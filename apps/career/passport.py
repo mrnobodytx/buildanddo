@@ -53,7 +53,9 @@ PARTICIPATION_WEIGHT: dict[Participation, float] = {
     Participation.DIRECTED: 0.85,
     Participation.VERIFIED: 0.85,
     Participation.REVIEWED: 0.7,
+    Participation.ASSESSED: 0.75,
     Participation.TEAM_DELIVERED: 0.5,
+    Participation.SELF_REPORTED: 0.3,
     Participation.AGENT_EXECUTED: 0.0,
 }
 STATE_WEIGHT: dict[ClaimState, float] = {
@@ -201,6 +203,7 @@ class Passport:
                 "agent-authored work earns personal credit only when the person integrated it, and then only as REVIEWED",
                 "commits carrying an AI or bot co-author trailer are AGENT_ASSISTED, never sole authorship",
                 "employment tenure is not derivable from repository history",
+                "imported profile claims are SELF_REPORTED and DECLARED; endorsements never change a claim state",
             ],
         }
 
@@ -330,6 +333,7 @@ def passport_from_history(
     missions: MissionAttribution | None = None,
     identity_digest: str | None = None,
     max_count: int | None = None,
+    additional: Iterable[tuple[dict[str, Any], list[EvidenceRef]]] = (),
 ) -> Passport:
     """Build a passport from git attribution, attestations and optional mission evidence."""
     extra = list(attestations)
@@ -354,8 +358,12 @@ def passport_from_history(
     if missions is not None:
         sources.append(missions.source())
         mission_evidence = missions.evidence
+    more: list[EvidenceRef] = []
+    for summary, refs in additional:
+        sources.append(summary)
+        more.extend(refs)
     return build_passport(
-        person_id, [*attribution.evidence, *extra, *mission_evidence], as_of=as_of, sources=sources
+        person_id, [*attribution.evidence, *extra, *mission_evidence, *more], as_of=as_of, sources=sources
     )
 
 

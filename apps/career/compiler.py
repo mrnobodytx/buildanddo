@@ -73,7 +73,9 @@ COUNT_PHRASES: dict[str, str] = {
     Participation.DIRECTED.value: "directed (attested)",
     Participation.REVIEWED.value: "reviewed and integrated",
     Participation.VERIFIED.value: "verified (attested)",
+    Participation.ASSESSED.value: "assessed",
     Participation.TEAM_DELIVERED.value: "team-delivered (attested)",
+    Participation.SELF_REPORTED.value: "self-reported (imported)",
 }
 
 

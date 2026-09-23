@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     apps/career/evidence.py, apps/career/packages.py
+# Depends:     apps/career/evidence.py, apps/career/ledger.py, apps/career/packages.py
 # EnumType:    Service
-# EnumEdges:   DEPENDS_ON apps/career/evidence.py; DEPENDS_ON apps/career/packages.py; CONSUMES application packages; PRODUCES outcome report
+# EnumEdges:   DEPENDS_ON apps/career/evidence.py; DEPENDS_ON apps/career/ledger.py; DEPENDS_ON apps/career/packages.py; CONSUMES application packages; PRODUCES outcome report
 # DAG Node:    none
 # Intent:      Record human-reported application outcomes and show which representations of real work get responses, without over-reading small samples.
 # ─────────────────────────────────────────────────────────────
@@ -31,7 +31,8 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-from apps.career.evidence import CareerError, canonical_digest
+from apps.career.evidence import CareerError
+from apps.career.ledger import append_chain, read_chain
 from apps.career.passport import parse_instant
 
 STAGES = ("applied", "response", "screen", "technical", "offer")
@@ -62,37 +63,9 @@ def role_family(title: str) -> str:
     return "other"
 
 
-GENESIS = "sha256:" + "0" * 64
-
-
-def _chain(event: dict[str, Any]) -> str:
-    return canonical_digest({key: value for key, value in event.items() if key != "digest"})
-
-
 def read_ledger(path: Path) -> list[dict[str, Any]]:
-    """Read every ledger event and verify the hash chain; a missing ledger is empty.
-
-    Each event carries ``prev`` (the previous event's digest) and ``digest``. Editing,
-    removing or reordering an earlier line breaks the chain and the read fails.
-    """
-    if not path.exists():
-        return []
-    events: list[dict[str, Any]] = []
-    previous = GENESIS
-    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-        if not line.strip():
-            continue
-        try:
-            event = json.loads(line)
-        except json.JSONDecodeError as error:
-            raise CareerError(f"ledger line {number} is not JSON") from error
-        if not isinstance(event, dict):
-            raise CareerError(f"ledger line {number} is not an object")
-        if event.get("prev") != previous or event.get("digest") != _chain(event):
-            raise CareerError(f"ledger line {number} breaks the hash chain; the ledger was edited")
-        previous = str(event["digest"])
-        events.append(event)
-    return events
+    """Read every ledger event and verify the hash chain; a missing ledger is empty."""
+    return read_chain(path)
 
 
 def _applications(events: Iterable[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -165,12 +138,7 @@ def record_stage(path: Path, application_id: str, stage: str, *, at: str, record
 
 
 def _append(path: Path, event: dict[str, Any]) -> None:
-    existing = read_ledger(path)
-    event["prev"] = existing[-1]["digest"] if existing else GENESIS
-    event["digest"] = _chain(event)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(event, sort_keys=True) + "\n")
+    append_chain(path, event)
 
 
 def _furthest(history: list[str]) -> int:

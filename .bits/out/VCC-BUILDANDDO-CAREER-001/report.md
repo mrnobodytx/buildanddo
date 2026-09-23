@@ -19,18 +19,18 @@
 
 ## §1 SUMMARY
 
-Status:      COMPLETE (slices 1-3; no submission, no deployment)
+Status:      COMPLETE (slices 1-4; no submission, no deployment)
 Dispatch:    VCC-BUILDANDDO-CAREER-001
 Seat:        BITS-CODEGEN
 SRS:         SRS-BUILDANDDO-CAREER-001
 Branch:      bits/SRS-BUILDANDDO-CAREER-001-career-evidence
-Tasks:       13/13
+Tasks:       15/15
 Smoke:       3/3
 CKS Gate:    pending
 CKS:         pending
 CAPS:        pending
 CK:          pending
-Commits:     3 (SHAs assigned by the focused repository commits)
+Commits:     4 (SHAs assigned by the focused repository commits)
 
 ## §2 TASK RESULTS
 
@@ -115,9 +115,20 @@ Before and after on this repository (HEAD 72ad1355, same identity file):
   slice 2: 70 authored, headline "Implemented" for architecture, backend, CI/CD, deployment, frontend, Python.
   slice 3: 70 authored, 67 of them agent-assisted; no capability carries an "Implemented" headline.
 
+Task 14 — Portable claims
+  Status:  PASS
+  Output:  LinkedIn export, JSON Resume and Open Badges import as SELF_REPORTED/DECLARED; endorsements kept as context only; badges bound to the recipient hash; overlapping positions counted once as declared employment.
+  Verify:  `python -m unittest tests.career.test_assessments.ImportTests`
+
+Task 15 — Assessments
+  Status:  PASS
+  Output:  Forms without answer keys; 3 attempts per 30 days; 30-minute limit; failures recorded; re-grade detects a forged result; proctored pass is VERIFIED.
+  Verify:  `python -m unittest tests.career.test_assessments`
+  Dogfood: imported 7 LinkedIn claims (1 unmapped); a proctored Python quiz scored 5/5; the passport's Python entry reached VERIFIED while Kubernetes stayed SELF_REPORTED/DECLARED; verify re-derived 132 commit refs and re-graded 1 attempt.
+
 ## §3 SMOKE TEST RESULTS
 
-1. `python tests/career/check_career.py` — expected PASS — actual PASS (62 run, 0 failures; every module 94-100 percent).
+1. `python tests/career/check_career.py` — expected PASS — actual PASS (73 run, 0 failures; every module 96-100 percent).
 2. `python scripts/ci/verify_public_boundary.py` — expected PASS — actual PASS.
 3. `python scripts/ci/agent_context.py --check` — expected PASS — actual PASS.
 
@@ -171,6 +182,6 @@ staging deployment (A3; this package has no service surface to deploy), a live
 PocketBase reader for missions (needs credentials; exported snapshots only).
 Known remaining limits: git identities and dates are forgeable, so verify must run against the canonical remote;
 squash merges authored by an agent are not credited to the merger; many trivial commits still inflate record counts.
-Suggested next dispatch: human-dispatched A3 runner that consumes fill_plan.json
+Assessment limits: the committed bank is a public sample; an unproctored pass does not establish who answered;\nmultiple-choice quizzes test recall, not delivery, so they add to work evidence rather than replace it.\nSuggested next dispatch: human-dispatched A3 runner that consumes fill_plan.json
 and stops at every HUMAN_REQUIRED field and challenge.
 Bugs filed (out of scope, comment-only): none.

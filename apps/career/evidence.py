@@ -45,6 +45,8 @@ class Participation(str, Enum):
     VERIFIED = "VERIFIED"
     TEAM_DELIVERED = "TEAM_DELIVERED"
     AGENT_EXECUTED = "AGENT_EXECUTED"
+    ASSESSED = "ASSESSED"
+    SELF_REPORTED = "SELF_REPORTED"
 
 
 AUTOMATED = re.compile(
@@ -77,7 +79,9 @@ PARTICIPATION_ORDER: tuple[Participation, ...] = (
     Participation.DIRECTED,
     Participation.VERIFIED,
     Participation.REVIEWED,
+    Participation.ASSESSED,
     Participation.TEAM_DELIVERED,
+    Participation.SELF_REPORTED,
     Participation.AGENT_EXECUTED,
 )
 
@@ -98,6 +102,8 @@ CLAIM_VERBS: dict[Participation, str | None] = {
     Participation.REVIEWED: "Reviewed and integrated",
     Participation.VERIFIED: "Verified",
     Participation.TEAM_DELIVERED: "Contributed to team delivery of",
+    Participation.ASSESSED: "Passed an assessment in",
+    Participation.SELF_REPORTED: "Reports experience with",
     Participation.AGENT_EXECUTED: None,
 }
 

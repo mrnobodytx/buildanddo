@@ -112,7 +112,7 @@ def _capability_row(requirement: Requirement, entries: dict[str, CapabilityEntry
     )
 
 
-def _tenure_row(requirement: Requirement, entries: dict[str, CapabilityEntry]) -> CoverageRow:
+def _tenure_row(requirement: Requirement, entries: dict[str, CapabilityEntry], declared_months: int = 0) -> CoverageRow:
     relevant = [entries[cap] for cap in requirement.capabilities if cap in entries]
     scope = "related"
     if not requirement.capabilities:
@@ -125,6 +125,9 @@ def _tenure_row(requirement: Requirement, entries: dict[str, CapabilityEntry]) -
         )
     else:
         note = f"nominal gap: {requirement.years} years not established and no related evidence"
+    if declared_months:
+        note += (f"; an imported profile declares {declared_months // 12} years {declared_months % 12} months "
+                 "of employment, which is the person's own statement and not verified here")
     supporting = tuple(item.capability_id for item in relevant if _supports(item))
     return CoverageRow(requirement, Coverage.NOT_PROVEN, supporting, (), note)
 
@@ -137,7 +140,9 @@ def evaluate(job: Job, passport: Passport) -> CoverageMap:
         if requirement.kind in (RequirementKind.CAPABILITY, RequirementKind.UNMAPPED):
             rows.append(_capability_row(requirement, entries))
         elif requirement.kind is RequirementKind.TENURE:
-            rows.append(_tenure_row(requirement, entries))
+            declared = sum(int(source.get("declared_employment_months", 0)) for source in passport.sources
+                           if source.get("kind") == "imported_profile")
+            rows.append(_tenure_row(requirement, entries, declared))
         elif requirement.kind is RequirementKind.CREDENTIAL:
             rows.append(
                 CoverageRow(

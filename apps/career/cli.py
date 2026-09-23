@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     apps/career/history.py, apps/career/passport.py, apps/career/match.py, apps/career/dossier.py, apps/career/compiler.py, apps/career/missions.py, apps/career/sources.py, apps/career/outcomes.py, apps/career/packages.py, apps/career/fill.py
+# Depends:     apps/career/history.py, apps/career/passport.py, apps/career/match.py, apps/career/dossier.py, apps/career/compiler.py, apps/career/missions.py, apps/career/sources.py, apps/career/outcomes.py, apps/career/packages.py, apps/career/fill.py, apps/career/imports.py, apps/career/assessments.py, apps/career/ledger.py
 # EnumType:    Adapter
-# EnumEdges:   DEPENDS_ON apps/career/history.py; DEPENDS_ON apps/career/passport.py; DEPENDS_ON apps/career/match.py; DEPENDS_ON apps/career/dossier.py; DEPENDS_ON apps/career/compiler.py; DEPENDS_ON apps/career/missions.py; DEPENDS_ON apps/career/sources.py; DEPENDS_ON apps/career/outcomes.py; DEPENDS_ON apps/career/packages.py; DEPENDS_ON apps/career/fill.py
+# EnumEdges:   DEPENDS_ON apps/career/history.py; DEPENDS_ON apps/career/passport.py; DEPENDS_ON apps/career/match.py; DEPENDS_ON apps/career/dossier.py; DEPENDS_ON apps/career/compiler.py; DEPENDS_ON apps/career/missions.py; DEPENDS_ON apps/career/sources.py; DEPENDS_ON apps/career/outcomes.py; DEPENDS_ON apps/career/packages.py; DEPENDS_ON apps/career/fill.py; DEPENDS_ON apps/career/imports.py; DEPENDS_ON apps/career/assessments.py; DEPENDS_ON apps/career/ledger.py
 # DAG Node:    none
 # Intent:      Run the passport, match, dossier and package stages locally, writing only to a new output directory.
 # ─────────────────────────────────────────────────────────────
@@ -22,12 +22,31 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import secrets
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from apps.career.assessments import (
+    assessment_evidence,
+    grade_attempt,
+    issue_attempt,
+    load_bank,
+    pending,
+    regrade,
+)
 from apps.career.compiler import canonical_json, compile_application
+from apps.career.imports import (
+    PLATFORMS,
+    build_inventory,
+    import_evidence,
+    load_inventory,
+    read_json_resume,
+    read_linkedin,
+    read_open_badges,
+)
+from apps.career.ledger import read_chain
 from apps.career.fill import grant_from_dict, plan_fill
 from apps.career.missions import attribute_missions
 from apps.career.outcomes import STAGES, TERMINAL, read_ledger, record_applied, record_stage, report
@@ -83,6 +102,14 @@ def cmd_passport(args: argparse.Namespace) -> dict[str, Any]:
     head, commits = read_git_history(Path(args.repo), max_count=args.max_count)
     attribution = attribute(commits, identity)
     extra = [ref for item in attestations for ref in attestation_evidence(item, identity.person_id)]
+    additional = []
+    if args.imports:
+        inventory = load_inventory(_read_json(Path(args.imports)))
+        if inventory["person_id"] != identity.person_id:
+            raise CareerError("imported claims belong to a different person_id")
+        additional.append(import_evidence(inventory))
+    if args.assessments:
+        additional.append(assessment_evidence(read_chain(Path(args.assessments)), identity.person_id))
     missions = None
     if args.missions:
         user_ids = raw_identity.get("person_user_ids", [])
@@ -91,7 +118,7 @@ def cmd_passport(args: argparse.Namespace) -> dict[str, Any]:
         missions = attribute_missions(_read_json(Path(args.missions)), [str(item) for item in user_ids])
     passport = passport_from_history(
         identity.person_id, attribution, extra, as_of=as_of, head=head, missions=missions,
-        identity_digest=identity.digest(), max_count=args.max_count,
+        identity_digest=identity.digest(), max_count=args.max_count, additional=additional,
     )
     out = _fresh_directory(Path(args.output))
     (out / "passport.json").write_text(canonical_json(passport.to_dict()), encoding="utf-8")
@@ -218,9 +245,72 @@ def cmd_fill_plan(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def cmd_verify(args: argparse.Namespace) -> dict[str, Any]:
-    """Re-derive a passport's repository claims; any disagreement fails."""
+    """Re-derive a passport's repository claims and, given the bank, re-grade its assessments."""
     identity, _ = load_identity(_read_json(Path(args.identity)))
-    return verify_passport(_read_json(Path(args.passport)), Path(args.repo), identity)
+    result = verify_passport(_read_json(Path(args.passport)), Path(args.repo), identity)
+    if bool(args.bank) != bool(args.assessments):
+        raise CareerError("--bank and --assessments are used together")
+    if args.bank:
+        graded = regrade(load_bank(_read_json(Path(args.bank))), read_chain(Path(args.assessments)))
+        result["assessments"] = graded
+        if graded["state"] == "MISMATCH":
+            result["state"] = "MISMATCH"
+            result["mismatches"] = [*result["mismatches"], *graded["mismatches"]]
+    return result
+
+
+def cmd_import(args: argparse.Namespace) -> dict[str, Any]:
+    """Import claims from another platform as self-reported, then list what an assessment could upgrade."""
+    identity, _ = load_identity(_read_json(Path(args.identity)))
+    as_of = parse_instant(args.as_of) if args.as_of else datetime.now(timezone.utc)
+    path = Path(args.path)
+    if args.platform == "linkedin":
+        claims = read_linkedin(path, as_of)
+    elif args.platform == "jsonresume":
+        claims = read_json_resume(_read_json(path), as_of)
+    else:
+        claims = read_open_badges(_read_json(path), identity.person_emails, as_of)
+    inventory = build_inventory(identity.person_id, args.platform, claims, as_of)
+    out = _fresh_directory(Path(args.output))
+    (out / "imported_claims.json").write_text(canonical_json(inventory), encoding="utf-8")
+    return {"state": "PASS", "claims": len(inventory["claims"]), "digest": inventory["digest"],
+            "claim_state": inventory["state"],
+            "declared_employment_months": inventory["declared_employment_months"],
+            "unmapped": [item["name"] for item in inventory["claims"] if not item["capabilities"]],
+            "capabilities": sorted({cap for item in inventory["claims"] for cap in item["capabilities"]})}
+
+
+def _need(args: argparse.Namespace, *names: str) -> None:
+    missing = [f"--{name.replace('_', '-')}" for name in names if not getattr(args, name)]
+    if missing:
+        raise CareerError(f"assess {args.action} needs " + ", ".join(missing))
+
+
+def cmd_assess(args: argparse.Namespace) -> dict[str, Any]:
+    """Issue, grade, re-grade or list pending assessments."""
+    _need(args, "bank", "ledger")
+    bank, ledger = load_bank(_read_json(Path(args.bank))), Path(args.ledger)
+    if args.action == "issue":
+        _need(args, "capability", "person_id", "output")
+        at = args.at or datetime.now(timezone.utc).isoformat()
+        form = issue_attempt(bank, ledger, person_id=args.person_id, capability=args.capability,
+                             seed=args.seed or secrets.token_hex(8), at=at)
+        out = _fresh_directory(Path(args.output))
+        (out / "form.json").write_text(canonical_json(form), encoding="utf-8")
+        return {"state": "PASS", "attempt_id": form["attempt_id"], "form": str(out / "form.json"),
+                "expires_at": form["expires_at"]}
+    if args.action == "grade":
+        _need(args, "attempt_id", "responses")
+        at = args.at or datetime.now(timezone.utc).isoformat()
+        event = grade_attempt(bank, ledger, attempt_id=args.attempt_id, responses=_read_json(Path(args.responses)),
+                              at=at, proctor_id=args.proctor_id, proctor_receipt=args.proctor_receipt)
+        return {"state": "PASS", **{key: event[key] for key in
+                                    ("attempt_id", "capability", "correct", "total", "passed", "within_time")}}
+    if args.action == "regrade":
+        return regrade(bank, read_chain(ledger))
+    _need(args, "imports")
+    return {"state": "PASS", "pending": pending(load_inventory(_read_json(Path(args.imports))), bank,
+                                                read_chain(ledger))}
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -233,6 +323,8 @@ def build_parser() -> argparse.ArgumentParser:
     passport.add_argument("--output", required=True)
     passport.add_argument("--as-of")
     passport.add_argument("--max-count", type=int)
+    passport.add_argument("--imports", help="imported_claims.json from the import command")
+    passport.add_argument("--assessments", help="assessment ledger")
     passport.add_argument("--missions", help="exported BuildAndDo missions/evidence/suite_runs JSON")
     passport.set_defaults(handler=cmd_passport)
     run = sub.add_parser("evaluate", help="match supplied jobs and compile packages")
@@ -273,7 +365,24 @@ def build_parser() -> argparse.ArgumentParser:
     check.add_argument("--passport", required=True)
     check.add_argument("--repo", required=True)
     check.add_argument("--identity", required=True)
+    check.add_argument("--bank", help="question bank, to re-grade assessment results")
+    check.add_argument("--assessments", help="assessment ledger to re-grade")
     check.set_defaults(handler=cmd_verify)
+    bring = sub.add_parser("import", help="import LinkedIn, JSON Resume or Open Badges claims as self-reported")
+    bring.add_argument("--platform", required=True, choices=PLATFORMS)
+    bring.add_argument("--path", required=True, help="LinkedIn export folder, or a JSON file")
+    bring.add_argument("--identity", required=True)
+    bring.add_argument("--output", required=True)
+    bring.add_argument("--as-of")
+    bring.set_defaults(handler=cmd_import)
+    quiz = sub.add_parser("assess", help="issue, grade, re-grade or list capability assessments")
+    quiz.add_argument("action", choices=["issue", "grade", "regrade", "pending"])
+    quiz.add_argument("--bank")
+    quiz.add_argument("--ledger")
+    for name in ("capability", "person-id", "seed", "at", "output", "attempt-id", "responses",
+                 "proctor-id", "proctor-receipt", "imports"):
+        quiz.add_argument(f"--{name}")
+    quiz.set_defaults(handler=cmd_assess)
     return parser
 
 

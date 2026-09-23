@@ -41,6 +41,8 @@ turned into dossiers and application packages whose every claim has provenance.
 | 11 | J3 fill plan with authority decisions | `python -m unittest tests.career.test_slice2.FillTests tests.career.test_slice2.SliceCliTests && echo PASS` | done |
 | 12 | Red-team: prove failures, then fix (co-authorship, bot identity, parsing, ledger) | `python -m unittest tests.career.test_redteam.LaunderingTests tests.career.test_redteam.RequirementTests && echo PASS` | done |
 | 13 | Third-party passport verification and shareable card | `python -m unittest tests.career.test_redteam.IntegrityTests && echo PASS` | done |
+| 14 | Import LinkedIn, JSON Resume and Open Badges claims as self-reported | `python -m unittest tests.career.test_assessments.ImportTests && echo PASS` | done |
+| 15 | Hidden-key, limited, timed, re-gradable assessments and proctored verification | `python -m unittest tests.career.test_assessments.AssessmentTests tests.career.test_assessments.ImportCliTests && echo PASS` | done |
 | 7 | Public boundary and context gates | `python scripts/ci/verify_public_boundary.py && python scripts/ci/agent_context.py --check && echo PASS` | done |
 
 ## Constraints
