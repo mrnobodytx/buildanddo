@@ -19,18 +19,18 @@
 
 ## §1 SUMMARY
 
-Status:      COMPLETE (slices 1-4; no submission, no deployment)
+Status:      COMPLETE (slices 1-5; no submission, no deployment, profile endpoint not yet activated)
 Dispatch:    VCC-BUILDANDDO-CAREER-001
 Seat:        BITS-CODEGEN
 SRS:         SRS-BUILDANDDO-CAREER-001
 Branch:      bits/SRS-BUILDANDDO-CAREER-001-career-evidence
-Tasks:       15/15
+Tasks:       18/18
 Smoke:       3/3
 CKS Gate:    pending
 CKS:         pending
 CAPS:        pending
 CK:          pending
-Commits:     4 (SHAs assigned by the focused repository commits)
+Commits:     5 (SHAs assigned by the focused repository commits)
 
 ## §2 TASK RESULTS
 
@@ -126,9 +126,25 @@ Task 15 — Assessments
   Verify:  `python -m unittest tests.career.test_assessments`
   Dogfood: imported 7 LinkedIn claims (1 unmapped); a proctored Python quiz scored 5/5; the passport's Python entry reached VERIFIED while Kubernetes stayed SELF_REPORTED/DECLARED; verify re-derived 132 commit refs and re-graded 1 attempt.
 
+Task 16 — Profile envelope Citadel serves
+  Status:  PASS
+  Output:  `buildanddo.career.profile/v1` binds one digest-checked passport to one BuildAndDo account id, plus its card; nothing else.
+  Verify:  `python -m unittest tests.career.test_profile`
+
+Task 17 — Authenticated no-store profile route
+  Status:  PASS
+  Output:  `GET /api/buildanddo/career/profile` fetches from Citadel server-to-server with an environment token, refuses another subject's profile, drops every non-allow-listed field (evidence refs, answers, emails), writes no record, and answers not_configured when unset.
+  Verify:  `node --test tests/upgrade/career-profile.test.mjs` (5/5; the Citadel double serves a Python-built envelope)
+
+Task 18 — Load on login, clear on logout
+  Status:  PARTIAL (written, not executed here)
+  Output:  `CareerProfileProvider` loads after sign-in, drops late responses from a previous account, clears on sign-out, skips demo mode; mounted in App.jsx.
+  Verify:  `npx --prefix apps/web vitest run src/lib/__tests__/careerProfile.test.js src/contexts/__tests__/CareerProfileContext.test.jsx`
+  Limit:   web dependencies are not installed and the sandbox has no network, so Vitest did not run. The client library was exercised directly in Node (7 checks pass); the JSX provider was reviewed, not executed.
+
 ## §3 SMOKE TEST RESULTS
 
-1. `python tests/career/check_career.py` — expected PASS — actual PASS (73 run, 0 failures; every module 96-100 percent).
+1. `python tests/career/check_career.py` — expected PASS — actual PASS (75 run, 0 failures; every module 96-100 percent).
 2. `python scripts/ci/verify_public_boundary.py` — expected PASS — actual PASS.
 3. `python scripts/ci/agent_context.py --check` — expected PASS — actual PASS.
 
@@ -182,6 +198,6 @@ staging deployment (A3; this package has no service surface to deploy), a live
 PocketBase reader for missions (needs credentials; exported snapshots only).
 Known remaining limits: git identities and dates are forgeable, so verify must run against the canonical remote;
 squash merges authored by an agent are not credited to the merger; many trivial commits still inflate record counts.
-Assessment limits: the committed bank is a public sample; an unproctored pass does not establish who answered;\nmultiple-choice quizzes test recall, not delivery, so they add to work evidence rather than replace it.\nSuggested next dispatch: human-dispatched A3 runner that consumes fill_plan.json
+Assessment limits: the committed bank is a public sample; an unproctored pass does not establish who answered;\nmultiple-choice quizzes test recall, not delivery, so they add to work evidence rather than replace it.\nHandoff: .bits/handoffs/2026-09-23-bits-codegen-ide1-career-profile.md (Citadel endpoint; operator sets URL and token).\nSuggested next dispatch: human-dispatched A3 runner that consumes fill_plan.json
 and stops at every HUMAN_REQUIRED field and challenge.
 Bugs filed (out of scope, comment-only): none.

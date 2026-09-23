@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-21
-// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx
+// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/contexts/CareerProfileContext.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx
+// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx; CONSUMES apps/web/src/contexts/CareerProfileContext.jsx
 // Intent:      Route public and workspace views only after native session validation.
 // ───────────────────────────────────────────────────────────────
 
@@ -25,6 +25,7 @@ import ScrollToTop from './components/ScrollToTop';
 import RouteTelemetry from './components/observability/RouteTelemetry';
 import TelemetryBoundary from './components/observability/TelemetryBoundary';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { CareerProfileProvider } from '@/contexts/CareerProfileContext';
 import { WorkspaceProvider, useWorkspace } from '@/contexts/WorkspaceContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageBoundary from '@/components/workspace/PageBoundary';
@@ -259,11 +260,13 @@ function App() {
                     <Router>
                         <SkipNavigation />
                         <AuthProvider>
-                            <WorkspaceProvider>
-                                <ScrollToTop />
-                                <RouteTelemetry />
-                                <AppRoutes />
-                            </WorkspaceProvider>
+                            <CareerProfileProvider>
+                                <WorkspaceProvider>
+                                    <ScrollToTop />
+                                    <RouteTelemetry />
+                                    <AppRoutes />
+                                </WorkspaceProvider>
+                            </CareerProfileProvider>
                         </AuthProvider>
                     </Router>
                 </TelemetryBoundary>

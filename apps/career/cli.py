@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     apps/career/history.py, apps/career/passport.py, apps/career/match.py, apps/career/dossier.py, apps/career/compiler.py, apps/career/missions.py, apps/career/sources.py, apps/career/outcomes.py, apps/career/packages.py, apps/career/fill.py, apps/career/imports.py, apps/career/assessments.py, apps/career/ledger.py
+# Depends:     apps/career/history.py, apps/career/passport.py, apps/career/match.py, apps/career/dossier.py, apps/career/compiler.py, apps/career/missions.py, apps/career/sources.py, apps/career/outcomes.py, apps/career/packages.py, apps/career/fill.py, apps/career/imports.py, apps/career/assessments.py, apps/career/ledger.py, apps/career/profile.py
 # EnumType:    Adapter
-# EnumEdges:   DEPENDS_ON apps/career/history.py; DEPENDS_ON apps/career/passport.py; DEPENDS_ON apps/career/match.py; DEPENDS_ON apps/career/dossier.py; DEPENDS_ON apps/career/compiler.py; DEPENDS_ON apps/career/missions.py; DEPENDS_ON apps/career/sources.py; DEPENDS_ON apps/career/outcomes.py; DEPENDS_ON apps/career/packages.py; DEPENDS_ON apps/career/fill.py; DEPENDS_ON apps/career/imports.py; DEPENDS_ON apps/career/assessments.py; DEPENDS_ON apps/career/ledger.py
+# EnumEdges:   DEPENDS_ON apps/career/history.py; DEPENDS_ON apps/career/passport.py; DEPENDS_ON apps/career/match.py; DEPENDS_ON apps/career/dossier.py; DEPENDS_ON apps/career/compiler.py; DEPENDS_ON apps/career/missions.py; DEPENDS_ON apps/career/sources.py; DEPENDS_ON apps/career/outcomes.py; DEPENDS_ON apps/career/packages.py; DEPENDS_ON apps/career/fill.py; DEPENDS_ON apps/career/imports.py; DEPENDS_ON apps/career/assessments.py; DEPENDS_ON apps/career/ledger.py; DEPENDS_ON apps/career/profile.py
 # DAG Node:    none
 # Intent:      Run the passport, match, dossier and package stages locally, writing only to a new output directory.
 # ─────────────────────────────────────────────────────────────
@@ -47,6 +47,7 @@ from apps.career.imports import (
     read_open_badges,
 )
 from apps.career.ledger import read_chain
+from apps.career.profile import build_profile
 from apps.career.fill import grant_from_dict, plan_fill
 from apps.career.missions import attribute_missions
 from apps.career.outcomes import STAGES, TERMINAL, read_ledger, record_applied, record_stage, report
@@ -280,6 +281,16 @@ def cmd_import(args: argparse.Namespace) -> dict[str, Any]:
             "capabilities": sorted({cap for item in inventory["claims"] for cap in item["capabilities"]})}
 
 
+def cmd_profile(args: argparse.Namespace) -> dict[str, Any]:
+    """Write the login profile envelope Citadel Nexus serves for one BuildAndDo account."""
+    issued = parse_instant(args.issued_at) if args.issued_at else datetime.now(timezone.utc)
+    envelope = build_profile(_read_json(Path(args.passport)), args.subject_id, issued)
+    out = _fresh_directory(Path(args.output))
+    (out / "profile.json").write_text(canonical_json(envelope), encoding="utf-8")
+    return {"state": "PASS", "profile": str(out / "profile.json"), "subject_id": envelope["subject_id"],
+            "passport_digest": envelope["passport"]["digest"]}
+
+
 def _need(args: argparse.Namespace, *names: str) -> None:
     missing = [f"--{name.replace('_', '-')}" for name in names if not getattr(args, name)]
     if missing:
@@ -375,6 +386,12 @@ def build_parser() -> argparse.ArgumentParser:
     bring.add_argument("--output", required=True)
     bring.add_argument("--as-of")
     bring.set_defaults(handler=cmd_import)
+    card = sub.add_parser("profile", help="build the login profile envelope Citadel Nexus serves")
+    card.add_argument("--passport", required=True)
+    card.add_argument("--subject-id", required=True, help="the BuildAndDo (PocketBase) account id")
+    card.add_argument("--output", required=True)
+    card.add_argument("--issued-at")
+    card.set_defaults(handler=cmd_profile)
     quiz = sub.add_parser("assess", help="issue, grade, re-grade or list capability assessments")
     quiz.add_argument("action", choices=["issue", "grade", "regrade", "pending"])
     quiz.add_argument("--bank")

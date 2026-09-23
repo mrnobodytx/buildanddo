@@ -43,6 +43,9 @@ turned into dossiers and application packages whose every claim has provenance.
 | 13 | Third-party passport verification and shareable card | `python -m unittest tests.career.test_redteam.IntegrityTests && echo PASS` | done |
 | 14 | Import LinkedIn, JSON Resume and Open Badges claims as self-reported | `python -m unittest tests.career.test_assessments.ImportTests && echo PASS` | done |
 | 15 | Hidden-key, limited, timed, re-gradable assessments and proctored verification | `python -m unittest tests.career.test_assessments.AssessmentTests tests.career.test_assessments.ImportCliTests && echo PASS` | done |
+| 16 | Profile envelope Citadel serves | `python -m unittest tests.career.test_profile && echo PASS` | done |
+| 17 | Authenticated no-store profile route with allow-listed projection | `node --test tests/upgrade/career-profile.test.mjs && echo PASS` | done |
+| 18 | Load profile on login, clear on logout | `npx --prefix apps/web vitest run src/lib/__tests__/careerProfile.test.js src/contexts/__tests__/CareerProfileContext.test.jsx && echo PASS` | done |
 | 7 | Public boundary and context gates | `python scripts/ci/verify_public_boundary.py && python scripts/ci/agent_context.py --check && echo PASS` | done |
 
 ## Constraints
@@ -51,14 +54,20 @@ turned into dossiers and application packages whose every claim has provenance.
   `tests/fixtures/career/**`, `.bits/srs/SRS-BUILDANDDO-CAREER-001.md`,
   `.bits/srs_registry.yml`, `.bits/queue/VCC-BUILDANDDO-CAREER-001.md`,
   `.bits/context.lock.json`, `.bits/out/VCC-BUILDANDDO-CAREER-001/**`, and
+  `apps/pocketbase/pb_hooks/career-profile.js`, `apps/pocketbase/pb_hooks/career-profile.pb.js`,
+  `apps/web/src/lib/careerProfile.js`, `apps/web/src/contexts/CareerProfileContext.jsx`,
+  their tests, `tests/upgrade/career-profile.test.mjs`, the provider mount in
+  `apps/web/src/App.jsx` (owner-directed, the only existing-file edit),
+  `.bits/handoffs/2026-09-23-bits-codegen-ide1-career-profile.md`, and
   `.bits/hostinger-readiness.lock.json` (source-review refresh only; `apps/` is
   governed source, and no milestone rationale, owner, check or next action changes).
-- Files it must not touch: existing application, PocketBase, web, CI,
-  authority policy, migrations, deployment and private-plane files.
+- Files it must not touch: other existing application, PocketBase and web files,
+  CI, authority policy, migrations, deployment and private-plane files.
 - Anything that would raise risk above A1: network access beyond the opt-in GET
   to the three allow-listed public posting endpoints, authenticated ATS APIs,
   browser runners, submission, credential or personal-data storage, persisted
-  schema, staging or production deployment.
+  schema, staging or production deployment, configuring the Citadel profile
+  endpoint or its token on a running server.
 
 ## Smoke test
 

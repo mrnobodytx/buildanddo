@@ -68,6 +68,15 @@ Slice 2 (same SRS, same PR):
   positions and badges from a LinkedIn data export, JSON Resume or Open Badges
   2.0 assertions as SELF_REPORTED claims; issue, grade and re-grade capability
   quizzes from a grader-held bank; list which imported claims are assessed.
+- Profile on login (slice 5, owner-directed): Citadel Nexus holds the person's
+  career records; BuildAndDo requests the signed-in user's profile at login.
+  `python -m apps.career profile` builds the `buildanddo.career.profile/v1`
+  envelope Citadel serves. A native-authenticated PocketBase route
+  `GET /api/buildanddo/career/profile` requests it server-to-server, validates
+  it, binds it to the signed-in account and returns an allow-listed projection
+  with `no-store`; it persists nothing. The web app loads it after login and
+  clears it on logout or account change. The single existing-file edit is
+  mounting the provider in `apps/web/src/App.jsx`.
 - A J3 fill plan mapping an employer form's fields to profile, package or human
   sources, with fill and submit authority decisions. It is a plan, not a runner.
 
@@ -86,7 +95,11 @@ Slice 2 (same SRS, same PR):
 - Inferring answers to reserved questions: work authorization, clearance,
   criminal history, compensation, relocation, contract acceptance, background
   check consent, disability, veteran or demographic disclosure.
-- Language-model generation; persisted schema; PocketBase, web or CI changes.
+- Language-model generation; persisted schema; CI changes; PocketBase or web
+  changes beyond the slice 5 route, client, provider and its mount.
+- The Citadel Nexus profile endpoint itself, its storage and the service token
+  (private plane; see the handoff). Setting the endpoint URL and token on a
+  running PocketBase is an A3 operator action.
 
 ## Invariants
 
@@ -123,6 +136,13 @@ Slice 2 (same SRS, same PR):
   with a result digest. Owner-set mission `status` is never used.
 - Outcome events are recorded by a named human against a digest-verified package;
   stages only advance. Groups under ten applications are never ranked.
+- BuildAndDo never stores a Citadel profile: the route writes no record, answers
+  `no-store`, and the browser holds it in memory only. The route returns only
+  allow-listed passport fields; anything else Citadel sends (answers, emails,
+  evidence payloads) is dropped. A profile for a different subject is refused.
+- The Citadel service token is read from the PocketBase environment and never
+  reaches the browser. Without a configured endpoint the route reports
+  `not_configured`, and login is unaffected.
 - The compiler's maximum authority is J2. J3 and J4 are policy decisions only;
   an anti-bot challenge always yields a human stop, never a bypass.
 
@@ -135,6 +155,11 @@ Slice 2 (same SRS, same PR):
    authority, package validation, board normalization, mission verification,
    package tamper detection, the outcome ledger and fill plans.
    `tests.career.test_redteam` holds every adversarial failure as a regression.
+   `tests.career.test_profile` covers the profile envelope;
+   `node --test tests/upgrade/career-profile.test.mjs` runs the real route source
+   against a Citadel double; `apps/web/src/lib/__tests__/careerProfile.test.js`
+   and `apps/web/src/contexts/__tests__/CareerProfileContext.test.jsx` cover
+   loading on login and clearing on logout.
    `tests.career.test_assessments` covers imports, hidden keys, limits, lateness,
    proctoring, re-grading and forged results.
 3. `python -m apps.career passport --repo . --identity <file> --output <new-dir>`

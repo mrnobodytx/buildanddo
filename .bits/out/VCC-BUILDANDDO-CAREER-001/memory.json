@@ -31,6 +31,38 @@
     },
     {
       "type": "A",
+      "file_path": ".bits/handoffs/2026-09-23-bits-codegen-ide1-career-profile.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/career/profile.py",
+        "apps/pocketbase/pb_hooks/career-profile.js"
+      ],
+      "lines": 62,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Ask the private plane to serve career profiles from Citadel Nexus stores and to bind the endpoint to BuildAndDo, without moving that data into the public repository.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
       "file_path": ".bits/hostinger-readiness.lock.json",
       "cket_stage": "11_COMMIT",
       "srs_codes": [
@@ -41,7 +73,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1064,
+      "lines": 1067,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -74,7 +106,7 @@
         "tests/career/test_career.py",
         "tests/career/check_career.py"
       ],
-      "lines": 187,
+      "lines": 203,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve reviewer-runnable evidence that the career slice credits only attributed work and never infers reserved answers or submits.",
@@ -106,7 +138,7 @@
         ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
         ".bits/srs_registry.yml"
       ],
-      "lines": 77,
+      "lines": 86,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Authorize and gate the local career evidence slice without discovery, submission or external-write authority.",
@@ -138,7 +170,7 @@
         "AGENTS.md",
         "docs/architecture/CAPABILITY_PASSPORT.md"
       ],
-      "lines": 148,
+      "lines": 173,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Specify a local career evidence engine that derives role matches and application packages only from recorded work, with explicit participation and human-reserved attestations.",
@@ -354,6 +386,7 @@
         "cmd_fill_plan",
         "cmd_verify",
         "cmd_import",
+        "cmd_profile",
         "_need",
         "cmd_assess",
         "build_parser",
@@ -372,9 +405,10 @@
         "apps/career/fill.py",
         "apps/career/imports.py",
         "apps/career/assessments.py",
-        "apps/career/ledger.py"
+        "apps/career/ledger.py",
+        "apps/career/profile.py"
       ],
-      "lines": 398,
+      "lines": 415,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the passport, match, dossier and package stages locally, writing only to a new output directory.",
@@ -918,6 +952,40 @@
     },
     {
       "type": "A",
+      "file_path": "apps/career/profile.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "build_profile"
+      ],
+      "dependencies": [
+        "apps/career/passport.py",
+        "apps/career/verify.py"
+      ],
+      "lines": 52,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define the one profile envelope Citadel Nexus serves to BuildAndDo at login, so both sides validate the same shape.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
       "file_path": "apps/career/sources.py",
       "cket_stage": "07_BUILD",
       "srs_codes": [
@@ -1035,6 +1103,245 @@
     },
     {
       "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/career-profile.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "endpoint",
+        "capability",
+        "source",
+        "project",
+        "load"
+      ],
+      "dependencies": [
+        "apps/career/profile.py"
+      ],
+      "lines": 112,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Fetch the signed-in user's career profile from Citadel Nexus server-to-server and return only an allow-listed, account-bound projection, storing nothing. BUILDANDDO_CAREER_PROFILE_URL    Citadel endpoint; https://, or http:// on loopback only. BUILDANDDO_CAREER_PROFILE_TOKEN  service bearer token; never sent to the browser.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Route",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/career-profile.js"
+      ],
+      "lines": 22,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Serve the signed-in user's Citadel-held career profile with native auth and no-store, so it loads at login and is never cached.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/App.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Widget",
+      "functions": [
+        "EstateOnly",
+        "RedirectIfAuthed",
+        "WorkspaceGate",
+        "AppRoutes",
+        "App"
+      ],
+      "dependencies": [
+        "apps/web/src/contexts/AuthContext.jsx",
+        "apps/web/src/components/ProtectedRoute.jsx",
+        "apps/web/src/contexts/CareerProfileContext.jsx"
+      ],
+      "lines": 278,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Mount the career profile provider so the Citadel-held profile loads when a user signs in.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/contexts/CareerProfileContext.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "CareerProfileProvider"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/careerProfile.js",
+        "apps/web/src/contexts/AuthContext.jsx",
+        "apps/web/src/hooks/useDemoMode.js"
+      ],
+      "lines": 47,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Load the user's career profile from Citadel Nexus as soon as they sign in, and drop it the moment they sign out or switch account.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/contexts/__tests__/CareerProfileContext.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Wrapper"
+      ],
+      "dependencies": [
+        "apps/web/src/contexts/CareerProfileContext.jsx"
+      ],
+      "lines": 71,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the career profile loads when a user signs in and is cleared on sign-out, account change and demo mode.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/__tests__/careerProfile.test.js",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/lib/careerProfile.js"
+      ],
+      "lines": 76,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the browser accepts a career profile only for the signed-in account and in the expected shape.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/careerProfile.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "createCareerProfileClient"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/career-profile.pb.js"
+      ],
+      "lines": 55,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Request the signed-in user's Citadel-held career profile and accept it only for that account, keeping it in memory.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
       "file_path": "tests/career/__init__.py",
       "cket_stage": "08_TEST",
       "srs_codes": [
@@ -1078,6 +1385,7 @@
         "tests/career/test_slice2.py",
         "tests/career/test_redteam.py",
         "tests/career/test_assessments.py",
+        "tests/career/test_profile.py",
         "apps/career"
       ],
       "lines": 83,
@@ -1173,6 +1481,40 @@
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prove participation-honest attribution, requirement coverage, mandatory do-not-claim lists, reserved-answer handling and claim provenance.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/career/test_profile.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "ProfileTests"
+      ],
+      "dependencies": [
+        "apps/career/profile.py",
+        "tests/career/test_career.py"
+      ],
+      "lines": 64,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the login envelope binds one digest-checked passport to one account and carries nothing else.",
       "objective_id": "VCC-BUILDANDDO-CAREER-001",
       "outcome": "success",
       "supersedes": false,
@@ -1579,6 +1921,42 @@
     },
     {
       "type": "A",
+      "file_path": "tests/upgrade/career-profile.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "envelope",
+        "fixture"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/career-profile.pb.js",
+        "apps/pocketbase/pb_hooks/career-profile.js",
+        "apps/career/profile.py"
+      ],
+      "lines": 157,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Run the real profile route against a Citadel double serving a Python-built envelope, proving auth, account binding, allow-listing, no-store and no persistence.",
+      "objective_id": "VCC-BUILDANDDO-CAREER-001",
+      "outcome": "success",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-CAREER-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-CAREER-001",
+        "career-evidence"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
       "file_path": "tests/fixtures/career/linkedin.cgrf.yaml",
       "cket_stage": "08_TEST",
       "srs_codes": [
@@ -1615,6 +1993,26 @@
       "edge_type": "DEPENDS_ON",
       "weight": 0.8,
       "description": ".bits/context.lock.json DEPENDS_ON SRS-BUILDANDDO-CAREER-001",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-23-bits-codegen-ide1-career-profile.md",
+      "target": "apps/career/profile.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": ".bits/handoffs/2026-09-23-bits-codegen-ide1-career-profile.md DEPENDS_ON apps/career/profile.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-23-bits-codegen-ide1-career-profile.md",
+      "target": "apps/pocketbase/pb_hooks/career-profile.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": ".bits/handoffs/2026-09-23-bits-codegen-ide1-career-profile.md DEPENDS_ON apps/pocketbase/pb_hooks/career-profile.js",
       "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -1965,6 +2363,16 @@
       "edge_type": "DEPENDS_ON",
       "weight": 0.8,
       "description": "apps/career/cli.py DEPENDS_ON apps/career/ledger.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/cli.py",
+      "target": "apps/career/profile.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/cli.py DEPENDS_ON apps/career/profile.py",
       "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -2480,6 +2888,36 @@
     },
     {
       "type": "B",
+      "source": "apps/career/profile.py",
+      "target": "apps/career/passport.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/profile.py DEPENDS_ON apps/career/passport.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/profile.py",
+      "target": "apps/career/verify.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/career/profile.py DEPENDS_ON apps/career/verify.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/career/profile.py",
+      "target": "apps/pocketbase/pb_hooks/career-profile.js",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/career/profile.py PRODUCES apps/pocketbase/pb_hooks/career-profile.js",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "apps/career/sources.py",
       "target": "apps/career/jobs.py",
       "edge_type": "DEPENDS_ON",
@@ -2560,6 +2998,116 @@
     },
     {
       "type": "B",
+      "source": "apps/pocketbase/pb_hooks/career-profile.js",
+      "target": "apps/career/profile.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/pocketbase/pb_hooks/career-profile.js CONSUMES apps/career/profile.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/career-profile.js",
+      "target": "Citadel Nexus career profile endpoint",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/pocketbase/pb_hooks/career-profile.js CONSUMES Citadel Nexus career profile endpoint",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/career-profile.js",
+      "target": "apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/pocketbase/pb_hooks/career-profile.js PRODUCES apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "target": "apps/pocketbase/pb_hooks/career-profile.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/pocketbase/pb_hooks/career-profile.pb.js CONSUMES apps/pocketbase/pb_hooks/career-profile.js",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "target": "GET /api/buildanddo/career/profile",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/pocketbase/pb_hooks/career-profile.pb.js PRODUCES GET /api/buildanddo/career/profile",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/App.jsx",
+      "target": "apps/web/src/contexts/CareerProfileContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/App.jsx CONSUMES apps/web/src/contexts/CareerProfileContext.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/contexts/CareerProfileContext.jsx",
+      "target": "apps/web/src/lib/careerProfile.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/contexts/CareerProfileContext.jsx CONSUMES apps/web/src/lib/careerProfile.js",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/contexts/CareerProfileContext.jsx",
+      "target": "apps/web/src/contexts/AuthContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/contexts/CareerProfileContext.jsx CONSUMES apps/web/src/contexts/AuthContext.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/contexts/__tests__/CareerProfileContext.test.jsx",
+      "target": "apps/web/src/contexts/CareerProfileContext.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "apps/web/src/contexts/__tests__/CareerProfileContext.test.jsx VALIDATES apps/web/src/contexts/CareerProfileContext.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/__tests__/careerProfile.test.js",
+      "target": "apps/web/src/lib/careerProfile.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "apps/web/src/lib/__tests__/careerProfile.test.js VALIDATES apps/web/src/lib/careerProfile.js",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/careerProfile.js",
+      "target": "apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/lib/careerProfile.js CONSUMES apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "tests/career/__init__.py",
       "target": "apps/career",
       "edge_type": "VALIDATES",
@@ -2605,6 +3153,16 @@
       "edge_type": "DEPENDS_ON",
       "weight": 0.8,
       "description": "tests/career/check_career.py DEPENDS_ON tests/career/test_assessments.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/check_career.py",
+      "target": "tests/career/test_profile.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/career/check_career.py DEPENDS_ON tests/career/test_profile.py",
       "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -2725,6 +3283,26 @@
       "edge_type": "VALIDATES",
       "weight": 0.8,
       "description": "tests/career/test_career.py VALIDATES apps/career/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_profile.py",
+      "target": "apps/career/profile.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_profile.py VALIDATES apps/career/profile.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/career/test_profile.py",
+      "target": "apps/career/cli.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/career/test_profile.py VALIDATES apps/career/cli.py",
       "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -2960,6 +3538,36 @@
     },
     {
       "type": "B",
+      "source": "tests/upgrade/career-profile.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/career-profile.test.mjs VALIDATES apps/pocketbase/pb_hooks/career-profile.pb.js",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/career-profile.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/career-profile.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/career-profile.test.mjs VALIDATES apps/pocketbase/pb_hooks/career-profile.js",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/career-profile.test.mjs",
+      "target": "apps/career/profile.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/upgrade/career-profile.test.mjs DEPENDS_ON apps/career/profile.py",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
       "source": "tests/fixtures/career/linkedin.cgrf.yaml",
       "target": "apps/career/imports.py",
       "edge_type": "VALIDATES",
@@ -3058,12 +3666,25 @@
       "timestamp": "2026-09-22T20:00:00Z",
       "commit_sha": "7321bc2",
       "smoke_result": "3/3"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/career-profile.test.mjs",
+      "description": "Slice 5: profile route passes 5 contract tests against a Citadel double serving a Python-built envelope; 75 Python career tests pass; web Vitest suites written but not run (dependencies absent in sandbox)",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": "Profile loads on login once the private plane serves the endpoint and the operator sets its URL and token",
+      "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
+      "timestamp": "2026-09-23T12:00:00Z",
+      "commit_sha": "17de4eb",
+      "smoke_result": "3/3"
     }
   ],
   "summary": {
-    "type_a_count": 44,
-    "type_b_count": 136,
-    "type_c_count": 7,
+    "type_a_count": 55,
+    "type_b_count": 159,
+    "type_c_count": 8,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-CAREER-001",
