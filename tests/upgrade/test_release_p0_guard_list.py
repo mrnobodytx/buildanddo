@@ -7,16 +7,23 @@
 # Created:     2026-09-23
 # Depends:     tools/buildanddo_release.py
 # EnumType:    Test
-# EnumEdges:   VERIFIES tools/buildanddo_release.py::p0_state
+# EnumEdges:   VERIFIES tools/buildanddo_release.py::p0_state;
+#              VERIFIES tools/buildanddo_release.py::pick_artifact_dir;
+#              VERIFIES tools/buildanddo_release.py::build_plan
 # Intent:      The P0 legacy-copy gate must not fire on the product's own RETIRED_PHRASES guard
-#              list, and must still fire on the same phrase used as copy.
+#              list and must still fire on the same phrase used as copy; the release artifact
+#              must be picked from the directory that carries index.html at its root.
 # ───────────────────────────────────────────────────────────────
-"""p0_state and the retired-phrase guard list.
+"""p0_state, the retired-phrase guard list, and artifact selection.
 
 Measured 2026-09-23: apps/web/src/lib/purpose.js declares RETIRED_PHRASES so the pages can
 refuse old framing at runtime. The list quotes 'try a business challenge', the release controller
 read that as product copy, and identity_pass went HOLD on a file whose purpose is to keep that
 phrase OUT of the product. These tests pin the split both ways.
+
+Same day: the controller packaged the repo-level `dist` (only entry: apps/) because it accepted
+any directory with a file somewhere below, and the staging webroot lost its root index.html
+until rollback. The artifact tests pin the layout this repo builds into and the root check.
 
 The controller is loaded by file path so a foreign `tools` package earlier on sys.path cannot
 shadow it (this workstation exports one).
@@ -24,7 +31,6 @@ shadow it (this workstation exports one).
 from __future__ import annotations
 
 import importlib.util
-import os
 import sys
 import tempfile
 import unittest
@@ -108,6 +114,37 @@ class RetiredPhraseGuardListTests(unittest.TestCase):
             "export const Banner = () => <p>Try a business challenge</p>;\n")
         p0 = self.release.p0_state(self.repo)
         self.assertFalse(p0["identity_pass"])
+
+
+class ArtifactSelectionTests(unittest.TestCase):
+    def setUp(self):
+        self.release = _load_controller()
+        self.tmp = tempfile.TemporaryDirectory()
+        self.repo = Path(self.tmp.name)
+        (self.repo / "package.json").write_text("{}\n", encoding="utf-8")
+        (self.repo / "package-lock.json").write_text("{}\n", encoding="utf-8")
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_the_repo_build_output_is_the_first_default_candidate(self):
+        plan = self.release.build_plan(self.repo)
+        first = Path(plan["artifact_candidates"][0])
+        self.assertEqual(first, self.repo / "dist" / "apps" / "web")
+
+    def test_a_tree_without_a_root_index_is_skipped_in_favour_of_one_that_has_it(self):
+        # The 2026-09-23 shape: repo-level dist holds only apps/web/..., which is where index.html is.
+        nested = self.repo / "dist" / "apps" / "web"
+        nested.mkdir(parents=True)
+        (nested / "index.html").write_text("<!doctype html>\n", encoding="utf-8")
+        candidates = [self.repo / "dist", nested]
+        self.assertEqual(self.release.pick_artifact_dir(candidates), nested)
+
+    def test_no_candidate_with_a_root_index_means_none_not_a_guess(self):
+        only_files = self.repo / "dist"
+        only_files.mkdir()
+        (only_files / "_version").write_text("{}\n", encoding="utf-8")
+        self.assertIsNone(self.release.pick_artifact_dir([only_files, self.repo / "missing"]))
 
 
 if __name__ == "__main__":

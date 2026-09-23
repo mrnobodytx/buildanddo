@@ -927,6 +927,11 @@ def build_plan(repo: Path) -> dict[str, Any]:
         candidates.append(p if p.is_absolute() else repo / p)
     candidates.extend(
         [
+            # The layout this repository actually builds into (scripts/deploy/ship.py DIST_DIR):
+            # apps/web writes to <repo>/dist/apps/web. It was missing from this list, so the
+            # repo-level `dist` -- whose only entry is `apps/` -- matched first on 2026-09-23 and a
+            # tree with no root index.html replaced the staging webroot (500 until rollback).
+            repo / "dist" / "apps" / "web",
             repo / "apps" / "web" / "dist",
             repo / "apps" / "web" / "build",
             repo / "apps" / "web" / "out",
@@ -964,6 +969,21 @@ def artifact_manifest(root: Path) -> dict[str, Any]:
             )
     canonical = json.dumps(files, separators=(",", ":"), sort_keys=True).encode("utf-8")
     return {"file_count": len(files), "files": files, "tree_sha256": sha256_bytes(canonical)}
+
+
+def pick_artifact_dir(candidates: Sequence[Path]) -> Path | None:
+    """The first candidate that is a directory with index.html at its ROOT, else None.
+
+    A static site is served from the root of the tree that reaches the webroot. "Any file
+    anywhere below" was the previous test, and it accepted the repo-level `dist` on 2026-09-23:
+    its only entry was `apps/`, the deploy replaced the staging webroot with it, and every page
+    answered 500 until the controller's own rollback. Requiring the root index.html refuses that
+    tree BEFORE a remote write, which is where a release gate belongs.
+    """
+    for candidate in candidates:
+        if candidate.is_dir() and (candidate / "index.html").is_file():
+            return candidate
+    return None
 
 
 def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict[str, Any]:
@@ -1012,13 +1032,10 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
     if build.returncode != 0:
         raise ReleaseError(f"BuildAndDo build failed rc={build.returncode}")
 
-    source_artifact: Path | None = None
-    for candidate in map(Path, plan["artifact_candidates"]):
-        if candidate.is_dir() and any(p.is_file() for p in candidate.rglob("*")):
-            source_artifact = candidate
-            break
+    source_artifact = pick_artifact_dir([Path(x) for x in plan["artifact_candidates"]])
     if source_artifact is None:
-        raise ReleaseError("no static build artifact found; set BUILDANDDO_ARTIFACT_DIR explicitly")
+        raise ReleaseError("no static build artifact with a root index.html found; "
+                           "set BUILDANDDO_ARTIFACT_DIR explicitly")
     copy_tree_clean(source_artifact, artifact)
     # Digest the PAYLOAD before _version exists. Excluding _version is not a detail - both reasons
     # are load-bearing:
