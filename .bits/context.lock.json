@@ -163,7 +163,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_seat_session.py is never executed by GitHub Actions"
@@ -244,6 +244,13 @@
       "severity": "high",
       "srs": "",
       "statement": "SRS-BUILDANDDO-COMMUNITY-001 has a spec but is not in the registry"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-WEB-001.md is unregistered, so no branch may claim it",
+      "severity": "high",
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-COMMUNITY-WEB-001 has a spec but is not in the registry"
     },
     {
       "area": "governance",
@@ -438,7 +445,9 @@
     },
     {
       "path": "scripts/ci/ocn_seat_session.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_ocn_seat_session.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -528,7 +537,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-23T17:15:20.505218+00:00",
+  "generated_at": "2026-09-23T17:27:48.638072+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -905,12 +914,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 56,
-    "python_files": 297,
+    "python_files": 298,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1271,
-    "web_source_files": 333
+    "tracked_files": 1286,
+    "web_source_files": 344
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -989,12 +998,12 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "34d07075d0eb3a8f677d3fb4a3a931fa1c787ead2ce0ec637d1734b10a570a0c",
+    "source_sha256": "495e2e010d217646ee25c75b4e657625cacaaa3fccc46c2c46f2df344c5873c6",
     "state": "PASS"
   },
   "summary": {
-    "findings": 36,
-    "findings_high": 36,
+    "findings": 37,
+    "findings_high": 37,
     "pipelines": 7,
     "srs_open": 27,
     "srs_total": 31,
@@ -1004,7 +1013,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 64,
+    "js_test_files": 68,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
