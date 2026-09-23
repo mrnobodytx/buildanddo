@@ -30,11 +30,13 @@
 // OFFLINE
 //   Nothing in this file opens a socket. The write path never calls the SFU. Since
 //   d91a5f9 the read path asks the SFU, through the shared lib, which tracks each
-//   session really holds. Here no realtime app is configured and $http is not
+//   session really holds. By default no realtime app is configured and $http is not
 //   provided at all, so every echo answers SFU_UNREACHABLE, and a call that tried
 //   the network would fail with ReferenceError rather than silently reaching it.
-//   The publish allowlist is read from an injected $os.getenv, never from the real
-//   environment, and no credential NAME is read from the process.
+//   The echo tests pass obviously fake credentials and an in-memory $http.send that
+//   answers the SFU's session read from a table (SRS-BUILDANDDO-PRESENCE-001). The
+//   publish allowlist and those credentials are read from an injected $os.getenv,
+//   never from the real environment, and no credential NAME is read from the process.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
@@ -46,7 +48,7 @@ const HOOK = 'apps/pocketbase/pb_hooks/classroom-presence.pb.js';
 const LIB = 'apps/pocketbase/pb_hooks/classroom-realtime-lib.js';
 
 /** Builds a fixture with the presence collection migrated and both handlers loaded. */
-function presenceFixture({ publishers = 'owner,viewer', migrated = true } = {}) {
+function presenceFixture({ publishers = 'owner,viewer', migrated = true, http } = {}) {
     const f = classroomFixture();
     const logs = [];
     f.app.logger = () => ({
@@ -67,6 +69,8 @@ function presenceFixture({ publishers = 'owner,viewer', migrated = true } = {}) 
         $apis: { requireAuth: (name) => ({ auth: name }), bodyLimit: (max) => ({ max }) },
         routerAdd: (method, path, callback, auth, limit) => routes.set(`${method} ${path}`, { callback, auth, limit }),
     };
+    // Only the echo tests pass a stand-in; by default a handler that reached for the network would throw.
+    if (http) globals.$http = http;
     // The double's Record class, reached through the fixture, so `new Record(...)`
     // inside the handler produces a record the double's save() understands.
     globals.Record = function RecordShim(collection, values) { return f.record(collection.name, values || {}); };
@@ -308,6 +312,82 @@ test('the route never claims the advertisement was verified against the SFU', ()
     const read = f.request('GET', '/api/classroom/presence', { actor: 'owner', query: { room } });
     assert.equal(read.body.items[0].verified, false);
     assert.equal(read.body.items[0].verification, 'SFU_UNREACHABLE:CLOUDFLARE_REALTIME_APP_ID absent');
+});
+
+// THE ECHO, AGAINST AN IN-MEMORY STAND-IN FOR THE SFU
+// Obviously fake credentials, and a $http.send that answers GET /apps/<app>/sessions/<id> from a table: for each
+// session, either the tracks the SFU holds or an HTTP status it answers with instead. It records every request,
+// and nothing opens a socket.
+const FAKE_REALTIME = { CLOUDFLARE_REALTIME_APP_ID: 'fake-app-id', CLOUDFLARE_REALTIME_APP_SECRET: 'fake-app-key' };
+
+function sfuStandIn(held) {
+    const requests = [];
+    const send = (request) => {
+        requests.push(request);
+        const [, , , app, kind, session] = new URL(request.url).pathname.split('/');
+        const answer = app === FAKE_REALTIME.CLOUDFLARE_REALTIME_APP_ID && kind === 'sessions'
+            ? held[decodeURIComponent(session)] : undefined;
+        if (typeof answer === 'number') return { statusCode: answer, json: {} };
+        if (!Array.isArray(answer)) return { statusCode: 404, json: {} };
+        return { statusCode: 200, json: { tracks: answer } };
+    };
+    return { requests, send };
+}
+
+function echoRoom(held) {
+    const sfu = sfuStandIn(held);
+    const f = presenceFixture({ http: { send: sfu.send } });
+    Object.assign(f.env, FAKE_REALTIME);
+    return { f, sfu, room: seedRoom(f) };
+}
+
+const advertise = (f, room, session, tracks) => f.request('POST', '/api/classroom/presence',
+    { actor: 'owner', body: { room, session_id: session, tracks, expires_at: future() } });
+
+function echoOf(f, room, session) {
+    const read = f.request('GET', '/api/classroom/presence', { actor: 'owner', query: { room } });
+    assert.equal(read.status, 200, JSON.stringify(read.body));
+    const row = read.body.items.find((item) => item.session_id === session);
+    assert.ok(row, `no row for ${session}`);
+    return [row.verified, row.verification];
+}
+
+test('a session whose every advertised track the SFU holds is verified, from one read without a body', () => {
+    const { f, sfu, room } = echoRoom({ s1: [{ trackName: 'seat:o/mic', status: 'active' }, { trackName: 'seat:o/cam' }] });
+    assert.equal(advertise(f, room, 's1', ['seat:o/mic', 'seat:o/cam']).status, 200);
+    assert.deepEqual(echoOf(f, room, 's1'), [true, 'ECHOED_BY_SFU']);
+    assert.equal(sfu.requests.length, 1);
+    assert.equal(sfu.requests[0].method, 'GET');
+    assert.equal(sfu.requests[0].body, undefined);
+    assert.ok(sfu.requests[0].url.endsWith('/apps/fake-app-id/sessions/s1'), sfu.requests[0].url);
+});
+
+test('a session missing one advertised track is not verified, and the missing track is named', () => {
+    const { f, room } = echoRoom({ s1: [{ trackName: 'seat:o/mic' }] });
+    assert.equal(advertise(f, room, 's1', ['seat:o/mic', 'seat:o/cam']).status, 200);
+    assert.deepEqual(echoOf(f, room, 's1'), [false, 'NOT_HELD_BY_SFU:seat:o/cam']);
+});
+
+test('a track the SFU reports inactive does not count as held', () => {
+    const { f, room } = echoRoom({ s1: [{ trackName: 'seat:o/mic', status: 'inactive' }] });
+    assert.equal(advertise(f, room, 's1', ['seat:o/mic']).status, 200);
+    assert.deepEqual(echoOf(f, room, 's1'), [false, 'NOT_HELD_BY_SFU:seat:o/mic']);
+});
+
+test('a row that advertises no tracks is not verified', () => {
+    // The route refuses an empty advertisement, so the row is written directly, as an older row could be.
+    const { f, room } = echoRoom({ s1: [{ trackName: 'seat:o/mic' }] });
+    f.seed('classroom_presence', {
+        id: 'empty-row', workspace: 'ws1', room, publisher: 'owner', display_name: 'Empty', role: 'teacher',
+        access_basis: 'host', session_id: 's1', tracks: [], state: 'LIVE', expires_at: future(),
+    });
+    assert.deepEqual(echoOf(f, room, 's1'), [false, 'NO_TRACKS_ADVERTISED']);
+});
+
+test('an SFU that answers 500 leaves the row unverified, with the status named', () => {
+    const { f, room } = echoRoom({ s1: 500 });
+    assert.equal(advertise(f, room, 's1', ['seat:o/mic']).status, 200);
+    assert.deepEqual(echoOf(f, room, 's1'), [false, 'SFU_UNREACHABLE:sfu_http_500']);
 });
 
 test('an expired or ENDED row is not served, and an expired row is eventually collected', () => {

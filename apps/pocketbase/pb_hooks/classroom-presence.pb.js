@@ -3,10 +3,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/classroom-presence.pb.js
 // Stage:       07_BUILD
-// SRS:         SRS-CN-PERSONA-RUNTIME-001
+// SRS:         SRS-CN-PERSONA-RUNTIME-001, SRS-BUILDANDDO-PRESENCE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    C-ONE-20260918-PERSONA-RUNTIME-001
+// Dispatch:    C-ONE-20260918-PERSONA-RUNTIME-001, VCC-BUILDANDDO-PRESENCE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
@@ -386,7 +386,10 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
             // when the SFU says it is holding every track that was advertised; anything else -
             // including an unreachable SFU - stays unverified with a named reason.
             ...(() => {
-                const advertised = Array.isArray(read.tracks) ? read.tracks.map(String) : [];
+                // tracksOf hands back {trackName, kind} objects, and the SFU is compared by name. String() on
+                // one of them reads "[object Object]", so until 2026-09-23 no row could ever be verified
+                // (SRS-BUILDANDDO-PRESENCE-001, found by the echo tests).
+                const advertised = Array.isArray(read.tracks) ? read.tracks.map((track) => track.trackName) : [];
                 const echo = echoFor(row.getString('session_id'));
                 if (!echo.ok) return { verified: false, verification: 'SFU_UNREACHABLE:' + echo.reason };
                 if (!advertised.length) return { verified: false, verification: 'NO_TRACKS_ADVERTISED' };
