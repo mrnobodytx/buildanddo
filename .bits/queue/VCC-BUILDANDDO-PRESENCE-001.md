@@ -59,3 +59,16 @@ fails only when the route breaks that contract.
   `NOT_HELD_BY_SFU`, `NO_TRACKS_ADVERTISED`). The test double provides no network, by design.
 - **Gates:** `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`
   and `verify_public_boundary.py` pass, also in a fresh LF checkout.
+
+## The locks on the integration head (2026-09-23)
+
+The pull request's branch was brought up to date with GitHub's "Update branch" merge, which combines the two
+lock files as text. After the merge, the integration head (`fc1e4f1`) failed `hostinger_readiness.py --check`
+and `agent_context.py --check`. Its tree differed from the locally verified merge only in those two files.
+
+Both locks are regenerated on the head itself, with LF line endings. By the operator's decision of the same
+day, the readiness refresh also covers the eight commits pushed directly to the integration branch (`055bb8f`
+through `13ed854`), which had left it stale. No acceptance state changed.
+
+**How to apply:** after "Update branch" on any pull request that touches `.bits/`, regenerate both locks on
+the result before merging. A text merge of a lock is not a lock.
