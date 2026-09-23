@@ -103,6 +103,20 @@ function fresh(member) {
     const age = member ? Date.now() - Date.parse(member.getString('last_seen').replace(' ', 'T')) : NaN;
     return Boolean(member?.getBool('active') && age >= 0 && age < TTL);
 }
+/** Resolve current classroom participation for the signalling and presence owners. */
+function mediaAccess(app, auth, id) {
+    access.authenticated({ auth });
+    const current = access.find(app, 'users', auth.id);
+    const room = access.find(app, 'classroom_rooms', access.id(id));
+    const workspace = room.getString('workspace');
+    const scope = scopeFor(app, { auth: current }, workspace);
+    roomMembership(app, current, room);
+    const member = memberFor(app, workspace, room.id, current.id);
+    if (room.getString('status') !== 'live' || !fresh(member))
+        throw new ForbiddenError('Join the live classroom before using media.');
+    return { room, workspace, member, auth: current, can_manage: canManage(scope, current, room),
+        basis: room.getString('host') === current.id ? 'host' : 'member' };
+}
 function members(app, workspace, room) {
     return app.findRecordsByFilter('classroom_members', 'workspace = {:workspace} && room = {:room} && active = {:active}',
         '-last_seen,-id', CAPACITY + 1, 0, { workspace, room, active: true }).filter(fresh);
@@ -254,10 +268,13 @@ function list(e) {
  * @param {boolean} live Room is in session.
  * @returns {{available: boolean, reason?: string}}
  */
-function mediaStatus(live) {
+function mediaStatus(live, app) {
     if (!live) return { available: false };
     let config;
-    try { config = require(`${__hooks}/classroom-realtime-lib.js`).realtimeConfig(); }
+    try {
+        require(`${__hooks}/classroom-media.js`).schema(app);
+        config = require(`${__hooks}/classroom-realtime-lib.js`).realtimeConfig();
+    }
     catch (_) { config = { reason: 'unreadable' }; }
     return config && !config.reason ? { available: true } : { available: false, reason: 'not configured on this server' };
 }
@@ -281,7 +298,7 @@ function detail(e) {
         participants: live ? members(e.app, workspace, room.id).map((row) => ({ id: row.id, name: row.getString('name'), is_host: row.getString('owner') === room.getString('host') })) : [],
         messages: { items: discussion.rows.map((row) => ({ id: row.id, room: room.id, name: row.getString('name'), body: row.getString('body'),
             own: row.getString('owner') === e.auth.id, created: row.getString('created') })), page: discussion.page, has_more: discussion.has_more },
-        media: mediaStatus(live) };
+        media: mediaStatus(live, e.app) };
 }
 
 /** @param {object} e Authenticated native request. @returns {object} Confirmation for the current attendance generation. */
@@ -356,4 +373,4 @@ function record(e) {
         hours };
 }
 
-module.exports = { command, list, detail, heartbeat, record };
+module.exports = { command, list, detail, heartbeat, record, mediaAccess };

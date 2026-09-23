@@ -28,7 +28,10 @@ function set(record, values) { Object.entries(values).forEach(([key, value]) => 
 function schema(app, name) {
     const contract = contracts[name];
     const collection = access.schema(app, name, ['owner', 'workspace', 'revision', 'protocol_version', ...contract.fields]);
-    if (['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'].some((key) => collection[key] !== null) || !collection.indexes.includes(contract.index))
+    const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')
+        .replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').trim();
+    if (['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'].some((key) => collection[key] !== null) ||
+        !(collection.indexes || []).map(shape).includes(shape(contract.index)))
         throw new ApiError(503, 'Assistant account isolation needs operator review.');
     return collection;
 }

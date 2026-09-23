@@ -465,7 +465,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-23T15:57:50.951665+00:00",
+  "generated_at": "2026-09-23T19:54:56.940763+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -987,13 +987,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 52,
-    "python_files": 410,
+    "migrations": 56,
+    "python_files": 411,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1533,
-    "web_source_files": 370
+    "tracked_files": 1549,
+    "web_source_files": 373
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1013,7 +1013,7 @@
       },
       {
         "id": "HS-03",
-        "next_step": "Execute both native runtime profiles and have the release owner validate migration rollout and recovery on staging.",
+        "next_step": "Execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -1066,7 +1066,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "dc1941ff242e77955f3bc206fb58edc2128cbd762b5b85ed553311871edbfd24",
+    "source_sha256": "03c708fb913158edcd9bf88e0d4d4ac9cfe6207cf9a783598049e0e9276be057",
     "state": "PASS"
   },
   "summary": {
@@ -1081,7 +1081,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 72,
+    "js_test_files": 74,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

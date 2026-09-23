@@ -65,15 +65,12 @@ onRecordAfterDeleteError((event) => {
         /* Fail open. */
     }
 });
-onServe((event) => {
-    event.router.bind((request) => {
-        let telemetry;
-        try {
-            telemetry = require(`${__hooks}/telemetry.js`);
-        } catch (_) {
-            return request.next();
-        }
-        return telemetry.observeRequest(request);
-    });
-    return event.next();
+routerUse((event) => {
+    let telemetry;
+    try {
+        telemetry = require(`${__hooks}/telemetry.js`);
+    } catch (_) {
+        return event.next();
+    }
+    return telemetry.observeRequest(event);
 });

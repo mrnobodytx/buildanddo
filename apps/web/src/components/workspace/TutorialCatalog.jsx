@@ -12,7 +12,7 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/observability/mutations.js;
 //              CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/web/src/components/workspace/TutorialReader.jsx;
-//              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json;
+//              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json;
 //              CONSUMES apps/web/src/lib/tutorialLearning.js; CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx; CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx
 // DAG Node:    none
 // Intent:      Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.
@@ -22,6 +22,7 @@ import { MotionList } from '@/components/motion/MotionPrimitives';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Clock } from 'lucide-react';
 import curriculum from '../../../../pocketbase/pb_migrations/data/starter-tutorials.json';
+import broadcastCurriculum from '../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
 import { Button, Card, StatePill } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -37,7 +38,7 @@ import { lessonProgress, mergeTutorials, selectTutorials, validLesson } from '@/
 import { createTutorialLearningClient } from '@/lib/tutorialLearning';
 import pb from '@/lib/pocketbaseClient';
 
-const authoredLessons = curriculum.lessons;
+const authoredLessons = [...curriculum.lessons, ...broadcastCurriculum.lessons];
 function CatalogView({ lessons, progress = [], progressKnown = false, canPersist = false, onSave, onGuided, busy = '', error = '', saved = '', limit = 0, initialCategory = 'all', initialLesson = '', onLinkedLesson }) {
     const [query, setQuery] = useState('');
     const [category, setCategory] = useState(initialCategory);
@@ -143,9 +144,9 @@ function SignedInCatalog({ userId, limit, initialCategory, initialLesson, provid
     return <div className="ph-no-capture space-y-5" data-dd-privacy="mask">
         <TutorialGrowth {...growth} onRefresh={refreshGrowth} onOpen={openGuided} />
         <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{providedLessons ? 'Government member learning' : `${authoredLessons.length} authored lessons plus your shared catalogue.`}</p><Button size="sm" variant="secondary" disabled={tutorials.loading || progress.loading || Boolean(busy)} onClick={() => { tutorials.refresh(); progress.refresh(); }}>Refresh lessons</Button></div>
-        {tutorials.degraded && <DegradedNotice message="The lesson catalogue is unavailable. Showing the bundled starter curriculum; progress cannot be saved." onRetry={tutorials.refresh} />}
+        {tutorials.degraded && <DegradedNotice message="The lesson catalogue is unavailable. Showing the bundled public curriculum; progress cannot be saved." onRetry={tutorials.refresh} />}
         {progress.degraded && <DegradedNotice message="Your saved progress is unavailable. You can read lessons; retry before saving progress." onRetry={progress.refresh} />}
-        {!tutorials.loading && !tutorials.degraded && lessons.some((lesson) => !lesson.persistedId) && <p className="text-sm leading-6 text-muted-foreground">Starter previews are ready to read. Apply the tutorial catalogue migration to save progress for lessons not yet installed.</p>}
+        {!tutorials.loading && !tutorials.degraded && lessons.some((lesson) => !lesson.persistedId) && <p className="text-sm leading-6 text-muted-foreground">Bundled previews are ready to read. Apply the tutorial catalogue migration to save progress for lessons not yet installed.</p>}
         {tutorials.loading ? <ListSkeleton label="Loading lessons…" /> : <CatalogView lessons={lessons} progress={progress.records} progressKnown={progressKnown}
             canPersist onSave={saveProgress} onGuided={openGuided} busy={busy} error={writeError} saved={saved} limit={limit} initialCategory={initialCategory}
             initialLesson={openedLink === initialLesson ? '' : initialLesson} onLinkedLesson={setOpenedLink} />}
@@ -166,7 +167,7 @@ export default function TutorialCatalog({ limit = 0, initialCategory = 'all', in
     const { isAuthed, user } = useAuth();
     const { demo } = useDemoMode();
     if (!isAuthed || !user?.id || demo) return <div className="space-y-5">
-        <p className="text-sm leading-6 text-muted-foreground">{demo ? 'Demo mode: read the starter lessons without writing progress.' : 'Explore the starter lessons. Sign in to keep progress on installed lessons.'}</p>
+        <p className="text-sm leading-6 text-muted-foreground">{demo ? 'Demo mode: read the bundled lessons without writing progress.' : 'Explore the bundled lessons. Sign in to keep progress on installed lessons.'}</p>
         {!demo && <Button href="/login" size="sm">Sign in for lessons</Button>}
         <CatalogView key={`${demo ? 'demo' : 'public'}:${initialCategory}`} lessons={mergeTutorials([], authoredLessons)} limit={limit} initialCategory={initialCategory} initialLesson={initialLesson} />
     </div>;

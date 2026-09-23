@@ -46,7 +46,7 @@ function runtime(env = { BUILDANDDO_TELEMETRY_TRANSPORT: 'stdout', NODE_ENV: 'pr
         'onRecordAfterCreateError',
         'onRecordAfterUpdateError',
         'onRecordAfterDeleteError',
-        'onServe',
+        'routerUse',
     ]) {
         hookScope[hook] = (callback) => {
             hooks[hook] = callback;
@@ -139,12 +139,12 @@ test('workflow command latency uses bounded endpoint names and preserves failed 
     assert.doesNotMatch(JSON.stringify(records), /private-run-id/);
 });
 
-test('unset configuration silently disables counters and middleware', () => {
-    const { hooks, telemetry, records } = runtime({});
+test('unset transport configuration keeps registered middleware inert without changing requests', () => {
+    const { hooks, records } = runtime({});
     const event = recordEvent();
     hooks.onRecordAfterCreateSuccess(event);
     assert.equal(event.calls, 1);
-    assert.equal(telemetry.observeRequest(requestEvent()), 'saved');
+    assert.equal(hooks.routerUse(requestEvent()), 'saved');
     assert.equal(records.length, 0);
 });
 
@@ -156,7 +156,7 @@ test('logging failures and helper load failures preserve the write result', () =
     const event = recordEvent();
     assert.doesNotThrow(() => hooks.onRecordAfterCreateSuccess(event));
     assert.equal(event.calls, 1);
-    assert.equal(telemetry.observeRequest(requestEvent()), 'saved');
+    assert.equal(hooks.routerUse(requestEvent()), 'saved');
     assert.doesNotThrow(() => telemetry.record({}, 'create', false));
 });
 
@@ -214,27 +214,37 @@ test('auth, system collections, arbitrary paths, query values and invalid trace 
     assert.equal(records[0].data.tags.endpoint, '/api/collections/missions/records');
 });
 
-test('serve binding delegates one time and registers request timing', () => {
+test('routerUse registers request timing without an onServe compatibility fake', () => {
     const { hooks, records } = runtime();
-    let handler,
-        calls = 0;
-    assert.equal(
-        hooks.onServe({
-            router: {
-                bind: (callback) => {
-                    handler = callback;
-                },
-            },
-            next: () => {
-                calls++;
-                return 'serving';
-            },
-        }),
-        'serving',
-    );
+    assert.equal(typeof hooks.routerUse, 'function');
+    assert.equal(Object.hasOwn(hooks, 'onServe'), false);
+    let calls = 0;
+    const event = requestEvent(undefined, undefined, () => { calls++; return 'saved'; });
+    assert.equal(hooks.routerUse(event), 'saved');
     assert.equal(calls, 1);
-    assert.equal(handler(requestEvent()), 'saved');
     assert.equal(records.length, 1);
+    assert.equal(records[0].data.metric, 'buildanddo.request.duration_ms');
+});
+
+test('router middleware loads the helper inside its isolated callback and preserves downstream errors', () => {
+    const { hooks, telemetry, records } = runtime();
+    const handler = vm.runInNewContext(`(${hooks.routerUse.toString()})`, {
+        __hooks: '/native/hooks', require: (path) => {
+            assert.equal(path, '/native/hooks/telemetry.js'); return telemetry;
+        },
+    });
+    const failure = new Error('downstream failed');
+    let calls = 0;
+    assert.throws(() => handler(requestEvent(undefined, undefined, () => { calls++; throw failure; })), (error) => error === failure);
+    assert.equal(calls, 1);
+    assert.equal(records.length, 1);
+    assert.equal(records[0].data.tags.outcome, 'failure');
+});
+
+test('an unsupported router registration fails instead of silently disabling telemetry', () => {
+    const { hookScope } = runtime();
+    delete hookScope.routerUse;
+    assert.throws(() => vm.runInNewContext(hookSource, hookScope), /routerUse is not defined/);
 });
 
 test('missing helpers cannot stop record hooks or middleware', () => {
@@ -243,21 +253,14 @@ test('missing helpers cannot stop record hooks or middleware', () => {
         throw new Error('helper unavailable');
     };
     for (const [name, callback] of Object.entries(hooks)) {
-        if (name === 'onServe') continue;
+        if (name === 'routerUse') continue;
         const event = recordEvent();
         callback(event);
         assert.equal(event.calls, 1);
     }
-    let handler;
-    hooks.onServe({
-        router: {
-            bind: (callback) => {
-                handler = callback;
-            },
-        },
-        next: () => null,
-    });
-    assert.equal(handler(requestEvent()), 'saved');
+    let calls = 0;
+    assert.equal(hooks.routerUse(requestEvent(undefined, undefined, () => { calls++; return 'saved'; })), 'saved');
+    assert.equal(calls, 1);
     assert.equal(records.length, 0);
 });
 

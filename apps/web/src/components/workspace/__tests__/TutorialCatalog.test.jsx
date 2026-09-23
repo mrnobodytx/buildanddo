@@ -19,6 +19,7 @@ import React from 'react';
 import { act, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import curriculum from '../../../../../pocketbase/pb_migrations/data/starter-tutorials.json';
+import broadcastCurriculum from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import TutorialsPage from '@/pages/workspace/TutorialsPage';
 import DocsPage from '@/pages/DocsPage';
@@ -36,6 +37,8 @@ vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMet
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 vi.mock('@/components/workspace/ComponentCatalog', () => ({ default: () => <p>Component reference</p> }));
 const lesson = curriculum.lessons[0];
+const broadcastLesson = broadcastCurriculum.lessons[0];
+const publicLessonCount = curriculum.lessons.length + broadcastCurriculum.lessons.length;
 it('opens the saved lesson linked by a classroom and keeps personal progress separate', async () => {
     const user = setupUser();
     renderWithProviders(<TutorialsPage />, { route: `/app/tutorials?lesson=${lesson.id}` });
@@ -61,17 +64,17 @@ const read = async (prefix = 'Read') => {
 describe('complete Field Manual lessons', () => {
     it('withholds government lessons from public and demo previews', async () => {
         renderWithProviders(<TutorialCatalog />, { auth: { isAuthed: false, user: null } });
-        expect(screen.getByText('25 lessons to explore')).toBeVisible();
+        expect(screen.getByText(`${publicLessonCount} lessons to explore`)).toBeVisible();
         expect(screen.queryByRole('option', { name: 'Government submissions' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Read Read the opportunity and freeze its rules' })).not.toBeInTheDocument();
         expect(pb.collection).not.toHaveBeenCalled();
     });
 
-    it('shows 25 readable previews when the backend has not installed the seed', async () => {
+    it('shows starter and source-case previews when the backend has not installed the seeds', async () => {
         pb.__setRecords('tutorials', []);
         renderWithProviders(<TutorialCatalog />);
         expect(await screen.findByText(/Apply the tutorial catalogue migration/)).toBeVisible();
-        expect(screen.getByText('0 of 25 lessons completed')).toBeVisible();
+        expect(screen.getByText(`0 of ${publicLessonCount} lessons completed`)).toBeVisible();
         const { reader } = await read();
         expect(reader.getByRole('heading', { name: 'Why this matters' })).toBeVisible();
         expect(reader.getByRole('heading', { name: 'Worked example — illustrative data' })).toBeVisible();
@@ -81,14 +84,14 @@ describe('complete Field Manual lessons', () => {
 
     it('lets anonymous and demo readers explore without requesting any private collection', async () => {
         const view = renderWithProviders(<TutorialCatalog />, { auth: { isAuthed: false, user: null } });
-        expect(screen.getByText('25 lessons to explore')).toBeVisible();
+        expect(screen.getByText(`${publicLessonCount} lessons to explore`)).toBeVisible();
         const { reader, user } = await read();
         expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
         await user.click(reader.getByRole('button', { name: 'Close lesson' }));
         expect(pb.collection).not.toHaveBeenCalled();
         view.unmount(); setDemoMode(true);
         renderWithProviders(<TutorialCatalog />);
-        expect(screen.getByText(/Demo mode: read the starter lessons/)).toBeVisible();
+        expect(screen.getByText(/Demo mode: read the bundled lessons/)).toBeVisible();
         expect(pb.collection).not.toHaveBeenCalled();
     });
 
@@ -115,7 +118,7 @@ describe('complete Field Manual lessons', () => {
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(opener).toHaveFocus();
         expect(pb.__collection('tutorial_progress').update).not.toHaveBeenCalled();
-        expect(screen.getByText('1 of 25 lessons completed')).toBeVisible();
+        expect(screen.getByText(`1 of ${publicLessonCount} lessons completed`)).toBeVisible();
     });
 
     it('shares saved progress between Docs and the default Field Manual lesson tab', async () => {
@@ -151,7 +154,7 @@ describe('complete Field Manual lessons', () => {
         pb.__clearError('tutorials');
         await user.click(screen.getByRole('button', { name: 'Try again' }));
         await waitFor(() => expect(screen.queryByText(/The lesson catalogue is unavailable/)).not.toBeInTheDocument());
-        expect(screen.getByText('0 of 25 lessons completed')).toBeVisible();
+        expect(screen.getByText(`0 of ${publicLessonCount} lessons completed`)).toBeVisible();
     });
 
     it('blocks progress writes during a failed progress read while keeping the lesson readable', async () => {
@@ -184,7 +187,7 @@ describe('complete Field Manual lessons', () => {
     it('does not count orphaned progress and keeps completed counts outside a limited preview', async () => {
         pb.__setRecords('tutorial_progress', [{ id: 'hidden', tutorial: curriculum.lessons[1].id, status: 'completed' }, { id: 'orphan', tutorial: 'missing', status: 'completed' }]);
         renderWithProviders(<TutorialCatalog limit={1} />);
-        expect(await screen.findByText('1 of 25 lessons completed')).toBeVisible();
+        expect(await screen.findByText(`1 of ${publicLessonCount} lessons completed`)).toBeVisible();
         expect(screen.queryByRole('heading', { name: curriculum.lessons[1].title })).not.toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'View all lessons' })).toHaveAttribute('href', '/docs#workspace-lessons');
     });
@@ -195,6 +198,43 @@ describe('complete Field Manual lessons', () => {
         const { reader } = await read();
         expect(reader.getByText(/lesson body is unavailable or uses an unsupported format/)).toBeVisible();
         expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
+    });
+
+    it('opens the public source case by slug with practice, quiz and a local evidence link, without private reads', async () => {
+        renderWithProviders(<TutorialCatalog initialLesson={broadcastLesson.slug} />, { auth: { isAuthed: false, user: null } });
+        const reader = within(await screen.findByRole('dialog'));
+        expect(reader.getByRole('heading', { name: broadcastLesson.title })).toBeVisible();
+        expect(reader.getByRole('heading', { name: 'Practice' })).toBeVisible();
+        expect(reader.getByRole('group', { name: 'Check your understanding' })).toBeVisible();
+        expect(reader.getByText(broadcastCurriculum.source_evidence.boundary)).toBeVisible();
+        expect(reader.getByRole('link', { name: /Open Evidence and its separate Source case studies panel/ })).toHaveAttribute('href', '/app/evidence');
+        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
+        expect(pb.collection).not.toHaveBeenCalled();
+    });
+
+    it('keeps an uninstalled source lesson a read-only preview even for a signed-in learner', async () => {
+        renderWithProviders(<TutorialsPage />, { route: `/app/tutorials?lesson=${broadcastLesson.slug}` });
+        const reader = within(await screen.findByRole('dialog'));
+        expect(reader.getByRole('heading', { name: broadcastLesson.title })).toBeVisible();
+        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
+        expect(reader.queryByRole('button', { name: 'Start interactive tutorial' })).not.toBeInTheDocument();
+        for (const name of ['tutorial_progress', 'tutorial_learning', 'evidence']) expect(pb.__collection(name).create).not.toHaveBeenCalled();
+    });
+
+    it('merges an installed source lesson once, honors operator edits and does not auto-save on its deep link', async () => {
+        const edited = { ...broadcastLesson, title: 'Operator-reviewed broadcast lesson',
+            lesson: { ...broadcastLesson.lesson, why: 'Keep this operator clarification.' } };
+        pb.__setRecords('tutorials', [...curriculum.lessons, edited]);
+        renderWithProviders(<TutorialsPage />, { route: `/app/tutorials?lesson=${broadcastLesson.slug}` });
+        const reader = within(await screen.findByRole('dialog'));
+        expect(reader.getByRole('heading', { name: edited.title })).toBeVisible();
+        expect(reader.getByText(edited.lesson.why)).toBeVisible();
+        expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeEnabled();
+        for (const name of ['tutorial_progress', 'tutorial_learning', 'evidence']) expect(pb.__collection(name).create).not.toHaveBeenCalled();
+        await setupUser().keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(screen.getAllByRole('heading', { name: edited.title })).toHaveLength(1);
+        expect(screen.getByText(`0 of ${publicLessonCount} lessons completed`)).toBeVisible();
     });
 
     it('discards an open reader and a pending save when the account logs out', async () => {

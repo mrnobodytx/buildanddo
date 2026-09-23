@@ -10,12 +10,13 @@
 // Created:     2026-09-10
 // Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/workspaceActions.js, apps/web/src/components/workspace/EvidenceInspector.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; PRODUCES workspace.evidence.create; CONSUMES apps/web/src/components/workspace/EvidenceInspector.jsx
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; PRODUCES workspace.evidence.create; CONSUMES apps/web/src/components/workspace/EvidenceInspector.jsx; CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json
 // Intent:      Make the evidence trail searchable and linkable, so a ledger stays a ledger past its first thirty entries.
 // ───────────────────────────────────────────────────────────────
 
 import { ExternalLink, FileSearch, Info, Link2, Loader2, Plus, Tag } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
+import broadcastCurriculum from '../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
 
 import { Button, Card } from '@/components/site/ui';
 import {
@@ -41,6 +42,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import EvidenceInspector from '@/components/workspace/EvidenceInspector';
 import { safeEvidenceUrl } from '@/lib/evidenceInspection';
+import { lessonLink } from '@/lib/tutorialCurriculum';
 import ListToolbar from '@/components/workspace/ListToolbar';
 import {
     EVIDENCE_TYPE,
@@ -74,6 +76,49 @@ const splitTags = (value) =>
         .split(',')
         .map((tag) => tag.trim())
         .filter(Boolean);
+
+function SourceCaseStudies() {
+    const tutorial = broadcastCurriculum.lessons[0];
+    const evidence = broadcastCurriculum.source_evidence;
+    const observation = evidence.observation;
+    return <section aria-labelledby="source-case-studies" className="space-y-4 border-t border-border pt-6">
+        <h2 id="source-case-studies" className="font-display text-xl font-semibold">Source case studies</h2>
+        <p className="text-sm leading-6 text-muted-foreground">{evidence.boundary}</p>
+        <p className="text-sm leading-6 text-muted-foreground">Public learning material, separate from workspace evidence records, totals and verification badges. It does not verify mission outcomes or award progress or XP.</p>
+        <Card className="min-w-0 space-y-3 p-5">
+            <h3 className="font-display text-lg font-semibold">{tutorial.title}</h3>
+            <p className="text-sm leading-6 text-muted-foreground">{tutorial.summary}</p>
+            <p className="text-xs text-muted-foreground">Curriculum {broadcastCurriculum.version}</p>
+            <Link to={`/app/tutorials?lesson=${encodeURIComponent(tutorial.slug)}`} className="inline-flex min-h-11 items-center text-sm text-primary underline underline-offset-4">Read the repair lesson</Link>
+            <p className="text-sm">{evidence.validation.map((check) => `${check.label}: ${check.status}`).join(' | ')}</p>
+            <details className="space-y-3">
+                <summary className="cursor-pointer py-2 text-sm font-semibold">Validation evidence and public source references</summary>
+                <div className="space-y-2 text-sm" aria-label="Recorded source run">
+                    <p>Local source run: {observation.counts.pass}/{observation.counts.tests} passed, {observation.counts.fail} failed, {observation.counts.skipped} skipped. Node {observation.runtime}.</p>
+                    <p>Observed <time dateTime={observation.observed_at}>{observation.observed_at}</time>. These results used explicit local doubles, not a native backend or live media.</p>
+                    <p className="break-all font-mono text-xs">Tested source SHA-256: {observation.source_sha256}</p>
+                    <p className="break-all font-mono text-xs">Captured command-output SHA-256: {observation.output_sha256}</p>
+                    <a href={lessonLink(evidence.artifact.url)} download className="inline-flex min-h-11 items-center underline underline-offset-4">Download the captured source test output</a>
+                    <p className="break-all font-mono text-xs">Public capture SHA-256: {evidence.artifact.sha256}</p>
+                    <p className="text-xs text-muted-foreground">The source fingerprint covers the listed files, not a deployed release or the whole repository. Hashes check consistency, not reviewer identity.</p>
+                    <ul aria-label="Tested source scope" className="space-y-1 break-all font-mono text-xs">{observation.source_files.map((path) => <li key={path}>{path}</li>)}</ul>
+                </div>
+                <ul aria-label="Case study validation plan" className="space-y-4 text-sm leading-6">
+                    {evidence.validation.map((check) => <li key={check.label} className="space-y-2">
+                        <h4 className="font-semibold">{check.label}: {check.status}</h4>
+                        <p className="text-muted-foreground">{check.description}</p>
+                        {check.commands.map((command) => <code key={command} className="block whitespace-pre-wrap break-all rounded border border-border p-3 text-xs">{command}</code>)}
+                    </li>)}
+                </ul>
+                <nav aria-label="Case study source references" className="space-y-2 text-sm">
+                    <p className="text-muted-foreground">These links inspect the pre-repair source and test definitions, not recorded results for the repair candidate.</p>
+                    {tutorial.lesson.references.filter((reference) => reference.url.startsWith('https://')).map((reference) =>
+                        <a key={reference.url} href={lessonLink(reference.url)} target="_blank" rel="noopener noreferrer" className="block break-words text-primary underline underline-offset-4">{reference.label}<span className="sr-only"> (opens in a new tab)</span></a>)}
+                </nav>
+            </details>
+        </Card>
+    </section>;
+}
 
 export default function EvidencePage() {
     const [params, setParams] = useSearchParams();
@@ -441,6 +486,7 @@ export default function EvidencePage() {
                 success still needs verifying. A link points at evidence held elsewhere; BuildAndDo
                 stores the reference, not a copy.
             </p>
+            <SourceCaseStudies />
         </div>
     );
 }

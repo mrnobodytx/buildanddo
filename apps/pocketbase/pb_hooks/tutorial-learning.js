@@ -30,7 +30,9 @@ function schema(app) {
     if (FIELDS.some((key) => !collection.fields.getByName(key))) throw new ApiError(503, 'The interactive learning upgrade is not installed.');
     if (['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'].some((key) => collection[key] !== null))
         throw new ApiError(503, 'Learning records need an operator review before they can be used.');
-    if (!collection.indexes.includes('create unique index idx_tutorial_learning_identity on tutorial_learning (owner, tutorial)'))
+    const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')
+        .replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').trim();
+    if (!(collection.indexes || []).map(shape).includes(shape('create unique index idx_tutorial_learning_identity on tutorial_learning (owner, tutorial)')))
         throw new ApiError(503, 'Learning identity constraints need an operator review.');
     return collection;
 }

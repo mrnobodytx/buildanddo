@@ -50,6 +50,9 @@ migrate((app) => {
             { name: 'command', type: 'json', maxSize: 30000 }, { name: 'result', type: 'json', maxSize: 10000 }, ...stamps()],
             indexes: ['create unique index idx_classroom_retry on classroom_receipts (workspace, actor, request_key)'] },
     ];
+    // PocketBase normalizes index quoting and whitespace when saving collections.
+    const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')
+        .replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').trim();
     // Validate every existing definition before creating or re-enabling anything.
     for (const definition of definitions) {
         const actual = exists(definition.name);
@@ -62,7 +65,8 @@ migrate((app) => {
             if (!saved || Object.keys(field).some((key) => JSON.stringify(saved[key]) !== JSON.stringify(field[key])))
                 throw new Error(`Review custom ${definition.name}.${field.name}.`);
         }
-        if (!definition.indexes.every((index) => actual.indexes.includes(index))) throw new Error(`Review ${definition.name} indexes.`);
+        const present = (actual.indexes || []).map(shape);
+        if (!definition.indexes.every((index) => present.includes(shape(index)))) throw new Error(`Review ${definition.name} indexes.`);
     }
     for (const definition of definitions) {
         const actual = exists(definition.name);
