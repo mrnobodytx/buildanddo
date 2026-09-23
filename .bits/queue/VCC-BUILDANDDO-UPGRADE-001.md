@@ -20,6 +20,76 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Career Passport dogfood authorized 2026-09-22
+
+The owner selects BuildAndDo as the first career-evidence instance. This
+continues the existing A2 source dispatch; one real reviewed application is the
+receiving target. No employment claim, sensitive answer or submission authority
+is inferred from the illustrative architecture or the platform's development.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| CP1 | Bind work, personal participation and independent review | Attribution/provenance negative tests and real repository capture | source PASS — 22 real artifacts, 19 agent-attributed observations, zero verified personal claims; missing ancestor diffs retained as a gap |
+| CP2 | Normalize job requirements, explain gaps and compile draft artifacts | Feed, matching, package and approval regressions | source PASS — 90 Python cases and 82.30–100 percent statement coverage; synthetic 100/10/3 succeeds, actual job/submission counts remain zero |
+| CP3 | Connect the scoped Career Passport review desk | Client and rendered page cases | source PASS — 14 client cases within 625 Node passes; seven rendered cases await the missing frontend runtime |
+| CP4 | Retain dogfood results, validation and receiving acceptance | Typing, source regression, readiness, context, boundary and memory | PARTIAL — typing/lint/readiness/submission pass; broad Python has two missing-history errors and 32 skips; rendered/build/lint prerequisites and live receiving work remain open |
+
+The source implementation uses the existing work/read/review owners. The real
+repository-only passport remains HOLD with no personal claims or draft packages;
+its person identifier is deliberately unresolved, not a native account mapping.
+The full Python run executed 952 cases and reported two errors (one class setup)
+from unchanged Semantic Twin history consumers requiring absent ancestor trees;
+four compiler-class cases could not run. No missing objects were fetched and no
+existing tests were disabled. The seven-command application smoke is 3/7 when
+context and boundary pass: Node passes, Python and all three frontend gates do
+not. Detailed evidence and receiving actions are retained in
+`.bits/out/VCC-BUILDANDDO-UPGRADE-001/career-passport-report.md` and the dated
+Career Passport handoff. The original eighteen acceptance profiles remain.
+
+Memory brief: the merged research/assurance baseline is locally available and
+restored. Existing capability passports describe callable assets, not a person's
+work. Native mission reviews preserve exact evidence and independent review;
+the development loop already uses externally pinned ReviewPolicy receipts.
+No reviewed mapping from human.nobody to personal contributions, live ATS feed,
+job-search preferences, or approved application is supplied. Git authorship,
+seat summaries and a source PASS cannot fill those gaps. Retain all 205 previous
+memory events and the unchanged eleven milestones/eighteen-profile acceptance.
+The baseline readiness binding is stale; review and refresh it after this source
+continuation without claiming a completed milestone. No external seat event is
+sent without an authenticated receiving session and explicit authorization.
+
+## Test assurance and restricted research sprint — 2026-09-22
+
+The owner authorizes implementation of the testing recommendations and bounded
+three-lane sprint in the existing public repository, with government work
+restricted to the USD 100 high tier. Production activation, purchases, provider
+credentials, hosted model runs and official submissions require receiving owners.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| QA | Enforce membership and existing-role boundaries across government surfaces | Government Node/native/rendered regressions | source PASS — 611 Node passes; 30 government boundary cases plus the membership enquiry regression; native and rendered acceptance BLOCKED |
+| QB | Extend the existing decision and foundry owners with reproducible research packages | Research sprint Python tests and demo export | source PASS — 44 research cases; 79 exported files checked and replayed; official/model/GPU evidence remains unavailable |
+| QC | Implement all eight testing categories with explicit runtime prerequisites | Assurance runner and source regressions | source PASS — 20 recorder regressions; all eight profiles retained, 2 PASS / 6 BLOCKED; required source and explicit full-runtime GitLab lanes configured |
+| QD | Review source bindings and retain observed evidence and receiving actions | Readiness, context, boundary and memory checks | source review complete; exact validation and receiving limits are retained in research-assurance-report.md and research-assurance-validation.json |
+
+Memory brief: the retained implementation contains 580 Node cases, 802 upgrade
+Python cases, 65 frontend files and ten live Praxis suites. Last measured source
+run passed 1,350 and skipped 32. The 18-profile acceptance matrix remains HOLD.
+Frontend packages, native PocketBase, PDF/Discord runtimes and GPU tooling are
+absent in this sandbox. The existing decision runtime is advisory; the foundry
+already contains a deterministic multi-asset auction and model-independent task
+packets. Membership billing is not implemented. Do not duplicate these owners,
+fabricate a charge or use an unverified source as an official solicitation.
+
+Observed source regression: 611 Node passes; 866 Python cases, 834 passed and
+32 existing dependency skips. The portable portfolio gate passes 110 cases with
+98.84–100% statement coverage across its measured modules. The standalone market
+controls replay 36 orders each; their metrics are synthetic controls. Release
+readiness stays HOLD. Missing Vitest, Vite and eslint-plugin-import keep the
+three frontend smoke gates non-passing. Provisioning and activation follow
+`.bits/handoffs/2026-09-22-bits-codegen-research-assurance.md`; no real payment,
+hosted-model call, official submission or GPU benchmark is asserted.
+
 ## Educational collaboration framing — 2026-09-22
 
 The owner's product correction continues this A2 source dispatch. Learning

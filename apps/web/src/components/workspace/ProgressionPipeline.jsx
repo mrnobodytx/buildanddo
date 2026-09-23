@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/components/site/ui.jsx, .gitlab/ci/day21-submission.yml
+// Depends:     apps/web/src/components/site/ui.jsx, .gitlab/ci/day21-submission.yml, .gitlab/ci/source-validation.yml
 // EnumType:    Widget
-// EnumEdges:   VALIDATES .gitlab/ci/day21-submission.yml; USES_TEMPLATE apps/web/src/components/site/ui.jsx
+// EnumEdges:   VALIDATES .gitlab/ci/day21-submission.yml; USES_TEMPLATE apps/web/src/components/site/ui.jsx; CONSUMES .gitlab/ci/source-validation.yml
 // Intent:      Show the contribution flow the repository actually enforces, one step at a time.
 // ───────────────────────────────────────────────────────────────
 
@@ -102,6 +102,8 @@ export const PIPELINE_STEPS = [
             'GitLab runs source Node/Python, semantic-twin and web coverage suites',
             'Native Discord/PDF and CPU blueprint checks pass with required dependencies',
             'Foundry, federal portfolio and mission coverage passes on Python 3.11 and 3.12',
+            'Membership, evidence/authority and fault-handling source assurance runs on reviewed changes',
+            'The separately requested full-assurance lane exercises browser journeys, accessibility, browser sizes, load and backup restoration',
             'Skipped or unavailable dependencies keep acceptance incomplete',
             'Native PocketBase dossier, suite, operator and classroom auth, scoped reads, storage, presence, leases and retry checks pass for both declared runtimes',
             'Native interactive tutorial checkpoints, completion certificates, concurrent credit and migration retention pass for both declared runtimes',

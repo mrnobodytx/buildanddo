@@ -20,6 +20,96 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## BuildAndDo Career Passport dogfood — 2026-09-22
+
+The owner requests BuildAndDo as the first verified career-evidence test case.
+Continue this existing A2 source dispatch. Reuse the development/Twin contracts,
+native workspace observations and capability-token independent review policy.
+The passport is a projection of work and pinned reviews, never a new identity,
+verification, employment-history or operational-authority owner.
+
+Acceptance:
+
+1. Capture bounded BuildAndDo repository history and current workspace exports
+   with exact source bytes, revisions, attribution and explicit gaps. Generate
+   person-level claims only from participation bound to that person. Preserve
+   personally implemented/operated, designed, directed, reviewed, verified,
+   team-delivered and agent-executed roles; account ownership and git authorship
+   alone cannot establish personal implementation or independent verification.
+2. Normalize public Lever/Ashby job captures, retaining source text, freshness,
+   requirements and unparsed clauses. Prepare a bounded 100-job batch, top ten
+   requirement dossiers and up to three draft packages. Missing/live-unavailable
+   data remains incomplete. No synthetic posting counts as a live job.
+3. Match each requirement against independently pinned, exact contribution and
+   artifact evidence. Keep scope, recency, participation, legal requirements and
+   duration separate; include DO NOT CLAIM gaps. Compile the six application
+   artifacts from verified facts only, with claim-level provenance and hashes.
+4. Keep J0–J5 workflow stages separate from A0–A3 authority. Bind any fill/submit
+   approval to a person, job, package, form and expiry. Reserved attestations need
+   explicit human answers; challenges require human handling. Preserve uncertain
+   submissions and actual outcome receipts; no autonomous mass submission.
+5. Add an authenticated Career Passport review desk using existing workspace
+   context and permissions. Clear imports on account/workspace changes; imported
+   packets cannot authenticate themselves, mint verification or send applications.
+6. Exercise attribution, self-review, foreign/stale/tampered evidence, hard gaps,
+   unsupported application prose, scoped approvals and deterministic outputs.
+   Retain a real repository dogfood capture separately from synthetic test jobs.
+
+Verify: `python -m unittest discover -s tests/upgrade -p 'test_career_*.py'`,
+`python tests/upgrade/check_career_passport.py`,
+`node --test tests/upgrade/career-passport.test.mjs`, the existing rendered web
+checks, strict typing and context/readiness/boundary/memory gates. Live job
+collection, personal identity/participation review, browser submission and real
+outcomes remain receiving acceptance until actually observed and authorized.
+Private career data, applications and raw feeds stay in ignored local storage.
+
+Observed source acceptance: 90 portable career cases pass with at least 82.30
+percent statement coverage per implementation module; 14 client cases pass in
+the 625-case Node source suite. The real repository capture yields 22 artifacts,
+19 agent-attributed contributions and no verified personal claim, job or draft.
+Missing historical Git trees prevent two unchanged Semantic Twin checks in full
+Python discovery; native/dependency skips and missing frontend tools remain
+non-passing evidence. See the career report and receiving handoff before making
+any live search, qualification or application-acceptance claim.
+
+## Test assurance and research sprint — 2026-09-22
+
+The owner requests the eight testing categories from the retained gap assessment,
+a bounded Army decision-package / DARPA market / FHERMA experiment sprint, and
+restricted government work for high-tier members at USD 100. This continues the
+existing public application dispatch. Existing decision, foundry, evidence,
+authentication and acceptance owners remain authoritative.
+
+Acceptance:
+
+1. Enforce government membership on the server and in navigation, direct routes,
+   learning content and submission tools. Membership records are provisioned by
+   the trusted operator/billing owner, never by account edits, workspace roles,
+   client payment claims, demo mode or query parameters. Expiry and revocation
+   fence reads, retries and in-flight worker completion. Missing configuration
+   denies access. No live billing is activated by this source change.
+2. Extend the decision runtime with an auditable package containing objectives,
+   options, constraints, assumptions, risks, evidence, bias checks, tradeoffs,
+   an advisory decision, flip conditions and independent review/approval gaps.
+   Produce point-in-time and changed-evidence demonstrations with retained hashes.
+3. Reuse the existing market simulation and evidence compiler for a two-asset
+   experiment, black-box action receipts, quantitative comparison and replay.
+   Scripted trials remain labeled synthetic; no LLM or federal performance claim
+   is inferred from them. Prepare separate Army and DARPA proposal skeletons and
+   requirement crosswalks with explicit gaps.
+4. Provide an exact integer polynomial reference and candidate-validation harness
+   for the reported FHERMA parameters. Unknown official interface, modulus,
+   hardware, cuPQC/CLI availability, correctness receipts and leaderboard remain
+   unverified until supplied by the official execution environment. Do not label
+   a CPU/reference timing as an official GPU benchmark or submit an entry here.
+5. Add runnable browser journey, accessibility, browser/mobile, load and recovery
+   profiles; strengthen security, evidence/authority and fault/retry tests. Reuse
+   disposable native fixtures and retain blocked prerequisites as non-passing
+   results. Preserve the existing eighteen-profile acceptance gate.
+6. Retain observed results, exact tested source, historical memory, a ten-day
+   dependency plan and concrete receiving actions. Pasted dates, topic claims,
+   prizes and timings are owner-supplied research leads, not verified notices.
+
 ## Educational collaboration framing — 2026-09-22
 
 The owner clarifies the product identity: BuildAndDo is an educational

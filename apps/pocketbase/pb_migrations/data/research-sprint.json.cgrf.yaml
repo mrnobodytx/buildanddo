@@ -1,0 +1,32 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/pocketbase/pb_migrations/data/research-sprint.json.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     apps/pocketbase/pb_migrations/data/research-sprint.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES apps/pocketbase/pb_migrations/data/research-sprint.json
+# Intent:      Preserve the research plan as an unverified owner lead shared by the protected desk and offline compiler.
+# ───────────────────────────────────────────────────────────────
+file: apps/pocketbase/pb_migrations/data/research-sprint.json
+stage: 07_BUILD
+srs: [SRS-BUILDANDDO-UPGRADE-001]
+caps: pending
+ck: pending
+dispatch: VCC-BUILDANDDO-UPGRADE-001
+seat: BITS-CODEGEN
+owner: Citadel Nexus Inc.
+intent: Preserve the research plan as an unverified owner lead shared by the protected desk and offline compiler.
+dependencies:
+  - apps/decision/packages.py
+  - apps/federal_foundry/episodes.py
+  - apps/federal_foundry/polynomial.py
+enum_edges:
+  - EXTENDS apps/decision/packages.py
+  - CONSUMES apps/federal_foundry/episodes.py
+  - CONSUMES apps/federal_foundry/polynomial.py

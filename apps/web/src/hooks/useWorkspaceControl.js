@@ -46,7 +46,7 @@ export function useWorkspaceControl(section, query = {}) {
             setSnapshot({ key, loading: false, data: null, error: demo ? 'Turn off demonstration mode to use workspace controls.' : 'Sign in and select a workspace.' });
             return false;
         }
-        setSnapshot({ key, loading: true, data: null, error: '' });
+        setSnapshot((before) => ({ key, loading: true, data: section === 'access' && before.key === key ? before.data : null, error: '' }));
         const result = await api.read(section, JSON.parse(queryKey));
         if (!live.current.mounted || live.current.key !== key || attempt !== request.current) return false;
         setSnapshot({ key, loading: false, data: result.ok ? result.data : null, error: result.error || '' });

@@ -29,7 +29,9 @@
         "tools/day21/day21_architecture_snapshot.py",
         ".gitlab/ci/source-validation.yml",
         "scripts/ci/verify_public_boundary.py",
-        "docs/sprint-user-journey.md"
+        "docs/sprint-user-journey.md",
+        "tests/assurance",
+        "docs/test-assurance.md"
       ],
       "checks": [
         "boundary",
@@ -53,7 +55,8 @@
         "The GitLab artifact download retains every referenced receipt, log and artifact plus the original JUnit/build paths; the shared validator rechecks their bytes.",
         "Required native SDK/parser and portable-suite coverage checks execute in GitLab, retaining Python 3.11 and 3.12; manual submission waits for every required source job.",
         "Review pipelines retain exactly one actor label from the current provider context; GitHub exports bind repository, review number and exact tested head. Missing metadata cannot satisfy governance.",
-        "Automatic public PR governance and required GitLab checks remain enabled; neither provider substitutes for observed candidate acceptance."
+        "Automatic public PR governance and required GitLab checks remain enabled; neither provider substitutes for observed candidate acceptance.",
+        "The supplemental assurance source job preserves evidence/authority and payment-boundary regressions; the opt-in full runtime matrix reports unavailable dependencies as non-passing and does not replace the eighteen-profile gate."
       ],
       "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic."
     },
@@ -75,7 +78,9 @@
         "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js",
         "apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js",
         "apps/web/src/pages/workspace/OverviewPage.jsx",
-        "apps/web/src/lib/authSession.js"
+        "apps/web/src/lib/authSession.js",
+        "apps/pocketbase/pb_hooks/government-access.js",
+        "apps/web/src/components/workspace/GovernmentGate.jsx"
       ],
       "checks": [
         "source_node",
@@ -95,7 +100,8 @@
         "Fresh and concurrent onboarding is atomic; uncertain retries recover one workspace, its chosen intent, one ERP objective and all seven planned services. Domain and business context are optional and imply no lookup or authority.",
         "All six intents are explicit choices; the saved workspace reopens its readable objective and a starting path into existing lessons and planning. Legacy setup receipts and existing workspaces remain usable.",
         "Rollback of the objective migration disables new objective setup while retaining existing goals, workspace links and receipts. Failure to load a confirmed workspace can be retried without resubmitting setup.",
-        "Persisted sessions require native refresh; delayed account responses cannot restore old identity. Named onboarding selects the exact returned readable workspace."
+        "Persisted sessions require native refresh; delayed account responses cannot restore old identity. Named onboarding selects the exact returned readable workspace.",
+        "Government content and tools require current operator-approved paid membership in addition to native account and workspace access; account changes and expiry cannot reuse a stale grant."
       ],
       "next_step": "Execute rendered objective-first onboarding and both native profiles, then demonstrate signup, an explicit intent/objective, the saved workspace's first lesson, setup recovery, password recovery and return navigation on the accepted candidate."
     },
@@ -113,7 +119,8 @@
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/pocketbase/pb_hooks/workspace-assistant.js",
         "apps/pocketbase/pb_hooks/business-actions.js",
-        "apps/web/src/lib/workspaceRecords.js"
+        "apps/web/src/lib/workspaceRecords.js",
+        "apps/pocketbase/pb_migrations/1791200000_government_membership.js"
       ],
       "checks": [
         "source_node",
@@ -132,7 +139,8 @@
         "The declared PocketBase versions apply the needed migrations and enforce current membership.",
         "Saved work survives restart and denial/retry cases preserve record integrity.",
         "Personal assistant collections deny other users including workspace administrators; protocol rollback retains records and disables commands.",
-        "Collection queries group extra predicates under the workspace filter. Foreign targets and stale account/workspace read or write results cannot appear current."
+        "Collection queries group extra predicates under the workspace filter. Foreign targets and stale account/workspace read or write results cannot appear current.",
+        "Government membership records deny ordinary raw CRUD; down/up migrations preserve receipts and keep restricted lessons fenced."
       ],
       "next_step": "Execute both native runtime profiles and have the release owner validate migration rollout and recovery on staging."
     },
@@ -190,7 +198,8 @@
         "apps/pocketbase/pb_hooks/business-actions.js",
         "apps/pocketbase/pb_hooks/business-action-policy.js",
         "apps/pocketbase/pb_migrations/1790800000_business_execution.js",
-        "docs/business-execution.md"
+        "docs/business-execution.md",
+        "apps/pocketbase/pb_hooks/government-access.js"
       ],
       "checks": [
         "source_node",
@@ -211,7 +220,8 @@
         "An independent-review plan rejects verification by its proposer or a selected evidence author.",
         "Actual ERP and registered external actions bind frozen inputs, release declarations and current authority before effect.",
         "Dispatched work is never blindly reissued after timeout or response loss.",
-        "Verification controls explain current membership, approved plan, proposer and evidence-author separation without replacing native review policy."
+        "Verification controls explain current membership, approved plan, proposer and evidence-author separation without replacing native review policy.",
+        "Government suite reads, commands, cached retries and worker completion recheck current sponsoring membership without changing ordinary mission review authority."
       ],
       "next_step": "Use the receiving dispatch to run the native ERP effect and the registered bounded n8n operation; retain current release identity and a distinct result verifier."
     },
@@ -341,7 +351,9 @@
         "apps/web/src/components/workspace/missions/MissionReview.jsx",
         "apps/web/src/components/workspace/EvidenceInspector.jsx",
         "apps/web/src/lib/evidenceInspection.js",
-        "docs/development-loop.md"
+        "docs/development-loop.md",
+        "libs/career_passport",
+        "docs/career-passport.md"
       ],
       "checks": [
         "semantic_twin",
@@ -362,9 +374,10 @@
         "Verified review snapshots retain exact source observations; referenced evidence cannot silently change or disappear.",
         "Native result bytes and release declaration agree with independent replay/deployment evidence.",
         "The evidence inspector exposes the exact frozen reviewed observation, its author and reviewer, and differences from the current record.",
-        "Semantic invitations retain unresolved or conflicting owner identities; exact evidence prerequisites and historical captures cannot grant or promote authority."
+        "Semantic invitations retain unresolved or conflicting owner identities; exact evidence prerequisites and historical captures cannot grant or promote authority.",
+        "Career facts preserve personal, team and agent participation; only exact independently pinned reviews support application claims, while employment duration, personal attestations and operational authority remain separate."
       ],
-      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review."
+      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application."
     },
     {
       "id": "HS-10",
@@ -393,7 +406,12 @@
         "apps/web/src/lib/workspaceJourney.js",
         "apps/pocketbase/pb_hooks/workspace-value.js",
         "apps/web/src/lib/workspaceValue.js",
-        "apps/web/src/components/workspace/ValueDashboard.jsx"
+        "apps/web/src/components/workspace/ValueDashboard.jsx",
+        "apps/web/src/pages/workspace/GovernmentPage.jsx",
+        "docs/research-sprint.md",
+        "apps/web/src/pages/workspace/CareerPage.jsx",
+        "apps/web/src/lib/careerPassport.js",
+        "docs/career-passport.md"
       ],
       "checks": [
         "source_node",
@@ -417,9 +435,11 @@
         "Specialist desks open real tools; Living Rooms modes expose source inspection, operations, learning and retained replay.",
         "The existing agent performs one reviewed ordinary form action with native authority and personal, account/workspace-isolated session knowledge.",
         "Overview next actions derive only from current readable records; missing reads and demo data do not imply completed or actionable work.",
-        "Owner, Operator and Reviewer views consume one scoped value projection; current UTC-month counts retain exact readable native reviews and unknown economic baselines or denominators stay unmeasured."
+        "Owner, Operator and Reviewer views consume one scoped value projection; current UTC-month counts retain exact readable native reviews and unknown economic baselines or denominators stay unmeasured.",
+        "The government desk is restricted to paid approved members and labels supplied research leads, synthetic demonstrations and absent model/GPU verification explicitly.",
+        "The Career Passport desk reads current scoped work and shows imported verification as reported; account/workspace changes or revocation clear private reviews, DO NOT CLAIM gaps remain visible, and imports cannot approve or submit applications."
       ],
-      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI."
+      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt."
     },
     {
       "id": "HS-11",

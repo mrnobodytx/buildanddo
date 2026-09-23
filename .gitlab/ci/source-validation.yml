@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     tests/upgrade/check_discordbot.py, tests/upgrade/check_blueprint_pipeline.py, tests/foundry/check_foundry.py, tests/upgrade/check_federal_foundry.py, tests/upgrade/check_mission_suite.py
+# Depends:     tests/upgrade/check_discordbot.py, tests/upgrade/check_blueprint_pipeline.py, tests/foundry/check_foundry.py, tests/upgrade/check_federal_foundry.py, tests/upgrade/check_mission_suite.py, tests/assurance/run.py
 # EnumType:    Workflow
-# EnumEdges:   CONSUMES tests/upgrade/check_discordbot.py; CONSUMES tests/upgrade/check_blueprint_pipeline.py; CONSUMES tests/foundry/check_foundry.py; CONSUMES tests/upgrade/check_federal_foundry.py; CONSUMES tests/upgrade/check_mission_suite.py
+# EnumEdges:   CONSUMES tests/upgrade/check_discordbot.py; CONSUMES tests/upgrade/check_blueprint_pipeline.py; CONSUMES tests/foundry/check_foundry.py; CONSUMES tests/upgrade/check_federal_foundry.py; CONSUMES tests/upgrade/check_mission_suite.py; CONSUMES tests/assurance/run.py
 # Intent:      Keep native parser and portable coverage requirements executing on GitLab when duplicate GitHub scheduling is retired.
 # ───────────────────────────────────────────────────────────────
 
@@ -119,4 +119,63 @@ source_mission_suite:
     - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - when: never
+
+# Membership, evidence/authority and fault handling run on every reviewed head.
+# Their source-only receipt is explicit; it cannot replace runtime acceptance.
+source_assurance:
+  stage: test
+  tags: [buildanddo]
+  timeout: 15m
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.11", "3.12"]
+  before_script:
+    - node --eval "require('node:assert/strict').equal(process.versions.node.split('.')[0], require('node:fs').readFileSync('.nvmrc', 'utf8').trim())"
+    - python${PYTHON_VERSION} -m venv state/ci/assurance-venv
+  script:
+    - state/ci/assurance-venv/bin/python -m unittest tests.upgrade.test_assurance_runner
+    - state/ci/assurance-venv/bin/python -m tests.assurance.run --source-only --profiles security,evidence,failure --output state/ci/assurance/$CI_JOB_ID/source
+    - state/ci/assurance-venv/bin/python -m apps.federal_foundry sprint --output state/ci/assurance/$CI_JOB_ID/research
+    - state/ci/assurance-venv/bin/python -m apps.federal_foundry verify-sprint state/ci/assurance/$CI_JOB_ID/research
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - state/ci/assurance/$CI_JOB_ID/
+  rules:
+    - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1" || $BUILDANDDO_ASSURANCE_FULL == "1"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - when: never
+
+# Explicit receiving-runner lane: downloads locked frontend packages, pinned
+# Playwright browsers and the two declared disposable PocketBase versions.
+# Runner OS browser libraries and Docker must already be provisioned by its owner.
+# No shared backend, payments, hosted models or deployments are exercised here.
+assurance_full_runtime:
+  stage: test
+  tags: [buildanddo]
+  timeout: 45m
+  parallel:
+    matrix:
+      - POCKETBASE_PROFILE: ["package", "compose"]
+  variables:
+    PLAYWRIGHT_BROWSERS_PATH: "$CI_PROJECT_DIR/state/ci/assurance-browsers/$CI_JOB_ID"
+  before_script:
+    - node --eval "require('node:assert/strict').equal(process.versions.node.split('.')[0], require('node:fs').readFileSync('.nvmrc', 'utf8').trim())"
+    - python3.12 -m venv state/ci/assurance-runtime-venv
+  script:
+    - npm ci --include=dev
+    - state/ci/assurance-runtime-venv/bin/python -m pip install -r tests/assurance/requirements.txt
+    - state/ci/assurance-runtime-venv/bin/python -m playwright install chromium firefox webkit
+    - state/ci/assurance-runtime-venv/bin/python -m tests.assurance.run --provision-profile $POCKETBASE_PROFILE --output state/ci/assurance/$CI_JOB_ID/runtime
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - state/ci/assurance/$CI_JOB_ID/
+  rules:
+    - if: '$BUILDANDDO_ASSURANCE_FULL == "1"'
+      allow_failure: false
     - when: never

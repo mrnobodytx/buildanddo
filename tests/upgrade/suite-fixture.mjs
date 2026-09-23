@@ -8,15 +8,16 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/mission-suite.js, apps/mission_suite/engine.py
+// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/mission-suite.js, apps/mission_suite/engine.py, tests/upgrade/government-fixture.mjs
 // EnumType:    Test
-// EnumEdges:   DEPENDS_ON tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/mission-suite.js; VALIDATES apps/mission_suite/engine.py
+// EnumEdges:   DEPENDS_ON tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/mission-suite.js; VALIDATES apps/mission_suite/engine.py; CONSUMES tests/upgrade/government-fixture.mjs
 // DAG Node:    none
 // Intent:      Connect the real mission API and Python engine while identifying storage and native-auth doubles explicitly.
 // ───────────────────────────────────────────────────────────────
 
 import { createHash } from 'node:crypto';
 import { fixture, plain, runPython } from './admin-fixture.mjs';
+import { installGovernment } from './government-fixture.mjs';
 export const SCHEMA = 'apps/pocketbase/pb_migrations/1790300000_mission_suite.js';
 export const hash = (value) => createHash('sha256').update(value).digest('hex');
 let cachedSourceHash;
@@ -30,6 +31,7 @@ export function suiteFixture({ bound = true } = {}) {
     const env = { value: bound ? JSON.stringify(registered) : '' };
     const f = fixture({ runtime: { $os: { getenv: (name) => name === 'BUILDANDDO_SUITE_BINDINGS' ? env.value : '' }, $security: { sha256: hash } } });
     f.migration(SCHEMA).up();
+    installGovernment(f, ['owner', 'admin', 'editor', 'viewer']);
     f.seed('users', { id: 'suiteworker' }); f.seed('users', { id: 'worker2' });
     f.seed('missions', { id: 'mission1', workspace: 'ws1', owner: 'owner', title: 'Submission mission', status: 'running' });
     f.seed('missions', { id: 'mission2', workspace: 'ws2', owner: 'otherowner', title: 'Foreign mission', status: 'running' });

@@ -80,11 +80,12 @@ describe('public pages', () => {
         },
     );
 
-    it('explains access without presenting a made-up subscription price', () => {
+    it('distinguishes approved government membership from early access and scoped pilots', () => {
         renderPage(PricingPage, '/pricing');
         expect(
-            screen.getByText(/Public subscription prices have not been announced/),
+            screen.getByText('$100/month · approval required'),
         ).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Request government membership' })).toHaveAttribute('href', '/contact?interest=government');
         expect(screen.getByRole('link', { name: 'Request early access' })).toHaveAttribute(
             'href',
             '/#early-access',
@@ -149,6 +150,22 @@ describe('public pages', () => {
         expect(body).toContain('pat@example.com');
         expect(body).toContain('Licensing for a team of five & support.');
         await user.type(screen.getByLabelText('Name'), ' updated');
+        expect(screen.queryByRole('link', { name: 'Open email draft' })).not.toBeInTheDocument();
+    });
+
+    it('keeps government membership enquiries reviewable and clears them when the tier changes', async () => {
+        const user = setupUser();
+        renderPage(ContactPage, '/contact?interest=government&paid=true');
+        expect(screen.getByLabelText('Enquiry type')).toHaveValue('government');
+        expect(screen.getByRole('heading', { name: 'Request government membership' })).toBeVisible();
+        await user.type(screen.getByLabelText('Name'), 'Research member');
+        await user.type(screen.getByLabelText('Email'), 'member@example.com');
+        await user.type(screen.getByLabelText('What would you like to discuss?'), 'Please review my research membership request.');
+        await user.click(screen.getByRole('button', { name: 'Prepare email draft' }));
+        expect(screen.getByLabelText('Email draft preview').value).toContain('USD 100/month');
+        expect(screen.getByLabelText('Email draft preview').value).toContain('does not confirm payment, activate membership');
+        await user.selectOptions(screen.getByLabelText('Enquiry type'), 'commercial');
+        expect(screen.getByLabelText('Name')).toHaveValue('');
         expect(screen.queryByRole('link', { name: 'Open email draft' })).not.toBeInTheDocument();
     });
 

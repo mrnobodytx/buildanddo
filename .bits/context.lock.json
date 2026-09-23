@@ -456,13 +456,14 @@
       ],
       "path": "tools/day21/day21_acceptance.py",
       "referenced_by": [
+        "tests/assurance/run.py",
         "tests/upgrade/test_day21_acceptance.py",
         "tests/upgrade/test_gitlab_acceptance.py"
       ],
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-23T00:25:01.790138+00:00",
+  "generated_at": "2026-09-22T23:13:13.676175+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -913,7 +914,9 @@
         "source_discord",
         "source_foundry",
         "source_federal_portfolio",
-        "source_mission_suite"
+        "source_mission_suite",
+        "source_assurance",
+        "assurance_full_runtime"
       ],
       "kind": "include",
       "local_actions": [],
@@ -950,13 +953,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 47,
-    "python_files": 348,
+    "migrations": 50,
+    "python_files": 347,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1408,
-    "web_source_files": 351
+    "tracked_files": 1398,
+    "web_source_files": 353
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1012,13 +1015,13 @@
       },
       {
         "id": "HS-09",
-        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review.",
+        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application.",
         "owner": "BITS-CODEGEN / release owner",
         "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
@@ -1029,7 +1032,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "18dc3c48be0b332bb99f36b46944fa133a10bbd8c91601237a810d34d686bb01",
+    "source_sha256": "1b6a054ff39549e085181dd8afdc249856be3678c69eab4ac35d7a15fc1511af",
     "state": "PASS"
   },
   "summary": {
