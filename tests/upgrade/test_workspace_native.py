@@ -127,6 +127,7 @@ class WorkspaceServer(DiagnosticNativeServer):
                 "evidence-policy.js",
                 "evidence.pb.js",
                 "business-policy.js",
+                "tutorial-learning.js",
                 "business.pb.js",
                 "workspace-access.js",
                 "government-access.js",

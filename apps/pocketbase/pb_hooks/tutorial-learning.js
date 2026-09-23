@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js, apps/pocketbase/pb_hooks/government-access.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
 // Intent:      Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer that is never sent before it is earned.
 // ───────────────────────────────────────────────────────────────
@@ -110,11 +110,9 @@ function projectProgress(app, record) {
     progress.set('progress', complete ? 100 : Math.max(Number(progress.get('progress') || 0), state.progress));
     app.save(progress);
 }
-// The digest covers the full stored lesson; the answer is only returned for review after this learner earned it.
+// The digest covers the full stored lesson; the answer and explanation return for review only after this learner earned them.
 function reviewed(tutorial, record) {
-    if (record && record.getString('completed_at')) return tutorial;
-    const { answer: _answer, ...check } = tutorial.lesson.check;
-    return { ...tutorial, lesson: { ...tutorial.lesson, check } };
+    return record && record.getString('completed_at') ? tutorial : { ...tutorial, lesson: access.publicLesson(tutorial.lesson) };
 }
 function detailResult(owner, tutorial, record) { return { schema_version: 1, account_id: owner, tutorial: reviewed(tutorial, record), enrollment: output(record) }; }
 function retryWait(record) {
@@ -236,4 +234,15 @@ function certified(app, owner, tutorial) {
         .some((row) => Boolean(row.getString('completed_at')) && Boolean(access.json(row, 'certificate')));
 }
 
-module.exports = { detail, command, list, interactive, certified };
+/** @param {object} e Native record enrichment. Hides earned-only lesson fields from every client read of the catalogue. */
+function enrich(e) {
+    const auth = e.requestInfo && e.requestInfo.auth;
+    if (auth && auth.isSuperuser()) return;
+    const raw = e.record.getString('lesson');
+    if (!raw || raw === 'null') return;
+    let lesson;
+    try { lesson = JSON.parse(raw); } catch { e.record.set('lesson', null); return; }
+    e.record.set('lesson', access.publicLesson(lesson));
+}
+
+module.exports = { detail, command, list, interactive, certified, enrich };

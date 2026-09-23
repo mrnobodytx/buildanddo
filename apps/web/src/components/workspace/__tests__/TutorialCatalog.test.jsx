@@ -20,6 +20,8 @@ import { act, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import curriculum from '../../../../../pocketbase/pb_migrations/data/starter-tutorials.json';
 import broadcastCurriculum from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
+import publicStarter from '../../../../../pocketbase/pb_migrations/data/starter-tutorials.json?public-lessons';
+import publicBroadcast from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json?public-lessons';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import TutorialsPage from '@/pages/workspace/TutorialsPage';
 import DocsPage from '@/pages/DocsPage';
@@ -62,6 +64,15 @@ const read = async (prefix = 'Read') => {
 };
 
 describe('complete Field Manual lessons', () => {
+    it('bundles the curriculum the catalogue imports without any knowledge-check answer or explanation', () => {
+        const shipped = [...publicStarter.lessons, ...publicBroadcast.lessons];
+        expect(shipped).toHaveLength(publicLessonCount);
+        for (const item of shipped) {
+            expect(Object.keys(item.lesson.check).sort()).toEqual(['choices', 'question']);
+            expect(JSON.stringify(item)).not.toMatch(/"answer"|"explanation"/);
+        }
+    });
+
     it('withholds government lessons from public and demo previews', async () => {
         renderWithProviders(<TutorialCatalog />, { auth: { isAuthed: false, user: null } });
         expect(screen.getByText(`${publicLessonCount} lessons to explore`)).toBeVisible();
@@ -87,6 +98,8 @@ describe('complete Field Manual lessons', () => {
         expect(screen.getByText(`${publicLessonCount} lessons to explore`)).toBeVisible();
         const { reader, user } = await read();
         expect(reader.getByRole('button', { name: 'Save reading progress' })).toBeDisabled();
+        expect(reader.getByText('Sign in and open the interactive tutorial to answer this knowledge check.')).toBeVisible();
+        expect(JSON.stringify(screen.getByRole('dialog').textContent)).not.toContain(lesson.lesson.check.explanation);
         await user.click(reader.getByRole('button', { name: 'Close lesson' }));
         expect(pb.collection).not.toHaveBeenCalled();
         view.unmount(); setDemoMode(true);
@@ -133,13 +146,14 @@ describe('complete Field Manual lessons', () => {
         // Completion of an interactive lesson belongs to its server-issued certificate.
         expect(reader.queryByRole('button', { name: 'Mark lesson complete' })).not.toBeInTheDocument();
         expect(reader.getByRole('button', { name: 'Start interactive tutorial' })).toBeEnabled();
-        await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[0] }));
-        await user.click(reader.getByRole('button', { name: 'Check answer' }));
-        expect(reader.getByText('Try another answer.')).toBeVisible();
-        await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[lesson.lesson.check.answer] }));
-        await user.click(reader.getByRole('button', { name: 'Check answer' }));
-        expect(reader.getByText('That’s right.')).toBeVisible();
-        await user.click(reader.getByRole('checkbox', { name: /I worked through the exercise/ }));
+        // The reader previews the question; grading happens only in the interactive tutorial.
+        const check = within(reader.getByRole('region', { name: 'Knowledge check' }));
+        expect(check.getByText(lesson.lesson.check.question)).toBeVisible();
+        for (const choice of lesson.lesson.check.choices) expect(check.getByText(choice)).toBeVisible();
+        expect(reader.queryByRole('radio')).not.toBeInTheDocument();
+        expect(reader.queryByRole('button', { name: 'Check answer' })).not.toBeInTheDocument();
+        expect(reader.queryByText(lesson.lesson.check.explanation)).not.toBeInTheDocument();
+        expect(check.getByText('Answer this knowledge check in the interactive tutorial.')).toBeVisible();
         expect(reader.getByText(/Finish the interactive tutorial to complete this lesson/)).toBeVisible();
         expect(pb.__collection('tutorial_progress').create).toHaveBeenCalledTimes(1);
         expect(pb.__collection('tutorial_progress').update).not.toHaveBeenCalled();

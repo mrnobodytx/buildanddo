@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js, apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js
+# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js; VALIDATES apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js
+# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js; VALIDATES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 # DAG Node:    none
 # Intent:      Require real PocketBase auth, concurrent completion and migration retention before accepting installed interactive learning.
 # ───────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ MIGRATION = "1790600000_tutorial_learning.js"
 MIGRATIONS = (
     MIGRATION,
     "1791400001_broadcast_classroom_lessons.js",
-    "1791500000_tutorial_answer_wait.js",
+    "1791500100_tutorial_answer_wait.js",
 )
 SEED = r"""
 migrate((app) => {
@@ -255,6 +255,21 @@ class NativeLearningTests(unittest.TestCase):
                 (400, 403, 404),
             )
 
+    def test_catalogue_reads_never_carry_the_answer(self) -> None:
+        raw = "/api/collections/tutorials/records"
+        viewed = self.server.request(
+            "GET", raw + "/" + self.server.lesson["id"], token=self.owner
+        )
+        self.assertEqual(viewed[0], 200)
+        listed = self.server.request("GET", raw + "?perPage=200", token=self.owner)
+        self.assertEqual(listed[0], 200)
+        for item in [viewed[1], *listed[1]["items"]]:
+            check = item["lesson"]["check"]
+            self.assertNotIn("answer", check)
+            self.assertNotIn("explanation", check)
+        stored = json.loads(self.server.stored("tutorials")[0]["lesson"])["check"]
+        self.assertTrue({"answer", "explanation"} <= stored.keys())
+
     def test_concurrent_completion_issues_one_certificate_and_one_award(self) -> None:
         with ThreadPoolExecutor(max_workers=3) as pool:
             starts = list(pool.map(lambda _: self.command("start"), range(3)))
@@ -325,7 +340,7 @@ class NativeLearningTests(unittest.TestCase):
                 "check": {
                     key: value
                     for key, value in lesson["lesson"]["check"].items()
-                    if key != "answer"
+                    if key not in ("answer", "explanation")
                 },
             }
             self.assertEqual(detail["tutorial"]["lesson"], public)

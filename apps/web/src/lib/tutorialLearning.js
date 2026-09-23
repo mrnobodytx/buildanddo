@@ -41,16 +41,11 @@ function enrollment(value, accountId, tutorialId) {
         value.certificate.id === `BDO-${value.id.toUpperCase()}` && Date.parse(value.completed_at) === Date.parse(value.certificate.issued_at);
     return value.status === 'in_progress' && value.points === 0 && value.progress < 100 && value.completed_at === '' && value.certificate === null;
 }
-// The server withholds the answer until it is earned; validate the rest of the lesson with a placeholder.
-function lessonBody(lesson) {
-    if (!lesson?.check || typeof lesson.check !== 'object' || Object.prototype.hasOwnProperty.call(lesson.check, 'answer')) return validLesson(lesson);
-    return validLesson({ ...lesson, check: { ...lesson.check, answer: 0 } });
-}
 function detail(value, accountId, tutorialId) {
     const tutorial = value?.tutorial;
     if (value?.schema_version !== 1 || value.account_id !== accountId || tutorial?.id !== tutorialId ||
         !text(tutorial.title, 160) || typeof tutorial.summary !== 'string' || !text(tutorial.curriculum_version, 200) ||
-        !digest(tutorial.content_digest) || !lessonBody(tutorial.lesson)) return false;
+        !digest(tutorial.content_digest) || !validLesson(tutorial.lesson)) return false;
     if (value.enrollment === null) return true;
     const saved = value.enrollment;
     const sections = tutorial.lesson.sections.length;

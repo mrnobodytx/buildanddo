@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/workflow-policy.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -36,6 +36,12 @@ function json(record, name, fallback = null) {
     } catch {
         invalid('The saved workflow data is invalid. Reload the definition before continuing.');
     }
+}
+/** @param {unknown} lesson Stored lesson body. @returns {unknown} The same lesson without the knowledge-check answer or its revealing explanation. */
+function publicLesson(lesson) {
+    if (!lesson || typeof lesson !== 'object' || Array.isArray(lesson) || !lesson.check || typeof lesson.check !== 'object') return lesson;
+    const { answer: _answer, explanation: _explanation, ...check } = lesson.check;
+    return { ...lesson, check };
 }
 function steps(value, required = false) {
     if (!Array.isArray(value) || value.length > 20 || (required && !value.length))
@@ -130,5 +136,5 @@ function remove(e) {
     return e.next();
 }
 
-module.exports = { KINDS, OPEN, invalid, text, fields, json, steps, authenticated,
+module.exports = { KINDS, OPEN, invalid, text, fields, json, publicLesson, steps, authenticated,
     schema, find, role, writable, readable, enforce, remove };

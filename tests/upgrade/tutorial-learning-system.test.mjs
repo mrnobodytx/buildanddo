@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     tests/upgrade/tutorial-learning-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.pb.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js
+// Depends:     tests/upgrade/tutorial-learning-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.pb.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/tutorial-learning-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.pb.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js
+// EnumEdges:   CONSUMES tests/upgrade/tutorial-learning-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.pb.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 // DAG Node:    none
 // Intent:      Prevent unearned certificates, duplicate credit, cross-account reads and partial completion receipts.
 // ───────────────────────────────────────────────────────────────
@@ -72,7 +72,7 @@ test('cannot skip sections, practice, or the server-checked answer', () => {
 
 test('the answer is withheld from every response until this learner answers correctly', () => {
     const f = learningFixture(), lesson = f.lessons[0];
-    const hidden = (result) => !Object.prototype.hasOwnProperty.call(result.tutorial.lesson.check, 'answer');
+    const hidden = (result) => !['answer', 'explanation'].some((key) => Object.prototype.hasOwnProperty.call(result.tutorial.lesson.check, key));
     const before = f.detail();
     assert.ok(hidden(before));
     assert.deepEqual(before.tutorial.lesson.check.choices, lesson.lesson.check.choices);
@@ -90,6 +90,7 @@ test('the answer is withheld from every response until this learner answers corr
     assert.equal(passed.tutorial.lesson.check.answer, lesson.lesson.check.answer, 'earned answers return for review');
     assert.equal(passed.feedback.explanation, lesson.lesson.check.explanation);
     assert.equal(f.detail().tutorial.lesson.check.answer, lesson.lesson.check.answer);
+    assert.equal(f.detail().tutorial.lesson.check.explanation, lesson.lesson.check.explanation);
     assert.equal(f.detail(undefined, 'otherowner').tutorial.lesson.check.answer, undefined, 'another account has not earned it');
     assert.equal(f.data.tutorial_learning[0].snapshot.lesson.check.answer, lesson.lesson.check.answer, 'the stored snapshot is unchanged');
 });
@@ -134,6 +135,27 @@ test('the answer-wait migration replays, refuses a changed field and its down di
     assert.equal(f.list().points, 100);
     f.collections.tutorial_learning.fields.getByName('answer_retry_at').type = 'text';
     assert.throws(() => f.migration(WAIT_MIGRATION).up(), /Review custom/);
+});
+
+test('catalogue reads hide the answer and explanation from every client but superusers', () => {
+    const f = learningFixture(), lesson = f.lessons[0];
+    const read = (auth, value = lesson.lesson) => {
+        const record = f.record('tutorials', { id: lesson.id, title: lesson.title, lesson: value });
+        f.service.enrich({ record, requestInfo: auth === undefined ? undefined : { auth } });
+        return plain(record.get('lesson'));
+    };
+    const user = { isSuperuser: () => false }, superuser = { isSuperuser: () => true };
+    for (const viewer of [user, null, undefined]) {
+        const shown = read(viewer);
+        assert.equal(shown.check.answer, undefined); assert.equal(shown.check.explanation, undefined);
+        assert.deepEqual(shown.check.choices, lesson.lesson.check.choices);
+        assert.deepEqual(shown.sections, lesson.lesson.sections);
+    }
+    assert.deepEqual(read(superuser), lesson.lesson, 'operators keep the full authored lesson');
+    assert.equal(read(user, null), null);
+    assert.equal(read(user, '{broken'), null, 'an unreadable body is not passed through');
+    assert.deepEqual(read(user, { schema_version: 1 }), { schema_version: 1 });
+    assert.equal(f.data.tutorials.find((row) => row.id === lesson.id).lesson.check.answer, lesson.lesson.check.answer, 'stored lessons are unchanged');
 });
 
 test('retries, replay after completion and repeated enrollment cannot farm points or replace a certificate', () => {
@@ -336,13 +358,18 @@ test('missing installation, identity constraints and corrupt checkpoints fail cl
 });
 
 test('routes require native users auth and keep responses uncached with bounded command bodies', () => {
-    const routes = [];
+    const routes = [], enrichers = [];
     const auth = { native: 'users' };
+    let enriched = 0;
     vm.runInNewContext(source('apps/pocketbase/pb_hooks/tutorial-learning.pb.js'), {
-        __hooks: '/hooks', routerAdd: (...args) => routes.push(args),
+        __hooks: '/hooks', routerAdd: (...args) => routes.push(args), onRecordEnrich: (...args) => enrichers.push(args),
         $apis: { requireAuth: (collection) => { assert.equal(collection, 'users'); return auth; }, bodyLimit: (bytes) => ({ bytes }) },
-        require: () => ({ list: () => 'list', detail: () => 'detail', command: () => 'command' }),
+        require: () => ({ list: () => 'list', detail: () => 'detail', command: () => 'command', enrich: () => { enriched++; } }),
     }, { filename: new URL('../../apps/pocketbase/pb_hooks/tutorial-learning.pb.js', import.meta.url).href });
+    assert.equal(enrichers.length, 1);
+    assert.deepEqual(enrichers[0].slice(1), ['tutorials']);
+    assert.equal(enrichers[0][0]({ next: () => 'next' }), 'next');
+    assert.equal(enriched, 1);
     assert.equal(routes.length, 3);
     for (const [verb, path, handler, middleware, limit] of routes) {
         assert.equal(middleware, auth); assert.match(path, /^\/api\/buildanddo\/learning/);

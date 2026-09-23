@@ -19,7 +19,7 @@ import { createHash } from 'node:crypto';
 import { fixture, plain, source } from './admin-fixture.mjs';
 
 export const MIGRATION = 'apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js';
-export const WAIT_MIGRATION = 'apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js';
+export const WAIT_MIGRATION = 'apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js';
 
 export function learningFixture() {
     const f = fixture({ runtime: { $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') } } });

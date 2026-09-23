@@ -39,7 +39,7 @@ function installed(data = bundle) {
     } });
     f.migration('apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js').up();
     f.migration('apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js').up();
-    f.migration('apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js').up();
+    f.migration('apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js').up();
     f.app.countRecords = (name, filter, params) => f.app.findRecordsByFilter(name, filter, '', 0, 0, params).length;
     return f;
 }
@@ -146,8 +146,8 @@ test('the actual native learning validator accepts the new lesson without enroll
     const f = installed(); f.migration(MIGRATION).up();
     const before = plain(f.data), learning = f.load('tutorial-learning.js');
     const result = plain(learning.detail(f.event('owner', {}, { id: seed.id })));
-    const { answer: _answer, ...check } = seed.lesson.check;
-    assert.deepEqual(result.tutorial.lesson, { ...seed.lesson, check }, 'the answer is withheld until it is earned');
+    const { answer: _answer, explanation: _explanation, ...check } = seed.lesson.check;
+    assert.deepEqual(result.tutorial.lesson, { ...seed.lesson, check }, 'the answer and its explanation are withheld until earned');
     assert.equal(result.tutorial.curriculum_version, bundle.version);
     assert.equal(result.enrollment, null);
     assert.equal(learning.list(f.event('owner')).points, 0);
