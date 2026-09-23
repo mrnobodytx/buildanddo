@@ -36,6 +36,7 @@ it" standard).
 from __future__ import annotations
 import datetime as dt
 import json
+import shlex
 import shutil
 import subprocess
 import sys
@@ -241,27 +242,55 @@ def _ssh_identity_args() -> list[str]:
     return ["-i", SSH_KEY] if SSH_KEY else []
 
 
+def _swap_script(remote_dir: str) -> str:
+    """The server half of a deploy, as one shell command: move the copied build into place.
+
+    `_rsync` copies the build into `<remote_dir>.incoming`, beside the live directory. This refuses a copy
+    without its index.html, keeps the live release as `<remote_dir>.previous` (replacing an older one), and
+    moves the copy in with two renames on the same filesystem, so visitors see the old release or the new one
+    and never an empty or half-copied directory. The copy takes the live directory's owner and mode where the
+    server allows it. A first deploy, with no live directory yet, just moves the copy into place.
+    """
+    live = shlex.quote(remote_dir)
+    incoming = shlex.quote(f"{remote_dir}.incoming")
+    previous = shlex.quote(f"{remote_dir}.previous")
+    return (f"set -eu; test -s {incoming}/index.html || "
+            f"{{ echo 'REFUSED: the copied build has no index.html' >&2; exit 3; }}; "
+            f"if [ -d {live} ]; then chown --reference={live} {incoming} 2>/dev/null || true; "
+            f"chmod --reference={live} {incoming} 2>/dev/null || true; rm -rf {previous}; mv {live} {previous}; fi; "
+            f"mv {incoming} {live}; echo SWAPPED")
+
+
 def _rsync(local_dir: Path, remote_dir: str) -> dict:
-    """scp -r the whole dist tree; the remote dir is emptied first via ssh so stale
-    files from a previous build never linger (a partial-diff sync could keep an
-    old chunk that the new index.html no longer references)."""
+    """Copy the build beside the live directory, then swap it in (SRS-BUILDANDDO-DEPLOY-SWAP-001).
+
+    The live directory used to be emptied first and then refilled by scp. For the whole copy, and for good
+    after a failed copy, the environment served an empty or half-filled directory. Now nothing touches the
+    live directory until a complete copy sits beside it in `<remote_dir>.incoming`. `_swap_script` then
+    checks the copy and swaps it in, keeping the release it replaced as `<remote_dir>.previous`. A failure
+    before the swap returns the failing stage and leaves the live directory as it was.
+    """
     if not VM_HOST:
         return {"ok": False, "stage": "config", "reason": "BUILDANDDO_VM_HOST not set (see secrets/deploy.local.env)"}
-    # `rm -rf dir/*` leaves DOTFILES: the shell glob never matches a leading dot. Measured
-    # 2026-09-20 - that is why /var/www/buildanddo/.well-known/citadel-release.json was still
-    # reporting commit 0b9faeb from 09-11 after deploys on 09-18 and 09-20, while `_version`
-    # (no dot) was deleted by every single one. The environment ended up publishing two
-    # identities that disagreed by nine days, and a capability inventory reading the survivor
-    # concluded production was missing pages it was in fact serving.
-    clear = _run(["ssh", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", VM_HOST,
-                  f"mkdir -p {remote_dir} && find {remote_dir} -mindepth 1 -delete"])
-    if not clear["ok"]:
-        return {"ok": False, "stage": "clear_remote", **clear}
+    # Dotfiles move with the directory. The first clear, `rm -rf dir/*`, left them behind, because the shell
+    # glob never matches a leading dot. Measured 2026-09-20: /var/www/buildanddo/.well-known/citadel-release.json
+    # still reported commit 0b9faeb from 09-11 after deploys on 09-18 and 09-20, while `_version` (no dot) was
+    # replaced every time, so the environment published two identities nine days apart. Replacing the whole
+    # directory makes that impossible, and no build file from an older release can linger either.
+    incoming = f"{remote_dir}.incoming"
+    prepare = _run(["ssh", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", VM_HOST,
+                    f"rm -rf {shlex.quote(incoming)} && mkdir -p {shlex.quote(incoming)}"])
+    if not prepare["ok"]:
+        return {"ok": False, "stage": "prepare_incoming", **prepare}
     copy = _run(["scp", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", "-r",
-                 f"{local_dir}/.", f"{VM_HOST}:{remote_dir}/"], timeout=300)
+                 f"{local_dir}/.", f"{VM_HOST}:{incoming}/"], timeout=300)
     if not copy["ok"]:
         return {"ok": False, "stage": "scp", **copy}
-    return {"ok": True}
+    swap = _run(["ssh", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", VM_HOST,
+                 _swap_script(remote_dir)], timeout=120)
+    if not swap["ok"]:
+        return {"ok": False, "stage": "swap", **swap}
+    return {"ok": True, "previous": f"{remote_dir}.previous"}
 
 
 def _write_web_env() -> None:
