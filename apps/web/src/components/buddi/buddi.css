@@ -1,0 +1,73 @@
+/* ─── CGRF Header ───────────────────────────────────────────────
+ * File:        apps/web/src/components/buddi/buddi.css
+ * Stage:       07_BUILD
+ * SRS:         SRS-BUILDANDDO-BUDDI-001
+ * CAPS:        pending
+ * CK:          pending
+ * Dispatch:    VCC-BUILDANDDO-BUDDI-001
+ * Seat:        BITS-CODEGEN
+ * Owner:       Citadel Nexus Inc.
+ * Created:     2026-09-23
+ * Depends:     apps/web/src/motion.css, apps/web/src/contexts/MotionContext.jsx
+ * EnumType:    Widget
+ * EnumEdges:   DEPENDS_ON apps/web/src/motion.css
+ * DAG Node:    none
+ * Intent:      Buddi's animation layer: short, single-run movements gated by the learning motion category.
+ * ───────────────────────────────────────────────────────────────
+ *
+ * Every duration is a motion token, which MotionContext sets to 0ms until the
+ * person turns effects on. The learning category must also be on, and reduced
+ * motion removes all of it. Nothing here loops.
+ */
+
+.buddi svg { display: block; overflow: visible; }
+.buddi .buddi-eyes { transition: transform var(--motion-micro) var(--motion-ease); }
+.buddi[data-look="up"] .buddi-eyes { transform: translateY(-4px); }
+
+.buddi-button {
+    display: inline-flex;
+    border: 0;
+    padding: 4px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+.buddi-button:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
+
+:root[data-motion-learning="on"] .buddi-arrive { animation: buddi-hop var(--motion-milestone) var(--motion-ease) 1; }
+:root[data-motion-learning="on"] .buddi[data-pose="hello"] .buddi-wave {
+    transform-box: view-box;
+    transform-origin: 176px 122px;
+    animation: buddi-wave calc(var(--motion-milestone) * 1.5) var(--motion-ease) 1;
+}
+:root[data-motion-learning="on"] .buddi-stamp {
+    transform-box: view-box;
+    transform-origin: 196px 80px;
+    animation: buddi-stamp var(--motion-milestone) var(--motion-ease) 1;
+}
+:root[data-motion-learning="on"] .buddi-button:active .buddi { scale: 0.96; transition: scale var(--motion-control) var(--motion-ease); }
+:root[data-motion-learning="on"] .buddi-celebrate { animation: buddi-stamp-in var(--motion-milestone) var(--motion-ease) 1; }
+
+@keyframes buddi-hop {
+    0% { transform: translateY(0); }
+    40% { transform: translateY(-10%); }
+    70% { transform: translateY(0) scaleY(0.96); }
+    100% { transform: translateY(0) scaleY(1); }
+}
+@keyframes buddi-wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-12deg); }
+    60% { transform: rotate(8deg); }
+}
+@keyframes buddi-stamp {
+    0% { transform: scale(1.35); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+@keyframes buddi-stamp-in {
+    0% { transform: scale(1.02); opacity: 0.4; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .buddi, .buddi *, .buddi-celebrate { animation: none !important; transition: none !important; }
+}

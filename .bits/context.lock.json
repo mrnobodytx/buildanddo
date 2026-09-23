@@ -465,7 +465,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-23T19:54:56.940763+00:00",
+  "generated_at": "2026-09-23T22:39:10.933756+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -492,6 +492,13 @@
         "spec": "",
         "status": "delivered",
         "title": "Machine-facing governance bootstrap"
+      },
+      {
+        "code": "SRS-BUILDANDDO-BUDDI-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md",
+        "status": "in_progress",
+        "title": "Brand mark and the Buddi mascot with server-confirmed achievements"
       },
       {
         "code": "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
@@ -1066,15 +1073,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "03c708fb913158edcd9bf88e0d4d4ac9cfe6207cf9a783598049e0e9276be057",
+    "source_sha256": "d7a54873a14d3ca36c0004c1681517d063a6cf136e305c96ae9581006f41a999",
     "state": "PASS"
   },
   "summary": {
     "findings": 24,
     "findings_high": 24,
     "pipelines": 10,
-    "srs_open": 33,
-    "srs_total": 37,
+    "srs_open": 34,
+    "srs_total": 38,
     "unwired_gates": 22
   },
   "tests": {

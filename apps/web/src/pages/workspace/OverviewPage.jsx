@@ -32,6 +32,8 @@ import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { Button, Card } from '@/components/site/ui';
+import Buddi from '@/components/buddi/Buddi';
+import BuddiAchievements from '@/components/buddi/BuddiAchievements';
 import EmptyState from '@/components/workspace/EmptyState';
 import NextWorkspaceActions from '@/components/workspace/NextWorkspaceActions';
 import {
@@ -221,6 +223,7 @@ export default function OverviewPage() {
                 </Card>
             )}
             <NextWorkspaceActions signals={signals} missions={missions} evidence={evidence} />
+            <BuddiAchievements missions={missions} />
 
             {degradedSources.length > 0 && (
                 <DegradedNotice
@@ -383,7 +386,7 @@ export default function OverviewPage() {
                         <ListSkeleton rows={2} />
                     ) : activeMissions.length === 0 ? (
                         <EmptyState
-                            icon={Target}
+                            art={<Buddi pose="build" size={88} />}
                             title="No missions yet"
                             description="A mission is a bounded, approved task with a clear goal and scope. Start one from a signal — you review the plan before anything runs."
                             action={
