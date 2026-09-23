@@ -1,16 +1,17 @@
+// CGRF: SRS=SRS-BUILDANDDO-UPGRADE-001,SRS-BUILDANDDO-BUDDI-002 | CAPS=B | Seat=C-ONE
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/edge/src/index.js
 // Stage:       11_COMMIT
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-002
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-BUDDI-002
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     none
+// Depends:     apps/edge/src/graph.js, apps/edge/src/public-api.js
 // EnumType:    Service
-// EnumEdges:   FRONTS apps/web
+// EnumEdges:   FRONTS apps/web; PROXIES /api/v1/public/* VIA apps/edge/src/public-api.js
 // DAG Node:    none
 // Intent:      Set the response security headers for buildanddo.com and www at the edge.
 // ───────────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@
  */
 
 import { handleGraphMatch } from './graph.js';
+import { handlePublicApi } from './public-api.js';
 
 const ALLOW_POSTHOG = ['https://us.i.posthog.com', 'https://us-assets.i.posthog.com'];
 
@@ -88,6 +90,12 @@ export default {
 		// graph read never pays for a round trip to an origin that would 404 it anyway.
 		const graph = await handleGraphMatch(request, env);
 		if (graph) return graph;
+
+		// The voice agent's tool URLs, forwarded to the backend routes that answer them. Also null
+		// for everything else - /api/webhooks/* included - and its answers are JSON, which the
+		// document-only header path below would leave untouched anyway.
+		const publicApi = await handlePublicApi(request);
+		if (publicApi) return publicApi;
 
 		const response = await fetch(request);
 		const contentType = response.headers.get('Content-Type') || '';
