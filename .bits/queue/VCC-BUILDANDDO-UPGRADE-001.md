@@ -20,6 +20,18 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Live classroom on the staging line - 2026-09-23
+
+Operator direction (2026-09-23): the live classroom system should be on staging. Staging is built from
+the integration branch; the broadcast classroom below was merged to main only. Seat: C-ONE.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| LS-1 | Apply main's live classroom and its seat-name follow-up as one change; adapt what this line lacks | Classroom flow and broadcast Vitest cases; classroom node suites | done: the class record no longer calls main's government membership helper, which this line does not have |
+| LS-2 | A known guildmaster in the live room links to its public profile | `vitest run src/components/broadcast`, with a control that drops the link | done |
+| LS-3 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`, `verify_public_boundary.py` | done |
+| LS-4 | Staging-only deploy of the merged line | Staging `/_version` names the merged commit; the classroom routes answer | not part of this change |
+
 ## Broadcast classroom - 2026-09-23
 
 Owner-authorized continuation of the classroom scope: connect the existing
