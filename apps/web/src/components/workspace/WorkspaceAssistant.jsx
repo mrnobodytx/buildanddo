@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:         apps/web/src/components/workspace/WorkspaceAssistant.jsx
 // Stage:        07_BUILD
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-001
 // CAPS:         pending
 // CK:           pending
 // Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -86,7 +86,7 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
                 // lands, so repeating it as an error would print the same sentence twice.
                 // It only ever looked right before because the reload wiped it immediately.
                 await load(activeSession);
-            } else setError(result.error || 'The assistant response is unavailable.');
+            } else setError(result.error || "Buddi's response is unavailable.");
         } finally { lock.current = false; if (alive.current) setBusy(false); }
     };
     const retain = async (record) => {
@@ -136,13 +136,13 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
     const closed = snapshot?.sessions?.items.find((item) => item.id === session)?.status === 'closed';
     return <div data-assistant-panel className="ph-no-capture" data-dd-privacy="mask">
         <Button type="button" size="sm" aria-expanded={open} aria-controls="workspace-assistant-panel"
-            className="fixed bottom-4 right-4 z-40 shadow-md" onClick={() => setOpen(!open)}><MessageCircle className="h-4 w-4" />Assistant</Button>
-        {open && <Card id="workspace-assistant-panel" role="region" aria-label="BuildAndDo assistant"
+            className="fixed bottom-4 right-4 z-40 shadow-md" onClick={() => setOpen(!open)}><MessageCircle className="h-4 w-4" />Buddi</Button>
+        {open && <Card id="workspace-assistant-panel" role="region" aria-label="Buddi"
             className="fixed bottom-16 right-2 z-40 flex max-h-[calc(100dvh-6rem)] w-[min(28rem,calc(100vw-1rem))] flex-col border border-border bg-background shadow-xl sm:right-4">
-            <div className="flex items-center justify-between border-b border-border p-3"><div><h2 className="font-display font-semibold">BuildAndDo assistant</h2><p className="text-xs text-muted-foreground">Your account · Current workspace</p></div>
-                <button type="button" aria-label="Close assistant" onClick={() => setOpen(false)} className="p-2"><X className="h-4 w-4" /></button></div>
+            <div className="flex items-center justify-between border-b border-border p-3"><div><h2 className="font-display font-semibold">Buddi</h2><p className="text-xs text-muted-foreground">Your account · Current workspace</p></div>
+                <button type="button" aria-label="Close Buddi" onClick={() => setOpen(false)} className="p-2"><X className="h-4 w-4" /></button></div>
             <div className="space-y-3 overflow-y-auto p-3 text-sm">
-                {demo ? <p>Sign in to use saved assistant sessions. Demo mode does not send workspace data or perform actions.</p> : <>
+                {demo ? <p>Sign in to use saved Buddi sessions. Demo mode does not send workspace data or perform actions.</p> : <>
                     <p className="text-xs text-muted-foreground">Ask for help on any desk. Review the proposed steps before applying them. Approval, verification and destructive actions stay with you. Never enter passwords or keys.</p>
                     <div className="flex flex-wrap gap-2"><Button type="button" size="sm" variant="secondary" disabled={busy || Boolean(recordPending)} onClick={newSession}>New session</Button>
                         <Button type="button" size="sm" variant="ghost" disabled={busy} onClick={() => load()}>Reload history</Button><Link className="self-center text-xs underline" to="/app/knowledge">My knowledge</Link>
@@ -156,9 +156,9 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
                         <option value="">New conversation</option>{snapshot?.sessions?.items.map((item) => <option key={item.id} value={item.id}>{item.title} · {item.status}</option>)}
                     </select></label>
                     {snapshot?.sessions?.has_more && <Button type="button" size="sm" variant="ghost" onClick={() => load(session, { sessionPage: snapshot.sessions.page + 1, append: 'sessions' })}>Load earlier sessions</Button>}
-                    {snapshot?.inference_configured === false && <p role="status" className="border border-border p-2">The assistant provider is not connected yet. Your workspace operator must bind the existing agent endpoint.</p>}
+                    {snapshot?.inference_configured === false && <p role="status" className="border border-border p-2">Buddi isn't connected yet. Your workspace operator must bind the existing agent endpoint.</p>}
                     <ol className="space-y-3" aria-label="Conversation">{history.map((item) => <li key={item.id} className="space-y-2 border-b border-border pb-3">
-                        <p className="whitespace-pre-wrap"><strong>You:</strong> {item.message}</p><p className="whitespace-pre-wrap"><strong>Assistant:</strong> {item.reply || 'Response pending…'}</p>
+                        <p className="whitespace-pre-wrap"><strong>You:</strong> {item.message}</p><p className="whitespace-pre-wrap"><strong>Buddi:</strong> {item.reply || 'Response pending…'}</p>
                         <p className="text-xs text-muted-foreground">{item.status}</p>
                         {item.plan?.context && <details className="text-xs"><summary>Workspace sources used</summary>
                             <p>{item.plan.context.complete ? 'Readable source context was included.' : 'Source coverage is partial; inspect the original records.'}</p>
@@ -181,7 +181,7 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
                     {closed && <p>This session is retained for reading. Start a new session to continue.</p>}
                     <form onSubmit={send} className="space-y-2"><label htmlFor="assistant-message" className="font-medium">What would you like to do?</label>
                         <Textarea ref={composer} id="assistant-message" value={message} onChange={(event) => { setMessage(event.target.value); }} maxLength={4000} rows={3} disabled={busy || closed || Boolean(recordPending)} />
-                        <Button type="submit" size="sm" disabled={busy || closed || !message.trim() || Boolean(recordPending)}>{busy ? 'Working…' : pending.current ? 'Retry message' : 'Ask assistant'}</Button></form>
+                        <Button type="submit" size="sm" disabled={busy || closed || !message.trim() || Boolean(recordPending)}>{busy ? 'Working…' : pending.current ? 'Retry message' : 'Ask Buddi'}</Button></form>
                 </>}
             </div>
         </Card>}

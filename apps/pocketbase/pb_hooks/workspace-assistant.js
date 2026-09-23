@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:         apps/pocketbase/pb_hooks/workspace-assistant.js
 // Stage:        07_BUILD
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-001
 // CAPS:         pending
 // CK:           pending
 // Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -29,7 +29,7 @@ function schema(app, name) {
     const contract = contracts[name];
     const collection = access.schema(app, name, ['owner', 'workspace', 'revision', 'protocol_version', ...contract.fields]);
     if (['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'].some((key) => collection[key] !== null) || !collection.indexes.includes(contract.index))
-        throw new ApiError(503, 'Assistant account isolation needs operator review.');
+        throw new ApiError(503, 'Buddi account isolation needs operator review.');
     return collection;
 }
 function scope(e) {
@@ -41,7 +41,7 @@ function scope(e) {
 function owned(app, name, id, context) {
     const record = access.find(app, name, access.id(id));
     if (record.getString('workspace') !== context.workspace || record.getString('owner') !== context.owner)
-        throw new NotFoundError('This personal assistant record is unavailable.');
+        throw new NotFoundError('This personal Buddi record is unavailable.');
     return record;
 }
 function sessionOut(record) {
@@ -54,7 +54,7 @@ function turnOut(record) {
         plan: access.json(record, 'plan'), revision: Number(record.get('revision')), created: record.getString('created') };
 }
 function key(value) {
-    if (typeof value !== 'string' || !/^[a-zA-Z0-9_-]{16,80}$/.test(value)) access.invalid('Use a stable assistant retry key.');
+    if (typeof value !== 'string' || !/^[a-zA-Z0-9_-]{16,80}$/.test(value)) access.invalid('Use a stable Buddi retry key.');
     return value;
 }
 /** Read only the authenticated account's sessions and optional message history. */
@@ -127,7 +127,7 @@ function command(e) {
                 route: plan.route, steps, outcome: p.outcome, observation: p.observation, revision: 1, protocol_version: 1 }); app.save(pattern);
             turn.set('status', p.outcome); turn.set('revision', Number(turn.get('revision')) + 1); app.save(turn);
             result = { id: pattern.id, ...context, outcome: p.outcome, evidence_state: 'client_observed' };
-        } else access.invalid('Choose a supported assistant command.');
+        } else access.invalid('Choose a supported Buddi command.');
     });
     return result;
 }
@@ -135,7 +135,7 @@ function infer(message, captured, history, context, patterns, packet) {
     const url = $os.getenv('BUILDANDDO_ASSISTANT_URL') || '', model = $os.getenv('BUILDANDDO_ASSISTANT_MODEL') || '';
     if (!/^https:\/\/[a-z0-9.-]+(?::443)?\/[^\s?#@]*$/i.test(url) || !access.text(model, 120))
         throw new ApiError(503, 'The workspace assistant inference binding is not configured.');
-    const instruction = 'You are the BuildAndDo workspace assistant. Return exactly JSON {reply:string,steps:array}. '
+    const instruction = 'You are Buddi, the BuildAndDo workspace assistant. Return exactly JSON {reply:string,steps:array}. '
         + 'Only use these step forms: {kind:"navigate",path:string}, {kind:"fill",control:string,value:string|boolean}, {kind:"activate",control:string}. '
         + 'Use only supplied routes and the current visible control IDs. After navigation or activation stop and inspect the new surface. '
         + 'The user reviews plans before application. Approval, verification, deletion, invitations, publishing and secrets require direct human interaction. '
@@ -193,7 +193,7 @@ function chat(e) {
                 access.conflict('Wait for the current message before sending another.');
             const recent = app.findRecordsByFilter('assistant_turns', 'workspace = {:workspace} && owner = {:owner}', '-created', 31, 0, context);
             if (recent.filter((record) => Date.now() - Date.parse(record.getString('created')) < 3600000).length >= 30)
-                throw new ApiError(429, 'The hourly assistant limit has been reached.');
+                throw new ApiError(429, 'The hourly Buddi limit has been reached.');
             turn = new Record(schema(app, 'assistant_turns'));
             set(turn, { ...context, session: session.id, request_key: body.request_key, message, surface: captured, revision: 0, protocol_version: 1 });
         }
@@ -214,10 +214,10 @@ function chat(e) {
     if (finalScope.role !== context.role) throw new ForbiddenError('Workspace authority changed during this response. Inspect the current page again.');
     e.app.runInTransaction((app) => {
         const session = owned(app, 'assistant_sessions', body.session, context);
-        if (session.getString('status') !== 'active') access.conflict('This session closed while the assistant was responding.');
+        if (session.getString('status') !== 'active') access.conflict('This session closed while Buddi was responding.');
         turn = owned(app, 'assistant_turns', turn.id, context);
         if (Number(turn.get('revision')) !== claimedRevision || turn.getString('status') !== 'pending') access.conflict('A newer response already owns this turn.');
-        set(turn, { status: failure ? 'unavailable' : 'ready', failure, reply: proposal?.reply || 'The assistant is unavailable. Your message is retained for retry.',
+        set(turn, { status: failure ? 'unavailable' : 'ready', failure, reply: proposal?.reply || 'Buddi is unavailable. Your message is retained for retry.',
             plan: proposal || null, revision: claimedRevision + 1 }); app.save(turn);
     });
     return turnOut(turn);
@@ -234,7 +234,7 @@ function knowledge(e) {
     for (const id of [...new Set(page.rows.map((record) => record.getString('session')))]) {
         const session = owned(e.app, 'assistant_sessions', id, context);
         docs.push({ id: graph.key(context.workspace, 'assistant_sessions', id), kind: 'assistant_session', title: session.getString('title'),
-            text: 'Personal assistant session; outcomes are browser observations, not verified business results.', state: session.getString('status'),
+            text: 'Personal Buddi session; outcomes are browser observations, not verified business results.', state: session.getString('status'),
             source: { collection: 'assistant_sessions', record_id: id, created_at: session.getString('created'), updated_at: session.getString('updated') },
             truncated: false, category: 'operations', tags: ['personal-assistant'], relations: [] });
     }
