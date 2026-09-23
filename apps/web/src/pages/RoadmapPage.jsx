@@ -232,6 +232,31 @@ function mergeLiveStatus(live) {
 }
 
 /**
+ * Where an activity row's measurement came from. A link only when the projection gave a web address: it also
+ * publishes plain text for sources a visitor cannot open (a private control plane, a guildmaster's members-only
+ * workspace), and rendering that text as a link produced a broken one on every such row.
+ *
+ * @param {{id: string, evidence?: string|null}} props
+ */
+export function ActivityEvidence({ id, evidence }) {
+    if (!evidence) return null;
+    if (evidence.startsWith('https://') || evidence.startsWith('http://')) {
+        return (
+            <a
+                href={evidence}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => trackEvent('roadmap_activity_evidence_click', { id })}
+                className="font-evidence text-[11px] text-primary"
+            >
+                evidence
+            </a>
+        );
+    }
+    return <span className="font-evidence text-[11px] text-muted-foreground">{evidence}</span>;
+}
+
+/**
  * One milestone's replay verdict, from scripts/ci/sprint_replay.py.
  *
  * Day 21's contract, in the words this page already uses for it: every milestone is shown
@@ -893,17 +918,7 @@ export default function RoadmapPage() {
                                     {e.count_24h ?? '—'} / 24 h · {e.count_7d ?? '—'} / 7 d
                                 </div>
                                 <div className="col-span-4 flex items-center justify-end gap-3 sm:col-span-3">
-                                    {e.evidence && (
-                                        <a
-                                            href={e.evidence}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            onClick={() => trackEvent('roadmap_activity_evidence_click', { id: e.id })}
-                                            className="font-evidence text-[11px] text-primary"
-                                        >
-                                            evidence
-                                        </a>
-                                    )}
+                                    <ActivityEvidence id={e.id} evidence={e.evidence} />
                                     <span className={`font-evidence text-[10px] uppercase tracking-[0.14em] ${e.state === 'MEASURED' ? 'text-success' : 'text-muted-foreground'}`}>
                                         {e.state}
                                     </span>
