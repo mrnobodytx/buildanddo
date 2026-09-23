@@ -40,6 +40,7 @@ const PlatformPage = lazy(() => import('./pages/PlatformPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 const WorkspaceLayout = lazy(() => import('./components/workspace/WorkspaceLayout'));
 const OverviewPage = lazy(() => import('./pages/workspace/OverviewPage'));
@@ -207,6 +208,7 @@ export function AppRoutes() {
                     }
                 />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password/:token?" element={<ResetPasswordPage />} />
 
                 {/* Onboarding (protected) */}
                 <Route

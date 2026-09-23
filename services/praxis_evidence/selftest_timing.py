@@ -6,11 +6,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient  # noqa: E402
+from client import PocketBaseClient, require_test_target  # noqa: E402
 from methods import create_method  # noqa: E402
 from timing import record_timing, timing_distribution  # noqa: E402
 
-client = PocketBaseClient()
+client = PocketBaseClient(require_test_target())
 checks: list[tuple[str, bool]] = []
 
 method = create_method(client, objective="reach clean F barre chord criterion", domain="music.guitar")

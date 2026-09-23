@@ -8,11 +8,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient  # noqa: E402
+from client import PocketBaseClient, require_test_target  # noqa: E402
 from materials import create_material  # noqa: E402
 from pricing import record_price, price_aggregate  # noqa: E402
 
-client = PocketBaseClient()
+client = PocketBaseClient(require_test_target())
 checks: list[tuple[str, bool]] = []
 
 material = create_material(client, canonical_name=f"selftest-2x4-{dt.datetime.now().timestamp()}",

@@ -49,7 +49,10 @@ praxis_evidence_tests:
   # variables (masked), not the gitignored secrets/deploy.local.env - a fresh
   # CI checkout never has that file. client.py's _load_secrets() already
   # merges os.environ, so no code change was needed to pick these up.
+  # No PB_API_URL means no target: fail fast, never fall back to production.
+  # run_all_tests.py also refuses a production host (SRS-BUILDANDDO-TRUST-001).
   script:
+    - 'if [ -z "${PB_API_URL:-}" ]; then echo "REFUSED: PB_API_URL is not set; praxis_evidence_tests needs a non-production PocketBase." >&2; exit 1; fi'
     - python3 services/praxis_evidence/run_all_tests.py
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'

@@ -18,9 +18,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 SUITES = sorted(p.name for p in ROOT.glob("selftest*.py"))
+sys.path.insert(0, str(ROOT))
+from client import UnsafeTargetError, require_test_target  # noqa: E402
 
 
 def main() -> int:
+    # Before any suite starts: they create users and records, so an unset or
+    # production PB_API_URL is a refusal, never a fallback.
+    try:
+        require_test_target()
+    except UnsafeTargetError as exc:
+        print(f"REFUSED: {exc} Set PB_API_URL to a disposable, non-production PocketBase.")
+        return 2
     if not SUITES:
         print("NO_SUITES_FOUND - this is a real failure, not a vacuous pass")
         return 1
