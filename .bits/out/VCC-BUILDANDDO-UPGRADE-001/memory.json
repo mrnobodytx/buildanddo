@@ -535,7 +535,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 53308,
+      "lines": 54301,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -672,7 +672,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1630,
+      "lines": 1652,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -996,7 +996,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2152,
+      "lines": 2194,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -38711,7 +38711,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 574,
+      "lines": 578,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38778,7 +38778,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1164,
+      "lines": 1170,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -44867,7 +44867,7 @@
         "apps/pocketbase/pb_hooks/workflow-runs.js",
         "apps/pocketbase/pb_hooks/business-actions.js"
       ],
-      "lines": 95,
+      "lines": 98,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Capture a bounded mission's readable history in one transaction with exact content digests and explicit integrity gaps.",
@@ -45204,7 +45204,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-replay.js"
       ],
-      "lines": 61,
+      "lines": 64,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Revalidate bounded mission capture identities and content digests before exposing an export.",
@@ -45350,7 +45350,7 @@
         "apps/web/src/lib/businessPlanning.js",
         "apps/web/src/lib/missionLearning.js"
       ],
-      "lines": 370,
+      "lines": 385,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise real journey modules across identity changes, forbidden reads, stale health, independent review and complete capture integrity.",
@@ -53291,12 +53291,1005 @@
       "timestamp": "2026-09-23T02:31:56.322298+00:00",
       "commit_sha": null,
       "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/world-events.md",
+        "apps/world_twin/capture.py",
+        "apps/world_twin/projection.py",
+        ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md"
+      ],
+      "lines": 63,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Define receiving identity, authorization, evidence and replay obligations for the connected public world-event compiler without authorizing private runtime activation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/world-events.md",
+        "tests/world_twin/check_world_twin.py",
+        "tests/upgrade/sprint-journey.test.mjs",
+        ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md"
+      ],
+      "lines": 120,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain source interoperability evidence and runtime limits for the connected world-event, episode and semantic projection path.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/world_twin/capture.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "ActorBinding",
+        "MissionImport",
+        "_exact",
+        "_id",
+        "_number",
+        "_same_json",
+        "_canonical",
+        "_member",
+        "import_mission_capture"
+      ],
+      "dependencies": [
+        "apps/world_twin/events.py",
+        "libs/evolution/common.py",
+        "libs/evolution/event.py",
+        "apps/pocketbase/pb_hooks/workspace-replay.js"
+      ],
+      "lines": 412,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind complete native snapshots to private world observations without inventing identity, telemetry or verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/world_twin/cli.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "_input",
+        "_compile",
+        "main",
+        "_legacy"
+      ],
+      "dependencies": [
+        "apps/world_twin/events.py",
+        "apps/world_twin/twin.py",
+        "apps/world_twin/projection.py",
+        "apps/world_twin/capture.py"
+      ],
+      "lines": 145,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record events and disputes and print twins, projections and world state from the command line.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/world_twin/episode.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "review_states",
+        "WorldEpisode",
+        "world_episodes"
+      ],
+      "dependencies": [
+        "apps/world_twin/events.py",
+        "libs/evolution/episode.py",
+        "libs/capability_tokens/verification.py"
+      ],
+      "lines": 204,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Join scoped world observations through existing episode and review contracts without inferring causation or trusting self-reported verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/world_twin/events.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "TraceReference",
+        "WorldEvent",
+        "world_events",
+        "TwinError",
+        "ident",
+        "_ids",
+        "moment",
+        "validate_event",
+        "effective_state",
+        "tier",
+        "record_event"
+      ],
+      "dependencies": [
+        "apps/career/evidence.py",
+        "apps/career/ledger.py",
+        "libs/evolution/event.py",
+        "libs/semantic_twin/contracts.py"
+      ],
+      "lines": 259,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record every interaction as a typed world event and derive how strongly it is established, so self-reported success counts for nothing.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/world_twin/projection.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "ProjectionScope",
+        "compile_projection",
+        "project",
+        "world_state"
+      ],
+      "dependencies": [
+        "apps/world_twin/twin.py",
+        "apps/world_twin/episode.py",
+        "libs/semantic_twin/ingestion/builder.py",
+        "libs/semantic_twin/ingestion/graph.py"
+      ],
+      "lines": 262,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep the private twin private: community and public views are narrower projections, and minors get no public graph.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/world-events.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/world_twin/events.py",
+        "apps/world_twin/episode.py",
+        "apps/world_twin/projection.py",
+        "apps/world_twin/capture.py",
+        "apps/pocketbase/pb_hooks/workspace-replay.js"
+      ],
+      "lines": 201,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe the connected world-event, replay and semantic projection boundary without inventing provider transport or verification authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/world_twin/check_world_twin.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "tests/world_twin/test_world_twin.py",
+        "tests/world_twin/test_capture.py",
+        "tests/world_twin/test_interop.py",
+        "tests/world_twin/test_world_cli.py",
+        "apps/world_twin"
+      ],
+      "lines": 82,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require the world twin suite and at least 80 percent statement coverage per module.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/world_twin/test_capture.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "serialized",
+        "sha",
+        "content",
+        "row",
+        "leaves",
+        "seal",
+        "synthetic_capture",
+        "assert_native_capture",
+        "CaptureTests"
+      ],
+      "dependencies": [
+        "apps/world_twin/capture.py",
+        "tests/upgrade/sprint-journey.test.mjs"
+      ],
+      "lines": 477,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject ambiguous native captures and exercise synthetic production exports without claiming runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/world_twin/test_interop.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "at",
+        "event",
+        "scope",
+        "review",
+        "pins",
+        "history",
+        "obj",
+        "rows",
+        "WorldContractTests",
+        "WorldIngestionTests",
+        "WorldEpisodeTests",
+        "WorldReviewTests",
+        "WorldProjectionTests",
+        "WorldSeamTests"
+      ],
+      "dependencies": [
+        "apps/world_twin/events.py",
+        "apps/world_twin/episode.py",
+        "apps/world_twin/projection.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 907,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Challenge world-event identity, lineage, privacy and receiving-pinned review boundaries with explicitly synthetic evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/world_twin/test_world_cli.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "WorldCliTests"
+      ],
+      "dependencies": [
+        "apps/world_twin/cli.py",
+        "tests/world_twin/test_capture.py",
+        "tests/world_twin/test_interop.py"
+      ],
+      "lines": 117,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise the actual import and compile commands with explicitly synthetic captures, explicit read scope and externally supplied test review pins.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "world-event-interoperability"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md",
+      "target": "docs/world-events.md",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md CONSUMES docs/world-events.md",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md",
+      "target": "apps/world_twin/capture.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md CONSUMES apps/world_twin/capture.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md",
+      "target": "apps/world_twin/projection.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md CONSUMES apps/world_twin/projection.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md",
+      "target": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md CONSUMES .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md",
+      "target": "docs/world-events.md",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md CONSUMES docs/world-events.md",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md",
+      "target": "tests/world_twin/check_world_twin.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md VERIFIED_BY tests/world_twin/check_world_twin.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md",
+      "target": "tests/upgrade/sprint-journey.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md VERIFIED_BY tests/upgrade/sprint-journey.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md",
+      "target": ".bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md CONSUMES .bits/handoffs/2026-09-23-bits-codegen-cmax-b-world-events.md",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/world-events-report.md CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/capture.py",
+      "target": "apps/pocketbase/pb_hooks/workspace-replay.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/capture.py CONSUMES apps/pocketbase/pb_hooks/workspace-replay.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/capture.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/capture.py CONSUMES libs/evolution/common.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/capture.py",
+      "target": "libs/evolution/event.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/capture.py CONSUMES libs/evolution/event.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/capture.py",
+      "target": "apps/world_twin/events.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/world_twin/capture.py PRODUCES apps/world_twin/events.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/cli.py",
+      "target": "apps/world_twin/events.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/world_twin/cli.py DEPENDS_ON apps/world_twin/events.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/cli.py",
+      "target": "apps/world_twin/twin.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/world_twin/cli.py DEPENDS_ON apps/world_twin/twin.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/cli.py",
+      "target": "apps/world_twin/projection.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/world_twin/cli.py DEPENDS_ON apps/world_twin/projection.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/cli.py",
+      "target": "apps/world_twin/capture.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/cli.py CONSUMES apps/world_twin/capture.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/episode.py",
+      "target": "apps/world_twin/events.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/episode.py CONSUMES apps/world_twin/events.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/episode.py",
+      "target": "libs/evolution/episode.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/episode.py CONSUMES libs/evolution/episode.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/episode.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/episode.py CONSUMES libs/capability_tokens/verification.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/events.py",
+      "target": "apps/career/ledger.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/world_twin/events.py DEPENDS_ON apps/career/ledger.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/events.py",
+      "target": "libs/evolution/event.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/events.py CONSUMES libs/evolution/event.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/events.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/events.py CONSUMES libs/semantic_twin/contracts.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/events.py",
+      "target": "apps/world_twin/twin.py",
+      "edge_type": "PRODUCES",
+      "weight": 0.8,
+      "description": "apps/world_twin/events.py PRODUCES apps/world_twin/twin.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/projection.py",
+      "target": "apps/world_twin/twin.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/world_twin/projection.py DEPENDS_ON apps/world_twin/twin.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/projection.py",
+      "target": "apps/world_twin/episode.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/projection.py CONSUMES apps/world_twin/episode.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/projection.py",
+      "target": "libs/semantic_twin/ingestion/builder.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/projection.py CONSUMES libs/semantic_twin/ingestion/builder.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/world_twin/projection.py",
+      "target": "libs/semantic_twin/ingestion/graph.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/world_twin/projection.py CONSUMES libs/semantic_twin/ingestion/graph.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/world-events.md",
+      "target": "apps/world_twin/events.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/world-events.md CONSUMES apps/world_twin/events.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/world-events.md",
+      "target": "apps/world_twin/episode.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/world-events.md CONSUMES apps/world_twin/episode.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/world-events.md",
+      "target": "apps/world_twin/projection.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/world-events.md CONSUMES apps/world_twin/projection.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/world-events.md",
+      "target": "apps/world_twin/capture.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/world-events.md CONSUMES apps/world_twin/capture.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/world-events.md",
+      "target": "apps/pocketbase/pb_hooks/workspace-replay.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/world-events.md CONSUMES apps/pocketbase/pb_hooks/workspace-replay.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/check_world_twin.py",
+      "target": "tests/world_twin/test_world_twin.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/world_twin/check_world_twin.py DEPENDS_ON tests/world_twin/test_world_twin.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/check_world_twin.py",
+      "target": "tests/world_twin/test_capture.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/world_twin/check_world_twin.py DEPENDS_ON tests/world_twin/test_capture.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/check_world_twin.py",
+      "target": "tests/world_twin/test_interop.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/world_twin/check_world_twin.py DEPENDS_ON tests/world_twin/test_interop.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/check_world_twin.py",
+      "target": "tests/world_twin/test_world_cli.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/world_twin/check_world_twin.py DEPENDS_ON tests/world_twin/test_world_cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/check_world_twin.py",
+      "target": "apps/world_twin",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/world_twin/check_world_twin.py VALIDATES apps/world_twin",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/test_capture.py",
+      "target": "apps/world_twin/capture.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/world_twin/test_capture.py VALIDATES apps/world_twin/capture.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/test_capture.py",
+      "target": "tests/upgrade/sprint-journey.test.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tests/world_twin/test_capture.py CONSUMES tests/upgrade/sprint-journey.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/test_interop.py",
+      "target": "apps/world_twin/events.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/world_twin/test_interop.py VALIDATES apps/world_twin/events.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/test_interop.py",
+      "target": "apps/world_twin/episode.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/world_twin/test_interop.py VALIDATES apps/world_twin/episode.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/test_interop.py",
+      "target": "apps/world_twin/projection.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/world_twin/test_interop.py VALIDATES apps/world_twin/projection.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/test_interop.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tests/world_twin/test_interop.py CONSUMES tests/upgrade/test_evolution_support.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/test_world_cli.py",
+      "target": "apps/world_twin/cli.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/world_twin/test_world_cli.py VALIDATES apps/world_twin/cli.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/test_world_cli.py",
+      "target": "tests/world_twin/test_capture.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tests/world_twin/test_world_cli.py CONSUMES tests/world_twin/test_capture.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/world_twin/test_world_cli.py",
+      "target": "tests/world_twin/test_interop.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tests/world_twin/test_world_cli.py CONSUMES tests/world_twin/test_interop.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/world_twin/test_interop.py",
+      "description": "Five new world-interoperability seam regressions reproduced hidden-predecessor rejection, dotted-event rejection, source-record collision, incomplete mission projection and backdated review metadata before their fixes.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T04:25:17.427208+00:00",
+      "commit_sha": null,
+      "smoke_result": "0/5 before fixes; two failures and three errors"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/world_twin/check_world_twin.py",
+      "description": "The connected world-event suite passes 82 cases on Python 3.11 and 3.12; statement coverage is 93.00-100 percent per measured implementation module. Exact receiver pins are separate from submitted observations.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T04:25:17.427350+00:00",
+      "commit_sha": null,
+      "smoke_result": "82/82; zero skips"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "tests/upgrade/sprint-journey.test.mjs",
+      "description": "The production mission-export JSVM fixture passes through browser byte validation, strict Python import, deduplication and canonical graph projection. All 635 Node source cases pass on Node 22. This is explicitly synthetic, not native or deployed acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T04:25:17.427365+00:00",
+      "commit_sha": null,
+      "smoke_result": "635/635; zero skips"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_hostinger_readiness.py",
+      "description": "125 governance/acceptance regressions and 92 reused semantic/evolution/review contract cases pass while preserving the existing eighteen acceptance profiles and provider boundaries.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-23T04:25:17.427379+00:00",
+      "commit_sha": null,
+      "smoke_result": "125/125; 92/92"
     }
   ],
   "summary": {
-    "type_a_count": 857,
-    "type_b_count": 1999,
-    "type_c_count": 218,
+    "type_a_count": 869,
+    "type_b_count": 2046,
+    "type_c_count": 222,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

@@ -20,6 +20,28 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## World-event interoperability - 2026-09-23
+
+Continue the existing A2 semantic/evidence integration scope for the owner's
+event -> episode -> scoped projection request. Reuse strict canonical contracts,
+the current mission export and externally pinned review policy. No new page,
+canonical store or live provider binding is authorized.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| WE-1 | Bind universal event identity, scope and opaque trace references | World-event contract and adversarial parsing tests | source PASS; typed wire version and exact metadata binding exercised |
+| WE-2 | Reconstruct correlated episodes and existing semantic graphs | Determinism, chronology, deduplication and review-pin tests | source PASS; hidden-predecessor and review-time red/green regressions retained |
+| WE-3 | Adapt a complete native mission capture through the same path | Production capture fixture -> Python compiler -> scoped graph | source PASS; 28 connected Node cases; synthetic source, not live acceptance |
+| WE-4 | Retain evidence, deployment limits and receiving contract | Required coverage, source regression, readiness, context, boundary and memory | 82 focused Python cases and 635 Node cases pass; receiving/native/browser acceptance remains unmeasured |
+
+Memory brief: PR 75 is merged and its source-acceptance repairs are retained.
+Earlier toy world events are unscoped claims, not authenticated canonical events;
+they must not silently acquire a tenant or verified status in the new pipeline.
+`libs/evolution` already owns immutable events and episode reconstruction;
+`libs/semantic_twin` owns graph contracts and `ReviewPolicy` owns externally
+pinned review admission. Use these owners without changing their vocabulary.
+No authenticated runtime session is attached, so no seat event is fabricated.
+
 ## Connected learning-loop acceptance — 2026-09-23
 
 Continue the existing source-acceptance and user-journey scope. The current owner

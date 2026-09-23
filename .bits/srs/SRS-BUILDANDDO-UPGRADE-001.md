@@ -20,6 +20,48 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## World-event interoperability continuation - 2026-09-23
+
+The owner requests one interoperable world-event envelope, a joined episode/replay
+and scoped semantic projections instead of additional standalone pages. Continue
+this existing A2 public-source integration dispatch. Citadel remains canonical;
+this change is a read-only compiler over supplied, authorized captures.
+
+Acceptance:
+
+1. Add `buildanddo.world-event/v1` to the existing world-twin package using the
+   strict semantic Contract, CitadelEvent, identity and content-digest types.
+   Bind tenant, actor, mission, correlation, release, visibility and opaque trace
+   references; missing links remain missing. Reject malformed versions, duplicate
+   source identities with conflicting bytes, foreign scope and future observations.
+2. Join events into deterministic episodes using the existing evolution episode
+   validation. Preserve attempt failures, observation versus inference, and
+   partial layer coverage. Never infer causation from a timestamp or join tenants,
+   missions, releases or authority scopes merely because a trace ID matches.
+3. Reuse the current semantic graph builder for user, agent, guild, project and
+   community views. Only receiving-authorized events enter a view; sharing and
+   minors fail closed. Deduplicate retries before counting activity. No provider
+   status, plain verifier name, content hash or imported receipt grants verified
+   capability, reputation or action authority. Authenticate exact reviews through
+   the existing receiving ReviewPolicy pins, not through submitted event fields.
+4. Connect the existing complete native mission-replay export to this contract.
+   Retain exact source bytes and revisions, bind the expected workspace and
+   mission, preserve HOLD, and exclude raw private source bodies from derived
+   events. Test the production capture shape through the compiler, not only a
+   separately authored successful fixture. Existing callers remain usable.
+5. Extend the already required world-twin coverage and source acceptance tests.
+   Run scoped negative controls for wrong tenant/mission/release, duplicate events,
+   spoofed verification, missing/changed evidence, hidden/private links and replay
+   determinism. Retain the preceding deployment acceptance HOLD as history; local
+   compiler tests cannot establish live vendor feeds or a deployed user loop.
+
+Scope: existing `apps/world_twin`, its tests, the native/browser mission-replay
+producer and validator, connected upgrade tests, documentation and existing
+dispatch/readiness/memory records. Do not change the canonical semantic v2
+vocabulary, instantiate new stores, call private providers, export raw learner
+data, activate NATS/Cloudflare/Ray, trigger CI or deploy. Receiving adapters and
+canonical identity/review authentication remain separately governed.
+
 ## Connected learning-loop acceptance — 2026-09-23
 
 The owner prioritizes closing the source-to-deployment evidence gap before adding
