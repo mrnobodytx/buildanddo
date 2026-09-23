@@ -242,16 +242,84 @@ test('native route callbacks load policy in isolation and require bounded authen
     vm.runInNewContext(code, { routerAdd: (...args) => routes.push(args), $apis: {
         requireAuth: (...args) => ({ auth: args }), bodyLimit: (max) => ({ max }),
     } });
-    assert.equal(routes.length, 4);
+    assert.equal(routes.length, 5);
     for (const [method, path, callback, auth, bodyLimit] of routes) {
         assert.deepEqual(plain(auth), { auth: ['users'] });
         if (method === 'POST') assert.ok(bodyLimit.max <= 30000);
         const fields = new Map(); let called = 0;
-        const expected = method === 'GET' ? path.endsWith('{id}') ? 'detail' : 'list' : path.endsWith('/presence') ? 'heartbeat' : 'command';
+        const expected = method === 'GET' ? path.endsWith('/record') ? 'record' : path.endsWith('{id}') ? 'detail' : 'list' : path.endsWith('/presence') ? 'heartbeat' : 'command';
         const handler = vm.runInNewContext(`(${callback.toString()})`, { __hooks: '/native/hooks', require: (name) => {
             assert.equal(name, '/native/hooks/classrooms.js'); return { [expected]: () => { called++; return { accepted: true }; } };
         } });
         handler({ response: { header: () => ({ set: (key, value) => fields.set(key, value) }) }, json: (status, body) => { assert.equal(status, 200); assert.equal(body.accepted, true); } });
         assert.equal(called, 1); assert.equal(fields.get('Cache-Control'), 'no-store');
     }
+});
+
+test('media is offered only while live and only when the realtime service is configured, without exposing its values', () => {
+    const configured = { CLOUDFLARE_REALTIME_APP_ID: 'app-id-value', CLOUDFLARE_REALTIME_APP_SECRET: 'secret-value' };
+    const f = classroomFixture({ runtime: { $os: { getenv: (key) => configured[key] || '' } } });
+    const room = f.create();
+    assert.deepEqual(f.detail(room.id).media, { available: false });
+    f.command('room.start', { id: room.id });
+    const live = f.detail(room.id);
+    assert.deepEqual(live.media, { available: true });
+    assert.equal(JSON.stringify(live).includes('secret-value'), false);
+    assert.equal(JSON.stringify(live).includes('app-id-value'), false);
+    f.command('room.end', { id: room.id });
+    assert.deepEqual(f.detail(room.id).media, { available: false });
+
+    const missing = classroomFixture({ runtime: { $os: { getenv: () => '' } } });
+    const other = missing.create(); missing.command('room.start', { id: other.id });
+    assert.deepEqual(missing.detail(other.id).media, { available: false, reason: 'not configured on this server' });
+});
+
+const ATTENDANCE = 'apps/pocketbase/pb_migrations/1791300000_classroom_attendance.js';
+const record = (f, id, actor = 'owner', workspace = 'ws1') => plain(f.service.record(f.event(actor, {}, { id, workspace })));
+
+test('attendance history records each start, join, leave and end once, inside the command, and replays never duplicate it', () => {
+    const f = classroomFixture(); f.migration(ATTENDANCE).up();
+    const room = f.create({ actor: 'editor' });
+    const first = f.command('room.start', { id: room.id }, { actor: 'editor', key: 'attendance_start_once', revision: 1 });
+    const again = f.command('room.start', { id: room.id }, { actor: 'editor', key: 'attendance_start_once', revision: 1 });
+    assert.equal(first.replayed, false); assert.equal(again.replayed, true);
+    f.command('room.join', { id: room.id }, { actor: 'viewer' });
+    const viewer = f.detail(room.id, 'viewer').membership;
+    f.command('room.leave', { id: room.id, membership_revision: viewer.revision }, { actor: 'viewer' });
+    f.command('room.end', { id: room.id }, { actor: 'editor' });
+    const events = f.data.classroom_attendance.map((row) => [row.owner, row.event]);
+    assert.deepEqual(events.map(([, event]) => event), ['start', 'join', 'join', 'leave', 'end']);
+    assert.equal(f.data.classroom_attendance.every((row) => row.room === room.id && row.workspace === 'ws1' && row.at), true);
+});
+
+test('the class record is aggregate, host-only and honest about a backend without the history', () => {
+    const f = classroomFixture();
+    const room = f.create({ actor: 'editor' });
+    assert.equal(record(f, room.id, 'editor').installed, false);
+    f.migration(ATTENDANCE).up();
+    assert.deepEqual({ ...record(f, room.id, 'editor'), started_at: '', ended_at: '' },
+        { room: room.id, status: 'scheduled', started_at: '', ended_at: '', installed: true, attendees: 0, minutes: 0, hours: [], truncated: false });
+    f.command('room.start', { id: room.id }, { actor: 'editor' });
+    f.command('room.join', { id: room.id }, { actor: 'viewer' });
+    const view = record(f, room.id, 'editor');
+    assert.equal(view.installed, true); assert.equal(view.status, 'live');
+    assert.equal(view.attendees, 2);
+    assert.equal(view.hours.length >= 1, true);
+    assert.equal(view.hours.at(-1).people, 2);
+    assert.equal(JSON.stringify(view).includes('viewer'), false, 'the record carries counts, never identities');
+    assert.equal(record(f, room.id, 'owner').attendees, 2, 'a workspace administrator may read it');
+    assert.throws(() => record(f, room.id, 'viewer'), /host or a workspace administrator/);
+    assert.throws(() => record(f, room.id, 'editor', 'ws2'));
+});
+
+test('the attendance migration is locked, replays cleanly and keeps history on rollback', () => {
+    const f = classroomFixture(); const migration = f.migration(ATTENDANCE);
+    migration.up(); migration.up();
+    const collection = f.collections.classroom_attendance;
+    for (const rule of ['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule']) assert.equal(collection[rule], null);
+    migration.down();
+    assert.ok(f.collections.classroom_attendance, 'rollback keeps recorded attendance');
+    f.collections.classroom_attendance.listRule = '';
+    assert.throws(() => migration.down(), /Review custom classroom_attendance.listRule/);
+    assert.throws(() => migration.up(), /Review custom classroom_attendance.listRule/);
 });

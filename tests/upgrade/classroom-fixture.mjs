@@ -25,8 +25,8 @@ export const MIGRATIONS = [
     'apps/pocketbase/pb_migrations/1791100000_room_kind.js',
 ];
 
-export function classroomFixture() {
-    const f = fixture();
+export function classroomFixture({ runtime } = {}) {
+    const f = fixture(runtime ? { runtime } : undefined);
     for (const migration of MIGRATIONS) f.migration(migration).up();
     const curriculum = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
     curriculum.lessons.slice(0, 2).forEach((lesson) => f.seed('tutorials', lesson));

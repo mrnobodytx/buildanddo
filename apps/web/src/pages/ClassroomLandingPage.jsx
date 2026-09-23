@@ -33,7 +33,7 @@ export default function ClassroomLandingPage() {
                 { icon: Users, title: 'Join when the host starts', text: 'See who is attending and leave at any time. A scheduled class becomes live only when a host starts the session.' },
                 { icon: MessageCircle, title: 'Keep the discussion', text: 'Ask questions during the session and return to the saved discussion afterward. Viewer seats can follow along.' },
             ].map(({ icon: Icon, title, text }) => <Card key={title} className="space-y-3 p-6"><Icon className="h-5 w-5 text-primary" aria-hidden="true" /><h2 className="font-display text-xl font-semibold">{title}</h2><p className="text-sm leading-6 text-muted-foreground">{text}</p></Card>)}</div>
-            <p className="text-sm leading-6 text-muted-foreground">Classes currently use shared reading and text discussion. Voice and video are not connected.</p>
+            <p className="text-sm leading-6 text-muted-foreground">Every class uses shared reading and text discussion. Where a workspace has live broadcasting set up, the host can also stream voice and video, and members choose when to join it.</p>
         </section>
         <section id="classroom-lessons" aria-labelledby="classroom-lessons-title" className="scroll-mt-20 space-y-5">
             <h2 id="classroom-lessons-title" className="font-display text-3xl font-semibold">Start with a lesson</h2>

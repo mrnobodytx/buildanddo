@@ -152,3 +152,37 @@ test('missing identity indices or field contracts stop assistant reads before in
         assert.throws(() => f.service.snapshot(f.event()), /Buddi account isolation needs operator review/); assert.equal(f.agentConfig.calls.length, 0);
     }
 });
+
+const usageMigration = 'apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js';
+test('assistant turns keep the answering model and reported token counts, never estimated ones', () => {
+    const f = setup(); f.migration(usageMigration).up(); f.migration(usageMigration).up();
+    const session = f.start();
+    f.agentConfig.envelope = { model: 'provider-model-7', usage: { prompt_tokens: 812, completion_tokens: 96, total_tokens: 908 } };
+    const one = f.chat(session);
+    const saved = f.data.assistant_turns.find((row) => row.id === one.id);
+    assert.deepEqual(saved.usage, { model: 'provider-model-7', input_tokens: 812, output_tokens: 96 });
+    assert.equal('usage' in (saved.plan || {}), false, 'usage never enters the stored plan');
+    assert.equal(JSON.stringify(one).includes('input_tokens'), false, 'usage is not returned to the browser');
+
+    f.agentConfig.envelope = {};
+    const two = f.chat(session);
+    assert.deepEqual(f.data.assistant_turns.find((row) => row.id === two.id).usage, { model: 'configured-model' });
+
+    f.agentConfig.envelope = { usage: { prompt_tokens: -4, completion_tokens: 1.5 } };
+    const three = f.chat(session);
+    assert.deepEqual(f.data.assistant_turns.find((row) => row.id === three.id).usage, { model: 'configured-model' });
+});
+
+test('a failed turn records no usage, and servers without the usage migration are unchanged', () => {
+    const plainServer = setup(), s1 = plainServer.start();
+    const turn = plainServer.chat(s1);
+    assert.equal('usage' in plainServer.data.assistant_turns.find((row) => row.id === turn.id), false);
+
+    const f = setup(); f.migration(usageMigration).up(); const session = f.start();
+    f.agentConfig.enabled = false;
+    const failed = f.chat(session);
+    assert.equal(failed.status, 'unavailable');
+    assert.equal(f.data.assistant_turns.find((row) => row.id === failed.id).usage, null);
+    f.migration(usageMigration).down();
+    assert.equal(f.collections.assistant_turns.fields.getByName('usage'), undefined);
+});

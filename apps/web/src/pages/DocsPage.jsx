@@ -34,7 +34,7 @@ export const GUIDES = [
     {
         id: 'classrooms',
         title: 'Host or join a classroom',
-        text: 'Open Classrooms in your workspace. An editor or administrator can schedule a lesson and start the session. Members join the shared reading, post questions with editor access, and revisit the discussion after it ends. Voice and video are not connected.',
+        text: 'Open Classrooms in your workspace. An editor or administrator can schedule a lesson and start the session. Members join the shared reading, post questions with editor access, and revisit the discussion after it ends. Where the workspace has live broadcasting set up, the host can stream voice and video during the session.',
         link: '/classrooms',
         action: 'Explore Classrooms',
     },
