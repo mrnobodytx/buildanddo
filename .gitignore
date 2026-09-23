@@ -71,6 +71,10 @@ apps/web/public/.well-known/citadel-release.json
 # projection is missing rather than drawing stale data when it was not written.
 apps/web/public/fleet-status.json
 apps/web/public/platform-health.json
+# Generated at build time by scripts/ci/changelog_feed.py from the commits the build is made from.
+# The home page's "What shipped" desk says the feed is missing when it was not written.
+apps/web/public/changelog.json
+apps/web/public/changelog.xml
 
 # BuildAndDo verified release artifacts
 .citadel-release/
