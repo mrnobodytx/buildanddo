@@ -38,7 +38,8 @@ async function digest(value) {
 export async function validateMissionReplay(value, workspace, mission) {
     const content = value?.content;
     if (value?.schema_version !== 'buildanddo.mission-replay/v1' || value.workspace !== workspace || value.capture_complete !== true ||
-        value.evidence_state !== 'recorded' || !content || content.mission?.id !== mission || content.mission.workspace !== workspace ||
+        value.evidence_state !== 'recorded' || value.independent_verification !== 'not_conferred_by_export' ||
+        !content || content.mission?.id !== mission || content.mission.workspace !== workspace ||
         Object.keys(content).sort().join(',') !== 'evidence,jobs,mission,runs,tasks' || !Number.isFinite(Date.parse(value.captured_at)) ||
         !['consistent', 'HOLD'].includes(value.integrity) || !Array.isArray(value.integrity_issues) ||
         value.integrity === 'consistent' && value.integrity_issues.length || !Array.isArray(value.leaves)) throw new Error('The complete mission capture is unavailable.');
@@ -50,12 +51,14 @@ export async function validateMissionReplay(value, workspace, mission) {
         groups[kind] = records;
     }
     const serialized = canonicalReplay(content);
-    if (serialized.length > 2_000_000 || await digest(content) !== value.content_sha256) throw new Error('The captured content digest does not match.');
+    if (serialized.length > 2_000_000 || 'content_canonical' in value && value.content_canonical !== serialized ||
+        await digest(content) !== value.content_sha256) throw new Error('The captured content digest does not match.');
     const expected = Object.entries(groups).flatMap(([kind, rows]) => rows.map((row) => ({ kind, row })));
     if (value.leaves.length !== expected.length) throw new Error('The capture leaf inventory is incomplete.');
     for (const { kind, row } of expected) {
         const leaves = value.leaves.filter((leaf) => leaf.kind === kind && leaf.id === row.id);
-        if (leaves.length !== 1 || leaves[0].sha256 !== await digest(row)) throw new Error('A captured record digest does not match.');
+        if (leaves.length !== 1 || 'canonical' in leaves[0] && leaves[0].canonical !== canonicalReplay(row) ||
+            leaves[0].sha256 !== await digest(row)) throw new Error('A captured record digest does not match.');
     }
     return value;
 }

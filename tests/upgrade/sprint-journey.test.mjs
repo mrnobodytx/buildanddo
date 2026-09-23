@@ -26,7 +26,7 @@ import { selectTasks } from '../../apps/web/src/lib/businessPlanning.js';
 import { emptyPlan, emptyReview, PLAN_FIELDS, TEVV, verificationIssues } from '../../apps/web/src/lib/missionLearning.js';
 import { workspaceJourney } from '../../apps/web/src/lib/workspaceJourney.js';
 import { canonicalReplay, validateMissionReplay } from '../../apps/web/src/lib/missionReplay.js';
-import { fixture, plain, source } from './admin-fixture.mjs';
+import { fixture, plain, runPython, source } from './admin-fixture.mjs';
 
 const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
 const sha = (value) => createHash('sha256').update(value).digest('hex');
@@ -255,19 +255,27 @@ test('mission capture includes more than one page, is read-only and has determin
     const value = f.capture(), repeated = f.capture();
     assert.equal(value.content.evidence.length, 25); assert.equal(value.capture_complete, true);
     assert.equal(value.evidence_state, 'recorded'); assert.equal(value.content_sha256, repeated.content_sha256);
+    assert.equal(value.content_canonical, canonicalReplay(value.content));
+    assert.ok(value.leaves.every((leaf) => typeof leaf.canonical === 'string' && sha(leaf.canonical) === leaf.sha256));
     assert.deepEqual(value.leaves, repeated.leaves); assert.deepEqual(plain(f.data), before);
     assert.equal(await validateMissionReplay(value, 'ws1', 'mission1'), value);
     assert.equal(f.capture('viewer').content.evidence.length, 25);
 });
 test('an actual approved ERP workflow exports its complete linked history through the existing business read policy', async () => {
     const f = replayFixture(0);
+    // Synthetic source bytes deliberately include JavaScript number spellings and
+    // private Unicode content. Passing this test is not native-runtime acceptance.
+    const mission = f.app.findRecordById('missions', 'mission1');
+    mission.set('mission_plan', { ...JSON.parse(mission.getString('mission_plan')),
+        canonical_probe: { text: 'PRIVATE caf\u00e9 \u{1f680}', tiny: 1e-7, large: 1e20, fractional: 0.30000000000000004 } });
+    f.app.save(mission);
     const canRead = f.app.canAccessRecord.bind(f.app);
     // Native business_jobs has a locked viewRule: the authenticated command
     // API applies current membership and linked-record rules instead.
     f.app.canAccessRecord = (record, info, rule) => record.collection().name !== 'business_jobs' && canRead(record, info, rule);
     f.seed('workflows', { id: 'workflow1', workspace: 'ws1', owner: 'owner', name: 'Follow up', status: 'active',
         steps: [{ id: 'approval', name: 'Approve task', kind: 'approval', detail: '' }, { id: 'execute', name: 'Save task', kind: 'execute', detail: '',
-            action: { provider: 'erp', binding: '', max_seconds: 5, parameters: { title: 'Call customer', description: 'Approved local fixture', objective: '', contact: '', priority: 'normal', due_date: '' } } }] });
+            action: { provider: 'erp', binding: '', max_seconds: 5, parameters: { title: 'PRIVATE caf\u00e9 \u{1f680}', description: 'Approved local fixture', objective: '', contact: '', priority: 'normal', due_date: '' } } }] });
     const handler = f.load('workflow-runs.js');
     const initial = handler.start(f.event('owner', { workspace: 'ws1', workflow: 'workflow1', mission: 'mission1', request_key: 'replay-workflow-start' })).record;
     const approved = handler.advance(f.event('admin', { workspace: 'ws1', request_key: 'replay-workflow-approve', revision: initial.revision,
@@ -282,6 +290,8 @@ test('an actual approved ERP workflow exports its complete linked history throug
     assert.ok(value.content.evidence.some((record) => record.id === job.evidence));
     assert.equal(value.content.tasks[0].execution, job.id);
     await validateMissionReplay(value, 'ws1', 'mission1');
+    runPython(['-c', 'import sys; from libs.evolution.common import decode_json; from tests.world_twin.test_capture import assert_native_capture; assert_native_capture(decode_json(sys.stdin.read()))'],
+        { input: JSON.stringify(value) });
     f.denied.add(initial.id);
     assert.throws(() => f.capture(), /readable/);
 });
@@ -330,11 +340,16 @@ test('export validation rejects altered bytes, duplicate leaves, wrong scope and
     for (const change of [(v) => { v.content.evidence[0].content = 'changed'; }, (v) => { v.workspace = 'foreign'; },
         (v) => { v.capture_complete = false; }, (v) => { v.leaves.pop(); }, (v) => { v.leaves[1] = v.leaves[0]; },
         (v) => { v.content.evidence.push(v.content.evidence[0]); }, (v) => { v.content.evidence[0].mission = 'foreign'; },
-        (v) => { v.integrity_issues.push('unacknowledged gap'); }]) {
+        (v) => { v.integrity_issues.push('unacknowledged gap'); }, (v) => { v.content_canonical += ' '; },
+        (v) => { v.leaves[0].canonical += ' '; }, (v) => { v.independent_verification = 'verified'; }]) {
         const value = structuredClone(original); change(value); await assert.rejects(validateMissionReplay(value, 'ws1', 'mission1'));
     }
     assert.equal(canonicalReplay({ b: 1, a: [true, null] }), '{"a":[true,null],"b":1}');
     assert.throws(() => canonicalReplay({ value: undefined }), /non-JSON/);
+    const legacy = structuredClone(original);
+    delete legacy.content_canonical;
+    legacy.leaves.forEach((leaf) => { delete leaf.canonical; });
+    assert.equal(await validateMissionReplay(legacy, 'ws1', 'mission1'), legacy);
 });
 test('exact action receipt lookups find old captures without crossing workspace scope', async () => {
     const f = replayFixture();

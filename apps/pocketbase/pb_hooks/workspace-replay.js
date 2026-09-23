@@ -83,12 +83,15 @@ function capture(e) {
         if (serialized.length > 2_000_000) throw new ApiError(413, 'This mission exceeds the export size limit. No partial capture was produced.');
         const leaves = [];
         for (const [kind, records] of Object.entries({ mission: [mission], runs, jobs, evidence, tasks }))
-            for (const row of records) leaves.push({ kind, id: row.id, sha256: $security.sha256(canonical(row)) });
+            for (const row of records) {
+                const serializedRow = canonical(row);
+                leaves.push({ kind, id: row.id, sha256: $security.sha256(serializedRow), canonical: serializedRow });
+            }
         access.requireRole(app, e.auth, workspace);
         result = { schema_version: 'buildanddo.mission-replay/v1', workspace, captured_by: e.auth.id, captured_at: new Date().toISOString(),
             capture_complete: true, evidence_state: 'recorded', independent_verification: 'not_conferred_by_export',
             integrity: issues.length ? 'HOLD' : 'consistent', integrity_issues: issues, content,
-            content_sha256: $security.sha256(serialized), leaves };
+            content_sha256: $security.sha256(serialized), content_canonical: serialized, leaves };
     });
     return result;
 }

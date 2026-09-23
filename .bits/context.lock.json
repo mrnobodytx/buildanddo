@@ -465,7 +465,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-23T02:32:59.828585+00:00",
+  "generated_at": "2026-09-23T04:25:14.972636+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -988,11 +988,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 50,
-    "python_files": 405,
+    "python_files": 410,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1511,
+    "tracked_files": 1519,
     "web_source_files": 360
   },
   "schema_version": 1,
@@ -1049,7 +1049,7 @@
       },
       {
         "id": "HS-09",
-        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application.",
+        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection.",
         "owner": "BITS-CODEGEN / release owner",
         "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
       },
@@ -1066,7 +1066,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "fc601daa4ff8423711ed0ef17cad4c43e5c65bf9be43b6c35fd88d03a25c9857",
+    "source_sha256": "7499904904e5352b2599ea04fb7dfce58bb76fdfe594078edf1a3c0d5c862003",
     "state": "PASS"
   },
   "summary": {

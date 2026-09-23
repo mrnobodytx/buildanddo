@@ -354,11 +354,14 @@
         "apps/web/src/lib/evidenceInspection.js",
         "docs/development-loop.md",
         "libs/career_passport",
-        "docs/career-passport.md"
+        "docs/career-passport.md",
+        "apps/world_twin",
+        "docs/world-events.md"
       ],
       "checks": [
         "semantic_twin",
         "source_node",
+        "source_python",
         "native_workspace"
       ],
       "requires": [
@@ -376,9 +379,10 @@
         "Native result bytes and release declaration agree with independent replay/deployment evidence.",
         "The evidence inspector exposes the exact frozen reviewed observation, its author and reviewer, and differences from the current record.",
         "Semantic invitations retain unresolved or conflicting owner identities; exact evidence prerequisites and historical captures cannot grant or promote authority.",
-        "Career facts preserve personal, team and agent participation; only exact independently pinned reviews support application claims, while employment duration, personal attestations and operational authority remain separate."
+        "Career facts preserve personal, team and agent participation; only exact independently pinned reviews support application claims, while employment duration, personal attestations and operational authority remain separate.",
+        "Complete mission exports retain original canonical content and leaf bytes for world-event interoperability. Scoped world projections deduplicate observations, preserve missing replay layers and use receiving-authenticated review pins; supplied status, trace correlation and local hashes cannot confer capability or authority."
       ],
-      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application."
+      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection."
     },
     {
       "id": "HS-10",
