@@ -38,6 +38,9 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
 | 8 | Continuation R7: a scan lets the unspecified address through, as it does loopback | `python -m unittest tests.upgrade.test_public_redaction -k unspecified` (fails on `1545c48`) | done |
 | 9 | Continuation R8: the documentation address in the same place is still caught; the built site with the voice chunk scans clean | the same test; `public_redaction.py scan dist/apps/web` after `npm run build` | done |
 | 10 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`, `verify_public_boundary.py` | done |
+| 11 | Continuation R9: a scan reads `.jsx`, `.ts`, `.tsx` and `.cjs`, states the files read, and never passes having read nothing | `python -m unittest tests.upgrade.test_public_redaction -k read` (fails on `ff7b865`) | done |
+| 12 | Continuation R10: test files may plant only the made-up names and documentation addresses; a fleet-map name fails even there | `python -m unittest tests.upgrade.test_public_redaction -k fixture` (fails on `ff7b865`) | done |
+| 13 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`, `verify_public_boundary.py` | done |
 
 ## Constraints
 
@@ -46,8 +49,8 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
   `apps/web/src/lib/operatorPlane.js`, `apps/web/src/lib/publicPages.js`,
   `apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx`,
   `tests/upgrade/test_public_redaction.py`, and this bookkeeping. The continuation adds the header of
-  `apps/web/src/hooks/useRoomsLive.js` and the readiness and context locks. Continuation R7-R8 touches
-  only `scripts/ci/public_redaction.py`, its test, this bookkeeping and the two locks.
+  `apps/web/src/hooks/useRoomsLive.js` and the readiness and context locks. Continuations R7-R8 and R9-R10
+  touch only `scripts/ci/public_redaction.py`, its test, this bookkeeping and the two locks.
 - Files it must not touch: the other files that name a machine (a separate dispatch),
   `scripts/publish/activity_publish.py` and the Buddi work (SRS-BUILDANDDO-BUDDI-001), the
   community work (SRS-BUILDANDDO-COMMUNITY-WEB-001), and `apps/web/public/activity-status.json`.
@@ -102,6 +105,26 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
 - **Controls:** the documentation address 203.0.113.9 in the same text still fails the unit test. Planted
   into a copy of the built voice chunk, it fails the scan (exit 1). Without the scan allowance the
   all-zeros address is still reported, and `redact()` still withholds it.
+- **Gates:** `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`
+  and `verify_public_boundary.py` pass, also in a fresh LF checkout.
+
+## Evidence, continuation R9-R10 (2026-09-23, local run on Windows, LF checkout)
+
+- **Found by:** a scan of the live classroom's components printed PASS having read none of them.
+- **Before** (`ff7b865` with only the new tests): all three fail. The scan command exits 0 and prints "PASS:
+  0 file(s) carry…" for a directory whose planted name sits in a `.jsx` file, and for a lone `.conf` file.
+- **After:** the three pass. With the private fleet map and `dist/apps/web` present, 15 of 15 pass.
+  - `scan dist/apps/web` reads 223 files and passes.
+  - `scan apps/web/src/components/broadcast/*.jsx` reads 8 files and passes.
+  - `scan apps/web/nginx.conf` reports NOT READ and UNMEASURED, with exit code 2.
+- **The fixture rule, on the real tree:** `scan apps/web/src` reads 364 files, and the deliberate fixtures in
+  five test files pass. Control: with `rig0` taken off the list, the four tests that plant it are flagged.
+  The file was then restored byte for byte.
+- **Finding, not fixed here** (it belongs to the separate dispatch for tracked files that name a machine):
+  four test files name a real fleet machine, as a seat fixture or in a comment. They are
+  `LoginPage.ocn.test.jsx`, `ocnLogin.test.js`, `src/test/select-testable.jsx` and
+  `tests/upgrade/admin-fixture.mjs`. A scan of `apps/web/src` therefore fails on the three under it, as it
+  should.
 - **Gates:** `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`
   and `verify_public_boundary.py` pass, also in a fresh LF checkout.
 

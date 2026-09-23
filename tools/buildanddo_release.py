@@ -52,9 +52,45 @@ import zipfile
 VERSION = "1.0.1"
 CAMPAIGN = "citadel-21-day-2026-09"
 SCHEMA = "buildanddo.release-control/v1"
-DEFAULT_ROOT = Path(r"D:\HOSTINGER_COMP")
+def _local_setting(name: str) -> str:
+    """Read one name from the environment, else from the gitignored secrets/deploy.local.env.
+
+    Exists so that machine-specific ABSOLUTE PATHS stop living in a file that is published.
+    The repo is at <this file>/../.. and secrets/ is gitignored with nothing tracked in it,
+    which makes it the correct home for "where does this operator keep their credentials".
+    """
+    value = os.environ.get(name, "").strip()
+    if value:
+        return value
+    try:
+        text = (Path(__file__).resolve().parents[1] / "secrets" / "deploy.local.env").read_text(
+            encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    for line in text.splitlines():
+        key, sep, raw = line.strip().partition("=")
+        if sep and key.strip() == name:
+            return raw.strip().strip('"').strip("'")
+    return ""
+
+
+def _release_secret_path() -> Path | None:
+    """The release credential file, named only by CITADEL_RELEASE_ENV / the local settings."""
+    value = _local_setting("CITADEL_RELEASE_ENV")
+    return Path(value) if value else None
+
+
+# DERIVED AND ENV-SOURCED, NOT HARDCODED. This file ships to the public mirror, which code
+# agents read and act on, and an absolute path on the operator's workstation is reconnaissance:
+# DEFAULT_ROOT named the controller estate and DEFAULT_SECRET named the credential store - the
+# one thing most worth knowing before attempting to read it. Measured 2026-09-22 across five
+# tracked files.
+#
+# This file lives at <estate>/sites/buildanddo/tools/, so the estate is three parents up.
+# CITADEL_ROOT still overrides (see resolve_root), exactly as before.
+DEFAULT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REPO_REL = Path("sites") / "buildanddo"
-DEFAULT_SECRET = Path(r"D:\citadel_secrets\BuildAndDo\release.env")
+DEFAULT_SECRET = _release_secret_path()
 LEGACY_HOME_TITLE = "Your business" + " changed today"
 LEGACY_HOME_DESC = "business newspaper" + " for your own operations"
 LEGACY_ONBOARDING = "Which business" + " should BuildAndDo understand?"
@@ -189,10 +225,12 @@ def load_public_config(repo: Path) -> dict[str, Any]:
 # 500+ credentials for the whole estate; reading all of them into a release tool's environment
 # would hand every subprocess it spawns the keys to everything. A deploy needs two secrets.
 SHIP_SHARED_KEYS = ("BUILDANDDO_VM_HOST", "BUILDANDDO_SSH_KEY")
+# Same reasoning as DEFAULT_SECRET above: the estate credential store is located by NAME
+# (CITADEL_WORKSPACE_ENV, in the environment or the gitignored secrets/deploy.local.env), never
+# by a literal path in a file that is published to the public mirror.
 WORKSPACE_ENV_CANDIDATES = (
-    Path(os.environ["CITADEL_WORKSPACE_ENV"]) if os.environ.get("CITADEL_WORKSPACE_ENV") else None,
-    Path(r"D:\citadel_secrets\CNWB\workspace.env"),
-    Path(r"D:\citadel_websites\Citadel-nexus\projects\guilds\CNWB\tools\workspace.env"),
+    (Path(_local_setting("CITADEL_WORKSPACE_ENV")),)
+    if _local_setting("CITADEL_WORKSPACE_ENV") else ()
 )
 
 
@@ -756,7 +794,7 @@ def wire_ci(root: Path, repo: Path, source_script: Path, *, ack: str) -> dict[st
 
 
 RELEASE_ENV_EXAMPLE = r"""# BuildAndDo verified release configuration v1
-# Copy to D:\citadel_secrets\BuildAndDo\release.env or another path outside Git.
+# Copy to the path named by CITADEL_RELEASE_ENV or another path outside Git.
 # Do not commit credential values.
 
 # Public readback URLs. Both are required before promotion.

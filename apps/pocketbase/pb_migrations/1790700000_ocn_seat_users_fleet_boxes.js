@@ -27,7 +27,7 @@
 //   - every box holds /opt/citadel/cbf/data/runtime/citadelkey/private/<seat>.key
 //   - five of the six public keys in the staging sidecar registry did NOT match the key the box
 //     signs with, so the sidecar answered 401 citadelkey_rejected:pubkey_fp mismatch. mesh-control
-//     was the one correct entry. After reconciling the five, ray-tor1-1 signed from 167.99.179.82
+//     was the one correct entry. After reconciling the five, ray-tor1-1 signed from its own box
 //     and the sidecar answered
 //
 //         403 {"message":"seat_not_provisioned"}

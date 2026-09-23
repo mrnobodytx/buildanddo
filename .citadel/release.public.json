@@ -8,7 +8,7 @@
     "",
     "THE DEFECT THIS CLOSES. `doctor` held BOTH environments on four values --",
     "BUILDANDDO_{STAGING,PRODUCTION}_{URL,DEPLOY_MODE} -- which it would only read from a secrets",
-    "file at D:\\citadel_secrets\\BuildAndDo\\release.env that has never existed. Meanwhile",
+    "file at the path named by CITADEL_RELEASE_ENV that has never existed. Meanwhile",
     "scripts/deploy/ship.py has been deploying both environments for weeks with the same URLs",
     "hardcoded at lines 73-74. The controller was blocked on knowing its own public hostname while",
     "the shipping tool beside it had that hostname as a literal.",
