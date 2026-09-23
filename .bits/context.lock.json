@@ -463,7 +463,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-23T00:48:45.904756+00:00",
+  "generated_at": "2026-09-23T01:10:34.567544+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -616,6 +616,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md",
         "status": "proposed",
         "title": "Semantic ISR research"
+      },
+      {
+        "code": "SRS-BUILDANDDO-INTEGRITY-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-INTEGRITY-001.md",
+        "status": "in_progress",
+        "title": "Epistemic Integrity Fabric slice 1"
       },
       {
         "code": "SRS-BUILDANDDO-JOURNEY-001",
@@ -950,6 +957,7 @@
       "decision",
       "estate",
       "federal_foundry",
+      "integrity",
       "knowledge_units",
       "mission_suite",
       "pocketbase",
@@ -969,11 +977,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 50,
-    "python_files": 385,
+    "python_files": 396,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1486,
+    "tracked_files": 1499,
     "web_source_files": 360
   },
   "schema_version": 1,
@@ -1047,15 +1055,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "960af9514f9aad3bb29831eb79d99d981cf6088c88d682adffd6bcfff4a5d37f",
+    "source_sha256": "428b15a5142936676590be33b7c6d13ab2a6b939724992fb6dfb21be9f29d9e9",
     "state": "PASS"
   },
   "summary": {
     "findings": 24,
     "findings_high": 24,
     "pipelines": 10,
-    "srs_open": 31,
-    "srs_total": 35,
+    "srs_open": 32,
+    "srs_total": 36,
     "unwired_gates": 22
   },
   "tests": {
