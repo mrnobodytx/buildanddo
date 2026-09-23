@@ -345,19 +345,25 @@ function published(name, deadline) {
     if (Date.now() > deadline) {
         return { ok: false, reason: 'Not fetched within this request\'s time budget.', fetched_at: now() };
     }
+    let response = null;
     try {
-        const response = $http.send({
+        response = $http.send({
             url: `${origin()}/${name}`,
             method: 'GET',
             headers: { Accept: 'application/json', 'User-Agent': 'BuildAndDo-PublicAPI/1.0 (+https://buildanddo.com)' },
             timeout: 2,
         });
+    } catch (_) {
+        result = { ok: false, reason: 'The published file could not be fetched.' };
+    }
+    if (response) {
         const type = String(((response.headers || {})['Content-Type'] || [''])[0] || '');
         if (response.statusCode !== 200) result = { ok: false, reason: `The site answered ${response.statusCode}.` };
         else if (!type.includes('application/json')) result = { ok: false, reason: `The site served ${type || 'no content type'}, not JSON.` };
-        else result = { ok: true, doc: JSON.parse(toString(response.body)) };
-    } catch (_) {
-        result = { ok: false, reason: 'The published file could not be fetched.' };
+        else {
+            try { result = { ok: true, doc: JSON.parse(toString(response.body)) }; }
+            catch (_) { result = { ok: false, reason: 'The site served JSON that does not parse.' }; }
+        }
     }
     result.fetched_ms = Date.now();
     result.fetched_at = now();
