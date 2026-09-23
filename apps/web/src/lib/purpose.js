@@ -38,9 +38,9 @@ export const PURPOSE = Object.freeze({
 });
 
 /**
- * Phrases from the retired small-business framing. No public page may say them again. Matched
- * case-insensitively; the Hostinger challenge entry's own business idea is the operator's call and uses
- * none of them.
+ * Phrases from the retired small-business framing. No public page may say them again, and neither may the
+ * Hostinger challenge entry or its judge bundle (reframed on the operator's direction, 2026-09-23). Matched
+ * case-insensitively.
  */
 export const RETIRED_PHRASES = Object.freeze([
     'software for small-business owners',
@@ -53,4 +53,13 @@ export const RETIRED_PHRASES = Object.freeze([
     'first-time business owner',
     'set up your business next',
     'repetitive task would you like',
+    'watches the important parts of a small business',
+    'small business owners and operators',
+    'operational problem for small-business owners',
+    'one business problem',
+    'one real business problem',
+    'try a business challenge',
+    'real business challenge',
+    'observed business problem',
+    'focused business problem',
 ]);

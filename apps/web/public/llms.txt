@@ -35,7 +35,7 @@ A daily learning edition built around sources, scoped missions and evidence.
 ## Public pages
 
 - [BuildAndDo — learn by doing, together](https://buildanddo.com/): Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.
-- [BuildAndDo — Hostinger 21-Day Challenge](https://buildanddo.com/hostinger-challenge): See the focused business problem, verified mission story and Hostinger product roles behind the BuildAndDo challenge entry.
+- [BuildAndDo — Hostinger 21-Day Challenge](https://buildanddo.com/hostinger-challenge): See the learning-platform idea, the verified mission story and the Hostinger product roles behind the BuildAndDo challenge entry.
 - [MetaFunction Fabric Platform | BuildAndDo](https://buildanddo.com/platform): Explore the governed execution flow, capability mesh and illustrative monitoring of the MetaFunction Fabric.
 - [BuildAndDo — Practice library](https://buildanddo.com/practice): Community-audited methods for real objectives, with evidence, knowledge states and lessons from each attempt.
 - [BuildAndDo — Public roadmap](https://buildanddo.com/roadmap): Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.
