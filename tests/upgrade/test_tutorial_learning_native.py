@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_tutorial_learning_native.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js
+# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js
+# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js; VALIDATES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 # DAG Node:    none
 # Intent:      Require real PocketBase auth, concurrent completion and migration retention before accepting installed interactive learning.
 # ───────────────────────────────────────────────────────────────
@@ -37,7 +37,11 @@ from tests.upgrade.test_classroom_native import DiagnosticNativeServer  # noqa: 
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 MIGRATION = "1790600000_tutorial_learning.js"
-MIGRATIONS = (MIGRATION, "1791400001_broadcast_classroom_lessons.js")
+MIGRATIONS = (
+    MIGRATION,
+    "1791400001_broadcast_classroom_lessons.js",
+    "1791500100_tutorial_answer_wait.js",
+)
 SEED = r"""
 migrate((app) => {
     let users;
@@ -219,10 +223,17 @@ class NativeLearningTests(unittest.TestCase):
         self.assertEqual(self.command("answer", {"choice": 1})[0], 409)
         self.practice()
         answer = self.server.lesson["lesson"]["check"]["answer"]
+        detail = self.server.request("GET", self.path, token=self.owner)[1]
+        self.assertNotIn("answer", detail["tutorial"]["lesson"]["check"])
         wrong = self.command("answer", {"choice": (answer + 1) % 3})
         self.assertEqual(wrong[0], 200)
         self.assertIsNone(wrong[1]["enrollment"]["certificate"])
-        completed = self.command("answer", {"choice": answer})[1]["enrollment"]
+        self.assertNotIn("answer", wrong[1]["tutorial"]["lesson"]["check"])
+        self.assertEqual(wrong[1]["feedback"]["retry_after"], 30)
+        waiting = self.command("answer", {"choice": answer})
+        self.assertEqual(waiting[0], 429)
+        self.assertRegex(waiting[1]["message"], r"again in \d+ seconds")
+        completed = wrong[1]["enrollment"]
         self.assertIsNone(
             self.server.request("GET", self.path, token=self.other)[1]["enrollment"]
         )
@@ -243,6 +254,21 @@ class NativeLearningTests(unittest.TestCase):
                 self.server.request(method, raw + suffix, body, token=self.owner)[0],
                 (400, 403, 404),
             )
+
+    def test_catalogue_reads_never_carry_the_answer(self) -> None:
+        raw = "/api/collections/tutorials/records"
+        viewed = self.server.request(
+            "GET", raw + "/" + self.server.lesson["id"], token=self.owner
+        )
+        self.assertEqual(viewed[0], 200)
+        listed = self.server.request("GET", raw + "?perPage=200", token=self.owner)
+        self.assertEqual(listed[0], 200)
+        for item in [viewed[1], *listed[1]["items"]]:
+            check = item["lesson"]["check"]
+            self.assertNotIn("answer", check)
+            self.assertNotIn("explanation", check)
+        stored = json.loads(self.server.stored("tutorials")[0]["lesson"])["check"]
+        self.assertTrue({"answer", "explanation"} <= stored.keys())
 
     def test_concurrent_completion_issues_one_certificate_and_one_award(self) -> None:
         with ThreadPoolExecutor(max_workers=3) as pool:
@@ -309,7 +335,15 @@ class NativeLearningTests(unittest.TestCase):
                 detail["tutorial"]["curriculum_version"],
                 self.server.broadcast["version"],
             )
-            self.assertEqual(detail["tutorial"]["lesson"], lesson["lesson"])
+            public = {
+                **lesson["lesson"],
+                "check": {
+                    key: value
+                    for key, value in lesson["lesson"]["check"].items()
+                    if key not in ("answer", "explanation")
+                },
+            }
+            self.assertEqual(detail["tutorial"]["lesson"], public)
         self.assertEqual(self.server.stored("tutorial_learning"), [])
         self.assertEqual(self.server.stored("tutorial_progress"), [])
         tutorial = detail["tutorial"]

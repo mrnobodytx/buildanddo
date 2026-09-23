@@ -59,6 +59,8 @@ export default [
 
 			// Override recommended import rules for stricter checking
 			'import/no-self-import': 'error', // Extremely fast rule, breaking results in infinite loop/bundling error
+			// ?public-lessons is resolved by plugins/vite-plugin-public-lessons.js; tests/upgrade/public-lessons.test.mjs checks those imports.
+			'import/no-unresolved': ['error', { ignore: ['\\?public-lessons$'] }],
 
 			// Disable expensive rules for performance
 			'import/no-cycle': 'off', // AI rarely makes this error, and the rule is very slow to run

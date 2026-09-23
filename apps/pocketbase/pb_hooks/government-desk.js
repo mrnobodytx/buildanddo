@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/government-desk.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
@@ -27,7 +27,7 @@ function read(e) {
         membership.lesson(e.app, e.auth, row);
         const result = { id: row.id };
         for (const field of ['title', 'summary', 'category', 'prerequisites', 'curriculum_key', 'curriculum_version']) result[field] = row.getString(field);
-        result.effort_minutes = row.get('effort_minutes'); result.order = row.get('order'); result.lesson = access.json(row, 'lesson');
+        result.effort_minutes = row.get('effort_minutes'); result.order = row.get('order'); result.lesson = access.publicLesson(access.json(row, 'lesson'));
         return result;
     });
     const dataDir = $filepath.join(__hooks, '..', 'pb_migrations', 'data');

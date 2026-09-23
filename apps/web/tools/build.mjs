@@ -12,6 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { resolveBuildRelease } from '../../../scripts/ci/release.mjs';
 import { generatePublicAssets, generatePageHeads } from './generate-seo.mjs';
 import { generateCommunityCatalogue } from './generate-community.mjs';
+import { findLessonAnswers } from './check-public-lessons.mjs';
 
 // Container build contexts deliberately exclude .git. The staging image passes
 // the exact candidate SHA instead, keeping the release stamped into RUM and the
@@ -47,5 +48,11 @@ const vite = spawnSync('vite', ['build', '--outDir', '../../dist/apps/web'], {
 });
 if (vite.error) console.error('Unable to start Vite:', vite.error.message);
 if (vite.status !== 0) process.exit(vite.status ?? 1);
+// Interactive lessons are graded on the server; a shipped explanation would give the answer away.
+const leaks = findLessonAnswers(output);
+if (leaks.length) {
+    for (const leak of leaks) console.error(`Lesson ${leak.slug} explanation is in assets/${leak.file}; import curricula with ?public-lessons.`);
+    process.exit(1);
+}
 generatePageHeads(output, release);
 generateCommunityCatalogue(output, release);
