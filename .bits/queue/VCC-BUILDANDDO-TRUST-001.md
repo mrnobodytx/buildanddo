@@ -28,18 +28,23 @@ from a browser or a misconfigured job.
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | Tutorial answer withheld, bounded retries, server-owned lesson completion | `node --test tests/upgrade/*.test.mjs && echo PASS` | pending |
-| 2 | Shared-record permissions, revenue fields, seat events | `node --test tests/upgrade/*.test.mjs && echo PASS` | pending |
-| 3 | Praxis fail-closed target, staged deploy swap, host keys | `python -m pytest -q tests/deploy 2>/dev/null; python scripts/ci/verify_public_boundary.py && echo PASS` | pending |
-| 4 | Password reset URL, confirmation page, honest errors | `cd apps/web && npx vitest run src/pages/__tests__ && echo PASS` | pending |
-| 5 | Lint, build, context, readiness, boundary, secret scan | `cd apps/web && npm run lint && npm run build && cd ../.. && python scripts/ci/agent_context.py --check && echo PASS` | pending |
+| 1 | Tutorial answer withheld, bounded retries, server-owned lesson completion | `node --test tests/upgrade/*.test.mjs && echo PASS` | done |
+| 2 | Shared-record permissions, revenue fields, seat events | `node --test tests/upgrade/*.test.mjs && echo PASS` | done |
+| 3 | Praxis fail-closed target, staged deploy swap, host keys | `python3 -m unittest tests.deploy.test_ship_swap tests.praxis_evidence.test_target_guard && python scripts/ci/verify_public_boundary.py && echo PASS` | done |
+| 4 | Password reset URL, confirmation page, honest errors | `cd apps/web && npx vitest run src/pages/__tests__/PasswordReset.test.jsx src/pages/__tests__/LoginPage.test.jsx && echo PASS` | done |
+| 5 | Lint, build, context, readiness, boundary, secret scan | `cd apps/web && npm run lint && npm run build && cd ../.. && python scripts/ci/agent_context.py --check && echo PASS` | done |
 
 ## Constraints
 
 - May touch: `apps/pocketbase/pb_hooks/**`, new files in `apps/pocketbase/pb_migrations/`,
-  `apps/web/src/**`, `services/praxis_evidence/client.py`, `.gitlab-ci.yml` (the
-  Praxis job only), `scripts/deploy/ship.py`, `tests/**`, this dispatch, the SRS,
-  the registry, `.bits/context.lock.json`, `.bits/hostinger-readiness.lock.json`.
+  `apps/web/src/**`, `apps/web/plugins/**`, `apps/web/tools/build.mjs`,
+  `apps/web/tools/check-public-lessons.mjs`, `apps/web/tools/generate-community.mjs`,
+  `apps/web/vite.config.js`, `apps/web/vitest.config.js`, `apps/web/eslint.config.mjs`,
+  `services/praxis_evidence/client.py`, `services/praxis_evidence/run_all_tests.py`,
+  `services/praxis_evidence/selftest*.py`, `.gitlab-ci.yml` (the Praxis job only),
+  `scripts/deploy/ship.py`, `tests/**`, `AGENTS.md` (the seat-identity rule only),
+  this dispatch, the SRS, the registry, `.bits/context.lock.json`,
+  `.bits/hostinger-readiness.lock.json`.
 - Must not touch: existing migrations' up steps, secrets or `secrets/**`,
   deployment execution, private-plane files.
 - No secret values anywhere; configuration by variable name only.

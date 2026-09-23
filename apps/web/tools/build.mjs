@@ -41,7 +41,9 @@ const buildEnvironment = {
     VITE_BUILD_SHA: release.commit_sha,
     VITE_DD_ENV: process.env.VITE_DD_ENV || '',
 };
-const vite = spawnSync('vite', ['build', '--outDir', '../../dist/apps/web'], {
+// The output sits outside the app root, so Vite keeps old bundles unless told to
+// empty it; a stale chunk could still carry lesson answers. Vite writes first.
+const vite = spawnSync('vite', ['build', '--outDir', '../../dist/apps/web', '--emptyOutDir'], {
     stdio: 'inherit',
     env: buildEnvironment,
     shell: process.platform === 'win32', // Windows needs shell:true to resolve vite.cmd; POSIX doesn't
