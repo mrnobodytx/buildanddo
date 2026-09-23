@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/DailyEditionPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
 // Seat:        BITS-CODEGEN
@@ -57,6 +57,7 @@ import { timeAgo } from '@/lib/format';
 import { dailyDigest } from '@/lib/dailyDigest';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 
 const EMPTY_FORM = { title: '', summary: '', body: '', edition_date: '', status: 'draft' };
 
@@ -101,6 +102,8 @@ function DailyEditionDesk() {
         clearWriteError,
     } = useWorkspaceRecords('daily_editions', { sort: '-created' });
 
+    // Publishing needs an owner or admin; the server enforces it, this hides the controls.
+    const canPublish = useWorkspaceAccess().data?.can_admin === true;
     const missions = useWorkspaceRecords('missions', { sort: '-created' });
     const signals = useWorkspaceRecords('signals', { sort: '-created' });
 
@@ -301,7 +304,7 @@ function DailyEditionDesk() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="draft">Draft</SelectItem>
-                                        <SelectItem value="published">Published</SelectItem>
+                                        {canPublish && <SelectItem value="published">Published</SelectItem>}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -368,7 +371,7 @@ function DailyEditionDesk() {
                                         source="workspace record"
                                         timestamp={fmtDate(edition.edition_date || edition.created)}
                                     />
-                                    {edition.status === 'draft' && (
+                                    {canPublish && edition.status === 'draft' && (
                                         <Button
                                             variant="secondary"
                                             size="sm"
