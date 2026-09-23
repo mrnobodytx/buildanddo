@@ -271,6 +271,39 @@ test('missing identity indices or field contracts stop assistant reads before in
     }
 });
 
+test('assistant hooks accept equivalent native indexes without broadening account access', () => {
+    const f = setup(); f.agentConfig.enabled = false;
+    for (const name of ['assistant_sessions', 'assistant_turns', 'assistant_patterns']) {
+        f.collections[name].indexes = f.collections[name].indexes.map((index) => index.replace(/\b[a-z_]+\b/g,
+            (word) => ['create', 'unique', 'index', 'on'].includes(word) ? word.toUpperCase() : '`' + word + '`')
+            .replace(/\s+/g, '\n ').replace(/,/g, ' , '));
+    }
+    const session = f.start('editor'), turn = f.chat(session, 'editor');
+    assert.equal(turn.status, 'unavailable');
+    assert.equal(f.agentConfig.calls.length, 0);
+    assert.equal(f.service.snapshot(f.event('editor', {}, { query: { session: session.id } })).turns.items[0].id, turn.id);
+    assert.throws(() => f.service.snapshot(f.event('owner', {}, { query: { session: session.id } })), /unavailable/);
+});
+
+test('assistant index normalization retains exact unique keys, table, name, predicate and locked fields', () => {
+    for (const name of ['assistant_sessions', 'assistant_turns', 'assistant_patterns']) {
+        for (const change of [
+            (index) => index.replace('unique ', ''),
+            (index) => index.replace('idx_assistant_', 'idx_other_'),
+            (index) => index.replace('on ' + name, 'on other_records'),
+            (index) => index.replace(/\([^)]*\)/, '(workspace)'),
+            (index) => index + ' where protocol_version = 1',
+        ]) {
+            const f = setup(); f.collections[name].indexes[0] = change(f.collections[name].indexes[0]);
+            assert.throws(() => f.service.snapshot(f.event()), /isolation/);
+            assert.equal(f.agentConfig.calls.length, 0);
+        }
+        const f = setup(); f.collections[name].fields.removeByName('owner');
+        assert.throws(() => f.service.snapshot(f.event()), /schema/);
+        assert.equal(f.agentConfig.calls.length, 0);
+    }
+});
+
 const usageMigration = 'apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js';
 test('assistant turns keep the answering model and reported token counts, never estimated ones', () => {
     const f = setup(); f.migration(usageMigration).up(); f.migration(usageMigration).up();

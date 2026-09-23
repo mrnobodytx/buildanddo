@@ -120,6 +120,11 @@
         "apps/pocketbase/pb_hooks/workspace-administration.js",
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/pocketbase/pb_hooks/workspace-assistant.js",
+        "apps/pocketbase/pb_hooks/classroom-media.js",
+        "apps/pocketbase/pb_hooks/classroom-realtime.pb.js",
+        "apps/pocketbase/pb_hooks/classroom-presence.pb.js",
+        "apps/pocketbase/pb_hooks/classrooms.js",
+        "apps/pocketbase/pb_hooks/metrics.pb.js",
         "apps/pocketbase/pb_hooks/business-actions.js",
         "apps/web/src/lib/workspaceRecords.js",
         "apps/pocketbase/pb_migrations/1791200000_government_membership.js"
@@ -142,9 +147,10 @@
         "Saved work survives restart and denial/retry cases preserve record integrity.",
         "Personal assistant collections deny other users including workspace administrators; protocol rollback retains records and disables commands.",
         "Collection queries group extra predicates under the workspace filter. Foreign targets and stale account/workspace read or write results cannot appear current.",
-        "Government membership records deny ordinary raw CRUD; down/up migrations preserve receipts and keep restricted lessons fenced."
+        "Government membership records deny ordinary raw CRUD; down/up migrations preserve receipts and keep restricted lessons fenced.",
+        "Media sessions bind native account, workspace, live room and attendance revision. Signalling/presence reject stale, revoked, foreign, unbound or closed sessions and unknown tracks; publishing additionally requires room management plus the configured allowlist. Both native profiles load media, attendance, usage and learning migrations rather than the old classroom subset."
       ],
-      "next_step": "Execute both native runtime profiles and have the release owner validate migration rollout and recovery on staging."
+      "next_step": "Execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging."
     },
     {
       "id": "HS-04",
@@ -423,7 +429,16 @@
         "docs/research-sprint.md",
         "apps/web/src/pages/workspace/CareerPage.jsx",
         "apps/web/src/lib/careerPassport.js",
-        "docs/career-passport.md"
+        "docs/career-passport.md",
+        "apps/web/src/hooks/useClassroomMedia.js",
+        "apps/web/src/hooks/classroomMediaLifetime.js",
+        "apps/web/src/lib/classroomRealtime.js",
+        "apps/web/src/components/broadcast",
+        "apps/web/src/components/workspace/TutorialCatalog.jsx",
+        "apps/web/src/pages/workspace/EvidencePage.jsx",
+        "apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json",
+        "apps/web/public/broadcast-repairs-source.txt",
+        "docs/classrooms.md"
       ],
       "checks": [
         "source_node",
@@ -450,7 +465,8 @@
         "Owner, Operator and Reviewer views consume one scoped value projection; current UTC-month counts retain exact readable native reviews and unknown economic baselines or denominators stay unmeasured.",
         "The government desk is restricted to paid approved members and labels supplied research leads, synthetic demonstrations and absent model/GPU verification explicitly.",
         "The Career Passport desk reads current scoped work and shows imported verification as reported; account/workspace changes or revocation clear private reviews, DO NOT CLAIM gaps remain visible, and imports cannot approve or submit applications.",
-        "Same-grant permission polling preserves career imports, journey drafts and assistant work while pausing new requests. Observed denial/regrant boundaries invalidate old work; already-issued command receipts may settle only in the same lifetime, and private reads/chat remain permission-gated. Polling cannot steal keyboard focus."
+        "Same-grant permission polling preserves career imports, journey drafts and assistant work while pausing new requests. Observed denial/regrant boundaries invalidate old work; already-issued command receipts may settle only in the same lifetime, and private reads/chat remain permission-gated. Polling cannot steal keyboard focus.",
+        "Pending media joins and discovery cannot revive cancelled room/account lifetimes; same-session token refresh preserves subscriptions. Structured agent detail renders as bounded inert text. The broadcast repair lesson and downloadable source-test evidence stay separate from workspace outcomes, learning completion, independent verification and deployed acceptance."
       ],
       "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt."
     },

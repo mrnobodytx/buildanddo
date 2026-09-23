@@ -29,6 +29,37 @@ const EVENT = {
 };
 const when = (value) => (value && Number.isFinite(Date.parse(value.replace(' ', 'T'))) ? new Date(value.replace(' ', 'T')).toLocaleString() : 'Time not recorded');
 
+function detailText(detail) {
+    if (detail == null) return '';
+    const clip = (text, limit) => text.length > limit ? `${text.slice(0, limit - 3)}...` : text;
+    // Project only a small JSON-shaped copy. Never stringify the original graph,
+    // invoke its getters/toJSON or walk beyond two container levels.
+    const project = (value, depth = 0) => {
+        if (value === null || typeof value === 'number' || typeof value === 'boolean') return value;
+        if (typeof value === 'string') return clip(value, 240);
+        if (typeof value !== 'object') return '[unsupported]';
+        if (depth >= 2) return '...';
+        const array = Array.isArray(value), result = array ? [] : Object.create(null);
+        const read = (key) => {
+            const property = Object.getOwnPropertyDescriptor(value, key);
+            return property && 'value' in property ? project(property.value, depth + 1) : '[unreadable]';
+        };
+        if (array) {
+            for (let index = 0; index < Math.min(value.length, 6); index++) result.push(read(String(index)));
+            if (value.length > 6) result.push('...');
+        } else {
+            let count = 0;
+            for (const key in value) {
+                if (count++ === 6) { result['...'] = 'More fields omitted'; break; }
+                if (Object.prototype.hasOwnProperty.call(value, key)) result[clip(key, 80)] = read(key);
+            }
+        }
+        return result;
+    };
+    try { return clip(typeof detail === 'string' ? detail : JSON.stringify(project(detail), null, 2), 1200); }
+    catch { return '[Detail unavailable]'; }
+}
+
 /**
  * @param {{unattended?: boolean, limit?: number}} props unattended: nobody is in the class right now.
  */
@@ -51,6 +82,7 @@ export default function AgentActivity({ unattended = false, limit = 12 }) {
         {!loading && !agents.length && <p className="text-sm text-muted-foreground">No agent activity to show. Either none has been recorded in this workspace, or your seat cannot read the agent record.</p>}
         {agents.length > 0 && <ol aria-label="Recent agent activity" className="space-y-0">{agents.map((item) => {
             const [label, state] = EVENT[item.name] || ['Update', 'observed'];
+            const detail = detailText(item.detail);
             return <li key={item.id} className="grid gap-1.5 border-t border-border py-3 first:border-t-0 first:pt-0">
                 <div className="flex flex-wrap items-center gap-2">
                     <StatePill state={state} />
@@ -60,7 +92,7 @@ export default function AgentActivity({ unattended = false, limit = 12 }) {
                     <time className="ml-auto font-evidence text-[11px] text-muted-foreground" dateTime={item.createdAt}>{when(item.createdAt)}</time>
                 </div>
                 <p className="break-words text-sm font-semibold leading-6">{item.summary}</p>
-                {item.detail && <p className="whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground">{item.detail}</p>}
+                {detail && <p className="whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground">{detail}</p>}
                 {(item.subject || item.prUrl) && <p className="flex flex-wrap gap-3 font-evidence text-[11px] text-muted-foreground">
                     {item.subject && <span>{item.subjectType ? `${item.subjectType}: ` : ''}{item.subject}</span>}
                     {/^https:\/\//.test(item.prUrl || '') && <a href={item.prUrl} target="_blank" rel="noreferrer" className="underline underline-offset-4">Evidence link</a>}

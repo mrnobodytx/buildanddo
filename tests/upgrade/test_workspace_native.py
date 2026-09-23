@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workspace-replay.js, apps/pocketbase/pb_hooks/workspace-value.js
+# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workspace-replay.js, apps/pocketbase/pb_hooks/workspace-value.js, apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js; VALIDATES apps/pocketbase/pb_hooks/workspace-value.js
+# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js; VALIDATES apps/pocketbase/pb_hooks/workspace-value.js; VALIDATES apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js
 # Intent:      Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.
 # ───────────────────────────────────────────────────────────────
 
@@ -25,7 +25,6 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import shutil
 import socket
-import subprocess
 import sys
 import tempfile
 from typing import Any
@@ -34,7 +33,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from tests.upgrade.test_dossier_native import NativeServer  # noqa: E402
+from tests.upgrade.test_classroom_native import DiagnosticNativeServer  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
@@ -62,6 +61,7 @@ MIGRATIONS = (
     "1790800000_business_execution",
     "1790900000_workspace_assistant",
     "1791100000_objective_onboarding",
+    "1791300001_assistant_turn_usage",
 )
 AUTH = r"""
 migrate((app) => {
@@ -79,6 +79,8 @@ migrate((app) => {
 SEED = r"""
 migrate((app) => {
     const save = (name, id, values) => {
+        try { app.findRecordById(name, id); return; }
+        catch (error) { if (!String(error.message).includes('no rows in result set')) throw error; }
         const record = new Record(app.findCollectionByNameOrId(name)); record.id = id;
         for (const [key, value] of Object.entries(values)) record.set(key, value);
         app.save(record);
@@ -91,7 +93,7 @@ migrate((app) => {
 """
 
 
-class WorkspaceServer(NativeServer):
+class WorkspaceServer(DiagnosticNativeServer):
     """Install production public migrations with isolated synthetic auth and data."""
 
     def __init__(self, binary: str) -> None:
@@ -101,7 +103,7 @@ class WorkspaceServer(NativeServer):
         self.root = Path(self.directory.name)
         self.binary = str(Path(binary).resolve())
         self.process = None
-        self.log = (self.root / "native.log").open("w")
+        self.log = tempfile.TemporaryFile(mode="w+b")
         self.environment = {"PATH": os.environ.get("PATH", "")}
         try:
             hooks = self.root / "hooks"
@@ -142,7 +144,7 @@ class WorkspaceServer(NativeServer):
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             migrations = self.root / "migrations"
             migrations.mkdir()
-            (migrations / "1_auth.js").write_text(AUTH)
+            (migrations / "0000000001_auth.js").write_text(AUTH)
             for name in MIGRATIONS:
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations" / (name + ".js"),
@@ -164,22 +166,6 @@ class WorkspaceServer(NativeServer):
         except BaseException:
             self.close()
             raise
-
-    def migrate(self) -> None:
-        """Apply only the fixture's copied public migrations."""
-        result = subprocess.run(
-            [self.binary, "migrate", "up", *self.paths()],
-            cwd=self.root,
-            env=self.environment,
-            stdout=self.log,
-            stderr=subprocess.STDOUT,
-            timeout=45,
-            check=False,
-        )
-        if result.returncode:
-            raise AssertionError(
-                "The disposable workspace migration failed; native acceptance did not pass."
-            )
 
 
 @unittest.skipUnless(
@@ -775,6 +761,14 @@ class NativeWorkspaceTests(unittest.TestCase):
     def test_assistant_isolates_personal_history_and_reports_unconfigured_inference(
         self,
     ) -> None:
+        schema = self.server.collection("assistant_turns")
+        fields = {field["name"]: field for field in schema["fields"]}
+        self.assertIn(
+            "usage", fields, "The usage migration must actually be installed."
+        )
+        self.assertEqual(fields["usage"]["type"], "json")
+        self.assertEqual(fields["usage"]["maxSize"], 2000)
+        self.assertFalse(fields["usage"]["required"])
         endpoint = f"/api/buildanddo/workspaces/{WORKSPACE}/assistant"
         code, session = self.server.request(
             "POST",
@@ -805,6 +799,16 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(code, 200)
         self.assertEqual(turn["status"], "unavailable")
         self.assertIsNone(turn["plan"])
+        saved_turn = next(
+            row
+            for row in self.server.stored("assistant_turns")
+            if row["id"] == turn["id"]
+        )
+        self.assertIn("usage", saved_turn)
+        self.assertIn(saved_turn["usage"], (None, "null"))
+        self.assertEqual(saved_turn["owner"], ALICE)
+        self.assertEqual(saved_turn["workspace"], WORKSPACE)
+        self.assertEqual(saved_turn["session"], session["id"])
         for token in (self.bravo, self.viewer, self.other):
             self.assertIn(
                 self.server.request(
@@ -842,6 +846,100 @@ class NativeWorkspaceTests(unittest.TestCase):
                 "GET", endpoint + "?session=" + session["id"], token=self.alice
             )[0],
             404,
+        )
+
+    def test_assistant_usage_down_up_preserves_history_and_locked_rules(self) -> None:
+        endpoint = f"/api/buildanddo/workspaces/{WORKSPACE}/assistant"
+        code, session = self.server.request(
+            "POST",
+            endpoint,
+            {
+                "action": "session.start",
+                "request_key": "native_usage_session_001",
+                "payload": {"title": "Usage compatibility; no provider"},
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 200)
+        body = {
+            "session": session["id"],
+            "request_key": "native_usage_absent_001",
+            "message": "No provider is configured.",
+            "surface": {"id": "usage-fixture", "route": "/app/erp", "controls": []},
+        }
+        self.server.stop()
+        # The final seed is idempotent; the preceding migration is the usage field.
+        self.server.migrate("down", "2")
+        self.assertNotIn(
+            "usage",
+            {
+                field["name"]
+                for field in self.server.collection("assistant_turns")["fields"]
+            },
+        )
+        self.server.start()
+        code, absent = self.server.request("POST", endpoint + "/chat", body, self.alice)
+        self.assertEqual(code, 200)
+        self.assertEqual(absent["status"], "unavailable")
+        self.assertIsNone(absent["plan"])
+        self.assertNotIn("usage", self.server.stored("assistant_turns")[0])
+        self.server.stop()
+        self.server.migrate()
+        self.server.migrate()
+        self.server.start()
+        fields = {
+            field["name"]
+            for field in self.server.collection("assistant_turns")["fields"]
+        }
+        self.assertIn("usage", fields)
+        code, present = self.server.request(
+            "POST",
+            endpoint + "/chat",
+            {
+                **body,
+                "request_key": "native_usage_present_001",
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(present["status"], "unavailable")
+        rows = self.server.stored("assistant_turns")
+        self.assertEqual({row["id"] for row in rows}, {absent["id"], present["id"]})
+        self.assertTrue(
+            all("usage" in row and row["usage"] in (None, "null") for row in rows)
+        )
+        for collection, identity in (
+            ("assistant_turns", present["id"]),
+            ("assistant_sessions", session["id"]),
+        ):
+            installed = self.server.collection(collection)
+            for rule in (
+                "listRule",
+                "viewRule",
+                "createRule",
+                "updateRule",
+                "deleteRule",
+            ):
+                self.assertIsNone(installed[rule])
+            for method, suffix, payload in (
+                ("GET", "", None),
+                ("POST", "", {"owner": ALICE}),
+                ("PATCH", "/" + identity, {"usage": {"input_tokens": 42}}),
+                ("DELETE", "/" + identity, None),
+            ):
+                with self.subTest(collection=collection, method=method):
+                    self.assertIn(
+                        self.server.request(
+                            method,
+                            f"/api/collections/{collection}/records" + suffix,
+                            payload,
+                            self.alice,
+                        )[0],
+                        (403, 404),
+                    )
+        self.assertEqual(
+            {row["id"] for row in self.server.stored("assistant_turns")},
+            {absent["id"], present["id"]},
         )
 
     def test_source_auth_revocation_staleness_and_foreign_denial(self) -> None:

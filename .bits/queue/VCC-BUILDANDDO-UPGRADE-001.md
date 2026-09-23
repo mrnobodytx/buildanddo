@@ -20,6 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Broadcast repair and learning continuation - 2026-09-23
+
+The owner requests fixing the merged classroom integration findings and retaining
+them as lessons and evidence in the site. Continue the existing A2 dispatch on
+the merged source without external activation or private data.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| BR-1 | Bind media operations and presence to current room/account authority | Connected negative controls and locked migration tests | source PASS: foreign/session/track denials precede provider effects; full native execution remains unavailable |
+| BR-2 | Close late joins and safely render structured agent details | Media lifecycle and rendering regressions | source PASS: late transport/lifetime and refresh controls; rendered cases authored but blocked by missing Vitest |
+| BR-3 | Publish a lesson and separate source evidence in existing site views | Curriculum/migration, links and no-fabricated-outcome tests | source PASS: versioned lesson, 121-test dated capture, fingerprint and download; no workspace outcomes or learner state seeded |
+| BR-4 | Exercise complete native fixtures and retain receiving limits | Both declared runtime profiles, source/rendered checks and governance | PARTIAL: 761 Node passes; 1,189 Python cases with zero failures and six dependency skips; 15 source-fixture checks per Python version; 23 actual native cases remain blocked, not passed |
+
+Memory brief: PR 80 is merged at ce1ce50fe408100bc617b33b5fed277efde64648 and
+retains PR 81's evidence repairs. Source tracing found unbound SFU sessions,
+late join cleanup and object-detail rendering failures; the native classroom
+fixture does not cover the full new backend. Earlier 680 Node passes cannot
+establish media or native acceptance. No authenticated workspace is attached;
+do not fabricate seat events or insert test claims into a shared evidence ledger.
+
 ## Audited evidence and handoff repairs - 2026-09-23
 
 The owner requests fixing the completed audit in logical dependency order under

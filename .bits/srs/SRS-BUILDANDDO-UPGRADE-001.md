@@ -20,6 +20,43 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Broadcast integration repairs and lessons - 2026-09-23
+
+The owner requests repairs for the inspected merged broadcast classroom and
+lessons/evidence visible in the site. Continue this pre-existing A2 source
+dispatch. Preserve earlier evidence repairs and the existing learning and
+workspace authorities. This continuation does not authorize a live deployment,
+provider call, secret access or fabricated learner/reviewer records.
+
+Acceptance:
+
+1. Bind every media session, track push/pull and renegotiation to the authenticated
+   native account, a live classroom in its readable workspace, current attendance
+   and a server-owned session record. Publisher allowlisting is additional to
+   current classroom management authority, never a substitute. Reject foreign,
+   ended, stale, left, revoked, unknown-session and cross-room track requests
+   before contacting the provider. Presence must reference the same owned,
+   server-recorded published tracks. Use an idempotent locked migration with an
+   explicit down path; old unbound sessions fail closed, not inferred ownership.
+2. Invalidate pending media joins on leave, disable, navigation, account or scope
+   changes and close late handles/tracks. Render structured agent event details
+   safely as bounded text; arbitrary objects must not crash a classroom or become
+   executable markup. Add adversarial lifecycle and rendering regressions.
+3. Extend connected and disposable-native coverage to the actual signalling,
+   presence, attendance and assistant-usage contracts, not just the old classroom
+   subset. Preserve both declared runtime profiles, failure logs and missing
+   prerequisite results. Fix fixture/migration compatibility only where required
+   to exercise this scope; do not bypass gates or substitute mocks for native proof.
+4. Add a versioned classroom-repair lesson through the existing curriculum and
+   data-migration patterns. Expose its public source references, reproduction
+   commands and observed test limitations in a separate source-case-study section
+   of the existing Evidence Ledger. Do not seed workspace outcomes, attendance,
+   learning progress, certificates, XP or independently verified claims.
+5. Run available source, rendered and native checks, retain red/green evidence,
+   review the changed scope and refresh governance bindings. GitLab owns execution;
+   actual hosted media, a two-browser test and deployed readback remain receiving
+   gates until observed on the exact release.
+
 ## Evidence and handoff repairs - 2026-09-23
 
 The owner approves fixing the completed audit's defects in dependency order.

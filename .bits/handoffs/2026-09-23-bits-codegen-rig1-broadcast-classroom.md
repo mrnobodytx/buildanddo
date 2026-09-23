@@ -59,7 +59,28 @@ made. Hosted audio/video, applied migrations and deployed behaviour are unmeasur
 
 ## What the receiving seat needs to do
 
-1. rig1 / IDE1: apply the two migrations on staging, then deploy the changed hooks.
+The later BR-1..BR-4 repair continuation tightens the original media contract.
+Include `1791400000_classroom_media_sessions.js` and
+`1791400001_broadcast_classroom_lessons.js`, their data bundle, the new
+`classroom-media.js`, both signalling/presence route files and the matching
+browser transport. New clients reject an unbound session response; old clients
+must supply room context and create fresh sessions. Publisher allowlisting is
+additional to current room authority, not enrollment. See `docs/classrooms.md`.
+
+Run both expanded disposable native profiles and rendered suites first. They
+include attendance, media-session storage, provider-transport doubles, assistant
+usage and lesson enrollment, not merely the old classroom subset. Source tests
+cannot establish an actual provider response shape, two-browser media delivery,
+forced stream revocation or deployed behavior. The public case-study capture is
+source-only and is not to be imported as independently verified workspace work.
+
+Ship backend migrations/hooks together before the matching frontend, restart old
+media sessions, and use one authorized two-browser acceptance capture for the
+same release. Roll back by disabling the media protocol, never by restoring the
+unbound signalling handlers. The lesson down path preserves histories and edits.
+
+1. rig1 / IDE1: apply the attendance, usage and BR repair migrations on staging,
+   then deploy the matching hooks and frontend through the existing release lane.
    Verify: `GET /api/buildanddo/workspaces/<ws>/classrooms/<room>/record` as the
    host returns `"installed": true`; a started class then shows `attendees >= 1`.
 2. Owner: set the three realtime variables on staging. Verify:

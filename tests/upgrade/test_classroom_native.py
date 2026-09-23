@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js
+# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js
+# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
 # DAG Node:    none
 # Intent:      Require native classroom authentication, date serialization, concurrent receipt recovery and reversible schema before accepting an installed backend.
 # ───────────────────────────────────────────────────────────────
@@ -20,11 +20,14 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta, timezone
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import socket
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -39,6 +42,29 @@ from tests.upgrade.test_dossier_native import NativeServer  # noqa: E402
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
 MIGRATION = "1790400000_classroom_rooms.js"
+MIGRATIONS = (
+    MIGRATION,
+    "1790600000_classroom_presence.js",
+    "1791300000_classroom_attendance.js",
+    "1791400000_classroom_media_sessions.js",
+    "1791400001_broadcast_classroom_lessons.js",
+)
+HOOKS = (
+    "classrooms.pb.js",
+    "classrooms.js",
+    "classroom-realtime.pb.js",
+    "classroom-realtime-lib.js",
+    "classroom-media.js",
+    "classroom-presence.pb.js",
+    "metrics.pb.js",
+    "telemetry.js",
+    "workspace-access.js",
+    "government-access.js",
+    "workflow-policy.js",
+    "business-action-policy.js",
+)
+OFFER = {"type": "offer", "sdp": "v=0\r\ns=fixture-only; no media negotiated\r\n"}
+ANSWER = {**OFFER, "type": "answer"}
 SEED = r"""
 migrate((app) => {
     let users;
@@ -61,22 +87,206 @@ migrate((app) => {
     };
     const workspaces = create('workspaces', [relation('owner', 'users')]);
     const workspace = new Record(workspaces); workspace.id = 'workspacealpha1'; workspace.set('owner', 'accountalice001'); app.save(workspace);
+    const foreign = new Record(workspaces); foreign.id = 'workspacebravo1'; foreign.set('owner', 'accountguest001'); app.save(foreign);
     const members = create('workspace_members', [relation('workspace', 'workspaces'), relation('user', 'users'), { name: 'role', type: 'text' }]);
     for (const [user, role] of [['accountbravo001', 'editor'], ['accountview0001', 'viewer']]) {
         const member = new Record(members); member.set('workspace', workspace.id); member.set('user', user); member.set('role', role); app.save(member);
     }
     const tutorials = create('tutorials', [{ name: 'title', type: 'text' }, { name: 'summary', type: 'text' }, { name: 'category', type: 'text' },
-        { name: 'effort_minutes', type: 'number' }, { name: 'order', type: 'number' }, { name: 'lesson', type: 'json', maxSize: 100000 }], true);
-    const data = JSON.parse(__LESSON__);
-    const record = new Record(tutorials); record.id = data.id;
-    for (const key of ['title', 'summary', 'category', 'effort_minutes', 'order', 'lesson']) record.set(key, data[key]);
-    app.save(record);
+        { name: 'effort_minutes', type: 'number' }, { name: 'order', type: 'number' }, { name: 'prerequisites', type: 'text' },
+        { name: 'slug', type: 'text', max: 100 }, { name: 'curriculum_version', type: 'text', max: 40 },
+        { name: 'lesson', type: 'json', maxSize: 65536 }], true);
+    const dataDir = $filepath.join(__hooks, '..', 'pb_migrations', 'data');
+    const curriculum = JSON.parse(toString($os.readFile($filepath.join(dataDir, 'starter-tutorials.json'))));
+    for (const data of curriculum.lessons) {
+        const record = new Record(tutorials); record.id = data.id;
+        for (const key of ['title', 'summary', 'category', 'effort_minutes', 'order', 'prerequisites', 'slug', 'lesson']) record.set(key, data[key]);
+        record.set('curriculum_version', curriculum.version); app.save(record);
+    }
 }, () => {});
 """
 
+# Fixture-only provider responses. Native auth, room scope, relations, session
+# storage and request hooks remain the production implementation. No SFU runs.
+PROVIDER_DOUBLE = r"""
+const actual = require(`${__hooks}/fixture-original-realtime-lib.js`);
+module.exports = { ...actual,
+    callRealtime(path, _secret, payload, method) {
+        const audit = $filepath.join(__hooks, '..', 'fixture-provider-calls.txt');
+        let before = '';
+        try { before = toString($os.readFile(audit)); } catch (_) { /* first fixture call */ }
+        $os.writeFile(audit, before + (method || 'POST') + ' ' + path + '\n', 0o600);
+        if (!__PROVIDER_ENABLED__) throw new Error('Fixture forbids provider network calls.');
+        const description = { type: 'answer', sdp: 'v=0\r\ns=fixture-only; no media negotiated\r\n' };
+        if (path.endsWith('/sessions/new')) return { status: 201, body: {
+            sessionId: 'fixture-session-' + (before.split('\n').filter(Boolean).length + 1), sessionDescription: description,
+        } };
+        if (path.endsWith('/tracks/new')) return { status: 200, body: {
+            tracks: payload.tracks.map((track) => ({ location: track.location, trackName: track.trackName,
+                ...(track.location === 'local' ? { mid: track.mid } : { sessionId: track.sessionId }) })),
+            sessionDescription: { ...description,
+                type: payload.tracks.some((track) => track.location === 'remote') ? 'offer' : 'answer' },
+            requiresImmediateRenegotiation: payload.tracks.some((track) => track.location === 'remote'),
+        } };
+        if (path.endsWith('/renegotiate')) return { status: 200, body: {} };
+        throw new Error('Unexpected fixture-only provider operation.');
+    },
+};
+if (__PROVIDER_ENABLED__) module.exports.realtimeConfig = () => ({ appId: 'fixture-only-app', secret: 'fixture-only-not-a-credential', reason: '' });
+"""
 
-class ClassroomServer(NativeServer):
-    """Reuse the native server lifecycle with only classroom schema and policies."""
+
+def sanitize_diagnostics(raw: str) -> str:
+    """Retain bounded errors without startup links or credential-bearing lines."""
+    raw = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", raw)
+    lines = []
+    for line in raw.splitlines():
+        if re.search(
+            r"password|passwd|credential|secret|token|authorization|bearer|cookie|superuser|eyJ",
+            line,
+            re.IGNORECASE,
+        ):
+            lines.append("[redacted credential-bearing diagnostic]")
+            continue
+        line = re.sub(r"https?://[^\s]+", "[redacted URL]", line, flags=re.IGNORECASE)
+        line = re.sub(r"[\w.+-]+@[\w.-]+", "[redacted account]", line)
+        line = re.sub(r"[A-Za-z0-9_+/=-]{40,}", "[redacted opaque value]", line)
+        lines.append(line[:2000])
+    return "\n".join(lines)[-12000:]
+
+
+class DiagnosticNativeServer(NativeServer):
+    """Retain sanitized failures for the owned fixtures without changing their base."""
+
+    def diagnostics(self) -> str:
+        """Read a bounded log tail without moving the running child's file offset."""
+        self.log.flush()
+        length = os.fstat(self.log.fileno()).st_size
+        offset = max(0, length - 64000)
+        raw = os.pread(self.log.fileno(), 64000, offset)
+        if offset:
+            raw = raw.partition(b"\n")[2]
+        return sanitize_diagnostics(raw.decode("utf-8", errors="replace"))
+
+    def migrate(self, direction: str = "up", count: str = "") -> None:
+        """Apply isolated migrations and preserve only sanitized subprocess errors."""
+        try:
+            result = subprocess.run(
+                [
+                    self.binary,
+                    "migrate",
+                    direction,
+                    *([count] if count else []),
+                    *self.paths(),
+                ],
+                input="y\n",
+                text=True,
+                cwd=self.root,
+                env=self.environment,
+                stdout=self.log,
+                stderr=subprocess.STDOUT,
+                timeout=45,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired) as error:
+            raise AssertionError(
+                f"Native migration unavailable ({type(error).__name__}); acceptance did not run.\n"
+                + self.diagnostics()
+            ) from None
+        if result.returncode:
+            raise AssertionError(
+                f"Native migration {direction} failed (exit {result.returncode}); acceptance did not pass.\n"
+                + self.diagnostics()
+            )
+
+    def start(self) -> None:
+        """Keep the base health check while exposing its sanitized failure reason."""
+        try:
+            super().start()
+        except Exception as error:
+            self.stop()
+            raise AssertionError(
+                f"Native startup failed ({type(error).__name__}); acceptance did not run.\n"
+                + self.diagnostics()
+            ) from None
+
+    def close(self) -> None:
+        """Discard private fixture data after emitting only sanitized diagnostics."""
+        if self.log.closed:
+            return
+        try:
+            self.stop()
+            diagnostic = self.diagnostics()
+            if diagnostic:
+                print(
+                    "Native fixture diagnostics (sanitized):\n" + diagnostic,
+                    file=sys.stderr,
+                )
+        finally:
+            self.log.close()
+            self.directory.cleanup()
+
+    def collection(self, name: str) -> dict[str, Any]:
+        """Inspect the actual installed schema using a read-only local connection."""
+        with sqlite3.connect(
+            (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
+        ) as database:
+            database.row_factory = sqlite3.Row
+            row = database.execute(
+                "select * from _collections where name = ?", (name,)
+            ).fetchone()
+        if row is None:
+            raise AssertionError(f"Required native collection is missing: {name}")
+        result = dict(row)
+        result["fields"] = json.loads(result["fields"])
+        return result
+
+    def stored(self, name: str) -> list[dict[str, Any]]:
+        """Observe only whitelisted disposable records, never auth or secret tables."""
+        allowed = {
+            "classroom_rooms",
+            "classroom_members",
+            "classroom_messages",
+            "classroom_receipts",
+            "classroom_attendance",
+            "classroom_presence",
+            "classroom_media_sessions",
+            "assistant_sessions",
+            "assistant_turns",
+            "assistant_patterns",
+            "tutorials",
+            "tutorial_learning",
+            "tutorial_progress",
+            "evidence",
+            "missions",
+        }
+        if name not in allowed:
+            raise ValueError("Choose a public synthetic fixture table.")
+        with sqlite3.connect(
+            (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
+        ) as database:
+            database.row_factory = sqlite3.Row
+            return [
+                dict(row)
+                for row in database.execute(f'select * from "{name}" order by id')
+            ]
+
+    def fixture_change(self, source: str) -> None:
+        """Apply a test-only migration while stopped, never hand-edit a running DB."""
+        self.stop()
+        self.fixture_sequence = getattr(self, "fixture_sequence", 0) + 1
+        path = (
+            self.root
+            / "migrations"
+            / f"{2000000000 + self.fixture_sequence}_fixture.js"
+        )
+        path.write_text("migrate((app) => {\n" + source + "\n}, () => {});\n")
+        self.migrate()
+        self.start()
+
+
+class ClassroomServer(DiagnosticNativeServer):
+    """Install the complete classroom hooks with real security and no provider I/O."""
 
     def __init__(self, binary: str) -> None:
         self.directory = tempfile.TemporaryDirectory(
@@ -85,19 +295,23 @@ class ClassroomServer(NativeServer):
         self.root = Path(self.directory.name)
         self.binary = str(Path(binary).resolve())
         self.process = None
-        self.log = (self.root / "native.log").open("w")
-        self.environment = {"PATH": os.environ.get("PATH", "")}
+        self.log = tempfile.TemporaryFile(mode="w+b")
+        self.environment = {
+            "PATH": os.environ.get("PATH", ""),
+            "BUILDANDDO_CLASSROOM_PUBLISHERS": "alice@fixture.invalid,bravo@fixture.invalid,viewer@fixture.invalid,guest@fixture.invalid",
+        }
         try:
             hooks = self.root / "hooks"
             hooks.mkdir()
-            for name in (
-                "classrooms.pb.js",
-                "classrooms.js",
-                "workspace-access.js",
-                "government-access.js",
-                "workflow-policy.js",
-            ):
+            for name in HOOKS:
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
+            shutil.copyfile(
+                hooks / "classroom-realtime-lib.js",
+                hooks / "fixture-original-realtime-lib.js",
+            )
+            (hooks / "classroom-realtime-lib.js").write_text(
+                PROVIDER_DOUBLE.replace("__PROVIDER_ENABLED__", "false")
+            )
             migrations = self.root / "migrations"
             migrations.mkdir()
             self.lesson = json.loads(
@@ -105,13 +319,17 @@ class ClassroomServer(NativeServer):
                     ROOT / "apps/pocketbase/pb_migrations/data/starter-tutorials.json"
                 ).read_text()
             )["lessons"][0]
-            (migrations / "1_fixture.js").write_text(
-                SEED.replace("__LESSON__", json.dumps(json.dumps(self.lesson)))
-            )
-            shutil.copyfile(
-                ROOT / "apps/pocketbase/pb_migrations" / MIGRATION,
-                migrations / MIGRATION,
-            )
+            (migrations / "0000000001_fixture.js").write_text(SEED)
+            for name in MIGRATIONS:
+                shutil.copyfile(
+                    ROOT / "apps/pocketbase/pb_migrations" / name, migrations / name
+                )
+            data_dir = self.root / "pb_migrations/data"
+            data_dir.mkdir(parents=True)
+            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json"):
+                shutil.copyfile(
+                    ROOT / "apps/pocketbase/pb_migrations/data" / name, data_dir / name
+                )
             with socket.socket() as reservation:
                 reservation.bind(("127.0.0.1", 0))
                 self.port = reservation.getsockname()[1]
@@ -122,29 +340,18 @@ class ClassroomServer(NativeServer):
             self.close()
             raise
 
-    def migrate(self, direction: str, count: str = "") -> None:
-        """Apply only this disposable fixture's registered migration files."""
-        result = subprocess.run(
-            [
-                self.binary,
-                "migrate",
-                direction,
-                *([count] if count else []),
-                *self.paths(),
-            ],
-            input="y\n",
-            text=True,
-            cwd=self.root,
-            env=self.environment,
-            stdout=self.log,
-            stderr=subprocess.STDOUT,
-            timeout=30,
-            check=False,
+    def enable_fixture_provider(self) -> None:
+        """Enable labelled canned signalling, not a credential or an actual SFU."""
+        self.stop()
+        (self.root / "hooks/classroom-realtime-lib.js").write_text(
+            PROVIDER_DOUBLE.replace("__PROVIDER_ENABLED__", "true")
         )
-        if result.returncode:
-            raise AssertionError(
-                "The isolated classroom migration failed; native acceptance did not pass."
-            )
+        self.start()
+
+    def provider_calls(self) -> list[str]:
+        """Read the fixture-only transport audit containing no SDP or credentials."""
+        path = self.root / "fixture-provider-calls.txt"
+        return path.read_text().splitlines() if path.exists() else []
 
 
 @unittest.skipUnless(
@@ -169,12 +376,13 @@ class NativeClassroomTests(unittest.TestCase):
         revision: int,
         token: str = "",
         key: str = "",
+        workspace: str = WORKSPACE,
     ) -> tuple[int, dict[str, Any]]:
         """Send one bounded command using a synthetic native user account."""
         self.sequence += 1
         return self.server.request(
             "POST",
-            self.path,
+            f"/api/buildanddo/workspaces/{workspace}/classrooms",
             {
                 "action": action,
                 "payload": payload,
@@ -184,7 +392,9 @@ class NativeClassroomTests(unittest.TestCase):
             token=token or self.owner,
         )
 
-    def create(self, key: str = "") -> tuple[int, dict[str, Any]]:
+    def create(
+        self, key: str = "", token: str = "", workspace: str = WORKSPACE
+    ) -> tuple[int, dict[str, Any]]:
         """Schedule a class around an actual authored lesson."""
         return self.command(
             "room.create",
@@ -195,7 +405,9 @@ class NativeClassroomTests(unittest.TestCase):
                 "starts_at": "",
             },
             0,
+            token=token,
             key=key,
+            workspace=workspace,
         )
 
     def detail(self, room: str, token: str = "") -> tuple[int, dict[str, Any]]:
@@ -203,6 +415,64 @@ class NativeClassroomTests(unittest.TestCase):
         return self.server.request(
             "GET", self.path + "/" + room, token=token or self.owner
         )
+
+    def live_room(self, token: str = "", workspace: str = WORKSPACE) -> str:
+        """Create native attendance via registered commands, not seeded outcomes."""
+        status, created = self.create(token=token, workspace=workspace)
+        self.assertEqual(status, 200)
+        self.assertEqual(
+            self.command(
+                "room.start", {"id": created["id"]}, 1, token, workspace=workspace
+            )[0],
+            200,
+        )
+        return str(created["id"])
+
+    def media_session(self, room: str, token: str = "") -> str:
+        """Create a server-owned binding using the explicitly enabled provider double."""
+        before = len(self.server.provider_calls())
+        status, session = self.server.request(
+            "POST",
+            "/api/classroom/session",
+            {
+                "room": room,
+                "sessionDescription": OFFER,
+            },
+            token or self.owner,
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(len(self.server.provider_calls()), before + 1)
+        self.assertTrue(session["sessionId"].startswith("fixture-session-"))
+        return str(session["sessionId"])
+
+    def denied_before_provider(
+        self,
+        method: str,
+        path: str,
+        body: dict[str, Any] | None,
+        token: str,
+        expected: tuple[int, ...] = (400, 403, 404, 409),
+    ) -> None:
+        """Require an authority/input refusal, never an unconfigured-provider 503."""
+        before = self.server.provider_calls()
+        status, _ = self.server.request(method, path, body, token)
+        self.assertIn(
+            status, expected, f"Expected a pre-provider denial from {method} {path}."
+        )
+        self.assertEqual(self.server.provider_calls(), before)
+
+    def presence_body(
+        self, room: str, session: str, track: str = "fixture-audio"
+    ) -> dict[str, Any]:
+        """Advertise only synthetic track identities for a short fixture lifetime."""
+        return {
+            "room": room,
+            "session_id": session,
+            "tracks": [{"trackName": track, "kind": "audio"}],
+            "expires_at": (
+                datetime.now(timezone.utc) + timedelta(seconds=30)
+            ).isoformat(),
+        }
 
     def test_native_lifecycle_lesson_presence_and_locked_raw_collections(self) -> None:
         self.assertIn(self.server.request("GET", self.path)[0], (401, 403))
@@ -221,6 +491,19 @@ class NativeClassroomTests(unittest.TestCase):
         self.assertTrue(view["membership"]["active"])
         self.assertEqual(len(view["participants"]), 2)
         self.assertFalse(view["media"]["available"])
+        self.assertEqual(
+            self.server.request(
+                "POST",
+                "/api/classroom/session",
+                {
+                    "room": room,
+                    "sessionDescription": OFFER,
+                },
+                self.owner,
+            )[0],
+            503,
+        )
+        self.assertEqual(self.server.provider_calls(), [])
         member = view["membership"]
         self.assertEqual(
             self.server.request(
@@ -259,6 +542,9 @@ class NativeClassroomTests(unittest.TestCase):
             "classroom_members",
             "classroom_messages",
             "classroom_receipts",
+            "classroom_attendance",
+            "classroom_presence",
+            "classroom_media_sessions",
         ):
             self.assertIn(
                 self.server.request(
@@ -305,12 +591,9 @@ class NativeClassroomTests(unittest.TestCase):
             )
         self.assertEqual([code for code, _ in replies], [200, 200])
         self.assertEqual(len(self.detail(room)[1]["messages"]["items"]), 1)
-        self.server.stop()
-        (self.server.root / "migrations/1790500000_revoke_fixture.js").write_text(
-            "migrate((app) => { for (const row of app.findRecordsByFilter('workspace_members', 'user = {:user}', '', 10, 0, { user: 'accountbravo001' })) app.delete(row); }, () => {});"
+        self.server.fixture_change(
+            "for (const row of app.findRecordsByFilter('workspace_members', 'user = {:user}', '', 10, 0, { user: 'accountbravo001' })) app.delete(row);"
         )
-        self.server.migrate("up")
-        self.server.start()
         self.assertEqual(self.detail(room, self.editor)[0], 403)
         self.assertEqual(
             self.command(
@@ -335,7 +618,7 @@ class NativeClassroomTests(unittest.TestCase):
             200,
         )
         self.server.stop()
-        self.server.migrate("down", "1")
+        self.server.migrate("down", str(len(MIGRATIONS)))
         self.server.start()
         self.assertEqual(self.detail(room)[0], 503)
         self.server.stop()
@@ -344,6 +627,794 @@ class NativeClassroomTests(unittest.TestCase):
         status, view = self.detail(room)
         self.assertEqual(status, 200)
         self.assertEqual(view["messages"]["items"][0]["body"], "Retained on rollback.")
+
+    def test_native_attendance_relations_and_additive_lesson_are_installed(
+        self,
+    ) -> None:
+        targets = {
+            name: self.server.collection(name)["id"]
+            for name in ("users", "workspaces", "classroom_rooms", "classroom_members")
+        }
+        session_schema = self.server.collection("classroom_media_sessions")
+        fields = {field["name"]: field for field in session_schema["fields"]}
+        self.assertTrue(
+            {
+                "owner",
+                "workspace",
+                "room",
+                "membership",
+                "member_revision",
+                "provider_app",
+                "session_id",
+                "tracks",
+                "expires_at",
+                "active",
+                "busy",
+                "protocol_version",
+            }.issubset(fields)
+        )
+        for field, target in (
+            ("owner", "users"),
+            ("workspace", "workspaces"),
+            ("room", "classroom_rooms"),
+            ("membership", "classroom_members"),
+        ):
+            self.assertEqual(fields[field]["type"], "relation")
+            self.assertEqual(fields[field]["collectionId"], targets[target])
+            self.assertTrue(fields[field]["required"])
+            self.assertEqual(fields[field]["maxSelect"], 1)
+        self.assertEqual(fields["tracks"]["type"], "json")
+        self.assertEqual(fields["expires_at"]["type"], "date")
+        self.assertEqual(fields["active"]["type"], "bool")
+        self.assertEqual(fields["busy"]["type"], "bool")
+        self.assertEqual(fields["protocol_version"]["type"], "number")
+        self.assertEqual(fields["member_revision"]["min"], 1)
+        self.assertTrue(fields["member_revision"]["onlyInt"])
+        for name in (
+            "classroom_attendance",
+            "classroom_presence",
+            "classroom_media_sessions",
+        ):
+            schema = self.server.collection(name)
+            for rule in (
+                "listRule",
+                "viewRule",
+                "createRule",
+                "updateRule",
+                "deleteRule",
+            ):
+                self.assertIsNone(schema[rule])
+        status, listing = self.server.request("GET", self.path, token=self.owner)
+        self.assertEqual(status, 200)
+        self.assertEqual(len(listing["lessons"]["items"]), 26)
+        self.assertIn(
+            "bdobroadcast001", {row["id"] for row in listing["lessons"]["items"]}
+        )
+        room = self.live_room()
+
+        def join() -> tuple[int, dict[str, Any]]:
+            return self.command(
+                "room.join", {"id": room}, 2, self.viewer, "native_attendance_retry_001"
+            )
+
+        self.assertEqual(join()[0], 200)
+        self.assertTrue(join()[1]["replayed"])
+        membership = self.detail(room, self.viewer)[1]["membership"]
+        self.assertEqual(
+            self.command(
+                "room.leave",
+                {"id": room, "membership_revision": membership["revision"]},
+                2,
+                self.viewer,
+            )[0],
+            200,
+        )
+        self.assertEqual(
+            self.command(
+                "room.lesson",
+                {"id": room, "tutorial": "bdobroadcast001", "section": 0},
+                2,
+            )[0],
+            200,
+        )
+        self.assertEqual(self.detail(room)[1]["lesson"]["id"], "bdobroadcast001")
+        self.assertEqual(self.command("room.end", {"id": room}, 3)[0], 200)
+        status, record = self.server.request(
+            "GET", self.path + f"/{room}/record", token=self.owner
+        )
+        self.assertEqual(status, 200)
+        self.assertTrue(record["installed"])
+        self.assertEqual(record["attendees"], 2)
+        self.assertFalse(record["truncated"])
+        self.assertGreaterEqual(record["minutes"], 0)
+        self.assertTrue(record["hours"])
+        self.assertNotIn("owner", json.dumps(record))
+        for token in (self.editor, self.viewer, self.guest):
+            self.assertEqual(
+                self.server.request("GET", self.path + f"/{room}/record", token=token)[
+                    0
+                ],
+                403,
+            )
+        history = self.server.stored("classroom_attendance")
+        self.assertEqual(
+            sorted((row["owner"], row["event"]) for row in history),
+            sorted(
+                [
+                    ("accountalice001", "start"),
+                    ("accountalice001", "join"),
+                    ("accountview0001", "join"),
+                    ("accountview0001", "leave"),
+                    ("accountalice001", "end"),
+                ]
+            ),
+        )
+        for row in history:
+            self.assertEqual(row["workspace"], WORKSPACE)
+            self.assertEqual(row["room"], room)
+            self.assertIsNotNone(
+                datetime.fromisoformat(row["at"].replace(" ", "T")).tzinfo
+            )
+
+    def test_native_signalling_rejects_auth_scope_and_input_before_provider(
+        self,
+    ) -> None:
+        self.server.enable_fixture_provider()
+        room = self.live_room()
+        requests = (
+            (
+                "POST",
+                "/api/classroom/session",
+                {"room": room, "sessionDescription": OFFER},
+            ),
+            (
+                "POST",
+                "/api/classroom/tracks",
+                {
+                    "room": room,
+                    "sessionId": "unbound-session",
+                    "action": "push",
+                    "tracks": [
+                        {
+                            "location": "local",
+                            "mid": "0",
+                            "trackName": "fixture-audio",
+                            "kind": "audio",
+                        }
+                    ],
+                    "sessionDescription": OFFER,
+                },
+            ),
+            (
+                "PUT",
+                "/api/classroom/renegotiate",
+                {
+                    "room": room,
+                    "sessionId": "unbound-session",
+                    "sessionDescription": ANSWER,
+                },
+            ),
+            (
+                "POST",
+                "/api/classroom/presence",
+                self.presence_body(room, "unbound-session"),
+            ),
+        )
+        for method, path, body in requests:
+            with self.subTest(path=path):
+                self.denied_before_provider(method, path, body, "", (401, 403))
+                self.denied_before_provider(
+                    method,
+                    path,
+                    {key: value for key, value in body.items() if key != "room"},
+                    self.owner,
+                    (400,),
+                )
+                self.denied_before_provider(method, path, body, self.guest, (403, 404))
+                self.denied_before_provider(method, path, body, self.viewer, (403, 409))
+                self.denied_before_provider(
+                    method,
+                    path,
+                    {**body, "room": "missingroom0001"},
+                    self.owner,
+                    (404,),
+                )
+        for offer in (
+            None,
+            ANSWER,
+            {"type": "offer", "sdp": {}},
+            {"type": "offer", "sdp": ""},
+        ):
+            self.denied_before_provider(
+                "POST",
+                "/api/classroom/session",
+                {"room": room, "sessionDescription": offer},
+                self.owner,
+                (400,),
+            )
+        for method, path, body in requests[1:]:
+            self.denied_before_provider(method, path, body, self.owner)
+        self.assertEqual(self.server.provider_calls(), [])
+        self.assertEqual(self.server.stored("classroom_media_sessions"), [])
+
+    def test_native_session_store_push_pull_and_scoped_presence_with_fixture_provider(
+        self,
+    ) -> None:
+        self.server.enable_fixture_provider()
+        room = self.live_room()
+        self.assertEqual(
+            self.command("room.join", {"id": room}, 2, self.viewer)[0], 200
+        )
+        publisher = self.media_session(room)
+        subscriber = self.media_session(room, self.viewer)
+        saved = next(
+            row
+            for row in self.server.stored("classroom_media_sessions")
+            if row["session_id"] == publisher
+        )
+        member = self.detail(room)[1]["membership"]
+        self.assertEqual(
+            (
+                saved["owner"],
+                saved["workspace"],
+                saved["room"],
+                saved["membership"],
+                saved["member_revision"],
+            ),
+            ("accountalice001", WORKSPACE, room, member["id"], member["revision"]),
+        )
+        self.assertEqual(saved["provider_app"], "fixture-only-app")
+        self.assertTrue(saved["active"])
+        self.assertFalse(saved["busy"])
+        self.assertEqual(saved["protocol_version"], 1)
+        remaining = datetime.fromisoformat(
+            saved["expires_at"].replace(" ", "T")
+        ) - datetime.now(timezone.utc)
+        self.assertGreater(remaining, timedelta(hours=3, minutes=55))
+        self.assertLessEqual(remaining, timedelta(hours=4))
+        self.assertEqual(json.loads(saved["tracks"]), [])
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            self.presence_body(room, publisher),
+            self.owner,
+        )
+        push = {
+            "room": room,
+            "sessionId": publisher,
+            "action": "push",
+            "sessionDescription": OFFER,
+            "tracks": [
+                {
+                    "location": "local",
+                    "mid": "0",
+                    "trackName": "fixture-audio",
+                    "kind": "audio",
+                }
+            ],
+        }
+        track = push["tracks"][0]
+        for malformed in (
+            {key: value for key, value in track.items() if key != "kind"},
+            {**track, "kind": "data"},
+            {**track, "location": "remote"},
+            {**track, "mid": 0},
+            {**track, "trackName": {"name": "fixture-audio"}},
+        ):
+            with self.subTest(track=malformed):
+                self.denied_before_provider(
+                    "POST",
+                    "/api/classroom/tracks",
+                    {**push, "tracks": [malformed]},
+                    self.owner,
+                    (400,),
+                )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/tracks",
+            {**push, "sessionId": subscriber},
+            self.viewer,
+            (403,),
+        )
+        code, pushed = self.server.request(
+            "POST", "/api/classroom/tracks", push, self.owner
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(
+            pushed["tracks"],
+            [{"location": "local", "mid": "0", "trackName": "fixture-audio"}],
+        )
+        published = next(
+            row
+            for row in self.server.stored("classroom_media_sessions")
+            if row["session_id"] == publisher
+        )
+        self.assertEqual(
+            json.loads(published["tracks"]),
+            [{"trackName": "fixture-audio", "kind": "audio"}],
+        )
+        self.assertFalse(published["busy"])
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            self.presence_body(room, publisher, "never-published"),
+            self.owner,
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            self.presence_body(room, publisher),
+            self.viewer,
+        )
+        status, advertised = self.server.request(
+            "POST",
+            "/api/classroom/presence",
+            self.presence_body(room, publisher),
+            self.owner,
+        )
+        self.assertEqual(status, 200)
+        self.assertFalse(
+            advertised["verified"],
+            "Fixture signalling cannot establish delivered media.",
+        )
+        self.assertNotEqual(advertised["access_basis"], "publisher_grant")
+        status, presence = self.server.request(
+            "GET", "/api/classroom/presence?room=" + room, token=self.viewer
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(len(presence["items"]), 1)
+        self.assertEqual(presence["items"][0]["session_id"], publisher)
+        self.assertEqual(
+            presence["items"][0]["tracks"],
+            [{"trackName": "fixture-audio", "kind": "audio"}],
+        )
+        self.assertNotIn("@fixture.invalid", json.dumps(presence))
+        pull = {
+            "room": room,
+            "sessionId": subscriber,
+            "action": "pull",
+            "tracks": [
+                {
+                    "location": "remote",
+                    "sessionId": publisher,
+                    "trackName": "fixture-audio",
+                }
+            ],
+        }
+        status, pulled = self.server.request(
+            "POST", "/api/classroom/tracks", pull, self.viewer
+        )
+        self.assertEqual(status, 200)
+        self.assertTrue(pulled["requiresImmediateRenegotiation"])
+        self.assertEqual(pulled["sessionDescription"]["type"], "offer")
+        self.assertEqual(pulled["tracks"], pull["tracks"])
+        self.denied_before_provider(
+            "PUT",
+            "/api/classroom/renegotiate",
+            {
+                "room": room,
+                "sessionId": subscriber,
+                "sessionDescription": OFFER,
+            },
+            self.viewer,
+            (400,),
+        )
+        self.assertEqual(
+            self.server.request(
+                "PUT",
+                "/api/classroom/renegotiate",
+                {
+                    "room": room,
+                    "sessionId": subscriber,
+                    "sessionDescription": ANSWER,
+                },
+                self.viewer,
+            )[0],
+            200,
+        )
+        self.assertEqual(len(self.server.provider_calls()), 5)
+        for collection, identity in (
+            ("classroom_media_sessions", saved["id"]),
+            ("classroom_presence", advertised["id"]),
+        ):
+            for method, suffix, body in (
+                ("GET", "", None),
+                ("GET", "/" + identity, None),
+                ("POST", "", {"owner": "accountalice001"}),
+                ("PATCH", "/" + identity, {"active": False}),
+                ("DELETE", "/" + identity, None),
+            ):
+                self.denied_before_provider(
+                    method,
+                    f"/api/collections/{collection}/records" + suffix,
+                    body,
+                    self.owner,
+                    (403, 404),
+                )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/close",
+            {"room": room, "sessionId": publisher},
+            self.viewer,
+            (403,),
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/close",
+            {"room": "missingroom0001", "sessionId": publisher},
+            self.owner,
+            (403,),
+        )
+        self.assertEqual(
+            self.command(
+                "room.leave", {"id": room, "membership_revision": member["revision"]}, 2
+            )[0],
+            200,
+        )
+        for session, token in ((publisher, self.owner), (subscriber, self.viewer)):
+            for _ in range(2):
+                code, closed = self.server.request(
+                    "POST",
+                    "/api/classroom/close",
+                    {"room": room, "sessionId": session},
+                    token,
+                )
+                self.assertEqual(code, 200)
+                self.assertTrue(closed["closed"])
+            self.denied_before_provider(
+                "PUT",
+                "/api/classroom/renegotiate",
+                {
+                    "room": room,
+                    "sessionId": session,
+                    "sessionDescription": ANSWER,
+                },
+                token,
+                (403,),
+            )
+        self.assertEqual(
+            len(self.server.provider_calls()),
+            5,
+            "Close invalidates local ownership without calling a provider.",
+        )
+        self.assertTrue(
+            all(
+                not row["active"] and not row["busy"]
+                for row in self.server.stored("classroom_media_sessions")
+            )
+        )
+        code, remaining_presence = self.server.request(
+            "GET", "/api/classroom/presence?room=" + room, token=self.viewer
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(remaining_presence["items"], [])
+
+    def test_native_media_rollback_retains_sessions_without_reactivating_bindings(
+        self,
+    ) -> None:
+        self.server.enable_fixture_provider()
+        room = self.live_room()
+        session = self.media_session(room)
+        before = self.server.stored("classroom_media_sessions")[0]
+        self.server.stop()
+        # The additive lesson is last; the media migration is immediately before it.
+        self.server.migrate("down", "2")
+        self.assertNotIn(
+            "protocol_version",
+            {
+                field["name"]
+                for field in self.server.collection("classroom_media_sessions")[
+                    "fields"
+                ]
+            },
+        )
+        self.server.start()
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/session",
+            {"room": room, "sessionDescription": OFFER},
+            self.owner,
+            (503,),
+        )
+        self.server.stop()
+        self.server.migrate("up")
+        self.server.start()
+        retained = self.server.stored("classroom_media_sessions")
+        self.assertEqual(len(retained), 1)
+        self.assertEqual(retained[0]["id"], before["id"])
+        self.assertEqual(retained[0]["owner"], before["owner"])
+        self.assertEqual(retained[0]["session_id"], session)
+        self.assertEqual(retained[0]["protocol_version"], 0)
+        self.denied_before_provider(
+            "PUT",
+            "/api/classroom/renegotiate",
+            {
+                "room": room,
+                "sessionId": session,
+                "sessionDescription": ANSWER,
+            },
+            self.owner,
+            (403,),
+        )
+        self.assertNotEqual(self.media_session(room), session)
+
+    def test_native_foreign_sessions_tracks_and_allowlisted_nonhosts_are_denied(
+        self,
+    ) -> None:
+        self.server.enable_fixture_provider()
+        room = self.live_room()
+        other_room = self.live_room()
+        foreign_room = self.live_room(self.guest, "workspacebravo1")
+        self.assertEqual(
+            self.command("room.join", {"id": room}, 2, self.editor)[0], 200
+        )
+        publisher = self.media_session(room)
+        editor_session = self.media_session(room, self.editor)
+        other_session = self.media_session(other_room)
+        foreign_session = self.media_session(foreign_room, self.guest)
+        push = {
+            "room": room,
+            "sessionId": publisher,
+            "action": "push",
+            "sessionDescription": OFFER,
+            "tracks": [
+                {
+                    "location": "local",
+                    "mid": "0",
+                    "trackName": "fixture-audio",
+                    "kind": "audio",
+                }
+            ],
+        }
+        self.assertEqual(
+            self.server.request("POST", "/api/classroom/tracks", push, self.owner)[0],
+            200,
+        )
+        self.assertEqual(
+            self.server.request(
+                "POST",
+                "/api/classroom/tracks",
+                {
+                    **push,
+                    "room": foreign_room,
+                    "sessionId": foreign_session,
+                },
+                self.guest,
+            )[0],
+            200,
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/session",
+            {
+                "room": foreign_room,
+                "sessionDescription": OFFER,
+            },
+            self.owner,
+            (403, 404),
+        )
+        for body, token in (
+            (push, self.editor),
+            ({**push, "sessionId": editor_session}, self.editor),
+            ({**push, "room": other_room}, self.owner),
+            ({**push, "sessionId": "unbound-session"}, self.owner),
+        ):
+            self.denied_before_provider("POST", "/api/classroom/tracks", body, token)
+        for body, token in (
+            ({"room": room, "sessionId": publisher}, self.editor),
+            ({"room": other_room, "sessionId": publisher}, self.owner),
+            ({"room": foreign_room, "sessionId": foreign_session}, self.owner),
+            ({"room": room, "sessionId": "unbound-session"}, self.owner),
+        ):
+            self.denied_before_provider(
+                "PUT",
+                "/api/classroom/renegotiate",
+                {**body, "sessionDescription": ANSWER},
+                token,
+            )
+        for target_room, target_session, source_session, track in (
+            (other_room, other_session, publisher, "fixture-audio"),
+            (room, publisher, foreign_session, "fixture-audio"),
+            (room, publisher, publisher, "unpublished-track"),
+            (room, publisher, "unbound-session", "fixture-audio"),
+        ):
+            self.denied_before_provider(
+                "POST",
+                "/api/classroom/tracks",
+                {
+                    "room": target_room,
+                    "sessionId": target_session,
+                    "action": "pull",
+                    "tracks": [
+                        {
+                            "location": "remote",
+                            "sessionId": source_session,
+                            "trackName": track,
+                        }
+                    ],
+                },
+                self.owner,
+            )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            self.presence_body(other_room, publisher),
+            self.owner,
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            self.presence_body(room, "unbound-session"),
+            self.guest,
+        )
+        self.denied_before_provider(
+            "GET", "/api/classroom/presence?room=" + room, None, self.guest, (403, 404)
+        )
+        self.denied_before_provider(
+            "GET",
+            "/api/classroom/presence?room=" + foreign_room,
+            None,
+            self.owner,
+            (403, 404),
+        )
+
+    def test_native_leave_rejoin_stale_and_revoked_attendance_fence_media(self) -> None:
+        self.server.enable_fixture_provider()
+        room = self.live_room(self.editor)
+        session = self.media_session(room, self.editor)
+        member = self.detail(room, self.editor)[1]["membership"]
+        self.assertEqual(
+            self.command(
+                "room.leave",
+                {"id": room, "membership_revision": member["revision"]},
+                2,
+                self.editor,
+            )[0],
+            200,
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/session",
+            {"room": room, "sessionDescription": OFFER},
+            self.editor,
+        )
+        self.assertEqual(
+            self.command("room.join", {"id": room}, 2, self.editor)[0], 200
+        )
+        self.denied_before_provider(
+            "PUT",
+            "/api/classroom/renegotiate",
+            {"room": room, "sessionId": session, "sessionDescription": ANSWER},
+            self.editor,
+        )
+        session = self.media_session(room, self.editor)
+        self.server.fixture_change("""
+            for (const row of app.findRecordsByFilter('classroom_members', 'owner = {:owner}', '', 10, 0, { owner: 'accountbravo001' })) {
+                row.set('last_seen', '2000-01-01T00:00:00.000Z'); app.save(row);
+            }
+        """)
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/session",
+            {"room": room, "sessionDescription": OFFER},
+            self.editor,
+        )
+        self.denied_before_provider(
+            "PUT",
+            "/api/classroom/renegotiate",
+            {"room": room, "sessionId": session, "sessionDescription": ANSWER},
+            self.editor,
+        )
+        self.denied_before_provider(
+            "GET", "/api/classroom/presence?room=" + room, None, self.editor
+        )
+        self.assertEqual(
+            self.command("room.join", {"id": room}, 2, self.editor)[0], 200
+        )
+        session = self.media_session(room, self.editor)
+        self.server.fixture_change("""
+            for (const row of app.findRecordsByFilter('workspace_members', 'user = {:user}', '', 10, 0, { user: 'accountbravo001' })) app.delete(row);
+        """)
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/session",
+            {"room": room, "sessionDescription": OFFER},
+            self.editor,
+        )
+        self.denied_before_provider(
+            "PUT",
+            "/api/classroom/renegotiate",
+            {"room": room, "sessionId": session, "sessionDescription": ANSWER},
+            self.editor,
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            self.presence_body(room, session),
+            self.editor,
+        )
+        self.denied_before_provider(
+            "GET", "/api/classroom/presence?room=" + room, None, self.editor
+        )
+
+    def test_native_expired_inactive_provider_mismatch_and_ended_sessions_fail_closed(
+        self,
+    ) -> None:
+        self.server.enable_fixture_provider()
+        for field, value in (
+            ("expires_at", "2000-01-01T00:00:00.000Z"),
+            ("active", False),
+            ("provider_app", "different-fixture-app"),
+            ("protocol_version", 0),
+            ("busy", True),
+        ):
+            with self.subTest(field=field):
+                room = self.live_room()
+                session = self.media_session(room)
+                self.server.fixture_change(
+                    "const row = app.findRecordsByFilter('classroom_media_sessions', 'session_id = {:session}', '', 1, 0, "
+                    + json.dumps({"session": session})
+                    + ")[0]; row.set("
+                    + json.dumps(field)
+                    + ", "
+                    + json.dumps(value)
+                    + "); app.save(row);"
+                )
+                self.denied_before_provider(
+                    "PUT",
+                    "/api/classroom/renegotiate",
+                    {"room": room, "sessionId": session, "sessionDescription": ANSWER},
+                    self.owner,
+                )
+                self.denied_before_provider(
+                    "POST",
+                    "/api/classroom/presence",
+                    self.presence_body(room, session),
+                    self.owner,
+                )
+        room = self.live_room()
+        session = self.media_session(room)
+        self.assertEqual(self.command("room.end", {"id": room}, 2)[0], 200)
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/session",
+            {"room": room, "sessionDescription": OFFER},
+            self.owner,
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/tracks",
+            {
+                "room": room,
+                "sessionId": session,
+                "action": "push",
+                "sessionDescription": OFFER,
+                "tracks": [
+                    {
+                        "location": "local",
+                        "mid": "0",
+                        "trackName": "fixture-audio",
+                        "kind": "audio",
+                    }
+                ],
+            },
+            self.owner,
+        )
+        self.denied_before_provider(
+            "PUT",
+            "/api/classroom/renegotiate",
+            {"room": room, "sessionId": session, "sessionDescription": ANSWER},
+            self.owner,
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            self.presence_body(room, session),
+            self.owner,
+        )
+        self.denied_before_provider(
+            "GET", "/api/classroom/presence?room=" + room, None, self.owner
+        )
 
 
 if __name__ == "__main__":

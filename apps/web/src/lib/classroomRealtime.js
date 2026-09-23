@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/classroomRealtime.js
 // Stage:       07_BUILD
-// SRS:         SRS-CN-PERSONA-RUNTIME-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    C-ONE-20260918-PERSONA-RUNTIME-001
-// Seat:        C-ONE
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
 // Depends:     apps/pocketbase/pb_hooks/classroom-realtime.pb.js, apps/pocketbase/pb_hooks/classroom-presence.pb.js
@@ -65,6 +65,7 @@ export const API = {
     session: `${BACKEND_BASE}/api/classroom/session`,
     tracks: `${BACKEND_BASE}/api/classroom/tracks`,
     renegotiate: `${BACKEND_BASE}/api/classroom/renegotiate`,
+    close: `${BACKEND_BASE}/api/classroom/close`,
     presence: `${BACKEND_BASE}/api/classroom/presence`,
     presenceHealth: `${BACKEND_BASE}/api/classroom/presence/health`,
     health: `${BACKEND_BASE}/api/classroom/health`,
@@ -281,14 +282,18 @@ export async function inboundAudioStats(pc) {
  * Joins a classroom.
  *
  * @param {object} opts
+ * @param {string} opts.room          Current native classroom identifier.
  * @param {'teach'|'watch'} opts.role   teach publishes camera/mic; watch subscribes.
  * @param {string} [opts.authToken]     PocketBase auth token.
  * @param {string} [opts.seatId]        seat the deterministic track names derive from.
  * @param {(s:string)=>void} [opts.onState] progress callback for the UI.
  * @param {MediaStream} [opts.localStream] existing stream, else getUserMedia is used.
+ * @param {() => boolean} [opts.isCurrent] Captured account/room lifetime.
+ * @param {(close: () => void) => void} [opts.onCleanup] Register immediate local cancellation.
  * @returns {Promise<object>} handle with { sessionId, pc, tracks, remoteStream, mayPublish, iceComplete, close() }
  */
 export async function joinClassroom(opts = {}) {
+    if (typeof opts.room !== 'string' || !/^[a-zA-Z0-9_-]{1,64}$/.test(opts.room)) throw new Error('room required');
     const role = opts.role === 'teach' ? 'teach' : 'watch';
     const say = opts.onState || (() => {});
 
@@ -302,8 +307,28 @@ export async function joinClassroom(opts = {}) {
     // Inbound tracks land here so the page has one object to hand an <audio>/<video>
     // element. Without it a pulled track arrives and is never rendered.
     const remoteStream = typeof MediaStream === 'undefined' ? null : new MediaStream();
+    let closed = false, sessionId = '', closeSent = false;
+    const isCurrent = () => !closed && (!opts.isCurrent || opts.isCurrent());
+    const close = () => {
+        closed = true;
+        for (const media of [stream, remoteStream]) {
+            try { for (const track of media?.getTracks() || []) track.stop(); } catch { /* Continue closing the peer. */ }
+        }
+        try { pc.close(); } catch { /* Local teardown is best effort. */ }
+        if (sessionId && !closeSent) {
+            closeSent = true;
+            // The server invalidates only this account's bound session. Failure
+            // does not undo local teardown or authorize an automatic retry.
+            void post(API.close, { room: opts.room, sessionId }, opts.authToken).catch(() => {});
+        }
+    };
+    const requireCurrent = () => {
+        if (!isCurrent()) { close(); throw new Error('Media join was cancelled.'); }
+    };
+    opts.onCleanup?.(close);
     if (remoteStream) {
         pc.addEventListener('track', (event) => {
+            if (!isCurrent()) { event.track?.stop(); return; }
             // A duplicate addTrack is harmless and expected; anything else is an
             // inbound track that will never be heard, so it is reported rather than
             // swallowed under a comment about duplicates.
@@ -318,17 +343,19 @@ export async function joinClassroom(opts = {}) {
     }
 
     try {
+        requireCurrent();
         if (role === 'teach') {
             say('requesting camera and microphone');
             if (!stream) {
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
             }
+            requireCurrent();
             for (const track of stream.getTracks()) {
                 const tx = pc.addTransceiver(track, { direction: 'sendonly' });
                 const kind = track.kind === 'video' ? 'cam' : 'mic';
                 localTracks.push({
                     location: 'local',
-                    mid: tx.mid,
+                    transceiver: tx,
                     // Unconditional: see trackNameFor. A falsy seatId yields
                     // seat:anon/<kind>, never a random UUID.
                     trackName: trackNameFor(opts.seatId, kind),
@@ -344,17 +371,25 @@ export async function joinClassroom(opts = {}) {
 
         say('creating offer');
         const offer = await pc.createOffer();
+        requireCurrent();
         await pc.setLocalDescription(offer);
+        requireCurrent();
         const iceComplete = await whenIceComplete(pc);
+        requireCurrent();
         if (!iceComplete) say('ICE gathering timed out; sending a partially gathered offer');
 
         say('opening SFU session');
         const session = await post(API.session, {
+            room: opts.room,
             sessionDescription: { type: 'offer', sdp: pc.localDescription.sdp },
         }, opts.authToken);
+        sessionId = session.sessionId || '';
+        requireCurrent();
 
+        if (session.room !== opts.room || !sessionId) throw new Error('The backend did not bind this media session to the classroom. Install the matching backend before joining.');
         if (!session.sessionDescription) throw new Error('SFU returned no answer');
         await pc.setRemoteDescription(new RTCSessionDescription(session.sessionDescription));
+        requireCurrent();
         say(`session ${String(session.sessionId).slice(0, 8)}… established`);
 
         // Advisory only — the server re-checks on every push.
@@ -367,31 +402,31 @@ export async function joinClassroom(opts = {}) {
         if (role === 'teach' && mayPublish && localTracks.length) {
             say('publishing tracks');
             tracks = await post(API.tracks, {
+                room: opts.room,
                 sessionId: session.sessionId,
                 action: 'push',
-                tracks: localTracks.map((t) => ({ location: t.location, mid: t.mid, trackName: t.trackName })),
+                tracks: localTracks.map((t) => ({ location: t.location, mid: t.transceiver.mid, trackName: t.trackName, kind: t.mediaKind })),
                 sessionDescription: { type: 'offer', sdp: pc.localDescription.sdp },
             }, opts.authToken);
+            requireCurrent();
         }
 
         return {
+            room: opts.room,
             sessionId: session.sessionId,
             pc,
             stream,
             remoteStream,
             tracks,
             iceComplete,
-            published: localTracks.map((t) => ({ trackName: t.trackName, kind: t.mediaKind })),
+            published: tracks ? localTracks.map((t) => ({ trackName: t.trackName, kind: t.mediaKind })) : [],
             mayPublish,
             role,
-            close() {
-                try { for (const t of (stream ? stream.getTracks() : [])) t.stop(); } catch { /* best effort */ }
-                try { pc.close(); } catch { /* best effort */ }
-            },
+            close,
+            isCurrent,
         };
     } catch (err) {
-        try { for (const t of (stream ? stream.getTracks() : [])) t.stop(); } catch { /* best effort */ }
-        try { pc.close(); } catch { /* best effort */ }
+        close();
         throw err;
     }
 }
@@ -416,6 +451,9 @@ export async function joinClassroom(opts = {}) {
  */
 export async function pullTracks(handle, remote, authToken) {
     if (!handle || !handle.sessionId) throw new Error('no session');
+    if (!handle.room) throw new Error('room required');
+    const requireCurrent = () => { if (handle.isCurrent && !handle.isCurrent()) throw new Error('Media session was cancelled.'); };
+    requireCurrent();
     const wanted = (Array.isArray(remote) ? remote : [])
         .filter((t) => t && t.trackName && t.sessionId)
         .map((t) => ({ location: 'remote', trackName: String(t.trackName), sessionId: String(t.sessionId) }));
@@ -423,19 +461,26 @@ export async function pullTracks(handle, remote, authToken) {
     if (!wanted.length) throw new Error('no tracks requested');
 
     const res = await post(API.tracks, {
+        room: handle.room,
         sessionId: handle.sessionId,
         action: 'pull',
         tracks: wanted,
     }, authToken);
+    requireCurrent();
 
     if (res.requiresImmediateRenegotiation && res.sessionDescription) {
         await handle.pc.setRemoteDescription(new RTCSessionDescription(res.sessionDescription));
+        requireCurrent();
         const answer = await handle.pc.createAnswer();
+        requireCurrent();
         await handle.pc.setLocalDescription(answer);
+        requireCurrent();
         await send('PUT', API.renegotiate, {
+            room: handle.room,
             sessionId: handle.sessionId,
             sessionDescription: { type: 'answer', sdp: handle.pc.localDescription.sdp },
         }, authToken);
+        requireCurrent();
     }
     return res;
 }
@@ -483,6 +528,7 @@ export async function listPresence(room, authToken) {
  * @param {number} [opts.ttlMs]
  * @param {string} [opts.personaId]
  * @param {string} [opts.authToken]
+ * @param {() => string} [opts.getAuthToken] Current token within the same captured lifetime.
  * @param {() => number} [opts.now]
  * @returns {Promise<object>}
  */
@@ -507,7 +553,7 @@ export async function publishPresence(opts = {}) {
         manifest_id: opts.manifestId || '',
         capsule_digest: opts.capsuleDigest || '',
         expires_at: new Date(now() + ttl).toISOString(),
-    }, opts.authToken);
+    }, opts.getAuthToken ? opts.getAuthToken() : opts.authToken);
 }
 
 /**
@@ -580,7 +626,7 @@ export function startPresenceHeartbeat(opts = {}) {
 export function createPresenceTracker(opts = {}) {
     const handle = opts.handle;
     const room = opts.room;
-    const authToken = opts.authToken;
+    const authToken = () => opts.getAuthToken ? opts.getAuthToken() : opts.authToken;
     const now = opts.now || (() => Date.now());
     const list = opts.list || listPresence;
     const pullImpl = opts.pull || pullTracks;
@@ -597,6 +643,7 @@ export function createPresenceTracker(opts = {}) {
         .map((t) => `${row.session_id}::${t.trackName}`);
 
     async function pullRow(row) {
+        if (stopped || handle?.isCurrent && !handle.isCurrent()) throw new Error('Media discovery was cancelled.');
         const wanted = (Array.isArray(row.tracks) ? row.tracks : [])
             .filter((t) => t && t.trackName)
             .map((t) => ({ sessionId: row.session_id, trackName: t.trackName }));
@@ -606,7 +653,8 @@ export function createPresenceTracker(opts = {}) {
         // page's Listen button can overlap - cannot issue the same pull twice.
         for (const key of keys) inFlight.add(key);
         try {
-            const res = await pullImpl(handle, wanted, authToken);
+            const res = await pullImpl(handle, wanted, authToken());
+            if (stopped || handle?.isCurrent && !handle.isCurrent()) return null;
             for (const key of keys) pulled.set(key, row.id || row.session_id);
             return res;
         } finally {
@@ -615,7 +663,9 @@ export function createPresenceTracker(opts = {}) {
     }
 
     async function tick() {
-        const rows = await list(room, authToken);
+        if (stopped || handle?.isCurrent && !handle.isCurrent()) return null;
+        const rows = await list(room, authToken());
+        if (stopped || handle?.isCurrent && !handle.isCurrent()) return null;
         const at = now();
         const live = rows.filter((row) => isLivePresence(row, at));
         const unreadable = rows.filter((row) => isUnreadablePresence(row, at));
@@ -630,6 +680,7 @@ export function createPresenceTracker(opts = {}) {
 
         const pulledNow = [];
         for (const row of live) {
+            if (stopped || handle?.isCurrent && !handle.isCurrent()) return null;
             if (handle && row.session_id === handle.sessionId) continue;   // never pull our own body
             if (!select(row)) continue;
             const keys = keysOf(row);
@@ -639,11 +690,11 @@ export function createPresenceTracker(opts = {}) {
                 await pullRow(row);
                 pulledNow.push(row);
             } catch (err) {
-                if (opts.onError) opts.onError(err, row);
+                if (!stopped && opts.onError) opts.onError(err, row);
             }
         }
         const result = { live, unreadable, pulled: pulledNow, expired };
-        if (opts.onChange) opts.onChange(result);
+        if (!stopped && opts.onChange) opts.onChange(result);
         return result;
     }
 
