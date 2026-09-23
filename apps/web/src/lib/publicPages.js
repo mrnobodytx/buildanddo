@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/publicPages.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PUBLIC-REDACTION-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
@@ -15,7 +15,7 @@
 // Intent:      Keep public navigation, canonical metadata and crawler output on the same route catalogue.
 // ───────────────────────────────────────────────────────────────
 
-// Measured 2026-09-20 from a fleet box (rig1 cannot measure TLS - its antivirus terminates and
+// Measured 2026-09-20 from a fleet box (the operator's workstation cannot measure TLS - its antivirus terminates and
 // re-signs every connection): buildanddo.com resolves through Cloudflare and answers 200, while
 // buildanddo.tech has NO DNS RECORD AT ALL. This constant feeds the canonical link, the Open
 // Graph image and the JSON-LD WebSite.url in Seo.jsx, so production was telling search engines

@@ -2,7 +2,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/fleet_report.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-WORKSPACE-001
+# SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-PUBLIC-REDACTION-001
 # CAPS:        pending
 # CK:          pending
 # Seat:        BITS-CODEGEN
@@ -45,6 +45,11 @@ import argparse
 import datetime as dt
 import json
 from pathlib import Path
+
+try:  # imported as part of the repository (the tests), or run as a script from scripts/ci (the build)
+    from scripts.ci import public_redaction
+except ImportError:
+    import public_redaction  # type: ignore[no-redef]
 
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_DIR = ROOT / "apps" / "web" / "public"
@@ -405,7 +410,7 @@ PLATFORMS = [
         "label": "GitLab CE",
         "state": "connected",
         "verified": True,
-        "detail": "Self-hosted CE with a runner on citadel-vps-hq; scanners not enabled.",
+        "detail": "Self-hosted CE with one registered runner; scanners not enabled.",
         "first_detected": "2026-07-02",
         "features": [
             {"name": "Projects API", "status": STATUS_CONFIGURED,
@@ -413,7 +418,7 @@ PLATFORMS = [
             {"name": "Pipelines", "status": STATUS_CONFIGURED,
              "recommendation": "None. Candidate mirror pipeline runs on push."},
             {"name": "Runners", "status": STATUS_CONFIGURED,
-             "recommendation": "None. One runner registered on citadel-vps-hq."},
+             "recommendation": "None. One runner is registered."},
             {"name": "Merge request automation", "status": STATUS_UNDERUSED,
              "recommendation": "Mirror the public actor-label gate onto the private plane."},
             {"name": "Container registry", "status": STATUS_UNDERUSED,
@@ -646,6 +651,11 @@ def main(argv: list[str] | None = None) -> int:
             "actual": actual,
         }, indent=2))
 
+    # platform-health.json is public, so it passes the rule on the way out; fleet-status.json stays
+    # in state/ for the operator.
+    rule = public_redaction.Rule()
+    platform, withheld = rule.redact_document(platform)
+    public_redaction.report_withheld(rule, withheld, PLATFORM_OUT.name)
     _write(FLEET_OUT, fleet)
     _write(PLATFORM_OUT, platform)
 
