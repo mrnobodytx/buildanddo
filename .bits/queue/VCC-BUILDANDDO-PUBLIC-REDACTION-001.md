@@ -35,6 +35,9 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
 | 5 | Whole suite, production build and a scan of `dist/apps/web` | `npm test`, `npm run build`, then the test again with `dist/apps/web` present | done |
 | 6 | Continuation R5: a name joined into a slug is caught; the mesh family keeps its word boundary | `python -m unittest tests.upgrade.test_public_redaction -k slug` (fails on `46ced1b`) | done |
 | 7 | Continuation R6: the shipping header the stricter rule catches names its seat | `python -m unittest tests.upgrade.test_public_redaction` with `dist/apps/web` present | done |
+| 8 | Continuation R7: a scan lets the unspecified address through, as it does loopback | `python -m unittest tests.upgrade.test_public_redaction -k unspecified` (fails on `1545c48`) | done |
+| 9 | Continuation R8: the documentation address in the same place is still caught; the built site with the voice chunk scans clean | the same test; `public_redaction.py scan dist/apps/web` after `npm run build` | done |
+| 10 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`, `verify_public_boundary.py` | done |
 
 ## Constraints
 
@@ -43,7 +46,8 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
   `apps/web/src/lib/operatorPlane.js`, `apps/web/src/lib/publicPages.js`,
   `apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx`,
   `tests/upgrade/test_public_redaction.py`, and this bookkeeping. The continuation adds the header of
-  `apps/web/src/hooks/useRoomsLive.js` and the readiness and context locks.
+  `apps/web/src/hooks/useRoomsLive.js` and the readiness and context locks. Continuation R7-R8 touches
+  only `scripts/ci/public_redaction.py`, its test, this bookkeeping and the two locks.
 - Files it must not touch: the other files that name a machine (a separate dispatch),
   `scripts/publish/activity_publish.py` and the Buddi work (SRS-BUILDANDDO-BUDDI-001), the
   community work (SRS-BUILDANDDO-COMMUNITY-WEB-001), and `apps/web/public/activity-status.json`.
@@ -86,6 +90,20 @@ JSON, not the site bundle. A test that fails on today's code, with controls, pro
   read the review as stale. Rebound from an LF checkout in its own commit, which also acknowledges 33
   sources changed since the last refresh, all by this seat's reviewed and merged work. No acceptance
   state changed.
+
+## Evidence, continuation R7-R8 (2026-09-23, local run on Windows, LF checkout)
+
+- **Found by:** #85's voice SDK. The voice chunk in a production build names the all-zeros address five
+  times, in its session-description code, and `public_redaction.py scan dist/apps/web` failed on that one
+  file. The build had been clean before the SDK.
+- **Before** (`1545c48` with only the new test): the test fails, because the scan reports the address.
+- **After:** the test passes. With the private fleet map and `dist/apps/web` present, 12 of 12 pass. The
+  scanner from `1545c48` fails the same build on the voice chunk; this one passes it.
+- **Controls:** the documentation address 203.0.113.9 in the same text still fails the unit test. Planted
+  into a copy of the built voice chunk, it fails the scan (exit 1). Without the scan allowance the
+  all-zeros address is still reported, and `redact()` still withholds it.
+- **Gates:** `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`
+  and `verify_public_boundary.py` pass, also in a fresh LF checkout.
 
 ## Definition of done
 

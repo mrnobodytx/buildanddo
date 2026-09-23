@@ -69,6 +69,21 @@ its seat `<machine>-release`, both went unflagged.
 6. **R6 - the shipping source that the stricter rule catches is corrected.** `useRoomsLive.js` names its
    seat, not a machine, in its header.
 
+## Continuation (2026-09-23): the unspecified address
+
+PR #85 (SRS-BUILDANDDO-BUDDI-003) added the ElevenLabs voice SDK. Its session-description code carries the
+unspecified IPv4 address, the all-zeros one, which a WebRTC offer uses before any candidate is known. A scan
+of the built site therefore failed on one address in the voice chunk, where the build had been clean before.
+The all-zeros address means "no particular address": like loopback, it identifies no machine. A scan that
+fails on every build teaches everyone to ignore it.
+
+7. **R7 - a scan lets the unspecified address through, as it does loopback.** With the scan allowance,
+   `find_ips` reports neither loopback nor the all-zeros IPv4 address, and neither do `scan_tree` and the
+   `scan` command. The exemption is named for what it is (`UNSPECIFIED`). Without the allowance both are still
+   reported, and `redact()` is unchanged, so a published document still withholds the address.
+8. **R8 - every other address is still caught.** The documentation address 203.0.113.9, in the same place,
+   still fails the scan. The new test fails on the previous rule and passes now.
+
 ## Non-goals
 
 - The 33 tracked files that name a machine in scripts, docs, migrations or test fixtures, and the
