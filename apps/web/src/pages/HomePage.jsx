@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/HomePage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CHANGELOG-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CHANGELOG-001
+// Seat:        BITS-CODEGEN, C-ONE (the What shipped desk)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/hooks/useMissionResearch.js
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/hooks/useMissionResearch.js, apps/web/src/components/editorial/ChangelogDesk.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/components/workspace/TutorialCatalog.jsx; CONSUMES apps/web/src/lib/workspaceSummary.js; CONSUMES apps/web/src/components/editorial/EditorialFrontPage.jsx; CONSUMES apps/web/src/hooks/useMissionResearch.js
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/components/workspace/TutorialCatalog.jsx; CONSUMES apps/web/src/lib/workspaceSummary.js; CONSUMES apps/web/src/components/editorial/EditorialFrontPage.jsx; CONSUMES apps/web/src/hooks/useMissionResearch.js; CONSUMES apps/web/src/components/editorial/ChangelogDesk.jsx
 // DAG Node:    none
 // Intent:      Project authenticated workspace records onto the front page with provenance, recoverable intake and no anonymous private reads.
 // ───────────────────────────────────────────────────────────────
@@ -38,6 +38,7 @@ import Faq, { FAQ_ITEMS } from '@/components/site/Faq';
 import Seo from '@/components/Seo';
 import EditorialStory from '@/components/motion/EditorialStory';
 import EditorialFrontPage from '@/components/editorial/EditorialFrontPage';
+import ChangelogDesk from '@/components/editorial/ChangelogDesk';
 import ReadingProgress from '@/components/motion/ReadingProgress';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import {
@@ -652,6 +653,7 @@ function EditionContent({ sources = {}, workspaceControls, workspaceId = '' }) {
             <ChallengeDesk challenges={sources.challenges} />
             <EvidenceLedger evidence={sources.evidence} />
             <Corrections corrections={sources.corrections} />
+            <ChangelogDesk />
             <DailyEdition editions={sources.editions} />
             <SupportRevenue support={sources.support} />
             <FieldManual />
@@ -749,14 +751,6 @@ export default function HomePage() {
                 <EditorialStory />
                 <EarlyAccess />
                 <Faq />
-                <div className="mx-auto max-w-6xl px-4 pb-4 text-center text-[10px] text-muted-foreground/40 sm:px-6">
-                    <p className="font-evidence uppercase tracking-[0.14em]">Version log</p>
-                    <ul className="mt-1 space-y-0.5">
-                        <li>v3 — self-hosted deploy pipeline proof (2026-09-07)</li>
-                        <li>v2 — edit-proof-20260907b</li>
-                        <li>v1 — edit-proof-20260907</li>
-                    </ul>
-                </div>
             </main>
             <Footer />
         </div>

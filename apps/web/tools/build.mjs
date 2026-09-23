@@ -32,6 +32,14 @@ for (const python of ['python3', 'python']) {
     if (result.status === 0) break;
 }
 
+// public/changelog.xml + public/changelog.json - the reader-facing changes of the commits this build is
+// made from (SRS-BUILDANDDO-CHANGELOG-001). Best-effort the same way: a container build context has no
+// .git, so there is no feed, and the home page's "What shipped" desk says so.
+for (const python of ['python3', 'python']) {
+    const result = spawnSync(python, ['../../scripts/ci/changelog_feed.py'], { stdio: 'inherit' });
+    if (result.status === 0) break;
+}
+
 // An explicit environment is honored; otherwise the existing browser hostname
 // resolver chooses production/staging/preview instead of stamping CI into RUM.
 const buildEnvironment = {

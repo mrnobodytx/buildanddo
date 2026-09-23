@@ -88,6 +88,37 @@ git log --no-merges --oneline main | wc -l
 python -c "import json;print(json.load(open('state/changelog/latest.json'))['entry_count'])"
 ```
 
+## Continuation (2026-09-23, C-ONE): the changelog as a public feed
+
+Operator direction: publish the changelog as an RSS feed and show it as one of the feed sections on
+the home page. The generated changelog above reaches no reader. It is a file in the repository, and the
+home page still carries a hand-written "Version log" that stopped on 2026-09-07.
+
+6. **R6 - a feed from the commits the site is built from.** `scripts/ci/changelog_feed.py` (standard
+   library) reads the non-merge commits of the build's own ref, classifies them with the rules of
+   `changelog_gen.py`, and writes `apps/web/public/changelog.xml` (RSS 2.0) and
+   `apps/web/public/changelog.json`. The feed carries what a reader would notice (features, fixes,
+   performance, security, removals and content) and leaves housekeeping (chore, docs, ci, build, test,
+   style, refactor) to `CHANGELOG.md`. Every title passes the public redaction rule
+   (SRS-BUILDANDDO-PUBLIC-REDACTION-001). The output is a pure function of the history, with no
+   wall-clock time, so the same ref writes the same bytes. Both files are build output and git-ignored,
+   like `platform-health.json`.
+7. **R7 - the build runs it best-effort.** `apps/web/tools/build.mjs` runs the generator before Vite, the
+   way it runs `fleet_report.py`. A build without git history (a container context) produces no feed and
+   still builds.
+8. **R8 - a "What shipped" desk on the home page.** It reads `/changelog.json`, shows the latest changes
+   with their kind, date and SRS code and a link to each change, and offers the RSS feed. A missing or
+   unreadable feed is said in words, never shown as a quiet week. The page head advertises the feed to
+   readers that look for one. The hand-written "Version log" is removed.
+
+Acceptance evidence for the continuation:
+
+6. A feed built from a planted history carries only the reader-facing commits, newest first, and no merge.
+7. A machine name planted in a subject is withheld, and the RSS parses as XML with one item per entry.
+8. Two runs on the same ref write byte-identical files. With no git history the generator writes
+   nothing, and the build still succeeds.
+9. The desk renders the entries, says so when the feed is missing, and links the RSS feed.
+
 ## Notes for the implementing agent
 
 The separator characters matter. ASCII unit and record separators (`\x1f`,
