@@ -1,0 +1,65 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/edge/wrangler.toml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     apps/edge/src/index.js
+# EnumType:    Config
+# EnumEdges:   DEPLOYS apps/edge/src/index.js
+# DAG Node:    none
+# Intent:      Pin the deployed edge worker's identity, routes and compatibility date.
+# ───────────────────────────────────────────────────────────────
+
+# Every value here is READ BACK FROM THE LIVE WORKER (2026-09-22), not chosen: the script
+# already existed in Cloudflare with no source in git, so this config describes what is
+# deployed rather than proposing something new. A `wrangler deploy` from this directory
+# should therefore be a no-op apart from the CSP change in src/index.js.
+name = "buildanddo-edge"
+main = "src/index.js"
+compatibility_date = "2026-09-13"
+account_id = "cc14bd6176a780122231e2570b77928f"
+
+# Read back from the zone's worker routes. The apex and www are covered; staging is NOT,
+# which is why staging keeps the origin nginx header and these two do not.
+routes = [
+  { pattern = "buildanddo.com/*", zone_name = "buildanddo.com" },
+  { pattern = "www.buildanddo.com/*", zone_name = "buildanddo.com" },
+]
+
+# The live worker reports observability disabled, so nothing it does is currently visible:
+# no request logs, no way to see the CSP being applied or a fetch to the origin failing.
+# Turning it on is what Cloudflare's own "Next steps" panel recommends for this account,
+# and it costs nothing on a worker that only rewrites headers.
+[observability]
+enabled = true
+
+# The allow-lists stay compile-time constants so a policy change is reviewable in a diff rather
+# than invisible in a dashboard variable. The one binding below is new and is NOT read back from
+# the live worker — it is the first thing here that proposes rather than describes.
+
+# CSEG read projection. Canonical truth stays in NXC/DKG/Supabase; this database holds a bounded
+# public projection of the CNI Living Company Atlas, served at POST /api/graph/match. Created
+# 2026-09-22; the account had no D1 databases before it.
+#
+# Load it with:  wrangler d1 execute cni-edge-graph --remote --file=<graph>.d1.sql
+# The export begins with DELETE FROM quads WHERE g=<graph>, so loading is idempotent.
+[[d1_databases]]
+binding = "CNI_GRAPH"
+database_name = "cni-edge-graph"
+database_id = "48dbecc3-5cf2-439a-803c-df4561e3b377"
+
+# SECRET, not a var — set it out of band and never in this file:
+#
+#   wrangler secret put CSEG_PRINCIPAL_SECRET
+#
+# Shared with whatever BuildAndDo service mints principal tokens, and it must be the only thing
+# that can. While it is unset every caller is anonymous, so public_read graphs answer and gated
+# ones return DENIED: a safe default, not a broken one. The token is HS256, iss "buildanddo", a
+# short exp, claims {sub, authority, trust_points, platforms, roles, regions}, and is minted only
+# after the backend has authenticated the user — a token is a statement by the backend, never by
+# the browser.

@@ -1,0 +1,11 @@
+{
+	"name": "edge",
+	"type": "module",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dry-run": "wrangler deploy --dry-run",
+		"test": "vitest run --reporter=default --reporter=junit --outputFile.junit=../../reports/junit/edge.xml"
+	}
+}
