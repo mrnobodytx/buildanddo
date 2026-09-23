@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BuddiGuide from '@/components/buddi/BuddiGuide';
 import { Button, Card } from '@/components/site/ui';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
@@ -33,6 +34,7 @@ export default function NextWorkspaceActions({ signals, missions, evidence }) {
         ...Object.fromEntries(Object.entries(sources).map(([name, value]) => [name, value.records])) });
     return <section className="space-y-3 ph-no-capture" data-dd-privacy="mask" aria-label="Next workspace actions">
         <h2 className="font-display text-xl font-semibold">What needs attention next</h2>
+        <BuddiGuide view={view} loading={loading} />
         {demo ? <p>Demo records do not determine actions for your workspace.</p> : loading ? <p role="status">Checking current work…</p> : view.state === 'unavailable' ? <div role="alert">
             <p>Next actions are unavailable until the workspace records can be read.</p><Button size="sm" variant="secondary" onClick={() => Object.values(sources).forEach((source) => source.refresh())}>Retry workspace reads</Button></div>
             : <ul className="grid gap-3 sm:grid-cols-2">{view.actions.map((action) => <li key={action.id}><Card className="h-full space-y-2 p-4">

@@ -214,6 +214,12 @@ srs:
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-DEVENV-001.md
 
+  - code: SRS-BUILDANDDO-BUDDI-001
+    title: Brand mark and the Buddi mascot with server-confirmed achievements
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-BUDDI-001.md
+
   - code: SRS-BUILDANDDO-CHANGELOG-001
     title: Public record - generated changelog, release summary, README roadmap mirror
     status: in_progress

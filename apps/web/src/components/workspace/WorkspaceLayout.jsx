@@ -57,6 +57,7 @@ import { Button } from '@/components/site/ui';
 import { StatusBadge, DOMAIN_STATUS } from './workspaceHelpers';
 import { DemoModeBanner } from './WorkspaceNotices';
 import WorkspaceAssistant from './WorkspaceAssistant';
+import LogoMark from '@/components/buddi/LogoMark';
 
 // Build and Do lead; the rest is grouped so a new user sees five headings, not
 // thirty-five links. Every destination is still here; only its placement changed.
@@ -181,9 +182,7 @@ function NavList({ onNavigate }) {
 function BrandMark() {
     return (
         <Link to="/" className="flex items-center gap-2.5" aria-label="BuildAndDo home">
-            <span className="flex h-8 w-8 items-center justify-center rounded-md border border-primary/40 bg-primary/10 text-primary">
-                <Activity className="h-4 w-4" strokeWidth={2.4} />
-            </span>
+            <LogoMark size={32} className="text-foreground" />
             <span className="font-display text-base font-semibold tracking-tight">BuildAndDo</span>
         </Link>
     );
