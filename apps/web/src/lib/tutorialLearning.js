@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/tutorialLearning.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
@@ -41,11 +41,16 @@ function enrollment(value, accountId, tutorialId) {
         value.certificate.id === `BDO-${value.id.toUpperCase()}` && Date.parse(value.completed_at) === Date.parse(value.certificate.issued_at);
     return value.status === 'in_progress' && value.points === 0 && value.progress < 100 && value.completed_at === '' && value.certificate === null;
 }
+// The server withholds the answer until it is earned; validate the rest of the lesson with a placeholder.
+function lessonBody(lesson) {
+    if (!lesson?.check || typeof lesson.check !== 'object' || Object.prototype.hasOwnProperty.call(lesson.check, 'answer')) return validLesson(lesson);
+    return validLesson({ ...lesson, check: { ...lesson.check, answer: 0 } });
+}
 function detail(value, accountId, tutorialId) {
     const tutorial = value?.tutorial;
     if (value?.schema_version !== 1 || value.account_id !== accountId || tutorial?.id !== tutorialId ||
         !text(tutorial.title, 160) || typeof tutorial.summary !== 'string' || !text(tutorial.curriculum_version, 200) ||
-        !digest(tutorial.content_digest) || !validLesson(tutorial.lesson)) return false;
+        !digest(tutorial.content_digest) || !lessonBody(tutorial.lesson)) return false;
     if (value.enrollment === null) return true;
     const saved = value.enrollment;
     const sections = tutorial.lesson.sections.length;
@@ -74,7 +79,7 @@ export function createTutorialLearningClient({ client, accountId, demo = false, 
     const current = () => Boolean(!demo && id(accountId) && isCurrent() && client.authStore.record?.id === accountId);
     const prefix = '/api/buildanddo/learning';
     const failure = (error, writing = false) => ({ ok: false,
-        reason: error?.status === 409 ? 'conflict' : [401, 403].includes(error?.status) ? 'forbidden' :
+        reason: error?.status === 409 ? 'conflict' : error?.status === 429 ? 'wait' : [401, 403].includes(error?.status) ? 'forbidden' :
             writing && (!error?.status || error.status >= 500) ? 'uncertain' : 'unavailable',
         error: error?.response?.message || (writing ? 'The save could not be confirmed. Retry this checkpoint to recover it.' :
             'Interactive learning is unavailable. You can still read the lessons. Try again later.') });
@@ -87,12 +92,13 @@ export function createTutorialLearningClient({ client, accountId, demo = false, 
                 const value = await client.send(`${prefix}/${encodeURIComponent(request.id)}`, { method: 'POST', body: request.body, requestKey: null, cache: 'no-store' });
                 if (!detail(value, accountId, request.id) || !value.enrollment || typeof value.replayed !== 'boolean' ||
                     value.tutorial.content_digest !== request.body.content_digest || !(value.feedback === null ||
-                        typeof value.feedback?.correct === 'boolean' && text(value.feedback.explanation))) throw new Error('Incomplete learning receipt');
+                        typeof value.feedback?.correct === 'boolean' && text(value.feedback.explanation) &&
+                        (value.feedback.retry_after === undefined || integer(value.feedback.retry_after, 3600)))) throw new Error('Incomplete learning receipt');
                 const { action, payload } = request.body;
+                // Grading stays on the server; a correct answer must arrive with its certificate.
                 if (action === 'section' && value.enrollment.next_section <= payload.index ||
                     action === 'practice' && !value.enrollment.practiced ||
-                    action === 'answer' && (value.feedback?.correct !== (payload.choice === value.tutorial.lesson.check.answer) ||
-                        value.feedback.correct && !value.enrollment.certificate)) throw new Error('Unconfirmed learning checkpoint');
+                    action === 'answer' && (!value.feedback || value.feedback.correct && !value.enrollment.certificate)) throw new Error('Unconfirmed learning checkpoint');
                 return value;
             });
             if (!current()) return stale();

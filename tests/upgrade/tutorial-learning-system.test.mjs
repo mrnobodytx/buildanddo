@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/tutorial-learning-system.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     tests/upgrade/tutorial-learning-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.pb.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js
+// Depends:     tests/upgrade/tutorial-learning-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.pb.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/tutorial-learning-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.pb.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js
+// EnumEdges:   CONSUMES tests/upgrade/tutorial-learning-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.pb.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js
 // DAG Node:    none
 // Intent:      Prevent unearned certificates, duplicate credit, cross-account reads and partial completion receipts.
 // ───────────────────────────────────────────────────────────────
@@ -19,7 +19,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
 import { plain, source } from './admin-fixture.mjs';
-import { learningFixture, MIGRATION } from './tutorial-learning-fixture.mjs';
+import { learningFixture, MIGRATION, WAIT_MIGRATION } from './tutorial-learning-fixture.mjs';
 
 test('reading does not enroll; checkpoints, practice and correct answer award one durable completion', () => {
     const f = learningFixture();
@@ -66,7 +66,74 @@ test('cannot skip sections, practice, or the server-checked answer', () => {
     assert.equal(wrong.enrollment.points, 0);
     assert.equal(f.data.tutorial_progress[0].status, 'in_progress');
     assert.equal(f.list().completed, 0);
+    f.expire();
     assert.equal(f.command('answer', { choice: f.lessons[0].lesson.check.answer }).feedback.correct, true);
+});
+
+test('the answer is withheld from every response until this learner answers correctly', () => {
+    const f = learningFixture(), lesson = f.lessons[0];
+    const hidden = (result) => !Object.prototype.hasOwnProperty.call(result.tutorial.lesson.check, 'answer');
+    const before = f.detail();
+    assert.ok(hidden(before));
+    assert.deepEqual(before.tutorial.lesson.check.choices, lesson.lesson.check.choices);
+    assert.ok(hidden(f.command('start')));
+    for (let index = 0; index < lesson.lesson.sections.length; index++) assert.ok(hidden(f.command('section', { index })));
+    assert.ok(hidden(f.command('practice', { checks: lesson.lesson.exercise.checklist.map(() => true) })));
+    const wrong = f.command('answer', { choice: (lesson.lesson.check.answer + 1) % 3 });
+    assert.ok(hidden(wrong)); assert.ok(hidden(f.detail()));
+    assert.equal(wrong.feedback.explanation.includes(lesson.lesson.check.explanation), false, 'a wrong attempt does not explain the right choice');
+    assert.equal(wrong.feedback.retry_after, 30);
+    assert.equal(f.detail().tutorial.content_digest, before.tutorial.content_digest, 'the digest still covers the full stored lesson');
+    assert.equal(f.detail(undefined, 'otherowner').tutorial.lesson.check.answer, undefined);
+    f.expire();
+    const passed = f.command('answer', { choice: lesson.lesson.check.answer });
+    assert.equal(passed.tutorial.lesson.check.answer, lesson.lesson.check.answer, 'earned answers return for review');
+    assert.equal(passed.feedback.explanation, lesson.lesson.check.explanation);
+    assert.equal(f.detail().tutorial.lesson.check.answer, lesson.lesson.check.answer);
+    assert.equal(f.detail(undefined, 'otherowner').tutorial.lesson.check.answer, undefined, 'another account has not earned it');
+    assert.equal(f.data.tutorial_learning[0].snapshot.lesson.check.answer, lesson.lesson.check.answer, 'the stored snapshot is unchanged');
+});
+
+test('a wrong answer pauses further answers on the server, then allows a retry without a lockout', () => {
+    const f = learningFixture(), lesson = f.lessons[0], right = lesson.lesson.check.answer;
+    f.command('start');
+    for (let index = 0; index < lesson.lesson.sections.length; index++) f.command('section', { index });
+    f.command('practice', { checks: lesson.lesson.exercise.checklist.map(() => true) });
+    const wrong = f.command('answer', { choice: (right + 1) % 3 });
+    assert.equal(wrong.replayed, false);
+    const stamp = f.data.tutorial_learning[0].answer_retry_at;
+    assert.ok(Date.parse(stamp) - Date.now() > 25000 && Date.parse(stamp) - Date.now() <= 30000);
+    for (const choice of [right, (right + 2) % 3])
+        assert.throws(() => f.command('answer', { choice }), (error) => error.status === 429 && /again in (30|29|28) seconds/.test(error.message));
+    assert.equal(f.data.tutorial_learning[0].answer_retry_at, stamp, 'refused attempts do not extend the wait');
+    assert.equal(f.data.tutorial_learning[0].completed_at, undefined);
+    assert.equal(f.list().points, 0);
+    // Only the knowledge check waits; ordinary checkpoints still replay.
+    assert.equal(f.command('section', { index: 0 }).replayed, true);
+    f.data.tutorial_learning[0].answer_retry_at = new Date(Date.now() - 1000).toISOString().replace('T', ' ');
+    assert.equal(f.command('answer', { choice: (right + 1) % 3 }).feedback.correct, false);
+    f.data.tutorial_learning[0].answer_retry_at = new Date(Date.now() + 86400000).toISOString();
+    assert.equal(f.command('answer', { choice: right }).enrollment.points, 100, 'a wait beyond the bound is never a lockout');
+    const review = f.command('answer', { choice: (right + 1) % 3 });
+    assert.equal(review.feedback.correct, false);
+    assert.equal(review.feedback.retry_after, undefined, 'completed learners review without waiting');
+    assert.equal(review.replayed, true);
+    assert.equal(f.command('answer', { choice: right }).feedback.correct, true);
+});
+
+test('the answer-wait migration replays, refuses a changed field and its down disables commands without losing credit', () => {
+    const f = learningFixture();
+    f.finish();
+    const before = plain(f.data.tutorial_learning);
+    f.migration(WAIT_MIGRATION).up();
+    assert.equal(f.collections.tutorial_learning.fields.filter((field) => field.name === 'answer_retry_at').length, 1);
+    f.migration(WAIT_MIGRATION).down();
+    assert.throws(() => f.detail(), /upgrade is not installed/);
+    assert.deepEqual(f.data.tutorial_learning, before);
+    f.migration(WAIT_MIGRATION).up();
+    assert.equal(f.list().points, 100);
+    f.collections.tutorial_learning.fields.getByName('answer_retry_at').type = 'text';
+    assert.throws(() => f.migration(WAIT_MIGRATION).up(), /Review custom/);
 });
 
 test('retries, replay after completion and repeated enrollment cannot farm points or replace a certificate', () => {
@@ -88,7 +155,8 @@ test('enrollment freezes content and records the original version even if the ca
     stored.lesson.check.answer = 0;
     stored.curriculum_version = 'next';
     assert.equal(f.detail().tutorial.title, first.tutorial.title);
-    assert.equal(f.detail().tutorial.lesson.check.answer, first.tutorial.lesson.check.answer);
+    assert.equal(f.detail().tutorial.lesson.check.answer, undefined);
+    assert.equal(f.data.tutorial_learning[0].snapshot.lesson.check.answer, f.answerFor(), 'grading uses the enrolled answer');
     assert.equal(f.finish().enrollment.certificate.curriculum_version, first.tutorial.curriculum_version);
     assert.equal(f.list().certificates.items[0].certificate.title, first.tutorial.title);
 });

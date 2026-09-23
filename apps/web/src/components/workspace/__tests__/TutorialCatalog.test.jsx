@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -130,7 +130,9 @@ describe('complete Field Manual lessons', () => {
         docs.unmount();
         renderWithProviders(<TutorialsPage />, { route: '/app/tutorials' });
         ({ reader, user } = await read('Continue'));
-        expect(reader.getByRole('button', { name: 'Mark lesson complete' })).toBeDisabled();
+        // Completion of an interactive lesson belongs to its server-issued certificate.
+        expect(reader.queryByRole('button', { name: 'Mark lesson complete' })).not.toBeInTheDocument();
+        expect(reader.getByRole('button', { name: 'Start interactive tutorial' })).toBeEnabled();
         await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[0] }));
         await user.click(reader.getByRole('button', { name: 'Check answer' }));
         expect(reader.getByText('Try another answer.')).toBeVisible();
@@ -138,10 +140,9 @@ describe('complete Field Manual lessons', () => {
         await user.click(reader.getByRole('button', { name: 'Check answer' }));
         expect(reader.getByText('That’s right.')).toBeVisible();
         await user.click(reader.getByRole('checkbox', { name: /I worked through the exercise/ }));
-        await user.click(reader.getByRole('button', { name: 'Mark lesson complete' }));
-        expect(await reader.findByText('Completed. Reviewing keeps your saved completion.')).toBeVisible();
+        expect(reader.getByText(/Finish the interactive tutorial to complete this lesson/)).toBeVisible();
         expect(pb.__collection('tutorial_progress').create).toHaveBeenCalledTimes(1);
-        expect(pb.__collection('tutorial_progress').update).toHaveBeenCalledWith(expect.any(String), { status: 'completed', progress: 100 });
+        expect(pb.__collection('tutorial_progress').update).not.toHaveBeenCalled();
     });
 
     it('allows reading during catalogue failure and recovers persistent progress only after successful reads', async () => {

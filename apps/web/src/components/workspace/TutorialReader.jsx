@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/TutorialReader.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -107,9 +107,10 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
                     {!canSave && <p className="text-sm text-muted-foreground">Reading preview only. Saved progress needs a signed-in account, a persisted lesson and an available backend.</p>}
                     {completed ? <p className="text-sm text-success">Completed. Reviewing keeps your saved completion.</p> : <div className="flex flex-wrap gap-2">
                         <Button size="sm" variant="secondary" disabled={!canSave || busy || !available} onClick={() => onSave('in_progress')}>Save reading progress</Button>
-                        <Button size="sm" disabled={!canSave || busy || !correct || !practiced} onClick={() => onSave('completed')}>{busy ? 'Saving…' : 'Mark lesson complete'}</Button>
+                        {!onGuided && <Button size="sm" disabled={!canSave || busy || !correct || !practiced} onClick={() => onSave('completed')}>{busy ? 'Saving…' : 'Mark lesson complete'}</Button>}
                     </div>}
-                    <p className="text-xs leading-6 text-muted-foreground">Reading completion records your own learning activity. Finish the interactive tutorial to earn a certificate and learning points.</p>
+                    <p className="text-xs leading-6 text-muted-foreground">{onGuided ? 'Reading progress records your own learning activity. Finish the interactive tutorial to complete this lesson and earn its certificate and learning points.' :
+                        'Reading completion records your own learning activity. Finish the interactive tutorial to earn a certificate and learning points.'}</p>
                     {onGuided && available && <Button size="sm" disabled={busy} onClick={onGuided}>Start interactive tutorial</Button>}
                     <Button size="sm" variant="ghost" disabled={busy} onClick={onClose}>Close lesson</Button>
                 </div>

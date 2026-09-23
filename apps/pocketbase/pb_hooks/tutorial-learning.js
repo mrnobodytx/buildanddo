@@ -1,24 +1,26 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/tutorial-learning.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_hooks/government-access.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500000_tutorial_answer_wait.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
-// Intent:      Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer.
+// Intent:      Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer that is never sent before it is earned.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
 const government = require(`${__hooks}/government-access.js`);
-const FIELDS = ['owner', 'tutorial', 'snapshot', 'content_digest', 'next_section', 'practiced', 'completed_at', 'certificate', 'protocol_version'];
+const FIELDS = ['owner', 'tutorial', 'snapshot', 'content_digest', 'next_section', 'practiced', 'completed_at', 'certificate', 'protocol_version', 'answer_retry_at'];
 const POINTS = 100;
+// A wrong answer pauses further answers for this enrollment; longer stored waits are ignored so nobody is locked out.
+const RETRY_SECONDS = 30;
 
 function schema(app) {
     let collection;
@@ -108,7 +110,17 @@ function projectProgress(app, record) {
     progress.set('progress', complete ? 100 : Math.max(Number(progress.get('progress') || 0), state.progress));
     app.save(progress);
 }
-function detailResult(owner, tutorial, record) { return { schema_version: 1, account_id: owner, tutorial, enrollment: output(record) }; }
+// The digest covers the full stored lesson; the answer is only returned for review after this learner earned it.
+function reviewed(tutorial, record) {
+    if (record && record.getString('completed_at')) return tutorial;
+    const { answer: _answer, ...check } = tutorial.lesson.check;
+    return { ...tutorial, lesson: { ...tutorial.lesson, check } };
+}
+function detailResult(owner, tutorial, record) { return { schema_version: 1, account_id: owner, tutorial: reviewed(tutorial, record), enrollment: output(record) }; }
+function retryWait(record) {
+    const wait = Math.ceil((Date.parse(record.getString('answer_retry_at').replace(' ', 'T')) - Date.now()) / 1000);
+    return wait > 0 && wait <= RETRY_SECONDS ? wait : 0;
+}
 
 /** @param {object} e Native authenticated request. @returns {object} Current versioned lesson and personal checkpoints. */
 function detail(e) {
@@ -160,8 +172,14 @@ function command(e) {
             if (!Number.isSafeInteger(body.payload.choice) || body.payload.choice < 0 || body.payload.choice >= tutorial.lesson.check.choices.length)
                 access.invalid('Choose a listed answer.');
             if (!state.practiced) access.conflict('Complete the sections and practice before the final check.');
+            const wait = state.completed_at ? 0 : retryWait(record);
+            if (wait) throw new ApiError(429, `Review the lesson, then try the knowledge check again in ${wait} second${wait === 1 ? '' : 's'}.`);
             const correct = body.payload.choice === tutorial.lesson.check.answer;
-            feedback = { correct, explanation: tutorial.lesson.check.explanation };
+            feedback = correct || state.completed_at ? { correct, explanation: tutorial.lesson.check.explanation } :
+                { correct, explanation: 'Not the expected answer. Review the lesson sections, then try again.', retry_after: RETRY_SECONDS };
+            if (!correct && !state.completed_at) {
+                record.set('answer_retry_at', new Date(Date.now() + RETRY_SECONDS * 1000).toISOString()); changed = true;
+            }
             if (correct && !state.completed_at) {
                 const issued = new Date().toISOString();
                 record.set('completed_at', issued);
@@ -204,4 +222,18 @@ function list(e) {
         resume: active ? { tutorial: active.getString('tutorial'), title: access.json(active, 'snapshot').title, progress: output(active).progress } : null };
 }
 
-module.exports = { detail, command, list };
+/** @param {object} tutorial Catalogue record. @returns {boolean} Whether its lesson is served with a server-checked answer. */
+function interactive(tutorial) {
+    const raw = tutorial.getString('lesson');
+    if (!raw || raw === 'null') return false;
+    try { return Boolean(supported(JSON.parse(raw))); } catch { return false; }
+}
+
+/** @param {object} app Native app. @param {string} owner Account. @param {string} tutorial Lesson. @returns {boolean} Whether a server-issued certificate exists. */
+function certified(app, owner, tutorial) {
+    try { schema(app); } catch { return false; }
+    return app.findRecordsByFilter('tutorial_learning', 'owner = {:owner} && tutorial = {:tutorial}', '', 2, 0, { owner, tutorial })
+        .some((row) => Boolean(row.getString('completed_at')) && Boolean(access.json(row, 'certificate')));
+}
+
+module.exports = { detail, command, list, interactive, certified };
