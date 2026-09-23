@@ -45,7 +45,7 @@ export const root = __bndUrl.pathToFileURL(__bndRootPath + __bndPath.sep);
 // in this module reads a file through it any more. Under the CI runner these tests died 11/11 in
 // 46ms with "The URL must be of scheme file" thrown from `source` - the fixture is imported from
 // jsdom specs that live under apps/web, so Vite transforms it and `root` is not guaranteed to
-// survive as a file: URL. The same specs pass on rig1, which is what made this look like a test
+// survive as a file: URL. The same specs pass on the operator workstation, which is what made this look like a test
 // failure rather than an environment one. A path needs no scheme, so this cannot recur.
 export const repoPath = (path) => __bndPath.resolve(__bndRootPath, path);
 export const source = (path) => readFileSync(repoPath(path), 'utf8');
