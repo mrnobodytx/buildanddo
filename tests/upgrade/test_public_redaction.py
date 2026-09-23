@@ -49,6 +49,7 @@ WEB_PUBLIC = ROOT / "apps" / "web" / "public"
 DIST = ROOT / "dist" / "apps" / "web"
 FAMILY_NAME = "ray-xyz0-0"          # follows a machine family; no machine carries it
 DOC_IP = "203.0.113.9"              # documentation range (RFC 5737)
+UNSPECIFIED_IP = "0.0.0.0"          # the unspecified address (RFC 1122): it names no machine
 
 
 def build_platform_health(env: dict[str, str] | None = None) -> dict:
@@ -169,6 +170,23 @@ class ControlTests(unittest.TestCase):
                          f"from {redaction.BAR} via http://localhost:8090")
         # Code that compares the page's hostname with loopback names no machine.
         self.assertEqual(rule.find_ips('h==="localhost"||h==="127.0.0.1"||h==="::1"', allow_loopback=True), [])
+
+    def test_a_scan_passes_the_unspecified_address_and_still_fails_a_documentation_address(self):
+        # A WebRTC offer names the unspecified address before any candidate is known, and the voice SDK's
+        # chunk carries that text (SRS-BUILDANDDO-BUDDI-003). Like loopback, it identifies no machine.
+        rule = redaction.Rule("")
+        offer = f"o=- 4611 2 IN IP4 {UNSPECIFIED_IP} c=IN IP4 {UNSPECIFIED_IP} a=rtcp:9 IN IP4 {UNSPECIFIED_IP}"
+        self.assertEqual(rule.find_ips(offer, allow_loopback=True), [])
+        with tempfile.TemporaryDirectory() as tmp:
+            chunk = Path(tmp) / "VoiceSession-x.js"
+            chunk.write_text(f'const offer="{offer}";', encoding="utf-8")
+            self.assertEqual(redaction.scan_tree(chunk, rule), {})
+            # The control: a documentation address in the same place still fails the scan.
+            chunk.write_text(f'const offer="{offer.replace(UNSPECIFIED_IP, DOC_IP)}";', encoding="utf-8")
+            self.assertEqual(redaction.scan_tree(chunk, rule), {"VoiceSession-x.js": {"ips": 1, "machines": 0}})
+        # Outside a scan the address is still reported, as loopback is, and published text still withholds it.
+        self.assertEqual(rule.find_ips(offer), [UNSPECIFIED_IP])
+        self.assertNotIn(UNSPECIFIED_IP, rule.redact(offer))
 
     def test_svg_geometry_versions_and_near_names_are_not_flagged(self):
         rule = redaction.Rule("")

@@ -33,7 +33,8 @@ Machine names come in two kinds:
   When it is unset, only the families apply, and ``Rule.source`` says so.
 
 In published text an address becomes a solid bar, loopback becomes "localhost", and a machine name
-becomes the bar, so a reader sees that something was withheld.
+becomes the bar, so a reader sees that something was withheld. A scan does not count loopback or the
+unspecified address, since neither identifies a machine.
 
     python scripts/ci/public_redaction.py scan <file or directory>...
         report counts per file (never the values found) and exit 1 when anything matched
@@ -65,6 +66,10 @@ IPV6 = re.compile(
 )
 LOOPBACK_V4 = re.compile(r"(?<!\d)(?<!\d\.)127\.0\.0\.1(?!\d)(?!\.\d)")
 LOOPBACK = {"127.0.0.1", "::1"}
+# The unspecified address means "no particular address". A WebRTC offer names it before any candidate is
+# known, so the voice SDK's chunk carries it (measured 2026-09-23, SRS-BUILDANDDO-BUDDI-003). Like loopback,
+# it identifies no machine, so a scan lets it through. The IPv6 form "::" is never matched in the first place.
+UNSPECIFIED = {"0.0.0.0"}
 
 
 def real_v6(candidate: str) -> bool:
@@ -142,10 +147,11 @@ class Rule:
         self.machine = _machine_pattern(self.names)
 
     def find_ips(self, text: str | None, allow_loopback: bool = False) -> list[str]:
-        """Addresses in the text; loopback may be allowed where code compares a hostname against it."""
+        """Addresses in the text. A scan allows loopback, which code compares a hostname against, and the
+        unspecified address, which a WebRTC offer names; neither identifies a machine."""
         text = text or ""
         found = set(IPV4.findall(text)) | {m for m in IPV6.findall(text) if real_v6(m)}
-        return sorted(found - LOOPBACK if allow_loopback else found)
+        return sorted(found - LOOPBACK - UNSPECIFIED if allow_loopback else found)
 
     def find_machines(self, text: str | None) -> list[str]:
         return sorted({m.group(0) for m in self.machine.finditer(text or "")})
