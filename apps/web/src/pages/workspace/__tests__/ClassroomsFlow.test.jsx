@@ -27,12 +27,14 @@ import { act, renderWithProviders, screen, setupUser, waitFor, within } from '@/
 
 vi.mock('@/lib/pocketbaseClient', () => ({ default: { authStore: { record: { id: 'owner' } }, send: vi.fn() } }));
 vi.mock('@/lib/observability/mutations', () => ({ observeMutation: (_name, _verb, operation) => operation() }));
+vi.mock('@/lib/seatComms', () => ({ recentSeatEvents: async () => [], subscribeSeatEvents: () => () => {}, connectSeatComms: async () => () => {},
+    disconnectSeatComms: async () => {}, isSeatCommsConnected: () => false }));
 let backend;
 function send(path, options) {
     const parts = path.split('/');
     const e = backend.event(pb.authStore.record.id, options.body || {}, { workspace: parts[4], id: parts[6], query: options.query || {} });
     try {
-        return plain(options.method === 'POST' ? path.endsWith('/presence') ? backend.service.heartbeat(e) : backend.service.command(e) : parts[6] ? backend.service.detail(e) : backend.service.list(e));
+        return plain(options.method === 'POST' ? path.endsWith('/presence') ? backend.service.heartbeat(e) : backend.service.command(e) : path.endsWith('/record') ? backend.service.record(e) : parts[6] ? backend.service.detail(e) : backend.service.list(e));
     } catch (error) { throw { status: error.status || 500, response: { message: error.message } }; }
 }
 function renderRoom(id = '', actor = 'owner', route = '') {
@@ -60,7 +62,7 @@ describe('classroom website flow', () => {
         expect(await screen.findByText('You are attending')).toBeVisible();
         expect(backend.data.classroom_rooms[0].status).toBe('live');
         expect(screen.getByRole('heading', { name: 'Attending (1)' })).toBeVisible();
-        expect(screen.getByText(/Voice and video are not connected/)).toBeVisible();
+        expect(screen.getByText(/Voice and video are not set up for this workspace/)).toBeVisible();
     });
 
     it('allows a viewer to join and leave while reserving discussion and host controls for writers', async () => {
@@ -172,5 +174,25 @@ describe('classroom website flow', () => {
         await user.click(screen.getByRole('button', { name: 'Refresh classrooms' }));
         expect(await screen.findByRole('alert')).toBeVisible();
         expect(screen.queryByRole('button', { name: 'Schedule a class' })).not.toBeInTheDocument();
+    });
+
+    it('gives the host an aggregate class record and says when attendance history is not installed', async () => {
+        const id = started(); renderRoom(id, 'owner');
+        expect(await screen.findByRole('heading', { name: 'Class record' })).toBeVisible();
+        expect(await screen.findByText(/Attendance history is not installed on this server yet/)).toBeVisible();
+    });
+
+    it('shows attendees and people per hour from the attendance history, and hides the record from members', async () => {
+        backend.migration('apps/pocketbase/pb_migrations/1791300000_classroom_attendance.js').up();
+        const id = started(); backend.command('room.join', { id }, { actor: 'viewer' });
+        const view = renderRoom(id, 'owner');
+        expect(await screen.findByText('People who attended')).toBeVisible();
+        expect(screen.getByText('People who attended').nextSibling).toHaveTextContent('2');
+        expect(screen.getByText(/People present per hour · peak 2/)).toBeVisible();
+        expect(screen.getByText(/Counts only/)).toBeVisible();
+        view.unmount();
+        renderRoom(id, 'viewer');
+        expect(await screen.findByText('Hosted by Workspace member')).toBeVisible();
+        expect(screen.queryByRole('heading', { name: 'Class record' })).toBeNull();
     });
 });

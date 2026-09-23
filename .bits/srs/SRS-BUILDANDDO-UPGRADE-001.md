@@ -2222,3 +2222,48 @@ unavailable through GitHub and scoped telemetry, while the local build and
 dependency lock retain their independently reproduced pre-existing blockers.
 The source integration is ready for PR synchronization; hosted build success
 and final mergeability after publication are not claimed.
+
+## Broadcast classroom continuation — 2026-09-23
+
+The owner reviewed the Broadcast Classroom design system and the repository
+assessment and authorized implementing all of it under this A2 dispatch. The
+routed classroom has shared lessons and discussion but no media, while the
+Cloudflare Realtime client, signalling and presence hooks already exist and an
+unrouted C-ONE page (`pages/workspace/ClassroomPage.jsx`) already joins them.
+This continuation connects those parts; it does not add a provider.
+
+Acceptance:
+
+1. Port the design system's stage, chart and small-ochre-text tokens into
+   `apps/web/src/index.css` and `tailwind.config.js` in both themes. Build the
+   stage, participant tile, media controls, signal meter and stats components
+   in `apps/web/src/components/broadcast/` on the existing `site/ui.jsx`
+   primitives and `lucide-react`.
+2. Render live media inside the routed live room: a host with publish
+   authority broadcasts camera and microphone, members pull advertised tracks.
+   Joining media is an explicit action. "Receiving" is shown only from
+   measured inbound packets; `may_publish` stays advisory and the server
+   re-checks every push. Retire the unrouted page once its behaviour is
+   carried by the routed room.
+3. The classroom detail reports media availability from the realtime
+   configuration instead of a constant, without exposing any secret value.
+4. Keep an append-only attendance history (join, leave, start, end) in a new
+   locked collection with an explicit down migration, and give hosts an
+   aggregate class record: people per hour, total attendees and minutes,
+   never another member's identity beyond the existing attendance list.
+5. Record provider model and token usage on assistant turns when the
+   provider reports it; absent usage stays empty rather than zero.
+6. Show agent activity for the workspace from the existing append-only
+   `seat_events` feed, with an honest empty state.
+7. Name the realtime variables in the local compose file without values.
+
+Excluded (A3 or private plane, handed off in `.bits/handoffs/`): a backend
+deploy step, realtime secret provisioning, the rooms/CitadelKey sidecar,
+the room-projection publisher, and DNS or canonical-origin changes. Owners
+of other SRS scopes (platform health data, unregistered specs, unwired CI
+gates) receive findings, not changes.
+
+Verify: classroom node suites, the classroom and broadcast Vitest cases with
+no new failures against the recorded baseline, build, lint, context, public
+boundary and readiness gates. Hosted audio/video, applied migrations and
+deployed behaviour remain unmeasured until run against a configured backend.
