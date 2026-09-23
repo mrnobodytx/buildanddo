@@ -60,6 +60,11 @@ function scrubUrl(url) {
 	try {
 		const parsed = new URL(url, window.location.origin);
 		let touched = false;
+		// The reset page carries its single-use token in the path, not the query.
+		if (/^\/reset-password\/[^/]/.test(parsed.pathname)) {
+			parsed.pathname = '/reset-password/:token';
+			touched = true;
+		}
 		for (const param of SENSITIVE_PARAMS) {
 			if (parsed.searchParams.has(param)) {
 				parsed.searchParams.set(param, 'redacted');

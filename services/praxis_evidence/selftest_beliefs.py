@@ -6,10 +6,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient, PocketBaseError  # noqa: E402
+from client import PocketBaseClient, PocketBaseError, require_test_target  # noqa: E402
 from beliefs import create_belief, coexisting_views  # noqa: E402
 
-client = PocketBaseClient()
+client = PocketBaseClient(require_test_target())
 checks: list[tuple[str, bool]] = []
 created_ids: list[str] = []
 

@@ -8,10 +8,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient  # noqa: E402
+from client import PocketBaseClient, require_test_target  # noqa: E402
+
+client = PocketBaseClient(require_test_target())  # refuse production before the pilots bind a client
 import dogfood_pilots  # noqa: E402
 
-client = PocketBaseClient()
 checks: list[tuple[str, bool]] = []
 
 # AST-based, not regex-on-text: a regex over raw source falsely flags this very

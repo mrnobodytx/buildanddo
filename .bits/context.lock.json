@@ -449,7 +449,9 @@
         "gitlab"
       ],
       "path": "services/praxis_evidence/run_all_tests.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/praxis_evidence/test_target_guard.py"
+      ],
       "wired_into_ci": true
     },
     {
@@ -465,7 +467,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-23T22:39:10.933756+00:00",
+  "generated_at": "2026-09-23T23:31:12.340798+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -723,6 +725,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-TEST-001.md",
         "status": "in_progress",
         "title": "Web test runner emitting JUnit, with workspace component suites"
+      },
+      {
+        "code": "SRS-BUILDANDDO-TRUST-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-TRUST-001.md",
+        "status": "in_progress",
+        "title": "Trust hardening before the website-to-credential loop"
       },
       {
         "code": "SRS-BUILDANDDO-UPGRADE-001",
@@ -994,13 +1003,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 56,
-    "python_files": 411,
+    "migrations": 57,
+    "python_files": 413,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1549,
-    "web_source_files": 373
+    "tracked_files": 1570,
+    "web_source_files": 385
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1073,22 +1082,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "d7a54873a14d3ca36c0004c1681517d063a6cf136e305c96ae9581006f41a999",
+    "source_sha256": "71097c85691cdd70b5e68621cb9dd95aa3325f93064e2d04c00fe5e2c6be1bec",
     "state": "PASS"
   },
   "summary": {
     "findings": 24,
     "findings_high": 24,
     "pipelines": 10,
-    "srs_open": 34,
-    "srs_total": 38,
+    "srs_open": 35,
+    "srs_total": 39,
     "unwired_gates": 22
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 74,
+    "js_test_files": 77,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
