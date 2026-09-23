@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/web/src/contexts/WorkspaceAccessContext.jsx
+// Depends:     apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/pages/workspace/CareerPage.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx
+// EnumEdges:   CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx
 // Intent:      Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.
 // ───────────────────────────────────────────────────────────────
 
@@ -75,6 +75,7 @@ const NAV = [
     { to: '/app/desks', label: 'Specialist desks', icon: Boxes },
     { to: '/app/replay', label: 'Execution replay', icon: Workflow },
     { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },
+    { to: '/app/career', label: 'Career Passport', icon: BookOpen },
     { to: '/app/corrections', label: 'Corrections', icon: Scale },
     { to: '/app/tutorials', label: 'Field Manual', icon: GraduationCap },
     { to: '/app/classrooms', label: 'Classrooms', icon: Users },
