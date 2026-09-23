@@ -547,6 +547,28 @@ def _is_product_surface(path: Path, repo: Path) -> bool:
     return bool(rel) and rel[0] in PRODUCT_SURFACE_PARTS
 
 
+# The product keeps its OWN list of retired copy (apps/web/src/lib/purpose.js, RETIRED_PHRASES) so
+# its pages can refuse the old framing at runtime. That list must quote the legacy phrases, and on
+# 2026-09-23 this detector read it as product copy and held identity_pass on
+# 'try a business challenge' -- the sprint-sheet failure above, one level down: a guard that
+# names what it guards against is not the thing it guards against.
+#
+# A hit is reclassified as a guard-list entry ONLY when the whole line is a bare quoted string
+# element (optionally trailing a comma) AND the file declares RETIRED_PHRASES. The same phrase in
+# JSX text, an attribute, a template string or a file with no guard list still gates.
+_GUARD_LIST_ENTRY = re.compile(r"""^['"][^'"]*['"],?$""")
+_GUARD_LIST_MARKER = "RETIRED_PHRASES"
+
+
+def _is_retired_phrase_guard(path: Path, text: str) -> bool:
+    if not _GUARD_LIST_ENTRY.match(str(text).strip()):
+        return False
+    try:
+        return _GUARD_LIST_MARKER in path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+
+
 def p0_state(repo: Path) -> dict[str, Any]:
     files = find_source_files(repo)
     # SPLIT, NOT FILTERED -- and this is the whole point. On 2026-09-20 `identity_pass` and
@@ -565,8 +587,14 @@ def p0_state(repo: Path) -> dict[str, Any]:
     for phrase in LEGACY_PHRASES:
         for hit in source_matches(files, phrase):
             hit["phrase"] = phrase
-            (legacy if _is_product_surface(Path(hit["path"]), repo)
-             else legacy_commentary).append(hit)
+            if not _is_product_surface(Path(hit["path"]), repo):
+                legacy_commentary.append(hit)
+            elif _is_retired_phrase_guard(Path(hit["path"]), hit["text"]):
+                # Reported, never dropped: the hit stays visible with the reason it does not gate.
+                hit["reclassified"] = "retired-phrase guard list"
+                legacy_commentary.append(hit)
+            else:
+                legacy.append(hit)
     values = {
         "learn_by_doing": source_contains(files, "Learn by doing real work"),
         "homepage_support": source_contains(files, "Learn with people and AI") or source_contains(files, "Prove what you can do"),
