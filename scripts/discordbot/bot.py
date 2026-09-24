@@ -53,7 +53,11 @@ LOG_EVENTS = OUTCOME_EVENTS | {
     "discord.transport.failed", "discord.error_notice.unavailable", "discord.reader.expiry_notice_unavailable",
     "discord.commands.synchronized", "discord.gateway.ready", "discord.prefix.delivery_failed",
     "discord.startup.blocked", "discord.startup.failed",
+    # Server grading (#104) logs its own outcome. Without this entry the formatter (#113) turned
+    # every graded answer into discord.event.unknown/error, a false failure on each correct use.
+    "discord.quiz.graded",
 }
+QUIZ_GRADED_OUTCOMES = frozenset({"graded", "unavailable", "error"})
 
 
 def caller_from(interaction: discord.Interaction) -> Caller:
@@ -292,24 +296,37 @@ class ReplyView(discord.ui.View):
 
     async def answer(self, interaction: discord.Interaction, choice: int) -> None:
         """Have the server grade one answer and retain its result under serialized callbacks."""
-        await interaction.response.defer()
-        async with self.lock:
-            try:
-                self.require_owner(interaction)
-                caller = caller_from(interaction)
-                page = await self.session.answer(
-                    interaction.user.id, choice, time.monotonic(),
-                    lambda quiz, picked: self.service.grade(quiz, picked, caller),
-                )
-                # Ungraded attempts keep the answer menu open for a later retry.
-                for item in self.children:
-                    if isinstance(item, discord.ui.Select) and self.session.answered:
-                        item.disabled = True
-                self.message = await interaction.edit_original_response(
-                    embed=render(page), view=self, allowed_mentions=discord.AllowedMentions.none(),
-                )
-            except InteractionDenied as error:
-                await notify_private(interaction, str(error))
+        # The control telemetry every sibling control carries (#113), on the server-graded answer
+        # path (#104). The main-line merge of the two kept this method's body and dropped its span.
+        started, outcome = time.monotonic(), "error"
+        try:
+            await interaction.response.defer()
+            async with self.lock:
+                try:
+                    self.require_owner(interaction)
+                    caller = caller_from(interaction)
+                    page = await self.session.answer(
+                        interaction.user.id, choice, time.monotonic(),
+                        lambda quiz, picked: self.service.grade(quiz, picked, caller),
+                    )
+                    # Ungraded attempts keep the answer menu open for a later retry.
+                    for item in self.children:
+                        if isinstance(item, discord.ui.Select) and self.session.answered:
+                            item.disabled = True
+                    self.message = await interaction.edit_original_response(
+                        embed=render(page), view=self, allowed_mentions=discord.AllowedMentions.none(),
+                    )
+                    # Acceptance describes control dispatch, not answer correctness or learning.
+                    outcome = "accepted"
+                except InteractionDenied as error:
+                    denied = self.denied_outcome(interaction)
+                    await notify_private(interaction, str(error))
+                    outcome = denied
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
+        finally:
+            log_outcome("discord.control.completed", "quiz_answer", outcome, started, clock=time.monotonic)
 
     @discord.ui.button(label="Previous", style=discord.ButtonStyle.secondary, row=0)
     async def previous(self, interaction: discord.Interaction, button: discord.ui.Button["ReplyView"]) -> None:
@@ -654,6 +671,8 @@ class EventFormatter(logging.Formatter):
             outcomes = frozenset()
         elif name == "discord.control.completed":
             outcomes = CONTROL_OUTCOMES
+        elif name == "discord.quiz.graded":
+            outcomes = QUIZ_GRADED_OUTCOMES
         event: dict[str, object] = {
             "event": name, "level": level if level in {"debug", "info", "warning", "error", "critical"} else "info",
             "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
