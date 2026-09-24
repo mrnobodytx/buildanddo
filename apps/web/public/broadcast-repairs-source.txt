@@ -13,776 +13,782 @@
 # EnumEdges:   CONSUMES tests/upgrade/broadcast-lessons.test.mjs; CONSUMES tests/upgrade/classroom-media.test.mjs; CONSUMES tests/upgrade/classroom-media-client.test.mjs
 # Intent:      Retain the actual public local-source test output without representing WebRTC doubles as native or hosted media proof.
 # ----------------------------------------------------------------
-# Observed: 2026-09-24T01:35:30.341333+00:00
+# Observed: 2026-09-24T08:46:02.989945+00:00
 # Runtime: Node v24.20.0
 # Command: node --test --test-reporter=tap tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/classroom-*.test.mjs
-# Source scope SHA-256: 2486343f6e72f8b3a941b96520823296200340af5ba3ddc7ffe9d545653e4cd9
-# Raw output SHA-256: 7782aa7b4488de07767948b49501f3eeb25e76bbf84472d6d433e82170f40381
+# Source scope SHA-256: a9f40ce9bc45f635ad753e6334fcfcfe5ecf3cb66d2d0b129686973013d46317
+# Raw output SHA-256: 702ed8f02e70f7541d9701dacc93c8e5733beb4128020921c646e3dced0d6810
 # This header describes a derived public capture; the unchanged raw TAP follows.
 # Storage, media and provider doubles only; native/rendered/hosted acceptance is not established.
 TAP version 13
-# Subtest: one versioned public lesson extends, rather than changes, the fixed 25-lesson starter contract
-ok 1 - one versioned public lesson extends, rather than changes, the fixed 25-lesson starter contract
+# Subtest: both source-case catalogue imports strip grading fields without losing their human-readable evidence limits
+ok 1 - both source-case catalogue imports strip grading fields without losing their human-readable evidence limits
   ---
-  duration_ms: 2.7896
+  duration_ms: 3.0612
+  type: 'test'
+  ...
+# Subtest: one versioned public lesson extends, rather than changes, the fixed 25-lesson starter contract
+ok 2 - one versioned public lesson extends, rather than changes, the fixed 25-lesson starter contract
+  ---
+  duration_ms: 0.8092
   type: 'test'
   ...
 # Subtest: source references are safe public inspected-revision links and the evidence route stays local
-ok 2 - source references are safe public inspected-revision links and the evidence route stays local
+ok 3 - source references are safe public inspected-revision links and the evidence route stays local
   ---
-  duration_ms: 1.5147
+  duration_ms: 0.8072
   type: 'test'
   ...
 # Subtest: recorded source evidence binds its stated file scope without upgrading blocked native or rendered checks
-ok 3 - recorded source evidence binds its stated file scope without upgrading blocked native or rendered checks
+ok 4 - recorded source evidence binds its stated file scope without upgrading blocked native or rendered checks
   ---
-  duration_ms: 4.8061
+  duration_ms: 577.9531
   type: 'test'
   ...
 # Subtest: migration creates a truly missing tutorial, changes no rules, and writes no evidence or learner state
-ok 4 - migration creates a truly missing tutorial, changes no rules, and writes no evidence or learner state
+ok 5 - migration creates a truly missing tutorial, changes no rules, and writes no evidence or learner state
   ---
-  duration_ms: 27.4708
+  duration_ms: 49.7001
   type: 'test'
   ...
 # Subtest: the actual native learning validator accepts the new lesson without enrolling or awarding points on read
-ok 5 - the actual native learning validator accepts the new lesson without enrolling or awarding points on read
+ok 6 - the actual native learning validator accepts the new lesson without enrolling or awarding points on read
   ---
-  duration_ms: 25.254
+  duration_ms: 43.602
   type: 'test'
   ...
 # Subtest: replay and data-only down preserve operator edits, frozen snapshots, certificates and existing evidence
-ok 6 - replay and data-only down preserve operator edits, frozen snapshots, certificates and existing evidence
+ok 7 - replay and data-only down preserve operator edits, frozen snapshots, certificates and existing evidence
   ---
-  duration_ms: 44.6536
+  duration_ms: 79.3875
   type: 'test'
   ...
 # Subtest: identity collision refuses ID occupied by another slug without replacing any record
-ok 7 - identity collision refuses ID occupied by another slug without replacing any record
+ok 8 - identity collision refuses ID occupied by another slug without replacing any record
   ---
-  duration_ms: 19.8733
+  duration_ms: 29.0521
   type: 'test'
   ...
 # Subtest: identity collision refuses slug occupied by another ID without replacing any record
-ok 8 - identity collision refuses slug occupied by another ID without replacing any record
+ok 9 - identity collision refuses slug occupied by another ID without replacing any record
   ---
-  duration_ms: 18.478
+  duration_ms: 26.5879
   type: 'test'
   ...
 # Subtest: identity collision refuses two matching identities without replacing any record
-ok 9 - identity collision refuses two matching identities without replacing any record
+ok 10 - identity collision refuses two matching identities without replacing any record
   ---
-  duration_ms: 19.5204
+  duration_ms: 22.8274
   type: 'test'
   ...
 # Subtest: wrong bundle versions, identities and missing schema fail without seeding partial state
-ok 10 - wrong bundle versions, identities and missing schema fail without seeding partial state
+ok 11 - wrong bundle versions, identities and missing schema fail without seeding partial state
   ---
-  duration_ms: 231.212
+  duration_ms: 236.5953
   type: 'test'
   ...
 # Subtest: a save failure leaves no partially installed lesson and a later retry creates it once
-ok 11 - a save failure leaves no partially installed lesson and a later retry creates it once
+ok 12 - a save failure leaves no partially installed lesson and a later retry creates it once
   ---
-  duration_ms: 29.2574
+  duration_ms: 31.0505
   type: 'test'
   ...
 # Subtest: catalogue merges the public case by slug without duplicating persisted identities or replacing edits
-ok 12 - catalogue merges the public case by slug without duplicating persisted identities or replacing edits
+ok 13 - catalogue merges the public case by slug without duplicating persisted identities or replacing edits
   ---
-  duration_ms: 0.4036
+  duration_ms: 0.7313
   type: 'test'
   ...
 # Subtest: actual browser and backend sources agree on scheduling, attendance, lessons, discussion and ended history
-ok 13 - actual browser and backend sources agree on scheduling, attendance, lessons, discussion and ended history
+ok 14 - actual browser and backend sources agree on scheduling, attendance, lessons, discussion and ended history
   ---
-  duration_ms: 48.9081
+  duration_ms: 47.1388
   type: 'test'
   ...
 # Subtest: lost replies keep immutable intent and recover a single create, start and message
-ok 14 - lost replies keep immutable intent and recover a single create, start and message
+ok 15 - lost replies keep immutable intent and recover a single create, start and message
   ---
-  duration_ms: 21.1234
+  duration_ms: 20.0908
   type: 'test'
   ...
 # Subtest: a malformed or foreign receipt remains uncertain and a valid replay resolves it
-ok 15 - a malformed or foreign receipt remains uncertain and a valid replay resolves it
+ok 16 - a malformed or foreign receipt remains uncertain and a valid replay resolves it
   ---
-  duration_ms: 113.3727
+  duration_ms: 108.7969
   type: 'test'
   ...
 # Subtest: current revisions and revoked permissions reject a save without trapping later corrected work
-ok 16 - current revisions and revoked permissions reject a save without trapping later corrected work
+ok 17 - current revisions and revoked permissions reject a save without trapping later corrected work
   ---
-  duration_ms: 23.3714
+  duration_ms: 22.377
   type: 'test'
   ...
 # Subtest: account, workspace and unmount changes discard late reads, writes and failures
-ok 17 - account, workspace and unmount changes discard late reads, writes and failures
+ok 18 - account, workspace and unmount changes discard late reads, writes and failures
   ---
-  duration_ms: 444.1618
+  duration_ms: 499.7407
   type: 'test'
   ...
 # Subtest: incomplete, foreign and inconsistent room reads never become successful empty views
-ok 18 - incomplete, foreign and inconsistent room reads never become successful empty views
+ok 19 - incomplete, foreign and inconsistent room reads never become successful empty views
   ---
-  duration_ms: 28.5115
+  duration_ms: 24.6271
   type: 'test'
   ...
 # Subtest: overlapping commands and heartbeats are bounded and cannot duplicate accepted work
-ok 19 - overlapping commands and heartbeats are bounded and cannot duplicate accepted work
+ok 20 - overlapping commands and heartbeats are bounded and cannot duplicate accepted work
   ---
-  duration_ms: 32.1988
+  duration_ms: 25.4825
   type: 'test'
   ...
 # Subtest: invalid actions, missing secure retry IDs and demo mode make no requests
-ok 20 - invalid actions, missing secure retry IDs and demo mode make no requests
+ok 21 - invalid actions, missing secure retry IDs and demo mode make no requests
   ---
-  duration_ms: 98.9681
+  duration_ms: 89.025
   type: 'test'
   ...
 # Subtest: classroom links survive local authentication while external, encoded and malformed redirects are rejected
-ok 21 - classroom links survive local authentication while external, encoded and malformed redirects are rejected
+ok 22 - classroom links survive local authentication while external, encoded and malformed redirects are rejected
   ---
-  duration_ms: 1.0742
+  duration_ms: 0.6195
   type: 'test'
   ...
 # Subtest: room, workspace and personal lesson identifiers stay out of classroom telemetry locations
-ok 22 - room, workspace and personal lesson identifiers stay out of classroom telemetry locations
+ok 23 - room, workspace and personal lesson identifiers stay out of classroom telemetry locations
   ---
-  duration_ms: 0.7636
+  duration_ms: 1.1029
   type: 'test'
   ...
 # Subtest: a live room may offer media; a room that is not live may not
-ok 23 - a live room may offer media; a room that is not live may not
+ok 24 - a live room may offer media; a room that is not live may not
   ---
-  duration_ms: 21.1735
+  duration_ms: 20.0112
   type: 'test'
   ...
 # Subtest: the class record read accepts aggregate counts only and refuses anything carrying an identity
-ok 24 - the class record read accepts aggregate counts only and refuses anything carrying an identity
+ok 25 - the class record read accepts aggregate counts only and refuses anything carrying an identity
   ---
-  duration_ms: 20.2978
+  duration_ms: 23.1295
   type: 'test'
   ...
 # Subtest: client joins, publishes, pulls and renegotiates through the exact room contract
-ok 25 - client joins, publishes, pulls and renegotiates through the exact room contract
+ok 26 - client joins, publishes, pulls and renegotiates through the exact room contract
   ---
-  duration_ms: 69.2139
+  duration_ms: 50.3323
   type: 'test'
   ...
 # Subtest: a room is required before accessing the camera or provider
-ok 26 - a room is required before accessing the camera or provider
+ok 27 - a room is required before accessing the camera or provider
   ---
-  duration_ms: 28.0838
+  duration_ms: 25.0996
   type: 'test'
   ...
 # Subtest: cancelling a camera prompt stops its late stream before any signalling
-ok 27 - cancelling a camera prompt stops its late stream before any signalling
+ok 28 - cancelling a camera prompt stops its late stream before any signalling
   ---
-  duration_ms: 27.6104
+  duration_ms: 20.0634
   type: 'test'
   ...
 # Subtest: late session responses are locally invalidated without publishing or reviving the join
-ok 28 - late session responses are locally invalidated without publishing or reviving the join
+ok 29 - late session responses are locally invalidated without publishing or reviving the join
   ---
-  duration_ms: 33.274
+  duration_ms: 32.4786
   type: 'test'
   ...
 # Subtest: stopping discovery fences a deferred list before automatic pulls
-ok 29 - stopping discovery fences a deferred list before automatic pulls
+ok 30 - stopping discovery fences a deferred list before automatic pulls
   ---
-  duration_ms: 0.4143
+  duration_ms: 0.8298
   type: 'test'
   ...
 # Subtest: token rotation preserves completed and pending subscriptions while future reads use the current token
-ok 30 - token rotation preserves completed and pending subscriptions while future reads use the current token
+ok 31 - token rotation preserves completed and pending subscriptions while future reads use the current token
   ---
-  duration_ms: 0.4298
+  duration_ms: 1.0015
   type: 'test'
   ...
 # Subtest: health and presence clients use the installed bound-session contract, not a client advertisement assertion
-ok 31 - health and presence clients use the installed bound-session contract, not a client advertisement assertion
+ok 32 - health and presence clients use the installed bound-session contract, not a client advertisement assertion
   ---
-  duration_ms: 49.2803
+  duration_ms: 57.6274
   type: 'test'
   ...
 # Subtest: a legacy or mismatched backend session response cannot authorize a join
-ok 32 - a legacy or mismatched backend session response cannot authorize a join
+ok 33 - a legacy or mismatched backend session response cannot authorize a join
   ---
-  duration_ms: 33.8505
+  duration_ms: 49.5274
   type: 'test'
   ...
 # Subtest: the lifetime is idle until an explicit claim and refuses same-tick duplicate joins
-ok 33 - the lifetime is idle until an explicit claim and refuses same-tick duplicate joins
+ok 34 - the lifetime is idle until an explicit claim and refuses same-tick duplicate joins
   ---
-  duration_ms: 2.2868
+  duration_ms: 2.9983
   type: 'test'
   ...
 # Subtest: leave during connection closes a late handle and the actual local and remote tracks
-ok 34 - leave during connection closes a late handle and the actual local and remote tracks
+ok 35 - leave during connection closes a late handle and the actual local and remote tracks
   ---
-  duration_ms: 0.2967
+  duration_ms: 1.2202
   type: 'test'
   ...
 # Subtest: returning to the same room cannot revive an old attempt or cancel its replacement
-ok 35 - returning to the same room cannot revive an old attempt or cancel its replacement
+ok 36 - returning to the same room cannot revive an old attempt or cancel its replacement
   ---
-  duration_ms: 0.2318
+  duration_ms: 0.4717
   type: 'test'
   ...
 # Subtest: scope invalidation rejects a late handle before effect cleanup and cannot be reversed
-ok 36 - scope invalidation rejects a late handle before effect cleanup and cannot be reversed
+ok 37 - scope invalidation rejects a late handle before effect cleanup and cannot be reversed
   ---
-  duration_ms: 0.1953
+  duration_ms: 0.3586
   type: 'test'
   ...
 # Subtest: cancellation fences callbacks before disposing and cleans each resource once
-ok 37 - cancellation fences callbacks before disposing and cleans each resource once
+ok 38 - cancellation fences callbacks before disposing and cleans each resource once
   ---
-  duration_ms: 0.3379
+  duration_ms: 0.3585
   type: 'test'
   ...
 # Subtest: a disposed effect is not retained, and registering cleanup on a cancelled attempt runs it immediately
-ok 38 - a disposed effect is not retained, and registering cleanup on a cancelled attempt runs it immediately
+ok 39 - a disposed effect is not retained, and registering cleanup on a cancelled attempt runs it immediately
   ---
-  duration_ms: 0.2282
+  duration_ms: 0.2081
   type: 'test'
   ...
 # Subtest: cleanup failures do not retain other resources, tracks or peer connections
-ok 39 - cleanup failures do not retain other resources, tracks or peer connections
+ok 40 - cleanup failures do not retain other resources, tracks or peer connections
   ---
-  duration_ms: 0.5076
+  duration_ms: 0.5146
   type: 'test'
   ...
 # Subtest: an already-stale claim cannot block an explicit join in the current scope
-ok 40 - an already-stale claim cannot block an explicit join in the current scope
+ok 41 - an already-stale claim cannot block an explicit join in the current scope
   ---
-  duration_ms: 0.2468
+  duration_ms: 0.2742
   type: 'test'
   ...
 # Subtest: native auth refresh preserves a claim but a same-account session replacement cancels it
-ok 41 - native auth refresh preserves a claim but a same-account session replacement cancels it
+ok 42 - native auth refresh preserves a claim but a same-account session replacement cancels it
   ---
-  duration_ms: 1.1215
+  duration_ms: 1.2438
   type: 'test'
   ...
 # Subtest: room, current workspace membership and fresh attendance precede session creation
-ok 42 - room, current workspace membership and fresh attendance precede session creation
+ok 43 - room, current workspace membership and fresh attendance precede session creation
   ---
-  duration_ms: 43.0243
+  duration_ms: 36.4143
   type: 'test'
   ...
 # Subtest: owned room sessions are required for tracks and renegotiation
-ok 43 - owned room sessions are required for tracks and renegotiation
+ok 44 - owned room sessions are required for tracks and renegotiation
   ---
-  duration_ms: 30.7292
+  duration_ms: 27.7377
   type: 'test'
   ...
 # Subtest: allowlisting alone cannot grant publishing into another classroom
-ok 44 - allowlisting alone cannot grant publishing into another classroom
+ok 45 - allowlisting alone cannot grant publishing into another classroom
   ---
-  duration_ms: 25.2442
+  duration_ms: 25.962
   type: 'test'
   ...
 # Subtest: ended, expired, revoked and rejoined attendance cannot reuse a media session
-ok 45 - ended, expired, revoked and rejoined attendance cannot reuse a media session
+ok 46 - ended, expired, revoked and rejoined attendance cannot reuse a media session
   ---
-  duration_ms: 169.9006
+  duration_ms: 167.1242
   type: 'test'
   ...
 # Subtest: pulls require exact server-confirmed tracks and a current publisher in the same room
-ok 46 - pulls require exact server-confirmed tracks and a current publisher in the same room
+ok 47 - pulls require exact server-confirmed tracks and a current publisher in the same room
   ---
-  duration_ms: 48.2707
+  duration_ms: 38.9256
   type: 'test'
   ...
 # Subtest: missing or opened session schema fails closed before provider access
-ok 47 - missing or opened session schema fails closed before provider access
+ok 48 - missing or opened session schema fails closed before provider access
   ---
-  duration_ms: 45.0534
+  duration_ms: 41.7065
   type: 'test'
   ...
 # Subtest: session migration is idempotent, locked and rollback disables historical bindings
-ok 48 - session migration is idempotent, locked and rollback disables historical bindings
+ok 49 - session migration is idempotent, locked and rollback disables historical bindings
   ---
-  duration_ms: 32.727
+  duration_ms: 24.6326
   type: 'test'
   ...
 # Subtest: presence cannot advertise an unowned or never-published provider session
-ok 49 - presence cannot advertise an unowned or never-published provider session
+ok 50 - presence cannot advertise an unowned or never-published provider session
   ---
-  duration_ms: 25.0975
+  duration_ms: 27.509
   type: 'test'
   ...
 # Subtest: presence readers and advertised publishers must still attend the live room
-ok 50 - presence readers and advertised publishers must still attend the live room
+ok 51 - presence readers and advertised publishers must still attend the live room
   ---
-  duration_ms: 42.2943
+  duration_ms: 31.615
   type: 'test'
   ...
 # Subtest: capacity does not trap a fresh attendance behind unusable historical sessions
-ok 51 - capacity does not trap a fresh attendance behind unusable historical sessions
+ok 52 - capacity does not trap a fresh attendance behind unusable historical sessions
   ---
-  duration_ms: 62.8329
+  duration_ms: 54.6783
   type: 'test'
   ...
 # Subtest: malformed retained advertisements are isolated from the rest of the room
-ok 52 - malformed retained advertisements are isolated from the rest of the room
+ok 53 - malformed retained advertisements are isolated from the rest of the room
   ---
-  duration_ms: 33.2978
+  duration_ms: 26.8052
   type: 'test'
   ...
 # Subtest: both handlers use App methods that actually exist on the PocketBase JSVM
-ok 53 - both handlers use App methods that actually exist on the PocketBase JSVM
+ok 54 - both handlers use App methods that actually exist on the PocketBase JSVM
   ---
-  duration_ms: 45.6556
+  duration_ms: 44.6478
   type: 'test'
   ...
 # Subtest: an empty allowlist refuses even an attending host with confirmed tracks
-ok 54 - an empty allowlist refuses even an attending host with confirmed tracks
+ok 55 - an empty allowlist refuses even an attending host with confirmed tracks
   ---
-  duration_ms: 28.8574
+  duration_ms: 24.0363
   type: 'test'
   ...
 # Subtest: no seat label is returned, logged or stored - it is the caller email on this estate
-ok 55 - no seat label is returned, logged or stored - it is the caller email on this estate
+ok 56 - no seat label is returned, logged or stored - it is the caller email on this estate
   ---
-  duration_ms: 30.7043
+  duration_ms: 26.0844
   type: 'test'
   ...
 # Subtest: a row must carry a bounded, future expires_at
-ok 56 - a row must carry a bounded, future expires_at
+ok 57 - a row must carry a bounded, future expires_at
   ---
-  duration_ms: 33.5288
+  duration_ms: 29.6724
   type: 'test'
   ...
 # Subtest: empty, oversized or malformed advertised tracks are refused rather than stored
-ok 57 - empty, oversized or malformed advertised tracks are refused rather than stored
+ok 58 - empty, oversized or malformed advertised tracks are refused rather than stored
   ---
-  duration_ms: 25.9805
+  duration_ms: 24.1282
   type: 'test'
   ...
 # Subtest: context, bare track strings and gm:forge work for an authorized attending host
-ok 58 - context, bare track strings and gm:forge work for an authorized attending host
+ok 59 - context, bare track strings and gm:forge work for an authorized attending host
   ---
-  duration_ms: 32.2715
+  duration_ms: 28.6062
   type: 'test'
   ...
 # Subtest: allowlisting alone grants neither attendance nor classroom management
-ok 59 - allowlisting alone grants neither attendance nor classroom management
+ok 60 - allowlisting alone grants neither attendance nor classroom management
   ---
-  duration_ms: 61.453
+  duration_ms: 45.4282
   type: 'test'
   ...
 # Subtest: reading requires live attendance and a native workspace grant, not an allowlist entry
-ok 60 - reading requires live attendance and a native workspace grant, not an allowlist entry
+ok 61 - reading requires live attendance and a native workspace grant, not an allowlist entry
   ---
-  duration_ms: 33.089
+  duration_ms: 26.1276
   type: 'test'
   ...
 # Subtest: one publisher cannot rewrite another publisher row and redirect the class
-ok 61 - one publisher cannot rewrite another publisher row and redirect the class
+ok 62 - one publisher cannot rewrite another publisher row and redirect the class
   ---
-  duration_ms: 35.0059
+  duration_ms: 28.1606
   type: 'test'
   ...
 # Subtest: unbound and never-published sessions cannot become advertisements
-ok 62 - unbound and never-published sessions cannot become advertisements
+ok 63 - unbound and never-published sessions cannot become advertisements
   ---
-  duration_ms: 33.3885
+  duration_ms: 25.9802
   type: 'test'
   ...
 # Subtest: legacy publisher_grant rows neither grant access nor grandfather guessed sessions
-ok 63 - legacy publisher_grant rows neither grant access nor grandfather guessed sessions
+ok 64 - legacy publisher_grant rows neither grant access nor grandfather guessed sessions
   ---
-  duration_ms: 26.9259
+  duration_ms: 24.7815
   type: 'test'
   ...
 # Subtest: tracks must match the successful push in the same session, including media kind
-ok 64 - tracks must match the successful push in the same session, including media kind
+ok 65 - tracks must match the successful push in the same session, including media kind
   ---
-  duration_ms: 32.4913
+  duration_ms: 27.9697
   type: 'test'
   ...
 # Subtest: a provider refusal cannot supply a recorded track for presence
-ok 65 - a provider refusal cannot supply a recorded track for presence
+ok 66 - a provider refusal cannot supply a recorded track for presence
   ---
-  duration_ms: 25.9798
+  duration_ms: 22.7116
   type: 'test'
   ...
 # Subtest: a missing track confirmation cannot supply a recorded track for presence
-ok 66 - a missing track confirmation cannot supply a recorded track for presence
+ok 67 - a missing track confirmation cannot supply a recorded track for presence
   ---
-  duration_ms: 28.1726
+  duration_ms: 22.6716
   type: 'test'
   ...
 # Subtest: a valid publisher cannot move a session to another room or workspace
-ok 67 - a valid publisher cannot move a session to another room or workspace
+ok 68 - a valid publisher cannot move a session to another room or workspace
   ---
-  duration_ms: 37.5169
+  duration_ms: 27.1937
   type: 'test'
   ...
 # Subtest: a conflicting or duplicate stored row is never overwritten as the current publisher
-ok 68 - a conflicting or duplicate stored row is never overwritten as the current publisher
+ok 69 - a conflicting or duplicate stored row is never overwritten as the current publisher
   ---
-  duration_ms: 38.506
+  duration_ms: 25.8987
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: workspace revoked
-ok 69 - publisher refresh and read-only visibility both fail closed: workspace revoked
+ok 70 - publisher refresh and read-only visibility both fail closed: workspace revoked
   ---
-  duration_ms: 35.8151
+  duration_ms: 25.8187
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: role downgraded
-ok 70 - publisher refresh and read-only visibility both fail closed: role downgraded
+ok 71 - publisher refresh and read-only visibility both fail closed: role downgraded
   ---
-  duration_ms: 37.0729
+  duration_ms: 28.5888
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: host changed
-ok 71 - publisher refresh and read-only visibility both fail closed: host changed
+ok 72 - publisher refresh and read-only visibility both fail closed: host changed
   ---
-  duration_ms: 53.8271
+  duration_ms: 44.8336
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: allowlist revoked
-ok 72 - publisher refresh and read-only visibility both fail closed: allowlist revoked
+ok 73 - publisher refresh and read-only visibility both fail closed: allowlist revoked
   ---
-  duration_ms: 32.6389
+  duration_ms: 37.4777
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: stale attendance
-ok 73 - publisher refresh and read-only visibility both fail closed: stale attendance
+ok 74 - publisher refresh and read-only visibility both fail closed: stale attendance
   ---
-  duration_ms: 40.4374
+  duration_ms: 28.3467
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: left classroom
-ok 74 - publisher refresh and read-only visibility both fail closed: left classroom
+ok 75 - publisher refresh and read-only visibility both fail closed: left classroom
   ---
-  duration_ms: 37.5462
+  duration_ms: 32.3344
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: rejoined attendance
-ok 75 - publisher refresh and read-only visibility both fail closed: rejoined attendance
+ok 76 - publisher refresh and read-only visibility both fail closed: rejoined attendance
   ---
-  duration_ms: 37.2276
+  duration_ms: 29.2953
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: expired session
-ok 76 - publisher refresh and read-only visibility both fail closed: expired session
+ok 77 - publisher refresh and read-only visibility both fail closed: expired session
   ---
-  duration_ms: 35.1471
+  duration_ms: 26.3023
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: closed session
-ok 77 - publisher refresh and read-only visibility both fail closed: closed session
+ok 78 - publisher refresh and read-only visibility both fail closed: closed session
   ---
-  duration_ms: 35.6982
+  duration_ms: 30.9908
   type: 'test'
   ...
 # Subtest: publisher refresh and read-only visibility both fail closed: foreign session workspace
-ok 78 - publisher refresh and read-only visibility both fail closed: foreign session workspace
+ok 79 - publisher refresh and read-only visibility both fail closed: foreign session workspace
   ---
-  duration_ms: 32.1987
+  duration_ms: 28.8373
   type: 'test'
   ...
 # Subtest: leaving, closing and rejoining requires a fresh session, not the closed record
-ok 79 - leaving, closing and rejoining requires a fresh session, not the closed record
+ok 80 - leaving, closing and rejoining requires a fresh session, not the closed record
   ---
-  duration_ms: 44.3814
+  duration_ms: 36.0691
   type: 'test'
   ...
 # Subtest: a stale or departed reader cannot enumerate an otherwise current advertisement
-ok 80 - a stale or departed reader cannot enumerate an otherwise current advertisement
+ok 81 - a stale or departed reader cannot enumerate an otherwise current advertisement
   ---
-  duration_ms: 36.2979
+  duration_ms: 28.2266
   type: 'test'
   ...
 # Subtest: a classroom with ended state fails closed for presence reads and writes
-ok 81 - a classroom with ended state fails closed for presence reads and writes
+ok 82 - a classroom with ended state fails closed for presence reads and writes
   ---
-  duration_ms: 38.3223
+  duration_ms: 29.8813
   type: 'test'
   ...
 # Subtest: a classroom with scheduled state fails closed for presence reads and writes
-ok 82 - a classroom with scheduled state fails closed for presence reads and writes
+ok 83 - a classroom with scheduled state fails closed for presence reads and writes
   ---
-  duration_ms: 36.5798
+  duration_ms: 25.9754
   type: 'test'
   ...
 # Subtest: a classroom with unknown state fails closed for presence reads and writes
-ok 83 - a classroom with unknown state fails closed for presence reads and writes
+ok 84 - a classroom with unknown state fails closed for presence reads and writes
   ---
-  duration_ms: 31.1912
+  duration_ms: 21.2743
   type: 'test'
   ...
 # Subtest: a classroom with missing state fails closed for presence reads and writes
-ok 84 - a classroom with missing state fails closed for presence reads and writes
+ok 85 - a classroom with missing state fails closed for presence reads and writes
   ---
-  duration_ms: 31.3651
+  duration_ms: 21.7293
   type: 'test'
   ...
 # Subtest: unreadable classroom state aborts reads and writes instead of assuming it is live
-ok 85 - unreadable classroom state aborts reads and writes instead of assuming it is live
+ok 86 - unreadable classroom state aborts reads and writes instead of assuming it is live
   ---
-  duration_ms: 32.5997
+  duration_ms: 25.9286
   type: 'test'
   ...
 # Subtest: advertisement role and state must use the declared values and persona pairing
-ok 86 - advertisement role and state must use the declared values and persona pairing
+ok 87 - advertisement role and state must use the declared values and persona pairing
   ---
-  duration_ms: 27.0548
+  duration_ms: 23.8742
   type: 'test'
   ...
 # Subtest: a refreshed row is an upsert, not a second row
-ok 87 - a refreshed row is an upsert, not a second row
+ok 88 - a refreshed row is an upsert, not a second row
   ---
-  duration_ms: 27.0461
+  duration_ms: 27.5024
   type: 'test'
   ...
 # Subtest: a write never claims verification; a read is verified only when the SFU echoes the tracks
-ok 88 - a write never claims verification; a read is verified only when the SFU echoes the tracks
+ok 89 - a write never claims verification; a read is verified only when the SFU echoes the tracks
   ---
-  duration_ms: 26.4088
+  duration_ms: 21.6177
   type: 'test'
   ...
 # Subtest: a session whose every advertised track the SFU holds is verified, from one read without a body
-ok 89 - a session whose every advertised track the SFU holds is verified, from one read without a body
+ok 90 - a session whose every advertised track the SFU holds is verified, from one read without a body
   ---
-  duration_ms: 28.5471
+  duration_ms: 22.0277
   type: 'test'
   ...
 # Subtest: a session missing one advertised track is not verified, and the missing track is named
-ok 90 - a session missing one advertised track is not verified, and the missing track is named
+ok 91 - a session missing one advertised track is not verified, and the missing track is named
   ---
-  duration_ms: 31.4125
+  duration_ms: 21.3282
   type: 'test'
   ...
 # Subtest: a track the SFU reports inactive does not count as held
-ok 91 - a track the SFU reports inactive does not count as held
+ok 92 - a track the SFU reports inactive does not count as held
   ---
-  duration_ms: 27.1398
+  duration_ms: 21.0485
   type: 'test'
   ...
 # Subtest: an SFU that answers 500 leaves the row unverified, with the status named
-ok 92 - an SFU that answers 500 leaves the row unverified, with the status named
+ok 93 - an SFU that answers 500 leaves the row unverified, with the status named
   ---
-  duration_ms: 25.8886
+  duration_ms: 20.6096
   type: 'test'
   ...
 # Subtest: an expired or ENDED row is not served, and an expired row is eventually collected
-ok 93 - an expired or ENDED row is not served, and an expired row is eventually collected
+ok 94 - an expired or ENDED row is not served, and an expired row is eventually collected
   ---
-  duration_ms: 32.0745
+  duration_ms: 30.677
   type: 'test'
   ...
 # Subtest: garbage collection stays room-scoped and does not turn a saved write into failure
-ok 94 - garbage collection stays room-scoped and does not turn a saved write into failure
+ok 95 - garbage collection stays room-scoped and does not turn a saved write into failure
   ---
-  duration_ms: 27.7009
+  duration_ms: 23.476
   type: 'test'
   ...
 # Subtest: malformed saved advertisements are not exposed as subscribable sessions
-ok 95 - malformed saved advertisements are not exposed as subscribable sessions
+ok 96 - malformed saved advertisements are not exposed as subscribable sessions
   ---
-  duration_ms: 29.7696
+  duration_ms: 22.3867
   type: 'test'
   ...
 # Subtest: a save that fails is a named refusal and leaves the stored advertisement unchanged
-ok 96 - a save that fails is a named refusal and leaves the stored advertisement unchanged
+ok 97 - a save that fails is a named refusal and leaves the stored advertisement unchanged
   ---
-  duration_ms: 26.0164
+  duration_ms: 22.0746
   type: 'test'
   ...
 # Subtest: an unknown room is a 404 and never leaks whether rows exist
-ok 97 - an unknown room is a 404 and never leaks whether rows exist
+ok 98 - an unknown room is a 404 and never leaks whether rows exist
   ---
-  duration_ms: 23.9376
+  duration_ms: 24.7095
   type: 'test'
   ...
 # Subtest: the health route answers without a room, a credential or a publisher name
-ok 98 - the health route answers without a room, a credential or a publisher name
+ok 99 - the health route answers without a room, a credential or a publisher name
   ---
-  duration_ms: 52.6442
+  duration_ms: 50.8119
   type: 'test'
   ...
 # Subtest: all signalling and presence routes register authentication and bounded write bodies
-ok 99 - all signalling and presence routes register authentication and bounded write bodies
+ok 100 - all signalling and presence routes register authentication and bounded write bodies
   ---
-  duration_ms: 19.1939
+  duration_ms: 16.5434
   type: 'test'
   ...
 # Subtest: missing provider configuration refuses current advertisements without contacting HTTP
-ok 100 - missing provider configuration refuses current advertisements without contacting HTTP
+ok 101 - missing provider configuration refuses current advertisements without contacting HTTP
   ---
-  duration_ms: 55.0644
+  duration_ms: 43.7777
   type: 'test'
   ...
 # Subtest: missing or reopened media-session storage fails closed for presence
-ok 101 - missing or reopened media-session storage fails closed for presence
+ok 102 - missing or reopened media-session storage fails closed for presence
   ---
-  duration_ms: 63.3464
+  duration_ms: 76.4728
   type: 'test'
   ...
 # Subtest: the migration is idempotent, refuses a hand-edited collection and rolls back
-ok 102 - the migration is idempotent, refuses a hand-edited collection and rolls back
+ok 103 - the migration is idempotent, refuses a hand-edited collection and rolls back
   ---
-  duration_ms: 27.0481
+  duration_ms: 26.0368
   type: 'test'
   ...
 # Subtest: presence migration accepts normalized SQL but rejects changed uniqueness and indexed columns
-ok 103 - presence migration accepts normalized SQL but rejects changed uniqueness and indexed columns
+ok 104 - presence migration accepts normalized SQL but rejects changed uniqueness and indexed columns
   ---
-  duration_ms: 24.0473
+  duration_ms: 20.9007
   type: 'test'
   ...
 # Subtest: presence migration refuses changed field contracts and opened rules rather than repairing them
-ok 104 - presence migration refuses changed field contracts and opened rules rather than repairing them
+ok 105 - presence migration refuses changed field contracts and opened rules rather than repairing them
   ---
-  duration_ms: 173.1104
+  duration_ms: 158.2891
   type: 'test'
   ...
 # Subtest: the presence migration retains its deployed prefix and avoids classroom-member index names
-ok 105 - the presence migration retains its deployed prefix and avoids classroom-member index names
+ok 106 - the presence migration retains its deployed prefix and avoids classroom-member index names
   ---
-  duration_ms: 0.4094
+  duration_ms: 0.328
   type: 'test'
   ...
 # Subtest: presence writes and health never call the provider, a read asks it once, and none exposes a credential
-ok 106 - presence writes and health never call the provider, a read asks it once, and none exposes a credential
+ok 107 - presence writes and health never call the provider, a read asks it once, and none exposes a credential
   ---
-  duration_ms: 23.3581
+  duration_ms: 21.9036
   type: 'test'
   ...
 # Subtest: the classroom source and regression files remain LF only
-ok 107 - the classroom source and regression files remain LF only
+ok 108 - the classroom source and regression files remain LF only
   ---
-  duration_ms: 0.9829
+  duration_ms: 0.9165
   type: 'test'
   ...
 # Subtest: host and learner share the selected lesson, discussion and terminal session history
-ok 108 - host and learner share the selected lesson, discussion and terminal session history
+ok 109 - host and learner share the selected lesson, discussion and terminal session history
   ---
-  duration_ms: 63.2771
+  duration_ms: 52.4925
   type: 'test'
   ...
 # Subtest: a chatroom has no lesson, so the lesson-category membership gate neither hides nor refuses it
-ok 109 - a chatroom has no lesson, so the lesson-category membership gate neither hides nor refuses it
+ok 110 - a chatroom has no lesson, so the lesson-category membership gate neither hides nor refuses it
   ---
-  duration_ms: 23.1669
+  duration_ms: 21.1623
   type: 'test'
   ...
 # Subtest: current membership and host ownership govern reads, writes and saved receipt recovery
-ok 110 - current membership and host ownership govern reads, writes and saved receipt recovery
+ok 111 - current membership and host ownership govern reads, writes and saved receipt recovery
   ---
-  duration_ms: 29.0666
+  duration_ms: 23.5669
   type: 'test'
   ...
 # Subtest: lost create, start and message responses replay once without reviving ended rooms
-ok 111 - lost create, start and message responses replay once without reviving ended rooms
+ok 112 - lost create, start and message responses replay once without reviving ended rooms
   ---
-  duration_ms: 34.6575
+  duration_ms: 27.3027
   type: 'test'
   ...
 # Subtest: receipt failure rolls room, attendance and discussion writes back together
-ok 112 - receipt failure rolls room, attendance and discussion writes back together
+ok 113 - receipt failure rolls room, attendance and discussion writes back together
   ---
-  duration_ms: 26.3164
+  duration_ms: 19.7154
   type: 'test'
   ...
 # Subtest: attendance expires and stale heartbeat or leave cannot overwrite a later join
-ok 113 - attendance expires and stale heartbeat or leave cannot overwrite a later join
+ok 114 - attendance expires and stale heartbeat or leave cannot overwrite a later join
   ---
-  duration_ms: 33.2184
+  duration_ms: 24.8295
   type: 'test'
   ...
 # Subtest: bad inputs and stale hosts cannot fabricate schedules, sections or participant authority
-ok 114 - bad inputs and stale hosts cannot fabricate schedules, sections or participant authority
+ok 115 - bad inputs and stale hosts cannot fabricate schedules, sections or participant authority
   ---
-  duration_ms: 33.4111
+  duration_ms: 28.6977
   type: 'test'
   ...
 # Subtest: list and discussion pagination are bounded and filter state without claiming unread pages are empty
-ok 115 - list and discussion pagination are bounded and filter state without claiming unread pages are empty
+ok 116 - list and discussion pagination are bounded and filter state without claiming unread pages are empty
   ---
-  duration_ms: 64.4789
+  duration_ms: 54.2671
   type: 'test'
   ...
 # Subtest: capacity counts only recent joined accounts and rejects foreign presence claims
-ok 116 - capacity counts only recent joined accounts and rejects foreign presence claims
+ok 117 - capacity counts only recent joined accounts and rejects foreign presence claims
   ---
-  duration_ms: 32.7507
+  duration_ms: 23.5624
   type: 'test'
   ...
 # Subtest: migration replays and down retains history while disabling every classroom route
-ok 117 - migration replays and down retains history while disabling every classroom route
+ok 118 - migration replays and down retains history while disabling every classroom route
   ---
-  duration_ms: 41.7044
+  duration_ms: 27.393
   type: 'test'
   ...
 # Subtest: classroom migrations accept native-normalized indexes and retain history through down/up
-ok 118 - classroom migrations accept native-normalized indexes and retain history through down/up
+ok 119 - classroom migrations accept native-normalized indexes and retain history through down/up
   ---
-  duration_ms: 100.1776
+  duration_ms: 99.7995
   type: 'test'
   ...
 # Subtest: classroom index normalization cannot admit changed uniqueness, identity, keys or predicates
-ok 119 - classroom index normalization cannot admit changed uniqueness, identity, keys or predicates
+ok 120 - classroom index normalization cannot admit changed uniqueness, identity, keys or predicates
   ---
-  duration_ms: 145.7008
+  duration_ms: 118.7022
   type: 'test'
   ...
 # Subtest: native route callbacks load policy in isolation and require bounded authenticated private requests
-ok 120 - native route callbacks load policy in isolation and require bounded authenticated private requests
+ok 121 - native route callbacks load policy in isolation and require bounded authenticated private requests
   ---
-  duration_ms: 4.0986
+  duration_ms: 18.7526
   type: 'test'
   ...
 # Subtest: media is offered only while live and only when the realtime service is configured, without exposing its values
-ok 121 - media is offered only while live and only when the realtime service is configured, without exposing its values
+ok 122 - media is offered only while live and only when the realtime service is configured, without exposing its values
   ---
-  duration_ms: 54.0264
+  duration_ms: 39.7857
   type: 'test'
   ...
 # Subtest: attendance history records each start, join, leave and end once, inside the command, and replays never duplicate it
-ok 122 - attendance history records each start, join, leave and end once, inside the command, and replays never duplicate it
+ok 123 - attendance history records each start, join, leave and end once, inside the command, and replays never duplicate it
   ---
-  duration_ms: 25.8053
+  duration_ms: 27.1542
   type: 'test'
   ...
 # Subtest: the class record is aggregate, host-only and honest about a backend without the history
-ok 123 - the class record is aggregate, host-only and honest about a backend without the history
+ok 124 - the class record is aggregate, host-only and honest about a backend without the history
   ---
-  duration_ms: 22.9416
+  duration_ms: 18.9165
   type: 'test'
   ...
 # Subtest: the attendance migration is locked, replays cleanly and keeps history on rollback
-ok 124 - the attendance migration is locked, replays cleanly and keeps history on rollback
+ok 125 - the attendance migration is locked, replays cleanly and keeps history on rollback
   ---
-  duration_ms: 23.3706
+  duration_ms: 23.6713
   type: 'test'
   ...
 # Subtest: attendance reapply accepts equivalent native index DDL without changing events
-ok 125 - attendance reapply accepts equivalent native index DDL without changing events
+ok 126 - attendance reapply accepts equivalent native index DDL without changing events
   ---
-  duration_ms: 22.7246
+  duration_ms: 21.9789
   type: 'test'
   ...
 # Subtest: attendance index normalization still rejects changed index structure and field contracts
-ok 126 - attendance index normalization still rejects changed index structure and field contracts
+ok 127 - attendance index normalization still rejects changed index structure and field contracts
   ---
-  duration_ms: 145.1186
+  duration_ms: 104.3835
   type: 'test'
   ...
-1..126
-# tests 126
+1..127
+# tests 127
 # suites 0
-# pass 126
+# pass 127
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 3372.9095
+# duration_ms 3032.1333
