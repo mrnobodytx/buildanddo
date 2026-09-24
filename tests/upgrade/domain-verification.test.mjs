@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-24
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/domain-verification.js, apps/pocketbase/pb_migrations/1791600000_domain_verification.js
+// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/domain-verification.js, apps/pocketbase/pb_migrations/1791600100_domain_verification.js
 // EnumType:    Test
-// EnumEdges:   DEPENDS_ON tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/domain-verification.js; VALIDATES apps/pocketbase/pb_hooks/workspace-record-policy.js; VALIDATES apps/pocketbase/pb_migrations/1791600000_domain_verification.js
+// EnumEdges:   DEPENDS_ON tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/domain-verification.js; VALIDATES apps/pocketbase/pb_hooks/workspace-record-policy.js; VALIDATES apps/pocketbase/pb_migrations/1791600100_domain_verification.js
 // DAG Node:    none
 // Intent:      Prove a domain is verified only by an exact DNS TXT match at a fixed resolver, and that browsers cannot assert it.
 // ───────────────────────────────────────────────────────────────
@@ -20,7 +20,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import test from 'node:test';
 import { fixture, plain, source } from './admin-fixture.mjs';
 
-const MIGRATION = 'apps/pocketbase/pb_migrations/1791600000_domain_verification.js';
+const MIGRATION = 'apps/pocketbase/pb_migrations/1791600100_domain_verification.js';
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const denied = (operation, status = 403) => assert.throws(operation, (error) => error.status === status);
 

@@ -88,7 +88,7 @@ class NativeFixtureContractTests(unittest.TestCase):
                 {path.name for path in (server.root / "migrations").glob("*.js")},
                 set(domain.MIGRATIONS) | {"0000000001_fixture.js", "1788474001_fixture.js"},
             )
-            self.assertIn("1791600000_domain_verification.js", domain.MIGRATIONS)
+            self.assertIn("1791600100_domain_verification.js", domain.MIGRATIONS)
             for name in domain.MIGRATIONS:
                 self.assertEqual(
                     (server.root / "migrations" / name).read_bytes(),

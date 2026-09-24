@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-24
-# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/domains.pb.js, apps/pocketbase/pb_hooks/domain-verification.js, apps/pocketbase/pb_hooks/workspace-record-policy.js, apps/pocketbase/pb_migrations/1788474000_create_workspace_collections.js, apps/pocketbase/pb_migrations/1791600000_domain_verification.js
+# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/domains.pb.js, apps/pocketbase/pb_hooks/domain-verification.js, apps/pocketbase/pb_hooks/workspace-record-policy.js, apps/pocketbase/pb_migrations/1788474000_create_workspace_collections.js, apps/pocketbase/pb_migrations/1791600100_domain_verification.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/domains.pb.js; VALIDATES apps/pocketbase/pb_hooks/domain-verification.js; VALIDATES apps/pocketbase/pb_hooks/workspace-record-policy.js; VALIDATES apps/pocketbase/pb_migrations/1791600000_domain_verification.js
+# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/domains.pb.js; VALIDATES apps/pocketbase/pb_hooks/domain-verification.js; VALIDATES apps/pocketbase/pb_hooks/workspace-record-policy.js; VALIDATES apps/pocketbase/pb_migrations/1791600100_domain_verification.js
 # DAG Node:    none
 # Intent:      Require real PocketBase to hide the challenge token, refuse browser-asserted ownership and fail closed on resolver errors.
 # ───────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
 DOMAIN = "domainalpha0001"
 LEGACY = "domainlegacy001"
-MIGRATION = "1791600000_domain_verification.js"
+MIGRATION = "1791600100_domain_verification.js"
 MIGRATIONS = ("1788474000_create_workspace_collections.js", MIGRATION)
 HOOKS = (
     "domains.pb.js",

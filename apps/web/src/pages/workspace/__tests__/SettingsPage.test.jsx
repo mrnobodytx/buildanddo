@@ -51,7 +51,7 @@ beforeEach(() => {
         $http: { send: () => ({ statusCode: 200, raw: JSON.stringify(dns) }) },
         $security: { randomString: (length) => 'T'.repeat(length) },
     } });
-    backend.migration('apps/pocketbase/pb_migrations/1791600000_domain_verification.js').up();
+    backend.migration('apps/pocketbase/pb_migrations/1791600100_domain_verification.js').up();
     pb.send = vi.fn(async (...args) => send(...args));
 });
 

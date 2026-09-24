@@ -28,11 +28,11 @@ record, and the product says so honestly.
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | Server-owned domain state and hidden challenge fields | `node --test tests/upgrade/*.test.mjs && echo PASS` | pending |
-| 2 | Challenge and DNS-over-HTTPS check commands with rate limit | `node --test tests/upgrade/*.test.mjs && echo PASS` | pending |
-| 3 | Add or change the domain after onboarding | `node --test tests/upgrade/*.test.mjs && echo PASS` | pending |
-| 4 | Settings verification panel and honest Front Page banner | `cd apps/web && npx vitest run src/pages/workspace/__tests__/SettingsPage.test.jsx src/pages/workspace/__tests__/OverviewPage.test.jsx && echo PASS` | pending |
-| 5 | Lint, build, context, readiness, boundary, secret scan | `cd apps/web && npm run lint && npm run build && cd ../.. && python scripts/ci/agent_context.py --check && echo PASS` | pending |
+| 1 | Server-owned domain state and hidden challenge fields | `node --test tests/upgrade/*.test.mjs && echo PASS` | done |
+| 2 | Challenge and DNS-over-HTTPS check commands with rate limit | `node --test tests/upgrade/*.test.mjs && echo PASS` | done |
+| 3 | Add or change the domain after onboarding | `node --test tests/upgrade/*.test.mjs && echo PASS` | done |
+| 4 | Settings verification panel and honest Front Page banner | `cd apps/web && npx vitest run src/pages/workspace/__tests__/SettingsPage.test.jsx src/pages/workspace/__tests__/OverviewPage.test.jsx && echo PASS` | done |
+| 5 | Lint, build, context, readiness, boundary, secret scan | `cd apps/web && npm run lint && npm run build && cd ../.. && python scripts/ci/agent_context.py --check && echo PASS` | done |
 
 ## Constraints
 
