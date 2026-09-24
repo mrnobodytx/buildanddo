@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/tutorial-learning-fixture.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-LEARNING-NATIVE-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
@@ -21,14 +21,27 @@ import { fixture, plain, source } from './admin-fixture.mjs';
 export const MIGRATION = 'apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js';
 export const WAIT_MIGRATION = 'apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js';
 
+// PocketBase's countRecords takes dbx expressions only; a filter string is a native
+// TypeError on 0.28 and 0.39, so the double refuses one too.
+export const DBX = { hashExp: (value) => ({ hash: value }), not: (expression) => ({ not: expression }) };
+const matches = (row, expression) => expression.not ? !matches(row, expression.not) :
+    Object.entries(expression.hash).every(([key, value]) => (row[key] ?? '') === value);
+export function nativeCount(f) {
+    return (name, ...expressions) => {
+        if (expressions.some((expression) => !expression || typeof expression !== 'object'))
+            throw new TypeError('could not convert function call parameter 1 to dbx.Expression');
+        return (f.data[name] || []).filter((row) => expressions.every((expression) => matches(row, expression))).length;
+    };
+}
+
 export function learningFixture() {
-    const f = fixture({ runtime: { $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') } } });
+    const f = fixture({ runtime: { $dbx: DBX, $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') } } });
     for (const name of ['lesson', 'curriculum_version']) f.collections.tutorials.fields.add({ name });
     const curriculum = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
     const lessons = curriculum.lessons.map((lesson) => ({ ...lesson, curriculum_version: curriculum.version }));
     lessons.forEach((lesson) => f.seed('tutorials', lesson));
     f.seed('users', { id: 'owner', name: 'Test Learner' });
-    f.app.countRecords = (name, filter, params) => f.app.findRecordsByFilter(name, filter, '', 0, 0, params).length;
+    f.app.countRecords = nativeCount(f);
     f.migration(MIGRATION).up();
     f.migration(WAIT_MIGRATION).up();
     const service = f.load('tutorial-learning.js');

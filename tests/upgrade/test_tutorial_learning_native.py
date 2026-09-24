@@ -25,6 +25,7 @@ import os
 from pathlib import Path
 import shutil
 import socket
+import sqlite3
 import sys
 import tempfile
 from typing import Any
@@ -64,7 +65,7 @@ migrate((app) => {
             { name: 'order', type: 'number' }, { name: 'prerequisites', type: 'text' }, { name: 'slug', type: 'text', max: 100 },
             { name: 'curriculum_version', type: 'text', max: 40 }, { name: 'lesson', type: 'json', maxSize: 65536 }] });
     app.save(tutorials);
-    const dataDir = $filepath.join(__hooks, '..', 'pb_migrations', 'data');
+    const dataDir = __FIXTURE_DATA_DIR__;
     const curriculum = JSON.parse(toString($os.readFile($filepath.join(dataDir, 'starter-tutorials.json'))));
     for (const data of curriculum.lessons) {
         const lesson = new Record(tutorials); lesson.id = data.id;
@@ -90,6 +91,16 @@ migrate((app) => {
 
 class LearningServer(DiagnosticNativeServer):
     """Use the existing native lifecycle with only the learning schema and hooks."""
+
+    def learning_fields(self) -> list[str]:
+        """Read the stored learning schema (field names only) while the server is stopped."""
+        with sqlite3.connect(
+            (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
+        ) as database:
+            row = database.execute(
+                "select fields from _collections where name = 'tutorial_learning'"
+            ).fetchone()
+        return [field["name"] for field in json.loads(row[0])]
 
     def __init__(self, binary: str) -> None:
         self.directory = tempfile.TemporaryDirectory(prefix="buildanddo-learning-")
@@ -127,12 +138,15 @@ class LearningServer(DiagnosticNativeServer):
                     / "apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json"
                 ).read_text()
             )
-            (migrations / "0000000001_fixture.js").write_text(SEED)
+            data_dir = self.root / "pb_migrations/data"
+            # The seed names its data directory itself: 0.28.4 has no __hooks in migrations.
+            (migrations / "0000000001_fixture.js").write_text(
+                SEED.replace("__FIXTURE_DATA_DIR__", json.dumps(str(data_dir)))
+            )
             for name in MIGRATIONS:
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations" / name, migrations / name
                 )
-            data_dir = self.root / "pb_migrations/data"
             data_dir.mkdir(parents=True)
             for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json"):
                 shutil.copyfile(
@@ -306,12 +320,13 @@ class NativeLearningTests(unittest.TestCase):
         self.assertEqual(len(tutorials), 26)
         self.server.stop()
         self.server.migrate("down", str(len(MIGRATIONS)))
-        self.server.start()
-        self.assertEqual(
-            self.server.request("GET", self.path, token=self.owner)[0], 503
-        )
-        self.server.stop()
-        self.server.migrate("up")
+        # `serve` applies pending migrations on start (PocketBase 0.23+), so the
+        # rolled-back schema is observable only on disk: commands lose their
+        # required fields while every checkpoint and certificate row remains.
+        fields = self.server.learning_fields()
+        self.assertNotIn("protocol_version", fields)
+        self.assertNotIn("answer_retry_at", fields)
+        self.assertEqual(len(self.server.stored("tutorial_learning")), 1)
         self.server.start()
         self.assertEqual(
             self.server.request("GET", self.path, token=self.owner)[1]["enrollment"][

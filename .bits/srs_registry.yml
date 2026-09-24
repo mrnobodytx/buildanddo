@@ -227,6 +227,13 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-TRUST-001.md
     notes: Owner-requested 2026-09-23; no secret values anywhere, configuration by variable name only
 
+  - code: SRS-BUILDANDDO-LEARNING-NATIVE-001
+    title: Native learning summary and migration replay on declared PocketBase
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-LEARNING-NATIVE-001.md
+    notes: Owner-requested 2026-09-24; 0.28.4 cannot install the current schema (owner decision on version pin)
+
   - code: SRS-BUILDANDDO-CHANGELOG-001
     title: Public record - generated changelog, release summary, README roadmap mirror
     status: in_progress
