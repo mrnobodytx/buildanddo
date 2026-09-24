@@ -1356,6 +1356,19 @@ def deploy_ssh_webroot(artifact: Path, sha: str, env_name: str) -> dict[str, Any
     return {"mode": "ssh_webroot", "target": target, "remote_root": remote_root, "backup": backup_tgz, "remote_writes": 1, "environment": env_name}
 
 
+def bundle_telemetry(repo: Path, artifact: Path) -> dict[str, Any]:
+    """Run scripts/deploy/bundle_telemetry_check.py against an artifact. Fails closed: a repo
+    without the checker cannot vouch for its bundle, so it reports not ok."""
+    checker = repo / "scripts" / "deploy" / "bundle_telemetry_check.py"
+    if not checker.is_file():
+        return {"ok": False, "reason": f"telemetry checker missing at {checker}"}
+    import importlib.util  # noqa: PLC0415 - loaded by path; scripts/deploy is not a package
+    spec = importlib.util.spec_from_file_location("bundle_telemetry_check", checker)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.check_dist(artifact)
+
+
 def deploy_environment(root: Path, repo: Path, env_name: str, *, ack: str) -> dict[str, Any]:
     if ack != "A3":
         raise ReleaseError("remote deployment requires --ack-authority A3")
@@ -1364,6 +1377,15 @@ def deploy_environment(root: Path, repo: Path, env_name: str, *, ack: str) -> di
     artifact = Path(str(release_doc.get("artifact_dir") or repo / ".citadel-release" / "artifact"))
     if not artifact.is_dir() or not re.fullmatch(r"[0-9a-fA-F]{40,64}", sha):
         raise ReleaseError("verified release artifact is missing; run build first")
+    # A WEB BUILD WITHOUT ITS TELEMETRY KEYS DEPLOYS CLEANLY AND THEN REPORTS NOTHING. This
+    # controller builds with whatever apps/web/.env sits in the checkout and never writes that file,
+    # so a checkout without it yields a keyless bundle. Measured 2026-09-24: production served one
+    # from 02:08 to 13:56 UTC, and the CI artifact of 2026-09-18 (job 93623) was keyless too. The
+    # check reads the artifact's own bytes, before anything moves, in both environments: staging and
+    # production receive the same artifact, and a keyless staging build is just as silent.
+    telemetry_keys = bundle_telemetry(repo, artifact)
+    if not telemetry_keys.get("ok"):
+        raise ReleaseError(f"refusing to deploy to {env_name}: {telemetry_keys.get('reason') or 'telemetry check failed'}")
     prefix = f"BUILDANDDO_{env_name.upper()}"
     mode = os.environ.get(prefix + "_DEPLOY_MODE", "").strip().lower()
     if mode == "local_webroot":
@@ -1389,6 +1411,7 @@ def deploy_environment(root: Path, repo: Path, env_name: str, *, ack: str) -> di
         "artifact_tree_sha256": (release_doc.get("manifest") or {}).get("tree_sha256"),
         "authority": "A3",
         "operation": operation,
+        "telemetry_keys": telemetry_keys,
         "provider_claim": os.environ.get(prefix + "_PROVIDER") or None,
         "provider_claim_state": "CLAIMED" if os.environ.get(prefix + "_PROVIDER") else "UNSPECIFIED",
         "gitlab_pipeline_id": os.environ.get("CI_PIPELINE_ID") or None,
