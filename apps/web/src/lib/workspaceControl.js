@@ -106,6 +106,7 @@ function readShape(value, workspace, section) {
 }
 
 /** Create scoped operations for the authenticated PocketBase command endpoints.
+ * Read-only readFailure metadata is diagnostic, separate from command outcomes and permissions.
  * @param {object} options Client, account/workspace, demo/liveness and telemetry adapter.
  * @returns {{read: Function, command: Function, retry: Function}} Bounded operations.
  */
@@ -114,28 +115,37 @@ export function createWorkspaceControlClient({ client, workspaceId, accountId, d
     let busy = false;
     let pending = null;
     const current = () => Boolean(!demo && validId(workspaceId) && accountId && isCurrent() && client.authStore.record?.id === accountId);
+    const observeCommand = (action, payload, operation) => observe(
+        typeof action === 'string' && action.startsWith('wiki.') ? 'wiki_pages' : typeof action === 'string' && action.startsWith('forum.')
+            ? action === 'forum.reply' || payload?.kind === 'reply' ? 'forum_replies' : 'forum_topics' : 'workspace_controls', action, operation);
     const prefix = `/api/buildanddo/workspaces/${encodeURIComponent(workspaceId)}`;
     const message = (error, writing = false) => ({ ok: false,
         reason: error?.status === 409 ? 'conflict' : error?.status === 403 ? 'forbidden' : writing && (!error?.status || error.status >= 500) ? 'uncertain' : 'unavailable',
         error: error?.response?.message || (writing ? 'Could not confirm the save. Retry the previous save to recover its result.' :
             'Workspace controls are unavailable. The backend upgrade may not be installed. Retry or contact the workspace operator.') });
     const send = async (body) => {
-        if (!current()) return stale();
-        if (busy) return { ok: false, reason: 'busy', error: '' };
+        if (!current()) return observeCommand(body.action, body.payload, stale);
+        if (busy) return observeCommand(body.action, body.payload, () => ({ ok: false, reason: 'busy', error: '' }));
         busy = true;
         try {
             const section = body.action.startsWith('wiki.') || body.action.startsWith('forum.') ? 'community' : 'admin';
-            const name = section === 'admin' ? 'workspace_controls' : body.action.startsWith('wiki.') ? 'wiki_pages' : body.action === 'forum.reply' || body.payload.kind === 'reply' ? 'forum_replies' : 'forum_topics';
-            const result = await observe(name, 'update', async () => {
-                const value = await client.send(`${prefix}/${section}`, { method: 'POST', body, requestKey: null, cache: 'no-store' });
-                if (!value || value.workspace !== workspaceId || value.action !== body.action || !validId(value.id) ||
-                    !Number.isSafeInteger(value.revision) || value.revision < 1 || typeof value.replayed !== 'boolean')
-                    throw new Error('Incomplete command response');
-                return value;
+            const response = await observeCommand(body.action, body.payload, async () => {
+                try {
+                    const value = await client.send(`${prefix}/${section}`, { method: 'POST', body, requestKey: null, cache: 'no-store' });
+                    if (!current()) return stale();
+                    if (!value || value.workspace !== workspaceId || value.action !== body.action || !validId(value.id) ||
+                        !Number.isSafeInteger(value.revision) || value.revision < 1 || typeof value.replayed !== 'boolean')
+                        throw Object.assign(new Error('Incomplete command response'), { reason: 'invalid_receipt' });
+                    return { ok: true, result: value };
+                } catch (error) {
+                    if (!current()) return stale();
+                    throw error;
+                }
             });
             if (!current()) return stale();
+            if (!response.ok) return response;
             pending = null;
-            return { ok: true, result };
+            return response;
         } catch (error) {
             if (!current()) return stale();
             const failure = message(error, true);
@@ -148,28 +158,38 @@ export function createWorkspaceControlClient({ client, workspaceId, accountId, d
             if (!current()) return stale();
             if (!['access', 'admin', 'integrations', 'wiki', 'forums', 'government'].includes(section) &&
                 !(section.startsWith('forums/') && validId(section.slice(7)))) return { ok: false, reason: 'invalid', error: 'Choose a supported workspace view.' };
+            let received = false;
             try {
                 const data = await client.send(`${prefix}/${section}`, { method: 'GET', query, requestKey: null, cache: 'no-store' });
                 if (!current()) return stale();
-                return readShape(data, workspaceId, section) && (section !== 'government' || data.account_id === accountId) ? { ok: true, data } : message(null);
-            } catch (error) { return current() ? message(error) : stale(); }
+                received = true;
+                return readShape(data, workspaceId, section) && (section !== 'government' || data.account_id === accountId) ? { ok: true, data } :
+                    { ...message(null), readFailure: { reason: 'invalid_response', status: 200 } };
+            } catch (error) {
+                if (!current()) return stale();
+                const cancelled = error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
+                const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';
+                const status = received ? 200 : Number.isInteger(error?.status) && (error.status === 0 || error.status >= 100 && error.status < 600) &&
+                    !(malformed && error.status === 0) ? error.status : undefined;
+                return { ...message(error), readFailure: { reason: cancelled ? 'cancelled' : malformed ? 'invalid_response' : 'unavailable', status } };
+            }
         },
         async command(action, payload, revision) {
-            if (!current()) return stale();
+            if (!current()) return observeCommand(action, payload, stale);
             if (!ACTIONS.includes(action) || !Number.isSafeInteger(revision) || revision < 0 || !payload || typeof payload !== 'object' || Array.isArray(payload))
-                return { ok: false, reason: 'invalid', error: 'Reload the current record before saving.' };
+                return observeCommand(action, payload, () => ({ ok: false, reason: 'invalid', error: 'Reload the current record before saving.' }));
             // Payloads are flat except integration configuration. Normalize both
             // levels so field rendering order cannot change retry identity.
             const signature = JSON.stringify([action, revision, stable({ ...payload, ...(payload.configuration ? { configuration: stable(payload.configuration) } : {}) })]);
             if (pending && signature !== pending.signature)
-                return { ok: false, reason: 'uncertain', error: 'Retry the previous save before starting a different change.' };
+                return observeCommand(action, payload, () => ({ ok: false, reason: 'uncertain', error: 'Retry the previous save before starting a different change.' }));
             if (!pending) {
                 try {
                     const requestKey = keyFactory();
                     if (typeof requestKey !== 'string' || !/^[a-zA-Z0-9_-]{16,80}$/.test(requestKey)) throw new Error('Invalid retry key');
                     pending = { signature, body: { action, payload: JSON.parse(JSON.stringify(payload)), revision, request_key: requestKey } };
                 } catch {
-                    return { ok: false, reason: 'unavailable', error: 'A secure retry identifier is unavailable. Reload this page from the secure site before saving.' };
+                    return observeCommand(action, payload, () => ({ ok: false, reason: 'unavailable', error: 'A secure retry identifier is unavailable. Reload this page from the secure site before saving.' }));
                 }
             }
             return send(pending.body);

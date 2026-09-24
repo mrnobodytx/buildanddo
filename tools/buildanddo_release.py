@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File:        tools/buildanddo_release.py
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-24
+# Depends:     apps/web/tools/release-telemetry.mjs
+# EnumType:    Adapter
+# EnumEdges:   CONSUMES apps/web/tools/release-telemetry.mjs
+# Intent:      Require configured, candidate-bound telemetry artifacts on the canonical release path before any artifact or webroot copy.
+# ----------------------------------------------------------------
 """BuildAndDo 21-day sprint P0 convergence + verified release controller v1.0.1.
 
 Purpose
@@ -47,6 +62,7 @@ from typing import Any, Iterable, Mapping, Sequence
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 import zipfile
 
 VERSION = "1.0.1"
@@ -986,10 +1002,47 @@ def pick_artifact_dir(candidates: Sequence[Path]) -> Path | None:
     return None
 
 
+def release_telemetry_context(repo: Path, sha: str) -> tuple[dict[str, Any], dict[str, str]]:
+    """Select release mode explicitly; ordinary npm builds remain opt-out and keyless."""
+    environment = {
+        **os.environ, "BUILD_SHA": sha,
+        "BUILDANDDO_RELEASE_TARGET": os.environ.get("BUILDANDDO_RELEASE_TARGET") or "staging-production",
+        "BUILDANDDO_TELEMETRY_BUILD_ID": str(uuid.uuid4()),
+    }
+    result = run(["node", str(repo / "apps/web/tools/release-telemetry.mjs"), "contract", str(repo), sha],
+                 cwd=repo, env=environment, timeout=30)
+    try:
+        expected = json.loads(result.stdout) if result.returncode == 0 else None
+    except ValueError:
+        expected = None
+    if (not isinstance(expected, dict) or expected.get("schema") != "buildanddo.release-telemetry/v2" or
+            expected.get("commit_sha") != sha or expected.get("target") != environment["BUILDANDDO_RELEASE_TARGET"] or
+            expected.get("build_id") != environment["BUILDANDDO_TELEMETRY_BUILD_ID"]):
+        raise ReleaseError("public release telemetry configuration is incomplete or its validator is unavailable")
+    return expected, environment
+
+
+def admit_release_telemetry(repo: Path, artifact: Path, expected: Mapping[str, Any], env_name: str) -> dict[str, Any]:
+    """Revalidate the public build contract without reading credentials or contacting vendors."""
+    result = run(["node", str(repo / "apps/web/tools/release-telemetry.mjs"), "verify", str(artifact),
+                  json.dumps(expected, separators=(",", ":")), env_name], cwd=repo, timeout=60)
+    try:
+        admission = json.loads(result.stdout) if result.returncode == 0 else None
+    except ValueError:
+        admission = None
+    if (not isinstance(admission, dict) or admission.get("ok") is not True or
+            admission.get("build_id") != expected.get("build_id") or
+            admission.get("environment") != env_name or
+            not re.fullmatch(r"[a-f0-9]{64}", str(admission.get("manifest_sha256") or ""))):
+        raise ReleaseError("release telemetry artifact admission failed; no copy authorized")
+    return admission
+
+
 def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict[str, Any]:
     sha = git_head(repo)
     if not re.fullmatch(r"[0-9a-fA-F]{40,64}", sha or ""):
         raise ReleaseError("exact committed Git SHA is required before build")
+    telemetry, build_environment = release_telemetry_context(repo, sha)
     plan = build_plan(repo)
     workdir = Path(plan["workdir"])
     release_root = repo / ".citadel-release"
@@ -1026,7 +1079,7 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
     (logs / "roadmap_status.stdout.txt").write_text(roadmap_gen.stdout, encoding="utf-8")
     (logs / "roadmap_status.stderr.txt").write_text(roadmap_gen.stderr, encoding="utf-8")
 
-    build = run(plan["build_command"], cwd=workdir, timeout=1800)
+    build = run(plan["build_command"], cwd=workdir, env=build_environment, timeout=1800)
     (logs / "build.stdout.txt").write_text(build.stdout, encoding="utf-8")
     (logs / "build.stderr.txt").write_text(build.stderr, encoding="utf-8")
     if build.returncode != 0:
@@ -1035,8 +1088,12 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
     source_artifact = pick_artifact_dir([Path(x) for x in plan["artifact_candidates"]])
     if source_artifact is None:
         raise ReleaseError("no static build artifact with a root index.html found; "
-                           "set BUILDANDDO_ARTIFACT_DIR explicitly")
+                            "set BUILDANDDO_ARTIFACT_DIR explicitly")
+    environment = "production" if telemetry["target"] == "production" else "staging"
+    admission = admit_release_telemetry(repo, source_artifact, telemetry, environment)
+    telemetry["manifest_sha256"] = admission["manifest_sha256"]
     copy_tree_clean(source_artifact, artifact)
+    admit_release_telemetry(repo, artifact, telemetry, environment)
     # Digest the PAYLOAD before _version exists. Excluding _version is not a detail - both reasons
     # are load-bearing:
     #   - CIRCULARITY: the digest cannot live inside the file being hashed.
@@ -1080,6 +1137,7 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
         },
         "commit_sha": sha,
         "artifact_dir": str(artifact),
+        "telemetry": telemetry,
         "source_artifact_dir": str(source_artifact),
         "manifest": manifest,
         "payload_manifest": payload_manifest,
@@ -1359,11 +1417,20 @@ def deploy_ssh_webroot(artifact: Path, sha: str, env_name: str) -> dict[str, Any
 def deploy_environment(root: Path, repo: Path, env_name: str, *, ack: str) -> dict[str, Any]:
     if ack != "A3":
         raise ReleaseError("remote deployment requires --ack-authority A3")
+    if env_name not in {"staging", "production"}:
+        raise ReleaseError("release environment must be staging or production")
     release_doc = read_json(repo / ".citadel-release" / "artifact.json")
     sha = str(release_doc.get("commit_sha") or "")
     artifact = Path(str(release_doc.get("artifact_dir") or repo / ".citadel-release" / "artifact"))
     if not artifact.is_dir() or not re.fullmatch(r"[0-9a-fA-F]{40,64}", sha):
         raise ReleaseError("verified release artifact is missing; run build first")
+    telemetry = release_doc.get("telemetry")
+    if (release_doc.get("state") != "PASS" or not isinstance(telemetry, dict) or
+            telemetry.get("commit_sha") != sha or not telemetry.get("manifest_sha256")):
+        raise ReleaseError("release lacks a pinned telemetry build contract; rebuild before deployment")
+    admission = admit_release_telemetry(repo, artifact, telemetry, env_name)
+    if artifact_manifest(artifact).get("tree_sha256") != (release_doc.get("manifest") or {}).get("tree_sha256"):
+        raise ReleaseError("release artifact changed after build; no copy authorized")
     prefix = f"BUILDANDDO_{env_name.upper()}"
     mode = os.environ.get(prefix + "_DEPLOY_MODE", "").strip().lower()
     if mode == "local_webroot":
@@ -1387,6 +1454,7 @@ def deploy_environment(root: Path, repo: Path, env_name: str, *, ack: str) -> di
         "environment": env_name,
         "commit_sha": sha,
         "artifact_tree_sha256": (release_doc.get("manifest") or {}).get("tree_sha256"),
+        "telemetry": admission,
         "authority": "A3",
         "operation": operation,
         "provider_claim": os.environ.get(prefix + "_PROVIDER") or None,
@@ -1786,6 +1854,11 @@ def adopt_runner_artifact(root: Path, repo: Path, job_id: int, expected_sha: str
         actual_manifest = artifact_manifest(artifact_dir)
         if actual_manifest.get("tree_sha256") != manifest.get("tree_sha256"):
             raise ReleaseError("runner artifact tree hash does not match artifact.json")
+        telemetry = record.get("telemetry")
+        if not isinstance(telemetry, dict) or telemetry.get("commit_sha") != observed or not telemetry.get("manifest_sha256"):
+            raise ReleaseError("runner artifact lacks a pinned telemetry build contract")
+        environment = "production" if telemetry.get("target") == "production" else "staging"
+        admit_release_telemetry(repo, artifact_dir, telemetry, environment)
         target = repo / ".citadel-release"
         if target.exists():
             shutil.rmtree(target)

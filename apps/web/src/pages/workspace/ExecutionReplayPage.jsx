@@ -22,6 +22,8 @@ import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { useBusinessExecution } from '@/hooks/useBusinessExecution';
 import { businessReplay } from '@/lib/businessExecution';
 import MissionReplayCapture from '@/components/workspace/MissionReplayCapture';
+import { readFailed } from '@/lib/observability/runtime';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 function Replay({ api, demo }) {
     const [data, setData] = useState(null), [page, setPage] = useState(1), [reload, setReload] = useState(0), [error, setError] = useState('');
@@ -29,11 +31,42 @@ function Replay({ api, demo }) {
     const setSelected = (id) => { const next = new URLSearchParams(params); if (id) next.set('action', id); else next.delete('action'); setParams(next); };
     const [detail, setDetail] = useState({ id: '', job: null, error: '' });
     useEffect(() => { let alive = true; setDetail({ id: selected, job: null, error: '' });
+        const pathname = globalThis.window?.location?.pathname, section = publicActionSection(pathname);
         if (selected && !demo) api.read(selected).then((result) => {
-            if (alive && !result.stale) setDetail({ id: selected, job: result.ok ? result.data : null, error: result.error || '' });
+            if (!alive || result.stale) return;
+            if (!result.ok && !['scope_changed', 'cancelled'].includes(result.reason) && pathname === globalThis.window?.location?.pathname)
+                readFailed(section, 'records', result.readFailure?.reason || 'unavailable', result.readFailure?.status);
+            setDetail({ id: selected, job: result.ok ? result.data : null, error: result.error || '' });
+        }).catch((failure) => {
+            if (!alive) return;
+            if (!failure?.isAbort && failure?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname)
+                readFailed(section, 'records', 'unavailable', failure?.status);
+            setDetail({ id: selected, job: null, error: 'The selected receipt could not be read. Refresh to try again.' });
         }); return () => { alive = false; }; }, [api, selected, reload, demo]);
     useEffect(() => { let alive = true; setData(null); setError('');
-        if (!demo) api.list({ page }).then((result) => { if (!alive || result.stale) return; if (result.ok) setData(result.data); else setError(result.error); });
+        const pathname = globalThis.window?.location?.pathname, section = publicActionSection(pathname);
+        if (!demo) api.list({ page }).then((result) => {
+            if (!alive || result.stale) return;
+            if (result.ok) {
+                setData(result.data);
+                if (pathname === globalThis.window?.location?.pathname) {
+                    try {
+                        if (!Array.isArray(result.data?.items)) throw new TypeError('Unavailable snapshot counts');
+                        const { completed, uncertain, failed } = businessReplay(result.data.items);
+                        trackPublicAction(PUBLIC_ACTIONS.REPLAY_SNAPSHOT, 'observed', 'recorded_snapshot', { completed, uncertain, failed }, { section });
+                    } catch { readFailed(section, 'records', 'invalid_response'); }
+                }
+            } else {
+                if (!['scope_changed', 'cancelled'].includes(result.reason) && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'records', result.readFailure?.reason || 'unavailable', result.readFailure?.status);
+                setError(result.error);
+            }
+        }).catch((failure) => {
+            if (!alive) return;
+            if (!failure?.isAbort && failure?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname)
+                readFailed(section, 'records', 'unavailable', failure?.status);
+            setError('Execution receipts could not be read. Refresh to try again.');
+        });
         return () => { alive = false; }; }, [api, page, reload, demo]);
     const replay = useMemo(() => businessReplay(data?.items || []), [data]);
     const job = detail.id === selected ? detail.job : null;

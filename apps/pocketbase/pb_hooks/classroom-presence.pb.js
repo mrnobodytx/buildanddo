@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN, C-ONE (the SFU echo on read)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_migrations/1790600000_classroom_presence.js
+// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_migrations/1790600000_classroom_presence.js, apps/pocketbase/pb_hooks/telemetry.js
 // EnumType:    Route
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790600000_classroom_presence.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790600000_classroom_presence.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
 // Intent:      Advertise only owned published tracks to current classroom participants without granting room access from a global publisher allowlist, and call a track verified only when the SFU echoes it.
 // ----------------------------------------------------------------
 
@@ -65,19 +65,27 @@ routerAdd('POST', '/api/classroom/presence', (e) => {
             expires_at: new Date(expires).toISOString() };
         Object.entries(values).forEach(([key, value]) => record.set(key, value));
         try { app.save(record); }
-        catch (_) { throw new ApiError(503, 'The classroom advertisement could not be stored.'); }
+        catch (_) {
+            try { require(`${__hooks}/telemetry.js`).diagnostic('classroom.presence.save', 'schema', 503, 'classroom_presence'); }
+            catch (_) { /* Retain the original refusal. */ }
+            throw new ApiError(503, 'The classroom advertisement could not be stored.');
+        }
         saved = record.id; basis = scope.basis;
     });
     // Only collect expired rows from this room; collection failure is not write failure.
-    let swept = 0;
+    let swept = 0, sweepFailed = false;
     try {
         const rows = e.app.findRecordsByFilter('classroom_presence', 'room = {:room}', 'expires_at', 50, 0, { room: roomId });
         for (const row of rows) {
             const at = Date.parse(row.getString('expires_at').replace(' ', 'T'));
             if (row.id === saved || !Number.isFinite(at) || at > now - 300000) continue;
-            try { e.app.delete(row); swept++; } catch (_) { /* Retain a row that could not be collected. */ }
+            try { e.app.delete(row); swept++; } catch (_) { sweepFailed = true; }
         }
-    } catch (_) { swept = -1; }
+    } catch (_) { swept = -1; sweepFailed = true; }
+    if (sweepFailed) {
+        try { require(`${__hooks}/telemetry.js`).diagnostic('classroom.presence.sweep', 'schema', 0, 'classroom_presence'); }
+        catch (_) { /* Collection failure is not write failure. */ }
+    }
     e.response.header().set('Cache-Control', 'no-store');
     // Not yet asked of the SFU: GET /api/classroom/presence performs the echo and is the only
     // place a track is ever reported verified.
@@ -135,11 +143,18 @@ routerAdd('GET', '/api/classroom/presence/health', (e) => {
     let installed = false;
     try {
         e.app.findCollectionByNameOrId('classroom_presence');
-        require(`${__hooks}/classroom-media.js`).schema(e.app); installed = true;
-    } catch (_) { /* Report installation state without credentials or raw database errors. */ }
+        installed = true;
+    } catch (_) {
+        try { require(`${__hooks}/telemetry.js`).diagnostic('classroom.presence.health', 'schema', 503); }
+        catch (_) { /* Report installation state without raw database errors. */ }
+    }
+    if (installed) {
+        try { require(`${__hooks}/classroom-media.js`).schema(e.app); }
+        catch (_) { installed = false; /* The media schema guard already reports this failure. */ }
+    }
     const publishers = ($os.getenv('BUILDANDDO_CLASSROOM_PUBLISHERS') || '').split(',').filter((item) => item.trim());
     e.response.header().set('Cache-Control', 'no-store');
-    return e.json(200, { ok: installed, route: 'classroom-presence/v1', collection_installed: installed,
+    return e.json(installed ? 200 : 503, { ok: installed, route: 'classroom-presence/v1', collection_installed: installed,
         publishers_configured: publishers.length, max_ttl_ms: 120000, max_rows: 50,
         verification: 'ECHO_ON_READ', reason: installed ? null : 'Classroom presence/session migrations required.' });
 });

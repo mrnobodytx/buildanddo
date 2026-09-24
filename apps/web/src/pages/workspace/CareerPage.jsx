@@ -25,6 +25,7 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import pb from '@/lib/pocketbaseClient';
+import { observeMutation } from '@/lib/observability/mutations';
 import { CAREER_MAX_BYTES, careerJobUrl, createCareerClient } from '@/lib/careerPassport';
 import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 
@@ -100,7 +101,7 @@ function CareerDesk({ accountId, workspaceId, authorized, sessionEpoch, isSessio
     const [pendingImport, setPendingImport] = useState(null);
     const [error, setError] = useState('');
     const api = useMemo(() => createCareerClient({ client: pb, accountId, workspaceId,
-        isCurrent: () => live.current && permission.current && isSessionCurrent(sessionEpoch) }), [accountId, workspaceId, isSessionCurrent, sessionEpoch]);
+        isCurrent: () => live.current && permission.current && isSessionCurrent(sessionEpoch), observe: observeMutation }), [accountId, workspaceId, isSessionCurrent, sessionEpoch]);
     const refresh = useCallback(async () => {
         if (!live.current || !permission.current || !isSessionCurrent(sessionEpoch)) return;
         started.current = true;

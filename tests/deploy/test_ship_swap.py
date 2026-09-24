@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/deploy/test_ship_swap.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-DEPLOY-SWAP-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-DEPLOY-SWAP-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-TRUST-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 # Seat:        BITS-CODEGEN, C-ONE (owner and mode)
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
-# Depends:     scripts/deploy/ship.py
+# Depends:     scripts/deploy/ship.py, tests/deploy/test_ship_telemetry.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES scripts/deploy/ship.py
+# EnumEdges:   VALIDATES scripts/deploy/ship.py; CONSUMES tests/deploy/test_ship_telemetry.py
 # Intent:      Prove a sync never empties the live directory before a verified copy exists, and never disables host-key checking.
 # ───────────────────────────────────────────────────────────────
 
@@ -19,7 +19,7 @@ swap script itself is executed by a local /bin/sh against temporary directories.
 
 from __future__ import annotations
 
-import importlib.util
+import hashlib
 import os
 import shlex
 import shutil
@@ -31,23 +31,19 @@ from pathlib import Path
 from unittest.mock import patch
 
 TOOL = Path(__file__).resolve().parents[2] / "scripts" / "deploy" / "ship.py"
-spec = importlib.util.spec_from_file_location("ship_under_test", TOOL)
-ship = importlib.util.module_from_spec(spec)
-sys.modules[spec.name] = ship
-spec.loader.exec_module(ship)
+sys.path.insert(0, str(TOOL.parents[2]))
+from tests.deploy.test_ship_telemetry import local_validator, make_artifact, ship  # noqa: E402 - allow direct invocation from this test directory
 
 HOST = "deploy@host.invalid"
 LIVE = "/var/www/buildanddo"
 
 
-def _dist(root: Path) -> Path:
+def _dist(root: Path) -> tuple[Path, dict]:
     dist = root / "dist"
-    (dist / "assets").mkdir(parents=True)
+    expected = make_artifact(dist)
     (dist / ".well-known").mkdir()
-    (dist / "index.html").write_text("<!doctype html>", encoding="utf-8")
-    (dist / "assets" / "app.js").write_text("", encoding="utf-8")
     (dist / ".well-known" / "citadel-release.json").write_text("{}", encoding="utf-8")
-    return dist
+    return dist, expected
 
 
 class Recorder:
@@ -58,6 +54,8 @@ class Recorder:
         self.fail_on, self.returncode = fail_on, returncode
 
     def __call__(self, cmd, cwd=None, timeout=600):
+        if cmd[0] == "node":
+            return local_validator(cmd, cwd=cwd, timeout=timeout)
         self.commands.append(list(cmd))
         if self.fail_on and self.fail_on in " ".join(cmd):
             self.fail_on = None
@@ -72,20 +70,20 @@ class ShipSwapTests(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
-        self.dist = _dist(self.tmp)
+        self.dist, self.expected_telemetry = _dist(self.tmp)
         for patcher in (patch.object(ship, "VM_HOST", HOST), patch.object(ship, "SSH_KEY", "")):
             patcher.start()
             self.addCleanup(patcher.stop)
 
     def _sync(self, recorder: Recorder) -> dict:
         with patch.object(ship, "_run", recorder):
-            return ship._rsync(self.dist, LIVE)
+            return ship._rsync(self.dist, LIVE, expected_telemetry=self.expected_telemetry)
 
     def test_copy_then_verify_then_swap(self):
         rec = Recorder()
         result = self._sync(rec)
         self.assertTrue(result["ok"], result)
-        self.assertEqual(result["files"], 3)
+        self.assertEqual(result["files"], 5)
         kinds = [c[0] for c in rec.commands]
         self.assertEqual(kinds, ["ssh", "scp", "ssh"])
         prepare, copy, swap = rec.remote()
@@ -95,7 +93,8 @@ class ShipSwapTests(unittest.TestCase):
         self.assertNotIn(f"rm -rf {LIVE} ", prepare + " ")
         # The swap verifies the staged copy before it touches the live tree.
         self.assertLess(swap.index("index.html"), swap.index(f"mv {LIVE} {LIVE}.previous"))
-        self.assertLess(swap.index("-eq 3"), swap.index(f"mv {LIVE} {LIVE}.previous"))
+        self.assertLess(swap.index("-eq 5"), swap.index(f"mv {LIVE} {LIVE}.previous"))
+        self.assertLess(swap.index("sha256sum --check"), swap.index(f"mv {LIVE} {LIVE}.previous"))
         self.assertLess(swap.index(f"rm -rf {LIVE}.previous"), swap.index(f"mv {LIVE} {LIVE}.previous"))
         self.assertLess(swap.index(f"mv {LIVE} {LIVE}.previous"), swap.index(f"mv {incoming} {LIVE}"))
 
@@ -132,7 +131,7 @@ class ShipSwapTests(unittest.TestCase):
         (self.dist / "index.html").unlink()
         rec = Recorder()
         result = self._sync(rec)
-        self.assertEqual((result["ok"], result["stage"]), (False, "local_verify"))
+        self.assertEqual((result["ok"], result["stage"]), (False, "telemetry_artifact"))
         self.assertEqual(rec.commands, [])
 
     def test_host_keys_are_checked(self):
@@ -203,6 +202,16 @@ class SwapScriptTests(unittest.TestCase):
         proc = self._swap(1)
         self.assertEqual(proc.returncode, 3)
         self.assertEqual((self.live / "index.html").read_text(encoding="utf-8"), "old")
+
+    def test_same_file_count_with_corrupt_javascript_is_refused_before_swap(self):
+        digests = {"index.html": hashlib.sha256(b"new").hexdigest(),
+                   "app.js": hashlib.sha256(b"expected JavaScript").hexdigest()}
+        script = ship._swap_script(str(self.incoming), str(self.live), str(self.previous), 2, digests)
+        proc = subprocess.run(["sh", "-c", script], capture_output=True, text=True, timeout=30)
+        self.assertEqual(proc.returncode, 3)
+        self.assertIn("artifact digest mismatch", proc.stderr)
+        self.assertEqual((self.live / "index.html").read_text(encoding="utf-8"), "old")
+        self.assertFalse(self.previous.exists())
 
     def test_staged_copy_takes_the_live_owner_and_mode(self):
         script = ship._swap_script(str(self.incoming), str(self.live), str(self.previous), 2)

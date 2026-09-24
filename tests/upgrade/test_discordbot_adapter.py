@@ -30,7 +30,7 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from discord_sdk_double import sdk_double
+from tests.upgrade.discord_sdk_double import sdk_double
 from scripts.discordbot.contracts import Caller, Page, Quiz, Reply, Settings
 from scripts.discordbot.public_data import Observation, PublicClient
 from scripts.discordbot.service import COMMANDS

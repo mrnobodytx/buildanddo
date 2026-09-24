@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/workspace-record-policy.js, apps/pocketbase/pb_hooks/workspace-claims.js, apps/pocketbase/pb_hooks/workspace-claims.pb.js, apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js, apps/web/src/lib/workspaceClaims.js, apps/web/src/lib/workspaceRecords.js, apps/web/src/lib/workspaceControl.js, apps/web/src/lib/seatComms.js
+// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/workspace-record-policy.js, apps/pocketbase/pb_hooks/workspace-claims.js, apps/pocketbase/pb_hooks/workspace-claims.pb.js, apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js, apps/web/src/lib/workspaceClaims.js, apps/web/src/lib/workspaceRecords.js, apps/web/src/lib/workspaceControl.js, apps/web/src/lib/seatComms.js, tests/upgrade/mutation-telemetry-fixture.mjs
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/workspace-record-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.pb.js; VALIDATES apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js; VALIDATES apps/web/src/lib/workspaceClaims.js; VALIDATES apps/web/src/lib/workspaceRecords.js; VALIDATES apps/web/src/lib/workspaceControl.js; VALIDATES apps/web/src/lib/seatComms.js
+// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/workspace-record-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.pb.js; VALIDATES apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js; VALIDATES apps/web/src/lib/workspaceClaims.js; VALIDATES apps/web/src/lib/workspaceRecords.js; VALIDATES apps/web/src/lib/workspaceControl.js; VALIDATES apps/web/src/lib/seatComms.js; CONSUMES tests/upgrade/mutation-telemetry-fixture.mjs
 // Intent:      Reject raw claim fabrication and exercise current native authority without treating storage doubles as native acceptance.
 // ----------------------------------------------------------------
 
@@ -21,6 +21,7 @@ import { fixture, plain, source, repoPath } from './admin-fixture.mjs';
 import { createWorkspaceRecordClient } from '../../apps/web/src/lib/workspaceRecords.js';
 import { createWorkspaceClaimClient } from '../../apps/web/src/lib/workspaceClaims.js';
 import { createWorkspaceControlClient } from '../../apps/web/src/lib/workspaceControl.js';
+import { mutationTelemetry } from './mutation-telemetry-fixture.mjs';
 
 const denied = (operation, status = 403) => assert.throws(operation, (error) => error.status === status);
 const collections = ['support_sources', 'corrections', 'daily_editions', 'specialist_desks', 'social_content', 'social_channels', 'seat_events'];
@@ -456,17 +457,18 @@ test('claim receipts remain readable in the existing administration audit withou
     assert.equal((await api.command('edition.save', drafts['edition.save'][1], 0)).reason, 'invalid');
 });
 
-function publisherFixture() {
-    const f = clientFixture('seat_events'), module = { exports: {} }, actions = [];
+function publisherFixture(sinks = {}) {
+    const f = clientFixture('seat_events'), module = { exports: {} }, actions = [], telemetry = mutationTelemetry(sinks);
     const authListeners = new Set();
     f.client.authStore.onChange = (listener) => { authListeners.add(listener); return () => authListeners.delete(listener); };
     const table = f.client.collection;
     f.client.collection = (name) => ({ ...table(name), getList: async () => ({ items: plain(f.f.data[name]) }) });
     const code = source('apps/web/src/lib/seatComms.js').replace(/^import .+;$/gm, '').replace(/\bexport /g, '');
     vm.runInNewContext(`${code}\nmodule.exports = { publishSeatEvent, recentSeatEvents };`, {
-        module, pb: f.client, createWorkspaceClaimClient, reportAction: (...args) => actions.push(args), console: { error() {} },
+        module, pb: f.client, createWorkspaceClaimClient, observeMutation: telemetry.observe,
+        reportAction: (...args) => actions.push(args), console: { error() {} },
     }, { filename: repoPath('apps/web/src/lib/seatComms.js') });
-    return { ...f, actions, publish: module.exports.publishSeatEvent, recent: module.exports.recentSeatEvents,
+    return { ...f, actions, telemetry, publish: module.exports.publishSeatEvent, recent: module.exports.recentSeatEvents,
         authenticate(record) { f.client.authStore.record = record; authListeners.forEach((listener) => listener()); } };
 }
 
@@ -481,6 +483,44 @@ test('the existing seat publisher retries one native human report without adopti
     assert.equal(events[0].owner, 'editor'); assert.equal(events[0].actorType, 'human'); assert.equal(events[0].attribution, 'reported');
     assert.equal(f.actions.length, 1);
     assert.equal(f.actions[0][1].actor_type, 'human');
+});
+
+test('publisher attempt telemetry preserves native human stamps and does not count internal recovery routing twice', async () => {
+    const f = publisherFixture(); f.lose();
+    assert.equal(await f.publish({ event: 'joined', workspaceId: 'ws1', summary: 'Synthetic private joined report', actorType: 'agent' }), null);
+    const result = await f.publish({ event: 'progress', workspaceId: 'ws1', summary: 'Synthetic private progress report', actorType: 'agent' });
+    assert.equal(result.actor_type, 'human'); assert.equal(result.seat, 'editor'); assert.equal(result.owner, 'editor');
+    assert.equal(f.calls.length, 3); assert.deepEqual(f.calls[0], f.calls[1]);
+    assert.equal(f.telemetry.actions.length, 3); assert.equal(f.telemetry.events.length, 3); assert.equal(f.telemetry.metrics.length, 3);
+    assert.deepEqual(f.telemetry.actions.map((entry) => [entry[0], entry[1].outcome]), [
+        ['workspace.seat.report', 'uncertain'], ['workspace.seat.report', 'success'], ['workspace.seat.report', 'success'],
+    ]);
+    assert.deepEqual(f.f.data.seat_events.map((row) => [row.event, row.owner, row.seat, row.actor_type]),
+        [['joined', 'editor', 'editor', 'human'], ['progress', 'editor', 'editor', 'human']]);
+    assert.equal(f.actions.length, 1);
+    assert.doesNotMatch(JSON.stringify(f.telemetry.actions), /Synthetic private|editor|request_key/);
+});
+
+test('publisher receipt validation precedes mutation telemetry and retains the same recovery key', async () => {
+    const f = publisherFixture(), send = f.client.send;
+    f.client.send = async (...args) => { const result = await send(...args); delete result.record.owner; return result; };
+    const input = { event: 'completed', workspaceId: 'ws1', summary: 'Synthetic private completion' };
+    assert.equal(await f.publish(input), null);
+    assert.deepEqual(f.telemetry.actions.map((entry) => entry[1].outcome), ['uncertain']);
+    f.client.send = send;
+    assert.equal((await f.publish(input))?.actor_type, 'human');
+    assert.deepEqual(f.calls[0], f.calls[1]); assert.equal(f.f.data.seat_events.length, 1);
+    assert.deepEqual(f.telemetry.actions.map((entry) => entry[1].outcome), ['uncertain', 'success']);
+});
+
+test('publisher recovery and confirmation survive failures in every injected SDK sink', async () => {
+    const fail = () => { throw new Error('Synthetic SDK failure'); };
+    const f = publisherFixture({ action: fail, event: fail, metric: fail });
+    const input = { event: 'completed', workspaceId: 'ws1', summary: 'Synthetic completed report' };
+    const record = await f.publish(input);
+    assert.equal(record?.owner, 'editor'); assert.equal(record?.seat, 'editor'); assert.equal(record?.actor_type, 'human');
+    assert.equal(f.calls.length, 1); assert.equal(f.f.data.seat_events.length, 1);
+    assert.equal(f.telemetry.actions.length, 1); assert.equal(f.telemetry.events.length, 1); assert.equal(f.telemetry.metrics.length, 1);
 });
 
 const seatInput = (event, workspaceId = 'ws1') => ({ event, workspaceId, summary: `Reported ${event}` });

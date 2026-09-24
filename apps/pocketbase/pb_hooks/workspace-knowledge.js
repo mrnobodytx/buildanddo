@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/knowledge-graph.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/knowledge-graph.js, apps/pocketbase/pb_hooks/telemetry.js
 // EnumType:    Service
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/knowledge-graph.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/knowledge-graph.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
 // DAG Node:    none
 // Intent:      Rebuild workspace knowledge from current readable records while retaining permission, source-availability and scan boundaries.
 // ───────────────────────────────────────────────────────────────
@@ -161,6 +161,8 @@ function collect(e, workspace, options) {
             // Unknown schema or storage failures are unavailable, never empty
             // success. No source bytes or provider diagnostics enter the response.
             if (error.status === 403 || error.status === 401) throw error;
+            try { require(`${__hooks}/telemetry.js`).diagnostic('knowledge.collect', 'schema', 0, name); }
+            catch (_) { /* Diagnostics do not grant access or change source availability. */ }
             status.state = 'unavailable';
         }
         coverage.push(status);

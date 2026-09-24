@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     tests/upgrade/check_discordbot.py, tests/upgrade/check_blueprint_pipeline.py, tests/foundry/check_foundry.py, tests/upgrade/check_federal_foundry.py, tests/upgrade/check_mission_suite.py, tests/career/check_career.py, tests/knowledge_units/check_knowledge_units.py, tests/integrity/check_integrity.py, tests/world_twin/check_world_twin.py, tests/assurance/run.py
+# Depends:     tests/upgrade/check_discordbot.py, tests/upgrade/check_blueprint_pipeline.py, tests/foundry/check_foundry.py, tests/upgrade/check_federal_foundry.py, tests/upgrade/check_mission_suite.py, tests/career/check_career.py, tests/knowledge_units/check_knowledge_units.py, tests/integrity/check_integrity.py, tests/world_twin/check_world_twin.py, tests/assurance/run.py, tests/deploy/test_release_telemetry.py, tests/deploy/test_ship_telemetry.py
 # EnumType:    Workflow
-# EnumEdges:   CONSUMES tests/upgrade/check_discordbot.py; CONSUMES tests/upgrade/check_blueprint_pipeline.py; CONSUMES tests/foundry/check_foundry.py; CONSUMES tests/upgrade/check_federal_foundry.py; CONSUMES tests/upgrade/check_mission_suite.py; CONSUMES tests/career/check_career.py; CONSUMES tests/knowledge_units/check_knowledge_units.py; CONSUMES tests/integrity/check_integrity.py; CONSUMES tests/world_twin/check_world_twin.py; CONSUMES tests/assurance/run.py
+# EnumEdges:   CONSUMES tests/upgrade/check_discordbot.py; CONSUMES tests/upgrade/check_blueprint_pipeline.py; CONSUMES tests/foundry/check_foundry.py; CONSUMES tests/upgrade/check_federal_foundry.py; CONSUMES tests/upgrade/check_mission_suite.py; CONSUMES tests/career/check_career.py; CONSUMES tests/knowledge_units/check_knowledge_units.py; CONSUMES tests/integrity/check_integrity.py; CONSUMES tests/world_twin/check_world_twin.py; CONSUMES tests/assurance/run.py; CONSUMES tests/deploy/test_release_telemetry.py; CONSUMES tests/deploy/test_ship_telemetry.py
 # Intent:      Keep native parser and portable coverage requirements executing on GitLab when duplicate GitHub scheduling is retired.
 # ───────────────────────────────────────────────────────────────
 
@@ -164,6 +164,7 @@ source_assurance:
     - python${PYTHON_VERSION} -m venv state/ci/assurance-venv
   script:
     - state/ci/assurance-venv/bin/python -m unittest tests.upgrade.test_assurance_runner
+    - state/ci/assurance-venv/bin/python -m unittest tests.deploy.test_ship_telemetry tests.deploy.test_release_telemetry tests.deploy.test_ship_swap
     - state/ci/assurance-venv/bin/python -m tests.assurance.run --source-only --profiles security,evidence,failure --output state/ci/assurance/$CI_JOB_ID/source
     - state/ci/assurance-venv/bin/python -m apps.federal_foundry sprint --output state/ci/assurance/$CI_JOB_ID/research
     - state/ci/assurance-venv/bin/python -m apps.federal_foundry verify-sprint state/ci/assurance/$CI_JOB_ID/research

@@ -19,8 +19,10 @@ import { ArrowRight, Check } from 'lucide-react';
 import PublicPage from '@/components/site/PublicPage';
 import { Button, Card } from '@/components/site/ui';
 import { PILOT_SCOPE } from '@/lib/commercialEnquiry';
+import { PUBLIC_ACTIONS, trackPublicAction } from '@/lib/publicActions';
 
 export default function PricingPage() {
+    const selectPlan = (plan) => trackPublicAction(PUBLIC_ACTIONS.CTA, 'intent', 'user_requested', undefined, { placement: 'pricing', plan });
     return (
         <PublicPage
             path="/pricing"
@@ -28,7 +30,7 @@ export default function PricingPage() {
             title="Start with one useful outcome."
             intro="BuildAndDo is in early access. Tell us what you want to learn or build, and we can discuss the right scope together. Government research is an approved membership tier; managed pilots are scoped separately."
         >
-            <Card className="space-y-4 p-6 sm:p-8"><h2 className="font-display text-3xl font-semibold">Government research membership</h2><p className="text-xl font-semibold">$100/month · approval required</p><p className="leading-relaxed text-muted-foreground">Government learning, research preparation and submission tools are reserved for approved government-tier members. An operator confirms payment and approval before activating a membership period.</p><p className="text-sm text-muted-foreground">Payment does not establish federal eligibility or authorize research execution or submission. Activation uses a confirmed invoice; online checkout is not available yet.</p><Button href="/contact?interest=government">Request government membership</Button></Card>
+            <Card className="space-y-4 p-6 sm:p-8"><h2 className="font-display text-3xl font-semibold">Government research membership</h2><p className="text-xl font-semibold">$100/month · approval required</p><p className="leading-relaxed text-muted-foreground">Government learning, research preparation and submission tools are reserved for approved government-tier members. An operator confirms payment and approval before activating a membership period.</p><p className="text-sm text-muted-foreground">Payment does not establish federal eligibility or authorize research execution or submission. Activation uses a confirmed invoice; online checkout is not available yet.</p><Button href="/contact?interest=government" onClick={() => selectPlan('government')}>Request government membership</Button></Card>
             <Card className="grid gap-8 border-primary p-6 sm:p-8 lg:grid-cols-2">
                 <div>
                     <p className="font-evidence text-xs uppercase tracking-widest text-primary">
@@ -39,7 +41,7 @@ export default function PricingPage() {
                         Bring one recurring operational problem. We will scope a supported pilot
                         around an approved action, its result and an independent review.
                     </p>
-                    <Button href="/contact?interest=pilot#commercial-enquiry" className="mt-6">
+                    <Button href="/contact?interest=pilot#commercial-enquiry" onClick={() => selectPlan('pilot')} className="mt-6">
                         Discuss a paid pilot <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </Button>
                 </div>
@@ -109,7 +111,7 @@ export default function PricingPage() {
                             </li>
                         ))}
                     </ul>
-                    <Button href="/#early-access" className="mt-auto">
+                    <Button href="/#early-access" onClick={() => selectPlan('early_access')} className="mt-auto">
                         Request early access <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </Button>
                 </Card>
@@ -127,7 +129,7 @@ export default function PricingPage() {
                         <li>Review the services and data you would connect.</li>
                         <li>Discuss licensing and support requirements.</li>
                     </ul>
-                    <Button href="/contact" variant="secondary" className="mt-auto">
+                    <Button href="/contact" onClick={() => selectPlan('team')} variant="secondary" className="mt-auto">
                         Contact the team
                     </Button>
                 </Card>

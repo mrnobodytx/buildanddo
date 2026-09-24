@@ -89,7 +89,11 @@ export function decisionFixture() {
         __hooks: '/hooks',
         console: { log: (value) => logs.push(value) },
         Date, JSON, Object, Number, String, Set, Array,
-        $os: { getenv(name) { assert.equal(name, 'BUILDANDDO_DECISION_PORT'); return port; } },
+        $os: { getenv(name) {
+            if (name === 'BUILDANDDO_TELEMETRY_TRANSPORT') return 'stdout';
+            if (['DD_ENV', 'NODE_ENV'].includes(name)) return 'development';
+            assert.equal(name, 'BUILDANDDO_DECISION_PORT'); return port;
+        } },
         $security: { sha256: (value) => createHash('sha256').update(value).digest('hex'), randomString: (n) => 'r'.repeat(n) },
         Record: function (coll) { assert.equal(coll.name, 'workspace_decisions'); return record(coll.name); },
         $apis: { requireAuth(name) { assert.equal(name, 'users'); return 'native-auth'; }, bodyLimit: (size) => size },

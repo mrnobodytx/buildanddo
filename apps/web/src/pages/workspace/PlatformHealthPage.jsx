@@ -1,18 +1,19 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/PlatformHealthPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-11
 // Depends:     scripts/ci/fleet_report.py,
 //              apps/web/src/components/workspace/workspaceHelpers.jsx,
-//              apps/web/src/components/site/ui.jsx
+//              apps/web/src/components/site/ui.jsx, apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/public/platform-health.json;
-//              DEPENDS_ON scripts/ci/fleet_report.py
+//              DEPENDS_ON scripts/ci/fleet_report.py; CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Say which connected platforms are actually being used, keeping
 //              "unknown" separate from "unused" so an unreadable entitlement is
 //              never counted as a deliberate gap.
@@ -41,6 +42,8 @@ import {
 import { DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNotices';
 import { formatDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 
 const REPORT_URL = '/platform-health.json';
 
@@ -203,19 +206,35 @@ export default function PlatformHealthPage() {
 
     useEffect(() => {
         let cancelled = false;
+        let status = 0, reason = 'unavailable';
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         setLoading(true);
         setFailed(false);
         fetch(REPORT_URL, { cache: 'no-store' })
-            .then((response) =>
-                response.ok ? response.json() : Promise.reject(new Error(`status ${response.status}`)),
-            )
+            .then((response) => {
+                status = response.status;
+                if (!response.ok) throw new Error(`status ${response.status}`);
+                reason = 'invalid_response';
+                return response.json();
+            })
             .then((data) => {
                 if (cancelled) return;
+                if (!data || typeof data !== 'object' || Array.isArray(data) || data.state !== 'UNMEASURED' &&
+                    (!Array.isArray(data.platforms) || !data.totals || data.platforms.some((platform) => !platform ||
+                        typeof platform.label !== 'string' || !Array.isArray(platform.features) || !platform.utilization?.counts ||
+                        platform.features.some((feature) => !feature || typeof feature.name !== 'string')) ||
+                        ['integration_timeline', 'recommendations'].some((key) => data[key] !== undefined && !Array.isArray(data[key]))))
+                    throw new Error('Unexpected platform health response');
+                if (data.state === 'UNMEASURED' && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'estate', 'unmeasured', status);
                 setReport(data);
                 setLoading(false);
             })
-            .catch(() => {
+            .catch((error) => {
                 if (cancelled) return;
+                if (error?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'estate', reason, status);
                 setFailed(true);
                 setLoading(false);
             });

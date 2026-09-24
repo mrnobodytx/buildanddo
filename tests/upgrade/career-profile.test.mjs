@@ -46,7 +46,7 @@ function envelope(subject = 'u_person01') {
 
 function fixture({ env = {}, answer, verified = true } = {}) {
     const routes = new Map(); const calls = []; const logs = []; const headers = new Map();
-    const forbidden = new Proxy({}, { get: (_, key) => { if (key === 'logger') return () => ({ warn: (...args) => logs.push(args) }); throw new Error(`storage touched: ${String(key)}`); } });
+    const forbidden = new Proxy({}, { get: (_, key) => { if (key === 'logger') return () => ({ error: (...args) => logs.push(args), warn: (...args) => logs.push(args) }); throw new Error(`storage touched: ${String(key)}`); } });
     const context = {
         __hooks: '/hooks', $app: forbidden,
         $os: { getenv: (name) => env[name] || '' },

@@ -2,10 +2,11 @@
 # ─── CGRF Header ─────────────────────────────────────────────────────────────
 # File:        scripts/ci/ocn_seat_session.py
 # Stage:       09_VERIFY
-# SRS:         SRS-BUILDANDDO-LIVE-UTILIZATION-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
-# CAPS:        B
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-LIVE-UTILIZATION-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
+# CAPS:        pending
 # CK:          pending
-# Seat:        C-ONE
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN, C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
 # Depends:     scripts/ci/ocn_rbac_probe.py (same CitadelKey login path);
@@ -35,11 +36,10 @@ consulted. When the identity is missing, contradicts itself, names a guild with 
 belongs to a different seat than the one asked for, the session REFUSES before any network call or
 telemetry and says why. It never guesses a persona, and never falls back to the hostname.
 
-AGENTS ARE MARKED, NOT DISGUISED. Every person and every event carries `is_ocn_agent: true`,
-`ocn_seat`, `ocn_persona` and `ocn_guild`. That is the point rather than a caveat: analytics that
-silently blends synthetic traffic into human funnels is corrupted analytics, and the operator asked
-for user stats AND agent stats, which needs the two to be separable. Filter the flag out for human
-behaviour, filter it in for agent behaviour.
+AGENTS ARE MARKED, NOT DISGUISED. Every new profile and event carries `is_ocn_agent: true`,
+`actor_type: agent`, `traffic_type: synthetic` and `probe_type: ocn-seat-session`. Analytics uses a
+random session-scoped identity, never a machine address, seat label or person name. The local
+receipt retains resolved identity and ordered measurements; historical vendor events are untouched.
 
 SESSIONS, AND WHAT "REPLAY" CAN HONESTLY MEAN HERE. Every event carries one `$session_id`, so
 PostHog groups the journey into a single session with a real timeline and duration. It is NOT a
@@ -207,47 +207,75 @@ def resolve_identity(seat_arg, node_path, placement_path):
 
 
 class Telemetry:
-    """PostHog capture for one seat session. Marks every payload as agent traffic."""
+    """Capture allowlisted probe measurements without exporting machine/person identity."""
 
-    def __init__(self, key, seat, meta, enabled=True):
+    def __init__(self, key: str | None, seat: str, meta: dict[str, object], enabled: bool = True) -> None:
         self.key, self.seat, self.meta, self.enabled = key, seat, meta, enabled and bool(key)
-        self.distinct_id = "ocn:" + seat
         self.session_id = str(uuid.uuid4())
+        self.distinct_id = "ocn-probe:" + self.session_id
         self.sent, self.refused = 0, 0
 
-    def _post(self, payload):
+    def _post(self, payload: dict[str, object]) -> bool:
         if not self.enabled:
             return False
         payload["api_key"] = self.key
         payload.setdefault("timestamp", datetime.datetime.now(datetime.timezone.utc).isoformat())
         res = http(PH_HOST + "/i/v0/e/", data=json.dumps(payload).encode(), timeout=20)
-        ok = res["status"] == 200
+        ok = bool(res["status"] == 200)
         self.sent += int(ok)
         self.refused += int(not ok)
         return ok
 
-    def _props(self, extra):
-        base = {"$session_id": self.session_id, "is_ocn_agent": True, "ocn_seat": self.seat,
-                "ocn_persona": self.meta["persona"], "ocn_guild": self.meta["guild"],
-                "ocn_box_ip": self.meta.get("egress_ip"), "$lib": "bnd-ocn-seat"}
-        base.update(extra or {})
+    def _props(self, extra: object) -> dict[str, object]:
+        base: dict[str, object] = {"$session_id": self.session_id, "$lib": "bnd-ocn-seat",
+                "is_ocn_agent": True, "actor_type": "agent", "traffic_type": "synthetic",
+                "probe_type": "ocn-seat-session", "$geoip_disable": True}
+        guild = self.meta.get("guild")
+        if isinstance(guild, str) and guild in GUILDMASTERS:
+            base["ocn_guild"] = guild
+        for key, value in (extra if isinstance(extra, dict) else {}).items():
+            if key in {"http_status", "http", "latency_ms", "items", "steps", "observation_count",
+                       "perc_median_latency_ms", "perc_prerendered_text_chars",
+                       "perc_data_endpoints_ok", "perc_data_endpoints_total"}:
+                if type(value) is int and value >= 0:
+                    base[key] = value
+            elif key in {"perc_reachable_routes", "perc_persona_vocabulary_coverage"}:
+                if isinstance(value, str) and re.fullmatch(r"\d+/\d+", value):
+                    base[key] = value
+            elif key == "perc_persona_vocabulary_hits" and isinstance(value, list):
+                base[key] = sorted({word for word in value if isinstance(word, str) and
+                                    any(word in words for words in LEXICON.values())})
+            elif key == "env" and isinstance(value, str) and value in ENVS:
+                base[key] = value
+            elif key == "login_state" and isinstance(value, str) and re.fullmatch(r"LOGIN_(?:OK|[1-5]\d\d)|SIGN_FAILED", value):
+                base[key] = value
+            elif key == "collection" and isinstance(value, str) and value in {"workspaces", "missions", "signals", "evidence", "tutorials"}:
+                base[key] = value
+            elif key == "$current_url" and isinstance(value, str):
+                try:
+                    url = urllib.parse.urlsplit(value)
+                    origin = "%s://%s" % (url.scheme, url.netloc)
+                    if origin in ENVS.values() and url.path in ROUTES:
+                        base[key] = origin + url.path
+                except ValueError:
+                    pass
         return base
 
-    def identify(self):
-        """person_profiles is 'identified_only' in the web app, so without this there is no person."""
+    def identify(self) -> bool:
+        """Identify only this synthetic session, not the person or machine running it."""
+        properties = self._props({})
+        properties["$set"] = {key: value for key, value in properties.items() if key != "$session_id"}
         return self._post({"event": "$identify", "distinct_id": self.distinct_id,
-                           "properties": self._props({"$set": {
-                               "is_ocn_agent": True, "ocn_seat": self.seat,
-                               "ocn_persona": self.meta["persona"], "ocn_guild": self.meta["guild"],
-                               "ocn_box_ip": self.meta.get("egress_ip"),
-                               "name": "OCN seat: " + self.seat}})})
+                           "properties": properties})
 
-    def pageview(self, url, status, ms):
+    def pageview(self, url: str, status: int, ms: int | float) -> bool:
         return self._post({"event": "$pageview", "distinct_id": self.distinct_id,
                            "properties": self._props({"$current_url": url, "http_status": status,
                                                       "latency_ms": ms})})
 
-    def event(self, name, props=None):
+    def event(self, name: str, props: object = None) -> bool:
+        if not isinstance(name, str) or name not in {"ocn_session_start", "ocn_collection_read", "ocn_perception", "ocn_session_end"}:
+            return False
         return self._post({"event": name, "distinct_id": self.distinct_id,
                            "properties": self._props(props)})
 
@@ -327,8 +355,9 @@ def main() -> int:
     try:
         meta = resolve_identity(args.seat, NODE_JSON, PLACEMENT)
     except IdentityRefused as refused:
-        # Nothing has touched the network: no egress lookup, no login, no telemetry under a guess.
+        # Nothing has touched the network: no login or telemetry under a guess.
         print(json.dumps({"schema": "buildanddo.ocn-seat-session/v1", "seat": args.seat, "env": args.env,
+                          "actor_type": "agent", "traffic_type": "synthetic", "probe_type": "ocn-seat-session",
                           "at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                           "identity": {"state": "REFUSED", "code": refused.code, "detail": refused.detail,
                                        "sources": refused.sources},
@@ -337,12 +366,10 @@ def main() -> int:
     seat = meta["seat"]
     base = ENVS[args.env]
 
-    ip = http("https://api.ipify.org", timeout=12)
-    meta["egress_ip"] = ip["body"].decode("utf-8", "replace").strip() if ip["status"] == 200 else None
-
     tel = Telemetry(args.ph_key, seat, meta, enabled=not args.no_capture)
     out = {"schema": "buildanddo.ocn-seat-session/v1", "seat": seat, "env": args.env,
-           "persona": meta["persona"], "guild": meta["guild"], "egress_ip": meta["egress_ip"],
+           "persona": meta["persona"], "guild": meta["guild"],
+           "actor_type": "agent", "traffic_type": "synthetic", "probe_type": "ocn-seat-session",
            "identity": meta["identity"],
            "session_id": tel.session_id, "distinct_id": tel.distinct_id,
            "at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "replay": []}
@@ -397,8 +424,7 @@ def main() -> int:
 
     perception = perceive(seat, meta, pages, data_docs)
     out["perception"] = perception
-    tel.event("ocn_perception", {"persona": perception["persona"], "guild": perception["guild"],
-                                 **{("perc_" + k): v for k, v in perception["score"].items()},
+    tel.event("ocn_perception", {**{("perc_" + k): v for k, v in perception["score"].items()},
                                  "observation_count": len(perception["observations"])})
     tel.event("ocn_session_end", {"steps": len(out["replay"])})
     out["telemetry"] = {"accepted": tel.sent, "refused": tel.refused,

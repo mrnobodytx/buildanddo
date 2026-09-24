@@ -1,9 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/observability/TelemetryBoundary.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-RUM-002
+// SRS:         SRS-BUILDANDDO-RUM-002, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
@@ -39,7 +40,7 @@ class TelemetryBoundary extends React.Component {
         return (
             <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center">
                 <p className="text-muted-foreground">
-                    Something broke while rendering this page. The failure has been reported.
+                    Something broke while rendering this page. Try reloading it.
                 </p>
                 <button
                     type="button"

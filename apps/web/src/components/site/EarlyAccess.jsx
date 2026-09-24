@@ -12,6 +12,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import pb from '@/lib/pocketbaseClient';
+import { PUBLIC_ACTIONS, publicActionFailureReason, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 // Where the person is starting from. Saved in the early-access record's `business_type` field, a free text
 // field whose name predates the learning framing (SRS-BUILDANDDO-PURPOSE-001), so older sign-ups stay valid.
@@ -55,7 +56,11 @@ export default function EarlyAccess() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (status === 'submitting') return;
-        if (!validate()) return;
+        const section = publicActionSection();
+        if (!validate()) {
+            trackPublicAction(PUBLIC_ACTIONS.EARLY_ACCESS_REQUEST, 'failure', 'validation', undefined, { section });
+            return;
+        }
 
         setStatus('submitting');
         try {
@@ -65,9 +70,10 @@ export default function EarlyAccess() {
                 business_type: form.businessType,
                 task: form.task.trim(),
             });
+            trackPublicAction(PUBLIC_ACTIONS.EARLY_ACCESS_REQUEST, 'accepted', 'request_accepted', undefined, { section });
             setStatus('success');
         } catch (err) {
-            console.error('Early access submission failed', err);
+            trackPublicAction(PUBLIC_ACTIONS.EARLY_ACCESS_REQUEST, 'failure', publicActionFailureReason(err), undefined, { section });
             setStatus('error');
         }
     };

@@ -68,12 +68,17 @@ onRecordAfterDeleteError((event) => {
 // PocketBase 0.39.8 binds no onServe; global middleware registers through
 // routerUse. Measured against the 0.39.8 binary: onServe=undefined,
 // routerUse=function. onServe here aborted startup at jsvm registerHooks.
-routerUse((request) => {
-    let telemetry;
-    try {
-        telemetry = require(`${__hooks}/telemetry.js`);
-    } catch (_) {
-        return request.next();
-    }
-    return telemetry.observeRequest(request);
-});
+// Wrap the built-in early middleware too: authorization/rate-limit refusals
+// must be observed, not bypassed or converted into a second response.
+routerUse(new Middleware({
+    func: (request) => {
+        let telemetry;
+        try {
+            telemetry = require(`${__hooks}/telemetry.js`);
+        } catch (_) {
+            return request.next();
+        }
+        return telemetry.observeRequest(request);
+    },
+    priority: -2000,
+}));

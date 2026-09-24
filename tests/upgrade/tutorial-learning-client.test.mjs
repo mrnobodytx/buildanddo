@@ -392,5 +392,5 @@ test('learning API identities and query values are removed from browser telemetr
     const event = scrubClassroomProperties({ properties: { $current_url: '/api/buildanddo/learning/private-lesson',
         $set_once: { $initial_current_url: '/app/tutorials?lesson=private-lesson' } } });
     assert.ok(!JSON.stringify(event).includes('private-lesson'));
-    assert.equal(classroomTelemetryLocation('/api/buildanddo/learning-tools'), '/api/buildanddo/learning-tools');
+    assert.equal(classroomTelemetryLocation('/api/buildanddo/learning-tools'), '/unknown');
 });

@@ -32,7 +32,9 @@
         "docs/sprint-user-journey.md",
         "tests/assurance",
         "docs/test-assurance.md",
-        "services/praxis_evidence"
+        "services/praxis_evidence",
+        "apps/web/tools/release-telemetry.mjs",
+        "docs/telemetry-coverage.md"
       ],
       "checks": [
         "boundary",
@@ -59,7 +61,8 @@
         "Automatic public PR governance and required GitLab checks remain enabled; neither provider substitutes for observed candidate acceptance.",
         "The supplemental assurance source job preserves evidence/authority and payment-boundary regressions; the opt-in full runtime matrix reports unavailable dependencies as non-passing and does not replace the eighteen-profile gate.",
         "Career, Knowledge Unit, integrity and world-twin behavior suites are included in source acceptance; their existing per-module coverage gates run on Python 3.11 and 3.12 and block submission when incomplete.",
-        "The blocking Praxis GitLab job runs both declared profiles in fresh runner-owned loopback databases. Direct selftests reject absent, foreign or changed fixtures before authentication; deployment configuration, shared targets, proxies and redirects cannot become test authority. Missing native binaries remain blocked."
+        "The blocking Praxis GitLab job runs both declared profiles in fresh runner-owned loopback databases. Direct selftests reject absent, foreign or changed fixtures before authentication; deployment configuration, shared targets, proxies and redirects cannot become test authority. Missing native binaries remain blocked.",
+        "Designated release builds and both release controllers require fresh telemetry configuration and exact artifact binding before copy. Real bundler/SDK checks and live vendor readback remain separate; a local manifest cannot establish ingestion or heartbeat monitoring."
       ],
       "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them."
     },
@@ -511,7 +514,8 @@
         "The Career Passport desk reads current scoped work and shows imported verification as reported; account/workspace changes or revocation clear private reviews, DO NOT CLAIM gaps remain visible, and imports cannot approve or submit applications.",
         "Same-grant permission polling preserves career imports, journey drafts and assistant work while pausing new requests. Observed denial/regrant boundaries invalidate old work; already-issued command receipts may settle only in the same lifetime, and private reads/chat remain permission-gated. Polling cannot steal keyboard focus.",
         "Pending media joins and discovery cannot revive cancelled room/account lifetimes; same-session token refresh preserves subscriptions. Structured agent detail renders as bounded inert text. The broadcast repair lesson and downloadable source-test evidence stay separate from workspace outcomes, learning completion, independent verification and deployed acceptance.",
-        "Catalogue completion derives from canonical guided states, not editable reading history; unavailable aggregates do not block individually authorized tutorials or imply zero completion. Open-book/self-reported limits, pending correction review, absent payment ingestion and claimed agent labels remain visible. The authority-repair lesson and source capture cannot create workspace outcomes or learner awards."
+        "Catalogue completion derives from canonical guided states, not editable reading history; unavailable aggregates do not block individually authorized tutorials or imply zero completion. Open-book/self-reported limits, pending correction review, absent payment ingestion and claimed agent labels remain visible. The authority-repair lesson and source capture cannot create workspace outcomes or learner awards.",
+        "Browser views, failed reads, rendered degradation and validated action outcomes use bounded private section names. Receipt and lifetime checks precede success; obsolete responses, demo and cancellation cannot become backend-failure events. Native diagnostics omit personal content and stdout remains separately activated. Full coverage requires exact-release arrival in both vendors, not passing source doubles."
       ],
       "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt."
     },

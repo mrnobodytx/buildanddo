@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/workspace-administration.js, apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workspace-value.js, apps/pocketbase/pb_hooks/government-access.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/workspace-administration.js, apps/pocketbase/pb_hooks/research-policy.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workspace-value.js, apps/pocketbase/pb_hooks/government-access.js, apps/pocketbase/pb_hooks/telemetry.js
 // EnumType:    Service
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; CONSUMES apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_hooks/mission-policy.js; CONSUMES apps/pocketbase/pb_hooks/workspace-value.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; CONSUMES apps/pocketbase/pb_hooks/research-policy.js; CONSUMES apps/pocketbase/pb_hooks/mission-policy.js; CONSUMES apps/pocketbase/pb_hooks/workspace-value.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
 // DAG Node:    none
 // Intent:      Project bounded existing workspace observations without creating work, exposing source bodies or replacing current record authority.
 // ───────────────────────────────────────────────────────────────
@@ -49,6 +49,8 @@ function observed(e, workspace, page, collection, fields, project, permit) {
         return { state: 'available', items, page, has_more: listed.has_more };
     } catch {
         // No body, private error text, guessed zero total or synthetic health.
+        try { require(`${__hooks}/telemetry.js`).diagnostic('operator.snapshot', 'schema', 0, collection); }
+        catch (_) { /* Preserve independently degraded sources. */ }
         return { state: 'unavailable', items: [], page, has_more: false };
     }
 }
@@ -108,7 +110,11 @@ function snapshot(e) {
         sources.integrations = { state: 'available', page: 1, has_more: false,
             items: administration.integrations(e).items.map((item) => ({ provider: item.provider, label: item.label,
                 desired_enabled: item.desired_enabled, observation: item.observation })) };
-    } catch { sources.integrations = { state: 'unavailable', items: [], page: 1, has_more: false }; }
+    } catch {
+        try { require(`${__hooks}/telemetry.js`).diagnostic('operator.integrations', 'schema'); }
+        catch (_) { /* Preserve independently degraded integrations. */ }
+        sources.integrations = { state: 'unavailable', items: [], page: 1, has_more: false };
+    }
     // A source failure must never conceal loss of the workspace itself.
     const scope = access.requireRole(e.app, e.auth, workspace);
     return { schema_version: 'buildanddo.operator-snapshot/v1', workspace, role: scope.role,
