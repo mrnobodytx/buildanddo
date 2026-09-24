@@ -41,7 +41,8 @@ seat's command line, which the seat script ignores; dropping it is the first A3 
 | 8 | Repository gates | `python scripts/ci/submission_readiness.py --check`; `python scripts/ci/verify_public_boundary.py` | done |
 | 9 | Every added line and commit message, scanned with the private fleet map | the added-line sweep and the branch sweep exit 0 | done |
 | 10 | Dry run on real receipts with the private map; the operator reviews one payload set | `publish --mode dry-run --receipt state/ocn_feature_sweep/staging.latest.json` shows both gates PASS | pending (next step, no vendor write) |
-| 11 | A3: the estate preconditions, then a verified staging pilot, then the estate drivers | `verify --pending` reads VERIFIED with C1-C5 held | pending (operator) |
+| 11 | A3: the estate preconditions (then `BUILDANDDO_OCN_TELEMETRY_POSTHOG=1`), then a verified staging pilot, then the estate drivers, first dropping `--ph-key` | `verify --pending` reads VERIFIED with C1-C5 held | pending (operator) |
+| 12 | Review fixes: 36 confirmed findings, each reproduced first, fixed with a test that fails without it | the unit tests and the selftest pass; 71 mutants, one or more per finding, are each caught | done |
 
 Every gate is judged by its exit code, never through a pipe.
 
@@ -87,6 +88,56 @@ or anything else: every test and the selftest ran with sockets refused.
 
 Not done here: the plan's later steps are A3 or need the operator. They are a dry run on real receipts
 with the private map, the estate preconditions, a verified live pilot, and the estate driver changes.
+
+## Review fixes (2026-09-24)
+
+Three reviewers reported 36 confirmed findings against `3172828` (one of them twice). Each was
+reproduced offline before it was fixed, with the real probes and the network patched out where a probe
+was involved. The fixes are in eight groups:
+- **Adapters** (`dfb22f7`): a VOID sweep or walk judges only the controls that voided it, and the
+  checks_failed gauge goes only beside the outcome gauge. project_fleet's own race checks are relabelled,
+  not duplicated. The three probes that take `--env` but never record it need `--env` (`NO_ENV`). A
+  request with no answer is TRANSPORT_FAULT, not REFUSED. Only the seven perception scores and the eight
+  inventory collections become property names.
+- **Templating and the leak gate** (`1d243ec`): the segment after `records` is `:id` whatever its shape,
+  an email becomes `:email` before anything is slugged, and the leak gate refuses anything email-shaped.
+- **Delivery** (`4f5b61c`): `BUILDANDDO_OCN_TELEMETRY=off` vetoes every flag, and `publish` without
+  `--mode` follows the switch. PostHog waits for `BUILDANDDO_OCN_TELEMETRY_POSTHOG=1`. A failed Datadog
+  part leaves the receipt degraded, and a re-publish posts only what was not accepted; `--force` never
+  posts an accepted Datadog body again. The budget is a wall clock. An interrupt mid-publish is recorded
+  before it carries on. A dry run no longer overwrites the ledger's record of a send (found while fixing
+  the retry, not in the review).
+- **Verify** (`f315fc6`): legacy capture is counted across the project since the first send, and only a
+  request with no status is read back as possibly delivered.
+- **The run wrapper** (`359d96d`): a receipt that names its own command decides, and the `--write`
+  fallback reads only the invocation's own env.
+- **Sibling imports** (`b90f43a`): siblings come from the publisher's own package or folder, never from a
+  `scripts` package elsewhere on the import path.
+- **Socket guards** (`c51210a`): both test modules record every attempt and fail on one, and each guard,
+  the selftest's included, is shown to refuse.
+- **Docs** (`84d2864`): the collector still passes the public capture key to every seat until its A3
+  change, which the seat script ignores.
+
+Evidence, offline, with sockets refused:
+- Unit tests: 188 of 188 (155, 24 and 9). The selftest passes 17 of 17 with no socket opened, with the
+  workstation's own switch set to off as well as unset.
+- Against `3172828`'s publisher, 53 of the 179 telemetry and seat tests fail. Every test added for a code
+  defect is among them.
+- 71 mutants, one or more per finding (the review's own, and the reverse of each fix), are each caught.
+  Run against `3172828` and its 128 tests, 38 of the review's 39 test-gap mutants passed. Only the
+  literal-URL capture mutant was caught (by the source grep); its assembled-URL twin passed while the
+  process guard refused 8 connection attempts.
+- The review's reproduction scripts, re-run on the fixes, show each defect gone. A VOID sweep has 2
+  failed checks (its controls), not 19. A publish under a 1-second budget takes 1.0 s, not 4.0 s. A
+  refused send leaves nothing pending, and a stand-in `scripts` package on PYTHONPATH is never imported.
+- AEGIS: `ocn_telemetry.py` and both test files audit clean=1, dead_code=0, logic=0.
+- The locks, gates and sweeps are listed in the pull request. They were run on this tree after the locks
+  were regenerated LF.
+
+Decisions for the operator:
+- `publish` with no `--mode` and the switch unset is still a dry run, as before. It writes the ledger's
+  counts and sends nothing. R1's "no file is written" holds for `run`.
+- `--force` re-posts the PostHog pair only, because Datadog keeps every copy it accepts.
 
 ## Constraints
 

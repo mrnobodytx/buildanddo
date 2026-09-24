@@ -48,7 +48,9 @@ The design was decided by a judged comparison of two designs (2026-09-24). The o
 1. **R1 - off by default.** With `BUILDANDDO_OCN_TELEMETRY` unset and no `--telemetry`, nothing is sent,
    no credential store is opened and no file is written. The receipt block reads `UNSENT` with reason
    `DISABLED`. `dry-run` prints what would be sent to stderr, runs the gates, records counts in the
-   ledger and still sends nothing.
+   ledger and still sends nothing. `BUILDANDDO_OCN_TELEMETRY=off` vetoes every `--telemetry` and `--mode`
+   flag, so turning it off is the rollback; `publish` without `--mode` follows the switch and is a dry run
+   while it is unset.
 2. **R2 - one publisher, on the release workstation, from finished receipts.** `scripts/ci/ocn_telemetry.py`
    is the only module that knows PostHog and Datadog. It uses the standard library only, reads each
    probe's receipt after the probe has reached its verdict, and never ships anything to a fleet box.
@@ -86,17 +88,21 @@ The design was decided by a judged comparison of two designs (2026-09-24). The o
    ambient environment second, and only their provenance is recorded. `POSTHOG_API_KEY` and
    `POSTHOG_HOST` are never read. A capture key without `phc_`, a readback key with `phc_`, or a
    `DD_SITE` other than us5 is refused. `off` and `dry-run` never open the store. With `CI` or `GITLAB_CI`
-   set, `send` and `verify` refuse (`CI_GUARD`) unless `BUILDANDDO_OCN_TELEMETRY_ALLOW_CI=1`.
+   set, `send` and `verify` refuse (`CI_GUARD`) unless `BUILDANDDO_OCN_TELEMETRY_ALLOW_CI=1`. Nothing goes
+   to PostHog (`POSTHOG_PRECONDITION`, its key never read) until the operator sets
+   `BUILDANDDO_OCN_TELEMETRY_POSTHOG=1`, recording that the estate precondition has landed.
 10. **R10 - one transport inside a budget.** Every network call goes through one function: one attempt, no
-    retry, no redirect, never raises. All requests share a 10-second budget with at most 3 seconds each.
-    A sink that could not start in time is `UNSENT/BUDGET`. `SENT` means the vendor accepted the request
+    retry, no redirect, never raises. All requests share a 10-second budget with at most 3 seconds each,
+    both held by the wall clock. A sink that could not start in time is `UNSENT/BUDGET`, and one that
+    overran is `UNSENT/TRANSPORT:BUDGET`. `SENT` means the vendor accepted the request
     (PostHog 200, Datadog 2xx), never that it was stored. Nothing the publisher does can raise into a
     probe: an exception becomes `UNSENT/PUBLISHER_ERROR:<class>`.
 11. **R11 - deterministic ids and a ledger.** `run_id` and every PostHog event uuid derive from the
     receipt's digest (the receipt without its `ocn_telemetry` block), so the same receipt always gives the
     same ids. The ledger under the gitignored `state/ocn_telemetry/` holds states, counts, digests and
-    credential provenance, never payload values, keys, box ids or addresses. A repeat publish returns
-    `LEDGER_DUPLICATE`; `--force` re-sends with the same uuids.
+    credential provenance, never payload values, keys, box ids or addresses. A repeat publish posts only
+    what the ledger does not record as accepted, and returns `LEDGER_DUPLICATE` when everything was;
+    `--force` re-sends the PostHog events with the same uuids and never posts an accepted Datadog body again.
 12. **R12 - delivery proved by readback with controls.** `verify` reads PostHog project 597897 back with
     HogQL and Datadog back through events and logs search. `VERIFIED` needs the expected counts and every
     control: C1 the invalid-key event is absent, C2 a never-sent run id returns 0 rows, C3 the project

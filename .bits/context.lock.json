@@ -53,7 +53,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py",
+      "evidence": "referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py, tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/emit_datadog_metrics.py is not configured in reachable GitLab jobs"
@@ -95,7 +95,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_classroom_live.py is not configured in reachable GitLab jobs"
@@ -165,7 +165,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py",
+      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py, tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_seat_session.py is not configured in reachable GitLab jobs"
@@ -344,7 +344,8 @@
       "path": "scripts/ci/emit_datadog_metrics.py",
       "referenced_by": [
         "apps/federal_foundry/operator.py",
-        "tests/upgrade/test_datadog_metrics.py"
+        "tests/upgrade/test_datadog_metrics.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": false
     },
@@ -417,7 +418,9 @@
     {
       "configured_providers": [],
       "path": "scripts/ci/ocn_classroom_live.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_ocn_telemetry.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -500,7 +503,8 @@
       "configured_providers": [],
       "path": "scripts/ci/ocn_seat_session.py",
       "referenced_by": [
-        "tests/upgrade/test_ocn_seat_session.py"
+        "tests/upgrade/test_ocn_seat_session.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": false
     },
@@ -657,7 +661,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T13:00:32.497796+00:00",
+  "generated_at": "2026-09-24T14:54:58.548293+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1357,7 +1361,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "87186c715ab7dba2d11c15b32818379367fe6a0e20414031312334047935a00a",
+    "source_sha256": "34e0121984e138397148c5859a50c17b0040d45b09887cd724b6f28879cfc853",
     "state": "PASS"
   },
   "summary": {
