@@ -252,7 +252,8 @@ withholds the whole receipt.
   no allowance for loopback, and for anything shaped like an email address. The report gives counts
   (addresses, machine names, emails) and the field names, never a value.
   `send` refuses without a readable fleet map (`NO_FLEET_MAP`); `dry-run` falls back to the families and
-  says so.
+  says so. `public_redaction.py`, like every module the publisher uses, is loaded from the publisher's own
+  folder and nowhere else, so a `scripts` package elsewhere on the import path can never stand in for it.
 
 ## States
 

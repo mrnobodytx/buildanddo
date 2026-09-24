@@ -69,6 +69,7 @@ import datetime as dt
 import functools
 import hashlib
 import importlib
+import importlib.util
 import json
 import os
 import re
@@ -256,16 +257,36 @@ class Unsent(Exception):
 
 @functools.lru_cache(maxsize=None)
 def _sibling(name: str) -> Any:
-    """A module next to this one: `scripts.ci.<name>` from the repository root, else `<name>`.
+    """A module next to this one, and only that module.
 
+    Imported through this module's own package when it has one (scripts.ci under the tests), else loaded
+    from HERE by its path. A `scripts` package elsewhere on the import path, as the release workstation's
+    PYTHONPATH carries one, is never imported, so nothing from another tree can stand in for the leak rule.
     Imported only when a receipt is being published, so `run` loads none of them while its probe runs.
     """
-    try:
-        return importlib.import_module("scripts.ci." + name)
-    except ImportError:
-        if str(HERE) not in sys.path:
-            sys.path.insert(0, str(HERE))
-        return importlib.import_module(name)
+    if __package__:
+        module = importlib.import_module(__package__ + "." + name)
+    else:
+        module = sys.modules.get(name)
+        if module is None or not _beside(module):
+            spec = importlib.util.spec_from_file_location(name, HERE / (name + ".py"))
+            if spec is None or spec.loader is None:
+                raise ImportError("no module %s beside the publisher" % name)
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[name] = module
+            try:
+                spec.loader.exec_module(module)
+            except BaseException:
+                sys.modules.pop(name, None)
+                raise
+    if not _beside(module):
+        raise ImportError("%s does not sit beside the publisher" % name)
+    return module
+
+
+def _beside(module: Any) -> bool:
+    location = getattr(module, "__file__", None)
+    return bool(location) and Path(location).resolve().parent == HERE
 
 
 def slug(text: object, limit: int = 64) -> str:

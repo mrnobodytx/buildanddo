@@ -39,6 +39,7 @@ import sys
 import tempfile
 import threading
 import time
+import types
 import unittest
 import urllib.error
 from pathlib import Path
@@ -1535,6 +1536,32 @@ class ReceiptParsingTests(Harness):
                               text=True, timeout=120)
         self.assertEqual(done.returncode, 0, done.stderr[-400:])
         self.assertEqual(json.loads(done.stdout.strip().splitlines()[-1]), [])
+
+    def test_a_scripts_package_elsewhere_on_the_path_is_never_imported(self):
+        # The release workstation's PYTHONPATH names a tree whose `scripts` is a regular package, which wins
+        # over this repository's namespace one. Every module of this stand-in tree records its own import.
+        shadow, marker = self.dir / "shadow", self.dir / "imported.txt"
+        (shadow / "scripts" / "ci").mkdir(parents=True)
+        record = "open(%r, 'a').write(__name__ + chr(10))\n" % str(marker)
+        for path in ("scripts/__init__.py", "scripts/ci/__init__.py", "scripts/ci/public_redaction.py",
+                     "public_redaction.py", "emit_datadog_metrics.py", "ocn_seat_session.py"):
+            (shadow / path).write_text(record, encoding="utf-8")
+        receipt = self.dir / "receipt.json"
+        receipt.write_text(json.dumps(receipts()["ocn_classroom_fleet"]), encoding="utf-8")
+        done = subprocess.run([sys.executable, str(SCRIPT), "publish", "--receipt", str(receipt), "--mode", "dry-run",
+                               "--fleet-map", str(self.fleet), "--ledger-dir", str(self.ledger)], cwd=ROOT,
+                              env=dict(os.environ, PYTHONPATH=str(shadow)), capture_output=True, text=True,
+                              encoding="utf-8", timeout=120)
+        self.assertEqual(done.returncode, 0, done.stderr[-400:])
+        self.assertEqual(json.loads(done.stdout)["reason"], "DRY_RUN")
+        self.assertFalse(marker.exists(), marker.read_text(encoding="utf-8") if marker.exists() else "")
+        self.assertIn("persona-joins-from-box", done.stderr)
+
+    def test_a_sibling_from_another_folder_is_refused(self):
+        stranger = types.SimpleNamespace(__file__=str(self.dir / "public_redaction.py"))
+        with mock.patch.object(t.importlib, "import_module", return_value=stranger):
+            with self.assertRaises(ImportError):
+                t._sibling.__wrapped__("public_redaction")
 
 
 def read_keys(**overrides: str) -> dict[str, str]:
