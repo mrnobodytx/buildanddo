@@ -592,6 +592,17 @@
     },
     {
       "configured_providers": [
+        "gitlab",
+        "github"
+      ],
+      "path": "scripts/ci/system_growth.py",
+      "referenced_by": [
+        "tests/upgrade/test_system_growth.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
         "github"
       ],
       "path": "scripts/ci/telemetry_delta.py",
@@ -657,7 +668,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T19:51:25.678363+00:00",
+  "generated_at": "2026-09-24T19:57:45.291906+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -838,6 +849,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md",
         "status": "proposed",
         "title": "Semantic ISR research"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GROWTH-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GROWTH-001.md",
+        "status": "in_progress",
+        "title": "System growth lock - per-system development and progression, measured from the repository and recorded on every merge"
       },
       {
         "code": "SRS-BUILDANDDO-HEADERS-001",
@@ -1107,6 +1125,21 @@
       ]
     },
     {
+      "file": ".github/workflows/growth.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo System Growth",
+      "npm_scripts": [],
+      "provider": "github",
+      "scripts": [
+        "scripts/ci/system_growth.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ]
+    },
+    {
       "file": ".github/workflows/pr-governance.yml",
       "kind": "workflow",
       "local_actions": [
@@ -1122,6 +1155,7 @@
         "scripts/ci/readme_check.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
+        "scripts/ci/system_growth.py",
         "scripts/ci/verify_public_boundary.py"
       ],
       "triggers": [
@@ -1180,6 +1214,7 @@
         "scripts/ci/readme_check.py",
         "scripts/ci/selftest_sprint_replay.py",
         "scripts/ci/sprint_replay.py",
+        "scripts/ci/system_growth.py",
         "scripts/ci/verify_public_boundary.py",
         "services/praxis_evidence/run_all_tests.py",
         "tools/buildanddo_release.py"
@@ -1189,6 +1224,7 @@
         "scripts/ci/readme_check.py",
         "scripts/ci/selftest_sprint_replay.py",
         "scripts/ci/sprint_replay.py",
+        "scripts/ci/system_growth.py",
         "scripts/ci/verify_public_boundary.py",
         "services/praxis_evidence/run_all_tests.py",
         "tools/buildanddo_release.py"
@@ -1290,11 +1326,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 75,
-    "python_files": 441,
+    "python_files": 443,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1794,
+    "tracked_files": 1800,
     "web_source_files": 416
   },
   "schema_version": 1,
@@ -1374,15 +1410,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "a447ae423d762834222b80835e319bd927490cebe8de4d051bd31e9d1f473b5c",
+    "source_sha256": "0db7e54349803d7db15f461d822e59b144de398f6b3c509ce6392b3d8daec3d6",
     "state": "PASS"
   },
   "summary": {
     "findings": 35,
     "findings_high": 35,
-    "pipelines": 11,
-    "srs_open": 45,
-    "srs_total": 49,
+    "pipelines": 12,
+    "srs_open": 46,
+    "srs_total": 50,
     "unwired_gates": 32
   },
   "tests": {

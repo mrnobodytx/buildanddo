@@ -31,6 +31,8 @@ integrity_gate:
     - python3 scripts/ci/integrity_regression_check.py
     - python3 scripts/ci/verify_public_boundary.py --root .
     - python3 scripts/ci/readme_check.py --check
+    # Summary only: the lock is refreshed on main by .github/workflows/growth.yml.
+    - python3 scripts/ci/system_growth.py
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
 

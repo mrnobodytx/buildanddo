@@ -30,6 +30,7 @@
   <a href="#how-a-change-ships">Shipping</a> ·
   <a href="#quality-gates">Quality gates</a> ·
   <a href="#roadmap">Roadmap</a> ·
+  <a href="#system-growth">Growth</a> ·
   <a href="#documentation">Docs</a> ·
   <a href="#readme-catalogue">READMEs</a>
 </p>
@@ -282,6 +283,7 @@ read back from outside before it counts. The rules for contributors are in
 |---|---|---|
 | [`.github/workflows/pr-governance.yml`](./.github/workflows/pr-governance.yml) | every PR | Pins one reviewed head, then runs readiness, boundary, context lock, README, dependency lock, lint, tests with coverage and the Python suites |
 | [`.github/workflows/changelog.yml`](./.github/workflows/changelog.yml) | push to `main` | Regenerates `CHANGELOG.md` from history and commits it back |
+| [`.github/workflows/growth.yml`](./.github/workflows/growth.yml) | push to `main` | Measures every system and records one growth point in `.bits/growth.lock.json` |
 | [`.github/workflows/evidence-epoch.yml`](./.github/workflows/evidence-epoch.yml) | push to `main` | Fingerprints the build's evidence and records the chain head |
 | [`.github/workflows/candidate-to-gitlab.yml`](./.github/workflows/candidate-to-gitlab.yml) | push to `main` | Hands the reviewed candidate to the GitLab mirror |
 | [`.github/workflows/datadog-dora.yml`](./.github/workflows/datadog-dora.yml) | after a candidate | DORA deployment events, with lead time |
@@ -306,6 +308,7 @@ assurance, plus the Day-21 job, which runs all eighteen acceptance profiles.
 | `scripts/ci/agent_context.py --check` | Pipelines, gates or governance changing without the context lock being updated |
 | `scripts/ci/readme_check.py` | This README falling behind the repository: dead links, an unnamed app or workflow, a stale roadmap |
 | `scripts/ci/changelog_gen.py --check` | A changelog that no longer matches `main` |
+| `scripts/ci/system_growth.py --diff` | Growth that goes unnoticed: every PR's summary shows what it adds or removes, per system (reported, not blocking) |
 | `scripts/ci/integrity_regression_check.py` | Build or lint regressions against the previous manifest |
 | `scripts/ci/hostinger_readiness.py --check` | Sprint milestones losing their rationale, owner or next step |
 | `apps/web/tools/check-public-lessons.mjs` | A lesson answer shipping in any file the build serves |
@@ -340,6 +343,25 @@ shows what was *planned*. Whether each milestone was verified is recorded live a
 and cites its SRS code. [`changelog.yml`](./.github/workflows/changelog.yml) regenerates it on every
 push to `main` and commits the result. That commit carries a `Changelog: skip` trailer, so it never
 lists itself.
+
+## System growth
+
+[`.bits/growth.lock.json`](./.bits/growth.lock.json) is to development what the context lock is to
+the pipeline: a measurement taken from the repository alone. For every system it records size by
+language, tests, README and CGRF coverage, and the SRS codes behind it. For the project, it records
+how many specs are delivered and how many dispatch tasks are done.
+[`growth.yml`](./.github/workflows/growth.yml) refreshes it on every merge to `main`, so the lock's
+git history is the growth history, one dated point per merge.
+
+```bash
+python scripts/ci/system_growth.py                     # every system, sized and ranked
+python scripts/ci/system_growth.py --diff origin/main  # what this branch grows or shrinks
+python scripts/ci/system_growth.py --history 30        # the growth history, with sparklines
+```
+
+Size is not value. The lock never scores a system; it records what changed, and a pull request's
+summary shows its own delta. Acceptance against the sprint criteria is measured separately by
+[the progression anchor](./docs/PROGRESSION_ANCHOR.md).
 
 ## Observability
 

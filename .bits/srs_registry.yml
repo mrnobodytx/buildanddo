@@ -374,3 +374,10 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.md
     owner: C-ONE
     notes: Operator decision 2026-09-24 - classes live outside workspaces, the workspace tracks a user's access and shows it as a gallery, so a student who never studies chemistry never sees a chemistry class there. Today classroom_rooms.workspace is REQUIRED and every classroom index is workspace-first, so a class cannot exist without a workspace; a5bc2b0 fanned out client-side across readable workspaces, which finds existing classes but does not make one global. Additive migration - existing rooms stay scope=workspace and keep their behaviour. Guildmaster audit and score land on the class, using the frozen trust vocabulary where VERIFIED needs a resolvable evidence reference. No deployment
+  - code: SRS-BUILDANDDO-GROWTH-001
+    title: System growth lock - per-system development and progression, measured from the repository and recorded on every merge
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-GROWTH-001.md
+    owner: BITS-CODEGEN
+    notes: Owner request 2026-09-24 - a progression and system development tracker kept the way the context lock is, for growth over time. Auto-refreshed on main by the owner's choice rather than required on every PR. This entry records that request and does not self-authorize A2. No deployment, no external writes

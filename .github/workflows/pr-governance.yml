@@ -126,6 +126,12 @@ jobs:
       - name: Verify README still describes the repository
         run: python scripts/ci/readme_check.py --check
 
+      # Reported, not blocking: growth.yml refreshes the lock on main, so a PR
+      # only shows what it grows or shrinks against the lock on origin/main.
+      - name: Report this change's system growth
+        continue-on-error: true
+        run: python scripts/ci/system_growth.py --diff origin/main >> "$GITHUB_STEP_SUMMARY"
+
       # Verify-only while the changelog is new: a stale changelog is worth
       # reporting, not worth failing a build over until every contributor has
       # the regeneration step in muscle memory.
