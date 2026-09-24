@@ -29,7 +29,9 @@ vi.mock('@/contexts/WorkspaceAccessContext', () => ({ useWorkspaceAccess: () => 
 vi.mock('@/hooks/useWorkspaceRecords', () => ({ useWorkspaceRecords: (name) => state.sources[name] }));
 vi.mock('@/hooks/useDemoMode', () => ({ useDemoMode: () => ({ demo: false }) }));
 vi.mock('@/components/motion/MotionPrimitives', () => ({ MotionEntrance: ({ children }) => children,
-    MotionList: ({ as: Element = 'div', children }) => <Element>{children}</Element>, MotionValue: ({ value }) => <span>{value}</span> }));
+    MotionList: ({ as: Element = 'div', children }) => <Element>{children}</Element>, MotionValue: ({ value }) => <span>{value}</span>,
+    // StatePill and the workspace helpers call this hook; it returns a ref.
+    useMotionChange: () => ({ current: null }) }));
 
 beforeEach(() => {
     state.account = 'account1'; state.workspace = 'workspace1';
