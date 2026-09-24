@@ -267,6 +267,10 @@ def _swap_script(incoming: str, live: str, previous: str, expected_files: int) -
         f"n=$(find {inc} -type f | wc -l); "
         f"[ \"$n\" -eq {int(expected_files)} ] || "
         f"{{ echo \"VERIFY_FAILED: expected {int(expected_files)} files, found $n\" >&2; exit 3; }}; "
+        # The staged copy takes the live directory's owner and mode where the server allows it, so the
+        # web server reads the new release as it read the old one (SRS-BUILDANDDO-DEPLOY-SWAP-001).
+        f"if [ -e {cur} ]; then chown --reference={cur} {inc} 2>/dev/null || true; "
+        f"chmod --reference={cur} {inc} 2>/dev/null || true; fi; "
         f"rm -rf {prev} || {{ echo 'SWAP_FAILED: could not clear previous release' >&2; exit 4; }}; "
         f"if [ -e {cur} ]; then mv {cur} {prev} || {{ echo 'SWAP_FAILED: could not retire live release' >&2; exit 4; }}; fi; "
         f"mv {inc} {cur} || {{ [ -e {prev} ] && mv {prev} {cur}; echo 'SWAP_FAILED: could not promote staged copy' >&2; exit 4; }}"

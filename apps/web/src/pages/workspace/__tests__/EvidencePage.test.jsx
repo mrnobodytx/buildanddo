@@ -68,7 +68,8 @@ it('preserves the dated broadcast observation as limited history, not a current 
     expect(panel.getByText(/Historical source observation dated/)).toHaveTextContent(broadcastCurriculum.source_evidence.observation.observed_at);
     expect(panel.getByText(/Not a current full-test gate/)).toBeVisible();
     await setupUser().click(panel.getByText('Validation evidence and public source references'));
-    expect(panel.getByLabelText(`Recorded source run: ${title}`)).toHaveTextContent('121/121 passed');
+    const { counts } = broadcastCurriculum.source_evidence.observation;
+    expect(panel.getByLabelText(`Recorded source run: ${title}`)).toHaveTextContent(`${counts.pass}/${counts.tests} passed`);
     expect(panel.getByLabelText(`Recorded source run: ${title}`)).toHaveTextContent(broadcastCurriculum.source_evidence.observation.source_sha256);
     expect(panel.getByRole('link', { name: `Download the captured source test output: ${title}` })).toHaveAttribute('href', '/broadcast-repairs-source.txt');
     expect(panel.getByText(`Public capture SHA-256: ${broadcastCurriculum.source_evidence.artifact.sha256}`)).toBeVisible();

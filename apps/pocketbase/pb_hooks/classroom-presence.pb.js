@@ -1,21 +1,33 @@
 // --- CGRF Header ------------------------------------------------
 // File:        apps/pocketbase/pb_hooks/classroom-presence.pb.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PRESENCE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PRESENCE-001
+// Seat:        BITS-CODEGEN, C-ONE (the SFU echo on read)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1790600000_classroom_presence.js
+// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_migrations/1790600000_classroom_presence.js
 // EnumType:    Route
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790600000_classroom_presence.js
-// Intent:      Advertise only owned published tracks to current classroom participants without granting room access from a global publisher allowlist.
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790600000_classroom_presence.js
+// Intent:      Advertise only owned published tracks to current classroom participants without granting room access from a global publisher allowlist, and call a track verified only when the SFU echoes it.
 // ----------------------------------------------------------------
 
 // The receiving persona adapter may retain context, string tracks and gm:slug
 // spelling, but it must now join the room and obtain a bound media session too.
+//
+// VERIFICATION. An advertisement must match tracks the provider confirmed when they were
+// pushed, in a media session this account owns, while its attendance is current
+// (classroom-media.js). That still does not show the SFU is holding them now. So the read
+// asks the SFU, once per session, which tracks it holds (echoSession in
+// classroom-realtime-lib.js). A row is verified:true / "ECHOED_BY_SFU" only when the SFU holds
+// every advertised track; otherwise it says "NOT_HELD_BY_SFU:<names>" or
+// "SFU_UNREACHABLE:<why>", so an unreachable SFU never reads as a verified track. A write answers
+// "NOT_YET_ECHOED" because it does not wait on the SFU (SRS-BUILDANDDO-PRESENCE-001).
+//
+// POCKETBASE 0.39.8. Every handler runs in its own VM and cannot see file-scope helpers, so
+// each handler require()s what it uses.
 routerAdd('POST', '/api/classroom/presence', (e) => {
     const media = require(`${__hooks}/classroom-media.js`);
     const access = require(`${__hooks}/workspace-access.js`);
@@ -67,8 +79,10 @@ routerAdd('POST', '/api/classroom/presence', (e) => {
         }
     } catch (_) { swept = -1; }
     e.response.header().set('Cache-Control', 'no-store');
+    // Not yet asked of the SFU: GET /api/classroom/presence performs the echo and is the only
+    // place a track is ever reported verified.
     return e.json(200, { id: saved, room: roomId, session_id: body.session_id, state, access_basis: basis,
-        verified: false, verification: 'NOT_ECHOED_BY_SFU', swept, expires_at: new Date(expires).toISOString(), ttl_ms: expires - now });
+        verified: false, verification: 'NOT_YET_ECHOED', swept, expires_at: new Date(expires).toISOString(), ttl_ms: expires - now });
 }, $apis.requireAuth('users'), $apis.bodyLimit(8000));
 
 routerAdd('GET', '/api/classroom/presence', (e) => {
@@ -78,16 +92,15 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
     const roomId = typeof id === 'string' ? id.trim().replace(/^classroom:/i, '') : '';
     const scope = media.scopeFor(e.app, e.auth, roomId);
     const rows = e.app.findRecordsByFilter('classroom_presence', 'room = {:room}', '-updated', 50, 0, { room: roomId });
-    const items = [];
     // One SFU read per SESSION, not per row: several rows can share a session and the echo is a
-    // network call. Bounded by MAX_ROWS, and a failure is carried as its own state so an
-    // unreachable SFU can never read as a verified track.
-    const L = require(`${__hooks}/classroom-realtime-lib.js`);
+    // network call, bounded by the 50 rows read above.
+    const provider = require(`${__hooks}/classroom-realtime-lib.js`);
     const echoed = {};
     const echoFor = (sessionId) => {
-        if (!Object.hasOwn(echoed, sessionId)) echoed[sessionId] = L.echoSession(sessionId);
+        if (!Object.hasOwn(echoed, sessionId)) echoed[sessionId] = provider.echoSession(sessionId);
         return echoed[sessionId];
     };
+    const items = [];
     for (const row of rows) {
         const expires = Date.parse(row.getString('expires_at').replace(' ', 'T'));
         if (row.getString('workspace') !== scope.workspace || !Number.isFinite(expires) || expires <= Date.now() || row.getString('state') === 'ENDED') continue;
@@ -100,11 +113,18 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
             if ([400, 403, 404, 409].includes(error.status)) continue;
             throw error;
         }
+        // advertisement() has already required one to eight {trackName, kind} tracks, so the only
+        // question left is whether the SFU holds every one of them by name.
+        const echo = echoFor(row.getString('session_id'));
+        const missing = echo.ok ? tracks.map((track) => track.trackName).filter((name) => !echo.tracks.includes(name)) : [];
+        const verdict = !echo.ok ? { verified: false, verification: 'SFU_UNREACHABLE:' + echo.reason }
+            : missing.length ? { verified: false, verification: 'NOT_HELD_BY_SFU:' + missing.slice(0, 3).join(',') }
+                : { verified: true, verification: 'ECHOED_BY_SFU' };
         items.push({ id: row.id, room: roomId, session_id: row.getString('session_id'), tracks, tracks_error: '',
             persona_id: row.getString('persona_id'), display_name: row.getString('display_name'), role: row.getString('role'),
             access_basis: row.getString('access_basis'), app_name: row.getString('app_name'), manifest_id: row.getString('manifest_id'),
             capsule_digest: row.getString('capsule_digest'), state: row.getString('state'),
-            verified: false, verification: 'NOT_ECHOED_BY_SFU', expires_at: new Date(expires).toISOString() });
+            ...verdict, expires_at: new Date(expires).toISOString() });
     }
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(200, { room: roomId, route: 'classroom-presence/v1', access_basis: scope.basis,
@@ -121,5 +141,5 @@ routerAdd('GET', '/api/classroom/presence/health', (e) => {
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(200, { ok: installed, route: 'classroom-presence/v1', collection_installed: installed,
         publishers_configured: publishers.length, max_ttl_ms: 120000, max_rows: 50,
-        verification: 'NOT_ECHOED_BY_SFU', reason: installed ? null : 'Classroom presence/session migrations required.' });
+        verification: 'ECHO_ON_READ', reason: installed ? null : 'Classroom presence/session migrations required.' });
 });

@@ -53,6 +53,25 @@ test('host and learner share the selected lesson, discussion and terminal sessio
     assert.throws(() => f.heartbeat(room.id, before.membership, 'viewer'), /connection ended/);
 });
 
+// A chatroom is a room with no lesson (SRS-BUILDANDDO-RECONCILE-001). The government membership gate
+// looks up the room's lesson, and before it learned to skip a room without one, every chatroom
+// answered 404: the list hid it, and join, detail and heartbeat all failed.
+test('a chatroom has no lesson, so the lesson-category membership gate neither hides nor refuses it', () => {
+    const f = classroomFixture();
+    const created = f.command('room.chat', { title: 'Open discussion', description: 'Talk through the week.' }, { actor: 'editor' });
+    const room = f.data.classroom_rooms.find((row) => row.id === created.id);
+    assert.equal(room.kind, 'chat');
+    assert.equal(room.tutorial, '');
+    assert.ok(f.list('viewer').items.some((row) => row.id === created.id && row.kind === 'chat'));
+    f.command('room.join', { id: created.id }, { actor: 'viewer' });
+    const view = f.detail(created.id, 'viewer');
+    assert.equal(view.membership.active, true);
+    f.heartbeat(created.id, view.membership, 'viewer');
+    f.command('room.join', { id: created.id }, { actor: 'editor' });
+    f.command('room.message', { id: created.id, body: 'Which part of the week was hardest?' }, { actor: 'editor' });
+    assert.equal(f.detail(created.id, 'viewer').messages.items[0].body, 'Which part of the week was hardest?');
+});
+
 test('current membership and host ownership govern reads, writes and saved receipt recovery', () => {
     const f = classroomFixture();
     const room = f.create({ actor: 'editor', key: 'create_room_retry_key' });

@@ -61,7 +61,7 @@ migrate((app) => {
     for (const field of definition.fields) {
         const actual = saved.fields.getByName(field.name);
         if (!actual && field.name === 'protocol_version') continue;
-        if (!actual || Object.keys(field).some((key) => JSON.stringify(typeof actual[key] === 'function' ? actual[key]() : actual[key]) !== JSON.stringify(field[key])))
+        if (!actual || Object.keys(field).some((key) => norm(actual, key) !== norm(field, key)))
             throw new Error(`Review custom tutorial_learning.${field.name}.`);
     }
     const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')

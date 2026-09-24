@@ -26,7 +26,9 @@ vi.mock('@/contexts/WorkspaceContext', () => ({ useWorkspace: () => ({ active: {
 vi.mock('@/contexts/WorkspaceAccessContext', () => ({ useWorkspaceAccess: () => state.access }));
 vi.mock('@/hooks/useWorkspaceRecords', () => ({ useWorkspaceRecords: (name) => state.sources[name] }));
 vi.mock('@/hooks/useDemoMode', () => ({ useDemoMode: () => ({ demo: false }) }));
-vi.mock('@/components/motion/MotionPrimitives', () => ({ MotionEntrance: ({ children }) => children, MotionList: ({ as: Element = 'div', children }) => <Element>{children}</Element>, MotionValue: ({ value }) => <span>{value}</span> }));
+vi.mock('@/components/motion/MotionPrimitives', () => ({ MotionEntrance: ({ children }) => children, MotionList: ({ as: Element = 'div', children }) => <Element>{children}</Element>, MotionValue: ({ value }) => <span>{value}</span>,
+    // StatePill and the workspace helpers call this hook; it returns a ref.
+    useMotionChange: () => ({ current: null }) }));
 beforeEach(() => {
     state.account = 'account1'; state.workspace = 'workspace1';
     state.access = { data: { role: 'admin', can_write: true, can_admin: true }, loading: false, error: '' };

@@ -433,9 +433,12 @@ class NativeFixtureContractTests(unittest.TestCase):
                     self.subTest(server=server_type.__name__),
                     staged(server_type) as server,
                 ):
+                    # SystemRoot is the Windows directory, not a credential; without it the
+                    # native binary cannot start Winsock there.
                     self.assertLessEqual(
                         set(server.environment),
-                        {"PATH", "BUILDANDDO_CLASSROOM_PUBLISHERS"},
+                        {"PATH", "BUILDANDDO_CLASSROOM_PUBLISHERS"}
+                        | ({"SystemRoot"} if os.name == "nt" else set()),
                     )
                     self.assertNotIn(
                         "synthetic-environment-only", str(server.environment)

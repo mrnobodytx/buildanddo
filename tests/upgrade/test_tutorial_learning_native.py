@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 import json
 import os
 from pathlib import Path
@@ -96,9 +97,9 @@ class LearningServer(DiagnosticNativeServer):
 
     def learning_fields(self) -> list[str]:
         """Read the stored learning schema (field names only) while the server is stopped."""
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             row = database.execute(
                 "select fields from _collections where name = 'tutorial_learning'"
             ).fetchone()
@@ -341,14 +342,20 @@ class NativeLearningTests(unittest.TestCase):
         tutorials = self.server.stored("tutorials")
         self.assertEqual(len(tutorials), 27)
         self.server.stop()
-        self.server.migrate("down", str(len(MIGRATIONS)))
-        # `serve` applies pending migrations on start (PocketBase 0.23+), so the
-        # rolled-back schema is observable only on disk: commands lose their
-        # required fields while every checkpoint and certificate row remains.
+        self.server.revert(str(len(MIGRATIONS)))
+        # `serve` applies pending migrations on start (PocketBase 0.23+), which is why revert() moves the
+        # reverted files aside. The rolled-back schema shows on disk first: commands lose their required
+        # fields while every checkpoint and certificate row remains; served, the route is unavailable.
         fields = self.server.learning_fields()
         self.assertNotIn("protocol_version", fields)
         self.assertNotIn("answer_retry_at", fields)
         self.assertEqual(len(self.server.stored("tutorial_learning")), 1)
+        self.server.start()
+        self.assertEqual(
+            self.server.request("GET", self.path, token=self.owner)[0], 503
+        )
+        self.server.stop()
+        self.server.restore()
         self.server.start()
         self.assertEqual(
             self.server.request("GET", self.path, token=self.owner)[1]["enrollment"][

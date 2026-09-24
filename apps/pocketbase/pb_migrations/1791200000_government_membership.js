@@ -15,6 +15,17 @@
 // ───────────────────────────────────────────────────────────────
 
 migrate((app) => {
+    // A Go-bound field exposes `type` as a method, so JSON.stringify(saved.type) is undefined and a raw
+    // comparison refused every re-apply on native PocketBase ("Review custom ..."). Read values the
+    // way the classroom_rooms and classroom_presence migrations do.
+    const norm = (holder, key) => {
+        const raw = holder[key];
+        const value = typeof raw === 'function' ? raw() : raw;
+        const json = JSON.stringify(value);
+        if (json === undefined) return String(value);
+        if (json === '{}' && value !== null && typeof value === 'object') return String(value);
+        return json;
+    };
     const name = 'government_memberships';
     const fields = [
         { name: 'user', type: 'relation', required: true, collectionId: app.findCollectionByNameOrId('users').id, maxSelect: 1, cascadeDelete: false },
@@ -39,7 +50,7 @@ migrate((app) => {
         for (const field of fields) {
             const actual = existing.fields.getByName(field.name);
             if (!actual && field.name === 'protocol_version') continue;
-            if (!actual || Object.keys(field).some((key) => JSON.stringify(typeof actual[key] === 'function' ? actual[key]() : actual[key]) !== JSON.stringify(field[key])))
+            if (!actual || Object.keys(field).some((key) => norm(actual, key) !== norm(field, key)))
                 throw new Error('Review custom membership fields.');
         }
         if (!existing.fields.getByName('protocol_version')) { existing.fields.add(new Field(fields[fields.length - 1])); app.save(existing); }

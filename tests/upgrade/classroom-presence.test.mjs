@@ -1,11 +1,11 @@
 // --- CGRF Header ------------------------------------------------
 // File:        tests/upgrade/classroom-presence.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PRESENCE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PRESENCE-001
+// Seat:        BITS-CODEGEN, C-ONE (the SFU echo outcomes)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
 // Depends:     tests/upgrade/admin-fixture.mjs, tests/upgrade/classroom-media-fixture.mjs, apps/pocketbase/pb_hooks/classroom-presence.pb.js
@@ -428,16 +428,78 @@ test('a refreshed row is an upsert, not a second row', () => {
     assert.equal(f.data.classroom_presence.length, 1);
 });
 
-test('the route never claims the advertisement was verified against the SFU', () => {
+test('a write never claims verification; a read is verified only when the SFU echoes the tracks', () => {
     const f = mediaFixture(), room = f.start(), body = published(f, room);
     const wrote = advertise(f, body);
     assert.equal(wrote.status, 200);
     assert.equal(wrote.body.verified, false);
-    assert.equal(wrote.body.verification, 'NOT_ECHOED_BY_SFU');
+    assert.equal(wrote.body.verification, 'NOT_YET_ECHOED');
     const listed = read(f, room);
     assert.equal(listed.status, 200);
-    assert.equal(listed.body.items[0].verified, false);
-    assert.equal(listed.body.items[0].verification, 'NOT_ECHOED_BY_SFU');
+    assert.equal(listed.body.items[0].verified, true);
+    assert.equal(listed.body.items[0].verification, 'ECHOED_BY_SFU');
+});
+
+// The echo outcomes (SRS-BUILDANDDO-PRESENCE-001). The fixture's SFU stand-in holds what a
+// successful push named; each test then changes what the SFU says about that one session.
+function publishedTracks(f, room, names, actor = 'owner') {
+    const session = f.session(room, actor);
+    assert.equal(session.status, 200, JSON.stringify(session));
+    const pushed = f.request('POST', '/api/classroom/tracks', { actor, body: { room, sessionId: session.body.sessionId,
+        action: 'push', tracks: names.map((trackName, index) => ({ location: 'local', mid: String(index), trackName, kind: 'audio' })),
+        sessionDescription: { type: 'offer', sdp: 'fixture-offer' } } });
+    assert.equal(pushed.status, 200, JSON.stringify(pushed));
+    const body = { room, session_id: session.body.sessionId, tracks: names.map((trackName) => ({ trackName, kind: 'audio' })),
+        expires_at: future() };
+    assert.equal(advertise(f, body, actor).status, 200);
+    return body;
+}
+const echoOf = (f, room) => {
+    const listed = read(f, room);
+    assert.equal(listed.status, 200, JSON.stringify(listed));
+    assert.equal(listed.body.items.length, 1);
+    return listed.body.items[0];
+};
+
+test('a session whose every advertised track the SFU holds is verified, from one read without a body', () => {
+    const f = mediaFixture(), room = f.start();
+    const body = publishedTracks(f, room, ['seat:owner/mic', 'seat:owner/camera']);
+    const before = f.requests.length;
+    const item = echoOf(f, room);
+    assert.equal(item.verified, true);
+    assert.equal(item.verification, 'ECHOED_BY_SFU');
+    const calls = f.requests.slice(before);
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].method, 'GET');
+    assert.ok(calls[0].url.endsWith(`/fixture-app/sessions/${body.session_id}`), calls[0].url);
+    assert.equal(calls[0].body, undefined);
+});
+
+test('a session missing one advertised track is not verified, and the missing track is named', () => {
+    const f = mediaFixture(), room = f.start();
+    const body = publishedTracks(f, room, ['seat:owner/mic', 'seat:owner/camera']);
+    f.sfu.held.set(body.session_id, [{ trackName: 'seat:owner/mic', status: 'active' }]);
+    const item = echoOf(f, room);
+    assert.equal(item.verified, false);
+    assert.equal(item.verification, 'NOT_HELD_BY_SFU:seat:owner/camera');
+});
+
+test('a track the SFU reports inactive does not count as held', () => {
+    const f = mediaFixture(), room = f.start();
+    const body = publishedTracks(f, room, ['seat:owner/mic']);
+    f.sfu.held.set(body.session_id, [{ trackName: 'seat:owner/mic', status: 'inactive' }]);
+    const item = echoOf(f, room);
+    assert.equal(item.verified, false);
+    assert.equal(item.verification, 'NOT_HELD_BY_SFU:seat:owner/mic');
+});
+
+test('an SFU that answers 500 leaves the row unverified, with the status named', () => {
+    const f = mediaFixture(), room = f.start();
+    const body = publishedTracks(f, room, ['seat:owner/mic']);
+    f.sfu.status.set(body.session_id, 500);
+    const item = echoOf(f, room);
+    assert.equal(item.verified, false);
+    assert.equal(item.verification, 'SFU_UNREACHABLE:sfu_http_500');
 });
 
 test('an expired or ENDED row is not served, and an expired row is eventually collected', () => {
@@ -673,7 +735,7 @@ test('the presence migration retains its deployed prefix and avoids classroom-me
     assert.equal(/idx_classroom_presence\s+on/.test(text), false, 'must not reuse classroom_members index name');
 });
 
-test('presence reads, writes and health never call the provider or expose a credential', (t) => {
+test('presence writes and health never call the provider, a read asks it once, and none exposes a credential', () => {
     const text = source(HOOK);
     for (const forbidden of ['$http', 'fetch(', 'CLOUDFLARE_REALTIME_APP_SECRET', 'callRealtime']) {
         assert.equal(text.includes(forbidden), false, `${forbidden} must not appear in the presence route`);
@@ -687,13 +749,20 @@ test('presence reads, writes and health never call the provider or expose a cred
     const fileScope = code.split('routerAdd(')[0];
     assert.equal(fileScope.includes('require('), false, 'require() must live inside each handler');
     const f = mediaFixture(), room = f.start(), body = published(f, room);
-    const http = t.mock.method(f.provider, 'send', () => { throw new Error('unexpected provider request'); });
     const before = f.requests.length;
     assert.equal(advertise(f, body).status, 200);
-    assert.equal(read(f, room).status, 200);
     assert.equal(f.request('GET', '/api/classroom/presence/health', { actor: null }).status, 200);
-    assert.equal(http.mock.callCount(), 0);
-    assert.equal(f.requests.length, before);
+    assert.equal(f.requests.length, before, 'a write and the health route never call the provider');
+    // The read's only provider call is the echo, made through the shared lib: one bodiless GET of
+    // the session, with the credential only in the lib's Authorization header, never in the reply.
+    const listed = read(f, room);
+    assert.equal(listed.status, 200);
+    const calls = f.requests.slice(before);
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].method, 'GET');
+    assert.ok(calls[0].url.endsWith(`/sessions/${body.session_id}`), calls[0].url);
+    assert.equal(calls[0].body, undefined);
+    assert.equal(JSON.stringify(listed.body).includes(f.env.CLOUDFLARE_REALTIME_APP_SECRET), false);
 });
 
 test('the classroom source and regression files remain LF only', () => {

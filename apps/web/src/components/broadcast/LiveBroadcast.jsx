@@ -5,35 +5,37 @@
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Seat:        BITS-CODEGEN, C-ONE (broadcasters named without logins or machine names; known guildmasters link to their profiles)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/web/src/hooks/useClassroomMedia.js, apps/web/src/components/broadcast/BroadcastStage.jsx, apps/web/src/components/broadcast/MediaControls.jsx
+// Depends:     apps/web/src/hooks/useClassroomMedia.js, apps/web/src/components/broadcast/BroadcastStage.jsx, apps/web/src/components/broadcast/MediaControls.jsx, apps/web/src/lib/seatDisplay.js, apps/web/src/data/personas.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useClassroomMedia.js; CONSUMES apps/web/src/components/broadcast/BroadcastStage.jsx; CONSUMES apps/web/src/components/broadcast/MediaControls.jsx
+// EnumEdges:   CONSUMES apps/web/src/hooks/useClassroomMedia.js; CONSUMES apps/web/src/components/broadcast/BroadcastStage.jsx; CONSUMES apps/web/src/components/broadcast/MediaControls.jsx; CONSUMES apps/web/src/lib/seatDisplay.js; CONSUMES apps/web/src/data/personas.js
 // DAG Node:    none
 // Intent:      Put the host's live broadcast inside the routed classroom, with every unavailable or failed state said in words.
 // ───────────────────────────────────────────────────────────────
 
-import { personaForPresence, personaPath } from '@/data/personas';
-import { seatName, withoutMachineNames } from '@/lib/seatDisplay';
 import React from 'react';
 import { Bot, Headphones, Radio } from 'lucide-react';
 import BroadcastStage from '@/components/broadcast/BroadcastStage';
 import MediaControls from '@/components/broadcast/MediaControls';
+import { personaForPresence, personaPath } from '@/data/personas';
 import { useClassroomMedia } from '@/hooks/useClassroomMedia';
+import { seatName, withoutMachineNames } from '@/lib/seatDisplay';
 
-/** A broadcaster is named by persona, never by login or machine; a guildmaster the canon knows links to its profile. */
+function Notice({ tone = 'muted', children, role }) {
+    const color = tone === 'alert' ? 'text-destructive' : tone === 'caution' ? 'text-amber-text' : 'text-muted-foreground';
+    return <p role={role} className={`text-sm leading-6 ${color}`}>{children}</p>;
+}
+
+// A guildmaster the canon knows links to its public profile. The profile opens in a new tab, because leaving the
+// room would end the listener's place in the live class. An id the canon does not know is still named, unlinked,
+// so an unexpected broadcaster is never hidden.
 function BroadcasterName({ id }) {
     const persona = personaForPresence(id);
     if (!persona) return seatName(id, 'Guildmaster');
     return <a href={personaPath(persona)} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
         {persona.name}<span className="sr-only"> (opens in a new tab)</span></a>;
-}
-
-function Notice({ tone = 'muted', children, role }) {
-    const color = tone === 'alert' ? 'text-destructive' : tone === 'caution' ? 'text-amber-text' : 'text-muted-foreground';
-    return <p role={role} className={`text-sm leading-6 ${color}`}>{children}</p>;
 }
 
 function Publishers({ media }) {

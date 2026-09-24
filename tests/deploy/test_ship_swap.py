@@ -1,11 +1,11 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/deploy/test_ship_swap.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-TRUST-001
+# SRS:         SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-DEPLOY-SWAP-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-TRUST-001
-# Seat:        BITS-CODEGEN
+# Seat:        BITS-CODEGEN, C-ONE (owner and mode)
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
 # Depends:     scripts/deploy/ship.py
@@ -20,6 +20,8 @@ swap script itself is executed by a local /bin/sh against temporary directories.
 from __future__ import annotations
 
 import importlib.util
+import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -201,6 +203,19 @@ class SwapScriptTests(unittest.TestCase):
         proc = self._swap(1)
         self.assertEqual(proc.returncode, 3)
         self.assertEqual((self.live / "index.html").read_text(encoding="utf-8"), "old")
+
+    def test_staged_copy_takes_the_live_owner_and_mode(self):
+        script = ship._swap_script(str(self.incoming), str(self.live), str(self.previous), 2)
+        live, staged = shlex.quote(str(self.live)), shlex.quote(str(self.incoming))
+        self.assertIn(f"chown --reference={live} {staged}", script)
+        self.assertIn(f"chmod --reference={live} {staged}", script)
+        if os.name == "nt":
+            return  # Windows only emulates POSIX modes; the text check above still guards the step.
+        self.live.chmod(0o750)
+        self.incoming.chmod(0o777)
+        proc = self._swap(2)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(self.live.stat().st_mode & 0o777, 0o750)
 
     def test_first_deploy_without_live_dir(self):
         shutil.rmtree(self.live)

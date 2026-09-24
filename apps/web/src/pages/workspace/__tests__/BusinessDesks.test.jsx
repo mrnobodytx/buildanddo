@@ -97,7 +97,7 @@ describe('ERP planning', () => {
         await user.type(form.getByLabelText('Objective'), 'Measure a baseline');
         await user.type(form.getByLabelText('Success measure'), 'One readable baseline report.');
         pb.__collection('erp_objectives').create.mockImplementationOnce(async (fields) => {
-            const record = { id: 'partially-saved', title: fields.title, description: fields.description, status: fields.status };
+            const record = { id: 'partially-saved', workspace: fields.workspace, title: fields.title, description: fields.description, status: fields.status };
             pb.__setRecords('erp_objectives', [record]); return record;
         });
         await user.click(form.getByRole('button', { name: 'Save' }));

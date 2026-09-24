@@ -269,6 +269,8 @@ def _twin_state(status, counts, artifacts):
         "note": ("counts are carried from an earlier receipt and do not describe this run"
                  if not ran and any(v for v in counts.values()) else ""),
     }
+
+
 def candidate_binding(root: Path) -> tuple[str | None, bool]:
     """Observe the local revision and whether its source has uncommitted changes."""
     try:

@@ -7,7 +7,7 @@
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
-# Depends:     tools/buildanddo_release.py, .bits/handoffs/2026-09-23-c-one-rig1-broadcast-staging-candidate.md
+# Depends:     tools/buildanddo_release.py, .bits/handoffs/2026-09-23-c-one-broadcast-staging-candidate.md
 # EnumType:    Doc
 # EnumEdges:   CONSUMES tools/buildanddo_release.py; SUPERSEDES the staging half of the 2026-09-23 broadcast candidate handoff
 # Intent:      Record that staging now serves the live trunk, how it got there, what broke on the way, and the exact gated steps production still needs.

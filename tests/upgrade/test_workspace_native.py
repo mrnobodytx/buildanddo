@@ -933,8 +933,9 @@ class NativeWorkspaceTests(unittest.TestCase):
             "surface": {"id": "usage-fixture", "route": "/app/erp", "controls": []},
         }
         self.server.stop()
-        # Retain the seed and claim records while rolling back through usage.
-        self.server.migrate("down", str(len(MIGRATIONS) - MIGRATIONS.index("1791300001_assistant_turn_usage") + 1))
+        # Retain the seed and claim records while rolling back through usage. revert() moves the reverted files
+        # aside too, because serve re-applies a pending migration on 0.39.8.
+        self.server.revert(str(len(MIGRATIONS) - MIGRATIONS.index("1791300001_assistant_turn_usage") + 1))
         self.assertNotIn(
             "usage",
             {
@@ -949,7 +950,7 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertIsNone(absent["plan"])
         self.assertNotIn("usage", self.server.stored("assistant_turns")[0])
         self.server.stop()
-        self.server.migrate()
+        self.server.restore()
         self.server.migrate()
         self.server.start()
         fields = {
@@ -1217,7 +1218,9 @@ class NativeWorkspaceTests(unittest.TestCase):
             self.assertEqual(after["claim_revision"], 0)
             self.assertFalse(after.get("published_at"))
         server.stop()
-        server.migrate("down", "2")
+        # revert() runs the same two rollbacks and moves their files aside: on 0.39.8 `serve` re-applies a
+        # pending migration, so a plain `migrate down` would be healed by the next start.
+        server.revert("2")
         server.start()
         code, _ = server.request("POST", f"/api/buildanddo/workspaces/{WORKSPACE}/claims", {
             "action": "edition.save", "revision": 0, "request_key": "rollback_claim_command_001", "payload": {"id": "", "values": {"title": "Blocked command"}},

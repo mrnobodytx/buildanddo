@@ -23,6 +23,7 @@ explicit configuration or the OS environment, never a deployment file.
 There is no default write target. Selftests use the separately guarded fixture.
 """
 from __future__ import annotations
+import ipaddress
 import json
 import os
 import urllib.error
@@ -31,7 +32,18 @@ import urllib.request
 from typing import Any
 
 # Screening known production names is additional to mandatory test isolation.
-PRODUCTION_HOSTS = frozenset({"buildanddo.com", "www.buildanddo.com", "45.82.75.40"})
+PRODUCTION_HOSTS = frozenset({"buildanddo.com", "www.buildanddo.com"})
+
+
+def _public_address(host: str) -> bool:
+    """True when the host is a globally reachable address rather than a name. The
+    production VM is also reachable by its address, and this repository is public,
+    so it refuses every such address instead of spelling that one: a disposable
+    PocketBase is named, or sits on loopback or a private network."""
+    try:
+        return ipaddress.ip_address(host).is_global
+    except ValueError:
+        return False
 
 
 class PocketBaseError(RuntimeError):
@@ -76,6 +88,10 @@ def require_test_target(url: str | None = None) -> str:
         raise UnsafeTargetError(
             "PB_API_URL points at production; the evidence suites create users and records "
             "and only run against a runner-owned disposable PocketBase.")
+    if _public_address(host):
+        raise UnsafeTargetError(
+            "PB_API_URL names a public address, and production is reachable by its address; "
+            "name a runner-owned disposable PocketBase by hostname, or use loopback or a private network.")
     return url
 
 

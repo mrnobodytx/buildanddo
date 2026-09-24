@@ -96,6 +96,9 @@ function lessons(app, info) {
         .map((row) => ({ id: row.id, title: row.getString('title'), category: row.getString('category') })), has_more: rows.length > 200 };
 }
 function roomMembership(app, auth, room) {
+    // A chatroom carries no lesson, so no lesson category can gate it. Without this, the lookup
+    // below answers 404 for every chatroom: the list hides them and join, detail and heartbeat fail.
+    if (!room.getString('tutorial')) return;
     const tutorial = access.find(app, 'tutorials', room.getString('tutorial'));
     if (tutorial.getString('category') === 'Government submissions') government.requireMember(app, auth);
 }

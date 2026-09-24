@@ -22,27 +22,50 @@ export const MIGRATION = 'apps/pocketbase/pb_migrations/1790600000_tutorial_lear
 export const PROGRESS_MIGRATION = 'apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js';
 export const WAIT_MIGRATION = 'apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js';
 
-// PocketBase's countRecords takes dbx expressions only; a filter string is a native
-// TypeError on 0.28 and 0.39, so the double refuses one too.
-export const DBX = { hashExp: (value) => ({ hash: value }), not: (expression) => ({ not: expression }) };
-const matches = (row, expression) => expression.not ? !matches(row, expression.not) :
-    Object.entries(expression.hash).every(([key, value]) => (row[key] ?? '') === value);
-export function nativeCount(f) {
-    return (name, ...expressions) => {
-        if (expressions.some((expression) => !expression || typeof expression !== 'object'))
-            throw new TypeError('could not convert function call parameter 1 to dbx.Expression');
-        return (f.data[name] || []).filter((row) => expressions.every((expression) => matches(row, expression))).length;
+// countRecords takes dbx expressions, so a double has to hand out dbx expressions too.
+export const DBX = { exp: (sql, params) => ({ __dbx: true, sql, params: params ?? {} }) };
+
+/** Give a fixture App the countRecords PocketBase has: dbx expressions only, never a filter string. */
+export function faithfulCountRecords(app) {
+    // THIS DOUBLE USED TO REPRODUCE THE DEFECT IT WAS SUPPOSED TO CATCH.
+    // It was `(name, filter, params) => findRecordsByFilter(...)`, i.e. exactly the wrong signature
+    // the hook was calling with. So the hook and its test agreed with each other and both disagreed
+    // with PocketBase, and `GET /api/buildanddo/learning` answered 400 to every signed-in account on
+    // BOTH environments while this suite stayed green. Real countRecords takes dbx expressions and
+    // throws on anything else; so does this now, which is what makes the green mean something.
+    app.countRecords = (name, ...exprs) => {
+        for (const expr of exprs) {
+            if (!expr || expr.__dbx !== true)
+                throw new TypeError(
+                    `could not convert function call parameter 1: could not convert ${expr} to dbx.Expression`);
+        }
+        // dbx speaks SQL, findRecordsByFilter speaks PocketBase filter syntax. Translate only the
+        // two differences this double can honour, and REFUSE anything else rather than quietly
+        // evaluating a filter that does not mean what the SQL meant.
+        const filters = exprs.map(({ sql }) => {
+            const translated = sql.replace(/\bAND\b/g, '&&').replace(/\bOR\b/g, '||').replace(/''/g, '""');
+            if (/\b(JOIN|SELECT|LIKE|IN\s*\(|CASE|COALESCE)\b/i.test(translated))
+                throw new Error(`countRecords double cannot faithfully evaluate this SQL: ${sql}`);
+            return translated;
+        });
+        const params = Object.assign({}, ...exprs.map((expr) => expr.params));
+        return app.findRecordsByFilter(name, filters.join(' && '), '', 0, 0, params).length;
     };
 }
 
-export function learningFixture() {
-    const f = fixture({ runtime: { $dbx: DBX, $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') } } });
+export function learningFixture({ progressAuthority = true } = {}) {
+    const f = fixture({
+        runtime: {
+            $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') },
+            $dbx: DBX,
+        },
+    });
     for (const name of ['lesson', 'curriculum_version']) f.collections.tutorials.fields.add({ name });
     const curriculum = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
     const lessons = curriculum.lessons.map((lesson) => ({ ...lesson, curriculum_version: curriculum.version }));
     lessons.forEach((lesson) => f.seed('tutorials', lesson));
     f.seed('users', { id: 'owner', name: 'Test Learner' });
-    f.app.countRecords = nativeCount(f);
+    faithfulCountRecords(f.app);
     f.migration(MIGRATION).up();
     if (progressAuthority) f.migration(PROGRESS_MIGRATION).up();
     f.migration(WAIT_MIGRATION).up();

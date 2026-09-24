@@ -236,7 +236,7 @@ sys.addaudithook(guard)
 runpy.run_path(sys.argv[1], run_name='__main__')
 """
         for suite in sorted(SERVICE.glob("selftest*.py")):
-            for target in ("", "https://buildanddo.com/hcgi/platform", "http://45.82.75.40:8090",
+            for target in ("", "https://buildanddo.com/hcgi/platform", "http://203.0.113.9:8090",
                            "https://shared.fixture.invalid", "https://staging.buildanddo.com/hcgi/platform", "http://127.0.0.1:18945"):
                 with self.subTest(suite=suite.name, target=target or "unset"):
                     result = subprocess.run([sys.executable, "-c", script, str(suite)], cwd=SERVICE, capture_output=True, text=True,

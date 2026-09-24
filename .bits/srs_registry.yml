@@ -215,10 +215,11 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-DEVENV-001.md
 
   - code: SRS-BUILDANDDO-BUDDI-001
-    title: Brand mark and the Buddi mascot with server-confirmed achievements
+    title: Buddi and the brand mark - the assistant's name, site icons and address-free public text (C-ONE), and the block mark and the Buddi mascot with server-confirmed achievements (BITS-CODEGEN)
     status: in_progress
-    risk: A1
+    risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-BUDDI-001.md
+    notes: Two seats filed work under this code on different lines - C-ONE on the staging line on 2026-09-22 (A2) and BITS-CODEGEN on main on 2026-09-23 (A1). Since main was merged into the staging line (SRS-BUILDANDDO-RECONCILE-001) the one spec and dispatch keep both scopes as parts A and B
 
   - code: SRS-BUILDANDDO-TRUST-001
     title: Trust hardening before the website-to-credential loop
@@ -359,6 +360,13 @@ srs:
     owner: C-ONE
     notes: Operator choice 2026-09-23, the deploy-safety item of the trust stage in the loop plan. scripts/deploy/ship.py emptied each webroot and then copied into it, so for the whole copy, and for good after a failed copy, the site served an empty or partial directory. Source change and tests only; this entry does not self-authorize A2 and no deploy is performed
 
+  - code: SRS-BUILDANDDO-RECONCILE-001
+    title: One line again - main merged into the staging line, then the staging line into main
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-RECONCILE-001.md
+    owner: C-ONE
+    notes: Operator direction 2026-09-23 - merge the branches into main, the staging line first, resolving public copy as the staging wording plus main's additions. At the start main was 67 commits ahead of the staging line and the staging line 152 ahead of main (merge base 916507f), and a trial merge had 53 conflicting files. Each merge and the staging-only deploy wait for the operator; this entry does not self-authorize A2 and production is excluded
   - code: SRS-BUILDANDDO-CLASSROOM-GLOBAL-001
     title: A class is a global object; the workspace holds a person's access to classes and renders it as their gallery
     status: in_progress

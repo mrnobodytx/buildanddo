@@ -20,6 +20,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import test from 'node:test';
 import { fixture, plain, repoPath, source } from './admin-fixture.mjs';
+import { DBX, faithfulCountRecords } from './tutorial-learning-fixture.mjs';
 import { lessonLink, mergeTutorials, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 
 const DATA = 'apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json';
@@ -32,6 +33,7 @@ const broadcast = JSON.parse(source('apps/pocketbase/pb_migrations/data/broadcas
 function installed(data = bundle) {
     const f = fixture({ runtime: {
         toString: String,
+        $dbx: DBX,
         $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') },
         $os: { readFile: (path) => {
             if (path === '/pb_migrations/data/authority-repairs-lessons.json') return JSON.stringify(data);
@@ -43,7 +45,9 @@ function installed(data = bundle) {
     f.migration('apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js').up();
     f.migration(BROADCAST_MIGRATION).up();
     f.migration('apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js').up();
-    f.app.countRecords = (name, filter, params) => f.app.findRecordsByFilter(name, filter, '', 0, 0, params).length;
+    // PocketBase's countRecords takes dbx expressions only; a filter-string double would accept the call
+    // shape PocketBase refuses (see tutorial-learning-fixture.mjs).
+    faithfulCountRecords(f.app);
     return f;
 }
 
