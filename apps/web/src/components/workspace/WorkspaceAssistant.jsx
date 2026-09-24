@@ -17,7 +17,8 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MessageCircle, X } from 'lucide-react';
+import { X } from 'lucide-react';
+import Buddi from '@/components/brand/Buddi';
 import { Button, Card } from '@/components/site/ui';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
@@ -136,10 +137,10 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
     const closed = snapshot?.sessions?.items.find((item) => item.id === session)?.status === 'closed';
     return <div data-assistant-panel className="ph-no-capture" data-dd-privacy="mask">
         <Button type="button" size="sm" aria-expanded={open} aria-controls="workspace-assistant-panel"
-            className="fixed bottom-4 right-4 z-40 shadow-md" onClick={() => setOpen(!open)}><MessageCircle className="h-4 w-4" />Buddi</Button>
+            className="fixed bottom-4 right-4 z-40 shadow-md" onClick={() => setOpen(!open)}><Buddi pose="calm" size={18} decorative className="-ml-0.5" />Buddi</Button>
         {open && <Card id="workspace-assistant-panel" role="region" aria-label="Buddi"
             className="fixed bottom-16 right-2 z-40 flex max-h-[calc(100dvh-6rem)] w-[min(28rem,calc(100vw-1rem))] flex-col border border-border bg-background shadow-xl sm:right-4">
-            <div className="flex items-center justify-between border-b border-border p-3"><div><h2 className="font-display font-semibold">Buddi</h2><p className="text-xs text-muted-foreground">Your account · Current workspace</p></div>
+            <div className="flex items-center justify-between border-b border-border p-3"><div className="flex items-center gap-2.5"><Buddi pose="calm" size={36} decorative className="shrink-0" /><div><h2 className="font-display font-semibold">Buddi</h2><p className="text-xs text-muted-foreground">Your account · Current workspace</p></div></div>
                 <button type="button" aria-label="Close Buddi" onClick={() => setOpen(false)} className="p-2"><X className="h-4 w-4" /></button></div>
             <div className="space-y-3 overflow-y-auto p-3 text-sm">
                 {demo ? <p>Sign in to use saved Buddi sessions. Demo mode does not send workspace data or perform actions.</p> : <>
