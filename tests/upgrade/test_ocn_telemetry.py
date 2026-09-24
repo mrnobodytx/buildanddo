@@ -30,6 +30,7 @@ import copy
 import datetime as dt
 import functools
 import io
+import ipaddress
 import json
 import os
 import re
@@ -1558,37 +1559,50 @@ class Vendor:
     def mine(self, run_id: str) -> bool:
         return t.ledger_file(self.ledger, run_id).is_file()
 
+    def never_sent(self, run_id: str) -> tuple[int, str, dict] | None:
+        """The answer to a lookup of a run nobody sent; None to answer it like any other."""
+        return None
+
     def __call__(self, method, url, body, headers, timeout):
-        self.calls.append({"method": method, "url": url, "body": copy.deepcopy(body), "headers": sorted(headers)})
+        self.calls.append({"method": method, "url": url, "body": copy.deepcopy(body), "headers": sorted(headers),
+                           "real_datadog_key": headers.get("DD-API-KEY") == datadog_key()})
         s = self.s
         if url.startswith(t.PH_QUERY_BASE):
             project = url[len(t.PH_QUERY_BASE):].split("/")[0]
             query, values = body["query"]["query"], body["query"]["values"]
             if "FROM persons" in query:
                 return s["ph_status"], "", {"results": [[s["persons"]]]}
+            if "ocn_box_ip" in query:
+                return s["ph_status"], "", {"results": [[s["legacy"]]]}
             if project != str(t.PH_PROJECT):
-                return s["canary_status"], "", {"results": [["ocn_probe_run", s["canary_rows"], 0, 0]]}
+                return s["canary_status"], "", {"results": [["ocn_probe_run", s["canary_rows"], 0]]}
             if s["ph_status"] != 200:
                 return s["ph_status"], "", {"detail": "refused"}
             if not self.mine(values["run_id"]):
-                return 200, "", {"results": [["ocn_probe_run", s["never_rows"], 0, 0]] if s["never_rows"] else []}
+                return self.never_sent(values["run_id"]) or (
+                    200, "", {"results": [["ocn_probe_run", s["never_rows"], 0]] if s["never_rows"] else []})
             if s["late"]:
                 s["late"] -= 1
                 return 200, "", {"results": []}
-            rows = [["ocn_probe_run", s["run"], s["ip_kept"], s["legacy"]], ["ocn_probe_check", s["checks"], 0, 0]]
+            rows = [["ocn_probe_run", s["run"], s["ip_kept"]], ["ocn_probe_check", s["checks"], 0]]
             if s["control"]:
-                rows.append(["ocn_telemetry_control", s["control"], 0, 0])
+                rows.append(["ocn_telemetry_control", s["control"], 0])
             return 200, "", {"results": rows}
         if url in (t.DD_EVENTS_SEARCH, t.DD_LOGS_SEARCH):
             if s["dd_status"] != 200:
                 return s["dd_status"], "", {"errors": ["Forbidden"]}
             run_id = re.search(r"ocn_run:([0-9a-f-]{36})", body["filter"]["query"]).group(1)
+            if not self.mine(run_id) and self.never_sent(run_id):
+                return self.never_sent(run_id)
             if url == t.DD_EVENTS_SEARCH:
                 count = s["events"] if self.mine(run_id) else s["never_events"]
             else:
                 count = s["logs"] if self.mine(run_id) else s["never_logs"]
             return 200, "", {"data": [{"id": str(index)} for index in range(count)]}
         if url == t.DD_LOGS:
+            # The real key is accepted, as the real intake would: only an invalid key may meet the control.
+            if headers.get("DD-API-KEY") == datadog_key():
+                return 202, "", {}
             return s["invalid_status"], "", {}
         if url.startswith(t.DD_METRIC_QUERY):
             return 200, "", {"series": [{"pointlist": [[1, 1.0]]}] if s["points"] else []}
@@ -1633,7 +1647,7 @@ class Stored:
             values = body["query"]["values"]
             if "run_id" not in values or not url.startswith(t.PH_QUERY):
                 return 200, "", {"results": [[0]] if "run_id" not in values else []}
-            return 200, "", {"results": [[event, len(uuids), 0, 0] for (run, event), uuids in self.posthog.items()
+            return 200, "", {"results": [[event, len(uuids), 0] for (run, event), uuids in self.posthog.items()
                                          if run == values["run_id"]]}
         if url in (t.DD_EVENTS_SEARCH, t.DD_LOGS_SEARCH):
             found = self.datadog["events" if url == t.DD_EVENTS_SEARCH else "logs"]
@@ -1678,6 +1692,88 @@ class VerifyTests(Harness):
         self.publish(receipts()["ocn_journey_report"], transport=vendor)
         after = t.verify_entry(t.read_ledger(self.ledger, first["run_id"]), self.read(vendor), 0)
         self.assertEqual((after["state"], after["datadog"]["counts"]["events"]), ("VERIFIED", 1))
+
+    def test_only_a_verified_result_promotes_a_sink(self):
+        entry = self.sent()
+        result = self.verify(entry, run=0, checks=0, events=0, logs=0)
+        self.assertEqual(result["state"], "NOT_FOUND")
+        updated = t.record_verification(self.ledger, entry, result)
+        self.assertEqual({name: sink["state"] for name, sink in updated["sinks"].items()},
+                         {"posthog": "SENT", "datadog": "SENT"})
+        self.assertEqual(t.read_ledger(self.ledger, entry["run_id"])["sinks"]["datadog"]["state"], "SENT")
+        self.assertEqual(t.block_from_ledger(updated, self.ledger)["state"], "SENT")
+        self.assertEqual([item["run_id"] for item in t.pending_entries(self.ledger)], [entry["run_id"]])
+
+    def test_a_control_that_could_not_be_measured_is_never_held(self):
+        entry = self.sent()
+        dead_hop = self.verify(entry, invalid_status=0)
+        self.assertEqual(dead_hop["datadog"]["controls"]["C4_invalid_key_refused"], "UNMEASURED")
+        self.assertEqual((dead_hop["datadog"]["state"], dead_hop["state"]), ("UNMEASURED", "UNMEASURED"))
+
+        class Unanswered(Vendor):
+            def never_sent(self, run_id):
+                return 500, "", {"errors": ["server error"]}
+
+        unanswered = t.verify_entry(entry, self.read(Unanswered(self.ledger)), 0)
+        self.assertEqual(unanswered["posthog"]["controls"]["C2_never_sent_id_empty"], "UNMEASURED")
+        self.assertEqual(unanswered["datadog"]["controls"]["C5_never_sent_id_empty"], "UNMEASURED")
+        self.assertEqual((unanswered["posthog"]["state"], unanswered["datadog"]["state"]), ("UNMEASURED", "UNMEASURED"))
+
+    def test_a_partial_ingest_is_not_found(self):
+        result = self.verify(self.sent(), checks=2)
+        self.assertEqual((result["posthog"]["state"], result["state"]), ("NOT_FOUND", "NOT_FOUND"))
+
+    def test_the_invalid_key_control_never_carries_the_real_key(self):
+        entry = self.sent()
+        vendor = Vendor(self.ledger)
+        self.assertEqual(t.verify_entry(entry, self.read(vendor), 0)["state"], "VERIFIED")
+        control = [call for call in vendor.calls if call["url"] == t.DD_LOGS]
+        self.assertEqual(len(control), 1)
+        self.assertFalse(control[0]["real_datadog_key"])
+
+    def test_legacy_properties_are_read_across_the_project(self):
+        entry = self.sent()
+        vendor = Vendor(self.ledger, legacy=3)
+        result = t.verify_entry(entry, self.read(vendor), 0)
+        self.assertEqual(result["posthog"]["privacy"]["legacy_properties"], "FOUND")
+        legacy = [call["body"]["query"] for call in vendor.calls
+                  if call["url"].startswith(t.PH_QUERY_BASE) and "ocn_box_ip" in call["body"]["query"]["query"]]
+        self.assertEqual(len(legacy), 1)
+        # The run's own events never carry them, so the count reads the project, since the first send.
+        self.assertEqual(legacy[0]["values"], {"since": t._clock(t.parse_time(entry["first_published_at"]))})
+        self.assertEqual(self.verify(entry)["posthog"]["privacy"]["legacy_properties"], "CLEAN")
+
+    def test_a_cut_off_send_is_pending_and_a_refused_one_is_not(self):
+        refused = self.publish(receipts()["ocn_journey_report"], sinks=("datadog",),
+                               transport=Recorder([(403, "forbidden", None)] * 2))
+        self.assertEqual((refused["state"], refused["reason"]), ("UNSENT", "TRANSPORT:403"))
+        self.assertEqual(t.pending_entries(self.ledger), [])
+        mixed = self.publish(dict(receipts()["ocn_journey_report"], at="2026-09-24T12:00:20+00:00"),
+                             sinks=("datadog",),
+                             transport=Recorder([(403, "forbidden", None), (0, "TimeoutError", None)]))
+        cut = self.publish(dict(receipts()["ocn_journey_report"], at="2026-09-24T12:00:30+00:00"),
+                           transport=Recorder([(0, "TimeoutError", None)] * 4))
+        self.assertEqual((cut["state"], cut["posthog"]["reason"]), ("UNSENT", "TRANSPORT:TimeoutError"))
+        self.assertEqual(sorted(entry["run_id"] for entry in t.pending_entries(self.ledger)),
+                         sorted([mixed["run_id"], cut["run_id"]]))
+
+    def test_sent_gauges_are_read_back(self):
+        entry = self.sent_with_metrics()
+        self.assertGreater(entry["expected"]["datadog"]["series"], 0)
+        found = self.verify(entry)
+        self.assertEqual((found["state"], found["datadog"]["counts"]["metrics"]), ("VERIFIED", "FOUND"))
+        missing = self.verify(entry, points=False)
+        self.assertEqual((missing["datadog"]["state"], missing["datadog"]["reason"]),
+                         ("NOT_FOUND", "METRICS_NOT_FOUND"))
+
+    def sent_with_metrics(self) -> dict:
+        block = self.publish(receipts()["ocn_journey_report"], transport=Recorder(), dd_metrics=True, force=True)
+        return t.read_ledger(self.ledger, block["run_id"])
+
+    def test_the_ip_marker_and_the_project_are_pinned(self):
+        self.assertTrue(ipaddress.ip_address(t.UNSPECIFIED_IP).is_unspecified)
+        self.assertEqual(t.PH_QUERY, "https://us.posthog.com/api/projects/597897/query/")
+        self.assertEqual(t.PH_CAPTURE, "https://us.i.posthog.com/batch/")
 
     def test_nothing_found_is_not_found(self):
         result = self.verify(self.sent(), run=0, checks=0, events=0, logs=0)

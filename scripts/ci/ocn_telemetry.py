@@ -1998,10 +1998,13 @@ def summary_line(block: dict[str, Any]) -> str:
 READ_TIMEOUT_S = 30.0
 # The run id reaches HogQL as a value, never spliced into the query text.
 Q_RUN = ("SELECT event, count(DISTINCT uuid), "
-         "countIf(coalesce(toString(properties.$ip), '') NOT IN ('', {unspecified})), "
-         "countIf(isNotNull(properties.ocn_seat) OR isNotNull(properties.ocn_box_ip)) "
+         "countIf(coalesce(toString(properties.$ip), '') NOT IN ('', {unspecified})) "
          "FROM events WHERE properties.ocn_run_id = {run_id} "
          "AND timestamp >= toDateTime({since}) AND timestamp <= toDateTime({until}) GROUP BY event")
+# Across the whole project since the first send: this publisher never builds ocn_seat or ocn_box_ip, so
+# only box-side capture that is still live somewhere can put them there.
+Q_LEGACY = ("SELECT count() FROM events WHERE (isNotNull(properties.ocn_seat) OR isNotNull(properties.ocn_box_ip)) "
+            "AND timestamp >= toDateTime({since})")
 Q_PERSONS = "SELECT count() FROM persons WHERE properties.is_ocn_agent = true AND created_at >= toDateTime({since})"
 ALL_TAG_KEYS = frozenset({"service", "team", "env", "ocn_probe", "ocn_feature"})
 VERDICTS = ("VOID", "UNMEASURED", "NOT_FOUND")
@@ -2047,7 +2050,7 @@ def _window(entry: dict[str, Any]) -> tuple[dt.datetime, dt.datetime]:
 
 def _ph_counts(read: Readback, key: str, project: str, run_id: str,
                window: tuple[dt.datetime, dt.datetime]) -> tuple[int, dict[str, list[int]] | None]:
-    """(status, {event: [distinct uuids, events keeping an address, events carrying box properties]})."""
+    """(status, {event: [distinct uuids, events keeping an address]})."""
     values = {"run_id": run_id, "unspecified": UNSPECIFIED_IP, "since": _clock(window[0]), "until": _clock(window[1])}
     status, _detail, document = read.transport("POST", PH_QUERY_BASE + project + "/query/", _hogql(Q_RUN, values),
                                                {"Authorization": "Bearer " + key}, READ_TIMEOUT_S)
@@ -2056,8 +2059,8 @@ def _ph_counts(read: Readback, key: str, project: str, run_id: str,
         return status, None
     counts: dict[str, list[int]] = {}
     for row in rows:
-        if isinstance(row, list) and len(row) >= 4 and isinstance(row[0], str):
-            counts[row[0]] = [_int(row[1]) or 0, _int(row[2]) or 0, _int(row[3]) or 0]
+        if isinstance(row, list) and len(row) >= 3 and isinstance(row[0], str):
+            counts[row[0]] = [_int(row[1]) or 0, _int(row[2]) or 0]
     return status, counts
 
 
@@ -2077,8 +2080,9 @@ def _canary(read: Readback, key: str, run_id: str, window: tuple[dt.datetime, dt
     return "HELD" if not any(value[0] for value in counts.values()) else "FAILED"
 
 
-def _agent_persons(read: Readback, key: str, since: dt.datetime) -> str:
-    status, _detail, document = read.transport("POST", PH_QUERY, _hogql(Q_PERSONS, {"since": _clock(since)}),
+def _project_count(read: Readback, key: str, query: str, since: dt.datetime) -> str:
+    """A project-wide count since the first send: CLEAN at 0, FOUND above it, UNMEASURED unanswered."""
+    status, _detail, document = read.transport("POST", PH_QUERY, _hogql(query, {"since": _clock(since)}),
                                                {"Authorization": "Bearer " + key}, READ_TIMEOUT_S)
     rows = document.get("results") if status == 200 and isinstance(document, dict) else None
     if not isinstance(rows, list) or not rows or not isinstance(rows[0], list) or not rows[0]:
@@ -2111,9 +2115,8 @@ def verify_posthog(entry: dict[str, Any], read: Readback, wait: float) -> dict[s
     since = parse_time(entry.get("first_published_at")) or window[0]
     privacy = {"ip": ("UNMEASURED" if not seen else "CLEAN" if not sum(v[1] for v in counts.values())
                       else "IP_STORED"),
-               "legacy_properties": ("UNMEASURED" if not seen else "CLEAN" if not sum(v[2] for v in counts.values())
-                                     else "FOUND"),
-               "agent_persons": _agent_persons(read, key, since)}
+               "legacy_properties": _project_count(read, key, Q_LEGACY, since),
+               "agent_persons": _project_count(read, key, Q_PERSONS, since)}
     if "FAILED" in controls.values():
         state = "VOID"
     elif controls["C2_never_sent_id_empty"] == "UNMEASURED":
@@ -2210,9 +2213,18 @@ def verify_datadog(entry: dict[str, Any], read: Readback, wait: float) -> dict[s
             "counts": {"events": events, "logs": logs, "metrics": metrics}, "controls": controls}
 
 
+def _cut_off(reason: object) -> bool:
+    """A request that got no status back (TRANSPORT:<class>, BUDGET or INTERRUPTED) may have been delivered.
+    One answered with a status (TRANSPORT:403) was refused, and never was."""
+    text = str(reason or "")
+    return text.startswith("TRANSPORT:") and not text[len("TRANSPORT:"):].isdigit()
+
+
 def _maybe_delivered(sink: dict[str, Any]) -> bool:
-    """Accepted, or cut off mid-request: a timed-out send stays UNSENT until a readback finds it."""
-    return sink.get("state") in ("SENT", "VERIFIED") or str(sink.get("reason", "")).startswith("TRANSPORT:")
+    """Accepted, or cut off mid-request, in the sink or any of its parts: a request that got no answer stays
+    UNSENT until a readback finds it."""
+    parts = [sink] + [part for part in sink.values() if isinstance(part, dict)]
+    return any(part.get("state") in ("SENT", "VERIFIED") or _cut_off(part.get("reason")) for part in parts)
 
 
 def verify_entry(entry: dict[str, Any], read: Readback, wait: float = WAIT_S) -> dict[str, Any]:

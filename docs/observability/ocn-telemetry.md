@@ -316,7 +316,9 @@ python scripts/ci/ocn_telemetry.py verify --tags
 ```
 
 - `--pending` checks every sent run the ledger has not verified, with no ids to type. That includes a
-  request that timed out, which stays UNSENT until a readback finds it.
+  request that got no status back (it timed out, overran the budget or was interrupted), which stays
+  UNSENT until a readback finds it. A request the vendor refused with a status was never delivered, and
+  is not read back.
 - `--run ID` checks one run.
 - `--receipt PATH` checks the run a receipt was published as. With `--update-receipt`, the verified
   block is written back into a persisted `state/<probe>/<env>.latest.json`, and the run id is unchanged.
@@ -348,9 +350,11 @@ metrics were sent.
 | C5 | a never-sent run id returns 0 Datadog events and 0 logs |
 
 **Privacy readbacks:** a count of the run's events that keep any address other than the unspecified one
-(`IP_STORED` if any), events still carrying `ocn_seat` or `ocn_box_ip`, and `is_ocn_agent` persons
-created since the first send. None of these should be found. If PostHog does not honour the `$ip` marker,
-the fallback is the project-wide "Discard client IP data" setting, which is the operator's decision.
+(`IP_STORED` if any); events anywhere in the project still carrying `ocn_seat` or `ocn_box_ip` since the
+first send, which this publisher never builds, so any found come from box-side capture still live; and
+`is_ocn_agent` persons created since the first send. None of these should be found. If PostHog does not
+honour the `$ip` marker, the fallback is the project-wide "Discard client IP data" setting, which is the
+operator's decision.
 
 **Results:** `VERIFIED`, `NOT_FOUND` (with `LOGS_NOT_FOUND` when the event arrived without its logs, which
 never counts as verified), `VOID`, `UNMEASURED` (no read key, a 401 or a 403), or `NOT_CHECKED` (nothing
