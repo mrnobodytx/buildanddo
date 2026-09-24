@@ -386,9 +386,16 @@ def selftest() -> dict:
             "state": "PASS" if all(c["state"] == "PASS" for c in checks) else "FAIL"}
 
 
+# The seat the feature sweep treats as its own default, taken by reference rather than spelled
+# here. This file ships to the public mirror, where no machine name may appear (operator rule,
+# 2026-09-22), and the sweep already holds its seat table - so this reuses that table rather than
+# naming a machine a second time. Dicts keep insertion order, so this is the sweep's first seat.
+DEFAULT_BOX = next(iter(sweep.SSH_KEYS))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--box", default="mesh-control", choices=sorted(sweep.SSH_KEYS))
+    parser.add_argument("--box", default=DEFAULT_BOX, choices=sorted(sweep.SSH_KEYS))
     parser.add_argument("--env", default="production", choices=sorted(sweep.ENVS))
     parser.add_argument("--enable-community", action="store_true",
                         help="A3: switch this workspace's wiki and forum on through its own governed admin command")
