@@ -277,13 +277,13 @@
   },
   "schema": "buildanddo.growth-lock/v1",
   "surface": {
-    "docs_pages": 54,
+    "docs_pages": 55,
     "github_workflows": 8,
     "gitlab_jobs": 14,
     "pocketbase_hooks": 29,
     "pocketbase_migrations": 65,
     "readmes": 50,
-    "tracked_files": 1767
+    "tracked_files": 1787
   },
   "systems": {
     "apps/career": {
@@ -398,17 +398,17 @@
       "test_files": 3
     },
     "apps/pocketbase": {
-      "cgrf_coverage": 0.8421,
-      "cgrf_files": 112,
+      "cgrf_coverage": 0.8722,
+      "cgrf_files": 116,
       "files": 146,
       "lines": {
         "data": 3924,
-        "javascript": 13848,
+        "javascript": 14128,
         "typescript": 917
       },
       "readme": false,
       "source_files": 133,
-      "source_lines": 14765,
+      "source_lines": 15045,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-CAREER-001",
@@ -442,19 +442,19 @@
       "test_files": 7
     },
     "apps/web": {
-      "cgrf_coverage": 0.739,
-      "cgrf_files": 337,
-      "files": 494,
+      "cgrf_coverage": 0.7527,
+      "cgrf_files": 347,
+      "files": 499,
       "lines": {
         "css": 1101,
         "data": 1449,
         "html": 22,
-        "javascript": 70414,
+        "javascript": 72797,
         "markdown": 129
       },
       "readme": true,
-      "source_files": 456,
-      "source_lines": 71537,
+      "source_files": 461,
+      "source_lines": 73920,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -478,7 +478,7 @@
         "SRS-BUILDANDDO-WITNESS-001",
         "SRS-BUILDANDDO-WORKSPACE-001"
       ],
-      "test_files": 110
+      "test_files": 111
     },
     "apps/world_twin": {
       "cgrf_coverage": 1.0,
@@ -585,11 +585,11 @@
       "lines": {
         "data": 654,
         "javascript": 50,
-        "python": 19028
+        "python": 19054
       },
       "readme": false,
       "source_files": 51,
-      "source_lines": 19078,
+      "source_lines": 19104,
       "srs_codes": [
         "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-CHANGELOG-001",
@@ -607,39 +607,39 @@
       "test_files": 9
     },
     "scripts/deploy": {
-      "cgrf_coverage": 0.75,
-      "cgrf_files": 3,
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 4,
       "files": 4,
       "lines": {
-        "python": 1179,
+        "python": 1274,
         "shell": 85
       },
       "readme": false,
       "source_files": 4,
-      "source_lines": 1264,
+      "source_lines": 1359,
       "srs_codes": [
         "SRS-BUILDANDDO-PRODCONFIG-001",
         "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
         "SRS-BUILDANDDO-ROADMAP-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
-      "test_files": 2
+      "test_files": 4
     },
     "scripts/discordbot": {
       "cgrf_coverage": 1.0,
       "cgrf_files": 9,
       "files": 10,
       "lines": {
-        "python": 2287
+        "python": 2494
       },
       "readme": false,
       "source_files": 9,
-      "source_lines": 2287,
+      "source_lines": 2494,
       "srs_codes": [
         "SRS-BUILDANDDO-QUIZ-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
-      "test_files": 7
+      "test_files": 8
     },
     "scripts/publish": {
       "cgrf_coverage": 1.0,
@@ -672,15 +672,15 @@
       "test_files": 2
     },
     "tools": {
-      "cgrf_coverage": 0.5385,
-      "cgrf_files": 7,
+      "cgrf_coverage": 0.6154,
+      "cgrf_files": 8,
       "files": 13,
       "lines": {
-        "python": 5602
+        "python": 5675
       },
       "readme": false,
       "source_files": 13,
-      "source_lines": 5602,
+      "source_lines": 5675,
       "srs_codes": [
         "SRS-BUILDANDDO-DAY21-CLOSURE-001",
         "SRS-BUILDANDDO-SUBMISSION-FRESHNESS-001",
@@ -690,13 +690,13 @@
     }
   },
   "totals": {
-    "cgrf_coverage": 0.8188,
-    "files": 1067,
-    "source_lines": 166727,
+    "cgrf_coverage": 0.832,
+    "files": 1072,
+    "source_lines": 169791,
     "systems": 22,
     "systems_with_readme": 4,
     "systems_with_tests": 21,
-    "test_files": 220,
-    "test_files_unattributed": 105
+    "test_files": 224,
+    "test_files_unattributed": 114
   }
 }

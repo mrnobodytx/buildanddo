@@ -45,6 +45,7 @@ the entry.
 
 ### Fixed
 
+- web: close telemetry gaps (`a9b6e71`, SRS-BUILDANDDO-UPGRADE-001)
 - test: complete the motion mock in two workspace page tests (`7301df8`, SRS-BUILDANDDO-RECONCILE-001)
 - web: agent activity names seats by persona again and withholds machine names (`7ee648c`, SRS-BUILDANDDO-RECONCILE-001)
 - test: the claim rollback test stays rolled back across a restart (`8f12607`, SRS-BUILDANDDO-RECONCILE-001)
