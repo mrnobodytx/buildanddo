@@ -116,6 +116,32 @@ path intact.
   presence health six publishers, verification `ECHO_ON_READ`. Receipt on the box at
   `/tmp/classroom_video_proof.json`, 23:53:41Z.
 
+## 2026-09-24 addendum: finding a class, and the guildmasters in the room
+
+**Discoverability (shipped to staging, `a5bc2b0`).** The classroom desk now lists "Classes you can
+join" across every workspace the account can read, live first, through the same per-workspace
+route and client the desk already used; opening one switches the workspace by the existing link.
+The operator's account was also seated as editor in the two workspaces that hold the guildmaster
+classes, through the owner's admin command from the owner's box.
+
+**Open classroom on signup (NOT applied).** A patch that seats every newly onboarded account as a
+viewer in the workspace named by `BUILDANDDO_OPEN_CLASSROOM_WORKSPACE`, inside the onboarding
+transaction and only when the host names one, was refused by the release seat's classifier when it
+was about to be applied. It is an authorization-policy change and stays an operator decision: the
+patch is held on the release seat and can be reviewed there.
+
+**Guildmasters in the room.** A box-resident attendant (CNWB `tools/cbf/guildmaster_classroom.py`)
+signs in with the box's own CitadelKey, joins every live class the seat can see, keeps its attendance
+alive, greets a class once when somebody is present, and answers messages that address it by name,
+through the same in-persona brain the Discord bots use. It refuses to post when the box's persona
+and the seat's display name disagree, and when the brain has no inference provider. Measured on
+the six boxes against staging: Forge and Muse attend; the Finance box holds because none of its
+inference providers has a key; the Memory, Research and Writers boxes hold because their brains
+answer as Scholar, Oracle and Alex while their seats display as Oracle, Scholar and Quill. That
+split between the estate fleet map and the persona registry is the operator's to settle before
+those three can speak in a class. Nine of the live rooms are stale test classes with nobody
+present; ending them is a hygiene item for the hosts.
+
 ## Rollback
 
 Web: `py -3.13 tools/buildanddo_release.py rollback-staging --ack-authority A3` restores the
