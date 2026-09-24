@@ -152,10 +152,11 @@ through the private fleet map, taken from `--fleet-map`, then `CITADEL_FLEET_MAP
 own estate default. The box id never leaves the process and never reaches the ledger. A box the map does
 not know is unresolved: PostHog is skipped (`IDENTITY_UNRESOLVED`) and Datadog records `unplaced`.
 
-Check labels are templated: a machine name becomes `:box`, a persona `:persona`, an address `:addr`, and a
-record id, UUID or long digit run `:id`. Then the label is slugged to 64 characters at most, so
-"`<gm>` joins from `<box>`" becomes `persona-joins-from-box`. Paths lose their query and fragment, and
-the workspace segment becomes `:workspace`.
+Check labels are templated: an email becomes `:email`, a machine name `:box`, a persona `:persona`, an
+address `:addr`, and a record id, UUID or long digit run `:id`. Only then is the label slugged, to 64
+characters at most, so "`<gm>` joins from `<box>`" becomes `persona-joins-from-box`. Paths lose their query
+and fragment, the workspace segment becomes `:workspace`, and the segment after `records` becomes `:id`
+whatever its shape (about one PocketBase id in 130 has no digit).
 
 ## PostHog
 
@@ -232,7 +233,8 @@ withholds the whole receipt.
 - **Tag gate:** every Datadog tag key inside its set, every value inside its enum, `ocn_run` a UUID and
   on events and logs only, `ocn_feature` on the alive gauge only, no host, and the 178-series ceiling.
 - **Leak gate:** the serialized bodies checked by `public_redaction.Rule` with the private fleet map, with
-  no allowance for loopback. The report gives counts per family and the field names, never a value.
+  no allowance for loopback, and for anything shaped like an email address. The report gives counts
+  (addresses, machine names, emails) and the field names, never a value.
   `send` refuses without a readable fleet map (`NO_FLEET_MAP`); `dry-run` falls back to the families and
   says so.
 
@@ -387,8 +389,8 @@ Saved insights keyed on the old event names must move to `is_ocn_agent` and `ocn
 
 ## Checks
 
-- `python scripts/ci/ocn_telemetry.py selftest`: offline, sockets refused, with a planted machine name and
-  documentation address built at run time. It is registered as `CHECKS['ocn_telemetry']` at level
+- `python scripts/ci/ocn_telemetry.py selftest`: offline, sockets refused, with a planted machine name,
+  documentation address and email built at run time. It is registered as `CHECKS['ocn_telemetry']` at level
   `source`.
 - `python -m unittest tests.upgrade.test_ocn_telemetry tests.upgrade.test_ocn_seat_session`: fakes only,
   with the environment cleared and every socket blocked.

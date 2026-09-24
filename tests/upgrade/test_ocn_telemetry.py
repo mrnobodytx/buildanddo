@@ -58,7 +58,13 @@ EMAIL = "seat" + "@" + "example.org"
 RECORD = "q" * 3 + "1234567890ab"
 FORUM = "https://" + "forum.example.org" + "/t/topic/1"
 SESSION = "0f0e0d0c-0b0a-4908-8706-050403020100"
-PLANTED = (BOX, ALIAS, BOX_TWO, BOX_UNPLACED, ADDRESS, EGRESS, EMAIL, RECORD, "forum.example.org", SESSION)
+# A PocketBase id with no digit, as about one in 130 are: the label id pattern needs a digit.
+DIGITLESS = "mqzrtplkvbnwxyc"
+# A word planted in the free-text fields (said, why, message): nothing masks it, so it shows prose copied
+# into a label even where masking would hide the names and addresses in that prose.
+PROSE = "quokka" + "prose"
+PLANTED = (BOX, ALIAS, BOX_TWO, BOX_UNPLACED, ADDRESS, EGRESS, EMAIL, RECORD, "forum.example.org", SESSION,
+           DIGITLESS, PROSE)
 # The probes that take --env and never record it: their receipts publish only with an env named.
 NO_ENV = frozenset({"ocn_guild_dogfood", "ocn_mission_work", "ocn_room_probe"})
 KEEP = ("SYSTEMROOT", "WINDIR", "PATH", "PATHEXT", "COMSPEC", "TEMP", "TMP")
@@ -152,7 +158,7 @@ def receipts() -> dict[str, dict]:
                        {"feature": "workspace.admin", "method": "GET",
                         "path": "/api/buildanddo/workspaces/<workspace>/admin", "http": 404,
                         "state": "ROUTE_ABSENT", "alive": False, "expected": [200, 403],
-                        "said": "workspace of " + BOX + " " + EMAIL},
+                        "said": "workspace of " + BOX + " " + EMAIL + " " + PROSE},
                        {"feature": "learning.catalogue", "method": "GET", "path": "/api/buildanddo/learning",
                         "http": 200, "state": "OK", "alive": True, "expected": [200]}],
             "controls_held": True, "broken": ["workspace.admin"], "degraded": [], "state": "REPAIR_NEEDED"},
@@ -163,7 +169,7 @@ def receipts() -> dict[str, dict]:
             "legs": [{"leg": "control.absent", "doing": "CONTROL", "http": 404, "verdict": "OK"},
                      {"leg": "control.anon", "doing": "CONTROL", "http": 401, "verdict": "OK"},
                      {"leg": "missions", "doing": "Propose", "http": 400, "verdict": "UNHELPFUL",
-                      "why": "400 from " + BOX}],
+                      "why": "400 from " + BOX + " " + PROSE}],
             "controls_held": True, "defects": [{"leg": "missions", "verdict": "UNHELPFUL", "why": BOX}],
             "state": "DEFECTS"},
         "ocn_classroom_fleet": {
@@ -181,7 +187,7 @@ def receipts() -> dict[str, dict]:
                        {"check": "host seats oracle (%s)" % BOX_TWO, "box": BOX, "expect": "200", "http": 200,
                         "stage": "call", "outcome": "AS_EXPECTED", "message": None},
                        {"check": "oracle joins from %s" % BOX_TWO, "box": BOX_TWO, "expect": "200",
-                        "http": 409, "stage": "call", "outcome": "CONTRACT_BROKEN", "message": EMAIL},
+                        "http": 409, "stage": "call", "outcome": "CONTRACT_BROKEN", "message": EMAIL + " " + PROSE},
                        {"check": "CONTROL unseated oracle refused from %s" % BOX_TWO, "box": BOX_TWO,
                         "expect": "not 200", "http": 403, "stage": "call", "outcome": "AS_EXPECTED",
                         "message": "no"}],
@@ -199,7 +205,7 @@ def receipts() -> dict[str, dict]:
             "checks": [{"check": "host seats oracle in the workspace", "expect": "200", "http": 200,
                         "outcome": "AS_EXPECTED", "message": None},
                        {"check": "CONTROL unseated muse cannot read the class", "expect": "not 200",
-                        "http": 404, "outcome": "AS_EXPECTED", "message": EMAIL}],
+                        "http": 404, "outcome": "AS_EXPECTED", "message": EMAIL + " " + PROSE}],
             "readback": {"http": 200, "status": "live", "section": 1, "participants": 2, "messages": 2},
             "summary": {"checks": 2, "contract_broken": [], "guildmasters": 3}, "state": "PASS"},
         "ocn_project_fleet": {
@@ -213,7 +219,7 @@ def receipts() -> dict[str, dict]:
                        {"check": "concurrent-enqueue", "box": BOX + "+" + BOX_TWO, "expect": "exactly one winner",
                         "http": 200, "stage": "call", "outcome": "AS_EXPECTED", "message": ""},
                        {"check": "non-member-refused", "box": BOX_TWO, "expect": "403/404", "http": 403,
-                        "stage": "call", "outcome": "AS_EXPECTED", "message": "member " + EMAIL}],
+                        "stage": "call", "outcome": "AS_EXPECTED", "message": "member " + EMAIL + " " + PROSE}],
             "race": {"verdict": "MUTUAL_EXCLUSION_HELD", "why": "x", "winners": [BOX], "refused": [BOX_TWO],
                      "errored": []},
             "race_detail": [{"box": BOX, "http": 200, "message": ""}], "job_id": RECORD, "run_status": "queued",
@@ -228,7 +234,7 @@ def receipts() -> dict[str, dict]:
             "seat": BOX, "mode": "exercise", "at": AT,
             "login": {"state": "LOGIN_OK", "record_id": RECORD, "name": "OCN seat " + BOX},
             "steps": [{"step": "create mission (complete plan)", "http": 200, "id": RECORD},
-                      {"step": "CONTROL skip approval (refusal wanted)", "http": 400, "message": BOX,
+                      {"step": "CONTROL skip approval (refusal wanted)", "http": 400, "message": BOX + " " + PROSE,
                        "fields": {"status": EMAIL}},
                       {"step": "CONTROL stale revision (409 wanted)", "http": 409, "message": "stale"},
                       {"step": "create research_upload (expects 400: needs a real asset)", "http": 400}]},
@@ -246,7 +252,7 @@ def receipts() -> dict[str, dict]:
             "workspace": RECORD, "at": AT, "login": "OK", "uid": RECORD, "mission": RECORD, "workflow": RECORD,
             "steps": [{"step": "create mission (proposed, full plan)", "http": 200, "ok": True, "message": ""},
                       {"step": "CONTROL run on an unapproved mission must be refused", "http": 409, "ok": True,
-                       "message": "said by " + BOX}],
+                       "message": "said by " + BOX + " " + PROSE}],
             "signals_bound": [{"signal": RECORD, "http": 200}], "run": RECORD, "run_status": "running",
             "run_body_keys": ["record"]},
         "ocn_guild_forum": {
@@ -264,7 +270,7 @@ def receipts() -> dict[str, dict]:
             "readback": {"http": 200, "status": "verified"},
             "steps": [{"step": "create mission (proposed, with full plan)", "http": 200, "ok": True},
                       {"step": "CONTROL proposed->verified must be refused", "http": 400, "ok": True,
-                       "message": "by " + EMAIL}],
+                       "message": "by " + EMAIL + " " + PROSE}],
             "summary": {"steps": 2, "failed": [], "reached_verified": True}},
         "ocn_mission_work": {
             "schema": "buildanddo.ocn-mission-work/v1", "seat": BOX, "action": "evidence", "at": AT, "login": "OK",
@@ -294,8 +300,8 @@ def receipts() -> dict[str, dict]:
                         "path": "/api/buildanddo/definitely-not-a-route-9f3", "http": 404,
                         "state": "ROUTE_ABSENT", "message": None, "fields": None},
                        {"subsystem": "mission", "check": "approve mission", "method": "PATCH",
-                        "path": "/api/collections/missions/records/" + RECORD, "http": 403,
-                        "state": "REFUSED_BY_POLICY", "message": EMAIL, "fields": ["status"]},
+                        "path": "/api/collections/missions/records/" + DIGITLESS, "http": 403,
+                        "state": "REFUSED_BY_POLICY", "message": EMAIL + " " + PROSE, "fields": ["status"]},
                        {"subsystem": "suite", "check": "suite with empty body (contract)", "method": "POST",
                         "path": "/api/buildanddo/workspaces/%s/suite" % RECORD, "http": 418,
                         "state": "HTTP_418", "message": None, "fields": None}],
@@ -317,7 +323,8 @@ def dogfood_actions() -> dict[str, dict]:
     return {
         "sprint": dogfood("sprint", proposed=[RECORD], missions=[
             {"guild": "builder", "http": 403, "headline": "raised by " + EMAIL + " on " + BOX, "state": "REFUSED",
-             "message": "refused for " + EMAIL + " from " + ADDRESS, "fields": {"title": "too long: " + EMAIL}},
+             "message": "refused for " + EMAIL + " from " + ADDRESS + " " + PROSE,
+             "fields": {"title": "too long: " + EMAIL}},
             {"guild": "research", "http": 200, "headline": "from " + BOX, "mission": RECORD, "state": "PROPOSED"},
             {"guild": "guild of " + BOX, "http": 200, "headline": "x", "mission": RECORD, "state": "PROPOSED"}]),
         "promote": dogfood("promote", signals=[RECORD], promoted=[
@@ -740,6 +747,34 @@ class AdapterTests(Harness):
                          ("fail", "LOGIN_FAILED", 403))
 
 
+# The receipt fields each adapter turns into a check label, a list entry or a path template.
+LABEL_FIELDS = {
+    "ocn_feature_sweep": (("checks", "feature"), ("checks", "path")),
+    "ocn_journey_report": (("legs", "leg"), ("defects", "leg")),
+    "ocn_classroom_fleet": (("checks", "check"),), "ocn_classroom_live": (("checks", "check"),),
+    "ocn_project_fleet": (("checks", "check"),),
+    "ocn_guild_dogfood": (("steps", "step"),), "ocn_mission_lifecycle": (("steps", "step"),),
+    "ocn_signal_lifecycle": (("steps", "step"),), "ocn_box_exercise": (("steps", "step"),),
+    "ocn_subsystem_probe": (("checks", "subsystem"), ("checks", "check"), ("checks", "path")),
+    "ocn_seat_session": (("replay", "route"), ("replay", "path"), ("replay", "collection")),
+}
+LIST_FIELDS = {"ocn_feature_sweep": ("broken", "degraded", "record_missing")}
+
+
+def with_email_in_labels(name: str, receipt: dict) -> dict:
+    """The receipt with an email added to every field its adapter turns into a label, list entry or path."""
+    receipt = copy.deepcopy(receipt)
+    for key, field in LABEL_FIELDS.get(name, ()):
+        for row in receipt.get(key) or []:
+            if isinstance(row.get(field), str):
+                row[field] += " by " + EMAIL
+    for key in LIST_FIELDS.get(name, ()):
+        receipt[key] = list(receipt.get(key) or []) + ["from " + EMAIL]
+    if name == "ocn_box_exercise":
+        receipt["authenticated_reads"] = {"reads by " + EMAIL: {"http": 200}}
+    return receipt
+
+
 # Each probe's own rule, applied to the receipt receipts() shapes like its real output.
 EXPECTED_OUTCOME = {
     "ocn_box_exercise": "observed", "ocn_classroom_fleet": "fail", "ocn_classroom_live": "pass",
@@ -761,15 +796,22 @@ class PerAdapterTests(Harness):
         plan = self.plan(receipt, dd_metrics=True)
         self.assertEqual((plan.view["probe"], plan.view["outcome"]), (name, EXPECTED_OUTCOME[name]))
         self.assertTrue(plan.view["checks"])
-        text = json.dumps(plan.bodies)
-        for index, value in enumerate(PLANTED):
-            self.assertFalse(value in text, "planted value %d reached an outbound body" % index)
+        self.assert_clean(plan)
         self.assertEqual(t.tag_gate(plan.bodies, plan.cat), [])
         self.assertEqual(t.leak_gate(plan.bodies, plan.rule)["state"], "PASS")
+        # The same receipt with an email in every field that becomes a label or a path.
+        self.assert_clean(self.plan(with_email_in_labels(name, receipt), dd_metrics=True))
         return plan.view
 
     def test_the_table_covers_every_probe(self):
         self.assertEqual(set(EXPECTED_OUTCOME), set(t.PROBES))
+
+    def test_the_email_is_really_planted_in_every_label_field(self):
+        # The control for the label check in adapt(): a field list that planted nothing would pass.
+        for name in LABEL_FIELDS:
+            with self.subTest(probe=name):
+                planted = json.dumps(with_email_in_labels(name, receipts()[name]))
+                self.assertGreater(planted.count(EMAIL), json.dumps(receipts()[name]).count(EMAIL))
 
     def test_box_exercise(self):
         self.assertIs(self.adapt("ocn_box_exercise")["controls_held"], True)
@@ -845,6 +887,25 @@ class TemplatingTests(Harness):
                          "/api/collections/workspaces/records")
         self.assertEqual(t.path_template("/api/buildanddo/learning/{lesson}", rule), "/api/buildanddo/learning/:id")
         self.assertEqual(t.path_template("/x/" + BOX + "/y", rule), "/x/:box/y")
+
+    def test_a_record_id_is_an_id_whether_or_not_it_has_a_digit(self):
+        rule = self.rule()
+        for record in (DIGITLESS, RECORD):
+            with self.subTest(digits=record != DIGITLESS):
+                self.assertEqual(t.path_template("/api/collections/missions/records/" + record, rule),
+                                 "/api/collections/missions/records/:id")
+        listing = "/api/collections/missions/records"
+        self.assertEqual(t.path_template(listing, rule), listing)
+
+    def test_an_email_becomes_email_before_anything_is_slugged(self):
+        rule = self.rule()
+        pattern = t.catalogue().persona_pattern
+        email = "alice.smith" + "@" + "example.org"
+        self.assertEqual(t.check_label("reply from " + email, rule, pattern), "reply-from-email")
+        self.assertEqual(t.path_template("/api/users/" + email + "/x", rule), "/api/users/:email/x")
+        for text in (t.check_label("reply from " + email, rule, pattern), t.path_template("/u/" + email, rule)):
+            self.assertNotIn("alice", text)
+            self.assertNotIn("example.org", text)
 
     def test_states_stay_inside_their_vocabulary(self):
         self.assertEqual(t.state_label("HTTP_418", t.SWEEP_STATES), "http_other")
@@ -933,6 +994,32 @@ class GateTests(Harness):
                 self.assertEqual(recorder.calls, [])
                 self.assertIn("body.posthog.batch[].properties.ocn_check", block["gates"]["leak_fields"])
                 self.assertNotIn(planted, json.dumps(block))
+
+    def test_the_leak_gate_reads_the_private_map(self):
+        # A name only the private map knows: it matches no public family, so a gate that fell back to the
+        # families would pass it.
+        private = "node" + "-" + "sample"
+        self.assertEqual(pr.Rule("").find_machines(private), [])
+        fleet = json.loads(self.fleet.read_text(encoding="utf-8"))
+        fleet["boxes"][private] = {"guildmaster": "forge", "guild": "builder"}
+        self.fleet.write_text(json.dumps(fleet), encoding="utf-8")
+        plan = self.plan(receipts()["ocn_journey_report"])
+        plan.bodies["datadog.logs"][0]["message"] += " via " + private
+        recorder = Recorder()
+        block = t.deliver(plan, mode="send", ledger_dir=self.ledger, credentials=keys(), transport=recorder, now=NOW)
+        self.assertEqual((block["reason"], recorder.calls), ("LEAK_GATE", []))
+        self.assertEqual(block["gates"]["leak_counts"]["machines"], 1)
+        self.assertNotIn(private, json.dumps(block))
+
+    def test_the_leak_gate_withholds_an_email(self):
+        plan = self.plan(receipts()["ocn_journey_report"])
+        plan.bodies["posthog.batch"][1]["properties"]["ocn_check"] = "reply-from-" + EMAIL
+        recorder = Recorder()
+        block = t.deliver(plan, mode="send", ledger_dir=self.ledger, credentials=keys(), transport=recorder, now=NOW)
+        self.assertEqual((block["reason"], recorder.calls), ("LEAK_GATE", []))
+        self.assertEqual(block["gates"]["leak_counts"], {"ips": 0, "machines": 0, "emails": 1})
+        self.assertIn("body.posthog.batch[].properties.ocn_check", block["gates"]["leak_fields"])
+        self.assertNotIn(EMAIL, json.dumps(block))
 
     def test_the_same_receipt_without_the_planted_value_sends(self):
         recorder = Recorder()
@@ -1576,13 +1663,14 @@ class SelftestTests(Harness):
 
     def test_the_selftest_fails_when_the_leak_gate_is_broken(self):
         def leaky(bodies, rule):
-            return {"state": "PASS", "ips": 0, "machines": 0, "fields": [], "rule": rule.source}
+            return {"state": "PASS", "ips": 0, "machines": 0, "emails": 0, "fields": [], "rule": rule.source}
 
         with mock.patch.object(t, "leak_gate", leaky):
             result = t.selftest()
         failed = {check["check"] for check in result["checks"] if check["state"] == "FAIL"}
         self.assertEqual(result["state"], "FAIL")
         self.assertIn("the leak gate withholds a planted machine name", failed)
+        self.assertIn("the leak gate withholds a planted email address", failed)
         self.assertIn("a send carrying a planted name is withheld before any request", failed)
 
     def test_the_selftest_runs_under_ci_and_puts_the_environment_back(self):

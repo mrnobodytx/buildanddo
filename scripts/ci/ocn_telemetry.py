@@ -224,6 +224,9 @@ READ_ACTIONS = frozenset({"list", "wiki.list", "topic", "lessons", "presence-hea
 HTTP_METHODS = frozenset({"GET", "POST", "PATCH", "PUT", "DELETE", "HEAD", "OPTIONS"})
 
 _UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", re.I)
+# An email address. Masked to :email before anything is slugged (slug() turns "@" into "-", after which
+# nothing would recognise it), and refused by the leak gate wherever one survives.
+_EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+")
 _RECORD_ID = re.compile(r"(?<![A-Za-z0-9])(?=[a-z]*[0-9])[a-z0-9]{15}(?![A-Za-z0-9])")
 _DIGITS = re.compile(r"(?<![0-9])[0-9]{4,}(?![0-9])")
 _NAME = re.compile(r"[a-z][a-z0-9_]{0,63}")
@@ -450,8 +453,9 @@ def persona_tags() -> frozenset[str]:
 
 
 def _mask(value: str, rule: Any, pad: str = "") -> str:
-    """Machine names become :box and addresses :addr, by the same rule the leak gate applies."""
+    """Emails become :email, machine names :box and addresses :addr, by the rules the leak gate applies."""
     redaction = _sibling("public_redaction")
+    value = _EMAIL.sub(pad + ":email" + pad, value)
     value = rule.machine.sub(pad + ":box" + pad, value)
     value = redaction.IPV4.sub(pad + ":addr" + pad, value)
     return redaction.IPV6.sub(lambda match: pad + ":addr" + pad if redaction.real_v6(match.group(0))
@@ -469,7 +473,11 @@ def check_label(text: object, rule: Any, persona_pattern: re.Pattern[str]) -> st
 
 
 def path_template(path: object, rule: Any) -> str | None:
-    """Query and fragment dropped; the workspace segment becomes :workspace, record ids :id."""
+    """Query and fragment dropped; the workspace segment becomes :workspace, record ids :id.
+
+    The segment after `records` is a record id whatever its shape: about one PocketBase id in 130 has no
+    digit, and the id pattern labels use needs one.
+    """
     if not isinstance(path, str) or not path:
         return None
     segments = _mask(path.split("?", 1)[0].split("#", 1)[0][:240], rule).split("/")
@@ -478,6 +486,8 @@ def path_template(path: object, rule: Any) -> str | None:
         previous = segments[index - 1] if index else ""
         if previous == "workspaces" and segment and segment != "records":
             out.append(":workspace")
+        elif previous == "records" and segment:
+            out.append(":id")
         elif re.fullmatch(r"[{<][^/]*[}>]", segment) or segment.isdigit():
             out.append(":id")
         elif _UUID.fullmatch(segment) or _RECORD_ID.fullmatch(segment):
@@ -808,17 +818,19 @@ def _seat_step(ctx: Context, index: int, row: dict[str, Any]) -> dict[str, Any] 
         label, code = login_label(row.get("result"))
         return _check(ctx, index, "login", "login", http=code, state=label, vocabulary=LOGIN_STATES,
                       as_expected=label == "LOGIN_OK")
+    # Raw text goes to the label, never slug() first: slugging turns an email into something _mask no
+    # longer recognises.
     if step == "pageview":
         route = _text(row.get("route"))
-        return _check(ctx, index, "route." + (slug(route.strip("/")) or "home"), "route",
+        return _check(ctx, index, "route." + (route.strip("/") or "home"), "route",
                       http=row.get("http"), method="GET", path=route, latency_ms=row.get("ms"),
                       prerendered_chars=row.get("prerendered_chars"))
     if step == "data":
         path = _text(row.get("path"))
-        name = slug(Path(path).stem.lstrip("_")) or "document"
+        name = Path(path).stem.lstrip("_") or "document"
         return _check(ctx, index, "data." + name, "data", http=row.get("http"), method="GET", path=path)
     if step == "api_read":
-        collection = slug(row.get("collection")) or "collection"
+        collection = _text(row.get("collection")) or "collection"
         return _check(ctx, index, "collection." + collection, "collection", http=row.get("http"),
                       method="GET", path="/api/collections/%s/records" % collection)
     return None
@@ -908,7 +920,7 @@ def adapt_box_exercise(receipt: dict[str, Any], ctx: Context) -> dict[str, Any]:
     reads = receipt.get("authenticated_reads") if isinstance(receipt.get("authenticated_reads"), dict) else {}
     for name, read in reads.items():
         read = read if isinstance(read, dict) else {}
-        checks.append(_check(ctx, len(checks), "collection." + (slug(name) or "collection"), "collection",
+        checks.append(_check(ctx, len(checks), "collection." + (str(name) or "collection"), "collection",
                              http=read.get("http"), method="GET"))
     for row in _rows(receipt.get("steps")):
         label = _text(row.get("step"))
@@ -1364,7 +1376,7 @@ def tag_gate(bodies: dict[str, Any], cat: Catalogue) -> list[str]:
 
 def _leaks(text: str, rule: Any) -> bool:
     found = rule.find_leaks(text, allow_loopback=False)
-    return bool(found["ips"] or found["machines"])
+    return bool(found["ips"] or found["machines"] or _EMAIL.search(text))
 
 
 def _leak_fields(value: Any, rule: Any, path: str) -> list[str]:
@@ -1385,12 +1397,15 @@ def _leak_fields(value: Any, rule: Any, path: str) -> list[str]:
 
 
 def leak_gate(bodies: dict[str, Any], rule: Any) -> dict[str, Any]:
-    """The whole serialized set, checked with the private fleet map. Counts and field names only."""
-    found = rule.find_leaks(json.dumps(bodies, sort_keys=True, ensure_ascii=False), allow_loopback=False)
-    ips, machines = len(found["ips"]), len(found["machines"])
-    fields = sorted(set(_leak_fields(bodies, rule, "body"))) if ips or machines else []
-    return {"state": "FAIL" if ips or machines else "PASS", "ips": ips, "machines": machines,
-            "fields": fields[:20] or (["body (serialized)"] if ips or machines else []), "rule": rule.source}
+    """The whole serialized set, checked with the private fleet map and for emails. Counts and field names
+    only."""
+    text = json.dumps(bodies, sort_keys=True, ensure_ascii=False)
+    found = rule.find_leaks(text, allow_loopback=False)
+    ips, machines, emails = len(found["ips"]), len(found["machines"]), len(set(_EMAIL.findall(text)))
+    leaked = bool(ips or machines or emails)
+    fields = sorted(set(_leak_fields(bodies, rule, "body"))) if leaked else []
+    return {"state": "FAIL" if leaked else "PASS", "ips": ips, "machines": machines, "emails": emails,
+            "fields": fields[:20] or (["body (serialized)"] if leaked else []), "rule": rule.source}
 
 
 # ── credentials: names only ──────────────────────────────────────────────────────────────────
@@ -1772,8 +1787,8 @@ def deliver(plan: Plan, *, mode: str, sinks: Iterable[str] = SINKS, force: bool 
     problems = tag_gate(bodies, plan.cat)
     leak = leak_gate(bodies, plan.rule)
     gates = {"tag": "FAIL" if problems else "PASS", "tag_problems": problems, "leak": leak["state"],
-             "leak_counts": {"ips": leak["ips"], "machines": leak["machines"]}, "leak_fields": leak["fields"],
-             "leak_rule": leak["rule"]}
+             "leak_counts": {"ips": leak["ips"], "machines": leak["machines"], "emails": leak["emails"]},
+             "leak_fields": leak["fields"], "leak_rule": leak["rule"]}
     if problems:
         return _block(mode, reason="TAG_GATE", gates=gates, **kwargs)
     if leak["state"] != "PASS":
@@ -2473,7 +2488,8 @@ def selftest() -> dict[str, Any]:
         text = json.dumps(plan.bodies)
         record("no planted name or address reaches an outbound byte", box not in text and address not in text)
         record("the leak gate passes the clean bodies", leak_gate(plan.bodies, plan.rule)["state"] == "PASS")
-        for label, planted, family in (("machine name", box, "machines"), ("documentation address", address, "ips")):
+        for label, planted, family in (("machine name", box, "machines"), ("documentation address", address, "ips"),
+                                       ("email address", "@".join(("seat", "example.org")), "emails")):
             dirty = copy.deepcopy(plan.bodies)
             dirty["posthog.batch"][0]["properties"]["ocn_state"] = planted
             verdict = leak_gate(dirty, plan.rule)
