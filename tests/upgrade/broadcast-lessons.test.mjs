@@ -20,6 +20,7 @@ import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { fixture, plain, source } from './admin-fixture.mjs';
 import { lessonLink, mergeTutorials, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
+import { DBX, faithfulCountRecords } from './tutorial-learning-fixture.mjs';
 
 const DATA = 'apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
 const MIGRATION = 'apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js';
@@ -30,6 +31,7 @@ const starter = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tu
 function installed(data = bundle) {
     const f = fixture({ runtime: {
         toString: String,
+        $dbx: DBX,
         $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') },
         $os: { readFile: (path) => {
             if (path === '/pb_migrations/data/broadcast-classroom-lessons.json') return JSON.stringify(data);
@@ -39,7 +41,9 @@ function installed(data = bundle) {
     } });
     f.migration('apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js').up();
     f.migration('apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js').up();
-    f.app.countRecords = (name, filter, params) => f.app.findRecordsByFilter(name, filter, '', 0, 0, params).length;
+    // The learning hook counts with dbx expressions, as PocketBase requires; a filter-string double
+    // agreed with the old call and let GET /api/buildanddo/learning answer 400 everywhere.
+    faithfulCountRecords(f.app);
     return f;
 }
 
@@ -89,7 +93,9 @@ test('recorded source evidence binds its stated file scope without upgrading blo
         assert.ok(check.description.length > 40);
         assert.ok(check.commands.every((command) => typeof command === 'string' && command.length > 0));
     }
-    assert.match(checks[0].commands[0], /^node --test tests\/upgrade\/broadcast-lessons\.test\.mjs /);
+    // The reporter is named because Node's default differs by version (TAP on 22, spec on 24) and
+    // the capture below must be TAP whichever Node re-runs it.
+    assert.match(checks[0].commands[0], /^node --test (?:--test-reporter=tap )?tests\/upgrade\/broadcast-lessons\.test\.mjs /);
     assert.match(checks[1].commands[0], /^npm run test --prefix apps\/web -- /);
     assert.equal(checks[2].commands.length, 4);
     assert.deepEqual(checks[3].commands, [], 'the source lesson cannot authorize hosted provider effects');
