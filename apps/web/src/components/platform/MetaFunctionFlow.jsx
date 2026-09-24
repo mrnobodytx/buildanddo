@@ -321,7 +321,7 @@ export default function MetaFunctionFlow({ autoPlay = true }) {
                                     tone="neutral"
                                     className={`${activeTone.border} ${activeTone.text} ${activeTone.wash}`}
                                 >
-                                    Stage {String(activeIndex + 1).padStart(2, '0')}
+                                    {`Stage ${String(activeIndex + 1).padStart(2, '0')}`}
                                 </Badge>
                                 <span className="font-evidence text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
                                     {active.subtitle}

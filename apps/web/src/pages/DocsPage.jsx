@@ -23,7 +23,7 @@ import { Input } from '@/components/ui/input';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import MissionGuide from '@/components/workspace/missions/MissionGuide';
 
-const GUIDES = [
+export const GUIDES = [
     {
         id: 'knowledge',
         title: 'Assemble workspace context',

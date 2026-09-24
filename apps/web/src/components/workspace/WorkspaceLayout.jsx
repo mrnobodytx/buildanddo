@@ -266,8 +266,13 @@ export default function WorkspaceLayout() {
                     <div className="space-y-3 border-t border-border/60 p-3">
                         <WorkspaceSwitcher />
                         <div className="flex items-center justify-between gap-2 rounded-md px-1">
+                            {/* Display name first, the way DossierPage already does it. A seat's
+                                email is derived from the machine it signs on, so rendering it here
+                                put a fleet hostname on every workspace screen and into any
+                                screenshot or recording of one. Settings still shows the address,
+                                which is where someone actually looks for it. */}
                             <span className="truncate text-xs text-muted-foreground">
-                                {user?.email}
+                                {user?.name || user?.email}
                             </span>
                             <button
                                 type="button"

@@ -35,7 +35,7 @@ const record = (name, values = {}) => ({
 
 export function python(operation, payload) {
     const result = spawnSync(pythonBin(), ['-m', 'apps.decision.adapters.service'], {
-        cwd: repoPath('.'), input: JSON.stringify({ operation, payload }), encoding: 'utf8',
+        cwd: repoPath('.'), env: { ...process.env, PYTHONPATH: repoPath('.') }, input: JSON.stringify({ operation, payload }), encoding: 'utf8',
         timeout: 35000, maxBuffer: 13 * 1024 * 1024,
     });
     assert.equal(result.status, 0, result.stderr);
@@ -54,7 +54,7 @@ export function layoutBlueprintResult() {
         '    result=asyncio.run(service.dispatch("blueprint", {"name":"sample.pdf","pdf_base64":base64.b64encode(FIXTURE.read_bytes()).decode(),"include_prompts":True}))',
         'print(json.dumps(result))',
     ].join('\n');
-    const result = spawnSync(pythonBin(), ['-c', script], { cwd: repoPath('.'), encoding: 'utf8', maxBuffer: 13 * 1024 * 1024 });
+    const result = spawnSync(pythonBin(), ['-c', script], { cwd: repoPath('.'), env: { ...process.env, PYTHONPATH: repoPath('.') }, encoding: 'utf8', maxBuffer: 13 * 1024 * 1024 });
     assert.equal(result.status, 0, result.stderr);
     planned = JSON.parse(result.stdout);
     return clone(planned);

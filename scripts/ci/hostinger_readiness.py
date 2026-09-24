@@ -216,7 +216,7 @@ def load_contract(root: Path) -> dict[str, object]:
         external_ids.add(identity)
     values = contract["pieces"]
     if not isinstance(values, list) or len(values) != len(MILESTONES):
-        raise ReadinessError("Account for all eleven canonical sprint milestones.")
+        raise ReadinessError("Account for every canonical sprint milestone.")
     seen: set[str] = set()
     for value, milestone in zip(values, MILESTONES):
         piece = object_value(value)
@@ -513,7 +513,7 @@ def main(argv: list[str] | None = None) -> int:
         _, source = check_review(root)
         if args.check:
             print(
-                "PASS: all eleven milestones retain current rationale, owners, checks and next steps."
+                "PASS: all %d milestones retain current rationale, owners, checks and next steps." % len(MILESTONES)
             )
             return 0
         evidence = args.evidence_dir or root / "state/hostinger/acceptance"

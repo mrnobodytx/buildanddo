@@ -19,7 +19,15 @@ migrate((app) => {
     const text = (name, max) => ({ name, type: 'text', max });
     const relation = (name, collection, required = false) => ({ name, type: 'relation', required, maxSelect: 1,
         collectionId: app.findCollectionByNameOrId(collection).id, cascadeDelete: false });
-    const sameField = (old, field) => old && Object.entries(field).every(([key, value]) => old[key] === value);
+    // PocketBase 0.39.8 does not expose Field properties as plain values: `type`
+    // is a METHOD (reflect.methodValueCall) and numeric bounds like `min` are
+    // *float64 POINTERS that read as typeof 'object'. Strict equality therefore
+    // reports every existing field as drift. Resolve, then compare as text.
+    const bound = (field, key) => {
+        const value = field[key];
+        return String(typeof value === 'function' ? value() : value);
+    };
+    const sameField = (old, field) => old && Object.entries(field).every(([key, value]) => bound(old, key) === String(value));
     let jobs;
     try { jobs = app.findCollectionByNameOrId('business_jobs'); }
     catch (error) { if (!String(error.message).includes('no rows in result set')) throw error; }

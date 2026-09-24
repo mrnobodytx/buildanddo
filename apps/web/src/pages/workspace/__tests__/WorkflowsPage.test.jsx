@@ -218,6 +218,11 @@ describe('WorkflowsPage', () => {
         pb.__collection('workflows').delete.mockRejectedValue({ response: { message: 'This workflow has run history. Pause it.' } });
         await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Delete workflow' }));
         await waitFor(() => expect(within(screen.getByRole('dialog')).getByRole('alert')).toHaveTextContent('run history'));
+        // The confirmation is modal, so everything behind it is aria-hidden and no role
+        // query can reach the list. Dismiss it first, then assert the definition survived,
+        // which is the state the user actually ends up in.
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(within(workflowList()).getByText('Retained procedure')).toBeInTheDocument();
     });
 });

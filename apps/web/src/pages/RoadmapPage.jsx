@@ -1,11 +1,12 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/RoadmapPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-ROADMAP-001
+// SRS:         SRS-BUILDANDDO-ROADMAP-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
 // Seat:        BITS-CODEGEN, C-ONE (live sources panel, interaction layer,
-//              2026-09-11 sprint-day-3 replay of what actually landed)
+//              2026-09-11 sprint-day-3 replay of what actually landed;
+//              2026-09-22 community group read from community-status.json)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     scripts/ci/sprint_cycle.py,
@@ -20,11 +21,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { Gauge, ArrowRight, Info, TrendingUp, GitCommit, Activity } from 'lucide-react';
+import { Gauge, ArrowRight, Info, TrendingUp, GitCommit, Activity, Users } from 'lucide-react';
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import Seo from '@/components/Seo';
 import { Section, SectionLabel, Card, StatePill, Button } from '@/components/site/ui';
+import { CommunityStatusPanel } from '@/components/site/StatusPanels';
+import { STATUS_PATH } from '@/lib/communityLinks';
 import { trackEvent } from '@/lib/telemetry';
 
 const STATUSES = ['proposed', 'planned', 'in_progress', 'blocked', 'verified', 'archived'];
@@ -129,7 +132,19 @@ export const PLANNED_MILESTONES = [
             'Steps that reuse the same evidence/audit model as everything else, so a learner’s workflow is verified the same way the platform’s own is'],
     },
     {
-        day: 13, title: 'Living Rooms and public-record bridges', status: 'planned', value: 60,
+        day: 13, title: 'Service connectors and provider health', status: 'planned', value: 60,
+        description: 'Outside data reaching a lesson through bindings that can be checked, because a saved '
+            + 'integration setting must not be mistaken for a working service connection. Each binding carries a '
+            + 'fresh observation for its current configuration revision, and a provider that is disabled, stale or '
+            + 'unavailable stays explicitly so rather than quietly producing successful-looking activity — the same '
+            + 'distinction between measured and merely declared that the rest of the platform is built on. Repeated '
+            + 'effects are deduplicated by identity, and reconciliation only reads a result that already exists.',
+        deliverables: ['Every provider bound through its receiving owner, with a health probe and a bounded effect',
+            'An observed successful use of each, plus the disabled, stale and unavailable-provider controls',
+            'Effect identities deduplicated; reconciliation reads an existing result and never creates one'],
+    },
+    {
+        day: 14, title: 'Living Rooms and public-record bridges', status: 'planned', value: 65,
         description: 'Where people and Citadel Nexus guilds actually work together: Living Rooms that project '
             + 'live guild activity into a workspace, and bridges that carry the verified record out to the public '
             + 'surfaces (wiki, forum, Discord, Reddit) — each with a stated data boundary, not blanket credential access. '
@@ -906,6 +921,23 @@ export default function RoadmapPage() {
                         </div>
                     )}
                 </Card>
+            </Section>
+
+            {/* Community surfaces - read from community-status.json, which a probe writes. activity-status.json
+                carries no community rows, so this group has its own file rather than borrowing another's green. */}
+            <Section className="border-t border-foreground/80 py-12 sm:py-16">
+                <SectionLabel icon={Users}>Activity · community</SectionLabel>
+                <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                    Where the community meets, and whether it answered.
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                    One row per community surface: UP, DEGRADED or DOWN only when a fresh reading says so,
+                    and UNMEASURED with the reason otherwise. The same rows sit beside the platform
+                    assessment on the <Link to={STATUS_PATH} className="text-primary underline underline-offset-4">service status</Link> page.
+                </p>
+                <div className="mt-6">
+                    <CommunityStatusPanel />
+                </div>
             </Section>
 
             {/* Provenance fields reference */}

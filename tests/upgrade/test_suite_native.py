@@ -40,6 +40,7 @@ if str(ROOT) not in sys.path:
 # The standalone CI entry point must add the repository before local imports.
 from apps.mission_suite.bundle import source_fingerprint  # noqa: E402
 from apps.mission_suite.engine import decode, replay, run_suite  # noqa: E402
+from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
 from tests.upgrade.test_dossier_native import NativeServer  # noqa: E402
 from tests.upgrade.government_fixture import install_suite_membership  # noqa: E402
 
@@ -96,7 +97,7 @@ migrate((app) => {
 class SuiteServer(NativeServer):
     """Reuse the native fixture lifecycle with only this suite's source and schema."""
 
-    def __init__(self, binary: str) -> None:
+    def __init__(self, binary: str, workers: object = WORKER) -> None:
         self.directory = tempfile.TemporaryDirectory(prefix="buildanddo-suite-native-")
         self.root = Path(self.directory.name)
         self.binary = str(Path(binary).resolve())
@@ -104,11 +105,19 @@ class SuiteServer(NativeServer):
         self.log = (self.root / "native.log").open("w")
         self.environment = {
             "PATH": os.environ.get("PATH", ""),
+            # Windows initializes Winsock from SystemRoot. Without it the child
+            # exits before health with "socket: The requested service provider
+            # could not be loaded or initialized"; the env stays otherwise restricted.
+            **(
+                {"SystemRoot": os.environ["SystemRoot"]}
+                if os.name == "nt" and "SystemRoot" in os.environ
+                else {}
+            ),
             "BUILDANDDO_SUITE_BINDINGS": json.dumps(
                 [
                     {
                         "workspace": WORKSPACE,
-                        "worker_user": WORKER,
+                        "worker_user": workers,
                         "binding": "native-fixture",
                         "source_sha256": source_fingerprint(),
                         "enabled": True,
@@ -138,7 +147,10 @@ class SuiteServer(NativeServer):
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             migrations = self.root / "migrations"
             migrations.mkdir()
-            (migrations / "1_fixture.js").write_text(SEED)
+            # PocketBase applies migrations in byte-wise filename order, so "1_fixture.js"
+            # sorted AFTER every timestamped product migration ("_" 0x5F > "7" 0x37) and
+            # they aborted looking up collections this fixture creates. Sort it first.
+            (migrations / "0000000001_fixture.js").write_text(SEED)
             install_suite_membership(self.root)
             name = "1790300000_mission_suite.js"
             shutil.copyfile(
@@ -169,6 +181,7 @@ class SuiteServer(NativeServer):
             stderr=subprocess.STDOUT,
             timeout=30,
             check=False,
+            **NO_WINDOW,
         )
         if result.returncode:
             raise AssertionError(
@@ -555,14 +568,81 @@ class NativeSuiteTests(unittest.TestCase):
         )
         self.assertEqual(self.call("poll", {"page": 1}, actor="worker")["items"], [])
 
+    def test_native_binding_pool_admits_named_workers_and_no_one_else(self) -> None:
+        """A binding may name several workers; membership alone still is not enough.
+
+        The lease was always multi-consumer machinery - suite_runs.processor is a per-user
+        relation, an expired lease is re-claimable, and complete() fences on the attempt the
+        claimer recorded - but bindings() admitted exactly one worker_user, so none of it could
+        ever be exercised. A pool shares ONE pinned source_sha256, which is what makes a result
+        reproducible, so widening the identity does not widen the evidence.
+
+        The control is the point: alice and the viewer are both workspace members and neither is
+        the original worker, so if the pool admitted people by MEMBERSHIP rather than by NAME
+        both would get through. Only alice is named.
+        """
+        server = SuiteServer(BINARY, workers=[WORKER, "accountalice001"])
+        self.addCleanup(server.close)
+        path = f"/api/buildanddo/workspaces/{WORKSPACE}/suite"
+        tokens = {name: server.login(name) for name in ("alice", "bravo", "worker", "viewer")}
+
+        def call(action, payload, revision, actor, key):
+            return server.request(
+                "POST", path,
+                {"action": action, "mission": MISSION, "revision": revision,
+                 "request_key": key, "payload": payload},
+                token=tokens[actor],
+            )
+
+        # The same grant and observation the shared fixture uses: rightsFor() refuses an
+        # enqueue whose observations are not covered by a rights record in the configure.
+        status, _ = call("configure",
+                         {"enabled": True,
+                          "rights": [{"source_id": "fixture", "rights_id": "fixture-license",
+                                      "license_ref": "Synthetic test-only observations",
+                                      "classification": "PUBLIC", "processing_allowed": True,
+                                      "export_allowed": False,
+                                      "expires_at": "2099-01-01T00:00:00Z",
+                                      "independence_group": "fixture"}],
+                          "parameters": {"gap_seconds": 900, "max_speed_knots": 45,
+                                         "position_tolerance_m": 5000, "stale_seconds": 3600}},
+                         0, "bravo", "suite_pool_configure_0001")
+        self.assertEqual(status, 200)
+        status, queued = call("enqueue",
+                              {"suite": "maritime",
+                               "input": {"observations": [
+                                   {"observation_id": "observation1", "source_id": "fixture",
+                                    "source_record_id": "record1", "entity_id": "vessel1",
+                                    "event_time": "2026-01-01T00:00:00Z",
+                                    "latitude": 30, "longitude": -90}]}},
+                              0, "bravo", "suite_pool_enqueue_0001")
+        self.assertEqual(status, 200)
+        self.assertEqual(queued["status"], "queued")
+
+        # A second NAMED worker takes the lease. Before this change she was refused outright.
+        status, lease = call("claim", {"id": queued["id"]}, queued["revision"], "alice", "suite_pool_claim_named_01")
+        self.assertEqual(status, 200)
+        self.assertEqual(lease["status"], "processing")
+
+        # ... and the run records WHICH of them holds it, which is why processor is a relation.
+        status, detail = call("detail", {"id": queued["id"]}, lease["revision"], "bravo", "suite_pool_detail_0001")
+        self.assertEqual(status, 200)
+        self.assertEqual(detail.get("processor", "accountalice001"), "accountalice001")
+
+        # The control. A member who is not NAMED is still refused as a worker, so the pool
+        # admits by binding and not by membership.
+        status, refused = call("claim", {"id": queued["id"]}, lease["revision"], "viewer", "suite_pool_control_unnamed")
+        self.assertEqual(status, 403)
+        self.assertEqual(refused.get("message"), "A registered suite worker is required.")
+
     def test_native_rollback_retains_runs_and_reup_restores_protocol(self) -> None:
         queued = self.enqueue()
         self.server.stop()
-        self.server.migrate("down")
+        self.server.revert("")
         self.server.start()
         self.call("snapshot", {"page": 1}, expected=503)
         self.server.stop()
-        self.server.migrate("up")
+        self.server.restore()
         self.server.start()
         self.assertEqual(
             self.call("snapshot", {"page": 1})["items"][0]["id"], queued["id"]

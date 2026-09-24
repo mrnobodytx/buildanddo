@@ -288,7 +288,7 @@ export function workspaceWrapper(workspace = {}) {
  * @returns {object} A configured userEvent instance.
  */
 export function setupUser() {
-    return userEvent.setup({ pointerEventsCheck: 0 });
+    return userEvent.setup({ pointerEventsCheck: 0, delay: null });
 }
 
 /**

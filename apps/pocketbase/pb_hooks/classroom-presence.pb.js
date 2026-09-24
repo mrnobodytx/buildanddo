@@ -79,6 +79,15 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
     const scope = media.scopeFor(e.app, e.auth, roomId);
     const rows = e.app.findRecordsByFilter('classroom_presence', 'room = {:room}', '-updated', 50, 0, { room: roomId });
     const items = [];
+    // One SFU read per SESSION, not per row: several rows can share a session and the echo is a
+    // network call. Bounded by MAX_ROWS, and a failure is carried as its own state so an
+    // unreachable SFU can never read as a verified track.
+    const L = require(`${__hooks}/classroom-realtime-lib.js`);
+    const echoed = {};
+    const echoFor = (sessionId) => {
+        if (!Object.hasOwn(echoed, sessionId)) echoed[sessionId] = L.echoSession(sessionId);
+        return echoed[sessionId];
+    };
     for (const row of rows) {
         const expires = Date.parse(row.getString('expires_at').replace(' ', 'T'));
         if (row.getString('workspace') !== scope.workspace || !Number.isFinite(expires) || expires <= Date.now() || row.getString('state') === 'ENDED') continue;

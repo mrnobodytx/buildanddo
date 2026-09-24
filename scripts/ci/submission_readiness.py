@@ -79,17 +79,36 @@ def load_policy(root: Path) -> dict[str, object]:
         "Keep official rules unknown in the provisional policy; attach a reviewed external copy to the entry.",
     )
     pieces = value.get("milestones")
+    # These are two different artifacts and only looked like one while both held eleven
+    # entries on the same days. sprint_cycle.MILESTONES is a VELOCITY plan - day, title and
+    # planned_value, no acceptance criteria - and the policy is the ACCEPTANCE gate, with an
+    # id and required[] per checkpoint. Comparing them positionally meant that adding a real
+    # planned milestone (day 14, Living Rooms) broke the submission gate, while the hardcoded
+    # eleven contradicted the twelve-entry list it was being compared against: no policy could
+    # satisfy both at once.
+    #
+    # The plan may legitimately carry checkpoints the submission does not gate on, so the
+    # relation is a SUBSET, not an equality: every gated checkpoint must fall on a planned day
+    # and the gate must not outgrow the plan. Renumbering the policy instead would have
+    # silently changed what HS-08 means in .bits/hostinger-readiness.json and
+    # .bits/context.lock.json, which both name these ids.
+    planned_days = [piece["day"] for piece in MILESTONES]
     require(
-        isinstance(pieces, list) and len(pieces) == 11,
-        "Account for all eleven sprint checkpoints.",
+        isinstance(pieces, list) and 0 < len(cast(list[object], pieces)) <= len(MILESTONES),
+        "Account for the sprint checkpoints without exceeding the plan.",
     )
+    previous_day = 0
     for index, item in enumerate(cast(list[object], pieces)):
         piece = object_value(item)
+        day = piece.get("day")
         require(
             piece.get("id") == f"HS-{index + 1:02}"
-            and piece.get("day") == MILESTONES[index]["day"],
-            "Retain the canonical checkpoint identity and day.",
+            and day in planned_days
+            and isinstance(day, int)
+            and day > previous_day,
+            "Retain the canonical checkpoint identity and an increasing planned day.",
         )
+        previous_day = cast(int, day)
         require(
             bool(piece.get("title")) and len(strings(piece.get("required"))) >= 4,
             "Every checkpoint needs concrete acceptance requirements.",
@@ -487,10 +506,14 @@ def main(argv: list[str] | None = None) -> int:
     options = parser.parse_args(argv)
     try:
         if options.check:
-            load_policy(options.root)
+            policy = load_policy(options.root)
             check_wiring(options.root)
+            # Report the count that was actually validated. A hardcoded "eleven" is how the
+            # gate came to disagree with the plan it checks against in the first place.
+            gated = len(cast(list[object], object_value(policy).get("milestones") or []))
             print(
-                "PASS: eleven internal submission checkpoints; official rules remain explicitly unknown."
+                f"PASS: {gated} internal submission checkpoints of {len(MILESTONES)} planned; "
+                "official rules remain explicitly unknown."
             )
         elif options.prepare:
             print(prepare(options.root, options.prepare, options.candidate))

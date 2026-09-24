@@ -144,15 +144,48 @@ def rk() -> str:
 def exercise(lane: str, seat: str, workspace: str, token: str, uid: str) -> None:
     """Drive one subsystem end to end inside this seat's own workspace."""
     if lane == "missions":
-        status, body = step("create mission", "POST", "/api/collections/missions/records",
+        # A BARE MISSION CANNOT BE APPROVED, and that refusal is the policy working. Earlier runs
+        # filed title/description only, got 400 "Complete the purpose, boundaries, security and
+        # four TEVV methods before approval", and left the lane looking broken when it was simply
+        # never satisfied. mission-policy.js wants a plan at version 1, a risk tier of A0-A2, and
+        # all fifteen PLAN_FIELDS non-empty, so the exercise files one.
+        plan = {"version": 1, "risk": "A0", "independent_review": False}
+        for field, answer in (
+            ("purpose", "Prove a fleet box can drive a mission end to end over its own CitadelKey."),
+            ("beneficiary", "Operators who need evidence that agents can use the platform, not just log in."),
+            ("in_scope", "One mission filed, approved and moved to running inside this seat's own workspace."),
+            ("out_of_scope", "Any workspace this seat does not own, and any change outside the mission record."),
+            ("baseline", "No mission has ever been approved by a box seat; the lane was unproven."),
+            ("target", "One mission reaches running with every transition recorded by the policy hook."),
+            ("authorization", "A0 read-and-record inside a workspace this seat owns."),
+            ("input_validation", "Every field is a fixed string from this file; nothing is taken from the network."),
+            ("data_handling", "Workspace records only. No credentials, no personal data, nothing leaves the workspace."),
+            ("rollback", "The mission is a record in this seat's own workspace and can be deleted by its owner."),
+            ("test", "Does the create call return 200 with a mission id?"),
+            ("evaluate", "Does the approve transition succeed once the plan is complete?"),
+            ("verify", "Does the run transition succeed only after approval, in sequence?"),
+            ("validate", "Does the mission read back as running under this seat's own token?"),
+        ):
+            plan[field] = answer
+
+        status, body = step("create mission (complete plan)", "POST",
+                            "/api/collections/missions/records",
                             {"title": "OCN mission from %s" % seat, "workspace": workspace,
-                             "owner": uid, "status": "proposed",
+                             "owner": uid, "status": "proposed", "mission_plan": plan,
                              "description": "Filed by box %s over its own CitadelKey." % seat}, token)
         if status in (200, 201):
+            mission = body["id"]
+            # The control runs FIRST, from proposed. The policy declares proposed -> approved ->
+            # running, so jumping straight to running MUST be refused. Run afterwards it would be a
+            # same-status write, which is a no-op and returns 200 - a control that cannot fail.
+            step("CONTROL skip approval (refusal wanted)", "PATCH",
+                 "/api/collections/missions/records/%s" % mission, {"status": "running"}, token)
             step("approve mission", "PATCH",
-                 "/api/collections/missions/records/%s" % body["id"], {"status": "approved"}, token)
+                 "/api/collections/missions/records/%s" % mission, {"status": "approved"}, token)
             step("run mission", "PATCH",
-                 "/api/collections/missions/records/%s" % body["id"], {"status": "running"}, token)
+                 "/api/collections/missions/records/%s" % mission, {"status": "running"}, token)
+            step("read mission back", "GET",
+                 "/api/collections/missions/records/%s" % mission, None, token)
 
     elif lane == "signals":
         step("create signal", "POST", "/api/collections/signals/records",

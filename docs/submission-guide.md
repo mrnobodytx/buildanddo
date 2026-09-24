@@ -1,7 +1,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:         docs/submission-guide.md
 # Stage:        06_PLAN
-# SRS:          SRS-BUILDANDDO-UPGRADE-001
+# SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-001
 # CAPS:         pending
 # CK:           pending
 # Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -80,7 +80,7 @@ message, billing change or invented success claim is authorized by this guide.
 | HS-07 / 13 | Firecrawl/n8n worker adapters, current-revision health and read-only receipt reconciliation | Both live bindings work; stale/disabled/unavailable paths retain their true state |
 | HS-08 / 15 | Objective/contact/task editing and executed-task mission/evidence references | Browser create/edit/link/reload, foreign relation rejection and inspected business outcome |
 | HS-09 / 17 | Exact reviewed evidence snapshots and immutable execution/review receipts | Producer differs from verifier; source/artifact/provider captures reconcile |
-| HS-10 / 19 | Correct review dates/error states, eight working specialist links, personal assistant and knowledge graph | Accurate edition and real assistant request → reviewed form action → native result, with tenant/account isolation |
+| HS-10 / 19 | Correct review dates/error states, eight working specialist links, personal assistant (Buddi) and knowledge graph | Accurate edition and real Buddi request → reviewed form action → native result, with tenant/account isolation |
 | HS-11 / 21 | Retained execution replay, native receipt/release comparison, owner-reviewed submission manifest | Full real journey and eleven decisions plus materials and captured official-rule review |
 
 `.bits/hostinger-readiness.json` remains the source/check/dependency/owner contract.
@@ -119,7 +119,7 @@ The receiving owner supplies the actual operation, allowed source and data right
 6. Have the verifier inspect the exact evidence and record four TEVV observations.
    Attempt an unauthorized evidence rewrite and verify denial. Open ERP, the
    Daily Edition and the operator snapshot to read the same outcome.
-7. Open Assistant on ERP, request help preparing a follow-up, review its proposed
+7. Open Buddi on ERP, request help preparing a follow-up, review its proposed
    steps, apply them and confirm the native saved result. Inspect personal
    session knowledge, switch accounts/workspaces and confirm isolation. Observe
    a missing provider or rejected control as an unavailable/failed state.

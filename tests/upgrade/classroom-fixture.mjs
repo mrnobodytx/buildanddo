@@ -17,10 +17,17 @@
 
 import { fixture, plain, source } from './admin-fixture.mjs';
 export const MIGRATION = 'apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js';
+// classrooms.js SHAPES requires `kind`, so a fixture carrying only the first migration answers
+// 503 "The classroom backend needs an operator review before it can be used." That is the guard
+// working, not a bug - the double simply has to install the same schema the deployment does.
+export const MIGRATIONS = [
+    MIGRATION,
+    'apps/pocketbase/pb_migrations/1791100000_room_kind.js',
+];
 
 export function classroomFixture({ runtime } = {}) {
     const f = fixture(runtime ? { runtime } : undefined);
-    f.migration(MIGRATION).up();
+    for (const migration of MIGRATIONS) f.migration(migration).up();
     const curriculum = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
     curriculum.lessons.slice(0, 2).forEach((lesson) => f.seed('tutorials', lesson));
     const service = f.load('classrooms.js');

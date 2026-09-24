@@ -50,7 +50,7 @@ function pythonPlan() {
 describe('sprint plan mirror', () => {
     it('sprint_cycle.py and RoadmapPage.jsx list the same milestones', () => {
         const canonical = pythonPlan();
-        expect(canonical).toHaveLength(11);
+        expect(canonical).toHaveLength(12);
         expect(PLANNED_MILESTONES).toHaveLength(canonical.length);
         canonical.forEach((c, i) => {
             const m = PLANNED_MILESTONES[i];

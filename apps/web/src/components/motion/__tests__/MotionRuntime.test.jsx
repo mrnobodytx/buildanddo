@@ -16,7 +16,7 @@
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MotionProvider, useMotionPreferences } from '@/contexts/MotionContext';
 import { MotionEntrance, MotionList, MotionReveal, MotionProgress, MotionValue } from '../MotionPrimitives';
@@ -33,8 +33,13 @@ beforeEach(() => {
     observers.length = 0; animations.length = 0;
     priorAnimate = Element.prototype.animate;
     Element.prototype.animate = vi.fn((frames, options) => {
-        const animation = { frames, options, cancel: vi.fn(), onfinish: null, oncancel: null };
+        const animation = { frames, options, cancel: vi.fn(), onfinish: null, oncancel: null,
+            finish: vi.fn(), play: vi.fn(), pause: vi.fn(), finished: Promise.resolve() };
         animations.push(animation);
+        // A real animation finishes. Without this the stub never settles, so an
+        // AnimatePresence with mode="wait" keeps the outgoing child mounted forever and
+        // the next stage never appears - the component's state had already advanced.
+        setTimeout(() => { animation.onfinish?.({ target: animation }); }, 0);
         return animation;
     });
     vi.stubGlobal('IntersectionObserver', class {
@@ -58,10 +63,10 @@ describe('motion activity and lifecycle', () => {
         render(<MotionProvider><Controls /><MetaFunctionFlow /><MetaFunctionDashboard animate={false} /></MotionProvider>);
         expect(screen.getByRole('heading', { name: 'MetaFunction control plane' })).toBeVisible();
         fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-        expect(await screen.findByText('Stage 02')).toBeVisible();
+        await waitFor(() => expect(screen.getByText('Stage 02')).toBeVisible());
         fireEvent.click(screen.getByText('Disable motion'));
         fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-        expect(await screen.findByText('Stage 03')).toBeVisible();
+        await waitFor(() => expect(screen.getByText('Stage 03')).toBeVisible());
         expect(screen.getByRole('heading', { name: 'MetaFunction control plane' })).toBeVisible();
     });
 

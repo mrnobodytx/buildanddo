@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/build.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (community links, sameAs and guildmaster profiles)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
 // Depends:     apps/web/tools/generate-seo.mjs
@@ -24,6 +24,11 @@ import test from 'node:test';
 import { resolveBuildRelease } from '../../scripts/ci/release.mjs';
 import { generatePublicAssets, generatePageHeads } from '../../apps/web/tools/generate-seo.mjs';
 import { PUBLIC_PAGES, SITE_ORIGIN } from '../../apps/web/src/lib/publicPages.js';
+import { COMMUNITY_LINKS, SAME_AS, STORE_LINK } from '../../apps/web/src/lib/communityLinks.js';
+import { PERSONA_PAGES } from '../../apps/web/src/data/personas.js';
+
+// The crawler resources cover the catalogue AND one profile per guildmaster.
+const INDEXED = [...PUBLIC_PAGES, ...PERSONA_PAGES];
 
 function temporary(t) {
     const root = mkdtempSync(join(tmpdir(), 'buildanddo-upgrade-'));
@@ -65,11 +70,16 @@ test('crawler resources contain every public route and exclude private pages', (
     const sitemap = readFileSync(join(root, 'sitemap.xml'), 'utf8');
     const robots = readFileSync(join(root, 'robots.txt'), 'utf8');
     const llms = readFileSync(join(root, 'llms.txt'), 'utf8');
-    assert.equal((sitemap.match(/<url>/g) || []).length, PUBLIC_PAGES.length);
-    for (const page of PUBLIC_PAGES) {
+    assert.equal((sitemap.match(/<url>/g) || []).length, INDEXED.length);
+    for (const page of INDEXED) {
         assert.ok(sitemap.includes(`<loc>${SITE_ORIGIN}${page.path}</loc>`));
         assert.ok(llms.includes(page.description));
     }
+    // llms.txt lists every community surface and the store from communityLinks.js, not a hand copy.
+    for (const link of [...COMMUNITY_LINKS, STORE_LINK]) {
+        assert.ok(llms.includes(`- [${link.label}](${link.url}): ${link.summary}`), link.id);
+    }
+    assert.ok(llms.includes('Each guildmaster is an automated agent, not a person.'));
     assert.ok(robots.includes(`Sitemap: ${SITE_ORIGIN}/sitemap.xml`));
     for (const path of [
         '/app',
@@ -93,7 +103,7 @@ test('social crawlers get route-specific metadata without executing the app', (t
     );
     const release = { version: '38+abc1234', commit_sha: 'abc1234' + '0'.repeat(33) };
     generatePageHeads(root, release);
-    for (const page of PUBLIC_PAGES) {
+    for (const page of INDEXED) {
         const html = readFileSync(join(root, page.path, 'index.html'), 'utf8');
         assert.equal((html.match(/<title>/g) || []).length, 1);
         assert.equal((html.match(/rel="canonical"/g) || []).length, 1);
@@ -109,6 +119,7 @@ test('social crawlers get route-specific metadata without executing the app', (t
         assert.equal(schema['@type'], page.type);
         assert.equal(schema.url, SITE_ORIGIN + page.path);
         assert.equal(schema.publisher.name, 'Citadel Nexus Inc.');
+        assert.deepEqual(schema.isPartOf.sameAs, [...SAME_AS]);
     }
     assert.deepEqual(JSON.parse(readFileSync(join(root, 'version.json'), 'utf8')), release);
     for (const path of ['app', 'login', 'signup', 'forgot-password', 'onboarding']) {

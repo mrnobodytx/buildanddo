@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/__tests__/AppRoutes.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (guild and status entries)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
 // Depends:     apps/web/src/App.jsx
@@ -30,14 +30,22 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllGlobals());
 
+// These routes are React.lazy, so each assertion waits on a real dynamic import.
+// Under the full 64-file parallel run that regularly exceeds the 1s default and
+// the file failed wholesale while passing 37/37 on its own. The wait is generous
+// on purpose: it is bounded, and a genuinely missing route still fails.
+const LAZY_ROUTE_TIMEOUT = 20000;
+
 describe('lazy route entry points', () => {
-    it.each(['/hostinger-challenge', '/pricing', '/about', '/docs', '/classrooms', '/blog', '/contact'])(
+    it.each(['/hostinger-challenge', '/pricing', '/about', '/docs', '/classrooms', '/blog', '/contact',
+        '/guild', '/guild/forge', '/status'])(
         'loads %s without an authenticated account',
         async (route) => {
             renderWithProviders(<AppRoutes />, { route, auth: { isAuthed: false, user: null } });
-            expect(await screen.findByRole('heading', { level: 1 })).toBeVisible();
+            expect(await screen.findByRole('heading', { level: 1 }, { timeout: LAZY_ROUTE_TIMEOUT })).toBeVisible();
             expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
         },
+        LAZY_ROUTE_TIMEOUT,
     );
 
     it.each([
@@ -71,10 +79,10 @@ describe('lazy route entry points', () => {
         '/forums',
     ])('mounts the real /app%s page inside the workspace shell', async (suffix) => {
         renderWithProviders(<AppRoutes />, { route: `/app${suffix}` });
-        expect(await screen.findByRole('heading', { level: 1 })).toBeVisible();
+        expect(await screen.findByRole('heading', { level: 1 }, { timeout: LAZY_ROUTE_TIMEOUT })).toBeVisible();
         expect(screen.getByRole('navigation', { name: 'Workspace' })).toBeVisible();
         expect(screen.queryByText(/could not be displayed/)).not.toBeInTheDocument();
-    });
+    }, LAZY_ROUTE_TIMEOUT);
 
     it('gates a protected page behind sign-in', async () => {
         renderWithProviders(<AppRoutes />, {

@@ -1,0 +1,73 @@
+{
+  "schema": "buildanddo.community-status/v1",
+  "srs": "SRS-BUILDANDDO-COMMUNITY-WEB-001",
+  "generated_at": null,
+  "stale_after_seconds": 21600,
+  "writer": "none yet: a separate community probe owns this file and replaces it whole on each run",
+  "surfaces": [
+    {
+      "id": "website",
+      "label": "BuildAndDo",
+      "url": "https://buildanddo.com",
+      "state": "UNMEASURED",
+      "checked_at": null,
+      "detail": "No probe has run yet."
+    },
+    {
+      "id": "discord",
+      "label": "Discord",
+      "url": "https://discord.gg/vTDZxmpHHC",
+      "state": "UNMEASURED",
+      "checked_at": null,
+      "detail": "No probe has run yet."
+    },
+    {
+      "id": "forum",
+      "label": "Community forum",
+      "url": "https://forum.buildanddo.com",
+      "state": "UNMEASURED",
+      "checked_at": null,
+      "detail": "No probe has run yet."
+    },
+    {
+      "id": "wiki",
+      "label": "Wiki",
+      "url": "https://wiki.buildanddo.com",
+      "state": "UNMEASURED",
+      "checked_at": null,
+      "detail": "No probe has run yet."
+    },
+    {
+      "id": "reddit",
+      "label": "r/buildanddo on Reddit",
+      "url": "https://www.reddit.com/r/buildanddo",
+      "state": "UNMEASURED",
+      "checked_at": null,
+      "detail": "No probe has run yet."
+    },
+    {
+      "id": "youtube",
+      "label": "YouTube",
+      "url": "https://www.youtube.com/@buildndo",
+      "state": "UNMEASURED",
+      "checked_at": null,
+      "detail": "No probe has run yet."
+    },
+    {
+      "id": "github",
+      "label": "GitHub",
+      "url": "https://github.com/mrnobodytx/buildanddo",
+      "state": "UNMEASURED",
+      "checked_at": null,
+      "detail": "No probe has run yet."
+    },
+    {
+      "id": "voice-agent",
+      "label": "Talk to our agent",
+      "url": "https://elevenlabs.io/app/talk-to?agent_id=agent_7801m2nrs2cney49mz2jgc5cc1yz",
+      "state": "UNMEASURED",
+      "checked_at": null,
+      "detail": "No probe has run yet."
+    }
+  ]
+}

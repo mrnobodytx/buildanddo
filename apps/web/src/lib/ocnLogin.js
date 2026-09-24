@@ -68,7 +68,7 @@ export class OcnLoginError extends Error {
     }
 }
 
-const MESSAGES = {
+export const OCN_MESSAGES = {
     no_header:
         'No Citadel seat key was supplied by the runtime (window.__BND_OCN_HEADER__ is absent). Nothing was signed in.',
     network_error: 'Could not reach BuildAndDo to verify the seat key. Nothing was signed in.',
@@ -80,7 +80,7 @@ const MESSAGES = {
 };
 
 function describe(status, code) {
-    if (MESSAGES[code]) return MESSAGES[code];
+    if (OCN_MESSAGES[code]) return OCN_MESSAGES[code];
     if (status === 401) return `The Citadel seat key was not accepted (${code}).`;
     if (status === 404) return 'This BuildAndDo backend has no OCN login route yet (deploy pending).';
     if (status >= 500) return `BuildAndDo answered ${status} (${code}). Nothing was signed in.`;
@@ -97,7 +97,7 @@ function describe(status, code) {
  *         auth store is untouched on every throw.
  */
 export async function ocnLogin({ header = readOcnHeader(), fetchImpl, client = pb } = {}) {
-    if (!header) throw new OcnLoginError(MESSAGES.no_header, 0, 'no_header');
+    if (!header) throw new OcnLoginError(OCN_MESSAGES.no_header, 0, 'no_header');
     const doFetch = fetchImpl || globalThis.fetch;
     let response;
     try {
@@ -107,7 +107,7 @@ export async function ocnLogin({ header = readOcnHeader(), fetchImpl, client = p
             headers: { 'X-Citadel-Key': header, Accept: 'application/json' },
         });
     } catch {
-        throw new OcnLoginError(MESSAGES.network_error, 0, 'network_error');
+        throw new OcnLoginError(OCN_MESSAGES.network_error, 0, 'network_error');
     }
     let body = null;
     try {
@@ -120,7 +120,7 @@ export async function ocnLogin({ header = readOcnHeader(), fetchImpl, client = p
         throw new OcnLoginError(describe(response.status, code), response.status, code);
     }
     if (!body || typeof body.token !== 'string' || !body.token || !body.record || !body.record.id) {
-        throw new OcnLoginError(MESSAGES.malformed_response, 200, 'malformed_response');
+        throw new OcnLoginError(OCN_MESSAGES.malformed_response, 200, 'malformed_response');
     }
     client.authStore.save(body.token, body.record);
     return body.record;

@@ -48,7 +48,10 @@ it('opens the saved lesson linked by a classroom and keeps personal progress sep
     expect(dialog.getByRole('heading', { name: lesson.title })).toBeVisible();
     expect(pb.collection('tutorial_progress').create).not.toHaveBeenCalled();
     await user.keyboard('{Escape}');
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    // Escape closes the dialog through a state update React still has to flush, so this is a
+    // WAIT, not a synchronous read. Asserting it directly passed only because userEvent's
+    // default delay of 0 awaited a macrotask first - the race was hidden, never removed.
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     await user.click(screen.getByRole('button', { name: 'Refresh lessons' }));
     await waitFor(() => expect(screen.getByRole('button', { name: 'Refresh lessons' })).not.toBeDisabled());
     // Refreshing the catalogue must not reopen a dismissed deep link.
@@ -115,7 +118,9 @@ describe('complete Field Manual lessons', () => {
         await user.selectOptions(screen.getByLabelText('Learning path'), 'Content production');
         expect(screen.getAllByRole('button', { name: /^Read / })).toHaveLength(5);
         await user.type(screen.getByLabelText('Search lessons'), 'social');
-        expect(screen.getAllByRole('button', { name: /^Read / })).toHaveLength(1);
+        await waitFor(() =>
+            expect(screen.getAllByRole('button', { name: /^Read / })).toHaveLength(1),
+        );
         await user.clear(screen.getByLabelText('Search lessons'));
         await user.type(screen.getByLabelText('Search lessons'), 'no-matching-lesson');
         expect(screen.getByText('No lessons match these filters.')).toBeVisible();

@@ -32,6 +32,7 @@ const hookSource = readFileSync(hookPath, 'utf8');
 function runtime(env = { BUILDANDDO_TELEMETRY_TRANSPORT: 'stdout', NODE_ENV: 'production' }) {
     const records = [];
     const hooks = {};
+    const registrations = {};
     const scope = {
         module: { exports: {} },
         $os: { getenv: (key) => env[key] || '' },
@@ -50,10 +51,11 @@ function runtime(env = { BUILDANDDO_TELEMETRY_TRANSPORT: 'stdout', NODE_ENV: 'pr
     ]) {
         hookScope[hook] = (callback) => {
             hooks[hook] = callback;
+            registrations[hook] = (registrations[hook] || 0) + 1;
         };
     }
     vm.runInNewContext(hookSource, hookScope, { filename: pathToFileURL(resolve(hookPath)).href });
-    return { records, hooks, scope, hookScope, telemetry: scope.module.exports };
+    return { records, hooks, registrations, scope, hookScope, telemetry: scope.module.exports };
 }
 
 function recordEvent(collection = 'missions') {

@@ -300,7 +300,19 @@ if (window.navigation && window.self !== window.top) {
 const addTransformIndexHtml = {
 	name: 'add-transform-index-html',
 	transformIndexHtml(html) {
-		const tags = [
+		// DEV ONLY. These five were injected into every build, so production shipped ~7.3KB of
+		// builder-template scaffolding: a window.onerror hook, a MutationObserver, a console.error
+		// override, a window.fetch monkey-patch and an iframe navigation listener. Measured on the
+		// served production HTML 2026-09-21 - not a preview artifact, the real bytes.
+		//
+		// None of it is load-bearing. The fetch patch returns the response unchanged and rethrows
+		// unchanged; it only chooses a console level, while cloning and reading the body of every
+		// failed response. Removing them leaves behaviour identical and stops the app redefining
+		// console and fetch in a visitor's session.
+		//
+		// It also lets the Content-Security-Policy drop script-src 'unsafe-inline': the only inline
+		// script left in the built page is the JSON-LD block, which is data and never executed.
+		const tags = isDev ? [
 			{
 				tag: 'script',
 				attrs: { type: 'module' },
@@ -331,7 +343,7 @@ const addTransformIndexHtml = {
 				children: configNavigationHandler,
 				injectTo: 'head',
 			},
-		];
+		] : [];
 
 		if (!isDev && process.env.TEMPLATE_BANNER_SCRIPT_URL && process.env.TEMPLATE_REDIRECT_URL) {
 			tags.push(
