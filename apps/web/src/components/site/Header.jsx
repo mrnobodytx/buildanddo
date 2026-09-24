@@ -1,7 +1,9 @@
 import MotionToggle from '@/components/motion/MotionToggle';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Activity, Menu } from 'lucide-react';
+import {Menu} from 'lucide-react';
+import BrandMark from '@/components/brand/BrandMark';
+import Wordmark from '@/components/brand/Wordmark';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/site/ui';
 import { ThemeToggle } from '@/components/ThemeControls';
@@ -35,10 +37,8 @@ export default function Header({
                     className="flex shrink-0 items-center gap-2"
                     aria-label="BuildAndDo home"
                 >
-                    <Activity className="h-5 w-5 text-primary" aria-hidden="true" />
-                    <span className="font-display text-lg font-semibold tracking-tight">
-                        BuildAndDo
-                    </span>
+                    <BrandMark size={24} decorative />
+                    <Wordmark className="text-lg" />
                 </Link>
                 <nav className="hidden min-w-0 flex-1 items-center justify-center xl:flex" aria-label="Primary">
                     <ul className="flex items-center gap-0.5">
