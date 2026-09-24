@@ -1287,6 +1287,44 @@ class WrapperTests(Harness):
         self.assertIn(b"ocn_telemetry: UNSENT (DISABLED)", done.stderr)
 
 
+class SelftestTests(Harness):
+    def test_the_selftest_passes_offline(self):
+        result = t.selftest()
+        self.assertEqual((result["state"], result["sockets_opened"]), ("PASS", 0))
+        self.assertEqual(result["passed"], result["total"])
+
+    def test_the_selftest_fails_when_the_leak_gate_is_broken(self):
+        def leaky(bodies, rule):
+            return {"state": "PASS", "ips": 0, "machines": 0, "fields": [], "rule": rule.source}
+
+        with mock.patch.object(t, "leak_gate", leaky):
+            result = t.selftest()
+        failed = {check["check"] for check in result["checks"] if check["state"] == "FAIL"}
+        self.assertEqual(result["state"], "FAIL")
+        self.assertIn("the leak gate withholds a planted machine name", failed)
+        self.assertIn("a send carrying a planted name is withheld before any request", failed)
+
+    def test_the_selftest_runs_under_ci_and_puts_the_environment_back(self):
+        with mock.patch.dict(os.environ, {"GITLAB_CI": "true"}):
+            self.assertEqual(t.selftest()["state"], "PASS")
+            self.assertNotIn("BUILDANDDO_OCN_TELEMETRY_ALLOW_CI", os.environ)
+
+    def test_the_selftest_is_a_source_check(self):
+        from scripts.ci import hostinger_checks
+
+        check = hostinger_checks.CHECKS["ocn_telemetry"]
+        self.assertEqual((check.argv, check.level), (("python", "scripts/ci/ocn_telemetry.py", "selftest"), "source"))
+
+    def test_the_selftest_command_exits_zero_and_writes_nothing_here(self):
+        state = ROOT / "state" / "ocn_telemetry"
+        before = state.exists()
+        done = subprocess.run([sys.executable, str(SCRIPT), "selftest"], cwd=ROOT, env=dict(os.environ),
+                              capture_output=True, text=True, timeout=120)
+        self.assertEqual(done.returncode, 0, done.stderr[-300:])
+        self.assertEqual(json.loads(done.stdout)["state"], "PASS")
+        self.assertEqual(state.exists(), before)
+
+
 class PublicSourceTests(unittest.TestCase):
     MACHINE = re.compile(r"\b(ray-[a-z]{3}\d+-\d+|mesh-[a-z]+|kvm\d+|rig\d+)\b", re.I)
     IPV4 = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")

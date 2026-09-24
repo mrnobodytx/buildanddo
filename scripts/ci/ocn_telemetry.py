@@ -35,6 +35,7 @@ holds a key for it, and no probe script imports it.
     ocn_telemetry.py verify (--pending | --run ID | --receipt PATH [--update-receipt] | --tags)
                             [--wait 120]
     ocn_telemetry.py probes
+    ocn_telemetry.py selftest       offline, sockets refused; hostinger_checks CHECKS['ocn_telemetry']
 
 OFF BY DEFAULT. Nothing is sent unless BUILDANDDO_OCN_TELEMETRY or --telemetry says `send`. `dry-run`
 prints what WOULD be sent to stderr, runs both gates and sends nothing. Turning the switch off is the
@@ -59,6 +60,8 @@ from __future__ import annotations
 
 import argparse
 import codecs
+import contextlib
+import copy
 import datetime as dt
 import functools
 import hashlib
@@ -66,8 +69,10 @@ import importlib
 import json
 import os
 import re
+import socket
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.parse
@@ -75,7 +80,7 @@ import urllib.request
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Iterable
+from typing import Any, Callable, Iterable, Iterator
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
@@ -2350,6 +2355,129 @@ def _publish_run(options: argparse.Namespace, argv: list[str], probe: str, scrip
                      ledger_dir=Path(options.ledger_dir) if options.ledger_dir else None, stderr=err)
 
 
+# ── selftest: offline, a CI check ────────────────────────────────────────────────────────────
+
+
+@contextlib.contextmanager
+def _socket_guard(attempts: list[str]) -> Iterator[None]:
+    """Every way out of this process refuses and is counted; the originals come back afterwards."""
+    saved = (socket.create_connection, socket.getaddrinfo, socket.socket.connect, socket.socket.connect_ex)
+
+    def refuse(*_args: Any, **_kwargs: Any) -> Any:
+        attempts.append("socket")
+        raise OSError("selftest: the network is closed")
+
+    socket.create_connection = socket.getaddrinfo = refuse
+    socket.socket.connect = socket.socket.connect_ex = refuse
+    try:
+        yield None
+    finally:
+        socket.create_connection, socket.getaddrinfo, socket.socket.connect, socket.socket.connect_ex = saved
+
+
+@contextlib.contextmanager
+def _allow_ci() -> Iterator[None]:
+    """The selftest's own sends go to a recorder behind the socket guard, so CI may run them."""
+    before = os.environ.get(ALLOW_CI_ENV)
+    os.environ[ALLOW_CI_ENV] = "1"
+    try:
+        yield None
+    finally:
+        if before is None:
+            os.environ.pop(ALLOW_CI_ENV, None)
+        else:
+            os.environ[ALLOW_CI_ENV] = before
+
+
+def _selftest_receipt(box: str, address: str) -> dict[str, Any]:
+    at = "2026-09-24T12:00:00+00:00"
+    return {"schema": PROBES["ocn_journey_report"].schema, "at": at, "box": box, "env": "staging",
+            "walked_from_ip": address, "workspace": "abc123def456ghi", "lesson_body_head": "from " + box,
+            "legs": [{"leg": "control.absent", "doing": "CONTROL", "http": 404, "verdict": "OK"},
+                     {"leg": "control.anon", "doing": "CONTROL", "http": 401, "verdict": "OK"},
+                     {"leg": "missions", "doing": "Propose", "http": 400, "verdict": "UNHELPFUL",
+                      "why": "refused " + box + " at " + address}],
+            "controls_held": True, "defects": [{"leg": "missions", "verdict": "UNHELPFUL"}], "state": "DEFECTS"}
+
+
+def selftest() -> dict[str, Any]:
+    """Offline: sockets refuse, the planted machine name and documentation address are built here,
+    and every send goes to an in-memory recorder."""
+    checks: list[dict[str, Any]] = []
+    attempts: list[str] = []
+    calls: list[str] = []
+    batches: list[Any] = []
+
+    def record(name: str, ok: bool) -> None:
+        checks.append({"check": name, "state": "PASS" if ok else "FAIL"})
+
+    def recorder(method: str, url: str, body: Any, headers: dict[str, str], timeout: float) -> tuple[int, str, Any]:
+        calls.append(url)
+        if url == PH_CAPTURE:
+            batches.append(body)
+        return (202 if "datadoghq" in url else 200), "", {}
+
+    box = "-".join(("ray", "xyz0", "0"))
+    address = ".".join(("192", "0", "2", "10"))
+    now = dt.datetime(2026, 9, 24, 12, 1, tzinfo=dt.timezone.utc)
+    fake = {CAPTURE_KEY: "_".join(("phc", "selftest" * 3)), DD_KEY: "0" * 32, DD_SITE_NAME: DD_SITE}
+    with tempfile.TemporaryDirectory(prefix="ocn-telemetry-selftest-") as folder, _socket_guard(attempts):
+        fleet = Path(folder) / "fleet.json"
+        fleet.write_text(json.dumps({"boxes": {box: {"guildmaster": "forge", "guild": "builder"}}}), encoding="utf-8")
+        ledger = Path(folder) / "ledger"
+        receipt = _selftest_receipt(box, address)
+        on_disk = {path.stem for path in HERE.glob("ocn_*.py")} - {Path(__file__).stem}
+        record("the registry names exactly the %d probes on disk" % len(on_disk),
+               set(PROBES) == on_disk and set(ADAPTERS) == set(PROBES))
+        record("an unset or unknown switch reads as off", switch_mode("") == "off" and switch_mode("loud") == "off")
+        plan = prepare(receipt, fleet_map=fleet, now=now)
+        text = json.dumps(plan.bodies)
+        record("no planted name or address reaches an outbound byte", box not in text and address not in text)
+        record("the leak gate passes the clean bodies", leak_gate(plan.bodies, plan.rule)["state"] == "PASS")
+        for label, planted, family in (("machine name", box, "machines"), ("documentation address", address, "ips")):
+            dirty = copy.deepcopy(plan.bodies)
+            dirty["posthog.batch"][0]["properties"]["ocn_state"] = planted
+            verdict = leak_gate(dirty, plan.rule)
+            record("the leak gate withholds a planted %s" % label, verdict["state"] == "FAIL" and verdict[family] >= 1)
+        tagged = copy.deepcopy(plan.bodies)
+        tagged["datadog.event"]["tags"].append("ocn_probe:not_a_probe")
+        record("the tag gate refuses a value outside its enum",
+               bool(tag_gate(tagged, plan.cat)) and not tag_gate(plan.bodies, plan.cat))
+        record("the metric catalogue stays within %d series" % SERIES_CEILING,
+               series_ceiling(plan.cat.features) <= SERIES_CEILING)
+        with _allow_ci():
+            withheld = prepare(receipt, fleet_map=fleet, now=now)
+            withheld.bodies["datadog.logs"][0]["message"] += " " + box
+            block = deliver(withheld, mode="send", ledger_dir=ledger, credentials=fake, transport=recorder, now=now)
+            record("a send carrying a planted name is withheld before any request",
+                   block["reason"] == "LEAK_GATE" and not calls)
+            block = deliver(plan, mode="send", ledger_dir=ledger, credentials=fake, transport=recorder, now=now)
+            record("a clean send goes out in order, to the pinned hosts only",
+                   block["state"] == "SENT" and calls == [PH_CAPTURE, PH_CAPTURE, DD_EVENTS, DD_LOGS])
+            sent = [event for body in batches for event in body["batch"]]
+            record("the $ip marker is attached to every sent event, and only after the gates",
+                   bool(sent) and all(event["properties"].get("$ip") == UNSPECIFIED_IP for event in sent)
+                   and "$ip" not in json.dumps(plan.bodies))
+        off = publish(receipt, mode="off", fleet_map=fleet, ledger_dir=Path(folder) / "off", transport=recorder)
+        record("off sends nothing and writes nothing",
+               off["reason"] == "DISABLED" and len(calls) == 4 and not (Path(folder) / "off").exists())
+        refused = {"schema": PROBES["ocn_seat_session"].schema, "seat": box, "env": "staging",
+                   "identity": {"state": "REFUSED", "code": "IDENTITY_CONFLICT"}, "login": "NOT_ATTEMPTED"}
+        record("a seat identity refusal is sent nowhere",
+               publish(refused, mode="send", fleet_map=fleet, ledger_dir=ledger, credentials=fake,
+                       transport=recorder, now=now)["reason"] == "IDENTITY_REFUSED" and len(calls) == 4)
+    record("no socket was opened", not attempts)
+    passed = sum(check["state"] == "PASS" for check in checks)
+    return {"schema": CONTRACT, "command": "selftest", "checks": checks, "passed": passed, "total": len(checks),
+            "sockets_opened": len(attempts), "state": "PASS" if passed == len(checks) else "FAIL"}
+
+
+def selftest_main() -> int:
+    result = selftest()
+    print(json.dumps(result, indent=2))
+    return 0 if result["state"] == "PASS" else 1
+
+
 # ── command line ─────────────────────────────────────────────────────────────────────────────
 
 
@@ -2498,6 +2626,7 @@ def build_parser() -> argparse.ArgumentParser:
     ver.add_argument("--ledger-dir", default=None)
     ver.add_argument("--strict", action="store_true")
     sub.add_parser("probes", help="print the closed probe registry")
+    sub.add_parser("selftest", help="offline checks with sockets refused; a CI gate")
     return parser
 
 
@@ -2510,6 +2639,8 @@ def main(argv: list[str] | None = None) -> int:
         return publish_main(args)
     if args.command == "verify":
         return verify_main(args)
+    if args.command == "selftest":
+        return selftest_main()
     return probes_main()
 
 

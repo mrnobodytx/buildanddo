@@ -1,3 +1,4 @@
+# CGRF: SRS=SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-OCN-TELEMETRY-001 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/hostinger_checks.py
 # Stage:       11_COMMIT
@@ -143,6 +144,14 @@ CHECKS = {
     # and "a person could finish", and a walk is only worth reading while they hold.
     "ocn_journey_report": Check(
         ("python", "scripts/ci/ocn_journey_report.py", "selftest"),
+        "source",
+    ),
+    # The OCN publisher's offline half. Sending needs the operator, keys and the private fleet map,
+    # so what is gated is what makes a send safe: sockets refuse, the planted machine name and
+    # documentation address are built at run time, and the leak gate must withhold both before any
+    # request, while the switch reads as off unless something turns it on.
+    "ocn_telemetry": Check(
+        ("python", "scripts/ci/ocn_telemetry.py", "selftest"),
         "source",
     ),
 }
