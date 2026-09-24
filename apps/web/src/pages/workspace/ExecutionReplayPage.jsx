@@ -24,16 +24,24 @@ import { businessReplay } from '@/lib/businessExecution';
 import MissionReplayCapture from '@/components/workspace/MissionReplayCapture';
 
 function Replay({ api, demo }) {
-    const [data, setData] = useState(null), [page, setPage] = useState(1), [reload, setReload] = useState(0), [error, setError] = useState('');
+    const [data, setData] = useState(null), [page, setPage] = useState(1), [reload, setReload] = useState(0), [error, setError] = useState(''), [discarded, setDiscarded] = useState(false);
     const [params, setParams] = useSearchParams(), selected = params.get('action') || '';
     const setSelected = (id) => { const next = new URLSearchParams(params); if (id) next.set('action', id); else next.delete('action'); setParams(next); };
-    const [detail, setDetail] = useState({ id: '', job: null, error: '' });
-    useEffect(() => { let alive = true; setDetail({ id: selected, job: null, error: '' });
+    const [detail, setDetail] = useState({ id: '', job: null, error: '', discarded: false });
+    useEffect(() => { let alive = true; setDetail({ id: selected, job: null, error: '', discarded: false });
+        // The single-receipt read goes through the same scope guard as the list below, so a stale
+        // answer is just as final here: record it, or a deep-linked ?action= would say it is loading forever.
         if (selected && !demo) api.read(selected).then((result) => {
-            if (alive && !result.stale) setDetail({ id: selected, job: result.ok ? result.data : null, error: result.error || '' });
+            if (!alive) return;
+            setDetail(result.stale ? { id: selected, job: null, error: '', discarded: true }
+                : { id: selected, job: result.ok ? result.data : null, error: result.error || '', discarded: false });
         }); return () => { alive = false; }; }, [api, selected, reload, demo]);
-    useEffect(() => { let alive = true; setData(null); setError('');
-        if (!demo) api.list({ page }).then((result) => { if (!alive || result.stale) return; if (result.ok) setData(result.data); else setError(result.error); });
+    useEffect(() => { let alive = true; setData(null); setError(''); setDiscarded(false);
+        // A stale answer is one the scope guard threw away because the signed-in account or selected
+        // workspace no longer matches the read; nothing further will arrive, so leaving the loading
+        // line up would make the page wait forever on a request that is already over.
+        if (!demo) api.list({ page }).then((result) => { if (!alive) return; if (result.stale) { setDiscarded(true); return; }
+            if (result.ok) setData(result.data); else setError(result.error); });
         return () => { alive = false; }; }, [api, page, reload, demo]);
     const replay = useMemo(() => businessReplay(data?.items || []), [data]);
     const job = detail.id === selected ? detail.job : null;
@@ -49,7 +57,7 @@ function Replay({ api, demo }) {
         <MissionReplayCapture api={api} demo={demo} />
         <div className="flex flex-wrap gap-3"><Button size="sm" variant="secondary" disabled={demo} onClick={() => setReload((value) => value + 1)}>Refresh receipts</Button>
             <Button size="sm" disabled={!data || demo} onClick={download}>Export this receipt page</Button><Link className="self-center text-sm underline" to="/app/workflows">Workflows</Link><Link className="self-center text-sm underline" to="/app/evidence">Evidence Ledger</Link></div>
-        {demo ? <p>No real execution receipts are loaded in demo mode.</p> : error ? <p role="alert">{error}</p> : !data ? <p role="status">Loading retained receipts…</p> : <>
+        {demo ? <p>No real execution receipts are loaded in demo mode.</p> : error ? <p role="alert">{error}</p> : discarded ? <p role="status">Receipts were not loaded: this read was made for an account and workspace that are no longer the ones open here, so the answer was discarded unread. That is not the same as having none. Use Refresh receipts to try again.</p> : !data ? <p role="status">Loading retained receipts…</p> : <>
             <p className="text-sm">This page: {replay.completed} succeeded · {replay.uncertain} uncertain · {replay.failed} failed. Provider success still requires mission review.</p>
             <div className="grid gap-4 lg:grid-cols-2"><Card className="space-y-3 p-4"><h2 className="font-display text-lg">Action receipts</h2>
                 {!data.items.length && <p className="text-sm">No recorded business actions on this page.</p>}
@@ -65,7 +73,8 @@ function Replay({ api, demo }) {
                 {job.provider === 'erp' && job.result?.reported?.output?.task && <Link className="block text-sm underline" to={`/app/erp?task=${encodeURIComponent(job.result.reported.output.task)}`}>Open resulting task</Link>}
                 <p className="text-sm">{job.status === 'hold' || job.requires_reconciliation ? 'HOLD: reconcile the existing provider result before planning another attempt.' : 'Retained execution observation.'}</p>
                 <pre className="max-h-[32rem] overflow-auto whitespace-pre-wrap break-words text-xs">{JSON.stringify(job, null, 2)}</pre>
-            </> : <p className="text-sm" role={detail.error ? 'alert' : 'status'}>{detail.error || (selected ? 'Loading the selected receipt…' : 'Select a receipt to inspect its approved input, actor, dates and exact saved result.')}</p>}</Card></div>
+            </> : <p className="text-sm" role={detail.error ? 'alert' : 'status'}>{detail.error || (selected && detail.id === selected && detail.discarded ? 'The selected receipt was not loaded: its read was discarded because it no longer matches the account and workspace open here. That does not mean the receipt is missing. Use Refresh receipts to try again.'
+                : selected ? 'Loading the selected receipt…' : 'Select a receipt to inspect its approved input, actor, dates and exact saved result.')}</p>}</Card></div>
             <Card className="space-y-3 p-4"><h2 className="font-display text-lg">Observed sequence</h2><ol className="space-y-2 text-sm">{replay.timeline.map((entry, index) => <li key={`${entry.job}:${entry.stage}:${index}`} className="border-l-2 border-border pl-3">
                 <time dateTime={entry.at}>{entry.at}</time> · {entry.stage} · {entry.actor}<p className="break-all text-xs">Action {entry.job}{entry.evidence ? ` · Evidence ${entry.evidence}` : ''}</p></li>)}</ol></Card>
         </>}

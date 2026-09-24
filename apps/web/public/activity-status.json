@@ -1,22 +1,7 @@
 {
  "schema": "buildanddo.activity-status/v1",
- "srs": "SRS-BUILDANDDO-ROADMAP-001",
- "producer": "citadel-activity-projection/1.0.1",
  "generated_at": "2026-09-23T21:12:41Z",
  "stale_after_seconds": 21600,
- "authority_effect": "NONE",
- "remote_writes": 0,
- "credentials_present": {
-  "GITLAB_ADMIN_TOKEN": true,
-  "DD_API_KEY": true,
-  "DD_APP_KEY": true,
-  "DD_SITE": true,
-  "POSTHOG_PERSONAL_API_KEY": true,
-  "POSTHOG_API_KEY": true,
-  "POSTHOG_HOST": true,
-  "CLOUDFLARE_API_TOKEN": true,
-  "CLOUDFLARE_ACCOUNT_ID": true
- },
  "window": {
   "h24_from": "2026-09-22T21:12:41Z",
   "d7_from": "2026-09-16T21:12:41Z"
@@ -38,7 +23,8 @@
    "count_24h": 3,
    "count_7d": 177,
    "evidence": "private control plane (not published)",
-   "reason": "guilds/CNWB:mrs:TimeoutError"
+   "reason": "a private project:mrs:TimeoutError",
+   "note": null
   },
   {
    "id": "gitlab.merge_requests",
@@ -49,7 +35,8 @@
    "count_24h": 0,
    "count_7d": 19,
    "evidence": "private control plane (not published)",
-   "reason": "guilds/CNWB:mrs:TimeoutError"
+   "reason": "a private project:mrs:TimeoutError",
+   "note": null
   },
   {
    "id": "guild_auditor.verdicts",
@@ -60,7 +47,7 @@
    "count_24h": 0,
    "count_7d": 18,
    "evidence": "private control plane (not published)",
-   "reason": "guilds/CNWB:mrs:TimeoutError",
+   "reason": "a private project:mrs:TimeoutError",
    "note": "verdict notes posted by the guildmaster identities on merge requests (last 15 MRs per repo)"
   },
   {
@@ -71,8 +58,9 @@
    "last_activity_at": "2026-09-22T21:24:10Z",
    "count_24h": 3,
    "count_7d": 180,
-   "evidence": "https://us5.datadoghq.com/ci/pipeline-executions",
-   "reason": null
+   "evidence": "private control plane (not published)",
+   "reason": null,
+   "note": null
   },
   {
    "id": "datadog.monitors",
@@ -82,7 +70,7 @@
    "last_activity_at": "2026-09-23T02:56:24Z",
    "count_24h": null,
    "count_7d": 99,
-   "evidence": "https://us5.datadoghq.com/monitors/manage",
+   "evidence": "private control plane (not published)",
    "reason": null,
    "note": "monitors by state: {'Alert': 17, 'OK': 41, 'No Data': 41}"
   },
@@ -94,8 +82,9 @@
    "last_activity_at": "2026-09-23T17:38:34Z",
    "count_24h": 193,
    "count_7d": 1384,
-   "evidence": "https://app.posthog.com/project/597897/activity/explore",
-   "reason": null
+   "evidence": "private control plane (not published)",
+   "reason": null,
+   "note": null
   },
   {
    "id": "cloudflare.workers",
@@ -105,7 +94,7 @@
    "last_activity_at": "2026-09-22T23:22:13Z",
    "count_24h": 1,
    "count_7d": 2,
-   "evidence": "https://dash.cloudflare.com/?to=/:account/workers",
+   "evidence": "private control plane (not published)",
    "reason": null,
    "note": "23 workers; counts are deploys (modified_on)"
   },
@@ -238,7 +227,8 @@
    "count_24h": null,
    "count_7d": null,
    "evidence": "https://staging.buildanddo.com/room-projections/systems.json",
-   "reason": "no room-projection files answered as JSON"
+   "reason": "no room-projection files answered as JSON",
+   "note": null
   },
   {
    "id": "production.rooms",
@@ -249,7 +239,8 @@
    "count_24h": null,
    "count_7d": null,
    "evidence": "https://buildanddo.com/room-projections/systems.json",
-   "reason": "no room-projection files answered as JSON"
+   "reason": "no room-projection files answered as JSON",
+   "note": null
   },
   {
    "id": "github.buildanddo",
@@ -260,7 +251,8 @@
    "count_24h": 26,
    "count_7d": 100,
    "evidence": "https://github.com/mrnobodytx/buildanddo/commits/main",
-   "reason": null
+   "reason": null,
+   "note": null
   },
   {
    "id": "memory.substrate",
@@ -271,7 +263,8 @@
    "count_24h": null,
    "count_7d": null,
    "evidence": "private control plane (not published)",
-   "reason": "not probed by this producer (use tools/cbf/_mcp_conn_probe.py)"
+   "reason": "not probed by this producer (use an internal tool)",
+   "note": null
   }
  ]
 }

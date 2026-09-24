@@ -172,12 +172,17 @@ def _lesson(value: object) -> Lesson:
         parts.append(("References", "\n\n".join(references)))
     check = mapping(body.get("check"))
     question = text(check.get("question"), 500)
+    # community-catalog.json is fetched by anyone with no session, so the generator withholds the
+    # graded answer and its explanation - publishing them made every knowledge check
+    # self-answering. Requiring an answer index here raised out of the lessons comprehension and
+    # took the WHOLE catalogue down with it, so /docs, /lesson, search and autocomplete all failed
+    # closed over a field none of them use. A check is now complete with a question and at least
+    # two choices; every other bound stays, including the six-choice cap and the 200-character
+    # choice width that strings() enforces.
     choices = strings(check.get("choices"), 6, 200)
-    answer = check.get("answer")
-    if len(choices) < 2 or type(answer) is not int or not 0 <= answer < len(choices):
+    if len(choices) < 2:
         raise DataUnavailable(DataFault.INVALID)
-    quiz = Quiz(choices, answer, text(check.get("explanation"), 1000))
-    return Lesson(slug, title, summary, category, minutes, tuple(parts), question, quiz)
+    return Lesson(slug, title, summary, category, minutes, tuple(parts), question, Quiz(choices))
 
 
 @dataclass(frozen=True)

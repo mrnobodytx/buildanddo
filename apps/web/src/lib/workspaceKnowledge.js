@@ -89,9 +89,14 @@ export function createKnowledgeClient({ client, accountId, workspaceId, demo = f
                 return { ok: true, data };
             } catch (error) {
                 if (!current() || sequence !== attempt) return stale();
-                const forbidden = [401, 403, 404].includes(error?.status);
-                return { ok: false, reason: forbidden ? 'forbidden' : 'unavailable', error: forbidden ?
-                    'This workspace or mission is no longer available to your account.' : 'Knowledge is unavailable. Retry or ask the workspace operator to check the installed knowledge API.' };
+                // A 404 is nothing matching, not an entitlement decision: the hook answers it for a mission
+                // it cannot resolve and the router answers it when a deployment never installed the knowledge
+                // route. Reported as lapsed access it sends the reader to an administrator who finds nothing.
+                const forbidden = [401, 403].includes(error?.status); const missing = error?.status === 404;
+                return { ok: false, reason: forbidden ? 'forbidden' : missing ? 'missing' : 'unavailable',
+                    error: forbidden ? 'This workspace or mission is no longer available to your account.' :
+                        missing ? 'Knowledge found no such workspace or mission. Check the selected mission, or ask the workspace operator whether this deployment carries the knowledge route.' :
+                            'Knowledge is unavailable. Retry or ask the workspace operator to check the installed knowledge API.' };
             }
         },
     };

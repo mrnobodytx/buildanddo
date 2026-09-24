@@ -21,6 +21,10 @@ const id = (value) => typeof value === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(
 const revision = (value, minimum = 0) => Number.isSafeInteger(value) && value >= minimum;
 const hash = (value) => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 const scopeChanged = () => ({ ok: false, reason: 'scope_changed', error: '' });
+// PocketBase returns these bodies for any unregistered route and any unhandled fault. They name no
+// cause, and preferring them hid the one sentence that points at the installed suite API.
+const GENERIC_SERVER_MESSAGES = new Set(["The requested resource wasn't found.", 'Something went wrong while processing your request.']);
+const specificMessage = (value) => typeof value === 'string' && value.trim() !== '' && !GENERIC_SERVER_MESSAGES.has(value.trim());
 const signature = (value) => {
     if (Array.isArray(value)) return '[' + value.map(signature).join(',') + ']';
     if (value && typeof value === 'object') return '{' + Object.keys(value).sort().map((key) => JSON.stringify(key) + ':' + signature(value[key])).join(',') + '}';
@@ -39,7 +43,7 @@ export function createSuiteClient({ client, accountId, workspaceId, missionId, d
         ['binding', 'created', 'processed_at', 'failure', 'evidence', 'result_sha256'].every((key) => typeof value[key] === 'string');
     const failure = (error, writing = false) => ({ ok: false,
         reason: error?.status === 403 || error?.status === 401 ? 'forbidden' : error?.status === 409 ? 'conflict' : writing && (!error?.status || error.status >= 500) ? 'uncertain' : 'unavailable',
-        error: typeof error?.response?.message === 'string' ? error.response.message : writing ? 'The save was not confirmed. Recover the previous request before making another change.' :
+        error: specificMessage(error?.response?.message) ? error.response.message : writing ? 'The save was not confirmed. Recover the previous request before making another change.' :
             'The mission suite is unavailable. Reload or ask the workspace operator to check its installed API.' });
     const envelope = (action, payload, expectedRevision = 0) => {
         const key = keyFactory();

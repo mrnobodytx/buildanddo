@@ -38,7 +38,15 @@ test('community projection shares all 33 lessons and the exact public page/relea
     assert.equal(result.lessons.length, 33);
     assert.deepEqual(result.pages.map((page) => page.path), PUBLIC_PAGES.map((page) => page.path));
     for (const [index, lesson] of result.lessons.entries()) {
-        assert.deepEqual(lesson.lesson, curriculum.lessons[index].lesson);
+        // Authored parity everywhere except the knowledge check, which now withholds the
+        // graded answer and its explanation - community-catalog.json is served with no
+        // session, and publishing them made every lesson check self-answering. The contract
+        // lives in tests/upgrade/community-catalogue-check-projection.test.mjs.
+        const authored = curriculum.lessons[index].lesson;
+        assert.deepEqual(lesson.lesson, {
+            ...authored,
+            check: { question: authored.check.question, choices: authored.check.choices },
+        });
         assert.equal(lesson.slug, curriculum.lessons[index].slug);
         assert.ok(!('id' in lesson));
         assert.ok(!('legacy_summary' in lesson));

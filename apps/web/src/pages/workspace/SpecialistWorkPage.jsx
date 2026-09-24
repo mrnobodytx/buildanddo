@@ -23,6 +23,7 @@ import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
+import { describeAccess } from '@/hooks/useWorkspaceControl';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 const DESKS = {
@@ -39,8 +40,15 @@ function WorkDesks() {
     const control = useWorkspaceRecords('specialist_desks'), missions = useWorkspaceRecords('missions');
     const { demo } = useDemoMode();
     const { user } = useAuth();
-    const access = useWorkspaceAccess(), canWrite = !demo && !access.loading && !access.error && access.data?.can_write === true;
+    // Every desk control below is switched off by an access outcome, and all
+    // three outcomes looked the same on screen: a grey button and no words.
+    // accessNotice is the sentence that separates them, empty when usable. The
+    // gate itself stays strict - a check still out or one that failed is not a
+    // grant - and describeAccess names exactly those states, so the sentence
+    // and the disabled control cannot disagree.
+    const access = useWorkspaceAccess(), canWrite = !demo && !access.loading && !access.error && access.data?.can_write === true, accessNotice = describeAccess(access);
     const canEdit = (record) => canWrite && (!record || record.owner === user?.id || access.data?.can_admin === true);
+    const attention = missions.records.filter((item) => ['proposed', 'needs_attention', 'failed'].includes(item.status));
     const [editing, setEditing] = useState(''), [scope, setScope] = useState(''), [status, setStatus] = useState('idle'), [error, setError] = useState(''), [busy, setBusy] = useState(false);
     const [savedVersion, setSavedVersion] = useState(null);
     const save = async (event) => {
@@ -52,14 +60,24 @@ function WorkDesks() {
     };
     return <div className="space-y-5"><PageHeader title="Specialist desks" description="Assign a scope to each kind of work and open its existing tools. Desk status is an operator record, not a claim of an active agent." />
         <Link to="/app/passport" className="text-sm underline">Capability Passport</Link>
+        {accessNotice && <p role="status" className="text-sm text-muted-foreground">{accessNotice}</p>}
         {control.degraded ? <p role="alert">Desk records are unavailable. <button className="underline" onClick={control.refresh}>Retry</button></p> : control.loading ? <p role="status">Loading desk records…</p> :
             <div className="grid gap-4 md:grid-cols-2">{Object.entries(DESKS).map(([id, [label, href, purpose]]) => {
                 const records = control.records.filter((record) => record.desk === id), record = records[0];
+                // Only when writing is otherwise allowed: if the access check is
+                // what stops the edit, accessNotice above already says so, and
+                // blaming ownership here would send the person the wrong way.
+                // The copy names the rule, not a person - a record with no
+                // owner field fails the same check, and we do not know who.
+                const notOwner = canWrite && records.length === 1 && !canEdit(record);
                 return <Card key={id} className="space-y-3 p-4"><h2 className="font-display text-lg">{label}</h2><p className="text-sm">{purpose}</p>
                     <p className="text-sm">{records.length > 1 ? 'Duplicate records: review required' : record ? `Recorded status: ${record.status}` : 'Scope not assigned'}</p>
                     <p className="whitespace-pre-wrap text-sm text-muted-foreground">{record?.scope}</p>
                     <div className="flex gap-3"><Link to={href} className="self-center text-sm underline">Open {label.toLowerCase()} tools</Link>
-                        <Button size="sm" variant="secondary" disabled={!canEdit(record) || busy || control.uncertain || records.length > 1} onClick={() => { setEditing(id); setSavedVersion(record || null); setScope(record?.scope || ''); setStatus(record?.status || 'idle'); }}>Edit scope</Button></div>
+                        <Button size="sm" variant="secondary" disabled={!canEdit(record) || busy || control.uncertain || records.length > 1}
+                            aria-describedby={notOwner ? `desk-owner-${id}` : undefined}
+                            onClick={() => { setEditing(id); setSavedVersion(record || null); setScope(record?.scope || ''); setStatus(record?.status || 'idle'); }}>Edit scope</Button></div>
+                    {notOwner && <p id={`desk-owner-${id}`} className="text-sm text-muted-foreground">Only the editor who recorded this desk, or a workspace admin, can change its scope.</p>}
                 </Card>;
             })}</div>}
         {editing && <form onSubmit={save} className="space-y-3 border border-border p-4"><h2 className="font-semibold">{DESKS[editing][0]} scope</h2>
@@ -74,8 +92,12 @@ function WorkDesks() {
             const result = await control.retry(); if (result.ok) { setEditing(''); setError(''); } else setError(result.error);
         }}>Retry previous scope save</Button>}
         <Card className="space-y-3 p-4"><h2 className="font-display text-lg">Current work requiring attention</h2>
-            {missions.degraded ? <p role="alert">Mission reads are unavailable.</p> : missions.loading ? <p>Loading missions…</p> : <ul className="space-y-2 text-sm">{
-                missions.records.filter((item) => ['proposed', 'needs_attention', 'failed'].includes(item.status)).map((item) => <li key={item.id}><Link className="underline" to={`/app/missions?mission=${encodeURIComponent(item.id)}`}>{item.title}</Link> · {item.status}</li>)}</ul>}
+            {missions.degraded ? <p role="alert">Mission reads are unavailable.</p> : missions.loading ? <p>Loading missions…</p> : attention.length === 0 ?
+                // A bare heading over an empty list read as "we have nothing to
+                // tell you", which is the unreadable state the degraded branch
+                // above exists to stay out of. Say that the read happened.
+                <p className="text-sm text-muted-foreground">No mission is flagged for attention right now.</p> : <ul className="space-y-2 text-sm">{
+                    attention.map((item) => <li key={item.id}><Link className="underline" to={`/app/missions?mission=${encodeURIComponent(item.id)}`}>{item.title}</Link> · {item.status}</li>)}</ul>}
         </Card>
     </div>;
 }

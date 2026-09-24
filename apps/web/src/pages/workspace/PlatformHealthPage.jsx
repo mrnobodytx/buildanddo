@@ -7,13 +7,15 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-11
-// Depends:     scripts/ci/fleet_report.py,
+// Depends:     apps/pocketbase/pb_hooks/estate.pb.js,
+//              apps/web/src/lib/pocketbaseClient.js,
 //              apps/web/src/components/workspace/workspaceHelpers.jsx,
 //              apps/web/src/components/site/ui.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/public/platform-health.json;
-//              DEPENDS_ON scripts/ci/fleet_report.py
-// Intent:      Say which connected platforms are actually being used, keeping
+// EnumEdges:   CONSUMES GET /api/buildanddo/estate/platform-health;
+//              DEPENDS_ON apps/pocketbase/pb_hooks/estate.pb.js
+// Intent:      Say which of the operating company's connected platforms are
+//              actually being used, to the operator who owns them, keeping
 //              "unknown" separate from "unused" so an unreadable entitlement is
 //              never counted as a deliberate gap.
 // ───────────────────────────────────────────────────────────────
@@ -40,12 +42,70 @@ import {
 } from '@/components/workspace/workspaceHelpers';
 import { DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNotices';
 import { formatDate } from '@/lib/format';
+import pocketbaseClient from '@/lib/pocketbaseClient';
 import { cn } from '@/lib/utils';
 
-const REPORT_URL = '/platform-health.json';
+// The full assessment is no longer a published file: the backend answers this route to a master
+// seat and to nobody else (estate.pb.js). The narrowed public file that remains carries only the
+// per-platform state the marketing status page reads.
+const REPORT_ROUTE = '/api/buildanddo/estate/platform-health';
 
+// WHAT A REJECTION HERE MEANS, AND ONLY WHAT IT MEANS. An absent report is not a rejection: the
+// route answers 200 with {state:'UNMEASURED'} for that, handled below. Reaching this branch means
+// the request itself did not complete, so the copy may not name a cause the page does not have.
 const MISSING_REPORT =
-    'platform-health.json was not served. It is written at build time by scripts/ci/fleet_report.py, so an absent file means the projection did not run — not that no platform is connected.';
+    'The platform report could not be read: the request to the estate route did not complete. Nothing is drawn below, because a failed read is not an estate with nothing connected.';
+
+const UNMEASURED_REPORT =
+    'The platform report answered but carried no measurement, so there is nothing to show yet.';
+
+const NOT_LIVE = 'Nothing on this page is measured when you open it.';
+
+/**
+ * How old the reading is, said only as far as the report actually says it.
+ *
+ * "We have not loaded it yet", "the report did not date itself" and "it was
+ * taken on this day" are three different answers, and the page must not spend
+ * one of them on another.
+ *
+ * @param {boolean} hasReport Whether a report has been read at all.
+ * @param {string|null} observedLabel The formatted observation date, if any.
+ * @returns {string} The sentence to show under the scope statement.
+ */
+function ageSentence(hasReport, observedLabel) {
+    if (!hasReport) return NOT_LIVE;
+    if (!observedLabel) {
+        return `The report did not say when it was taken, so the age of this reading is unknown. ${NOT_LIVE}`;
+    }
+    return `Transcribed on ${observedLabel}. ${NOT_LIVE}`;
+}
+
+/**
+ * When the reading was taken, and that opening the page does not take a new one.
+ *
+ * This was an amber warning card headed "not your workspace", written to stop a passing workspace
+ * user reading the operating company's vendor figures as their own. The route is now a master
+ * seat's only, so that reader cannot arrive: the warning was addressed to nobody, and it named
+ * whose the accounts are for a second time on a page that already says so in its first sentence.
+ * What it carried that nothing else did - the age of the reading, and that this is a transcription
+ * rather than a gauge - is kept here, in one line, at the weight an owner needs.
+ *
+ * @param {object} props Component props.
+ * @param {boolean} props.hasReport Whether a report has been read at all.
+ * @param {string|null} props.observedLabel The formatted observation date, if any.
+ * @returns {JSX.Element} The provenance line.
+ */
+function ReadingProvenance({ hasReport, observedLabel }) {
+    return (
+        <p
+            role="note"
+            data-testid="platform-health-scope"
+            className="font-evidence mt-4 border-l-2 border-border/80 pl-3 text-xs leading-relaxed text-muted-foreground"
+        >
+            {ageSentence(hasReport, observedLabel)}
+        </p>
+    );
+}
 
 // A feature whose entitlement could not be read is `unknown`, and unknown is
 // excluded from the utilization denominator in fleet_report.py. Presenting it
@@ -205,10 +265,8 @@ export default function PlatformHealthPage() {
         let cancelled = false;
         setLoading(true);
         setFailed(false);
-        fetch(REPORT_URL, { cache: 'no-store' })
-            .then((response) =>
-                response.ok ? response.json() : Promise.reject(new Error(`status ${response.status}`)),
-            )
+        pocketbaseClient
+            .send(REPORT_ROUTE, { method: 'GET', requestKey: null })
             .then((data) => {
                 if (cancelled) return;
                 setReport(data);
@@ -272,7 +330,7 @@ export default function PlatformHealthPage() {
         <div className="space-y-8">
             <PageHeader
                 title="Platform Health"
-                description="Which connected platforms are earning their keep. A feature is only counted against you when it is available and off — an entitlement that could not be read stays Unknown and is left out of the score."
+                description="Which of the vendor platforms Citadel Nexus Inc connects to are earning their keep, read from the operating company's own accounts. A feature is only counted against a platform when it is available and switched off - an entitlement that could not be read stays Unknown and is left out of the score."
                 actions={
                     report ? (
                         <ProvenanceTag
@@ -282,10 +340,24 @@ export default function PlatformHealthPage() {
                         />
                     ) : null
                 }
-            />
+            >
+                <ReadingProvenance hasReport={Boolean(report)} observedLabel={observedLabel} />
+            </PageHeader>
 
             {failed && (
                 <DegradedNotice message={MISSING_REPORT} onRetry={() => setAttempt((n) => n + 1)} />
+            )}
+
+            {/* THE REPORT CAN ARRIVE WITHOUT A MEASUREMENT. A 200 carrying
+                {state:'UNMEASURED', reason} and no totals leaves `failed` false, stops the
+                spinner, and the body below - gated on `totals` - draws nothing at all: a title,
+                a provenance tag, and silence, with no error and no way to retry. FleetPage had
+                the same hole. The server's own reason is worth saying out loud. */}
+            {!loading && !failed && report && !totals && (
+                <DegradedNotice
+                    message={report.reason || UNMEASURED_REPORT}
+                    onRetry={() => setAttempt((n) => n + 1)}
+                />
             )}
 
             {loading && <ListSkeleton rows={4} />}

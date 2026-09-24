@@ -216,7 +216,13 @@ export default function EvidencePage() {
             />
 
 
-            <Link to="/app/research" className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">Submit and review research sources</Link>
+            {/* The header above promises the reasoning can be replayed. That replay is a
+                separate route, and for a while this page named the promise without ever
+                pointing at it - readable only to someone who already knew the sidebar. */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
+                <Link to="/app/research" className="inline-flex min-h-11 items-center underline underline-offset-4">Submit and review research sources</Link>
+                <Link to="/app/replay" className="inline-flex min-h-11 items-center underline underline-offset-4">Open execution replay</Link>
+            </div>
             <div className="flex flex-wrap gap-2">
                 {Object.keys(EVIDENCE_TYPE).map((key) => (
                     <StatusBadge key={key} map={EVIDENCE_TYPE} value={key} />

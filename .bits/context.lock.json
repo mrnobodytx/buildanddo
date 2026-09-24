@@ -67,7 +67,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
+      "evidence": "referenced by: tests/upgrade/test_platform_health_public_projection.py, tests/upgrade/test_public_redaction.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/fleet_report.py is not configured in reachable GitLab jobs"
@@ -186,7 +186,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
+      "evidence": "referenced by: tests/upgrade/test_platform_health_public_projection.py, tests/upgrade/test_public_redaction.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/public_redaction.py is not configured in reachable GitLab jobs"
@@ -225,6 +225,13 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/verify_public_disclosure.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/workspace_readiness.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "governance",
@@ -366,6 +373,7 @@
       "configured_providers": [],
       "path": "scripts/ci/fleet_report.py",
       "referenced_by": [
+        "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
       "wired_into_ci": false
@@ -432,7 +440,8 @@
       ],
       "path": "scripts/ci/ocn_feature_sweep.py",
       "referenced_by": [
-        "scripts/ci/hostinger_checks.py"
+        "scripts/ci/hostinger_checks.py",
+        "scripts/deploy/apply_production_runtime_config.py"
       ],
       "wired_into_ci": true
     },
@@ -518,6 +527,7 @@
       "configured_providers": [],
       "path": "scripts/ci/public_redaction.py",
       "referenced_by": [
+        "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
       "wired_into_ci": false
@@ -619,6 +629,12 @@
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
+      "path": "scripts/ci/workspace_readiness.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "configured_providers": [
         "gitlab"
       ],
@@ -643,7 +659,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T09:17:12.318607+00:00",
+  "generated_at": "2026-09-24T11:02:13.304467+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1245,17 +1261,18 @@
       "apps/web/tools/lint.mjs",
       "apps/web/tools/observability-smoke.mjs",
       "apps/web/vite.config.js",
+      "scripts/deploy/apply_production_runtime_config.py",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 75,
-    "python_files": 437,
+    "python_files": 441,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1783,
-    "web_source_files": 416
+    "tracked_files": 1800,
+    "web_source_files": 428
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1334,22 +1351,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "a3369a8b652d9f27271bf6565332d8024fba096d0254824f9f777d876011113c",
+    "source_sha256": "bb699684d721bc4740026f2b5f8585e4764b7b9d2743aabe2c41609e5ea5c4c3",
     "state": "PASS"
   },
   "summary": {
-    "findings": 35,
-    "findings_high": 35,
+    "findings": 36,
+    "findings_high": 36,
     "pipelines": 10,
     "srs_open": 44,
     "srs_total": 48,
-    "unwired_gates": 32
+    "unwired_gates": 33
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 90,
+    "js_test_files": 102,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
