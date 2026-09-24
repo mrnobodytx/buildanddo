@@ -155,8 +155,8 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         await view.previous.callback(interaction())
         self.assertEqual(view.session.index, 0)
 
-    async def test_queued_quiz_answers_keep_exactly_one_explanation(self) -> None:
-        reply = Reply((Page("Question", "Choose."),), quiz=Quiz(("A", "B"), 1, "B requires evidence."))
+    async def test_queued_quiz_answers_keep_exactly_one_reply(self) -> None:
+        reply = Reply((Page("Question", "Choose."),), quiz=Quiz(("A", "B")))
         view = ADAPTER.ReplyView(self.service, self.caller, reply)
         self.addCleanup(view.stop)
         first, second = interaction(), interaction()
@@ -215,7 +215,7 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(owner.followup.send.await_args.kwargs["ephemeral"])
 
     async def test_lost_quiz_delivery_can_retry_the_same_answer(self) -> None:
-        reply = Reply((Page("Question", "Choose."),), quiz=Quiz(("A", "B"), 1, "B requires evidence."))
+        reply = Reply((Page("Question", "Choose."),), quiz=Quiz(("A", "B")))
         view = ADAPTER.ReplyView(self.service, self.caller, reply)
         self.addCleanup(view.stop)
         lost = interaction()
@@ -227,7 +227,8 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         retry = interaction()
         await view.answer(retry, 1)
         rendered = retry.edit_original_response.await_args.kwargs["embed"].to_dict()
-        self.assertIn("B requires evidence.", rendered["description"])
+        # The retry redelivers the one recorded choice, not a second, different reply.
+        self.assertIn("You chose 2:\n\"B\"", rendered["description"])
 
     async def test_timeout_disables_controls_and_keeps_public_links(self) -> None:
         view = ADAPTER.ReplyView(self.service, self.caller, Reply((Page("One", "First"), Page("Two", "Second"))))

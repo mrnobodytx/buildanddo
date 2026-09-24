@@ -275,7 +275,7 @@ class InteractionTests(unittest.TestCase):
     def test_sessions_reject_foreign_expired_and_repeated_answers(self) -> None:
         reply = Reply(
             (Page("Question", "Choose an answer."), Page("Next", "More.")),
-            quiz=Quiz(("A", "B"), 1, "B is correct because evidence is required."),
+            quiz=Quiz(("A", "B")),
         )
         session = PersonalSession(10, reply, now=0)
         self.assertEqual(session.move(10, 10, 1).title, "Next")
@@ -285,13 +285,17 @@ class InteractionTests(unittest.TestCase):
         with self.assertRaises(InteractionDenied):
             session.answer(10, -1, 1)
         result = session.answer(10, 0, 1)
-        self.assertIn("Review", result.body)
+        self.assertIn("You chose 1:\n\"A\"", result.body)
         self.assertIn("Practice only", result.body)
+        # The public feed carries no graded answer, so no choice may come back a verdict.
+        self.assertNotIn("Correct", result.body)
         with self.assertRaises(InteractionDenied):
             session.answer(10, 1, 1)
         with self.assertRaises(InteractionDenied):
             PersonalSession(10, reply, now=0).answer(10, 1, 600)
-        self.assertIn("Correct", PersonalSession(10, reply, now=0).answer(10, 1, 1).body)
+        other = PersonalSession(10, reply, now=0).answer(10, 1, 1)
+        self.assertIn("You chose 2:\n\"B\"", other.body)
+        self.assertNotIn("Correct", other.body)
         self.assertEqual(session.answer(10, 0, 2), result)
 
     def test_user_and_global_limits_expire_without_unbounded_identity_storage(self) -> None:

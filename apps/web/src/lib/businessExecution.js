@@ -32,8 +32,17 @@ export function createBusinessClient({ client, workspaceId, accountId, isCurrent
             if (value?.workspace !== workspaceId || method === 'GET' && (!Array.isArray(value.items) || value.items.some((job) => job.workspace !== workspaceId)))
                 return { ok: false, reason: method === 'POST' ? 'uncertain' : 'rejected', error: 'The action receipt has a different workspace scope.' };
             return { ok: true, data: value };
-        } catch (error) { return current() ? { ok: false, reason: method === 'POST' && !(error?.status > 0 && error.status < 500) ? 'uncertain' : 'rejected',
-            error: error?.response?.message || 'Could not confirm this action. Reload its receipts before retrying.' } : { ok: false, stale: true }; }
+        } catch (error) {
+            if (!current()) return { ok: false, stale: true };
+            // A write that got no definite 4xx may still have landed, so callers must recover the same
+            // request instead of retrying blindly. A read changed nothing and is simply rejected.
+            const reason = method === 'POST' && !(error?.status > 0 && error.status < 500) ? 'uncertain' : 'rejected';
+            // A read performed no action, so the command sentence would name one the person never
+            // took and send them looking for a receipt that was never going to exist.
+            const fallback = method === 'GET' ? 'Could not load these action receipts. Reload the page to try again.'
+                : 'Could not confirm this action. Reload its receipts before retrying.';
+            return { ok: false, reason, error: error?.response?.message || fallback };
+        }
     };
     return { list: (query = {}) => request('GET', undefined, query), command: (input) => request('POST', input),
         async captureMission(mission) {

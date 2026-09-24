@@ -67,7 +67,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
+      "evidence": "referenced by: tests/upgrade/test_platform_health_public_projection.py, tests/upgrade/test_public_redaction.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/fleet_report.py is not configured in reachable GitLab jobs"
@@ -186,7 +186,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_ocn_telemetry.py, tests/upgrade/test_public_redaction.py",
+      "evidence": "referenced by: tests/upgrade/test_ocn_telemetry.py, tests/upgrade/test_platform_health_public_projection.py, tests/upgrade/test_public_redaction.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/public_redaction.py is not configured in reachable GitLab jobs"
@@ -225,6 +225,13 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/verify_public_disclosure.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/workspace_readiness.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "governance",
@@ -367,6 +374,7 @@
       "configured_providers": [],
       "path": "scripts/ci/fleet_report.py",
       "referenced_by": [
+        "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
       "wired_into_ci": false
@@ -436,6 +444,7 @@
       "path": "scripts/ci/ocn_feature_sweep.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
+        "scripts/deploy/apply_production_runtime_config.py",
         "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": true
@@ -536,6 +545,7 @@
       "path": "scripts/ci/public_redaction.py",
       "referenced_by": [
         "tests/upgrade/test_ocn_telemetry.py",
+        "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
       "wired_into_ci": false
@@ -637,6 +647,12 @@
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
+      "path": "scripts/ci/workspace_readiness.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "configured_providers": [
         "gitlab"
       ],
@@ -661,7 +677,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T14:54:58.548293+00:00",
+  "generated_at": "2026-09-24T15:25:55.408427+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1272,17 +1288,18 @@
       "apps/web/tools/lint.mjs",
       "apps/web/tools/observability-smoke.mjs",
       "apps/web/vite.config.js",
+      "scripts/deploy/apply_production_runtime_config.py",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 75,
-    "python_files": 439,
+    "python_files": 443,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1788,
-    "web_source_files": 416
+    "tracked_files": 1805,
+    "web_source_files": 428
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1361,22 +1378,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "34e0121984e138397148c5859a50c17b0040d45b09887cd724b6f28879cfc853",
+    "source_sha256": "e0e1d10d42b6a1ee01dc74fc81d1d9f6accb7e80327f548e1806a87dfe8c05c9",
     "state": "PASS"
   },
   "summary": {
-    "findings": 35,
-    "findings_high": 35,
+    "findings": 36,
+    "findings_high": 36,
     "pipelines": 10,
     "srs_open": 45,
     "srs_total": 49,
-    "unwired_gates": 32
+    "unwired_gates": 33
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 90,
+    "js_test_files": 102,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

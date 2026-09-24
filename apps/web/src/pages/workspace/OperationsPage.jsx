@@ -69,6 +69,7 @@ import {
     WriteErrorNotice,
 } from '@/components/workspace/WorkspaceNotices';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { describeAccess } from '@/hooks/useWorkspaceControl';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import IntegrationControls from '@/components/workspace/IntegrationControls';
 import { timeAgo } from '@/lib/format';
@@ -183,6 +184,10 @@ function OperationCard({ operation, runs, onLogRun, busy }) {
 
 export default function OperationsPage() {
     const access = useWorkspaceAccess();
+    // The record controls below are switched off by three different access
+    // outcomes and used to look identical in all three. This is the sentence
+    // that tells them apart; it is empty whenever the controls are usable.
+    const accessNotice = describeAccess(access);
     const services = useWorkspaceRecords('services', { sort: 'created' });
     const operations = useWorkspaceRecords('operations', { sort: '-created' });
     const runs = useWorkspaceRecords('operation_runs', { sort: '-created' });
@@ -291,6 +296,12 @@ export default function OperationsPage() {
                             Add operation
                         </Button>
                     </div>
+
+                    {accessNotice && (
+                        <p role="status" className="text-sm leading-relaxed text-muted-foreground">
+                            {accessNotice}
+                        </p>
+                    )}
 
                     <WriteErrorNotice
                         message={validation || operations.writeError || runs.writeError}

@@ -43,7 +43,7 @@ COMMANDS = {
     "docs": "Search the site's public documentation and product pages.",
     "learn": "Search authored lessons, including government submissions, by topic or category.",
     "lesson": "Read a complete starter lesson in private pages.",
-    "quiz": "Practice a lesson's knowledge check with an explanation.",
+    "quiz": "Practice a lesson's knowledge check; the lesson marks it, not the bot.",
     "workspace": "Open a workspace desk using your existing website permissions.",
     "support": "Find the product support and bug-reporting entry points.",
     "diagnostics": "Inspect bot scope and public-read counters as a server manager.",

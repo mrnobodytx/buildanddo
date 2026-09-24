@@ -26,6 +26,29 @@ const starter = JSON.parse(readFileSync(
 const government = JSON.parse(readFileSync(new URL('../../pocketbase/pb_migrations/data/government-submissions.json', import.meta.url), 'utf8'));
 const authored = { version: starter.version + '+' + government.version, lessons: [...starter.lessons, ...government.lessons] };
 
+// Every field of a lesson's knowledge check that the public catalogue is allowed to serve is
+// named here. community-catalog.json is fetched with no session by anyone who knows the URL, so a
+// projection that copied the authored check and deleted the graded fields would publish the next
+// graded field an author adds. Naming the public fields instead withholds a new authored field by
+// default; it reaches the public file only when someone adds its name to this list.
+// Deliberately absent: answer and explanation. Publishing them makes every knowledge check
+// self-answering, so the assessment measures nothing.
+export const PUBLIC_CHECK_FIELDS = Object.freeze(['question', 'choices']);
+
+/** Build the public knowledge check from the named allowlist, never by copying the authored one.
+ * @param {object} check Authored knowledge check, already validated above.
+ * @returns {object} Only the fields named in PUBLIC_CHECK_FIELDS.
+ */
+function publicCheck(check) {
+    const projection = {};
+    for (const field of PUBLIC_CHECK_FIELDS) {
+        const value = check[field];
+        // Copied, not referenced, so the served document never aliases authored curriculum data.
+        projection[field] = Array.isArray(value) ? [...value] : value;
+    }
+    return projection;
+}
+
 function text(value, max) {
     return typeof value === 'string' && value.trim().length > 0 && value.length <= max;
 }
@@ -82,10 +105,7 @@ export function buildCommunityCatalogue(release, { pages = PUBLIC_PAGES, curricu
                     ...(section.steps ? { steps: [...section.steps] } : {}),
                 })),
                 exercise: { prompt: lesson.exercise.prompt, checklist: [...lesson.exercise.checklist] },
-                check: {
-                    question: lesson.check.question, choices: [...lesson.check.choices],
-                    answer: lesson.check.answer, explanation: lesson.check.explanation,
-                },
+                check: publicCheck(lesson.check),
                 references: lesson.references.map(({ label, url }) => ({ label, url })),
             },
         };

@@ -1,8 +1,12 @@
 // Deterministic layout helpers for BuildAndDo Living Rooms.
+// Two vocabularies reach this map. The workspace kinds were absent, so every node in a workspace
+// room took the shared default, landed on one level and drew a single row thousands of pixels wide;
+// their levels follow the recorded edge directions so a relationship always points down the page.
 const TYPE_LEVEL = {
     organization: 0, guild: 1, team: 2, seat: 3, agent: 3, capability: 4,
     requirement: 0, srs: 1, dispatch: 2, branch: 3, commit: 4, pull_request: 5,
     test_run: 6, candidate: 7, staging: 8, deployment: 9, release: 10, repository: 0,
+    signal: 0, evidence: 1, research: 2, mission: 3, wiki: 4, category: 5, topic: 5,
 };
 
 export function indexProjection(projection) {
