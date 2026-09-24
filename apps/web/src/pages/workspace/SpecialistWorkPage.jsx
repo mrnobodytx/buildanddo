@@ -24,6 +24,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
+import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 const DESKS = {
     research: ['Research', '/app/research', 'Capture sources and preserve their provenance.'],
     strategy: ['Strategy', '/app/erp', 'Set objectives and connect business tasks.'],
@@ -37,13 +38,16 @@ const DESKS = {
 function WorkDesks() {
     const control = useWorkspaceRecords('specialist_desks'), missions = useWorkspaceRecords('missions');
     const { demo } = useDemoMode();
-    const access = useWorkspaceAccess(), canWrite = !demo && access.data?.can_write === true;
+    const { user } = useAuth();
+    const access = useWorkspaceAccess(), canWrite = !demo && !access.loading && !access.error && access.data?.can_write === true;
+    const canEdit = (record) => canWrite && (!record || record.owner === user?.id || access.data?.can_admin === true);
     const [editing, setEditing] = useState(''), [scope, setScope] = useState(''), [status, setStatus] = useState('idle'), [error, setError] = useState(''), [busy, setBusy] = useState(false);
+    const [savedVersion, setSavedVersion] = useState(null);
     const save = async (event) => {
-        event.preventDefault(); if (busy || !canWrite) return; setBusy(true); setError('');
+        event.preventDefault(); if (busy || !canEdit(savedVersion) || control.uncertain) return; setBusy(true); setError('');
         const records = control.records.filter((record) => record.desk === editing);
         if (records.length > 1) { setError('Duplicate desk records require operator review.'); setBusy(false); return; }
-        const result = records[0] ? await control.update(records[0].id, { scope: scope.trim(), status }) : await control.create({ desk: editing, scope: scope.trim(), status });
+        const result = savedVersion ? await control.update(savedVersion.id, { scope: scope.trim(), status }, savedVersion) : await control.create({ desk: editing, scope: scope.trim(), status });
         if (result.ok) setEditing(''); else setError(result.error || 'The desk could not be saved.'); setBusy(false);
     };
     return <div className="space-y-5"><PageHeader title="Specialist desks" description="Assign a scope to each kind of work and open its existing tools. Desk status is an operator record, not a claim of an active agent." />
@@ -55,15 +59,20 @@ function WorkDesks() {
                     <p className="text-sm">{records.length > 1 ? 'Duplicate records: review required' : record ? `Recorded status: ${record.status}` : 'Scope not assigned'}</p>
                     <p className="whitespace-pre-wrap text-sm text-muted-foreground">{record?.scope}</p>
                     <div className="flex gap-3"><Link to={href} className="self-center text-sm underline">Open {label.toLowerCase()} tools</Link>
-                        <Button size="sm" variant="secondary" disabled={!canWrite || busy || records.length > 1} onClick={() => { setEditing(id); setScope(record?.scope || ''); setStatus(record?.status || 'idle'); }}>Edit scope</Button></div>
+                        <Button size="sm" variant="secondary" disabled={!canEdit(record) || busy || control.uncertain || records.length > 1} onClick={() => { setEditing(id); setSavedVersion(record || null); setScope(record?.scope || ''); setStatus(record?.status || 'idle'); }}>Edit scope</Button></div>
                 </Card>;
             })}</div>}
         {editing && <form onSubmit={save} className="space-y-3 border border-border p-4"><h2 className="font-semibold">{DESKS[editing][0]} scope</h2>
+            <fieldset className="space-y-3" disabled={busy || !canEdit(savedVersion) || control.uncertain}>
             <label className="block text-sm">Scope<textarea className="mt-1 w-full border border-border bg-background p-2" maxLength={500} value={scope} onChange={(event) => setScope(event.target.value)} /></label>
             <label className="block text-sm">Desk status<select className="ml-2 border border-border bg-background p-2" value={status} onChange={(event) => setStatus(event.target.value)}>{['idle', 'active', 'blocked'].map((item) => <option key={item}>{item}</option>)}</select></label>
-            <Button size="sm" type="submit" disabled={busy || !canWrite}>Save scope</Button><Button size="sm" type="button" variant="ghost" onClick={() => setEditing('')}>Cancel</Button>
+            <Button size="sm" type="submit">Save scope</Button><Button size="sm" type="button" variant="ghost" onClick={() => setEditing('')}>Cancel</Button>
+            </fieldset>
         </form>}
         {error && <p role="alert">{error}</p>}
+        {control.uncertain && <Button size="sm" disabled={control.saving || !canWrite} onClick={async () => {
+            const result = await control.retry(); if (result.ok) { setEditing(''); setError(''); } else setError(result.error);
+        }}>Retry previous scope save</Button>}
         <Card className="space-y-3 p-4"><h2 className="font-display text-lg">Current work requiring attention</h2>
             {missions.degraded ? <p role="alert">Mission reads are unavailable.</p> : missions.loading ? <p>Loading missions…</p> : <ul className="space-y-2 text-sm">{
                 missions.records.filter((item) => ['proposed', 'needs_attention', 'failed'].includes(item.status)).map((item) => <li key={item.id}><Link className="underline" to={`/app/missions?mission=${encodeURIComponent(item.id)}`}>{item.title}</Link> · {item.status}</li>)}</ul>}
@@ -71,6 +80,6 @@ function WorkDesks() {
     </div>;
 }
 export default function SpecialistWorkPage() {
-    const { user } = useAuth(), { active } = useWorkspace(), { demo } = useDemoMode();
-    return <WorkDesks key={`${user?.id}:${active?.id}:${demo}`} />;
+    const { user, sessionEpoch } = useAuth(), { active } = useWorkspace(), { demo } = useDemoMode(), access = useWorkspaceAccess();
+    return <WorkDesks key={workspaceLifecycleKey({ accountId: user?.id, workspaceId: active?.id, demo, sessionEpoch, access })} />;
 }

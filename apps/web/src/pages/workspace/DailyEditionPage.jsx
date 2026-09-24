@@ -1,17 +1,18 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/DailyEditionPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     apps/web/src/hooks/useWorkspaceRecords.js,
-//              apps/web/src/lib/workspaceActions.js
+//              apps/web/src/lib/dailyDigest.js, apps/web/src/lib/workspaceControl.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.edition.create
+//              CONSUMES apps/web/src/lib/dailyDigest.js; CONSUMES apps/web/src/lib/workspaceControl.js
 // Intent:      Show the day the edition is about — today's priorities, what was
 //              completed, what is blocked — beside the editions themselves.
 // ───────────────────────────────────────────────────────────────
@@ -31,13 +32,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Card, ProvenanceTag, Rule } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import EmptyState from '@/components/workspace/EmptyState';
 import {
@@ -53,12 +47,15 @@ import {
     WriteErrorNotice,
 } from '@/components/workspace/WorkspaceNotices';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { useDemoMode } from '@/hooks/useDemoMode';
 import { timeAgo } from '@/lib/format';
 import { dailyDigest } from '@/lib/dailyDigest';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
+import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 
-const EMPTY_FORM = { title: '', summary: '', body: '', edition_date: '', status: 'draft' };
+const EMPTY_FORM = { title: '', summary: '', body: '', edition_date: '' };
 
 function fmtDate(iso) {
     if (!iso) return '—';
@@ -99,7 +96,14 @@ function DailyEditionDesk() {
         saving,
         writeError,
         clearWriteError,
+        demo,
+        uncertain,
+        retry,
     } = useWorkspaceRecords('daily_editions', { sort: '-created' });
+    const access = useWorkspaceAccess();
+    const canWrite = !demo && !access.loading && !access.error && access.data?.can_write === true;
+    const canCreate = canWrite && !loading && !degraded;
+    const canPublish = canCreate && access.data?.can_admin === true;
 
     const missions = useWorkspaceRecords('missions', { sort: '-created' });
     const signals = useWorkspaceRecords('signals', { sort: '-created' });
@@ -124,6 +128,7 @@ function DailyEditionDesk() {
 
     const submit = async (event) => {
         event.preventDefault();
+        if (!canCreate || saving || uncertain) return;
         if (!form.title.trim()) {
             setValidation('An edition needs a headline.');
             return;
@@ -133,8 +138,7 @@ function DailyEditionDesk() {
             title: form.title.trim(),
             summary: form.summary.trim(),
             body: form.body.trim(),
-            edition_date: form.edition_date || null,
-            status: form.status,
+            edition_date: form.edition_date || '',
         });
         if (!result.ok) return;
         setForm(EMPTY_FORM);
@@ -142,9 +146,8 @@ function DailyEditionDesk() {
     };
 
     const publish = async (edition) => {
-        const result = await update(edition.id, { status: 'published' });
-        if (!result.ok) return;
-
+        if (!canPublish || saving || uncertain) return;
+        await update(edition.id, { status: 'published' }, edition);
     };
 
     const digestLoading = digest.loading;
@@ -157,6 +160,7 @@ function DailyEditionDesk() {
                 actions={
                     <Button
                         size="sm"
+                        disabled={!canCreate || uncertain}
                         onClick={() => {
                             setValidation('');
                             clearWriteError();
@@ -167,7 +171,11 @@ function DailyEditionDesk() {
                     </Button>
                 }
             />
-
+            {!show && <WriteErrorNotice message={writeError} onDismiss={clearWriteError} />}
+            {uncertain && <Button size="sm" disabled={!canWrite || saving} onClick={async () => {
+                const result = await retry(); if (result.ok) { setForm(EMPTY_FORM); setShow(false); }
+            }}>Retry previous save</Button>}
+            <p className="text-sm text-muted-foreground">Save a draft first. A current workspace administrator can publish that saved version; publication records an account and server timestamp, not independent verification.</p>
 
             {digest.unavailable.length > 0 ? (
                 <DegradedNotice message={`Daily summary unavailable: ${digest.unavailable.join(' and ')} could not be read.`}
@@ -252,10 +260,12 @@ function DailyEditionDesk() {
             {show && (
                 <Card className="p-5">
                     <form onSubmit={submit} className="space-y-4">
+                        <fieldset className="space-y-4" disabled={saving || !canCreate || uncertain}>
                         <div className="grid gap-2">
                             <Label htmlFor="ed-title">Headline</Label>
                             <Input
                                 id="ed-title"
+                                maxLength={200}
                                 value={form.title}
                                 onChange={(event) => set('title', event.target.value)}
                                 placeholder="e.g. Friday no-shows down 40% after reminder mission"
@@ -265,6 +275,7 @@ function DailyEditionDesk() {
                             <Label htmlFor="ed-summary">Standfirst (summary)</Label>
                             <Input
                                 id="ed-summary"
+                                maxLength={1000}
                                 value={form.summary}
                                 onChange={(event) => set('summary', event.target.value)}
                                 placeholder="One-sentence summary of today's intelligence"
@@ -274,6 +285,7 @@ function DailyEditionDesk() {
                             <Label htmlFor="ed-body">Body</Label>
                             <Textarea
                                 id="ed-body"
+                                maxLength={10000}
                                 value={form.body}
                                 onChange={(event) => set('body', event.target.value)}
                                 rows={6}
@@ -290,29 +302,16 @@ function DailyEditionDesk() {
                                     onChange={(event) => set('edition_date', event.target.value)}
                                 />
                             </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="ed-status">Status</Label>
-                                <Select
-                                    value={form.status}
-                                    onValueChange={(value) => set('status', value)}
-                                >
-                                    <SelectTrigger id="ed-status">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="draft">Draft</SelectItem>
-                                        <SelectItem value="published">Published</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            <p className="text-sm text-muted-foreground">New editions are saved as drafts.</p>
                         </div>
                         <WriteErrorNotice
                             message={validation || writeError}
                             onDismiss={clearWriteError}
                         />
-                        <Button type="submit" size="sm" disabled={saving}>
+                        <Button type="submit" size="sm">
                             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save edition'}
                         </Button>
+                        </fieldset>
                     </form>
                 </Card>
             )}
@@ -325,10 +324,10 @@ function DailyEditionDesk() {
                 <EmptyState
                     icon={Newspaper}
                     title="No editions yet"
-                    description="The first edition will appear after the system receives verified events. No sample headlines are generated. Write one from the summary above once you have real intelligence to record."
+                    description="Write a draft from the workspace observations you can support. No sample headlines, publication or verification is inferred from an empty record list."
                     action={
                         <div className="flex flex-wrap items-center justify-center gap-2">
-                            <Button size="sm" onClick={() => setShow(true)}>
+                            <Button size="sm" disabled={!canCreate || uncertain} onClick={() => setShow(true)}>
                                 <Plus className="h-4 w-4" /> New edition
                             </Button>
                             <DemoModeToggle />
@@ -351,11 +350,12 @@ function DailyEditionDesk() {
                                             </p>
                                         )}
                                     </div>
-                                    <StatusBadge
+                                    {edition.status === 'published' && (!edition.published_by || !edition.published_at) ?
+                                        <span className="text-xs text-muted-foreground">Historical reported publication</span> : <StatusBadge
                                         map={EDITION_STATUS}
                                         value={edition.status}
                                         className="shrink-0"
-                                    />
+                                    />}
                                 </div>
                                 {edition.body && (
                                     <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-foreground/90">
@@ -365,14 +365,14 @@ function DailyEditionDesk() {
                                 <Rule className="my-3" />
                                 <div className="flex flex-wrap items-center justify-between gap-3">
                                     <ProvenanceTag
-                                        source="workspace record"
-                                        timestamp={fmtDate(edition.edition_date || edition.created)}
+                                        source={edition.published_by ? `Published by account ${edition.published_by}` : 'Authored workspace record'}
+                                        timestamp={fmtDate(edition.published_at || edition.edition_date || edition.created)}
                                     />
                                     {edition.status === 'draft' && (
                                         <Button
                                             variant="secondary"
                                             size="sm"
-                                            disabled={saving}
+                                            disabled={saving || !canPublish || uncertain}
                                             onClick={() => publish(edition)}
                                         >
                                             Publish
@@ -395,6 +395,6 @@ function DailyEditionDesk() {
 }
 
 export default function DailyEditionPage() {
-    const { user } = useAuth(), { active } = useWorkspace();
-    return <DailyEditionDesk key={`${user?.id}:${active?.id}`} />;
+    const { user, sessionEpoch } = useAuth(), { active } = useWorkspace(), access = useWorkspaceAccess(), { demo } = useDemoMode();
+    return <DailyEditionDesk key={workspaceLifecycleKey({ accountId: user?.id, workspaceId: active?.id, demo, sessionEpoch, access })} />;
 }

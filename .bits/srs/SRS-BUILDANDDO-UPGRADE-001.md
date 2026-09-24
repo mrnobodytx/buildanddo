@@ -20,6 +20,48 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Test isolation and claim authority - 2026-09-23
+
+Continue the owner's repair-and-learning request against the newly supplied
+mission, evidence and progression findings under this existing A2 dispatch.
+Prioritize unsafe test destinations and falsifiable progress/claim boundaries;
+do not turn every audit suggestion into a new feature or operational grant.
+
+Acceptance:
+
+1. The Praxis selftests must fail before importing deployment configuration,
+   authenticating or writing unless launched against a fresh disposable backend
+   owned by the local test runner. GitLab invokes that isolated runner instead
+   of inheriting a shared PB_API_URL. Preserve real native testing and report an
+   absent binary as blocked; never run these tests against staging or production.
+2. Guided tutorial responses omit grading keys and pre-answer explanations while
+   the server preserves original lesson snapshots and grades them. The catalogue
+   derives guided completion from the locked learning records, not owner-edited
+   reading history. Close direct progress writes with a guarded forward migration,
+   retain historical rows and certificates, and label public quizzes/practice as
+   open-book/self-reported, not independently verified mastery.
+3. Close raw writes for the named support, correction, editorial and seat-report
+   surfaces using existing native authentication and explicit scoped commands.
+   Protect provider-observation fields, author-owned drafts and administrator
+   publication. No supplied correction status or agent label confers verification.
+   Preserve old bytes as historical reports without fabricated reviewer/provider
+   provenance. Seat reports retain the actual submitting account separately from
+   claimed labels; no new agent identity grant or provider binding is invented.
+4. Add adversarial source and disposable-native regression cases, including
+   hookless raw-write denial, revoked/foreign permissions and false legacy claims.
+   Preserve required GitLab jobs, both PocketBase profiles and all eighteen
+   acceptance checks. Do not disable gates or relabel unavailable checks as pass.
+5. Add these repairs and corrected audit conclusions to the existing site lesson
+   and source-case-study pattern with dated, bounded evidence. Retain earlier
+   captures as history. No seeded learner completion, XP, verified evidence,
+   epoch publication, shared-backend writes, provider calls or deployment.
+
+Deferred decisions remain explicit: mission assignment/follow-ups, worker hosting,
+durable epoch publication, a unified progression model, consent policy and actual
+release configuration. A mission's verified label must not mint new independent
+evidence by itself. Deployment controls and production variables remain with their
+private receiving owners; this source pass neither reads nor changes them.
+
 ## Broadcast integration repairs and lessons - 2026-09-23
 
 The owner requests repairs for the inspected merged broadcast classroom and

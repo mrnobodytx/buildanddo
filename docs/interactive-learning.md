@@ -34,8 +34,12 @@ and personal growth display are shared with Docs and the home Field Manual.
 
 The certificate records the learner name at completion, tutorial title/version,
 content fingerprint, issue time and stable receipt ID. It certifies completion
-of this educational tutorial. It is not a signed W3C credential, independent
-TEVV result, professional qualification or external accreditation.
+of this open-book educational tutorial with self-reported practice. It is not a
+signed W3C credential, independently verified mastery, TEVV result, professional
+qualification or external accreditation. Guided responses contain only the
+question and choices; feedback follows an answer command. Full authored grading
+keys remain in public source and open-book previews. Hiding an API field cannot
+make those questions a secret or proctored examination.
 
 ## Persistent growth
 
@@ -52,7 +56,14 @@ save or starting it on another device retains the same certificate and points.
 
 Existing manual tutorial completions remain visible in lesson history. They do
 not receive retroactive certificates or points; learners can complete the guided
-version to earn those. Mission learning retains its existing separate progress.
+version to earn those. Catalogue completion uses canonical `tutorial_learning`
+states from `/api/buildanddo/learning/states`, not manual reading rows. Direct
+`tutorial_progress` create/update/delete operations are locked; historical rows
+remain owner-readable. A failed or truncated aggregate read shows unknown
+completion, not zero or an optimistic fallback. An individually readable public
+lesson remains openable even when a restricted enrollment makes the aggregate
+unavailable; its detail and commands recheck access. Mission learning retains its
+separate shared practice/self-report and does not grant personal competence.
 The independently audited contributor reputation and XP/TP ledger are unchanged.
 Learning does not grant permissions, money or verified business outcomes.
 
@@ -71,13 +82,15 @@ enrollment continues to use its original content when the catalogue is edited.
 Current catalogue access is rechecked before detail reads and commands.
 
 Each command is monotonic and naturally idempotent. Lost responses can replay the
-same action without another award. Completion, certificate issuance and projection
-to the existing account-owned `tutorial_progress` run in one database transaction.
-Old duplicate progress rows are retained, not deleted or counted as extra credit.
-A failed write cannot leave a certificate with an unrecorded progress transition.
+same action without another award. Completion and certificate issuance run in
+one database transaction. New writes no longer mirror into legacy reading rows;
+that mixed-authority projection is not the completion source. Old duplicate
+progress rows and all prior certificates are retained unchanged. A failed write
+cannot leave a certificate with an unrecorded checkpoint transition.
 
-Certificate history remains personal even if a current catalogue entry becomes
-unreadable. Export is explicit, contains no email or private workspace evidence,
+Certificate history remains stored and personal if a current catalogue entry
+becomes unreadable; reads still require its current scope and can be denied.
+Export is explicit, contains no email or private workspace evidence,
 escapes all text, and contains no scripts or remote assets. It includes a name;
 the learner controls any later sharing. A digest identifies saved content and
 does not establish third-party authenticity.
@@ -89,6 +102,13 @@ Ship `1790600000_tutorial_learning.js`, `tutorial-learning.js`,
 `workflow-policy.js` dependencies with the matching web build. Existing tutorial
 catalogue migrations must already be installed. This source change does not
 apply migrations or change a shared backend.
+
+The claim-authority continuation also requires
+`1791500000_learning_progress_authority.js` with the keyless-response backend and
+matching client. It locks legacy progress writes without awarding or deleting
+anything. Its down path keeps that security lock and all owner-readable history;
+do not restore owner-writable completion as a rollback. Public reading and local
+quiz practice remain available without saving progress.
 
 The migration is idempotent and rejects incompatible custom definitions. Its
 explicit down path removes the protocol marker to disable new learning commands

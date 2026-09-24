@@ -31,7 +31,8 @@
         "scripts/ci/verify_public_boundary.py",
         "docs/sprint-user-journey.md",
         "tests/assurance",
-        "docs/test-assurance.md"
+        "docs/test-assurance.md",
+        "services/praxis_evidence"
       ],
       "checks": [
         "boundary",
@@ -57,9 +58,10 @@
         "Review pipelines retain exactly one actor label from the current provider context; GitHub exports bind repository, review number and exact tested head. Missing metadata cannot satisfy governance.",
         "Automatic public PR governance and required GitLab checks remain enabled; neither provider substitutes for observed candidate acceptance.",
         "The supplemental assurance source job preserves evidence/authority and payment-boundary regressions; the opt-in full runtime matrix reports unavailable dependencies as non-passing and does not replace the eighteen-profile gate.",
-        "Career, Knowledge Unit, integrity and world-twin behavior suites are included in source acceptance; their existing per-module coverage gates run on Python 3.11 and 3.12 and block submission when incomplete."
+        "Career, Knowledge Unit, integrity and world-twin behavior suites are included in source acceptance; their existing per-module coverage gates run on Python 3.11 and 3.12 and block submission when incomplete.",
+        "The blocking Praxis GitLab job runs both declared profiles in fresh runner-owned loopback databases. Direct selftests reject absent, foreign or changed fixtures before authentication; deployment configuration, shared targets, proxies and redirects cannot become test authority. Missing native binaries remain blocked."
       ],
-      "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic."
+      "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them."
     },
     {
       "id": "HS-02",
@@ -117,6 +119,10 @@
         "apps/pocketbase/pb_migrations",
         "apps/pocketbase/pb_hooks/workspace-access.js",
         "apps/pocketbase/pb_hooks/workspace-record-policy.js",
+        "apps/pocketbase/pb_hooks/workspace-claims.js",
+        "apps/pocketbase/pb_hooks/workspace-claims.pb.js",
+        "apps/pocketbase/pb_hooks/tutorial-learning.js",
+        "apps/pocketbase/pb_hooks/tutorial-learning.pb.js",
         "apps/pocketbase/pb_hooks/workspace-administration.js",
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/pocketbase/pb_hooks/workspace-assistant.js",
@@ -148,7 +154,8 @@
         "Personal assistant collections deny other users including workspace administrators; protocol rollback retains records and disables commands.",
         "Collection queries group extra predicates under the workspace filter. Foreign targets and stale account/workspace read or write results cannot appear current.",
         "Government membership records deny ordinary raw CRUD; down/up migrations preserve receipts and keep restricted lessons fenced.",
-        "Media sessions bind native account, workspace, live room and attendance revision. Signalling/presence reject stale, revoked, foreign, unbound or closed sessions and unknown tracks; publishing additionally requires room management plus the configured allowlist. Both native profiles load media, attendance, usage and learning migrations rather than the old classroom subset."
+        "Media sessions bind native account, workspace, live room and attendance revision. Signalling/presence reject stale, revoked, foreign, unbound or closed sessions and unknown tracks; publishing additionally requires room management plus the configured allowlist. Both native profiles load media, attendance, usage and learning migrations rather than the old classroom subset.",
+        "Raw writes to legacy tutorial progress and the seven claim/editorial collections stay locked even without request hooks. Current native commands own guided completion, author/admin draft changes, publication stamps and submitting-account attribution; retained legacy data acquires no fabricated provenance."
       ],
       "next_step": "Execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging."
     },
@@ -438,7 +445,14 @@
         "apps/web/src/pages/workspace/EvidencePage.jsx",
         "apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json",
         "apps/web/public/broadcast-repairs-source.txt",
-        "docs/classrooms.md"
+        "docs/classrooms.md",
+        "apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json",
+        "apps/web/public/authority-repairs-source.txt",
+        "apps/web/public/authority-repairs-final-source.txt",
+        "apps/web/public/authority-repairs-recovery-source.txt",
+        "apps/web/src/lib/workspaceClaims.js",
+        "apps/web/src/lib/tutorialLearning.js",
+        "docs/claim-authority.md"
       ],
       "checks": [
         "source_node",
@@ -466,7 +480,8 @@
         "The government desk is restricted to paid approved members and labels supplied research leads, synthetic demonstrations and absent model/GPU verification explicitly.",
         "The Career Passport desk reads current scoped work and shows imported verification as reported; account/workspace changes or revocation clear private reviews, DO NOT CLAIM gaps remain visible, and imports cannot approve or submit applications.",
         "Same-grant permission polling preserves career imports, journey drafts and assistant work while pausing new requests. Observed denial/regrant boundaries invalidate old work; already-issued command receipts may settle only in the same lifetime, and private reads/chat remain permission-gated. Polling cannot steal keyboard focus.",
-        "Pending media joins and discovery cannot revive cancelled room/account lifetimes; same-session token refresh preserves subscriptions. Structured agent detail renders as bounded inert text. The broadcast repair lesson and downloadable source-test evidence stay separate from workspace outcomes, learning completion, independent verification and deployed acceptance."
+        "Pending media joins and discovery cannot revive cancelled room/account lifetimes; same-session token refresh preserves subscriptions. Structured agent detail renders as bounded inert text. The broadcast repair lesson and downloadable source-test evidence stay separate from workspace outcomes, learning completion, independent verification and deployed acceptance.",
+        "Catalogue completion derives from canonical guided states, not editable reading history; unavailable aggregates do not block individually authorized tutorials or imply zero completion. Open-book/self-reported limits, pending correction review, absent payment ingestion and claimed agent labels remain visible. The authority-repair lesson and source capture cannot create workspace outcomes or learner awards."
       ],
       "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt."
     },

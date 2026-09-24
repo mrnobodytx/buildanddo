@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js
+// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js
+// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js
 // DAG Node:    none
 // Intent:      Exercise actual learning commands against the existing explicit transactional storage double.
 // ───────────────────────────────────────────────────────────────
@@ -19,8 +19,9 @@ import { createHash } from 'node:crypto';
 import { fixture, plain, source } from './admin-fixture.mjs';
 
 export const MIGRATION = 'apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js';
+export const PROGRESS_MIGRATION = 'apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js';
 
-export function learningFixture() {
+export function learningFixture({ progressAuthority = true } = {}) {
     const f = fixture({ runtime: { $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') } } });
     for (const name of ['lesson', 'curriculum_version']) f.collections.tutorials.fields.add({ name });
     const curriculum = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
@@ -29,6 +30,7 @@ export function learningFixture() {
     f.seed('users', { id: 'owner', name: 'Test Learner' });
     f.app.countRecords = (name, filter, params) => f.app.findRecordsByFilter(name, filter, '', 0, 0, params).length;
     f.migration(MIGRATION).up();
+    if (progressAuthority) f.migration(PROGRESS_MIGRATION).up();
     const service = f.load('tutorial-learning.js');
     const detail = (id = lessons[0].id, actor = 'owner') => plain(service.detail(f.event(actor, {}, { id })));
     const list = (actor = 'owner', query = {}) => plain(service.list(f.event(actor, {}, { query })));
@@ -38,7 +40,8 @@ export function learningFixture() {
         const started = command('start', {}, options);
         for (let index = 0; index < started.tutorial.lesson.sections.length; index++) command('section', { index }, options);
         command('practice', { checks: started.tutorial.lesson.exercise.checklist.map(() => true) }, options);
-        return command('answer', { choice: started.tutorial.lesson.check.answer }, options);
+        const saved = f.data.tutorial_learning.find((row) => row.id === started.enrollment.id);
+        return command('answer', { choice: saved.snapshot.lesson.check.answer }, options);
     };
     return { ...f, get data() { return f.data; }, lessons, service, detail, list, command, finish };
 }

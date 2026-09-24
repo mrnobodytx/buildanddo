@@ -8,11 +8,13 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-21
-// Depends:     apps/pocketbase/pb_hooks/workspace-record-policy.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-record-policy.js, apps/web/src/lib/workspaceClaims.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-record-policy.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-record-policy.js; CONSUMES apps/web/src/lib/workspaceClaims.js
 // Intent:      Keep collection requests and their results bound to the account and workspace that initiated them.
 // ───────────────────────────────────────────────────────────────
+
+import { CLAIM_COLLECTIONS, createWorkspaceClaimClient } from './workspaceClaims.js';
 
 /** Create scope-bound CRUD operations over native PocketBase rules.
  * @param {object} options Client, collection, current scope and mutation observer.
@@ -24,6 +26,8 @@ export function createWorkspaceRecordClient({ client, collection, workspaceId, a
     const current = () => Boolean(accountId && workspaceId && isCurrent() && client.authStore.record?.id === accountId);
     const stale = () => ({ ok: false, stale: true, reason: 'scope_changed', error: 'The workspace or account changed. Reload before continuing.' });
     const belongs = (record) => record && record.workspace === workspaceId && typeof record.id === 'string' && record.id;
+    let saved = new Map();
+    const claims = CLAIM_COLLECTIONS.includes(collection) ? createWorkspaceClaimClient({ client, collection, workspaceId, accountId, isCurrent, observe }) : null;
     return {
         async read({ sort = '-created', expand, extraFilter = '' } = {}) {
             if (!current()) return stale();
@@ -33,11 +37,13 @@ export function createWorkspaceRecordClient({ client, collection, workspaceId, a
                     filter: extraFilter ? `${base} && (${extraFilter})` : base, requestKey: null });
                 if (!current()) return stale();
                 if (!Array.isArray(records) || records.some((record) => !belongs(record))) throw new Error('Unexpected record scope');
+                if (claims) saved = new Map(records.map((record) => [record.id, record]));
                 return { ok: true, records };
             } catch { return current() ? { ok: false, error: 'Could not load this data right now. What you see may be incomplete.' } : stale(); }
         },
-        async write(operation, id, data = {}) {
+        async write(operation, id, data = {}, version) {
             if (!current()) return stale();
+            if (claims) return claims.write(operation, id, data, version || saved.get(id));
             if (busy) return { ok: false, reason: 'busy', error: 'Wait for the current save to finish.' };
             if (!['create', 'update', 'delete'].includes(operation) ||
                 operation !== 'create' && ['owner', 'workspace'].some((field) => Object.hasOwn(data, field)))
@@ -63,5 +69,6 @@ export function createWorkspaceRecordClient({ client, collection, workspaceId, a
                     'Could not confirm this save. Refresh the records before trying again.' };
             } finally { busy = false; }
         },
+        retry: () => claims ? claims.retry() : Promise.resolve({ ok: false, reason: 'invalid', error: 'Refresh these records before trying again.' }),
     };
 }

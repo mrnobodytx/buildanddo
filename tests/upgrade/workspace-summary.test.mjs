@@ -66,24 +66,25 @@ test('today uses the local calendar and excludes unknown and future timestamps',
     assert.equal(isToday(new Date().toISOString()), true);
 });
 
-test('editions show the latest publication, excluding drafts, future and invalid dates', () => {
+test('editions require a native publication stamp, excluding legacy labels, drafts and future stamps', () => {
     const records = [
-        { id: 'older', status: 'published', edition_date: yesterday, created: morning },
+        { id: 'older', status: 'published', edition_date: tomorrow, published_at: yesterday, published_by: 'admin', claim_revision: 2 },
         { id: 'draft', status: 'draft', edition_date: morning },
-        { id: 'scheduled', status: 'published', edition_date: tomorrow },
-        { id: 'invalid', status: 'published', edition_date: 'invalid' },
-        { id: 'latest', status: 'published', edition_date: '', created: morning },
+        { id: 'scheduled', status: 'published', published_at: tomorrow, published_by: 'admin', claim_revision: 2 },
+        { id: 'invalid', status: 'published', published_at: 'invalid', published_by: 'admin', claim_revision: 2 },
+        { id: 'latest', status: 'published', edition_date: yesterday, published_at: morning, published_by: 'admin', claim_revision: 2 },
+        { id: 'legacy', status: 'published', edition_date: morning, created: morning },
     ];
     assert.equal(latestPublishedEdition(records, now).id, 'latest');
     assert.deepEqual(
         records.map((record) => record.id),
-        ['older', 'draft', 'scheduled', 'invalid', 'latest'],
+        ['older', 'draft', 'scheduled', 'invalid', 'latest', 'legacy'],
     );
     assert.equal(latestPublishedEdition(records.slice(1, 4), now), null);
     assert.equal(latestPublishedEdition([]), null);
 });
 
-test('correction previews require both halves of a verified comparison', () => {
+test('legacy verified comparisons never become verified previews without an installed review authority', () => {
     const complete = {
         status: 'verified',
         prior_prediction: 'Expected 4',
@@ -97,15 +98,16 @@ test('correction previews require both halves of a verified comparison', () => {
             { ...complete, prior_prediction: '' },
             { status: 'verified' },
         ]),
-        [complete],
+        [],
     );
+    assert.equal(complete.status, 'verified', 'preserve the reported label instead of rewriting history');
 });
 
-test('a reported amount requires a real sync and currency, not just a connection state', () => {
+test('self-reported amounts never become provider-confirmed revenue without an installed ingestor', () => {
     const record = { status: 'healthy', last_sync: morning, gross: 20, currency: 'USD' };
-    assert.equal(hasReportedRevenue(record, now), true);
-    assert.equal(hasReportedRevenue({ ...record, gross: 0 }, now), true);
-    assert.equal(hasReportedRevenue({ ...record, status: 'degraded' }, now), true);
+    assert.equal(hasReportedRevenue(record, now), false);
+    assert.equal(hasReportedRevenue({ ...record, gross: 0 }, now), false);
+    assert.equal(hasReportedRevenue({ ...record, status: 'degraded' }, now), false);
     for (const overrides of [
         { status: 'pending' },
         { status: 'not_connected' },
@@ -129,7 +131,8 @@ test('a reported amount requires a real sync and currency, not just a connection
             false,
             JSON.stringify(overrides),
         );
-    assert.equal(hasReportedRevenue({ ...record, last_sync: new Date().toISOString() }), true);
+    assert.equal(hasReportedRevenue({ ...record, last_sync: new Date().toISOString(), provider_confirmed: true, receipt: 'claimed' }), false);
+    assert.equal(record.gross, 20, 'legacy values remain inspectable historical reports');
 });
 
 test('amounts preserve currency and missing fees never become zero', () => {

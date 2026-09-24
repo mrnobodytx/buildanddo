@@ -19,6 +19,10 @@ routerAdd('GET', '/api/buildanddo/learning', (e) => {
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(200, require(`${__hooks}/tutorial-learning.js`).list(e));
 }, $apis.requireAuth('users'));
+routerAdd('GET', '/api/buildanddo/learning/states', (e) => {
+    e.response.header().set('Cache-Control', 'no-store');
+    return e.json(200, require(`${__hooks}/tutorial-learning.js`).states(e));
+}, $apis.requireAuth('users'));
 routerAdd('GET', '/api/buildanddo/learning/{id}', (e) => {
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(200, require(`${__hooks}/tutorial-learning.js`).detail(e));

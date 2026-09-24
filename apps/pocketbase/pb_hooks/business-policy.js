@@ -143,22 +143,10 @@ function removeContent(e) {
     return e.next();
 }
 
-/** Preserve account-owned lesson progress and completed learning. */
-function progress(e, creating) {
+/** Retain historical reading rows; guided commands own new learning progress. */
+function progress(e) {
     access.authenticated(e);
-    const record = e.record;
-    const original = creating ? null : record.original();
-    if (record.getString('owner') !== e.auth.id || (!creating &&
-        (record.getString('owner') !== original.getString('owner') || record.getString('tutorial') !== original.getString('tutorial'))))
-        access.invalid('Learning progress stays with its original account and lesson.');
-    const tutorial = access.find(e.app, 'tutorials', record.getString('tutorial'));
-    if (!require(`${__hooks}/government-access.js`).lesson(e.app, e.auth, tutorial)) access.readable(e.app, tutorial, e.requestInfo());
-    const status = record.getString('status');
-    if (!['not_started', 'in_progress', 'completed'].includes(status)) access.invalid('Choose a listed learning state.');
-    if (original?.getString('status') === 'completed' && status !== 'completed')
-        access.invalid('Reviewing a lesson keeps its completed progress.');
-    record.set('progress', { not_started: 0, in_progress: 50, completed: 100 }[status]);
-    return e.next();
+    throw new ForbiddenError('Use guided tutorial commands to save progress. Historical reading records are read-only.');
 }
 
 module.exports = { erp, content, removeContent, progress };

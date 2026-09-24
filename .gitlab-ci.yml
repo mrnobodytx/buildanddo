@@ -1,3 +1,18 @@
+# --- CGRF Header ------------------------------------------------
+# File:        .gitlab-ci.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-24
+# Depends:     services/praxis_evidence/run_all_tests.py, .gitlab/ci/day21-submission.yml
+# EnumType:    Workflow
+# EnumEdges:   CONSUMES services/praxis_evidence/run_all_tests.py; CONSUMES .gitlab/ci/day21-submission.yml
+# Intent:      Keep GitLab testing blocking while isolating mutating Praxis suites from shared backends and production credentials.
+# ----------------------------------------------------------------
 # Private CI for the buildanddo GitLab intake mirror (gitlab.citadel-nexus.com/root/buildanddo).
 # GitHub (mrnobodytx/buildanddo) is the public collaboration/submission plane; this project
 # runs the private release pipeline on a dedicated shell runner (tag: buildanddo).
@@ -45,13 +60,17 @@ praxis_evidence_tests:
   stage: test
   tags:
     - buildanddo
-  # PB_SUPERUSER_EMAIL / PB_SUPERUSER_PASSWORD / PB_API_URL are GitLab CI/CD
-  # variables (masked), not the gitignored secrets/deploy.local.env - a fresh
-  # CI checkout never has that file. client.py's _load_secrets() already
-  # merges os.environ, so no code change was needed to pick these up.
+  timeout: 30m
+  parallel:
+    matrix:
+      - POCKETBASE_PROFILE: ["package", "compose"]
+  # Each suite owns a fresh loopback database. Shared PB_API_URL, superuser
+  # credentials, proxies and deployment files are never passed to test children.
+  # Provisioning reuses the existing disposable-binary helper, not a deployed host.
   script:
-    - python3 services/praxis_evidence/run_all_tests.py
+    - python3 services/praxis_evidence/run_all_tests.py --profile $POCKETBASE_PROFILE --provision
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
 
 # BEGIN CITADEL BUILDANDDO VERIFIED RELEASE v1

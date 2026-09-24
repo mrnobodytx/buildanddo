@@ -12,7 +12,7 @@
 // EnumType:    Adapter
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js
 // DAG Node:    none
-// Intent:      Keep home and workspace summaries consistent without inventing outcomes or combining revenue sources.
+// Intent:      Keep summaries consistent without promoting historical reports into verified corrections or provider-confirmed revenue.
 // ───────────────────────────────────────────────────────────────
 
 /** @param {Array<object>} records Missions. @returns {Array<object>} Active missions. */
@@ -38,12 +38,15 @@ export function isToday(value, now = new Date()) {
 
 /** @param {Array<object>} records Editions. @param {Date} now Clock. @returns {object|null} Latest published edition. */
 export function latestPublishedEdition(records, now = new Date()) {
-    const date = (record) => new Date(record.edition_date || record.created).getTime();
+    const date = (record) => new Date(record.published_at).getTime();
     return (
         records
             .filter(
                 (record) =>
                     record.status === 'published' &&
+                    Number.isSafeInteger(record.claim_revision) && record.claim_revision > 0 &&
+                    typeof record.published_by === 'string' && record.published_by.trim() &&
+                    typeof record.published_at === 'string' && record.published_at.trim() &&
                     Number.isFinite(date(record)) &&
                     date(record) <= now.getTime(),
             )
@@ -51,29 +54,16 @@ export function latestPublishedEdition(records, now = new Date()) {
     );
 }
 
-/** @param {Array<object>} records Corrections. @returns {Array<object>} Complete verified comparisons. */
-export function verifiedCorrections(records) {
-    return records.filter(
-        (record) =>
-            record.status === 'verified' &&
-            record.prior_prediction?.trim() &&
-            record.observed_result?.trim(),
-    );
+/** @returns {Array<object>} No verified corrections until a real review authority is bound. */
+export function verifiedCorrections() {
+    // Preserve old labels in their source records, not as verified home previews.
+    return [];
 }
 
-/** @param {object} record Support source. @param {Date} now Clock. @returns {boolean} Has reported amounts. */
-export function hasReportedRevenue(record, now = new Date()) {
-    if (typeof record.last_sync !== 'string' || !record.last_sync.trim()) return false;
-    const sync = new Date(record.last_sync).getTime();
-    return (
-        ['connected', 'syncing', 'healthy', 'degraded', 'error'].includes(record.status) &&
-        Number.isFinite(sync) &&
-        sync <= now.getTime() &&
-        typeof record.gross === 'number' &&
-        Number.isFinite(record.gross) &&
-        record.gross >= 0 &&
-        /^[A-Z]{3}$/.test(record.currency || '')
-    );
+/** @returns {boolean} No provider-confirmed revenue without an installed trusted ingestor. */
+export function hasReportedRevenue() {
+    // Legacy amounts and sync labels are historical reports, never metrics.
+    return false;
 }
 
 /** @param {number} amount Reported amount. @param {string} currency ISO currency. @returns {string} Display amount. */

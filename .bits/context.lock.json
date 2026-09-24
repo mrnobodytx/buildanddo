@@ -449,7 +449,10 @@
         "gitlab"
       ],
       "path": "services/praxis_evidence/run_all_tests.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "services/praxis_evidence/isolated_test.py",
+        "tests/upgrade/test_praxis_isolation.py"
+      ],
       "wired_into_ci": true
     },
     {
@@ -465,7 +468,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-23T19:54:56.940763+00:00",
+  "generated_at": "2026-09-24T01:12:26.908575+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -987,13 +990,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 56,
-    "python_files": 411,
+    "migrations": 61,
+    "python_files": 413,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1549,
-    "web_source_files": 373
+    "tracked_files": 1569,
+    "web_source_files": 376
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1001,7 +1004,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic.",
+        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -1066,7 +1069,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "03c708fb913158edcd9bf88e0d4d4ac9cfe6207cf9a783598049e0e9276be057",
+    "source_sha256": "23f34933c54e2e0dec1d977299d2801f4724d6c52b591adbc047a3d147aee613",
     "state": "PASS"
   },
   "summary": {
@@ -1081,7 +1084,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 74,
+    "js_test_files": 75,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

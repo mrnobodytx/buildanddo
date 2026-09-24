@@ -387,17 +387,15 @@ test('legacy planned records cannot forge a review and only drafts can be delete
     f.records.social_content[0].status = 'failed'; assert.equal(f.content({ status: 'draft' }).run(), 'saved');
 });
 
-test('progress remains with its account and lesson, and review cannot downgrade completion', () => {
+test('raw progress creates, updates and deletes are denied even for their owner', () => {
     const f = fixture();
     const progress = { id: 'progress1', owner: 'owner1', tutorial: curriculum.lessons[0].id, status: 'in_progress', progress: 999 };
-    const save = f.request('tutorial_progress', progress, {}, 'owner1', true, 'progress'); save.run(); assert.equal(save.record.getString('progress'), '50');
-    for (const patch of [{ owner: 'other' }, { tutorial: curriculum.lessons[1].id }, { status: 'verified' }])
-        reject(f.request('tutorial_progress', progress, patch, 'owner1', false, 'progress').run, 400);
-    f.denied.add(progress.tutorial); reject(f.request('tutorial_progress', progress, {}, 'owner1', false, 'progress').run, 403); f.denied.clear();
-    const completed = f.request('tutorial_progress', progress, { status: 'completed' }, 'owner1', false, 'progress'); completed.run(); assert.equal(completed.record.getString('progress'), '100');
-    reject(f.request('tutorial_progress', completed.record.data, { status: 'in_progress' }, 'owner1', false, 'progress').run, 400);
-    assert.equal(f.request('tutorial_progress', completed.record.data, {}, 'owner1', false, 'progress').run(), 'saved');
-    const notStarted = f.request('tutorial_progress', progress, { status: 'not_started' }, 'owner1', true, 'progress'); notStarted.run(); assert.equal(notStarted.record.getString('progress'), '0');
+    for (const account of ['owner1', 'other', null]) for (const creating of [true, false, undefined]) {
+        const request = f.request('tutorial_progress', progress, { status: 'completed' }, account, creating, 'progress');
+        reject(request.run, 403); assert.equal(request.calls(), 0);
+        assert.equal(request.record.getString('progress'), '999');
+    }
+    assert.equal(f.records.tutorial_progress.length, 0);
 });
 
 test('native request registrations resolve their policy inside each isolated callback', () => {
@@ -405,10 +403,11 @@ test('native request registrations resolve their policy inside each isolated cal
     const context = { __hooks: '/hooks', require(path) { assert.equal(path, '/hooks/business-policy.js'); return Object.fromEntries(['erp', 'content', 'removeContent', 'progress'].map((name) => [name, (event, creating) => ({ name, event, creating })])); } };
     for (const kind of ['Create', 'Update', 'Delete']) context[`onRecord${kind}Request`] = (callback, ...collections) => registrations.push({ callback, collections, kind });
     vm.runInNewContext(source('apps/pocketbase/pb_hooks/business.pb.js'), context, { filename: new URL('apps/pocketbase/pb_hooks/business.pb.js', root).href });
-    assert.equal(registrations.length, 7);
+    assert.equal(registrations.length, 8);
+    assert.deepEqual(registrations.filter((row) => row.collections.includes('tutorial_progress')).map((row) => row.kind), ['Create', 'Update', 'Delete']);
     for (const registration of registrations) {
         const result = registration.callback('event'); assert.equal(result.event, 'event');
-        if (registration.kind !== 'Delete') assert.equal(result.creating, registration.kind === 'Create');
+        if (registration.kind !== 'Delete' && result.name !== 'progress') assert.equal(result.creating, registration.kind === 'Create');
     }
     assert.deepEqual(plain(registrations[0].collections), ['erp_objectives', 'erp_tasks', 'erp_contacts']);
 });

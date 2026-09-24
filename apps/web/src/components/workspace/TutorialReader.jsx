@@ -12,7 +12,7 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/web/src/components/ui/dialog.jsx
 // DAG Node:    none
-// Intent:      Let learners read complete lessons, practice and check understanding with accessible focus and explicit progress persistence.
+// Intent:      Keep public reading and local quiz practice separate from saved guided learning completion.
 // ───────────────────────────────────────────────────────────────
 
 import ReadingProgress from '@/components/motion/ReadingProgress';
@@ -24,8 +24,8 @@ import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { lessonLink, validLesson } from '@/lib/tutorialCurriculum';
 
-/** @param {{tutorial: object, completed: boolean, canSave: boolean, busy: boolean, error: string, saved: string, onSave: Function, onClose: Function, opener: HTMLElement|null}} props Reader state. @returns {React.ReactElement} Lesson dialog. */
-export default function TutorialReader({ tutorial, completed, canSave, busy, error, saved, onSave, onGuided, onClose, opener, origin }) {
+/** @param {{tutorial: object, completed: boolean, onGuided?: Function, onClose: Function, opener: HTMLElement|null, origin?: object}} props Reader state. @returns {React.ReactElement} Local open-book practice dialog. */
+export default function TutorialReader({ tutorial, completed, onGuided, onClose, opener, origin }) {
     const [answer, setAnswer] = useState(null);
     const [checked, setChecked] = useState(false);
     const [practiced, setPracticed] = useState(false);
@@ -38,7 +38,7 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
     const lesson = tutorial.lesson;
     const available = validLesson(lesson);
     const correct = available && checked && answer === lesson.check.answer;
-    return <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}>
+    return <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
         <DialogContent data-reading-scroll className="max-h-[92dvh] max-w-3xl overflow-y-auto"
             data-dd-privacy="mask" onOpenAutoFocus={(event) => { event.preventDefault(); heading.current?.focus(); }}
             onCloseAutoFocus={(event) => { event.preventDefault(); opener?.focus(); }}>
@@ -102,16 +102,11 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
                     </nav>
                 </>}
                 <div className="space-y-3 border-t border-border pt-4">
-                    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-                    {saved && <p role="status" className="text-sm text-success">{saved}</p>}
-                    {!canSave && <p className="text-sm text-muted-foreground">Reading preview only. Saved progress needs a signed-in account, a persisted lesson and an available backend.</p>}
-                    {completed ? <p className="text-sm text-success">Completed. Reviewing keeps your saved completion.</p> : <div className="flex flex-wrap gap-2">
-                        <Button size="sm" variant="secondary" disabled={!canSave || busy || !available} onClick={() => onSave('in_progress')}>Save reading progress</Button>
-                        <Button size="sm" disabled={!canSave || busy || !correct || !practiced} onClick={() => onSave('completed')}>{busy ? 'Saving…' : 'Mark lesson complete'}</Button>
-                    </div>}
-                    <p className="text-xs leading-6 text-muted-foreground">Reading completion records your own learning activity. Finish the interactive tutorial to earn a certificate and learning points.</p>
-                    {onGuided && available && <Button size="sm" disabled={busy} onClick={onGuided}>Start interactive tutorial</Button>}
-                    <Button size="sm" variant="ghost" disabled={busy} onClick={onClose}>Close lesson</Button>
+                    <p className="text-sm text-muted-foreground">Open-book reading and local quiz practice. These answers and self-reported practice are not saved and do not award guided completion, certificates or learning points.</p>
+                    {completed && <p className="text-sm text-success">Guided tutorial completed. Reading practice does not change your saved completion.</p>}
+                    <p className="text-xs leading-6 text-muted-foreground">Answers are public in the lesson source and bundled previews. Use the interactive tutorial for saved checkpoints, not independently verified mastery.</p>
+                    {onGuided && available && <Button size="sm" onClick={onGuided}>Start interactive tutorial</Button>}
+                    <Button size="sm" variant="ghost" onClick={onClose}>Close lesson</Button>
                 </div>
             </div>
         </DialogContent>

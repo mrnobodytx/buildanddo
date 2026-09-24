@@ -17,8 +17,9 @@
 
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import test from 'node:test';
-import { fixture, plain, source } from './admin-fixture.mjs';
+import { fixture, plain, repoPath, source } from './admin-fixture.mjs';
 import { lessonLink, mergeTutorials, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 
 const DATA = 'apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
@@ -104,12 +105,16 @@ test('recorded source evidence binds its stated file scope without upgrading blo
     assert.match(observation.output_sha256, /^[a-f0-9]{64}$/);
     assert.deepEqual(observation.source_files, [...new Set(observation.source_files)].sort());
     const digest = createHash('sha256');
+    const revision = bundle.source_evidence.source_revision;
+    assert.match(revision, /^[a-f0-9]{40}$/);
     for (const path of observation.source_files) {
         assert.match(path, /^(apps|tests)\/[a-zA-Z0-9/_.-]+$/);
         assert.equal(path.includes('..'), false);
-        digest.update(path + '\0').update(createHash('sha256').update(source(path)).digest());
+        const capturedSource = execFileSync('git', ['show', `${revision}:${path}`], { cwd: repoPath('.'),
+            env: { ...process.env, GIT_NO_LAZY_FETCH: '1', GIT_NO_REPLACE_OBJECTS: '1' } });
+        digest.update(path + '\0').update(createHash('sha256').update(capturedSource).digest());
     }
-    assert.equal(digest.digest('hex'), observation.source_sha256, 'Refresh observed evidence only after rerunning changed source, not by relabeling it.');
+    assert.equal(digest.digest('hex'), observation.source_sha256, 'Historical results bind their recorded revision, never newer source.');
     const artifact = bundle.source_evidence.artifact;
     assert.equal(artifact.url, '/broadcast-repairs-source.txt');
     const captured = source('apps/web/public' + artifact.url);
@@ -145,7 +150,9 @@ test('the actual native learning validator accepts the new lesson without enroll
     const f = installed(); f.migration(MIGRATION).up();
     const before = plain(f.data), learning = f.load('tutorial-learning.js');
     const result = plain(learning.detail(f.event('owner', {}, { id: seed.id })));
-    assert.deepEqual(result.tutorial.lesson, seed.lesson);
+    assert.deepEqual(result.tutorial.lesson, { ...seed.lesson,
+        check: { question: seed.lesson.check.question, choices: seed.lesson.check.choices } });
+    assert.deepEqual(f.data.tutorials.find((row) => row.id === seed.id).lesson, seed.lesson, 'full authored source remains unchanged');
     assert.equal(result.tutorial.curriculum_version, bundle.version);
     assert.equal(result.enrollment, null);
     assert.equal(learning.list(f.event('owner')).points, 0);

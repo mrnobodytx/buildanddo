@@ -57,6 +57,18 @@ it('shows unavailable history even with no receipts and provides retry; a confir
     expect(screen.queryByText('Previous work')).not.toBeInTheDocument();
 });
 
+it('keeps matching reported seat labels distinct by submitting account without a verified badge', () => {
+    renderWithProviders(<PreviousWorkNote history={{ ...history, state: 'completed', events: [{ id: 'report1' }], seats: [
+        { seat: 'Claimed agent', actorType: 'agent', owner: 'account1', lastEvent: 'completed', eventCount: 1 },
+        { seat: 'Claimed agent', actorType: 'agent', owner: 'account2', lastEvent: 'progress', eventCount: 1 },
+    ] }} />);
+    expect(screen.getByText(/^reported$/i)).toBeVisible();
+    expect(screen.getByText('Reported state: Completed')).toBeVisible();
+    expect(screen.getByText(/submitting account: account1/)).toBeVisible();
+    expect(screen.getByText(/submitting account: account2/)).toBeVisible();
+    expect(screen.queryByText(/^verified$/i)).not.toBeInTheDocument();
+});
+
 it('clears loaded history immediately when the workspace changes and ignores an older refresh', async () => {
     const wrapper = workspaceWrapper();
     const { result, rerender } = renderHook(() => usePreviousWork('mission', ['mission1']), { wrapper });

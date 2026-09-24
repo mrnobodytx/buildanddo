@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File: services/praxis_evidence/selftest_research_quests.py
+# Stage: 08_TEST
+# SRS: SRS-BUILDANDDO-UPGRADE-001
+# CAPS: pending
+# CK: pending
+# Dispatch: VCC-BUILDANDDO-UPGRADE-001
+# Seat: BITS-CODEGEN
+# Owner: Citadel Nexus Inc.
+# Created: 2026-09-23
+# Depends: services/praxis_evidence/isolated_test.py
+# EnumType: Test
+# EnumEdges: CONSUMES services/praxis_evidence/isolated_test.py; VALIDATES services/praxis_evidence/research_quests.py
+# Intent: Exercise quest compilation in a fresh local database without permanent live test records.
+# ----------------------------------------------------------------
 """selftest_research_quests.py - proves the auto-compiler against real data:
 a disputed claim gets a real quest, re-running doesn't duplicate it."""
 from __future__ import annotations
@@ -6,11 +21,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient  # noqa: E402
+from isolated_test import isolated_client  # noqa: E402
 from claims import create_source, create_claim, audit_claim  # noqa: E402
 from research_quests import compile_quests_for_disputed_claims, open_research_quest  # noqa: E402
 
-client = PocketBaseClient()
+client = isolated_client()
 checks: list[tuple[str, bool]] = []
 cleanup: list[tuple[str, str]] = []
 

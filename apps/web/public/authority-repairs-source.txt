@@ -1,0 +1,738 @@
+# --- CGRF Header ------------------------------------------------
+# File:        apps/web/public/authority-repairs-source.txt
+# Stage:       05_EVIDENCE
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-24
+# Depends:     tests/upgrade/test_praxis_isolation.py, tests/upgrade/workspace-claims.test.mjs, tests/upgrade/tutorial-learning-system.test.mjs, tests/upgrade/authority-repairs-lessons.test.mjs
+# EnumType:    Doc
+# EnumEdges:   CONSUMES tests/upgrade/test_praxis_isolation.py; CONSUMES tests/upgrade/workspace-claims.test.mjs; CONSUMES tests/upgrade/tutorial-learning-system.test.mjs; CONSUMES tests/upgrade/authority-repairs-lessons.test.mjs
+# Intent:      Preserve actual local source-test output while keeping disposable-native, rendered and deployment acceptance unclaimed.
+# ----------------------------------------------------------------
+# Observed: 2026-09-24T00:21:40.499110+00:00
+# Runtime: Node v22.17.0 / Python 3.12.13
+# Source scope SHA-256: 51a6bf8b195cc43e0ca4f59bdd240fcb98cde424b4f8980f40c562ae36091180
+# Raw output SHA-256: 553ccd8603f28494e1f21c9407aab4177dba33b73d23db110c630a25aa813728
+# Explicit in-memory, storage and process doubles; no native database or deployed outcome is certified.
+# Unmodified source command output follows this provenance header.
+COMMAND: node --test tests/upgrade/authority-repairs-lessons.test.mjs tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/tutorial-learning-system.test.mjs tests/upgrade/tutorial-learning-client.test.mjs tests/upgrade/workspace-claims.test.mjs
+TAP version 13
+# Subtest: one complete public authority lesson extends the existing catalogues with a stable unique identity
+ok 1 - one complete public authority lesson extends the existing catalogues with a stable unique identity
+  ---
+  duration_ms: 4.362501
+  type: 'test'
+  ...
+# Subtest: references use existing pre-repair public source and new candidate files remain plain paths
+ok 2 - references use existing pre-repair public source and new candidate files remain plain paths
+  ---
+  duration_ms: 1.412319
+  type: 'test'
+  ...
+# Subtest: the lesson distinguishes claim authorities and presents pending plans without fabricated results
+ok 3 - the lesson distinguishes claim authorities and presents pending plans without fabricated results
+  ---
+  duration_ms: 1.83667
+  type: 'test'
+  ...
+# Subtest: migration creates only the missing tutorial, preserving the prior broadcast lesson and every other collection
+ok 4 - migration creates only the missing tutorial, preserving the prior broadcast lesson and every other collection
+  ---
+  duration_ms: 75.609779
+  type: 'test'
+  ...
+# Subtest: the production learning source accepts the authored lesson without enrolling or writing on read
+ok 5 - the production learning source accepts the authored lesson without enrolling or writing on read
+  ---
+  duration_ms: 40.989068
+  type: 'test'
+  ...
+# Subtest: up/down replay preserves operator edits, completed snapshots, certificates and historical records
+ok 6 - up/down replay preserves operator edits, completed snapshots, certificates and historical records
+  ---
+  duration_ms: 95.424501
+  type: 'test'
+  ...
+# Subtest: identity collision refuses ID occupied by another slug without replacing records
+ok 7 - identity collision refuses ID occupied by another slug without replacing records
+  ---
+  duration_ms: 33.088518
+  type: 'test'
+  ...
+# Subtest: identity collision refuses slug occupied by another ID without replacing records
+ok 8 - identity collision refuses slug occupied by another ID without replacing records
+  ---
+  duration_ms: 51.32387
+  type: 'test'
+  ...
+# Subtest: identity collision refuses two matching identities without replacing records
+ok 9 - identity collision refuses two matching identities without replacing records
+  ---
+  duration_ms: 29.093986
+  type: 'test'
+  ...
+# Subtest: invalid bundle identities and missing schema fail without partial seeding
+ok 10 - invalid bundle identities and missing schema fail without partial seeding
+  ---
+  duration_ms: 297.019343
+  type: 'test'
+  ...
+# Subtest: save failure rolls back the data addition and retry installs the lesson only once
+ok 11 - save failure rolls back the data addition and retry installs the lesson only once
+  ---
+  duration_ms: 33.827997
+  type: 'test'
+  ...
+# Subtest: both source cases merge once while persisted operator content remains authoritative
+ok 12 - both source cases merge once while persisted operator content remains authoritative
+  ---
+  duration_ms: 1.898317
+  type: 'test'
+  ...
+# Subtest: one versioned public lesson extends, rather than changes, the fixed 25-lesson starter contract
+ok 13 - one versioned public lesson extends, rather than changes, the fixed 25-lesson starter contract
+  ---
+  duration_ms: 3.809809
+  type: 'test'
+  ...
+# Subtest: source references are safe public inspected-revision links and the evidence route stays local
+ok 14 - source references are safe public inspected-revision links and the evidence route stays local
+  ---
+  duration_ms: 1.448652
+  type: 'test'
+  ...
+# Subtest: recorded source evidence binds its stated file scope without upgrading blocked native or rendered checks
+ok 15 - recorded source evidence binds its stated file scope without upgrading blocked native or rendered checks
+  ---
+  duration_ms: 466.55351
+  type: 'test'
+  ...
+# Subtest: migration creates a truly missing tutorial, changes no rules, and writes no evidence or learner state
+ok 16 - migration creates a truly missing tutorial, changes no rules, and writes no evidence or learner state
+  ---
+  duration_ms: 36.503052
+  type: 'test'
+  ...
+# Subtest: the actual native learning validator accepts the new lesson without enrolling or awarding points on read
+ok 17 - the actual native learning validator accepts the new lesson without enrolling or awarding points on read
+  ---
+  duration_ms: 33.143638
+  type: 'test'
+  ...
+# Subtest: replay and data-only down preserve operator edits, frozen snapshots, certificates and existing evidence
+ok 18 - replay and data-only down preserve operator edits, frozen snapshots, certificates and existing evidence
+  ---
+  duration_ms: 67.173531
+  type: 'test'
+  ...
+# Subtest: identity collision refuses ID occupied by another slug without replacing any record
+ok 19 - identity collision refuses ID occupied by another slug without replacing any record
+  ---
+  duration_ms: 30.25213
+  type: 'test'
+  ...
+# Subtest: identity collision refuses slug occupied by another ID without replacing any record
+ok 20 - identity collision refuses slug occupied by another ID without replacing any record
+  ---
+  duration_ms: 32.978671
+  type: 'test'
+  ...
+# Subtest: identity collision refuses two matching identities without replacing any record
+ok 21 - identity collision refuses two matching identities without replacing any record
+  ---
+  duration_ms: 27.964848
+  type: 'test'
+  ...
+# Subtest: wrong bundle versions, identities and missing schema fail without seeding partial state
+ok 22 - wrong bundle versions, identities and missing schema fail without seeding partial state
+  ---
+  duration_ms: 521.066445
+  type: 'test'
+  ...
+# Subtest: a save failure leaves no partially installed lesson and a later retry creates it once
+ok 23 - a save failure leaves no partially installed lesson and a later retry creates it once
+  ---
+  duration_ms: 45.796242
+  type: 'test'
+  ...
+# Subtest: catalogue merges the public case by slug without duplicating persisted identities or replacing edits
+ok 24 - catalogue merges the public case by slug without duplicating persisted identities or replacing edits
+  ---
+  duration_ms: 0.701046
+  type: 'test'
+  ...
+# Subtest: client accepts real saved responses, resumes after remount, and exports a complete certificate
+ok 25 - client accepts real saved responses, resumes after remount, and exports a complete certificate
+  ---
+  duration_ms: 108.600315
+  type: 'test'
+  ...
+# Subtest: a dropped committed response keeps the exact retry and refuses a new change until recovery
+ok 26 - a dropped committed response keeps the exact retry and refuses a new change until recovery
+  ---
+  duration_ms: 64.839114
+  type: 'test'
+  ...
+# Subtest: anonymous, demo, unmounted and changed-account clients perform no requests
+ok 27 - anonymous, demo, unmounted and changed-account clients perform no requests
+  ---
+  duration_ms: 123.070017
+  type: 'test'
+  ...
+# Subtest: late responses after account change or unmount are discarded
+ok 28 - late responses after account change or unmount are discarded
+  ---
+  duration_ms: 33.705991
+  type: 'test'
+  ...
+# Subtest: incomplete or cross-account responses never mint browser progress or credit
+ok 29 - incomplete or cross-account responses never mint browser progress or credit
+  ---
+  duration_ms: 51.207581
+  type: 'test'
+  ...
+# Subtest: wrong answers retain their feedback and cannot claim completion
+ok 30 - wrong answers retain their feedback and cannot claim completion
+  ---
+  duration_ms: 42.76263
+  type: 'test'
+  ...
+# Subtest: the guided client accepts only keyless lessons, uses server feedback, and leaves authored validation strict
+ok 31 - the guided client accepts only keyless lessons, uses server feedback, and leaves authored validation strict
+  ---
+  duration_ms: 43.516935
+  type: 'test'
+  ...
+# Subtest: learner validation rejects malformed content, unsafe references and every grading-field variant
+ok 32 - learner validation rejects malformed content, unsafe references and every grading-field variant
+  ---
+  duration_ms: 23.188303
+  type: 'test'
+  ...
+# Subtest: answer feedback must be present, typed, and backed by saved practice and a certificate when correct
+ok 33 - answer feedback must be present, typed, and backed by saved practice and a certificate when correct
+  ---
+  duration_ms: 87.016308
+  type: 'test'
+  ...
+# Subtest: canonical state reads traverse every bounded page without relying on the first five certificates
+ok 34 - canonical state reads traverse every bounded page without relying on the first five certificates
+  ---
+  duration_ms: 258.052255
+  type: 'test'
+  ...
+# Subtest: a revoked restricted enrollment keeps aggregate progress unknown without blocking authorized public detail or commands
+ok 35 - a revoked restricted enrollment keeps aggregate progress unknown without blocking authorized public detail or commands
+  ---
+  duration_ms: 72.401762
+  type: 'test'
+  ...
+# Subtest: incomplete, repeated, foreign, or stale state pages never become partial catalogue authority
+ok 36 - incomplete, repeated, foreign, or stale state pages never become partial catalogue authority
+  ---
+  duration_ms: 824.483507
+  type: 'test'
+  ...
+# Subtest: state pagination has a finite budget and never publishes a truncated catalogue
+ok 37 - state pagination has a finite budget and never publishes a truncated catalogue
+  ---
+  duration_ms: 30.101506
+  type: 'test'
+  ...
+# Subtest: storage errors remain recoverable; rejected commands clear pending state
+ok 38 - storage errors remain recoverable; rejected commands clear pending state
+  ---
+  duration_ms: 26.110306
+  type: 'test'
+  ...
+# Subtest: duplicate in-flight saves are serialized and invalid routes are never sent
+ok 39 - duplicate in-flight saves are serialized and invalid routes are never sent
+  ---
+  duration_ms: 36.074769
+  type: 'test'
+  ...
+# Subtest: certificate export escapes personal text and carries no scripts, external assets or account email
+ok 40 - certificate export escapes personal text and carries no scripts, external assets or account email
+  ---
+  duration_ms: 48.865203
+  type: 'test'
+  ...
+# Subtest: learning API identities and query values are removed from browser telemetry
+ok 41 - learning API identities and query values are removed from browser telemetry
+  ---
+  duration_ms: 1.258836
+  type: 'test'
+  ...
+# Subtest: reading does not enroll; checkpoints, practice and correct answer award one durable completion
+ok 42 - reading does not enroll; checkpoints, practice and correct answer award one durable completion
+  ---
+  duration_ms: 95.481092
+  type: 'test'
+  ...
+# Subtest: cannot skip sections, practice, or the server-checked answer
+ok 43 - cannot skip sections, practice, or the server-checked answer
+  ---
+  duration_ms: 56.484615
+  type: 'test'
+  ...
+# Subtest: retries, replay after completion and repeated enrollment cannot farm points or replace a certificate
+ok 44 - retries, replay after completion and repeated enrollment cannot farm points or replace a certificate
+  ---
+  duration_ms: 105.765145
+  type: 'test'
+  ...
+# Subtest: enrollment freezes content and records the original version even if the catalogue changes
+ok 45 - enrollment freezes content and records the original version even if the catalogue changes
+  ---
+  duration_ms: 71.170009
+  type: 'test'
+  ...
+# Subtest: starting stale or unsupported catalogue content fails before creating learning records
+ok 46 - starting stale or unsupported catalogue content fails before creating learning records
+  ---
+  duration_ms: 32.399257
+  type: 'test'
+  ...
+# Subtest: native authentication, current account and lesson visibility are checked on every operation
+ok 47 - native authentication, current account and lesson visibility are checked on every operation
+  ---
+  duration_ms: 59.414845
+  type: 'test'
+  ...
+# Subtest: no supplied owner, point, certificate, unknown action or malformed checkpoint can be trusted
+ok 48 - no supplied owner, point, certificate, unknown action or malformed checkpoint can be trusted
+  ---
+  duration_ms: 49.925589
+  type: 'test'
+  ...
+# Subtest: completion checkpoints and certificate roll back together on storage failure
+ok 49 - completion checkpoints and certificate roll back together on storage failure
+  ---
+  duration_ms: 105.668416
+  type: 'test'
+  ...
+# Subtest: legacy completed progress is retained without creating retroactive credit
+ok 50 - legacy completed progress is retained without creating retroactive credit
+  ---
+  duration_ms: 82.938234
+  type: 'test'
+  ...
+# Subtest: learner detail and command responses are keyless while frozen snapshots and grading stay full
+ok 51 - learner detail and command responses are keyless while frozen snapshots and grading stay full
+  ---
+  duration_ms: 97.371924
+  type: 'test'
+  ...
+# Subtest: canonical state pages include active learning and completions beyond the certificate page without legacy claims
+ok 52 - canonical state pages include active learning and completions beyond the certificate page without legacy claims
+  ---
+  duration_ms: 388.353289
+  type: 'test'
+  ...
+# Subtest: state pages fail closed on revoked, missing or corrupt current lesson context without rewriting history
+ok 53 - state pages fail closed on revoked, missing or corrupt current lesson context without rewriting history
+  ---
+  duration_ms: 266.16823
+  type: 'test'
+  ...
+# Subtest: progress authority migration locks raw writes, preserves owner reads and all duplicate history on replay and down
+ok 54 - progress authority migration locks raw writes, preserves owner reads and all duplicate history on replay and down
+  ---
+  duration_ms: 66.360461
+  type: 'test'
+  ...
+# Subtest: progress migration accepts boxed native rules without changing owner reads, fields or history
+ok 55 - progress migration accepts boxed native rules without changing owner reads, fields or history
+  ---
+  duration_ms: 47.591922
+  type: 'test'
+  ...
+# Subtest: progress rollback accepts boxed native read rules while keeping null write rules locked
+ok 56 - progress rollback accepts boxed native read rules while keeping null write rules locked
+  ---
+  duration_ms: 26.956463
+  type: 'test'
+  ...
+# Subtest: progress migration accepts method-valued native field types and boxed booleans without weakening the schema
+ok 57 - progress migration accepts method-valued native field types and boxed booleans without weakening the schema
+  ---
+  duration_ms: 52.39066
+  type: 'test'
+  ...
+# Subtest: native rule and field representations still reject exact-policy and schema drift before any save
+ok 58 - native rule and field representations still reject exact-policy and schema drift before any save
+  ---
+  duration_ms: 706.764859
+  type: 'test'
+  ...
+# Subtest: progress authority migration refuses custom rules or owner/schema changes before mutating anything
+ok 59 - progress authority migration refuses custom rules or owner/schema changes before mutating anything
+  ---
+  duration_ms: 275.069236
+  type: 'test'
+  ...
+# Subtest: progress rollback refuses custom access without reopening manual writes
+ok 60 - progress rollback refuses custom access without reopening manual writes
+  ---
+  duration_ms: 158.787865
+  type: 'test'
+  ...
+# Subtest: growth milestones derive from distinct completions and certificate pages do not truncate totals
+ok 61 - growth milestones derive from distinct completions and certificate pages do not truncate totals
+  ---
+  duration_ms: 111.054611
+  type: 'test'
+  ...
+# Subtest: migration replays, keeps API writes locked and disables commands on down without deleting history
+ok 62 - migration replays, keeps API writes locked and disables commands on down without deleting history
+  ---
+  duration_ms: 45.152677
+  type: 'test'
+  ...
+# Subtest: learning migration accepts native-normalized index DDL while retaining completion
+ok 63 - learning migration accepts native-normalized index DDL while retaining completion
+  ---
+  duration_ms: 39.567848
+  type: 'test'
+  ...
+# Subtest: learning hooks read completed snapshots with equivalent native identity indexes
+ok 64 - learning hooks read completed snapshots with equivalent native identity indexes
+  ---
+  duration_ms: 37.231446
+  type: 'test'
+  ...
+# Subtest: learning index normalization still refuses weakened identity and altered field or rule contracts
+ok 65 - learning index normalization still refuses weakened identity and altered field or rule contracts
+  ---
+  duration_ms: 202.094009
+  type: 'test'
+  ...
+# Subtest: missing installation, identity constraints and corrupt checkpoints fail closed
+ok 66 - missing installation, identity constraints and corrupt checkpoints fail closed
+  ---
+  duration_ms: 39.921358
+  type: 'test'
+  ...
+# Subtest: routes require native users auth and keep responses uncached with bounded command bodies
+ok 67 - routes require native users auth and keep responses uncached with bounded command bodies
+  ---
+  duration_ms: 1.639438
+  type: 'test'
+  ...
+# Subtest: raw support_sources requests cannot bypass claim commands
+ok 68 - raw support_sources requests cannot bypass claim commands
+  ---
+  duration_ms: 37.490769
+  type: 'test'
+  ...
+# Subtest: raw corrections requests cannot bypass claim commands
+ok 69 - raw corrections requests cannot bypass claim commands
+  ---
+  duration_ms: 18.934054
+  type: 'test'
+  ...
+# Subtest: raw daily_editions requests cannot bypass claim commands
+ok 70 - raw daily_editions requests cannot bypass claim commands
+  ---
+  duration_ms: 20.091742
+  type: 'test'
+  ...
+# Subtest: raw specialist_desks requests cannot bypass claim commands
+ok 71 - raw specialist_desks requests cannot bypass claim commands
+  ---
+  duration_ms: 20.072606
+  type: 'test'
+  ...
+# Subtest: raw social_content requests cannot bypass claim commands
+ok 72 - raw social_content requests cannot bypass claim commands
+  ---
+  duration_ms: 16.368097
+  type: 'test'
+  ...
+# Subtest: raw social_channels requests cannot bypass claim commands
+ok 73 - raw social_channels requests cannot bypass claim commands
+  ---
+  duration_ms: 20.064484
+  type: 'test'
+  ...
+# Subtest: raw seat_events requests cannot bypass claim commands
+ok 74 - raw seat_events requests cannot bypass claim commands
+  ---
+  duration_ms: 20.420639
+  type: 'test'
+  ...
+# Subtest: a teammate editor cannot rewrite another author comparison through the native policy
+ok 75 - a teammate editor cannot rewrite another author comparison through the native policy
+  ---
+  duration_ms: 21.937953
+  type: 'test'
+  ...
+# Subtest: migration locks exactly seven collections, normalizes native rule pointers and retains every historical byte
+ok 76 - migration locks exactly seven collections, normalizes native rule pointers and retains every historical byte
+  ---
+  duration_ms: 50.210144
+  type: 'test'
+  ...
+# Subtest: migration preflights the whole scope and rejects custom rules and field collisions before saving
+ok 77 - migration preflights the whole scope and rejects custom rules and field collisions before saving
+  ---
+  duration_ms: 111.727416
+  type: 'test'
+  ...
+# Subtest: migration accepts native field methods and boxed scalars during fresh
+ok 78 - migration accepts native field methods and boxed scalars during fresh
+  ---
+  duration_ms: 32.718377
+  type: 'test'
+  ...
+# Subtest: migration accepts native field methods and boxed scalars during replay
+ok 79 - migration accepts native field methods and boxed scalars during replay
+  ---
+  duration_ms: 41.736907
+  type: 'test'
+  ...
+# Subtest: migration accepts native field methods and boxed scalars during rollback
+ok 80 - migration accepts native field methods and boxed scalars during rollback
+  ---
+  duration_ms: 49.470423
+  type: 'test'
+  ...
+# Subtest: method-aware schema normalization still rejects custom type, relation, numeric, boolean and rule drift before saves
+ok 81 - method-aware schema normalization still rejects custom type, relation, numeric, boolean and rule drift before saves
+  ---
+  duration_ms: 526.65938
+  type: 'test'
+  ...
+# Subtest: correction.save binds authorship, current membership, revision and retry receipts
+ok 82 - correction.save binds authorship, current membership, revision and retry receipts
+  ---
+  duration_ms: 55.777399
+  type: 'test'
+  ...
+# Subtest: edition.save binds authorship, current membership, revision and retry receipts
+ok 83 - edition.save binds authorship, current membership, revision and retry receipts
+  ---
+  duration_ms: 37.101307
+  type: 'test'
+  ...
+# Subtest: desk.save binds authorship, current membership, revision and retry receipts
+ok 84 - desk.save binds authorship, current membership, revision and retry receipts
+  ---
+  duration_ms: 36.5838
+  type: 'test'
+  ...
+# Subtest: content.save binds authorship, current membership, revision and retry receipts
+ok 85 - content.save binds authorship, current membership, revision and retry receipts
+  ---
+  duration_ms: 44.307204
+  type: 'test'
+  ...
+# Subtest: support requests are admin-only and cannot assert amounts, sync, health or provider provenance
+ok 86 - support requests are admin-only and cannot assert amounts, sync, health or provider provenance
+  ---
+  duration_ms: 28.44619
+  type: 'test'
+  ...
+# Subtest: commands reject foreign record IDs, unreadable saved versions and non-users authentication
+ok 87 - commands reject foreign record IDs, unreadable saved versions and non-users authentication
+  ---
+  duration_ms: 43.119206
+  type: 'test'
+  ...
+# Subtest: correction comparisons are pending reports; even administrators cannot promote or rewrite legacy decisions
+ok 88 - correction comparisons are pending reports; even administrators cannot promote or rewrite legacy decisions
+  ---
+  duration_ms: 26.202565
+  type: 'test'
+  ...
+# Subtest: edition publication uses only the saved version and current admin account, then becomes immutable
+ok 89 - edition publication uses only the saved version and current admin account, then becomes immutable
+  ---
+  duration_ms: 32.533713
+  type: 'test'
+  ...
+# Subtest: social commands call the existing review validator and preserve publication stamps and immutability
+ok 90 - social commands call the existing review validator and preserve publication stamps and immutability
+  ---
+  duration_ms: 43.007481
+  type: 'test'
+  ...
+# Subtest: channel requests cannot create health, and desk records stay operator reports rather than agent activity
+ok 91 - channel requests cannot create health, and desk records stay operator reports rather than agent activity
+  ---
+  duration_ms: 29.163055
+  type: 'test'
+  ...
+# Subtest: normalized approval retries require current admin authority and implicit re-approval stays disallowed
+ok 92 - normalized approval retries require current admin authority and implicit re-approval stays disallowed
+  ---
+  duration_ms: 37.173997
+  type: 'test'
+  ...
+# Subtest: seat reports retain claimed labels separately from native owner, validate scope, and are append-only
+ok 93 - seat reports retain claimed labels separately from native owner, validate scope, and are append-only
+  ---
+  duration_ms: 34.370391
+  type: 'test'
+  ...
+# Subtest: bounded commands reject nested or oversized payloads and roll back on missing audit storage
+ok 94 - bounded commands reject nested or oversized payloads and roll back on missing audit storage
+  ---
+  duration_ms: 29.461682
+  type: 'test'
+  ...
+# Subtest: claim route requires native users auth, a request size bound and a no-store response
+ok 95 - claim route requires native users auth, a request size bound and a no-store response
+  ---
+  duration_ms: 1.034102
+  type: 'test'
+  ...
+# Subtest: existing create/update wrappers use native commands, saved revisions and explicit publication only
+ok 96 - existing create/update wrappers use native commands, saved revisions and explicit publication only
+  ---
+  duration_ms: 38.90458
+  type: 'test'
+  ...
+# Subtest: an uncertain write replays its original bytes and revision even after a refresh or subsequent edit
+ok 97 - an uncertain write replays its original bytes and revision even after a refresh or subsequent edit
+  ---
+  duration_ms: 25.214955
+  type: 'test'
+  ...
+# Subtest: uncertain retries recheck revocation, discard late scope responses and never fall back for missing hooks
+ok 98 - uncertain retries recheck revocation, discard late scope responses and never fall back for missing hooks
+  ---
+  duration_ms: 66.977944
+  type: 'test'
+  ...
+# Subtest: malformed success remains uncertain and native schema bounds cannot be silently discarded
+ok 99 - malformed success remains uncertain and native schema bounds cannot be silently discarded
+  ---
+  duration_ms: 40.741886
+  type: 'test'
+  ...
+# Subtest: support_sources compatibility wrapper reaches its explicit native command
+ok 100 - support_sources compatibility wrapper reaches its explicit native command
+  ---
+  duration_ms: 22.568115
+  type: 'test'
+  ...
+# Subtest: social_channels compatibility wrapper reaches its explicit native command
+ok 101 - social_channels compatibility wrapper reaches its explicit native command
+  ---
+  duration_ms: 26.039889
+  type: 'test'
+  ...
+# Subtest: corrections compatibility wrapper reaches its explicit native command
+ok 102 - corrections compatibility wrapper reaches its explicit native command
+  ---
+  duration_ms: 21.163561
+  type: 'test'
+  ...
+# Subtest: specialist_desks compatibility wrapper reaches its explicit native command
+ok 103 - specialist_desks compatibility wrapper reaches its explicit native command
+  ---
+  duration_ms: 21.909243
+  type: 'test'
+  ...
+# Subtest: social_content compatibility wrapper reaches its explicit native command
+ok 104 - social_content compatibility wrapper reaches its explicit native command
+  ---
+  duration_ms: 21.889437
+  type: 'test'
+  ...
+# Subtest: seat_events compatibility wrapper reaches its explicit native command
+ok 105 - seat_events compatibility wrapper reaches its explicit native command
+  ---
+  duration_ms: 27.499088
+  type: 'test'
+  ...
+# Subtest: claim receipts remain readable in the existing administration audit without enabling generic admin commands
+ok 106 - claim receipts remain readable in the existing administration audit without enabling generic admin commands
+  ---
+  duration_ms: 34.007811
+  type: 'test'
+  ...
+# Subtest: the existing seat publisher retries one native report and exposes its account separately from claimed labels
+ok 107 - the existing seat publisher retries one native report and exposes its account separately from claimed labels
+  ---
+  duration_ms: 25.005115
+  type: 'test'
+  ...
+# Subtest: production publisher reconciles a lost joined response before the distinct progress report
+ok 108 - production publisher reconciles a lost joined response before the distinct progress report
+  ---
+  duration_ms: 24.960051
+  type: 'test'
+  ...
+# Subtest: production publisher reconciles a lost joined response before the distinct completed report
+ok 109 - production publisher reconciles a lost joined response before the distinct completed report
+  ---
+  duration_ms: 33.971356
+  type: 'test'
+  ...
+# Subtest: production publisher reconciles a lost joined response before the distinct blocked report
+ok 110 - production publisher reconciles a lost joined response before the distinct blocked report
+  ---
+  duration_ms: 25.592147
+  type: 'test'
+  ...
+# Subtest: publisher recovery retains the original key through repeated response loss and never submits unconfirmed follow-up reports
+ok 111 - publisher recovery retains the original key through repeated response loss and never submits unconfirmed follow-up reports
+  ---
+  duration_ms: 29.319281
+  type: 'test'
+  ...
+# Subtest: publisher recovery rechecks revoked membership and keeps the unknown original until an authorized retry succeeds
+ok 112 - publisher recovery rechecks revoked membership and keeps the unknown original until an authorized retry succeeds
+  ---
+  duration_ms: 26.341257
+  type: 'test'
+  ...
+# Subtest: a concurrent publisher cannot duplicate recovery or overtake the explicit next report
+ok 113 - a concurrent publisher cannot duplicate recovery or overtake the explicit next report
+  ---
+  duration_ms: 54.111283
+  type: 'test'
+  ...
+# Subtest: publisher recovery cannot continue an old report after a account switch
+ok 114 - publisher recovery cannot continue an old report after a account switch
+  ---
+  duration_ms: 24.925658
+  type: 'test'
+  ...
+# Subtest: publisher recovery cannot continue an old report after a workspace switch
+ok 115 - publisher recovery cannot continue an old report after a workspace switch
+  ---
+  duration_ms: 29.46542
+  type: 'test'
+  ...
+# Subtest: retrying the same production report with reordered detail keys never appends a second report
+ok 116 - retrying the same production report with reordered detail keys never appends a second report
+  ---
+  duration_ms: 22.989984
+  type: 'test'
+  ...
+1..116
+# tests 116
+# suites 0
+# pass 116
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3719.556993
+
+EXIT: 0
+COMMAND: python -m unittest tests.upgrade.test_praxis_isolation tests.upgrade.test_native_fixture_contracts
+....................................
+----------------------------------------------------------------------
+Ran 36 tests in 51.564s
+
+OK
+
+EXIT: 0

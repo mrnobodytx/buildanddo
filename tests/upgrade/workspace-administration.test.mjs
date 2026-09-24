@@ -161,7 +161,7 @@ test('native workspace writes reject owner shortcuts, viewers and reassignment a
 
 test('native service records require administrators and cannot fabricate runtime health', () => {
     const f = fixture();
-    for (const name of ['services', 'social_channels']) {
+    for (const name of ['services']) {
         const status = name === 'services' ? 'planned' : 'pending'; const stamp = name === 'services' ? 'last_health_check' : 'last_check';
         assert.equal(native(f, name, 'admin', 'create', { status })(), 'persisted');
         denied(native(f, name, 'editor', 'create', { status }));

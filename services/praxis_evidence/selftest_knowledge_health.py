@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File: services/praxis_evidence/selftest_knowledge_health.py
+# Stage: 08_TEST
+# SRS: SRS-BUILDANDDO-UPGRADE-001
+# CAPS: pending
+# CK: pending
+# Dispatch: VCC-BUILDANDDO-UPGRADE-001
+# Seat: BITS-CODEGEN
+# Owner: Citadel Nexus Inc.
+# Created: 2026-09-23
+# Depends: services/praxis_evidence/isolated_test.py
+# EnumType: Test
+# EnumEdges: CONSUMES services/praxis_evidence/isolated_test.py; VALIDATES services/praxis_evidence/knowledge_health.py
+# Intent: Exercise knowledge health against isolated native records without inheriting deployment targets.
+# ----------------------------------------------------------------
 """selftest_knowledge_health.py - proves the scorecard reflects REAL per-
 dimension differences, never one averaged number, against live data."""
 from __future__ import annotations
@@ -6,11 +21,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient  # noqa: E402
+from isolated_test import isolated_client  # noqa: E402
 from claims import create_source, create_claim, audit_claim  # noqa: E402
 from knowledge_health import domain_health  # noqa: E402
 
-client = PocketBaseClient()
+client = isolated_client()
 checks: list[tuple[str, bool]] = []
 cleanup: list[tuple[str, str]] = []
 DOMAIN = "selftest.knowledge_health"

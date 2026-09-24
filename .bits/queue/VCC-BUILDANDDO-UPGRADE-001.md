@@ -20,6 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Test isolation and claim authority continuation - 2026-09-23
+
+Continue the owner-requested repairs and site lessons against the reported safety
+and progression defects, under the existing A2 dispatch. No production inspection,
+secret access, private deployment change or external execution is authorized.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| CA-1 | Isolate mutating Praxis tests from shared backends | Rejection-before-I/O regressions and disposable native entrypoint | source PASS: 21 safety cases; both actual native profiles BLOCKED, no shared backend used |
+| CA-2 | Make guided completion server-owned and project keyless learner responses | Learning projection, retained-history and raw-write denial regressions | source PASS: 43 learning source/client cases; old reading history remains non-authoritative |
+| CA-3 | Protect workspace claims, drafts and submitting-account attribution | Scoped commands, legacy non-promotion and hookless native denial | source PASS: 56 claim cases, including workspace-return and multi-await recovery; native hookless denial remains unexecuted |
+| CA-4 | Retain corrected findings, site lessons and measured validation | Source/native/rendered checks plus readiness, boundary and memory | PARTIAL: 847 Node passes; 1,210 Python cases with six dependency skips; latest site capture records 135 behavior/fixture checks and preserves the earlier captures |
+
+Memory brief: merged PR 90 retains the broadcast security repairs. The new report
+mixes confirmed flaws with wider design decisions. Missions already emit scoped
+observations through existing execution paths; manual reading completion does
+not mint guided certificates. Praxis currently imports deployment configuration
+and has a public-backend fallback, but no actual production CI setting or write
+was inspected. Use isolated synthetic tests only and do not fabricate seat events.
+
 ## Broadcast repair and learning continuation - 2026-09-23
 
 The owner requests fixing the merged classroom integration findings and retaining
