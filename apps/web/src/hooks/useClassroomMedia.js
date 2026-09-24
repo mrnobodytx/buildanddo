@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/web/src/lib/classroomRealtime.js, apps/web/src/lib/pocketbaseClient.js
+// Depends:     apps/web/src/lib/classroomRealtime.js, apps/web/src/lib/pocketbaseClient.js, apps/web/src/hooks/classroomMediaLifetime.js, apps/web/src/contexts/AuthContext.jsx, apps/web/src/contexts/WorkspaceContext.jsx
 // EnumType:    Hook
-// EnumEdges:   CONSUMES apps/web/src/lib/classroomRealtime.js
+// EnumEdges:   CONSUMES apps/web/src/lib/classroomRealtime.js; CONSUMES apps/web/src/hooks/classroomMediaLifetime.js; CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/contexts/WorkspaceContext.jsx
 // DAG Node:    none
 // Intent:      Carry the live-classroom media behaviour of the retired ClassroomPage into the routed room.
 // ───────────────────────────────────────────────────────────────
@@ -25,8 +25,11 @@
 //   * A refused autoplay is surfaced so the page can offer a button.
 // The room id is the routed classroom's record id, so there is no free-text room
 // field and no per-keystroke advertisement to guard against.
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 import pocketbaseClient from '@/lib/pocketbaseClient';
+import { createMediaLifetime } from './classroomMediaLifetime.js';
 import {
     joinClassroom,
     classroomHealth,
@@ -38,6 +41,11 @@ import {
 
 const AUDIO_STATS_MS = 2000;
 const NO_AUDIO = Object.freeze({ supported: false, packets: 0, bytes: 0, streams: 0 });
+const IDLE = {
+    health: null, status: 'idle', detail: '', error: '', handle: null,
+    presence: [], unreadable: [], pulled: [], presenceError: '', audio: NO_AUDIO,
+    audioBlocked: false, local: { mic: true, camera: true },
+};
 
 /**
  * Derives the receive state shown to a member from measured audio stats.
@@ -56,149 +64,209 @@ export function receiveState(audio) {
  * @param {{enabled?: boolean}} [options] enabled=false keeps the hook idle (room not live, or not a member).
  */
 export function useClassroomMedia(roomId, { enabled = true } = {}) {
-    const [health, setHealth] = useState(null);
-    const [status, setStatus] = useState('idle');
-    const [detail, setDetail] = useState('');
-    const [error, setError] = useState('');
-    const [handle, setHandle] = useState(null);
-    const [presence, setPresence] = useState([]);
-    const [unreadable, setUnreadable] = useState([]);
-    const [pulled, setPulled] = useState([]);
-    const [presenceError, setPresenceError] = useState('');
-    const [audio, setAudio] = useState(NO_AUDIO);
-    const [audioBlocked, setAudioBlocked] = useState(false);
-    const [local, setLocal] = useState({ mic: true, camera: true });
+    const { user, isAuthed, sessionEpoch, isSessionCurrent } = useAuth();
+    const { active } = useWorkspace();
+    const accountId = isAuthed ? user?.id || '' : '', workspaceId = active?.id || '';
+    const key = JSON.stringify([roomId, enabled, accountId, workspaceId, sessionEpoch]);
+    const scopeRef = useRef(null);
+    if (scopeRef.current?.key !== key) scopeRef.current = { key };
+    const scope = scopeRef.current;
+    const sessionCurrent = useRef(isSessionCurrent); sessionCurrent.current = isSessionCurrent;
+    const mounted = useRef(false), healthGeneration = useRef(0), playbackGeneration = useRef(0);
+    const lifetimeRef = useRef(null);
+    if (!lifetimeRef.current) lifetimeRef.current = createMediaLifetime();
+    const lifetime = lifetimeRef.current;
+    const [snapshot, setSnapshot] = useState(() => ({ ...IDLE, scope }));
     const trackerRef = useRef(null);
     const audioRef = useRef(null);
-    const handleRef = useRef(null);
-    handleRef.current = handle;
+
+    // The native epoch distinguishes replacement from refresh; token equality does not.
+    const currentScope = useCallback(() => Boolean(mounted.current && scopeRef.current === scope &&
+        enabled && roomId && accountId && workspaceId && pocketbaseClient.authStore.record?.id === accountId &&
+        sessionCurrent.current?.(sessionEpoch)), [scope, enabled, roomId, accountId, workspaceId, sessionEpoch]);
+    const update = useCallback((patch, current = currentScope) => {
+        if (!current()) return;
+        setSnapshot((old) => {
+            if (!current()) return old;
+            const previous = old.scope === scope ? old : { ...IDLE, scope };
+            return { ...previous, ...(typeof patch === 'function' ? patch(previous) : patch) };
+        });
+    }, [scope, currentScope]);
+
+    useLayoutEffect(() => {
+        mounted.current = true;
+        setSnapshot({ ...IDLE, scope });
+        return () => {
+            mounted.current = false;
+            healthGeneration.current++;
+            lifetime.cancel();
+        };
+    }, [scope, lifetime]);
+
+    // Hide old scope data during render, before resource cleanup runs.
+    const media = snapshot.scope === scope && currentScope() ? snapshot : IDLE;
+    const { handle } = media;
 
     // Configuration metadata only: no secret, nothing started.
     useEffect(() => {
-        if (!enabled || !roomId) return undefined;
-        let alive = true;
+        if (!currentScope()) return undefined;
+        const generation = ++healthGeneration.current;
+        const current = () => currentScope() && generation === healthGeneration.current;
         classroomHealth()
-            .then((result) => { if (alive) setHealth(result); })
-            .catch((err) => { if (alive) setHealth({ ok: false, reason: err?.message || 'health route unreachable' }); });
-        return () => { alive = false; };
-    }, [enabled, roomId]);
-
-    const reset = useCallback(() => {
-        setHandle(null); setStatus('idle'); setDetail(''); setPresence([]); setUnreadable([]);
-        setPulled([]); setAudio(NO_AUDIO); setAudioBlocked(false); setLocal({ mic: true, camera: true });
-    }, []);
+            .then((result) => update({ health: result }, current))
+            .catch((err) => update({ health: { ok: false, reason: err?.message || 'health route unreachable' } }, current));
+        return () => { if (generation === healthGeneration.current) healthGeneration.current++; };
+    }, [currentScope, update]);
 
     const leave = useCallback(() => {
-        handleRef.current?.close();
-        reset();
-    }, [reset]);
-
-    // Leaving the room, the room ending or losing membership closes the session.
-    useEffect(() => {
-        if (!enabled && handleRef.current) leave();
-    }, [enabled, leave]);
-    useEffect(() => () => { handleRef.current?.close(); }, [roomId]);
+        if (!mounted.current || scopeRef.current !== scope) return;
+        healthGeneration.current++;
+        lifetime.cancel();
+        setSnapshot((old) => ({ ...IDLE, scope, health: old.scope === scope ? old.health : null }));
+    }, [scope, lifetime]);
 
     useEffect(() => {
-        if (!handle || !roomId) return undefined;
+        const attempt = lifetime.active;
+        if (!handle || attempt?.handle !== handle || !attempt.current()) return undefined;
+        let alive = true;
+        const current = () => alive && attempt.current();
         const tracker = createPresenceTracker({
-            handle,
-            room: roomId,
-            authToken: pocketbaseClient.authStore.token,
-            onChange: ({ live, pulled: fresh, unreadable: broken }) => {
-                setPresence(live);
-                setUnreadable(broken || []);
-                if (fresh.length) setPulled((current) => Array.from(new Set(current.concat(fresh.map((row) => row.id)))));
-                setPresenceError('');
-            },
-            onError: (err) => setPresenceError(err?.message || String(err)),
+            handle, room: roomId, getAuthToken: () => pocketbaseClient.authStore.token,
+            onChange: ({ live, pulled: fresh, unreadable: broken }) => update((previous) => ({
+                presence: live, unreadable: broken || [], presenceError: '',
+                pulled: Array.from(new Set(previous.pulled.concat(fresh.map((row) => row.id)))),
+            }), current),
+            onError: (err) => update({ presenceError: err?.message || String(err) }, current),
         });
-        trackerRef.current = tracker;
+        const entry = { tracker, current }; trackerRef.current = entry;
+        const stop = attempt.addCleanup(() => {
+            alive = false;
+            if (trackerRef.current === entry) trackerRef.current = null;
+            tracker.stop();
+        });
         tracker.start(PRESENCE_POLL_MS);
-        return () => { tracker.stop(); trackerRef.current = null; };
-    }, [handle, roomId]);
+        return stop;
+    }, [handle, roomId, lifetime, update]);
 
     // Only a publishing host advertises; the backend refuses anyone else's write.
     useEffect(() => {
-        if (!handle || !roomId) return undefined;
+        const attempt = lifetime.active;
+        if (!handle || attempt?.handle !== handle || !attempt.current()) return undefined;
         if (handle.role !== 'teach' || !handle.mayPublish || !handle.published?.length) return undefined;
+        let alive = true;
+        const current = () => alive && attempt.current();
         const beat = startPresenceHeartbeat({
-            room: roomId,
-            sessionId: handle.sessionId,
-            tracks: handle.published,
-            authToken: pocketbaseClient.authStore.token,
-            onError: (err) => setPresenceError(err?.message || String(err)),
+            room: roomId, sessionId: handle.sessionId, tracks: handle.published, getAuthToken: () => pocketbaseClient.authStore.token,
+            onError: (err) => update({ presenceError: err?.message || String(err) }, current),
         });
-        return () => beat.stop();
-    }, [handle, roomId]);
+        return attempt.addCleanup(() => { alive = false; beat.stop(); });
+    }, [handle, roomId, lifetime, update]);
 
     useEffect(() => {
-        if (!handle?.pc) return undefined;
-        let alive = true;
-        const read = () => { inboundAudioStats(handle.pc).then((stats) => { if (alive) setAudio(stats); }).catch(() => {}); };
+        const attempt = lifetime.active;
+        if (!handle?.pc || attempt?.handle !== handle || !attempt.current()) return undefined;
+        let alive = true, busy = false;
+        const current = () => alive && attempt.current();
+        const read = async () => {
+            if (busy || !current()) return;
+            busy = true;
+            try { update({ audio: await inboundAudioStats(handle.pc) }, current); } catch { /* No new measurement. */ }
+            finally { busy = false; }
+        };
         read();
         const timer = setInterval(read, AUDIO_STATS_MS);
-        return () => { alive = false; clearInterval(timer); };
-    }, [handle]);
+        return attempt.addCleanup(() => { alive = false; clearInterval(timer); });
+    }, [handle, lifetime, update]);
 
     const playAudio = useCallback(() => {
-        const element = audioRef.current;
-        if (!element) return;
-        const started = element.play();
-        if (started && typeof started.then === 'function') started.then(() => setAudioBlocked(false)).catch(() => setAudioBlocked(true));
-        else setAudioBlocked(false);
-    }, []);
+        const attempt = lifetime.active, element = audioRef.current;
+        if (!currentScope() || !attempt?.current() || !element || !attempt.handle?.remoteStream) return;
+        const stream = attempt.handle.remoteStream;
+        const generation = ++playbackGeneration.current;
+        const current = () => attempt.current() && generation === playbackGeneration.current &&
+            audioRef.current === element && element.srcObject === stream;
+        if (!current()) return;
+        try {
+            const started = element.play();
+            if (started && typeof started.then === 'function') return started.then(
+                () => update({ audioBlocked: false }, current), () => update({ audioBlocked: true }, current),
+            );
+            update({ audioBlocked: false }, current);
+        } catch { update({ audioBlocked: true }, current); }
+    }, [lifetime, currentScope, update]);
 
     // One inbound stream carries every pulled track; bind it once per session.
     useEffect(() => {
-        if (!handle?.remoteStream || !audioRef.current) return;
-        audioRef.current.srcObject = handle.remoteStream;
+        const attempt = lifetime.active, element = audioRef.current;
+        if (!handle?.remoteStream || !element || attempt?.handle !== handle || !attempt.current()) return undefined;
+        const stop = attempt.addCleanup(() => {
+            if (element.srcObject !== handle.remoteStream) return;
+            try { element.pause(); } finally { element.srcObject = null; }
+        });
+        element.srcObject = handle.remoteStream;
         playAudio();
-    }, [handle, playAudio]);
+        return stop;
+    }, [handle, playAudio, lifetime]);
 
     const join = useCallback(async (role) => {
-        if (!roomId || status === 'connecting' || handleRef.current) return;
-        setError(''); setStatus('connecting');
+        const attempt = lifetime.begin(currentScope);
+        if (!attempt) return;
+        update((previous) => ({ ...IDLE, health: previous.health, status: 'connecting' }), attempt.current);
         try {
             const next = await joinClassroom({
+                room: roomId,
+                isCurrent: attempt.current,
+                onCleanup: attempt.addCleanup,
                 role: role === 'teach' ? 'teach' : 'watch',
-                onState: setDetail,
+                onState: (detail) => update({ detail }, attempt.current),
                 authToken: pocketbaseClient.authStore.token,
-                seatId: pocketbaseClient.authStore.record?.id || '',
-                onRemoteTrackError: (err) => setPresenceError(`An incoming track was rejected: ${err?.message || err}`),
+                seatId: accountId,
+                onRemoteTrack: (event) => {
+                    if (!attempt.current()) {
+                        try { event.track?.stop(); } catch { /* A late track belongs to the cancelled join. */ }
+                    }
+                },
+                onRemoteTrackError: (err) => update({ presenceError: `An incoming track was rejected: ${err?.message || err}` }, attempt.current),
             });
-            setHandle(next); setStatus('connected');
+            if (attempt.accept(next)) update({ handle: next, status: 'connected' }, attempt.current);
         } catch (err) {
-            setStatus('failed'); setError(err?.message || String(err));
+            const current = attempt.current();
+            attempt.cancel();
+            if (current) update({ status: 'failed', detail: '', error: err?.message || String(err) });
         }
-    }, [roomId, status]);
+    }, [roomId, accountId, lifetime, currentScope, update]);
 
     const listen = useCallback(async (row) => {
-        setPresenceError('');
+        const entry = trackerRef.current;
+        if (!currentScope() || !entry?.current()) return;
+        const current = () => trackerRef.current === entry && entry.current();
+        update({ presenceError: '' }, current);
         try {
-            await trackerRef.current?.pull(row);
-            setPulled((current) => Array.from(new Set(current.concat([row.id]))));
+            await entry.tracker.pull(row);
+            if (!current()) return;
+            update((previous) => ({ pulled: Array.from(new Set(previous.pulled.concat([row.id]))) }), current);
             playAudio();
         } catch (err) {
-            setPresenceError(err?.message || String(err));
+            update({ presenceError: err?.message || String(err) }, current);
         }
-    }, [playAudio]);
+    }, [currentScope, playAudio, update]);
 
     // Local track switches act on the real MediaStreamTracks, so "muted" is true on the wire.
     const toggle = useCallback((kind) => {
-        const stream = handleRef.current?.stream;
-        if (!stream) return;
+        const attempt = lifetime.active, stream = attempt?.handle?.stream;
+        if (!currentScope() || !attempt?.current() || !stream) return;
         const tracks = kind === 'camera' ? stream.getVideoTracks() : stream.getAudioTracks();
         if (!tracks.length) return;
         const next = !tracks[0].enabled;
         tracks.forEach((track) => { track.enabled = next; });
-        setLocal((current) => ({ ...current, [kind]: next }));
-    }, []);
+        update((previous) => ({ local: { ...previous.local, [kind]: next } }), attempt.current);
+    }, [lifetime, currentScope, update]);
 
     return {
-        health, configured: Boolean(health?.ok), publishersConfigured: health ? health.publishers_configured : null,
-        status, detail, error, handle, presence, unreadable, pulled, presenceError,
-        audio, receive: receiveState(audio), audioBlocked, audioRef, local,
+        health: media.health, configured: Boolean(media.health?.ok), publishersConfigured: media.health ? media.health.publishers_configured : null,
+        status: media.status, detail: media.detail, error: media.error, handle,
+        presence: media.presence, unreadable: media.unreadable, pulled: media.pulled, presenceError: media.presenceError,
+        audio: media.audio, receive: receiveState(media.audio), audioBlocked: media.audioBlocked, audioRef, local: media.local,
         join, leave, listen, playAudio, toggle,
     };
 }

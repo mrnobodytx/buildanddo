@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/__tests__/classroomRealtime.presence.test.js
 // Stage:       08_TEST
-// SRS:         SRS-CN-PERSONA-RUNTIME-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    C-ONE-20260918-PERSONA-RUNTIME-001
-// Seat:        C-ONE
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
 // Depends:     apps/web/src/lib/classroomRealtime.js
@@ -103,7 +103,7 @@ describe('pullTracks', () => {
     it('posts the pull and then PUTs the answer to the renegotiate route', async () => {
         const pc = fakePc();
         await pullTracks(
-            { sessionId: 'sess-mine', pc },
+            { room: 'room-1', sessionId: 'sess-mine', pc },
             [{ sessionId: 'sess-forge', trackName: 'seat:forge/mic' }],
             'token-abc',
         );
@@ -113,6 +113,7 @@ describe('pullTracks', () => {
         expect(calls[0].method).toBe('POST');
         expect(calls[0].url).toContain('/api/classroom/tracks');
         expect(calls[0].body.action).toBe('pull');
+        expect(calls[0].body.room).toBe('room-1');
         expect(calls[0].body.tracks).toEqual([
             { location: 'remote', trackName: 'seat:forge/mic', sessionId: 'sess-forge' },
         ]);
@@ -123,13 +124,14 @@ describe('pullTracks', () => {
         expect(calls[1].url).toContain('/api/classroom/renegotiate');
         expect(calls[1].url).toBe(API.renegotiate);
         expect(calls[1].body.sessionId).toBe('sess-mine');
+        expect(calls[1].body.room).toBe('room-1');
         expect(calls[1].body.sessionDescription).toEqual({ type: 'answer', sdp: 'v=0\r\na=answer' });
         expect(pc.setRemoteDescription).toHaveBeenCalledTimes(1);
     });
 
     it('never sends an empty tracks array', async () => {
         const pc = fakePc();
-        await pullTracks({ sessionId: 'sess-mine', pc }, [{ sessionId: 's', trackName: 't' }], 'token-abc');
+        await pullTracks({ room: 'room-1', sessionId: 'sess-mine', pc }, [{ sessionId: 's', trackName: 't' }], 'token-abc');
         // Guard against a vacuous loop: at least one call MUST carry tracks, or the
         // assertions below would pass on a module that sent nothing at all.
         const withTracks = calls.filter((call) => call.body && 'tracks' in call.body);
@@ -144,9 +146,9 @@ describe('pullTracks', () => {
 
     it('refuses to call the backend at all when nothing was requested', async () => {
         const pc = fakePc();
-        await expect(pullTracks({ sessionId: 'sess-mine', pc }, [], 'token-abc'))
+        await expect(pullTracks({ room: 'room-1', sessionId: 'sess-mine', pc }, [], 'token-abc'))
             .rejects.toThrow('no tracks requested');
-        await expect(pullTracks({ sessionId: 'sess-mine', pc }, [{ trackName: 'orphan' }], 'token-abc'))
+        await expect(pullTracks({ room: 'room-1', sessionId: 'sess-mine', pc }, [{ trackName: 'orphan' }], 'token-abc'))
             .rejects.toThrow('no tracks requested');
         expect(globalThis.fetch).not.toHaveBeenCalled();
     });
@@ -157,7 +159,7 @@ describe('pullTracks', () => {
             return jsonResponse({ requiresImmediateRenegotiation: false });
         });
         const pc = fakePc();
-        await pullTracks({ sessionId: 'sess-mine', pc }, [{ sessionId: 's', trackName: 't' }], 'token');
+        await pullTracks({ room: 'room-1', sessionId: 'sess-mine', pc }, [{ sessionId: 's', trackName: 't' }], 'token');
         expect(calls).toHaveLength(1);
         expect(pc.setRemoteDescription).not.toHaveBeenCalled();
     });
@@ -240,7 +242,7 @@ describe('joinClassroom track naming', () => {
         };
         globalThis.fetch = vi.fn(async (url, init = {}) => {
             if (String(url).includes('/api/classroom/session')) {
-                return jsonResponse({ sessionId: 'sess-1', may_publish: true, sessionDescription: { type: 'answer', sdp: 'v=0' } });
+                return jsonResponse({ room: 'room-1', sessionId: 'sess-1', may_publish: true, sessionDescription: { type: 'answer', sdp: 'v=0' } });
             }
             return jsonResponse({ ok: true, echoed: init.body ? JSON.parse(init.body) : null });
         });
@@ -259,7 +261,7 @@ describe('joinClassroom track naming', () => {
                 { kind: 'video', id: 'random-uuid-video', stop: () => {} },
             ],
         };
-        const handle = await joinClassroom({ role: 'teach', seatId: '', localStream });
+        const handle = await joinClassroom({ room: 'room-1', role: 'teach', seatId: '', localStream });
         expect(handle.published).toEqual([
             { trackName: 'seat:anon/mic', kind: 'audio' },
             { trackName: 'seat:anon/cam', kind: 'video' },
@@ -276,7 +278,7 @@ describe('joinClassroom track naming', () => {
         const localStream = {
             getTracks: () => [{ kind: 'video', id: 'v1', stop: () => {} }],
         };
-        const handle = await joinClassroom({ role: 'teach', seatId: 'seat9', localStream });
+        const handle = await joinClassroom({ room: 'room-1', role: 'teach', seatId: 'seat9', localStream });
         expect(handle.published).toEqual([{ trackName: 'seat:seat9/cam', kind: 'video' }]);
     });
 });

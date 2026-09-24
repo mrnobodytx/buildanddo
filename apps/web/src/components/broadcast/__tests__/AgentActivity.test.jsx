@@ -79,4 +79,62 @@ describe('agent activity', () => {
         expect(links).toHaveLength(1);
         expect(links[0]).toHaveAttribute('href', 'https://github.com/o/r/pull/1');
     });
+
+    it.each([
+        ['string', 'Measured the inbound packets.', ['Measured the inbound packets.']],
+        ['object', { phase: 'BR-2', packets: 12, verified: false }, ['BR-2', 'packets', '12', 'false']],
+        ['array', ['Checked', { command: 'node --test' }, null], ['Checked', 'node --test', 'null']],
+        ['null', null, []],
+    ])('renders %s detail as text, including the real structured seat-event contract', async (_kind, detail, expected) => {
+        comms.recentSeatEvents.mockResolvedValue([event({ detail })]);
+        view({});
+        await screen.findByText('Checked the DNS steps against the provider docs');
+        const paragraph = screen.getByRole('listitem').querySelector('p.whitespace-pre-wrap');
+        if (detail === null) expect(paragraph).toBeNull();
+        else for (const text of expected) expect(paragraph).toHaveTextContent(text);
+    });
+
+    it.each(['string', 'object', 'array'])('never interprets markup in %s detail', async (kind) => {
+        const markup = '<img src=x onerror=alert(1)><script>alert(1)</script>';
+        const detail = kind === 'string' ? markup : kind === 'object' ? { note: markup } : [markup];
+        comms.recentSeatEvents.mockResolvedValue([event({ detail })]);
+        view({});
+        await screen.findByText('Checked the DNS steps against the provider docs');
+        const item = screen.getByRole('listitem');
+        expect(item).toHaveTextContent(markup);
+        expect(item.querySelector('img, script, iframe')).toBeNull();
+    });
+
+    it('bounds string output and does not traverse arbitrarily deep, wide or circular details', async () => {
+        let deep = { hidden: 'past the depth limit' };
+        for (let index = 0; index < 10000; index++) deep = { nested: deep };
+        const circular = { note: 'Circular input' }; circular.self = circular;
+        const wide = Array.from({ length: 10000 }, (_, index) => `entry-${index}`);
+        comms.recentSeatEvents.mockResolvedValue([
+            event({ id: 'long', detail: 'x'.repeat(20000) }), event({ id: 'deep', detail: deep }),
+            event({ id: 'circular', detail: circular }), event({ id: 'wide', detail: wide }),
+        ]);
+        view({});
+        await screen.findAllByText('Checked the DNS steps against the provider docs');
+        for (const item of screen.getAllByRole('listitem')) {
+            const detail = item.querySelector('p.whitespace-pre-wrap').textContent;
+            expect(detail.length).toBeLessThanOrEqual(1200);
+            expect(detail).toContain('...');
+            expect(detail).not.toContain('past the depth limit');
+            expect(detail).not.toContain('entry-9999');
+        }
+    });
+
+    it('does not invoke arbitrary getters or toJSON methods while projecting detail', async () => {
+        const getter = vi.fn(() => { throw new Error('Not a JSON value'); });
+        const toJSON = vi.fn(() => { throw new Error('Do not serialize the original object'); });
+        const detail = { note: 'Retain the readable part', toJSON };
+        Object.defineProperty(detail, 'bad', { enumerable: true, get: getter });
+        comms.recentSeatEvents.mockResolvedValue([event({ detail })]);
+        view({});
+        await screen.findByText('Checked the DNS steps against the provider docs');
+        expect(screen.getByRole('listitem')).toHaveTextContent('Retain the readable part');
+        expect(getter).not.toHaveBeenCalled();
+        expect(toJSON).not.toHaveBeenCalled();
+    });
 });

@@ -236,6 +236,42 @@ test('migration replays and down retains history while disabling every classroom
     assert.throws(() => f.list(), /not installed/);
 });
 
+test('classroom migrations accept native-normalized indexes and retain history through down/up', () => {
+    for (const quote of [['`', '`'], ['"', '"'], ['[', ']']]) {
+        const f = classroomFixture(), room = f.create();
+        f.command('room.start', { id: room.id });
+        const before = plain(f.data);
+        for (const name of ['classroom_rooms', 'classroom_members', 'classroom_messages', 'classroom_receipts']) {
+            f.collections[name].indexes = f.collections[name].indexes.map((index) => index.replace(/\b[a-z_]+\b/g,
+                (word) => ['create', 'unique', 'index', 'on', 'desc'].includes(word) ? word.toUpperCase() : quote[0] + word + quote[1])
+                .replace(/\s+/g, '\n  ').replace(/,/g, ' , '));
+        }
+        f.migration(MIGRATION).up();
+        f.migration(MIGRATION).down();
+        f.migration(MIGRATION).up();
+        assert.deepEqual(plain(f.data), before);
+        assert.equal(f.detail(room.id).room.status, 'live');
+    }
+});
+
+test('classroom index normalization cannot admit changed uniqueness, identity, keys or predicates', () => {
+    for (const change of [
+        (index) => index.replace('unique ', ''),
+        (index) => index.replace('idx_classroom_member', 'idx_other_member'),
+        (index) => index.replace('on classroom_members', 'on classroom_rooms'),
+        (index) => index.replace('(room, owner)', '(owner, room)'),
+        (index) => index.replace('(room, owner)', '(room, workspace)'),
+        (index) => index.replace('(room, owner)', '(room, owner desc)'),
+        (index) => index + ' where active = true',
+    ]) {
+        const f = classroomFixture();
+        f.collections.classroom_members.indexes[0] = change(f.collections.classroom_members.indexes[0]);
+        const before = plain(f.data);
+        assert.throws(() => f.migration(MIGRATION).up(), /indexes/);
+        assert.deepEqual(plain(f.data), before);
+    }
+});
+
 test('native route callbacks load policy in isolation and require bounded authenticated private requests', () => {
     const routes = [];
     const code = source('apps/pocketbase/pb_hooks/classrooms.pb.js');
@@ -262,6 +298,8 @@ test('media is offered only while live and only when the realtime service is con
     const room = f.create();
     assert.deepEqual(f.detail(room.id).media, { available: false });
     f.command('room.start', { id: room.id });
+    assert.equal(f.detail(room.id).media.available, false, 'configuration alone cannot replace the media session store');
+    f.migration('apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js').up();
     const live = f.detail(room.id);
     assert.deepEqual(live.media, { available: true });
     assert.equal(JSON.stringify(live).includes('secret-value'), false);
@@ -322,4 +360,36 @@ test('the attendance migration is locked, replays cleanly and keeps history on r
     f.collections.classroom_attendance.listRule = '';
     assert.throws(() => migration.down(), /Review custom classroom_attendance.listRule/);
     assert.throws(() => migration.up(), /Review custom classroom_attendance.listRule/);
+});
+
+test('attendance reapply accepts equivalent native index DDL without changing events', () => {
+    const f = classroomFixture(), migration = f.migration(ATTENDANCE);
+    migration.up();
+    const room = f.create(); f.command('room.start', { id: room.id });
+    const before = plain(f.data.classroom_attendance);
+    f.collections.classroom_attendance.indexes = [
+        '  CREATE INDEX `idx_classroom_attendance` ON `classroom_attendance` ( `workspace` , `room` , `at` , `id` )  ',
+    ];
+    migration.up(); migration.down(); migration.up();
+    assert.deepEqual(plain(f.data.classroom_attendance), before);
+});
+
+test('attendance index normalization still rejects changed index structure and field contracts', () => {
+    for (const change of [
+        (index) => index.replace('create index', 'create unique index'),
+        (index) => index.replace('idx_classroom_attendance', 'idx_other_attendance'),
+        (index) => index.replace('on classroom_attendance', 'on classroom_members'),
+        (index) => index.replace('(workspace, room, at, id)', '(room, workspace, at, id)'),
+        (index) => index.replace('(workspace, room, at, id)', '(workspace, room, at desc, id)'),
+        (index) => index + ' where event = "join"',
+    ]) {
+        const f = classroomFixture(), migration = f.migration(ATTENDANCE);
+        migration.up();
+        f.collections.classroom_attendance.indexes[0] = change(f.collections.classroom_attendance.indexes[0]);
+        assert.throws(() => migration.up(), /indexes/);
+    }
+    const f = classroomFixture(), migration = f.migration(ATTENDANCE);
+    migration.up();
+    f.collections.classroom_attendance.fields.getByName('room').collectionId = 'foreign';
+    assert.throws(() => migration.up(), /custom classroom_attendance.room/);
 });

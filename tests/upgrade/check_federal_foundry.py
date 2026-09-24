@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_federal_foundry.py, tests/upgrade/test_operator_compiler.py, apps/federal_foundry/catalog.py, apps/federal_foundry/evidence.py, apps/federal_foundry/compiler.py
+# Depends:     tests/upgrade/test_federal_foundry.py, tests/upgrade/test_operator_compiler.py, tests/upgrade/test_research_sprint.py, apps/federal_foundry/catalog.py, apps/federal_foundry/evidence.py, apps/federal_foundry/compiler.py, apps/decision/packages.py
 # EnumType:    Test
-# EnumEdges:   DEPENDS_ON tests/upgrade/test_federal_foundry.py; DEPENDS_ON tests/upgrade/test_operator_compiler.py; DEPENDS_ON apps/federal_foundry/catalog.py; DEPENDS_ON apps/federal_foundry/evidence.py; DEPENDS_ON apps/federal_foundry/compiler.py
+# EnumEdges:   DEPENDS_ON tests/upgrade/test_federal_foundry.py; DEPENDS_ON tests/upgrade/test_operator_compiler.py; DEPENDS_ON tests/upgrade/test_research_sprint.py; DEPENDS_ON apps/federal_foundry/catalog.py; DEPENDS_ON apps/federal_foundry/evidence.py; DEPENDS_ON apps/federal_foundry/compiler.py; VALIDATES apps/decision/packages.py
 # DAG Node:    none
 # Intent:      Require measured portable portfolio behavior and coverage independently of unavailable browser or hosted-model dependencies.
 # ───────────────────────────────────────────────────────────────
@@ -49,9 +49,16 @@ def main() -> int:
         suite = unittest.defaultTestLoader.discover(
             str(ROOT / "tests/upgrade"), pattern="test_federal_foundry.py"
         )
-        suite.addTests(unittest.defaultTestLoader.discover(
-            str(ROOT / "tests/upgrade"), pattern="test_operator_compiler.py"
-        ))
+        suite.addTests(
+            unittest.defaultTestLoader.discover(
+                str(ROOT / "tests/upgrade"), pattern="test_operator_compiler.py"
+            )
+        )
+        suite.addTests(
+            unittest.defaultTestLoader.discover(
+                str(ROOT / "tests/upgrade"), pattern="test_research_sprint.py"
+            )
+        )
         return unittest.TextTestRunner(verbosity=1, resultclass=ReportResult).run(suite)
 
     threading.settrace(tracer.globaltrace)
@@ -61,7 +68,11 @@ def main() -> int:
         threading.settrace(None)
     counts = tracer.results().counts
     measured = {}
-    for path in sorted((ROOT / "apps/federal_foundry").glob("*.py")):
+    paths = [
+        *sorted((ROOT / "apps/federal_foundry").glob("*.py")),
+        ROOT / "apps/decision/packages.py",
+    ]
+    for path in paths:
         executable = {
             line for line in trace._find_executable_linenos(str(path)) if line > 0
         }

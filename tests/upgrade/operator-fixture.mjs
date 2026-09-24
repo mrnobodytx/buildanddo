@@ -8,21 +8,23 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     tests/upgrade/research-fixture.mjs, apps/pocketbase/pb_hooks/workspace-operator.js, apps/federal_foundry/operator.py
+// Depends:     tests/upgrade/research-fixture.mjs, apps/pocketbase/pb_hooks/workspace-operator.js, apps/federal_foundry/operator.py, tests/upgrade/government-fixture.mjs
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/research-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; CONSUMES apps/federal_foundry/operator.py
+// EnumEdges:   CONSUMES tests/upgrade/research-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; CONSUMES apps/federal_foundry/operator.py; CONSUMES tests/upgrade/government-fixture.mjs
 // DAG Node:    none
 // Intent:      Exercise the operator route and native proposal handlers with the existing explicit storage and transport doubles.
 // ───────────────────────────────────────────────────────────────
 
 import { researchFixture } from './research-fixture.mjs';
 import { plain } from './admin-fixture.mjs';
+import { installGovernment } from './government-fixture.mjs';
 import { repoPath, pythonBin } from './admin-fixture.mjs';
 import { spawnSync } from 'node:child_process';
 
-export function operatorFixture() {
-    const f = researchFixture();
+export function operatorFixture(options = {}) {
+    const f = researchFixture(options);
     f.migration('apps/pocketbase/pb_migrations/1790300000_mission_suite.js').up();
+    installGovernment(f, ['owner', 'admin', 'editor', 'viewer']);
     const Collection = f.collections.users.constructor;
     f.app.save(new Collection({ name: 'seat_events', fields: ['workspace', 'seat', 'event', 'subject', 'subject_type'].map((name) => ({ name, type: 'text' })) }));
     const service = f.load('workspace-operator.js');

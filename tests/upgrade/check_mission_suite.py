@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_mission_suite.py, apps/mission_suite/engine.py, apps/mission_suite/worker.py
+# Depends:     tests/upgrade/test_mission_suite.py, tests/upgrade/test_business_worker.py, apps/mission_suite/engine.py, apps/mission_suite/worker.py, apps/mission_suite/business_worker.py
 # EnumType:    Test
-# EnumEdges:   DEPENDS_ON tests/upgrade/test_mission_suite.py; VALIDATES apps/mission_suite/engine.py; VALIDATES apps/mission_suite/worker.py
+# EnumEdges:   DEPENDS_ON tests/upgrade/test_mission_suite.py; DEPENDS_ON tests/upgrade/test_business_worker.py; VALIDATES apps/mission_suite/engine.py; VALIDATES apps/mission_suite/worker.py; VALIDATES apps/mission_suite/business_worker.py
 # DAG Node:    none
 # Intent:      Require behavior tests and measured coverage for every portable suite module without depending on frontend installation.
 # ───────────────────────────────────────────────────────────────
@@ -35,8 +35,11 @@ def main() -> int:
     tracer = trace.Trace(count=True, trace=False, ignoredirs=[sys.base_prefix])
 
     def run() -> unittest.TestResult:
-        suite = unittest.defaultTestLoader.discover(
-            str(ROOT / "tests/upgrade"), pattern="test_mission_suite.py"
+        suite = unittest.defaultTestLoader.loadTestsFromNames(
+            [
+                "tests.upgrade.test_mission_suite",
+                "tests.upgrade.test_business_worker",
+            ]
         )
         return unittest.TextTestRunner(verbosity=1).run(suite)
 

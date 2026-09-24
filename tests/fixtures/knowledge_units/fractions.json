@@ -1,0 +1,34 @@
+{
+  "schema": "buildanddo.knowledge-unit/v1",
+  "unit_id": "BDO-SAMPLE-MATH-0001",
+  "version": "1.0.0",
+  "title": "Equivalent fractions (synthetic sample)",
+  "author": {"id": "teacher.author"},
+  "reviewer": {"id": "teacher.reviewer"},
+  "sources": [
+    {"id": "s1", "title": "Sample primary mathematics reference", "kind": "primary"},
+    {"id": "s2", "title": "Sample open educational resource", "kind": "oer"}
+  ],
+  "standards": [
+    {"framework": "SAMPLE", "code": "SAMPLE-MATH-1", "confirmed_by": "teacher.reviewer"},
+    {"framework": "SAMPLE", "code": "SAMPLE-MATH-2", "confirmed_by": "teacher.author"}
+  ],
+  "claims": [
+    {"id": "c1", "text": "Multiplying numerator and denominator by the same non-zero number gives an equivalent fraction.", "sources": ["s1"], "status": "reviewed"},
+    {"id": "c2", "text": "Equivalent fractions name the same point on a number line.", "sources": ["s1", "s2"], "status": "reviewed"}
+  ],
+  "explanation": "Two fractions are equivalent when they represent the same quantity.",
+  "examples": ["3/6 = 1/2 because both numerator and denominator of 1/2 were multiplied by 3."],
+  "counterexamples": ["1/2 and 2/3 are not equivalent: 1/2 = 3/6 but 2/3 = 4/6."],
+  "items": [
+    {"id": "recall-1", "level": "recall", "reviewed": true},
+    {"id": "explain-1", "level": "explain", "reviewed": true}
+  ],
+  "transfer_task": {"prompt": "Explain two distinct ways to show that 3/6 = 1/2.",
+                    "rubric": ["Uses a correct multiplicative argument", "Uses a correct visual or number-line argument"]},
+  "last_review": "2026-09-20",
+  "next_review": "2027-09-20",
+  "surfaces": {"professional": {"title": "Teaching equivalent fractions conceptually", "suggested_hours": 2},
+               "public": {"title": "Understanding equivalent fractions"}},
+  "cpe": {"provider_approval": null}
+}

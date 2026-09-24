@@ -199,6 +199,53 @@ test('migration replays, keeps API writes locked and disables commands on down w
     assert.throws(() => f.migration(MIGRATION).up(), /Review/);
 });
 
+test('learning migration accepts native-normalized index DDL while retaining completion', () => {
+    const f = learningFixture(); f.finish();
+    const before = plain(f.data.tutorial_learning);
+    f.collections.tutorial_learning.indexes = [
+        'CREATE UNIQUE INDEX `idx_tutorial_learning_identity` ON `tutorial_learning` (`owner`,`tutorial`)',
+        ' CREATE INDEX "idx_tutorial_learning_history" ON "tutorial_learning" ( "owner" , "completed_at" , "updated" DESC , "id" ) ',
+    ];
+    f.migration(MIGRATION).up(); f.migration(MIGRATION).down(); f.migration(MIGRATION).up();
+    assert.deepEqual(plain(f.data.tutorial_learning), before);
+});
+
+test('learning hooks read completed snapshots with equivalent native identity indexes', () => {
+    const f = learningFixture(), result = f.finish();
+    const identity = f.collections.tutorial_learning.indexes[0];
+    for (const quote of [['`', '`'], ['"', '"'], ['[', ']']]) {
+        f.collections.tutorial_learning.indexes[0] = identity.replace(/\b[a-z_]+\b/g,
+            (word) => ['create', 'unique', 'index', 'on'].includes(word) ? word.toUpperCase() : quote[0] + word + quote[1])
+            .replace(/\s+/g, '\n ').replace(/,/g, ' , ');
+        assert.deepEqual(f.detail().enrollment.certificate, result.enrollment.certificate);
+        assert.equal(f.list().points, 100);
+    }
+});
+
+test('learning index normalization still refuses weakened identity and altered field or rule contracts', () => {
+    for (const change of [
+        (index) => index.replace('unique ', ''),
+        (index) => index.replace('idx_tutorial_learning_identity', 'idx_other_identity'),
+        (index) => index.replace('on tutorial_learning', 'on tutorial_progress'),
+        (index) => index.replace('(owner, tutorial)', '(tutorial, owner)'),
+        (index) => index.replace('(owner, tutorial)', '(owner, content_digest)'),
+        (index) => index + ' where completed_at != ""',
+    ]) {
+        const f = learningFixture();
+        f.collections.tutorial_learning.indexes[0] = change(f.collections.tutorial_learning.indexes[0]);
+        assert.throws(() => f.detail(), /identity constraints/);
+        assert.throws(() => f.migration(MIGRATION).up(), /indexes/);
+        assert.equal(f.data.tutorial_learning.length, 0);
+    }
+    for (const change of [
+        (collection) => { collection.fields.getByName('owner').collectionId = 'foreign'; },
+        (collection) => { collection.viewRule = ''; },
+    ]) {
+        const f = learningFixture(); change(f.collections.tutorial_learning);
+        assert.throws(() => f.migration(MIGRATION).up(), /custom/);
+    }
+});
+
 test('missing installation, identity constraints and corrupt checkpoints fail closed', () => {
     const f = learningFixture();
     const find = f.app.findCollectionByNameOrId;

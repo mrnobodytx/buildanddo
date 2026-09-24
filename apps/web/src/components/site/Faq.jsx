@@ -22,7 +22,7 @@ export const FAQ_ITEMS = [
     {
         question: 'Does it take actions automatically?',
         answer:
-            'Only within limits you approve. BuildAndDo separates observing information, simulating a possible action, and executing an approved action. You review the plan first, and the final say stays with you.',
+            'An executable workflow needs an approved scope and an available, authorized tool. You review the plan before effects occur. A saved objective, lesson completion or assistant suggestion does not grant execution authority or verify a result.',
     },
     {
         question: 'Who is BuildAndDo for?',

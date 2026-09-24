@@ -1,0 +1,74 @@
+{
+  "note": "Synthetic postings for tests. Not live listings; no company, URL or compensation is real.",
+  "jobs": [
+    {
+      "job_id": "synthetic-staff-platform",
+      "company": "Example Platform Co",
+      "role": "Staff Platform Engineer",
+      "location": "Remote (US)",
+      "seniority": "staff",
+      "source": "synthetic-fixture",
+      "source_updated_at": "2026-09-20T00:00:00Z",
+      "apply_url": "https://careers.example.invalid/staff-platform",
+      "application_system": "lever",
+      "compensation": {},
+      "requirements": [
+        "Distributed systems and event-driven architecture",
+        "CI/CD pipelines with GitLab or GitHub Actions",
+        "Production observability and monitoring",
+        "Python",
+        "10+ years of software engineering experience",
+        "Must be authorized to work in the United States"
+      ],
+      "preferred": [
+        "Kubernetes",
+        "Security and supply chain controls",
+        "Experience with Apache Flink"
+      ],
+      "responsibilities": ["Own the internal developer platform"],
+      "technologies": ["Datadog"]
+    },
+    {
+      "job_id": "synthetic-ai-systems-architect",
+      "company": "Example AI Labs",
+      "role": "AI Systems Architect",
+      "location": "Remote",
+      "seniority": "principal",
+      "source": "synthetic-fixture",
+      "source_updated_at": "2026-09-19T00:00:00Z",
+      "apply_url": "https://careers.example.invalid/ai-architect",
+      "application_system": "ashby",
+      "compensation": {},
+      "requirements": [
+        "AI agents and LLM systems",
+        "System architecture and technical design",
+        "Testing and verification of automated systems",
+        "Engineering governance and audit"
+      ],
+      "preferred": ["React frontend", "Technical writing"],
+      "responsibilities": ["Design governed multi-agent runtimes"],
+      "technologies": ["Python", "TypeScript"]
+    },
+    {
+      "job_id": "synthetic-mobile-lead",
+      "company": "Example Mobile",
+      "role": "iOS Engineering Lead",
+      "location": "Onsite",
+      "seniority": "lead",
+      "source": "synthetic-fixture",
+      "source_updated_at": "2026-09-18T00:00:00Z",
+      "apply_url": "https://careers.example.invalid/ios-lead",
+      "application_system": "greenhouse",
+      "compensation": {},
+      "requirements": [
+        "Swift and SwiftUI",
+        "Shipping iOS apps to the App Store",
+        "Kubernetes",
+        "Bachelor's degree in computer science"
+      ],
+      "preferred": [],
+      "responsibilities": [],
+      "technologies": []
+    }
+  ]
+}

@@ -20,11 +20,11 @@ export const SCHEMA = 'apps/pocketbase/pb_migrations/1790100000_mission_research
 export const GUILD = '12345678901234567';
 export const CHANNEL = '23456789012345678';
 export const DISCORD = '34567890123456789';
-export function researchFixture({ runtime = {} } = {}) {
+export function researchFixture({ runtime = {}, now } = {}) {
     const registered = [{ workspace: 'ws1', bot_user: 'bot', worker_user: 'worker', guild_id: GUILD, channel_id: CHANNEL,
         binding: 'research', capabilities: ['search', 'url', 'document', 'audio', 'video'] }];
     const env = { value: JSON.stringify(registered) };
-    const f = fixture({ runtime: { ...runtime, $dbx: { hashExp: (value) => plain(value) },
+    const f = fixture({ now, runtime: { ...runtime, $dbx: { hashExp: (value) => plain(value) },
         $os: { getenv: (name) => name === 'BUILDANDDO_RESEARCH_BINDINGS' ? env.value : runtime.$os?.getenv(name) || '' } } });
     f.migration(SCHEMA).up();
     for (const id of ['bot', 'worker', 'worker2']) f.seed('users', { id });

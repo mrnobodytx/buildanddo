@@ -1,0 +1,165 @@
+{
+  "files": {
+    "rollback.json": "{\"authority\":\"A0\",\"capability\":{\"semantic_id\":\"cni://capability/citadel/release-inspection-candidate\",\"version\":\"1c5e032c0b09e2c83c2a3e1020e8a6db140e471697b8ec76dbd8165770039b93\"},\"compatibility\":{\"context_root\":{\"algorithm\":\"sha256\",\"value\":\"91f79c44feb84467301d8cf475d4fd6ca32586fcd98ef93d6a788c6683989578\"},\"graph_schema\":\"2\",\"sbom_digest\":null,\"source_sha\":\"916507f53d203a1dff809948049cf59455f56205\"},\"compiler_version\":\"citadel.graph-rule/1\",\"rule\":{\"features\":{\"request\":\"inspect_release_path\"},\"lookups\":[],\"relations\":[],\"response\":{\"diagnosis\":\"Inspect the captured public release controller.\",\"operation\":\"discard_proposal\",\"parameters\":{\"path\":\"tools/buildanddo_release.py\"},\"reverse_tests_for\":[],\"targets\":[\"cni://module/buildanddo/07d741c02f2bec98a3ecec1b981b3045b0f9a91d805ff1b1115226750ada77f5\"],\"tests\":[]}},\"scope_id\":\"public/buildanddo-release\"}",
+    "rule.json": "{\"authority\":\"A0\",\"capability\":{\"semantic_id\":\"cni://capability/citadel/release-inspection-candidate\",\"version\":\"1c5e032c0b09e2c83c2a3e1020e8a6db140e471697b8ec76dbd8165770039b93\"},\"compatibility\":{\"context_root\":{\"algorithm\":\"sha256\",\"value\":\"91f79c44feb84467301d8cf475d4fd6ca32586fcd98ef93d6a788c6683989578\"},\"graph_schema\":\"2\",\"sbom_digest\":null,\"source_sha\":\"916507f53d203a1dff809948049cf59455f56205\"},\"compiler_version\":\"citadel.graph-rule/1\",\"rule\":{\"features\":{\"request\":\"inspect_release_path\"},\"lookups\":[],\"relations\":[],\"response\":{\"diagnosis\":\"Inspect the captured public release controller.\",\"operation\":\"inspect_source\",\"parameters\":{\"path\":\"tools/buildanddo_release.py\"},\"reverse_tests_for\":[],\"targets\":[\"cni://module/buildanddo/07d741c02f2bec98a3ecec1b981b3045b0f9a91d805ff1b1115226750ada77f5\"],\"tests\":[]}},\"scope_id\":\"public/buildanddo-release\"}"
+  },
+  "token": {
+    "applicability": [
+      "Captured public BuildAndDo source only"
+    ],
+    "authority": {
+      "forbidden_side_effects": [
+        "external_effect"
+      ],
+      "operations": [
+        "inspect_source",
+        "discard_proposal"
+      ],
+      "tier": "A0",
+      "tools": [
+        "read_public_source"
+      ]
+    },
+    "capability_id": "cni://capability/citadel/release-source-inspection",
+    "category": "engineering",
+    "dependencies": [],
+    "description": "Propose inspection of the actual captured release controller.",
+    "evidence": {
+      "max_age_seconds": 604800,
+      "policy_id": "cni://policy/citadel/token-review",
+      "policy_version": "1",
+      "replay_policy": {
+        "action_selection": 0.9,
+        "discovery_successes": 2,
+        "precision": 0.95,
+        "recall": 0.8,
+        "replay_cases": 10,
+        "shadow_cases": 5,
+        "test_recall": 0.8
+      }
+    },
+    "implementations": [
+      {
+        "assets": [
+          {
+            "path": "rule.json",
+            "sha256": {
+              "algorithm": "sha256",
+              "value": "459d37b14921b2ded85d53d4e67ea7fa6709e90cd36ea282665710f0a634a514"
+            },
+            "size": 862
+          },
+          {
+            "path": "rollback.json",
+            "sha256": {
+              "algorithm": "sha256",
+              "value": "2ae8ef96b040d6daa7c16e1754eb57b8f2fd8588d990d63d6323b86a61b1e1ab"
+            },
+            "size": 864
+          }
+        ],
+        "entrypoint": "rule.json",
+        "environments": [
+          "local-public-source"
+        ],
+        "implementation_id": "graph-v1",
+        "kind": "graph_rule",
+        "rollback_entrypoint": "rollback.json",
+        "sbom_digest": null,
+        "source_sha": "916507f53d203a1dff809948049cf59455f56205"
+      }
+    ],
+    "inputs": {
+      "document": {
+        "additionalProperties": false,
+        "properties": {
+          "request": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      }
+    },
+    "license": "Repository license; source inspection only",
+    "lineage": [
+      {
+        "semantic_id": "cni://capability/citadel/release-inspection-candidate",
+        "version": "1c5e032c0b09e2c83c2a3e1020e8a6db140e471697b8ec76dbd8165770039b93"
+      }
+    ],
+    "max_composition_steps": 16,
+    "name": "release-source-inspection",
+    "outputs": {
+      "document": {
+        "additionalProperties": false,
+        "properties": {
+          "diagnosis": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "type": "object"
+          },
+          "targets": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tests": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "diagnosis",
+          "operation",
+          "targets",
+          "parameters",
+          "tests"
+        ],
+        "type": "object"
+      }
+    },
+    "pricing": {
+      "attributions": [
+        {
+          "basis_points": 10000,
+          "creator_id": "cni://organization/citadel"
+        }
+      ],
+      "currency": "USD",
+      "price_minor": 0,
+      "unit": "verified_result"
+    },
+    "publisher": "citadel",
+    "risk": "read_only_public_metadata",
+    "rollback": {
+      "operation": "discard_proposal",
+      "postconditions": [
+        "no external state changed"
+      ]
+    },
+    "schema_version": "cnwb.capability-token/v1",
+    "skills": [
+      "public-source-inspection"
+    ],
+    "version": "1.0.0"
+  }
+}

@@ -1,0 +1,233 @@
+{
+  "bank_id": "sample-public",
+  "note": "SAMPLE ONLY. This bank is public, so its answers are public. A real bank belongs with the grader, never in this repository.",
+  "items": [
+    {
+      "id": "ci-1",
+      "capability": "ci_cd",
+      "prompt": "Which file configures GitLab CI pipelines by default?",
+      "choices": [
+        ".gitlab-ci.yml",
+        "Jenkinsfile",
+        "Makefile",
+        "ci.toml"
+      ],
+      "answer": [
+        0
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "ci-2",
+      "capability": "ci_cd",
+      "prompt": "A required CI check fails on a merge request. What should happen?",
+      "choices": [
+        "Merge anyway",
+        "Block the merge until it passes or is fixed",
+        "Delete the check",
+        "Rebase silently"
+      ],
+      "answer": [
+        1
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "ci-3",
+      "capability": "ci_cd",
+      "prompt": "Which are properties of a good CI gate? (select all)",
+      "choices": [
+        "Deterministic",
+        "Prints PASS or FAIL",
+        "Depends on a developer laptop",
+        "Fails loudly"
+      ],
+      "answer": [
+        0,
+        1,
+        3
+      ],
+      "kind": "multiple"
+    },
+    {
+      "id": "ci-4",
+      "capability": "ci_cd",
+      "prompt": "What does a pipeline cache primarily save?",
+      "choices": [
+        "Test results",
+        "Repeated dependency downloads",
+        "Secrets",
+        "Merge conflicts"
+      ],
+      "answer": [
+        1
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "ci-5",
+      "capability": "ci_cd",
+      "prompt": "Where should CI credentials live?",
+      "choices": [
+        "Committed .env file",
+        "Masked CI variables or a vault",
+        "Commit messages",
+        "README"
+      ],
+      "answer": [
+        1
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "ci-6",
+      "capability": "ci_cd",
+      "prompt": "What is a flaky test?",
+      "choices": [
+        "A slow test",
+        "A test that passes and fails without code changes",
+        "A skipped test",
+        "A lint rule"
+      ],
+      "answer": [
+        1
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "ci-7",
+      "capability": "ci_cd",
+      "prompt": "Which job ordering does 'needs:' express in GitLab CI?",
+      "choices": [
+        "A DAG dependency between jobs",
+        "A cron schedule",
+        "A runner tag",
+        "A cache key"
+      ],
+      "answer": [
+        0
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "py-1",
+      "capability": "python",
+      "prompt": "What does `len({1, 1, 2})` return?",
+      "choices": [
+        "1",
+        "2",
+        "3",
+        "Error"
+      ],
+      "answer": [
+        1
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "py-2",
+      "capability": "python",
+      "prompt": "Which statement creates a virtual environment in the standard library?",
+      "choices": [
+        "python -m venv .venv",
+        "pip env",
+        "python -m virtual",
+        "venv init"
+      ],
+      "answer": [
+        0
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "py-3",
+      "capability": "python",
+      "prompt": "Which are immutable built-in types? (select all)",
+      "choices": [
+        "tuple",
+        "list",
+        "frozenset",
+        "dict"
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "kind": "multiple"
+    },
+    {
+      "id": "py-4",
+      "capability": "python",
+      "prompt": "What does `@dataclass(frozen=True)` prevent?",
+      "choices": [
+        "Attribute assignment after init",
+        "Subclassing",
+        "Pickling",
+        "Type hints"
+      ],
+      "answer": [
+        0
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "py-5",
+      "capability": "python",
+      "prompt": "What does `asyncio.gather` do?",
+      "choices": [
+        "Runs awaitables concurrently and collects results",
+        "Starts threads",
+        "Blocks the GIL",
+        "Imports modules"
+      ],
+      "answer": [
+        0
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "py-6",
+      "capability": "python",
+      "prompt": "Which exception does `int('x')` raise?",
+      "choices": [
+        "TypeError",
+        "ValueError",
+        "KeyError",
+        "IndexError"
+      ],
+      "answer": [
+        1
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "py-7",
+      "capability": "python",
+      "prompt": "What is `__all__` used for?",
+      "choices": [
+        "Names exported by `from m import *`",
+        "Loop unrolling",
+        "Memory limits",
+        "Test discovery"
+      ],
+      "answer": [
+        0
+      ],
+      "kind": "single"
+    },
+    {
+      "id": "k8s-1",
+      "capability": "kubernetes",
+      "prompt": "What schedules pods onto nodes?",
+      "choices": [
+        "kube-scheduler",
+        "etcd",
+        "kubectl"
+      ],
+      "answer": [
+        0
+      ],
+      "kind": "single"
+    }
+  ]
+}

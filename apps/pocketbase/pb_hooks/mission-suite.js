@@ -8,14 +8,15 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     apps/pocketbase/pb_hooks/suite-policy.js, apps/pocketbase/pb_migrations/1790300000_mission_suite.js
+// Depends:     apps/pocketbase/pb_hooks/suite-policy.js, apps/pocketbase/pb_migrations/1790300000_mission_suite.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/suite-policy.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790300000_mission_suite.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/suite-policy.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790300000_mission_suite.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
 // Intent:      Connect one mission API to durable box-worker runs, current authorization and human-reviewed evidence.
 // ───────────────────────────────────────────────────────────────
 
 const p = require(`${__hooks}/suite-policy.js`);
+const government = require(`${__hooks}/government-access.js`);
 const WORKER = ['poll', 'claim', 'complete'];
 const READS = ['snapshot', 'detail', 'poll'];
 const ACTIONS = [...READS, 'configure', 'enqueue', 'cancel', 'retry', 'claim', 'complete', 'attach'];
@@ -61,6 +62,7 @@ function currentEvidence(app, info, record) {
 function currentJob(event, app, record, binding) {
     const workspace = record.getString('workspace'); const mission = record.getString('mission');
     const owner = p.find(app, 'users', record.getString('owner'));
+    government.requireMember(app, owner);
     live(app, owner, actorInfo(event, owner), workspace, mission, true);
     const control = p.control(app, workspace, mission);
     if (!control || !control.getBool('enabled') || Number(control.get('revision')) !== Number(record.get('config_revision')) ||
@@ -209,6 +211,7 @@ function command(event) {
         const auth = p.find(app, 'users', event.auth.id); const info = actorInfo(event, auth);
         const binding = WORKER.includes(body.action) ? p.worker(app, auth, workspace) : null;
         if (!WORKER.includes(body.action)) {
+            government.requireMember(app, auth);
             p.requireRole(app, auth, workspace, READS.includes(body.action) ? ['owner', 'admin', 'editor', 'viewer'] : p.WRITERS);
             p.mission(app, auth, info, workspace, body.mission, !READS.includes(body.action));
         } else if (body.action !== 'poll') currentJob(event, app, run(app, workspace, body.mission, body.payload.id), binding);

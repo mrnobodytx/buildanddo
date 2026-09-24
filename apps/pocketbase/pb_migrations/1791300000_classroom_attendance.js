@@ -52,7 +52,10 @@ migrate((app) => {
         if (!saved || Object.keys(field).some((key) => JSON.stringify(saved[key]) !== JSON.stringify(field[key])))
             throw new Error(`Review custom classroom_attendance.${field.name}.`);
     }
-    if (!definition.indexes.every((index) => actual.indexes.includes(index))) throw new Error('Review classroom_attendance indexes.');
+    const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')
+        .replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').trim();
+    const present = (actual.indexes || []).map(shape);
+    if (!definition.indexes.every((index) => present.includes(shape(index)))) throw new Error('Review classroom_attendance indexes.');
 }, (app) => {
     // Rollback keeps the recorded history, as the classroom migration does for
     // sessions: deleting attendance people already produced is not a schema

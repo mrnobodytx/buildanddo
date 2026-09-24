@@ -24,6 +24,8 @@ import { receiveState } from '@/hooks/useClassroomMedia';
 import * as realtime from '@/lib/classroomRealtime';
 import { WITHHELD } from '@/lib/seatDisplay';
 
+vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: { id: 'seat1' }, isAuthed: true, sessionEpoch: 1, isSessionCurrent: (epoch) => epoch === 1 }) }));
+vi.mock('@/contexts/WorkspaceContext', () => ({ useWorkspace: () => ({ active: { id: 'ws1' } }) }));
 vi.mock('@/lib/pocketbaseClient', () => ({ default: { authStore: { token: 'tok', record: { id: 'seat1' } } } }));
 vi.mock('@/lib/classroomRealtime', () => ({
     PRESENCE_POLL_MS: 5000,
@@ -45,6 +47,8 @@ function handle(overrides = {}) {
 
 beforeEach(() => {
     HTMLMediaElement.prototype.play = vi.fn(() => Promise.resolve());
+    HTMLMediaElement.prototype.pause = vi.fn();
+    realtime.joinClassroom.mockReset();
     realtime.classroomHealth.mockResolvedValue({ ok: true, publishers_configured: 1 });
     realtime.inboundAudioStats.mockResolvedValue({ supported: true, packets: 0, bytes: 0, streams: 0 });
     tracker = { start: vi.fn(), stop: vi.fn(), pull: vi.fn(() => Promise.resolve()) };
@@ -85,7 +89,7 @@ describe('live broadcast in the classroom', () => {
         expect(screen.getByText('Join the broadcast to see and hear the host.')).toBeVisible();
         expect(realtime.joinClassroom).not.toHaveBeenCalled();
         await user.click(screen.getByRole('button', { name: 'Join broadcast' }));
-        expect(realtime.joinClassroom).toHaveBeenCalledWith(expect.objectContaining({ role: 'watch', authToken: 'tok', seatId: 'seat1' }));
+        expect(realtime.joinClassroom).toHaveBeenCalledWith(expect.objectContaining({ room: 'room1', role: 'watch', authToken: 'tok', seatId: 'seat1' }));
         await waitFor(() => expect(tracker.start).toHaveBeenCalledWith(5000));
         expect(realtime.startPresenceHeartbeat).not.toHaveBeenCalled();
         act(() => onChange({ live: [
@@ -192,5 +196,21 @@ describe('live broadcast in the classroom', () => {
         await waitFor(() => expect(tracker.start).toHaveBeenCalled());
         rerender(<LiveBroadcast room={live} membership={{ ...member, active: false }} media={{ available: true }} />);
         await waitFor(() => expect(session.close).toHaveBeenCalled());
+    });
+
+    it('offers cancellation while connecting and never attaches a late session', async () => {
+        let resolve;
+        realtime.joinClassroom.mockReturnValue(new Promise((done) => { resolve = done; }));
+        const user = userEvent.setup();
+        render(<LiveBroadcast room={live} membership={member} media={{ available: true }} />);
+        await user.click(screen.getByRole('button', { name: 'Join broadcast' }));
+        expect(screen.getByRole('button', { name: 'Connecting\u2026' })).toBeDisabled();
+        await user.click(screen.getByRole('button', { name: 'Cancel connection' }));
+        expect(screen.getByRole('button', { name: 'Join broadcast' })).toBeEnabled();
+        const late = handle();
+        await act(async () => { resolve(late); });
+        expect(late.close).toHaveBeenCalledTimes(1);
+        expect(realtime.createPresenceTracker).not.toHaveBeenCalled();
+        expect(screen.queryByText('Receiving')).toBeNull();
     });
 });

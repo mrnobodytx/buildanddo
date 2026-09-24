@@ -64,7 +64,10 @@ migrate((app) => {
         if (!actual || Object.keys(field).some((key) => norm(actual, key) !== norm(field, key)))
             throw new Error(`Review custom tutorial_learning.${field.name}.`);
     }
-    if (!definition.indexes.every((index) => saved.indexes.includes(index))) throw new Error('Review tutorial_learning indexes.');
+    const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')
+        .replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').trim();
+    const present = (saved.indexes || []).map(shape);
+    if (!definition.indexes.every((index) => present.includes(shape(index)))) throw new Error('Review tutorial_learning indexes.');
     if (!saved.fields.getByName('protocol_version')) {
         saved.fields.add(new Field(definition.fields.find((field) => field.name === 'protocol_version')));
         app.save(saved);

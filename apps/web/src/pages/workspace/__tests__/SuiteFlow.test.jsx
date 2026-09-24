@@ -22,6 +22,7 @@ import pb from '@/lib/pocketbaseClient';
 import { renderWithProviders, screen, setupUser, waitFor, within } from '@/test/utils';
 import { suiteFixture } from '../../../../../../tests/upgrade/suite-fixture.mjs';
 import { plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
+import WorkspaceAccessContext from '@/contexts/WorkspaceAccessContext';
 vi.mock('@/lib/pocketbaseClient', () => ({ default: { authStore: { record: { id: 'editor' } }, send: vi.fn() } }));
 vi.mock('@/lib/observability/mutations', () => ({ observeMutation: (_name, _verb, operation) => operation() }));
 vi.mock('@/hooks/useWorkspaceRecords', () => ({ useWorkspaceRecords: (name) => ({ records: name === 'missions' ?
@@ -33,7 +34,8 @@ const call = (path, options) => {
 };
 const renderPage = (actor = 'editor', route = '/app/suite?mission=mission1') => {
     pb.authStore.record = { id: actor };
-    return renderWithProviders(<SuitePage />, { auth: { user: { id: actor }, isAuthed: true }, workspace: { active: { id: 'ws1' } }, route });
+    const access = backend.load('workspace-access.js').access(backend.event(actor));
+    return renderWithProviders(<WorkspaceAccessContext.Provider value={{ data: access, loading: false, error: '', refresh: vi.fn() }}><SuitePage /></WorkspaceAccessContext.Provider>, { auth: { user: { id: actor }, isAuthed: true }, workspace: { active: { id: 'ws1' } }, route });
 };
 const fillObservation = async (user) => {
     await user.selectOptions(await screen.findByLabelText('Analysis tool'), 'maritime');

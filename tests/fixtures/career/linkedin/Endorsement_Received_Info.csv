@@ -1,0 +1,4 @@
+Endorsement Date,Skill Name,Endorser First Name,Endorser Last Name,Endorser Public Url,Endorsement Status
+2026/01/02 10:00:00 UTC,Kubernetes,Ann,Example,https://example.invalid/ann,ACCEPTED
+2026/01/03 10:00:00 UTC,Kubernetes,Bo,Example,https://example.invalid/bo,ACCEPTED
+2026/01/04 10:00:00 UTC,Python,Cy,Example,https://example.invalid/cy,REJECTED

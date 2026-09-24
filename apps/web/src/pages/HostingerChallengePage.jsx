@@ -1,13 +1,17 @@
-// // --- CGRF Header ------------------------------------------------
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/pages/HostingerChallengePage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-PURPOSE-001
+// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-PURPOSE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-PURPOSE-001
+// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-PURPOSE-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        CLA-INSTALLER, C-ONE (the educational-platform framing)
 // Owner:       Citadel Nexus Inc.
+// Depends:     apps/web/src/data/hostingerChallenge.js, apps/web/src/components/site/Footer.jsx
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/data/hostingerChallenge.js; CONSUMES apps/web/src/components/site/Footer.jsx
 // Intent:      Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.
-// ----------------------------------------------------------------
+// ───────────────────────────────────────────────────────────────
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { ArrowRight, BadgeCheck, Box, Server, Sparkles, Target } from 'lucide-react';
@@ -102,6 +106,12 @@ export default function HostingerChallengePage() {
                             </li>
                         ))}
                     </ol>
+                    <p className="mt-5 max-w-3xl text-sm text-muted-foreground">
+                        Classrooms, the Field Manual, Practice Library, missions, evidence and
+                        replay support this loop. Progress and capability claims need their own
+                        evidence. Business operations is one project domain; ERP, Firecrawl and
+                        n8n provide planning, research and execution tools where available.
+                    </p>
                 </Section>
 
                 <Section className="border-t border-border bg-secondary/20">
@@ -132,7 +142,7 @@ export default function HostingerChallengePage() {
                                             {name === 'Business idea' && 'A learning platform where people build something real together and keep the evidence, rather than another course library or a generic assistant.'}
                                             {name === 'Business potential' && 'Reusable mission, workflow, evidence and classroom primitives that extend to every field a guild covers, from building and research to writing and commerce.'}
                                             {name === 'Hostinger product usage' && 'Hosting, Agents, AI Builder and VPS each have a bounded role with separate submission evidence.'}
-                                            {name === 'Creativity and innovation' && 'Evidence-first agentic work: action is bounded, verification is independent, and uncertainty stays visible.'}
+                                            {name === 'Creativity and innovation' && 'People and AI learn through bounded work, inspect evidence and retain reusable experience with its review status.'}
                                         </td>
                                     </tr>
                                 ))}

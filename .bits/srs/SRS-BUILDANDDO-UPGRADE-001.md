@@ -20,6 +20,495 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Broadcast integration repairs and lessons - 2026-09-23
+
+The owner requests repairs for the inspected merged broadcast classroom and
+lessons/evidence visible in the site. Continue this pre-existing A2 source
+dispatch. Preserve earlier evidence repairs and the existing learning and
+workspace authorities. This continuation does not authorize a live deployment,
+provider call, secret access or fabricated learner/reviewer records.
+
+Acceptance:
+
+1. Bind every media session, track push/pull and renegotiation to the authenticated
+   native account, a live classroom in its readable workspace, current attendance
+   and a server-owned session record. Publisher allowlisting is additional to
+   current classroom management authority, never a substitute. Reject foreign,
+   ended, stale, left, revoked, unknown-session and cross-room track requests
+   before contacting the provider. Presence must reference the same owned,
+   server-recorded published tracks. Use an idempotent locked migration with an
+   explicit down path; old unbound sessions fail closed, not inferred ownership.
+2. Invalidate pending media joins on leave, disable, navigation, account or scope
+   changes and close late handles/tracks. Render structured agent event details
+   safely as bounded text; arbitrary objects must not crash a classroom or become
+   executable markup. Add adversarial lifecycle and rendering regressions.
+3. Extend connected and disposable-native coverage to the actual signalling,
+   presence, attendance and assistant-usage contracts, not just the old classroom
+   subset. Preserve both declared runtime profiles, failure logs and missing
+   prerequisite results. Fix fixture/migration compatibility only where required
+   to exercise this scope; do not bypass gates or substitute mocks for native proof.
+4. Add a versioned classroom-repair lesson through the existing curriculum and
+   data-migration patterns. Expose its public source references, reproduction
+   commands and observed test limitations in a separate source-case-study section
+   of the existing Evidence Ledger. Do not seed workspace outcomes, attendance,
+   learning progress, certificates, XP or independently verified claims.
+5. Run available source, rendered and native checks, retain red/green evidence,
+   review the changed scope and refresh governance bindings. GitLab owns execution;
+   actual hosted media, a two-browser test and deployed readback remain receiving
+   gates until observed on the exact release.
+
+## Evidence and handoff repairs - 2026-09-23
+
+The owner approves fixing the completed audit's defects in dependency order.
+Continue this pre-existing A2 source dispatch; do not expand discovery, submission,
+private ingestion or deployment. Repair existing evidence admission before its
+native and browser consumers.
+
+Acceptance:
+
+1. Bind assessment results to their unique issued attempt, candidate, capability,
+   bank, timing and grading context. Reject malformed or self-proctored results
+   before evidence conversion. Keep local consistency distinct from authenticated
+   proctor identity. Passport headline wording, verification and retained support
+   must describe the same participation, not independent aggregate maxima.
+2. Preserve integrity disagreements under reordering and stale replay. Bind
+   Knowledge Unit mastery to the assessed unit revision and strict booleans.
+   Exclude action/result lineage participants from independent world review,
+   admit externally pinned reviews without depending on a producer's status
+   label, and avoid repeated event hashing while preserving exact-content checks.
+3. Connect the actual native mission-review producer to its value consumer using
+   the existing versioned contract. Enforce the persisted review byte limit after
+   evidence snapshots are embedded, without truncation or a schema-limit increase.
+4. Preserve local career review imports, journey drafts and assistant work across
+   same-identity refreshes. Continue clearing/fencing private work on account,
+   workspace, session or permission changes; do not reuse stale authorization.
+5. Add adversarial red/green and connected producer/consumer regressions. Run the
+   existing coverage and source gates without weakening the eighteen-profile
+   acceptance matrix. Retain missing native/rendered prerequisites and external
+   receiving work explicitly; source fixes do not establish deployed acceptance.
+
+## World-event interoperability continuation - 2026-09-23
+
+The owner requests one interoperable world-event envelope, a joined episode/replay
+and scoped semantic projections instead of additional standalone pages. Continue
+this existing A2 public-source integration dispatch. Citadel remains canonical;
+this change is a read-only compiler over supplied, authorized captures.
+
+Acceptance:
+
+1. Add `buildanddo.world-event/v1` to the existing world-twin package using the
+   strict semantic Contract, CitadelEvent, identity and content-digest types.
+   Bind tenant, actor, mission, correlation, release, visibility and opaque trace
+   references; missing links remain missing. Reject malformed versions, duplicate
+   source identities with conflicting bytes, foreign scope and future observations.
+2. Join events into deterministic episodes using the existing evolution episode
+   validation. Preserve attempt failures, observation versus inference, and
+   partial layer coverage. Never infer causation from a timestamp or join tenants,
+   missions, releases or authority scopes merely because a trace ID matches.
+3. Reuse the current semantic graph builder for user, agent, guild, project and
+   community views. Only receiving-authorized events enter a view; sharing and
+   minors fail closed. Deduplicate retries before counting activity. No provider
+   status, plain verifier name, content hash or imported receipt grants verified
+   capability, reputation or action authority. Authenticate exact reviews through
+   the existing receiving ReviewPolicy pins, not through submitted event fields.
+4. Connect the existing complete native mission-replay export to this contract.
+   Retain exact source bytes and revisions, bind the expected workspace and
+   mission, preserve HOLD, and exclude raw private source bodies from derived
+   events. Test the production capture shape through the compiler, not only a
+   separately authored successful fixture. Existing callers remain usable.
+5. Extend the already required world-twin coverage and source acceptance tests.
+   Run scoped negative controls for wrong tenant/mission/release, duplicate events,
+   spoofed verification, missing/changed evidence, hidden/private links and replay
+   determinism. Retain the preceding deployment acceptance HOLD as history; local
+   compiler tests cannot establish live vendor feeds or a deployed user loop.
+
+Scope: existing `apps/world_twin`, its tests, the native/browser mission-replay
+producer and validator, connected upgrade tests, documentation and existing
+dispatch/readiness/memory records. Do not change the canonical semantic v2
+vocabulary, instantiate new stores, call private providers, export raw learner
+data, activate NATS/Cloudflare/Ray, trigger CI or deploy. Receiving adapters and
+canonical identity/review authentication remain separately governed.
+
+## Connected learning-loop acceptance — 2026-09-23
+
+The owner prioritizes closing the source-to-deployment evidence gap before adding
+more independent subsystems. Continue this existing A2 acceptance and product
+integration dispatch. Reuse the current journey, native assistant, account-scoped
+Citadel profile, retained mission reviews and eighteen-profile Day-21 runner.
+
+Acceptance:
+
+1. Diagnose the reviewed candidate's hosted check from provider records before
+   changing source. A job that never starts is not a candidate-resolution defect.
+   Keep account billing, Cloudflare diagnostics, GitLab execution, provider
+   activation and deployed readback explicitly separate from local source tests.
+2. Include the career, Knowledge Unit, integrity and world-twin behavior suites
+   in existing source acceptance and their existing coverage gates in required
+   GitLab validation on both declared Python versions. Preserve all eighteen
+   profiles, coverage floors, empty/skip rejection and submission dependencies.
+3. Repair the existing public/browser capture producers to retain evidence the
+   unchanged submission validators can read. Bind explicit expected identities
+   to actual deployed-version observations and retained bytes. A mismatched
+   candidate, console error, missing artifact or changed capture cannot pass.
+4. Exercise the actual journey-to-assistant route, keep lesson navigation from
+   silently discarding the proposed mission draft, and fence profile responses
+   across reloads and account/session changes. Mission creation, approval and
+   independent review remain existing native commands, not compiler authority.
+5. Distinguish evidence records from independently reviewed outcomes in the home
+   view and link to the existing scoped proof inspection. Do not invent a live
+   semantic projection or reuse unverified event labels as capability proof.
+6. Run available source, rendered/build and native acceptance checks against one
+   final candidate; retain unavailable prerequisites and actual failures. Record
+   receiving owners and the exact remaining evidence without asserting deployment.
+
+No new truth store, private runtime, authentication scheme, certification,
+provider call, hosted CI trigger or deployment is authorized by this source pass.
+
+## BuildAndDo Career Passport dogfood — 2026-09-22
+
+The owner requests BuildAndDo as the first verified career-evidence test case.
+Continue this existing A2 source dispatch. Reuse the development/Twin contracts,
+native workspace observations and capability-token independent review policy.
+The passport is a projection of work and pinned reviews, never a new identity,
+verification, employment-history or operational-authority owner.
+
+Acceptance:
+
+1. Capture bounded BuildAndDo repository history and current workspace exports
+   with exact source bytes, revisions, attribution and explicit gaps. Generate
+   person-level claims only from participation bound to that person. Preserve
+   personally implemented/operated, designed, directed, reviewed, verified,
+   team-delivered and agent-executed roles; account ownership and git authorship
+   alone cannot establish personal implementation or independent verification.
+2. Normalize public Lever/Ashby job captures, retaining source text, freshness,
+   requirements and unparsed clauses. Prepare a bounded 100-job batch, top ten
+   requirement dossiers and up to three draft packages. Missing/live-unavailable
+   data remains incomplete. No synthetic posting counts as a live job.
+3. Match each requirement against independently pinned, exact contribution and
+   artifact evidence. Keep scope, recency, participation, legal requirements and
+   duration separate; include DO NOT CLAIM gaps. Compile the six application
+   artifacts from verified facts only, with claim-level provenance and hashes.
+4. Keep J0–J5 workflow stages separate from A0–A3 authority. Bind any fill/submit
+   approval to a person, job, package, form and expiry. Reserved attestations need
+   explicit human answers; challenges require human handling. Preserve uncertain
+   submissions and actual outcome receipts; no autonomous mass submission.
+5. Add an authenticated Career Passport review desk using existing workspace
+   context and permissions. Clear imports on account/workspace changes; imported
+   packets cannot authenticate themselves, mint verification or send applications.
+6. Exercise attribution, self-review, foreign/stale/tampered evidence, hard gaps,
+   unsupported application prose, scoped approvals and deterministic outputs.
+   Retain a real repository dogfood capture separately from synthetic test jobs.
+
+Verify: `python -m unittest discover -s tests/upgrade -p 'test_career_*.py'`,
+`python tests/upgrade/check_career_passport.py`,
+`node --test tests/upgrade/career-passport.test.mjs`, the existing rendered web
+checks, strict typing and context/readiness/boundary/memory gates. Live job
+collection, personal identity/participation review, browser submission and real
+outcomes remain receiving acceptance until actually observed and authorized.
+Private career data, applications and raw feeds stay in ignored local storage.
+
+Observed source acceptance: 90 portable career cases pass with at least 82.30
+percent statement coverage per implementation module; 14 client cases pass in
+the 625-case Node source suite. The real repository capture yields 22 artifacts,
+19 agent-attributed contributions and no verified personal claim, job or draft.
+Missing historical Git trees prevent two unchanged Semantic Twin checks in full
+Python discovery; native/dependency skips and missing frontend tools remain
+non-passing evidence. See the career report and receiving handoff before making
+any live search, qualification or application-acceptance claim.
+
+## Test assurance and research sprint — 2026-09-22
+
+The owner requests the eight testing categories from the retained gap assessment,
+a bounded Army decision-package / DARPA market / FHERMA experiment sprint, and
+restricted government work for high-tier members at USD 100. This continues the
+existing public application dispatch. Existing decision, foundry, evidence,
+authentication and acceptance owners remain authoritative.
+
+Acceptance:
+
+1. Enforce government membership on the server and in navigation, direct routes,
+   learning content and submission tools. Membership records are provisioned by
+   the trusted operator/billing owner, never by account edits, workspace roles,
+   client payment claims, demo mode or query parameters. Expiry and revocation
+   fence reads, retries and in-flight worker completion. Missing configuration
+   denies access. No live billing is activated by this source change.
+2. Extend the decision runtime with an auditable package containing objectives,
+   options, constraints, assumptions, risks, evidence, bias checks, tradeoffs,
+   an advisory decision, flip conditions and independent review/approval gaps.
+   Produce point-in-time and changed-evidence demonstrations with retained hashes.
+3. Reuse the existing market simulation and evidence compiler for a two-asset
+   experiment, black-box action receipts, quantitative comparison and replay.
+   Scripted trials remain labeled synthetic; no LLM or federal performance claim
+   is inferred from them. Prepare separate Army and DARPA proposal skeletons and
+   requirement crosswalks with explicit gaps.
+4. Provide an exact integer polynomial reference and candidate-validation harness
+   for the reported FHERMA parameters. Unknown official interface, modulus,
+   hardware, cuPQC/CLI availability, correctness receipts and leaderboard remain
+   unverified until supplied by the official execution environment. Do not label
+   a CPU/reference timing as an official GPU benchmark or submit an entry here.
+5. Add runnable browser journey, accessibility, browser/mobile, load and recovery
+   profiles; strengthen security, evidence/authority and fault/retry tests. Reuse
+   disposable native fixtures and retain blocked prerequisites as non-passing
+   results. Preserve the existing eighteen-profile acceptance gate.
+6. Retain observed results, exact tested source, historical memory, a ten-day
+   dependency plan and concrete receiving actions. Pasted dates, topic claims,
+   prizes and timings are owner-supplied research leads, not verified notices.
+
+## Educational collaboration framing — 2026-09-22
+
+The owner clarifies the product identity: BuildAndDo is an educational
+collaboration platform where people and AI learn by doing real work together.
+Continue this registered A2 source dispatch for public copy and submission
+materials. The core loop is objective, learn, collaborate, do, observe, verify,
+reflect and retain/reuse. Business operations is one application domain beside
+software, research, community, creative and government/proposal projects.
+
+Acceptance:
+
+1. Align the README, homepage, shared public copy and challenge presentation
+   around that identity. Place lessons, classrooms and shared methods before
+   business reporting; retain the existing business tools and pilot offer.
+2. Use a general project challenge and recorded-work summary. Keep workspace
+   reads, challenge receipts, private-data boundaries and revenue provenance.
+   Early-access intake must accommodate learners and project teams through its
+   existing text fields without a schema or external-write change.
+3. Lead the judge story and video plan with “Learn by doing. Verify what you did.
+   Do it together.” Show the complete learning/work/reflection loop, distinguish
+   the existing business demonstration lane from platform identity, and retain
+   all native, browser, provider, independent-review and submission gates.
+4. Update affected existing rendering assertions and run the dispatch smoke
+   checks. Retain missing dependencies as unavailable acceptance; copy cannot
+   establish a completed journey, measured capability or economic outcome.
+
+Verify with the existing homepage/challenge tests, crawler generation checks,
+dispatch smoke commands, readiness/submission and memory validation. No new
+runtime, authority, certification, deployment or external communication is
+authorized. Preserve the 192 historical memory events.
+
+## Developmental Twin and business-value continuation — 2026-09-22
+
+The owner requests ecosystem-wide semantic participation, predominantly for
+evidence-backed developmental progression, and Owner/Operator/Reviewer lenses
+over the same business facts. Continue the registered A2 public-source dispatch.
+The program is ecosystem-wide by invitation and discovery, not by a hard-coded
+integration list. Existing identity, authority, verification and mutation owners
+remain authoritative; this projection cannot register, promote or execute work.
+
+Acceptance:
+
+1. Extend the existing semantic package with generic owner-linked invitations,
+   explicit identity conflicts/gaps, dependency/impact queries, retained capture
+   history, deltas and evidence prerequisites. Reuse v2 envelopes, predicates,
+   provenance and leaf digests; require a canonical model reference for declared
+   progression labels. Preserve independent authority and competence axes.
+2. Record the supplied blueprint in the existing development-loop documentation
+   and a continuous progression lane in the sprint plan, without invented dates,
+   readiness percentages, A4/A5 authority definitions or operational acceptance.
+3. Project existing permission-scoped workspace evidence into one value view.
+   Use the existing operator route and mission verification owner. Show source,
+   action, evidence, reviewer, release and identity gaps through drill-downs;
+   never turn an evidence type, completed job or producer claim into verification.
+4. Render Owner, Operator and Reviewer lenses over those same measurements.
+   Keep absent money/time baselines, eligibility denominators, avoided losses,
+   rollback exercises and ecosystem coverage explicitly unmeasured. Preserve
+   paging, freshness, tenant isolation and account/workspace invalidation.
+5. Exercise conflict, regression, stale/future evidence, exact revisions,
+   partial reads and false-success cases. Retain observed results and unavailable
+   native/rendered checks separately. Continuous private feeds and real business
+   outcome measurement remain receiving-runtime work.
+
+Verify with the semantic-twin suite, connected operator/value tests, rendered
+operator tests where dependencies permit, strict Python typing, source lint,
+readiness/submission, context, boundary and dispatch-memory checks.
+
+## Paid-pilot continuation — 2026-09-22
+
+The owner prioritizes a managed paid pilot and one real verified automation
+journey over additional platform architecture or self-service billing. Continue
+the existing A2 public-source scope: put a one-workspace, one-operation pilot
+offer on Pricing and route its request through the existing reviewed commercial
+email draft. Collect the recurring problem, desired result and optional data
+restrictions. Agree duration, run limits, invoice/payment terms, support,
+cancellation and data handling in writing before execution. Do not invent
+prices, entitlements, service availability, customer results or legal acceptance.
+
+Acceptance: preserve general licensing and early-access paths; validate and
+encode the pilot request, require explicit preparation and sending, retain a
+copyable preview, clear stale drafts after edits or enquiry changes, and keep
+contact details out of telemetry capture. Exercise the pure draft contract and
+extend the existing rendered public-page tests without treating missing browser
+dependencies as passing acceptance.
+
+Use the existing Day-21 receiving handoff for the first registered n8n lane,
+Firecrawl input and approved inference binding. Require a real workspace,
+bounded operation, authorized data and separate verifier. Carry exact provider
+effect/recovery receipts through the existing replay. Payment cannot authorize
+execution or grant verification. Actual activation needs the receiving runtime
+dispatch and access; this source continuation supplies neither credentials nor
+fabricated live evidence.
+
+Observed local results: ten commercial-draft cases pass with 100 percent V8
+line/branch coverage of the helper; all 568 Node regressions pass. Python
+discovers 782 cases with 750 passing and 32 explicit skips. Three rendered
+pilot cases are added to the existing public-page suite, but Vitest, repository
+lint and the Vite build cannot run with the installed dependencies. Source
+diagnostics parse 338 modules. The offer is implemented; no customer, payment,
+provider activation or independently accepted live replay is claimed.
+
+## Objective-first Day-21 continuation — 2026-09-22
+
+The owner prioritizes one accepted journey over additional subsystems. Continue
+this existing A2 dispatch by replacing domain-first onboarding with explicit
+Learn / Build / Project / Class / Challenge / Explore choices and a persisted
+objective. Keep business/domain context optional, retain atomic setup and retry
+recovery, and connect the saved objective to existing lessons and ERP planning.
+No illustrative lookup may be presented as a live search or proof of ownership.
+
+Acceptance: test every intent, objective persistence, optional context, legacy
+receipt recovery, transaction failure, current-account isolation, migration
+replay/retention, and the existing recommended lesson destinations. Extend the
+rendered/native cases and run the existing complete Day-21 acceptance runner on
+one source candidate. Retain unavailable checks and external gates explicitly.
+Do not substitute source fixtures for hosted GitLab execution, actual provider
+effects, an independent reviewer, deployment readback or official rule capture.
+
+Private release activation, registered Firecrawl/n8n/inference bindings and the
+verified-artifact rollback postcondition remain receiving-owner work under the
+existing public/private boundary. Inspect the existing release path and record
+the exact missing postconditions; do not create another release or acceptance
+system in the public application.
+
+## Ten critical sprint repairs authorized 2026-09-21
+
+The owner requests restoration of automatic governance and implementation of
+the ten most critical remaining public site gaps. Continue this pre-existing
+A2 dispatch. Retain every GitLab gate, automatic public PR governance, actor
+attribution, exact candidate bindings and existing coverage requirements.
+
+The source audit selects these connected user outcomes, in sprint order:
+
+1. Day 3: revalidate saved sessions and recover onboarding into the workspace
+   actually created, retaining account changes and unavailable auth explicitly.
+2. Day 5: isolate collection reads, forms and write results across account,
+   workspace and demo changes; reject late responses and foreign records.
+3. Day 7: recover an exact source-capture receipt even beyond the first page,
+   expose retained failures and allow safe cancellation of queued captures.
+4. Day 9: show review prerequisites and reviewer independence before submission;
+   retain the server's approval and evidence-author constraints.
+5. Day 11: reopen a workflow run from its durable link and refresh its actual
+   revision before a decision, including unavailable or foreign run handling.
+6. Day 13: select current configured connections and explain stale, disabled or
+   unavailable health before requesting an effect; preserve runtime checks.
+7. Day 15: extend the existing ERP search, status and due-date triage with
+   objective/contact drilldowns and durable task links from execution receipts.
+   Task completion does not imply business-outcome verification.
+8. Day 17: inspect a selected evidence record, linked mission and frozen review
+   snapshot; keep unsafe source URLs inert and missing evidence explicit.
+9. Day 19: surface the next actionable step from actual workspace records,
+   including missing approval/evidence, incomplete reads and independent review.
+10. Day 21: export one bounded, complete mission history with exact source,
+    workflow, action and review records, content digests and explicit limits;
+    exporting observations cannot confer verification or submission authority.
+
+Acceptance: production-module Node tests and relevant existing suites cover
+these outcomes, scope changes, forbidden reads, concurrency and negative cases.
+Add rendered/native regressions where applicable and execute them if installed
+runtimes permit. Retain unavailable dependencies as unexecuted acceptance.
+No deployment, provider activation, external message or manufactured evidence
+is authorized. Record the ranked audit, exact tests and receiving gates.
+
+Observed source outcome: all ten pieces are implemented in the existing product
+flow and automatic public PR governance is restored alongside every GitLab job.
+The dedicated journey suite covers real production modules with explicit storage
+and transport fixtures, including a complete approved ERP workflow and native
+command read policy. Rendered cases and the existing native journey are extended;
+missing frontend packages and PocketBase runtimes keep their acceptance open.
+The ranked gap-to-outcome map and receiving obligations are in
+`docs/sprint-user-journey.md`. No provider activation, deployment, independent
+real grading, owner approval or competition submission is inferred.
+
+## Governance execution repair authorized 2026-09-21
+
+The owner reports that all governance checks still fail after the GitLab
+correction. Continue this A2 source dispatch and preserve the confirmed GitLab
+execution model. Inspect the current provider records before attributing a
+failure to source. Move the remaining required validation and actor checks into
+the reachable GitLab lane before making GitHub governance a manual fallback.
+Keep the full eighteen-profile acceptance requirements, both declared Python
+versions for the portable suites, coverage floors and native dependency gates.
+
+Acceptance: reject automatic duplicate GitHub scheduling, missing migrated
+checks, absent or conflicting actor labels and foreign review metadata. A
+GitHub review export must identify the exact tested revision. Run available
+governance and coverage checks; preserve the distinction between configured
+jobs, observed local results and hosted execution. Private mirroring, runner
+activation, remote status publication and branch protection remain receiving
+owner actions; no remote changes are made by this continuation.
+
+The migrated mission coverage checker must select the existing business worker
+tests alongside its original suite. Continue measuring every module at the same
+80 percent floor; excluding the untested worker or lowering the floor is not a
+repair. Retain the observed zero-coverage failure and both Python-version runs.
+
+## GitLab acceptance correction authorized 2026-09-21
+
+The owner confirms that GitLab executes CI and requests clearing the remaining
+locally actionable acceptance blockers. Continue this existing A2 dispatch.
+Measure the checked-in GitLab entry point and reachable local includes, repair
+the public acceptance job and artifact handoff, and make the briefing and
+readiness gates describe GitLab execution. GitHub billing observations remain
+historical provider-specific evidence, not prerequisites for GitLab acceptance.
+
+Run the complete eighteen-profile matrix in one GitLab job, with isolated Python
+dependencies and both declared disposable PocketBase versions. Retain the whole
+candidate-bound evidence export, including failures. Test include reachability,
+comment/template rejection, governance wiring and artifact continuity. Execute
+all locally available checks; absent packages or runtimes remain explicit.
+Do not change private release jobs, trigger hosted pipelines, access credentials,
+deploy, or substitute synthetic evidence for a completed GitLab run.
+
+## Acceptance-only continuation authorized 2026-09-21
+
+The owner narrows the four-gap continuation to acceptance. Reuse the existing
+eighteen-profile checks and restore available prerequisites without changing
+their pass criteria. Repair the Day-21 runner so mutually exclusive selections
+cannot skip all work successfully, failed native provisioning records current
+BLOCKED receipts, and its exit status agrees with revalidated acceptance.
+Allow explicitly supplied, version-checked PocketBase binaries and an offline
+mode that performs no dependency installation or Docker build. Reuse the
+existing acceptance exporter rather than maintaining a second summary validator.
+
+Acceptance: reproduce the empty-run false PASS; test failed provisioning after
+an older PASS, supplied runtime selection, candidate/log/artifact revalidation,
+and rejection of incomplete execution. Run every available profile and retain
+the actual results. Missing dependencies remain runtime prerequisites; test
+doubles do not satisfy native or rendered gates. The later GitLab correction
+supersedes the initial assumption that GitHub billing gates this execution.
+
+## Four-gap completion continuation authorized 2026-09-21
+
+The owner requests implementation of the remaining development-loop,
+acceptance, candidate evidence and submission closure work after PR 62. Continue
+this pre-existing A2 dispatch for local shared-source repairs and integration.
+Reuse the merged evolution review/promotion contracts and the Hostinger/Day-21
+validators. Repair executable acceptance failures, prepare portable actual
+prediction/run evidence for an independently selected reviewer, and connect
+candidate-bound acceptance, deployment, browser, product and submission inputs.
+Run every available gate and retain its real result and missing prerequisites.
+
+The local integration must never create reviewer identity, receipt trust pins,
+deployment observations, product-use proof, organizer requirements or owner
+approval. Missing external inputs remain explicit HOLD requirements. Provision
+dependencies only from available authorized local caches in this environment.
+Keep historical evidence intact and bind new runs to the exact tested bytes.
+Billing changes, private release activation, external messages and final
+competition submission retain their receiving human authority.
+
+Acceptance: reproduce and fix the PocketBase host-API fixture failures; exercise
+the existing independent review and promotion boundaries; validate candidate
+continuity and missing/tampered evidence; execute available acceptance profiles;
+produce a reviewable entry package with runnable next steps for external inputs.
+
 ## Workspace assistant continuation authorized 2026-09-20
 
 The owner extends the eleven-checkpoint submission build with a persistent

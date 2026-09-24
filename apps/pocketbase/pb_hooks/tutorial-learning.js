@@ -8,14 +8,15 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
 // Intent:      Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
+const government = require(`${__hooks}/government-access.js`);
 const FIELDS = ['owner', 'tutorial', 'snapshot', 'content_digest', 'next_section', 'practiced', 'completed_at', 'certificate', 'protocol_version'];
 const POINTS = 100;
 
@@ -29,7 +30,9 @@ function schema(app) {
     if (FIELDS.some((key) => !collection.fields.getByName(key))) throw new ApiError(503, 'The interactive learning upgrade is not installed.');
     if (['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'].some((key) => collection[key] !== null))
         throw new ApiError(503, 'Learning records need an operator review before they can be used.');
-    if (!collection.indexes.includes('create unique index idx_tutorial_learning_identity on tutorial_learning (owner, tutorial)'))
+    const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')
+        .replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').trim();
+    if (!(collection.indexes || []).map(shape).includes(shape('create unique index idx_tutorial_learning_identity on tutorial_learning (owner, tutorial)')))
         throw new ApiError(503, 'Learning identity constraints need an operator review.');
     return collection;
 }
@@ -68,8 +71,9 @@ function snapshot(record) {
 }
 function lessonFor(app, e, record) {
     const tutorial = access.find(app, 'tutorials', access.id(e.request.pathValue('id')));
-    access.readable(app, tutorial, e.requestInfo());
+    if (!government.lesson(app, e.auth, tutorial)) access.readable(app, tutorial, e.requestInfo());
     const body = record ? access.json(record, 'snapshot') : snapshot(tutorial);
+    if (body?.category === 'Government submissions') government.requireMember(app, e.auth);
     const digest = $security.sha256(access.canonical(body));
     if (!supported(body?.lesson) || record && record.getString('content_digest') !== digest)
         throw new ApiError(503, 'The saved lesson needs an operator review.');

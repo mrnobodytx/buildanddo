@@ -1,0 +1,211 @@
+{
+  "version": "2026.09.broadcast.1",
+  "lessons": [
+    {
+      "id": "bdobroadcast001",
+      "slug": "broadcast-classroom-repair",
+      "title": "Repairing classroom broadcasts without overstating evidence",
+      "summary": "Trace room authorization, late media joins and structured event failures; reproduce negative controls and keep source checks separate from native and hosted results.",
+      "category": "Source case studies",
+      "effort_minutes": 20,
+      "prerequisites": "Read the work-loop lesson. Use repository tests and disposable fixtures, not a shared classroom or private learner data.",
+      "order": 26,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Bind media operations to current room, attendance and account authority rather than a supplied session identifier.",
+          "Reproduce and close a late asynchronous join after its original scope has ended.",
+          "Render structured event details as bounded, non-executable text.",
+          "Distinguish source regression evidence from native, rendered and hosted acceptance."
+        ],
+        "why": "A broadcast can appear connected while its session is unbound, its cleanup is still pending or its activity panel cannot render an event. A passing source check answers only the question it actually exercised. This case teaches a repair method, not a claim that a hosted classroom or a learner's mission has been verified.",
+        "preparation": [
+          "Use the public source references below to inspect the pre-repair revision ce1ce50fe408100bc617b33b5fed277efde64648. Reproduce the checks on the candidate being reviewed and record that revision separately.",
+          "Run the source commands from the repository root with Node. Rendered checks also need the locked frontend dependencies; native checks need each declared disposable PocketBase runtime.",
+          "Use synthetic room, account and event values in local fixtures. Do not copy credentials, personal data, shared attendance or private evidence into this lesson.",
+          "No provider call or shared-backend write is authorized by this exercise. Record missing prerequisites as blocked or unmeasured, never as passes."
+        ],
+        "sections": [
+          {
+            "heading": "Failure and repair: room and session authority",
+            "paragraphs": [
+              "The inspected signalling path accepted provider session identifiers without a server-owned binding to the caller and classroom. A publisher allowlist alone cannot establish workspace access, current attendance or authority to manage that room. A presence announcement is not proof that the announcing account published its claimed tracks.",
+              "The repair contract requires every create, push, pull and renegotiation to check the authenticated native account, readable workspace, live room and current attendance before contacting the provider. An existing session must belong to that account and room. Published tracks must be recorded by the server; presence and cross-session pulls must resolve those same tracks. Old unbound sessions must fail closed, not acquire guessed ownership."
+            ],
+            "steps": [
+              "In the local signalling fixture, establish one allowed account and live room as the positive control. Count provider calls in the injected provider double, not on a live service.",
+              "Replay with a foreign room, ended room, stale or left attendance, revoked membership, unknown session and a track from another room. Each negative control must reject before any provider call.",
+              "Keep an allowlisted account that lacks current room-management authority as a separate publish-denial control. Compare its result with the allowed host, rather than weakening the permission check until both succeed."
+            ]
+          },
+          {
+            "heading": "Failure and repair: asynchronous join cleanup",
+            "paragraphs": [
+              "The inspected hook closed only the handle it already held. If joinClassroom was still awaiting media or signalling when the user left, a later resolution could install a connected handle in a room or account that no longer owned it.",
+              "Invalidate each pending join when leaving, disabling the room, navigating or changing account, workspace or session scope. On resolution, compare the captured scope with the current one and close late handles and tracks instead of publishing them into state. A stale rejection must not overwrite a newer join's state either."
+            ],
+            "steps": [
+              "Hold the join promise unresolved in a local hook test, then leave or change its scope before resolving it with a synthetic handle.",
+              "Assert that the late handle is closed, its tracks and timers are released, and neither connected state nor presence is restored. Repeat for unmount, disable and account change.",
+              "Resolve a current, authorized join as the positive control. It should remain usable until an explicit leave; blanket cancellation that breaks every join is not a repair."
+            ]
+          },
+          {
+            "heading": "Failure and repair: structured agent events",
+            "paragraphs": [
+              "The inspected activity component passed event.detail directly to a React text child. A structured object could therefore crash rendering even though the event was valid data. Turning arbitrary event data into HTML would replace that defect with an injection risk.",
+              "Normalize supported detail values to bounded text, then let React escape that text. Keep an agent's completed event as a report, not independent verification. Unsupported or excessive structures need an explicit safe fallback, not an unbounded serialization or executable markup."
+            ],
+            "steps": [
+              "Render a synthetic detail object such as {phase: 'repair', checks: ['room', 'cleanup']} and confirm the panel stays readable.",
+              "Repeat with an array, an oversized nested value and a string containing markup. Assert bounded output and no injected elements or event handlers.",
+              "Keep a short plain string and an empty detail as positive controls so the repair does not hide ordinary events."
+            ]
+          },
+          {
+            "heading": "Reproduction commands and negative controls",
+            "paragraphs": [
+              "Source checks: node --test tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/classroom-*.test.mjs",
+              "Rendered checks: npm run test --prefix apps/web -- src/components/workspace/__tests__/TutorialCatalog.test.jsx src/pages/workspace/__tests__/EvidencePage.test.jsx src/components/broadcast/__tests__ src/hooks/__tests__/useClassroomMedia.test.jsx src/pages/workspace/__tests__/ClassroomsFlow.test.jsx",
+              "The Evidence Ledger source-case-study panel retains the dated local source result and a fingerprint of its listed implementation/test files. The Node fixtures execute production source with explicit storage/provider doubles. They do not establish native PocketBase rule evaluation, browser media delivery or a deployed repair. A syntax check alone cannot reproduce an authorization or late-promise failure."
+            ],
+            "steps": [
+              "Retain the failing assertion and full output for each reproducible defect before changing the repair candidate. If the defect was only source-traced, say so instead of inventing a red run.",
+              "Run the same scoped checks on the repaired candidate and retain command, revision, runtime, exit status and actual failure or skip counts. Keep both failing and passing observations.",
+              "For this lesson's migration, create the genuinely missing tutorial, replay up, edit its content, then run down and up. Assert one stable identity, unchanged operator edits and retained progress, snapshots and certificates; an ID or slug collision must abort without replacing records."
+            ]
+          },
+          {
+            "heading": "Source, native, rendered and live evidence",
+            "paragraphs": [
+              "source regression evidence; hosted media/native/rendered status require recorded results",
+              "The recorded local run passed 121 source tests on Node 22.17.0, with no failures or skips. Its exact source scope and fingerprint are shown at /app/evidence. Rendered checks could not start without Vitest, and both declared native PocketBase runtimes were unavailable. Hosted media remains unmeasured. The external links below show the inspected pre-repair revision; they do not claim that revision contains these fixes.",
+              "Run native_classroom and native_learning through scripts/ci/hostinger_readiness.py --run with both --runtime package and --runtime compose on the receiving runner. Confirm that its disposable fixture actually installs the broadcast lesson migration and the full media/attendance contracts; a starter-only fixture cannot validate this addition.",
+              "Hosted acceptance additionally needs an approved two-browser session on the exact release, current membership denial controls, real track cleanup and measured inbound media. A successful signalling response is not measured audio. Missing browser dependencies, binaries, provider authorization or release readback stay explicit gaps.",
+              "The Source case studies panel at /app/evidence is public learning material, separate from workspace record totals and verification badges. Opening it or this lesson creates no evidence, attendance, learning progress, certificate or XP. Only an explicit learning action uses the existing personal-progress flow; that still cannot verify a mission outcome."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "In a disposable local fixture, write a four-row repair review for room/session authority, late join cleanup, structured detail rendering and evidence boundaries. Record expected versus observed behavior and the exact command/revision, or mark the result pending or unmeasured. Do not submit the exercise as verified workspace evidence.",
+          "checklist": [
+            "Pair an allowed room/session control with foreign, ended, stale, left, revoked, unknown-session and cross-room rejection checks before provider effects.",
+            "Resolve and reject a delayed join after leave or scope change; require cleanup without reviving stale state, while a current join still works.",
+            "Render objects, arrays, large values and markup as bounded inert text without losing ordinary text events.",
+            "Keep actual red/green output and missing prerequisites separate from expected behavior; do not convert a skip or source-only pass into native or hosted acceptance.",
+            "Confirm additive lesson creation and collision refusal while all existing progress, snapshots, certificates and workspace evidence remain unchanged."
+          ]
+        },
+        "check": {
+          "question": "The Node regressions pass, but no native runtime, rendered test output or two-browser media capture is recorded. What can the case study claim?",
+          "choices": [
+            "The hosted broadcast and every related mission outcome are verified.",
+            "Only the executed source regressions have evidence; native, rendered and hosted acceptance remain unmeasured.",
+            "Opening the lesson can award completion points because the source tests passed."
+          ],
+          "answer": 1,
+          "explanation": "A result is bounded by its actual candidate, runtime and checks. Source doubles are not native or live evidence, and reading a lesson cannot create progress, XP or independent mission verification."
+        },
+        "references": [
+          {
+            "label": "Signalling routes at the inspected revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/ce1ce50fe408100bc617b33b5fed277efde64648/apps/pocketbase/pb_hooks/classroom-realtime.pb.js"
+          },
+          {
+            "label": "Media lifecycle hook at the inspected revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/ce1ce50fe408100bc617b33b5fed277efde64648/apps/web/src/hooks/useClassroomMedia.js"
+          },
+          {
+            "label": "Agent activity renderer at the inspected revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/ce1ce50fe408100bc617b33b5fed277efde64648/apps/web/src/components/broadcast/AgentActivity.jsx"
+          },
+          {
+            "label": "Presence source tests at the inspected revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/ce1ce50fe408100bc617b33b5fed277efde64648/tests/upgrade/classroom-presence.test.mjs"
+          },
+          {
+            "label": "Classroom source tests at the inspected revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/ce1ce50fe408100bc617b33b5fed277efde64648/tests/upgrade/classroom-system.test.mjs"
+          },
+          {
+            "label": "Open Evidence and its separate Source case studies panel",
+            "url": "/app/evidence"
+          },
+          {
+            "label": "Download the recorded local-source test output",
+            "url": "/broadcast-repairs-source.txt"
+          }
+        ]
+      }
+    }
+  ],
+  "source_evidence": {
+    "boundary": "source regression evidence; hosted media/native/rendered status require recorded results",
+    "validation": [
+      {
+        "label": "Source regression",
+        "status": "recorded source pass",
+        "description": "121 source tests passed on Node 22.17.0 with zero failures or skips in the dated run below. Production code was exercised using explicit local storage, provider and WebRTC doubles. This is not rendered, native PocketBase or hosted media acceptance.",
+        "commands": [
+          "node --test tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/classroom-*.test.mjs"
+        ]
+      },
+      {
+        "label": "Rendered UI",
+        "status": "blocked",
+        "description": "The rendered test command could not start: Vitest is missing. Authored hook and component tests still require the locked frontend toolchain. Source inspection and transport doubles do not establish rendered lifecycle or DOM acceptance.",
+        "commands": [
+          "npm run test --prefix apps/web -- src/components/workspace/__tests__/TutorialCatalog.test.jsx src/pages/workspace/__tests__/EvidencePage.test.jsx src/components/broadcast/__tests__ src/hooks/__tests__/useClassroomMedia.test.jsx src/pages/workspace/__tests__/ClassroomsFlow.test.jsx"
+        ]
+      },
+      {
+        "label": "Native PocketBase",
+        "status": "blocked",
+        "description": "Both declared PocketBase binaries (0.39.8 and 0.28.4) are unavailable. The expanded disposable fixtures include media, attendance, assistant usage and the lesson; none of their 23 native cases executed here. Source fixture-assembly checks cannot establish native acceptance.",
+        "commands": [
+          "python scripts/ci/hostinger_readiness.py --run native_classroom --runtime package",
+          "python scripts/ci/hostinger_readiness.py --run native_classroom --runtime compose",
+          "python scripts/ci/hostinger_readiness.py --run native_learning --runtime package",
+          "python scripts/ci/hostinger_readiness.py --run native_learning --runtime compose"
+        ]
+      },
+      {
+        "label": "Hosted media",
+        "status": "unmeasured",
+        "description": "Requires receiving authorization, exact-release readback and an actual two-browser capture with denial controls, cleanup and measured inbound media. No hosted command or provider call is authorized by this source-only lesson.",
+        "commands": []
+      }
+    ],
+    "artifact": {
+      "url": "/broadcast-repairs-source.txt",
+      "sha256": "b40957edd7bff274b20f15455399b38bb2e21a93ca466f6d0f17e3b8ada3c269"
+    },
+    "observation": {
+      "kind": "local_source_regression",
+      "observed_at": "2026-09-23T19:35:59.931434+00:00",
+      "runtime": "v22.17.0",
+      "command": "node --test tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/classroom-*.test.mjs",
+      "exit_code": 0,
+      "counts": { "tests": 121, "pass": 121, "fail": 0, "skipped": 0 },
+      "output_sha256": "019219aacc2f67abbfcf9fbe12a69966a4ed6c45bd215497ce934b9da0d9185d",
+      "source_sha256": "72f8df76252ad9973cc2c3d5d0daddcd5a12f6e3144b69258947ae74a6f05d51",
+      "source_files": [
+        "apps/pocketbase/pb_hooks/classroom-media.js",
+        "apps/pocketbase/pb_hooks/classroom-presence.pb.js",
+        "apps/pocketbase/pb_hooks/classroom-realtime.pb.js",
+        "apps/pocketbase/pb_hooks/classrooms.js",
+        "apps/pocketbase/pb_hooks/metrics.pb.js",
+        "apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js",
+        "apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js",
+        "apps/web/src/components/broadcast/AgentActivity.jsx",
+        "apps/web/src/hooks/classroomMediaLifetime.js",
+        "apps/web/src/hooks/useClassroomMedia.js",
+        "apps/web/src/lib/classroomRealtime.js",
+        "tests/upgrade/classroom-media-client.test.mjs",
+        "tests/upgrade/classroom-media-lifetime.test.mjs",
+        "tests/upgrade/classroom-media.test.mjs",
+        "tests/upgrade/classroom-presence.test.mjs"
+      ]
+    }
+  }
+}
