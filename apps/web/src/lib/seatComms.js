@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/seatComms.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-COMMUNITY-001
+// SRS:         SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
 // Seat:        BITS-CODEGEN
@@ -173,30 +173,16 @@ export function isSeatCommsConnected() {
 }
 
 /**
- * Best-effort seat label for the signed-in actor.
+ * Publishes a seat event as the signed-in human account.
  *
- * A human contributor's seat is their account handle. An agent seat overrides
- * it with `VITE_BUILDANDDO_SEAT` so its events are attributable to the seat
- * identity rather than to whichever account it authenticated as.
- *
- * @returns {string} Seat label, never empty.
- */
-function currentSeat() {
-    const configured = import.meta.env.VITE_BUILDANDDO_SEAT;
-    if (configured) return String(configured);
-    const record = pb.authStore.record;
-    return record?.username || record?.email || 'unknown-seat';
-}
-
-/**
- * Publishes a seat event.
+ * The server binds a browser-originated event to `actor_type: 'human'` and
+ * `seat` = the authenticated account id, and refuses anything else
+ * (workspace-record-policy.js). Agent seats publish through the server.
  *
  * @param {object} input Event input.
  * @param {string} input.event One of `joined`, `progress`, `completed`, `blocked`, `handoff`.
  * @param {string} input.workspaceId Workspace record id.
  * @param {string} input.summary One-line human description; required.
- * @param {string} [input.seat] Seat label; defaults to `currentSeat()`.
- * @param {('human'|'agent'|'mixed')} [input.actorType] Defaults to `human`.
  * @param {string} [input.subjectType] `mission`, `workflow`, `page`, `issue`, `pull_request`, `other`.
  * @param {string} [input.subject] Record id or repository path the event is about.
  * @param {object} [input.detail] Arbitrary structured detail.
@@ -208,8 +194,6 @@ export async function publishSeatEvent({
     event,
     workspaceId,
     summary,
-    seat,
-    actorType = 'human',
     subjectType,
     subject,
     detail,
@@ -224,8 +208,8 @@ export async function publishSeatEvent({
 
     const payload = {
         event,
-        seat: seat || currentSeat(),
-        actor_type: actorType,
+        seat: pb.authStore.record.id,
+        actor_type: 'human',
         summary,
         workspace: workspaceId,
         owner: pb.authStore.record.id,
@@ -240,7 +224,7 @@ export async function publishSeatEvent({
         const record = await pb.collection(COLLECTION).create(payload);
         reportAction(SEAT_EVENTS[event], {
             seat: payload.seat,
-            actor_type: actorType,
+            actor_type: payload.actor_type,
             subject_type: subjectType || 'none',
         });
         return record;

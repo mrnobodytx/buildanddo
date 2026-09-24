@@ -31,11 +31,42 @@ def _load_secrets() -> dict:
 
 
 _SECRETS = _load_secrets()
-PB_API_URL = _SECRETS.get("PB_API_URL", "https://buildanddo.com/hcgi/platform").rstrip("/")
+# No default target. An unset PB_API_URL used to fall back to production, so a
+# CI job missing its variable ran the suites - which create users - against it.
+PB_API_URL = _SECRETS.get("PB_API_URL", "").strip().rstrip("/")
+# The production VM is also reachable by address (scripts/deploy/ship.py default host).
+PRODUCTION_HOSTS = frozenset({"buildanddo.com", "www.buildanddo.com", "45.82.75.40"})
 
 
 class PocketBaseError(RuntimeError):
     pass
+
+
+class UnsafeTargetError(PocketBaseError):
+    """The configured PocketBase target is missing, malformed or production."""
+
+
+def require_target(url: str | None = None) -> str:
+    """Return a usable PocketBase base URL, or raise. Never supplies a default."""
+    url = (PB_API_URL if url is None else url or "").strip().rstrip("/")
+    if not url:
+        raise UnsafeTargetError("PB_API_URL is not set; refusing to guess a PocketBase target.")
+    parsed = urllib.parse.urlsplit(url)
+    if parsed.scheme not in ("http", "https") or not parsed.hostname:
+        raise UnsafeTargetError("PB_API_URL must be an http(s) URL with a host.")
+    return url
+
+
+def require_test_target(url: str | None = None) -> str:
+    """Like require_target, but also refuses production: the suites create users
+    and records, so they may only run against a disposable PocketBase."""
+    url = require_target(url)
+    host = (urllib.parse.urlsplit(url).hostname or "").rstrip(".").lower()
+    if host in PRODUCTION_HOSTS:
+        raise UnsafeTargetError(
+            "PB_API_URL points at production; the evidence suites create users and records "
+            "and only run against a non-production PocketBase.")
+    return url
 
 
 class PocketBaseClient:
@@ -44,8 +75,8 @@ class PocketBaseClient:
     epistemic-state and no-self-audit rules live in THIS module, not in
     PocketBase's own API rules, so callers must go through here, not raw REST."""
 
-    def __init__(self, base_url: str = PB_API_URL):
-        self.base_url = base_url.rstrip("/")
+    def __init__(self, base_url: str | None = None):
+        self.base_url = require_target(base_url)
         self._token: str | None = None
 
     def _authenticate(self) -> str:

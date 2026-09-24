@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/business-learning.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_hooks/business.pb.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js, apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/web/src/lib/businessPlanning.js, apps/web/src/lib/tutorialCurriculum.js
+// Depends:     apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_hooks/business.pb.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js, apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/web/src/lib/businessPlanning.js, apps/web/src/lib/tutorialCurriculum.js
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/business.pb.js; VALIDATES apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js; VALIDATES apps/pocketbase/pb_migrations/data/starter-tutorials.json; VALIDATES apps/web/src/lib/businessPlanning.js; VALIDATES apps/web/src/lib/tutorialCurriculum.js
+// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/business-policy.js; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_hooks/business.pb.js; VALIDATES apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js; VALIDATES apps/pocketbase/pb_migrations/data/starter-tutorials.json; VALIDATES apps/web/src/lib/businessPlanning.js; VALIDATES apps/web/src/lib/tutorialCurriculum.js
 // DAG Node:    none
 // Intent:      Exercise authored lesson structure, migration retention and replay, ERP isolation and content approval against the production source contracts.
 // ───────────────────────────────────────────────────────────────
@@ -182,8 +182,12 @@ function fixture({ seedLegacy = false, seedCustom = false } = {}) {
         social_content: [...common, 'title', 'body', 'channel', 'scheduled_for', { name: 'status', values: ['draft', 'awaiting_approval', 'scheduled', 'published', 'failed'] }],
         tutorials: ['id', 'title', 'summary', 'category', 'effort_minutes', 'prerequisites', 'order'],
         tutorial_progress: ['id', 'tutorial', 'owner', 'status', 'progress'],
+        tutorial_learning: ['id', 'owner', 'tutorial', 'snapshot', 'content_digest', 'next_section', 'practiced', 'completed_at', 'certificate', 'protocol_version', 'answer_retry_at'],
     };
     const collections = new Map(Object.entries(definitions).map(([name, fields]) => [name, new Collection(name, fields)]));
+    const learning = collections.get('tutorial_learning');
+    for (const key of ['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule']) learning[key] = null;
+    learning.indexes = ['create unique index idx_tutorial_learning_identity on tutorial_learning (owner, tutorial)'];
     const records = Object.fromEntries(Object.keys(definitions).map((name) => [name, []]));
     const denied = new Set();
     let saves = 0, next = 1;
@@ -196,6 +200,7 @@ function fixture({ seedLegacy = false, seedCustom = false } = {}) {
             if (filter === 'slug = {:slug} || id = {:id}') rows = records[name].filter((row) => row.slug === params.slug || row.id === params.id);
             else if (filter === 'title = {:title} && summary = {:summary} && order = {:order}') rows = records[name].filter((row) => row.title === params.title && row.summary === params.summary && row.order === params.order);
             else if (filter === 'workspace = {:workspace} && user = {:user}') rows = records[name].filter((row) => row.workspace === params.workspace && row.user === params.user);
+            else if (filter === 'owner = {:owner} && tutorial = {:tutorial}') rows = records[name].filter((row) => row.owner === params.owner && row.tutorial === params.tutorial);
             else assert.fail(`Unexpected filter ${filter}`);
             return rows.slice(0, limit).map((row) => new Record(collections.get(name), row));
         },
@@ -243,7 +248,9 @@ function fixture({ seedLegacy = false, seedCustom = false } = {}) {
     const draft = { id: 'content1', workspace: 'ws1', owner: 'owner1', status: 'draft', format: 'blog', title: 'Test draft', body: '# A useful heading\n\nSupported facts.', audience: 'New editors', brief: '', call_to_action: '', channel: '', objective: '' };
     const content = (patch = {}, account = 'owner1', creating = false) => request('social_content',
         records.social_content.find((row) => row.id === 'content1') || draft, patch, account, creating, 'content');
-    return { app, records, collections, denied, up, down, policy, load, request, content, saves: () => saves,
+    const certify = (owner, tutorial, id = `certificate-${owner}`) => records.tutorial_learning.push({ id, owner, tutorial,
+        completed_at: '2026-09-23 12:00:00.000Z', certificate: { schema_version: 'buildanddo.learning-certificate/1', id: `BDO-${id.toUpperCase()}` } });
+    return { app, records, collections, denied, up, down, policy, load, request, content, certify, saves: () => saves,
         member(user, role, workspace = 'ws1') { records.workspace_members.push({ id: `${user}-${workspace}`, user, role, workspace }); } };
 }
 const reject = (call, status) => assert.throws(call, (error) => error.status === status);
@@ -262,7 +269,7 @@ test('migration hydrates six legacy identities and adds nineteen lessons without
         assert.ok(validLesson(row.lesson)); assert.equal(row.slug, curriculum.lessons[i].slug);
     }
     assert.equal(f.records.tutorials.find((row) => row.id === 'custom1').summary, 'Keep this summary');
-    for (const collection of f.collections.values()) {
+    for (const collection of [...f.collections.values()].filter((item) => item.name !== 'tutorial_learning')) {
         assert.equal(collection.listRule, 'original-list'); assert.equal(collection.viewRule, 'original-view');
         assert.equal(collection.createRule, 'original-create'); assert.equal(collection.updateRule, 'original-update'); assert.equal(collection.deleteRule, 'original-delete');
     }
@@ -394,10 +401,38 @@ test('progress remains with its account and lesson, and review cannot downgrade 
     for (const patch of [{ owner: 'other' }, { tutorial: curriculum.lessons[1].id }, { status: 'verified' }])
         reject(f.request('tutorial_progress', progress, patch, 'owner1', false, 'progress').run, 400);
     f.denied.add(progress.tutorial); reject(f.request('tutorial_progress', progress, {}, 'owner1', false, 'progress').run, 403); f.denied.clear();
+    f.certify('owner1', progress.tutorial);
     const completed = f.request('tutorial_progress', progress, { status: 'completed' }, 'owner1', false, 'progress'); completed.run(); assert.equal(completed.record.getString('progress'), '100');
     reject(f.request('tutorial_progress', completed.record.data, { status: 'in_progress' }, 'owner1', false, 'progress').run, 400);
     assert.equal(f.request('tutorial_progress', completed.record.data, {}, 'owner1', false, 'progress').run(), 'saved');
     const notStarted = f.request('tutorial_progress', progress, { status: 'not_started' }, 'owner1', true, 'progress'); notStarted.run(); assert.equal(notStarted.record.getString('progress'), '0');
+});
+
+test('interactive lesson completion needs the learner\'s own server-issued certificate; reading-only lessons are unchanged', () => {
+    const f = fixture({ seedCustom: true });
+    const progress = { id: 'progress1', owner: 'owner1', tutorial: curriculum.lessons[0].id, status: 'in_progress', progress: 50 };
+    f.request('tutorial_progress', progress, {}, 'owner1', true, 'progress').run();
+    const complete = (account = 'owner1', data = f.records.tutorial_progress[0]) =>
+        f.request('tutorial_progress', data, { status: 'completed' }, account, false, 'progress');
+    reject(complete().run, 400);
+    reject(f.request('tutorial_progress', { ...progress, id: 'progress2', status: 'completed' }, {}, 'owner1', true, 'progress').run, 400);
+    f.certify('other', progress.tutorial);
+    reject(complete().run, 400);
+    f.records.tutorial_learning.push({ id: 'unfinished', owner: 'owner1', tutorial: progress.tutorial, completed_at: '', certificate: null });
+    reject(complete().run, 400);
+    const learning = f.collections.get('tutorial_learning');
+    learning.updateRule = ''; f.certify('owner1', progress.tutorial, 'certified1');
+    f.records.tutorial_learning = f.records.tutorial_learning.filter((row) => row.id !== 'unfinished');
+    reject(complete().run, 400);
+    learning.updateRule = null;
+    assert.equal(complete().run(), 'saved');
+    assert.equal(f.records.tutorial_progress[0].progress, 100);
+    const reading = { id: 'progress3', owner: 'owner1', tutorial: 'custom1', status: 'completed', progress: 0 };
+    assert.equal(f.request('tutorial_progress', reading, {}, 'owner1', true, 'progress').run(), 'saved');
+    f.collections.delete('tutorial_learning');
+    const second = { id: 'progress4', owner: 'owner1', tutorial: curriculum.lessons[1].id, status: 'completed', progress: 0 };
+    reject(f.request('tutorial_progress', second, {}, 'owner1', true, 'progress').run, 400);
+    assert.equal(f.request('tutorial_progress', { ...reading, id: 'progress5' }, {}, 'owner1', true, 'progress').run(), 'saved');
 });
 
 test('native request registrations resolve their policy inside each isolated callback', () => {
