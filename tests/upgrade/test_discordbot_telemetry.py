@@ -28,6 +28,7 @@ from apps.research.contracts import ResearchError
 from scripts.discordbot import service as service_module
 from scripts.discordbot.contracts import Caller, DataFault, DataUnavailable, Option, Page, Quiz, Reply, Settings
 from scripts.discordbot.dossier import DOSSIER_COMMANDS
+from scripts.discordbot.grading import PRACTICE, Grader
 from scripts.discordbot.public_data import PublicClient
 from scripts.discordbot.research import RESEARCH_COMMANDS
 from scripts.discordbot.service import (
@@ -147,7 +148,13 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
         if control == "lesson_select":
             reply = Reply(reply.pages, options=(Option("PRIVATE_LESSON", "PRIVATE_SLUG"),))
         elif control == "quiz_answer":
-            reply = Reply((Page("PRIVATE_QUESTION", "PRIVATE_PROMPT"),), quiz=Quiz(("PRIVATE_CHOICE_A", "PRIVATE_CHOICE_B"), 1, "PRIVATE_EXPLANATION"))
+            # The quiz carries no answer since #104; the server grades it. The real Grader runs against a
+            # fake route that answers the way the community-quiz hook does: choice 1 is right.
+            reply = Reply((Page("PRIVATE_QUESTION", "PRIVATE_PROMPT"),), quiz=Quiz("PRIVATE_SLUG", ("PRIVATE_CHOICE_A", "PRIVATE_CHOICE_B")))
+            self.service.grader = Grader(SimpleNamespace(
+                json=AsyncMock(side_effect=lambda route, body: {"correct": True, "explanation": "PRIVATE_EXPLANATION"}
+                               if body["choice"] == 1 else {"correct": False}),
+                close=AsyncMock()))
         view = ADAPTER.ReplyView(self.service, self.caller, reply)
         view.session.expires_at = self.now + 600
         if control == "previous":
@@ -417,11 +424,16 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
                 await view.answer(first, choice)
                 await view.answer(retry, choice)
                 await view.answer(changed, 1 - choice)
-            self.assertEqual([row["outcome"] for row in events(captured)], ["accepted", "accepted", "rejected"])
+            # Control dispatch only; a graded answer also emits its own discord.quiz.graded event.
+            self.assertEqual([row["outcome"] for row in events(captured, "discord.control.completed")], ["accepted", "accepted", "rejected"])
+            self.assertEqual([row["outcome"] for row in events(captured, "discord.quiz.graded")], ["graded"])
             rendered = first.edit_original_response.await_args.kwargs["embed"].to_dict()
             self.assertEqual(rendered, retry.edit_original_response.await_args.kwargs["embed"].to_dict())
-            expected = ("Correct.\n\n" if choice == 1 else "Review the explanation.\n\n") + "Answer: PRIVATE_CHOICE_B\n\nPRIVATE_EXPLANATION\n\nPractice only. Progress is saved through your signed-in BuildAndDo workspace."
+            expected = ("Correct.\n\nPRIVATE_EXPLANATION" if choice == 1 else
+                        "Not the expected answer. Review the lesson, then run the quiz again.") + PRACTICE
             self.assertEqual(rendered["description"], ADAPTER.escaped(expected))
+            if choice == 0:
+                self.assertNotIn("PRIVATE_CHOICE_B", rendered["description"], "a wrong answer never reveals the right one")
             self.assertNotIn("verified", json.dumps(events(captured)))
             self.assert_private_free(captured)
 
@@ -537,7 +549,7 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual([(row["control"], row["outcome"]) for row in events(captured)], [(control, "rejected")])
             self.assert_private_free(captured)
         for constructor, control in ((ADAPTER.LessonSelect, "lesson_select"), (ADAPTER.QuizSelect, "quiz_answer")):
-            select = constructor(Reply((Page("PRIVATE_QUESTION", "PRIVATE_BODY"),), quiz=Quiz(("PRIVATE_A", "PRIVATE_B"), 1, "PRIVATE_EXPLANATION")))
+            select = constructor(Reply((Page("PRIVATE_QUESTION", "PRIVATE_BODY"),), quiz=Quiz("PRIVATE_SLUG", ("PRIVATE_A", "PRIVATE_B"))))
             with self.assertLogs("buildanddo.discord", level="INFO") as captured:
                 await select.callback(self.request())
             self.assertEqual([(row["control"], row["outcome"]) for row in events(captured)], [(control, "denied")])

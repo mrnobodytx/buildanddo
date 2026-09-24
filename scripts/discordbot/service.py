@@ -200,11 +200,15 @@ class CommandService:
             outcome = "graded" if graded else "unavailable"
             return page, graded
         finally:
-            logger.info("discord.quiz.graded", extra={
-                "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
-                "command": "quiz", "outcome": outcome,
-                "duration_ms": max(0, round((self.clock() - start) * 1000)),
-            })
+            # Like log_outcome: a failing stderr sink must not replace the grade or its exception.
+            try:
+                logger.info("discord.quiz.graded", extra={
+                    "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
+                    "command": "quiz", "outcome": outcome,
+                    "duration_ms": max(0, round((self.clock() - start) * 1000)),
+                })
+            except Exception:
+                pass
 
     async def _command(self, name: str, query: str, caller: Caller) -> Reply:
         if name == "help":
