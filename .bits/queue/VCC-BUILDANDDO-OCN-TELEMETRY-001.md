@@ -23,7 +23,9 @@
 ## Objective
 
 Every OCN probe receipt can become marked PostHog and Datadog telemetry from the release workstation, off
-by default and proven by readback, and no fleet box sends or holds anything for it.
+by default and proven by readback, and no fleet box sends anything for it or needs a key. Until the A3
+collector change, the estate collector still passes `BUILDANDDO_PH` (a public `phc_` client key) on every
+seat's command line, which the seat script ignores; dropping it is the first A3 driver step.
 
 ## Task table
 

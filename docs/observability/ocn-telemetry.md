@@ -24,8 +24,11 @@ workstation, `scripts/ci/ocn_telemetry.py` reads a finished receipt and publishe
 - to PostHog project 597897 (BuildAndDo), as marked, personless agent events;
 - to Datadog on us5, as one event per judged run and one log per check.
 
-Nothing runs on a fleet box, no key reaches a box, and no probe imports the publisher. The one probe
-that used to send from its box, `ocn_seat_session.py`, no longer does (see [Retired](#retired-box-side-capture)).
+Nothing is published from a fleet box, and no probe imports the publisher. The one probe that used to
+send from its box, `ocn_seat_session.py`, no longer does (see [Retired](#retired-box-side-capture)). No box
+needs or uses a key. Until the A3 collector change, though, the estate collector still passes
+`BUILDANDDO_PH` (a public `phc_` client key) on every seat's command line; the seat script ignores it and
+never echoes it.
 
 Telemetry is **off by default**. Sending is an A3 action and waits for the operator and for the
 [preconditions](#operator-preconditions).
@@ -384,9 +387,10 @@ Before the first send:
    the operator's. They can be filtered out by `$lib = bnd-ocn-seat`.
 
 The estate drivers change in a separate A3 dispatch:
-- `citadel_ocn_perception.collect` stops passing `--ph-key`, publishes each seat record over subprocess
-  stdin with `publish --probe ocn_seat_session --receipt - --tee`, and its aggregate reads
-  `ocn_telemetry.state`;
+- first, `citadel_ocn_perception.collect` stops passing `--ph-key`, so no key reaches a box's command
+  line at all;
+- it then publishes each seat record over subprocess stdin with
+  `publish --probe ocn_seat_session --receipt - --tee`, and its aggregate reads `ocn_telemetry.state`;
 - `citadel_ocn_review_round` publishes the observation records;
 - the drivers call the publisher from a clean checkout of main, not the shared checkout.
 
