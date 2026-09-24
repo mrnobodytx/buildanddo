@@ -20,6 +20,7 @@ import { act, within } from '@testing-library/react';
 import { beforeEach, afterEach, expect, it, vi } from 'vitest';
 import { learningFixture } from '../../../../../../tests/upgrade/tutorial-learning-fixture.mjs';
 import { plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
+import broadcast from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import AuthContext from '@/contexts/AuthContext';
 import pb from '@/lib/pocketbaseClient';
@@ -115,7 +116,7 @@ it('requires practice and the right answer, then displays a persistent certifica
     const growth = within(screen.getByRole('region', { name: 'Your learning journey' }));
     expect(await growth.findByText('Level 2 · Practitioner')).toBeVisible();
     expect(growth.getByText('First finish · earned')).toBeVisible();
-    expect(await screen.findByText('1 of 33 lessons completed')).toBeVisible();
+    expect(await screen.findByText(`1 of ${backend.lessons.length + broadcast.lessons.length} lessons completed`)).toBeVisible();
     const reopened = (await openTutorial(user)).reader;
     expect(await reopened.findByRole('heading', { name: 'Certificate of completion' })).toBeVisible();
     expect(backend.list('user_test').points).toBe(100);

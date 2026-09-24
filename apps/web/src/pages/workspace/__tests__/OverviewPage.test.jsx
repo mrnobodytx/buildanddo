@@ -101,7 +101,7 @@ describe('OverviewPage', () => {
         seed();
         renderWithProviders(<OverviewPage />, { workspace: { active: createMockWorkspace({
             id: 'ws_test', onboarding_intent: 'build', onboarding_objective: 'goal1',
-            expand: { onboarding_objective: { id: 'goal1', workspace: 'ws_test', title: 'Deploy my first website' } },
+            expand: { domain: null, onboarding_objective: { id: 'goal1', workspace: 'ws_test', title: 'Deploy my first website' } },
         }) } });
         expect(await screen.findByRole('heading', { name: 'Your starting path' })).toBeVisible();
         expect(screen.getByText('Deploy my first website')).toBeVisible();

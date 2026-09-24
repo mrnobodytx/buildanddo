@@ -124,17 +124,19 @@ describe('home workspace edition', () => {
         pb.__setRecords('missions', [createMockMission({ status: 'running' })]);
         pb.__setRecords('evidence', [createMockEvidence({ title: 'Reminder receipt' })]);
         pb.__setRecords('challenge_submissions', [
-            { id: 'project', problem: 'Build a shared project website', status: 'submitted', created: now() },
+            { id: 'project', workspace: 'ws_test', problem: 'Build a shared project website', status: 'submitted', created: now() },
         ]);
         pb.__setRecords('daily_editions', [
             {
                 id: 'draft',
+                workspace: 'ws_test',
                 status: 'draft',
                 title: 'Draft must stay off the front page',
                 created: now(),
             },
             {
                 id: 'edition',
+                workspace: 'ws_test',
                 status: 'published',
                 title: 'Friday appointment report',
                 summary: 'Measured reminders',
@@ -145,6 +147,7 @@ describe('home workspace edition', () => {
         pb.__setRecords('corrections', [
             {
                 id: 'c1',
+                workspace: 'ws_test',
                 status: 'verified',
                 prior_prediction: 'Expected four misses',
                 observed_result: 'Observed one miss',
@@ -152,6 +155,7 @@ describe('home workspace edition', () => {
             },
             {
                 id: 'c2',
+                workspace: 'ws_test',
                 status: 'pending',
                 prior_prediction: 'Pending prediction',
                 observed_result: 'Unverified result',
@@ -161,6 +165,7 @@ describe('home workspace edition', () => {
         pb.__setRecords('support_sources', [
             {
                 id: 'usd',
+                workspace: 'ws_test',
                 provider: 'patreon',
                 status: 'healthy',
                 last_sync: now(),
@@ -169,13 +174,14 @@ describe('home workspace edition', () => {
             },
             {
                 id: 'eur',
+                workspace: 'ws_test',
                 provider: 'kofi',
                 status: 'healthy',
                 last_sync: now(),
                 gross: 10,
                 currency: 'EUR',
             },
-            { id: 'pending', provider: 'gofundme', status: 'pending', gross: 900, currency: 'USD' },
+            { id: 'pending', workspace: 'ws_test', provider: 'gofundme', status: 'pending', gross: 900, currency: 'USD' },
         ]);
         renderWithProviders(<HomePage />);
         expect(
