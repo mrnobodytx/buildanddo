@@ -44,7 +44,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
+      "evidence": "referenced by: tests/upgrade/test_platform_health_public_projection.py, tests/upgrade/test_public_redaction.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/fleet_report.py is never executed by GitHub Actions"
@@ -184,7 +184,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
+      "evidence": "referenced by: tests/upgrade/test_platform_health_public_projection.py, tests/upgrade/test_public_redaction.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/public_redaction.py is never executed by GitHub Actions"
@@ -348,6 +348,7 @@
     {
       "path": "scripts/ci/fleet_report.py",
       "referenced_by": [
+        "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
       "wired_into_ci": false
@@ -471,6 +472,7 @@
     {
       "path": "scripts/ci/public_redaction.py",
       "referenced_by": [
+        "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
       "wired_into_ci": false
@@ -551,7 +553,7 @@
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-24T09:06:36.923218+00:00",
+  "generated_at": "2026-09-24T10:19:54.334848+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -971,12 +973,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 60,
-    "python_files": 305,
+    "python_files": 307,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1431,
-    "web_source_files": 383
+    "tracked_files": 1435,
+    "web_source_files": 384
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1055,7 +1057,7 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "d43ff97ca7a8015d398ff17ea2cea40baf86bd9d287f02dddf5db4f205cb4e6b",
+    "source_sha256": "e7e3674d22f2b4437e1eeff529ee65f82b443efb412a4d960cb14a5e739f1e63",
     "state": "PASS"
   },
   "summary": {
@@ -1070,7 +1072,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 90,
+    "js_test_files": 91,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
