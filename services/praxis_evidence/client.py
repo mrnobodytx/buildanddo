@@ -8,6 +8,7 @@ credentials from secrets/deploy.local.env or the OS environment - never
 hardcoded, never logged.
 """
 from __future__ import annotations
+import ipaddress
 import json
 import os
 import urllib.error
@@ -34,8 +35,18 @@ _SECRETS = _load_secrets()
 # No default target. An unset PB_API_URL used to fall back to production, so a
 # CI job missing its variable ran the suites - which create users - against it.
 PB_API_URL = _SECRETS.get("PB_API_URL", "").strip().rstrip("/")
-# The production VM is also reachable by address (scripts/deploy/ship.py default host).
-PRODUCTION_HOSTS = frozenset({"buildanddo.com", "www.buildanddo.com", "45.82.75.40"})
+PRODUCTION_HOSTS = frozenset({"buildanddo.com", "www.buildanddo.com"})
+
+
+def _public_address(host: str) -> bool:
+    """True when the host is a globally reachable address rather than a name. The
+    production VM is also reachable by its address, and this repository is public,
+    so it refuses every such address instead of spelling that one: a disposable
+    PocketBase is named, or sits on loopback or a private network."""
+    try:
+        return ipaddress.ip_address(host).is_global
+    except ValueError:
+        return False
 
 
 class PocketBaseError(RuntimeError):
@@ -66,6 +77,10 @@ def require_test_target(url: str | None = None) -> str:
         raise UnsafeTargetError(
             "PB_API_URL points at production; the evidence suites create users and records "
             "and only run against a non-production PocketBase.")
+    if _public_address(host):
+        raise UnsafeTargetError(
+            "PB_API_URL names a public address, and production is reachable by its address; "
+            "name a non-production PocketBase by hostname, or use loopback or a private network.")
     return url
 
 

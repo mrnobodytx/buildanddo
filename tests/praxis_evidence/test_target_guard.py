@@ -48,9 +48,24 @@ class TargetGuardTests(unittest.TestCase):
     def test_production_hosts_are_refused_on_any_path(self):
         for url in ("https://buildanddo.com/hcgi/platform", "https://buildanddo.com",
                     "http://www.buildanddo.com/anything/", "https://WWW.BuildAndDo.com./hcgi/platform",
-                    "https://buildanddo.com:443/hcgi/platform", "http://45.82.75.40:8090/"):
+                    "https://buildanddo.com:443/hcgi/platform"):
             with self.subTest(url=url), self.assertRaises(client.UnsafeTargetError):
                 client.require_test_target(url)
+
+    def test_public_addresses_are_refused_so_production_needs_no_name(self):
+        # The production VM is also reachable by its address, which this public repository must not spell, so
+        # the guard refuses every globally reachable address; the standard library classifies them. A test may
+        # plant only documentation addresses (RFC 5737, RFC 3849), which are not globally reachable, so here the
+        # classifier is told to answer "public".
+        with patch.object(client, "_public_address", return_value=True):
+            for url in ("http://203.0.113.9:8090/", "https://[2001:db8::9]/hcgi/platform"):
+                with self.subTest(url=url), self.assertRaises(client.UnsafeTargetError):
+                    client.require_test_target(url)
+
+    def test_names_loopback_and_documentation_addresses_are_not_public(self):
+        for host in ("localhost", "pocketbase", "staging.buildanddo.com", "127.0.0.1", "::1", "203.0.113.9"):
+            with self.subTest(host=host):
+                self.assertFalse(client._public_address(host))
 
     def test_malformed_targets_are_refused(self):
         for url in ("buildanddo.com/hcgi/platform", "ftp://pb.test", "https://", "   "):

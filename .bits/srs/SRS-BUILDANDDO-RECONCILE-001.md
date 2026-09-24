@@ -95,6 +95,19 @@ requirements. Each is shown by a test that fails without its change.
     regression run bound to a digest of the files it covered. After the merge changed those files, the command
     is re-run on the final merged sources, and that run is what is recorded.
 
+Scanning every line the merge adds, with the private fleet map, turned up one more.
+
+13. **R13 - the merge adds no address and no machine name to the staging line.** The staging line already keeps
+    them out: `ship.py` has no default host, and its copy of the broadcast-classroom handoff names the release
+    seat. Where main spells one, the merged file takes a form that needs none:
+    - the praxis target guard refuses every globally reachable address, so production's address is refused
+      without being written down;
+    - the handoff both lines carried under two names becomes one file at the staging line's path, with main's
+      added section, and main's references point at it.
+
+    One family match stays: a hosting plan's product key in recorded evidence. The staging line's generator
+    already carries the same key, and changing the record would relabel it (R12).
+
 ## Out of scope
 
 - Production, and any server change other than the staging-only deploy in R8.
@@ -107,3 +120,4 @@ requirements. Each is shown by a test that fails without its change.
 - The three suites pass on the merged tree.
 - `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check` and
   `verify_public_boundary.py` pass, also in a fresh LF checkout.
+- No line the merge adds carries an address or a machine name, apart from the one R13 names.

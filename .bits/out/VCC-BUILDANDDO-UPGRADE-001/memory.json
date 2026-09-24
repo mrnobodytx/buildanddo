@@ -55625,7 +55625,7 @@
     },
     {
       "type": "A",
-      "file_path": ".bits/handoffs/2026-09-23-bits-codegen-rig1-broadcast-classroom.md",
+      "file_path": ".bits/handoffs/2026-09-23-bits-codegen-c-one-broadcast-classroom.md",
       "cket_stage": "11_COMMIT",
       "srs_codes": [
         "SRS-BUILDANDDO-UPGRADE-001"
@@ -56600,11 +56600,11 @@
     },
     {
       "type": "B",
-      "source": ".bits/handoffs/2026-09-23-bits-codegen-rig1-broadcast-classroom.md",
+      "source": ".bits/handoffs/2026-09-23-bits-codegen-c-one-broadcast-classroom.md",
       "target": "cross-seat handoff",
       "edge_type": "TRIGGERS",
       "weight": 0.8,
-      "description": ".bits/handoffs/2026-09-23-bits-codegen-rig1-broadcast-classroom.md TRIGGERS cross-seat handoff",
+      "description": ".bits/handoffs/2026-09-23-bits-codegen-c-one-broadcast-classroom.md TRIGGERS cross-seat handoff",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },

@@ -167,4 +167,4 @@ That is an explicit live-revocation receiving test, not a source guarantee.
    through the ordinary evidence flow with a separate independent review.
 
 The receiving contract remains
-`.bits/handoffs/2026-09-23-bits-codegen-rig1-broadcast-classroom.md`.
+`.bits/handoffs/2026-09-23-bits-codegen-c-one-broadcast-classroom.md`.
