@@ -69,13 +69,19 @@ Object.assign(process.env, buildEnvironment);
 // Inject the measuring plugin without taking ownership of the shared Vite config.
 // Release inputs are explicit; a forgotten .env file cannot silently enable a sink.
 const { build } = await import('vite');
-await build({
-    ...(contract ? { envFile: false } : {}),
-    plugins: telemetry ? [telemetry.plugin] : [],
-    build: { outDir: output, emptyOutDir: true },
-});
-if (vite.error) console.error('Unable to start Vite:', vite.error.message);
-if (vite.status !== 0) process.exit(vite.status ?? 1);
+// The Vite API rejects on failure; there is no spawned process status to read any more. The two
+// lines that still read one threw a ReferenceError after every successful build, so page heads,
+// the community catalogue and the lesson-answer scan below never ran.
+try {
+    await build({
+        ...(contract ? { envFile: false } : {}),
+        plugins: telemetry ? [telemetry.plugin] : [],
+        build: { outDir: output, emptyOutDir: true },
+    });
+} catch (error) {
+    console.error('Vite build failed:', error?.message || error);
+    process.exit(1);
+}
 generatePageHeads(output, release);
 generateCommunityCatalogue(output, release);
 // Interactive lessons are graded on the server; a shipped answer or explanation would give it away.
@@ -85,3 +91,4 @@ if (leaks.length) {
     for (const leak of leaks) console.error(`Lesson ${leak.slug} answer is in ${leak.file}; import curricula with ?public-lessons and keep checks answer-free.`);
     process.exit(1);
 }
+telemetry?.finish(output);

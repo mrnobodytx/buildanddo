@@ -115,6 +115,29 @@ def parse_registry(path: Path) -> tuple[list[dict], str | None]:
     return entries, None
 
 
+TASK_ROW = re.compile(r"^\|\s*(\d+)\s*\|(.*)\|\s*([A-Za-z_ -]+?)\s*\|\s*$")
+DONE_STATUSES = {"done", "delivered", "complete", "completed"}
+
+
+def parse_dispatch(path: Path) -> dict:
+    """Read one .bits/queue dispatch: its SRS code, status and task-table progress.
+
+    The SRS code comes from the `**SRS:**` line, or from the CGRF header's `SRS:` field when a
+    dispatch has no such line (DAY21-CLOSURE and DEVELOPMENT-LOOP write it only in the header).
+    """
+    text = read(path)
+    statuses = [m.group(3).strip().lower() for m in map(TASK_ROW.match, text.splitlines()) if m]
+    status = re.search(r"\*\*Status:\*\*\s*([A-Za-z_]+)", text)
+    srs = re.search(r"\*\*SRS:\*\*\s*(SRS-[A-Z0-9-]+)", text) or re.search(
+        r"^\W*SRS:\s*(SRS-[A-Z0-9]+(?:-[A-Z0-9]+)+)", text, re.M)
+    return {
+        "status": status.group(1).lower() if status else "unknown",
+        "srs": srs.group(1) if srs else "",
+        "tasks_total": len(statuses),
+        "tasks_done": sum(1 for s in statuses if s in DONE_STATUSES),
+    }
+
+
 def collect_pipelines(root: Path) -> list[dict]:
     pipelines = []
     paths = sorted(root.glob(".github/workflows/*.yml")) + sorted(root.glob(".github/actions/*/action.yml"))
@@ -264,13 +287,21 @@ def collect_findings(root: Path, inventory: dict, registry: list[dict]) -> list[
             add("medium", "governance", f"{name} is declared by repo convention but absent",
                 "AGENTS.md and .bits/context.md name it as required reading", srs)
 
+    github_runs: dict[str, list[str]] = {}
+    for pipeline in inventory["pipelines"]:
+        if pipeline["provider"] == "github":
+            for script in pipeline["scripts"]:
+                github_runs.setdefault(script, []).append(pipeline["file"])
     for gate in inventory["gates"]:
         if gate["wired_into_ci"]:
             continue
         where = ", ".join(gate["referenced_by"]) or "nothing in this repo"
         srs = "SRS-BUILDANDDO-EVIDENCE-CI-001" if gate["path"].endswith("run_all_tests.py") else ""
-        add("high", "ci", f"{gate['path']} is not configured in reachable GitLab jobs",
-            f"referenced by: {where}", srs)
+        # GitLab is where acceptance executes, so the finding stands; but a gate GitHub runs is
+        # not "referenced by nothing", and saying so sent readers looking for dead code.
+        ran = sorted(github_runs.get(gate["path"], []))
+        evidence = (f"run only by GitHub ({', '.join(ran)}); " if ran else "") + f"referenced by: {where}"
+        add("high", "ci", f"{gate['path']} is not configured in reachable GitLab jobs", evidence, srs)
 
     for pipeline in inventory["pipelines"]:
         for error in pipeline.get("configuration_errors", []):
@@ -310,6 +341,23 @@ def collect_findings(root: Path, inventory: dict, registry: list[dict]) -> list[
                 f"{spec_file.relative_to(root).as_posix()} is unregistered, so no branch may claim it")
 
     queued = [p for p in sorted((root / ".bits/queue").glob("*.md")) if p.stem != "TEMPLATE"]
+    status_of = {e.get("code", ""): e.get("status", "") for e in registry}
+    for path in queued:
+        dispatch = parse_dispatch(path)
+        rel = path.relative_to(root).as_posix()
+        code = dispatch["srs"]
+        state = status_of.get(code, "")
+        if dispatch["tasks_total"] == 0:
+            add("info", "governance", f"{path.stem} has no task table",
+                f"{rel}: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL", code)
+        elif dispatch["tasks_done"] == dispatch["tasks_total"] and state in {"ready", "in_progress"}:
+            # Reported, never flipped: whether the work is merged and verified is its owner's call.
+            add("medium", "governance", f"{path.stem} has every task done but {code} is still {state}",
+                f"{rel}: {dispatch['tasks_done']}/{dispatch['tasks_total']} tasks done; mark {code} "
+                "delivered once merged and verified, or add the task that remains", code)
+        if state == "delivered":
+            add("medium", "governance", f"{code} is delivered but {path.stem} is still queued",
+                f"{rel}: TEMPLATE.md says to delete a queue file once its PR is merged", code)
     if not queued:
         add("info", "governance", "no dispatch is queued",
             ".bits/queue holds only templates; agents must ask for a dispatch ID before coding")

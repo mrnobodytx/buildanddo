@@ -1,0 +1,104 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/workflows/growth.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-GROWTH-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-GROWTH-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-24
+# Depends:     scripts/ci/system_growth.py, .bits/growth.lock.json
+# EnumType:    Workflow
+# EnumEdges:   CONSUMES scripts/ci/system_growth.py; PRODUCES .bits/growth.lock.json
+# Intent:      Record one growth point per merge, so the lock's git history is the system's
+#              development history.
+# ───────────────────────────────────────────────────────────────
+
+name: BuildAndDo System Growth
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # .bits/growth.lock.json is committed back to main; nothing else is written
+
+# Each run measures the whole tree, so a newer run supersedes an older one.
+# Queue rather than cancel, so a push never loses the race to an older run.
+concurrency:
+  group: buildanddo-system-growth
+  cancel-in-progress: false
+
+jobs:
+  growth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Measure every system
+        run: python scripts/ci/system_growth.py --write
+
+      - name: Summarise
+        run: |
+          {
+            echo '```'
+            python scripts/ci/system_growth.py
+            echo '```'
+            echo
+            python scripts/ci/system_growth.py --history 30
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the growth point
+        run: |
+          set -uo pipefail
+
+          if git diff --quiet -- .bits/growth.lock.json; then
+            echo ".bits/growth.lock.json already matches main; nothing to commit."
+            exit 0
+          fi
+
+          git config user.name "BuildAndDo Growth Bot"
+          git config user.email "buildanddo-growth@users.noreply.github.com"
+
+          commit() {
+            git add .bits/growth.lock.json
+            # [skip ci] plus the fact that GITHUB_TOKEN pushes do not start new
+            # workflow runs keep this push from retriggering anything.
+            # `Changelog: skip` keeps a bookkeeping commit out of CHANGELOG.md.
+            git commit -m "chore(growth): record system growth for ${GITHUB_SHA::7} [skip ci]" \
+              -m "Written by .github/workflows/growth.yml from scripts/ci/system_growth.py." \
+              -m "SRS: SRS-BUILDANDDO-GROWTH-001
+          Changelog: skip"
+          }
+          commit
+
+          # A rejected push means main moved: measure the new head instead. A lost
+          # point is a gap in the history, never a wrong one, so this warns rather
+          # than failing main.
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              echo "growth point pushed on attempt ${attempt}."
+              exit 0
+            fi
+            echo "push rejected; measuring the current head (attempt ${attempt})."
+            git fetch origin "${{ github.ref_name }}" || break
+            git reset --hard "origin/${{ github.ref_name }}"
+            python scripts/ci/system_growth.py --write
+            if git diff --quiet -- .bits/growth.lock.json; then
+              echo "the new head already carries a current growth lock."
+              exit 0
+            fi
+            commit
+          done
+
+          echo "::warning title=Growth point not pushed::.bits/growth.lock.json was measured but could not be pushed to ${{ github.ref_name }}. The next push to main records the next point."

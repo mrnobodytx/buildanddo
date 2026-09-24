@@ -1,0 +1,702 @@
+{
+  "progression": {
+    "dispatch_tasks": {
+      "done": 156,
+      "progress": 0.8342,
+      "total": 187
+    },
+    "dispatches": {
+      "USO-BUILDANDDO-CRAWL-001": {
+        "srs": "SRS-BUILDANDDO-CRAWL-001",
+        "status": "in_progress",
+        "tasks_done": 4,
+        "tasks_total": 4
+      },
+      "USO-BUILDANDDO-PLATFORM-001": {
+        "srs": "SRS-BUILDANDDO-PLATFORM-001",
+        "status": "in_progress",
+        "tasks_done": 2,
+        "tasks_total": 6
+      },
+      "VCC-BUILDANDDO-BUDDI-001": {
+        "srs": "SRS-BUILDANDDO-BUDDI-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 9
+      },
+      "VCC-BUILDANDDO-BUDDI-003": {
+        "srs": "SRS-BUILDANDDO-BUDDI-003",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-CAPABILITY-TOKEN-001": {
+        "srs": "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "status": "in_progress",
+        "tasks_done": 0,
+        "tasks_total": 0
+      },
+      "VCC-BUILDANDDO-CAREER-001": {
+        "srs": "SRS-BUILDANDDO-CAREER-001",
+        "status": "in_progress",
+        "tasks_done": 18,
+        "tasks_total": 18
+      },
+      "VCC-BUILDANDDO-CHANGELOG-001": {
+        "srs": "SRS-BUILDANDDO-CHANGELOG-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-CLASSROOM-GLOBAL-001": {
+        "srs": "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001",
+        "status": "in_progress",
+        "tasks_done": 1,
+        "tasks_total": 10
+      },
+      "VCC-BUILDANDDO-COMMUNITY-WEB-001": {
+        "srs": "SRS-BUILDANDDO-COMMUNITY-WEB-001",
+        "status": "in_progress",
+        "tasks_done": 0,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-DAY21-CLOSURE-001": {
+        "srs": "SRS-BUILDANDDO-DAY21-CLOSURE-001",
+        "status": "unknown",
+        "tasks_done": 0,
+        "tasks_total": 7
+      },
+      "VCC-BUILDANDDO-DECISION-001": {
+        "srs": "SRS-BUILDANDDO-DECISION-001",
+        "status": "in_progress",
+        "tasks_done": 7,
+        "tasks_total": 7
+      },
+      "VCC-BUILDANDDO-DEPLOY-SWAP-001": {
+        "srs": "SRS-BUILDANDDO-DEPLOY-SWAP-001",
+        "status": "in_progress",
+        "tasks_done": 2,
+        "tasks_total": 2
+      },
+      "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001": {
+        "srs": "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "status": "unknown",
+        "tasks_done": 0,
+        "tasks_total": 0
+      },
+      "VCC-BUILDANDDO-ESTATE-001": {
+        "srs": "SRS-BUILDANDDO-ESTATE-001",
+        "status": "in_progress",
+        "tasks_done": 8,
+        "tasks_total": 8
+      },
+      "VCC-BUILDANDDO-EVOLUTION-001": {
+        "srs": "SRS-BUILDANDDO-EVOLUTION-001",
+        "status": "in_progress",
+        "tasks_done": 0,
+        "tasks_total": 0
+      },
+      "VCC-BUILDANDDO-GROWTH-001": {
+        "srs": "SRS-BUILDANDDO-GROWTH-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-HEADERS-001": {
+        "srs": "SRS-BUILDANDDO-HEADERS-001",
+        "status": "in_progress",
+        "tasks_done": 2,
+        "tasks_total": 2
+      },
+      "VCC-BUILDANDDO-HYGIENE-001": {
+        "srs": "SRS-BUILDANDDO-HYGIENE-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-INTEGRITY-001": {
+        "srs": "SRS-BUILDANDDO-INTEGRITY-001",
+        "status": "in_progress",
+        "tasks_done": 6,
+        "tasks_total": 6
+      },
+      "VCC-BUILDANDDO-JOURNEY-001": {
+        "srs": "SRS-BUILDANDDO-JOURNEY-001",
+        "status": "in_progress",
+        "tasks_done": 2,
+        "tasks_total": 2
+      },
+      "VCC-BUILDANDDO-KNOWLEDGE-UNIT-001": {
+        "srs": "SRS-BUILDANDDO-KNOWLEDGE-UNIT-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-LEARNING-NATIVE-001": {
+        "srs": "SRS-BUILDANDDO-LEARNING-NATIVE-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-PRESENCE-001": {
+        "srs": "SRS-BUILDANDDO-PRESENCE-001",
+        "status": "in_progress",
+        "tasks_done": 3,
+        "tasks_total": 3
+      },
+      "VCC-BUILDANDDO-PUBLIC-REDACTION-001": {
+        "srs": "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
+        "status": "in_progress",
+        "tasks_done": 16,
+        "tasks_total": 16
+      },
+      "VCC-BUILDANDDO-PURPOSE-001": {
+        "srs": "SRS-BUILDANDDO-PURPOSE-001",
+        "status": "in_progress",
+        "tasks_done": 7,
+        "tasks_total": 7
+      },
+      "VCC-BUILDANDDO-QUIZ-001": {
+        "srs": "SRS-BUILDANDDO-QUIZ-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-RECONCILE-001": {
+        "srs": "SRS-BUILDANDDO-RECONCILE-001",
+        "status": "in_progress",
+        "tasks_done": 3,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-ROADMAP-001": {
+        "srs": "SRS-BUILDANDDO-ROADMAP-001",
+        "status": "in_progress",
+        "tasks_done": 4,
+        "tasks_total": 4
+      },
+      "VCC-BUILDANDDO-SEMANTIC-TWIN-001": {
+        "srs": "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "status": "in_progress",
+        "tasks_done": 11,
+        "tasks_total": 11
+      },
+      "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001": {
+        "srs": "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "status": "in_progress",
+        "tasks_done": 10,
+        "tasks_total": 10
+      },
+      "VCC-BUILDANDDO-TRUST-001": {
+        "srs": "SRS-BUILDANDDO-TRUST-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-UPGRADE-001": {
+        "srs": "SRS-BUILDANDDO-UPGRADE-001",
+        "status": "in_progress",
+        "tasks_done": 0,
+        "tasks_total": 0
+      },
+      "VCC-BUILDANDDO-WORLD-TWIN-001": {
+        "srs": "SRS-BUILDANDDO-WORLD-TWIN-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      }
+    },
+    "srs": {
+      "by_risk": {
+        "A0": 2,
+        "A1": 28,
+        "A2": 24
+      },
+      "by_status": {
+        "delivered": 4,
+        "in_progress": 44,
+        "proposed": 6
+      },
+      "specs": {
+        "SRS-BUILDANDDO-AGENTCTX-001": "in_progress",
+        "SRS-BUILDANDDO-BOOTSTRAP-001": "delivered",
+        "SRS-BUILDANDDO-BUDDI-001": "in_progress",
+        "SRS-BUILDANDDO-BUDDI-003": "in_progress",
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001": "in_progress",
+        "SRS-BUILDANDDO-CAREER-001": "in_progress",
+        "SRS-BUILDANDDO-CHANGELOG-001": "in_progress",
+        "SRS-BUILDANDDO-CI-001": "delivered",
+        "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001": "in_progress",
+        "SRS-BUILDANDDO-COMMUNITY-001": "in_progress",
+        "SRS-BUILDANDDO-COMMUNITY-WEB-001": "in_progress",
+        "SRS-BUILDANDDO-CRAWL-001": "in_progress",
+        "SRS-BUILDANDDO-DAY21-CLOSURE-001": "in_progress",
+        "SRS-BUILDANDDO-DECISION-001": "in_progress",
+        "SRS-BUILDANDDO-DEPLOY-SWAP-001": "in_progress",
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001": "in_progress",
+        "SRS-BUILDANDDO-DEVENV-001": "in_progress",
+        "SRS-BUILDANDDO-EPOCH-001": "in_progress",
+        "SRS-BUILDANDDO-ESTATE-001": "in_progress",
+        "SRS-BUILDANDDO-EVIDENCE-CI-001": "proposed",
+        "SRS-BUILDANDDO-EVOLUTION-001": "in_progress",
+        "SRS-BUILDANDDO-FEDERAL-INFLUENCE-001": "proposed",
+        "SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001": "proposed",
+        "SRS-BUILDANDDO-FEDERAL-MARITIME-001": "proposed",
+        "SRS-BUILDANDDO-FEDERAL-NAVAIR-001": "proposed",
+        "SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001": "proposed",
+        "SRS-BUILDANDDO-GROWTH-001": "in_progress",
+        "SRS-BUILDANDDO-HEADERS-001": "in_progress",
+        "SRS-BUILDANDDO-HYGIENE-001": "in_progress",
+        "SRS-BUILDANDDO-INTEGRITY-001": "in_progress",
+        "SRS-BUILDANDDO-JOURNEY-001": "in_progress",
+        "SRS-BUILDANDDO-KNOWLEDGE-UNIT-001": "in_progress",
+        "SRS-BUILDANDDO-LEARNING-NATIVE-001": "in_progress",
+        "SRS-BUILDANDDO-PB-METRICS-001": "in_progress",
+        "SRS-BUILDANDDO-PLATFORM-001": "in_progress",
+        "SRS-BUILDANDDO-PRESENCE-001": "in_progress",
+        "SRS-BUILDANDDO-PUBLIC-REDACTION-001": "in_progress",
+        "SRS-BUILDANDDO-PURPOSE-001": "in_progress",
+        "SRS-BUILDANDDO-QUIZ-001": "in_progress",
+        "SRS-BUILDANDDO-RECONCILE-001": "in_progress",
+        "SRS-BUILDANDDO-RELEASE-TAG-001": "in_progress",
+        "SRS-BUILDANDDO-ROADMAP-001": "in_progress",
+        "SRS-BUILDANDDO-RUM-001": "delivered",
+        "SRS-BUILDANDDO-RUM-ACTIONS-001": "in_progress",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001": "in_progress",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001": "delivered",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001": "in_progress",
+        "SRS-BUILDANDDO-SUPPLY-001": "in_progress",
+        "SRS-BUILDANDDO-TEST-001": "in_progress",
+        "SRS-BUILDANDDO-TRUST-001": "in_progress",
+        "SRS-BUILDANDDO-UPGRADE-001": "in_progress",
+        "SRS-BUILDANDDO-WITNESS-001": "in_progress",
+        "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
+        "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
+      },
+      "total": 54
+    }
+  },
+  "schema": "buildanddo.growth-lock/v1",
+  "surface": {
+    "docs_pages": 55,
+    "github_workflows": 8,
+    "gitlab_jobs": 14,
+    "pocketbase_hooks": 29,
+    "pocketbase_migrations": 65,
+    "readmes": 50,
+    "tracked_files": 1789
+  },
+  "systems": {
+    "apps/career": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 22,
+      "files": 22,
+      "lines": {
+        "python": 4282
+      },
+      "readme": false,
+      "source_files": 22,
+      "source_lines": 4282,
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAREER-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 12
+    },
+    "apps/decision": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 17,
+      "files": 17,
+      "lines": {
+        "python": 2839
+      },
+      "readme": false,
+      "source_files": 17,
+      "source_lines": 2839,
+      "srs_codes": [
+        "SRS-BUILDANDDO-DECISION-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 3
+    },
+    "apps/estate": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 12,
+      "files": 13,
+      "lines": {
+        "markdown": 134,
+        "python": 2492
+      },
+      "readme": true,
+      "source_files": 12,
+      "source_lines": 2492,
+      "srs_codes": [
+        "SRS-BUILDANDDO-ESTATE-001"
+      ],
+      "test_files": 12
+    },
+    "apps/federal_foundry": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 9,
+      "files": 11,
+      "lines": {
+        "data": 1498,
+        "python": 3646
+      },
+      "readme": false,
+      "source_files": 9,
+      "source_lines": 3646,
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 2
+    },
+    "apps/integrity": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 8,
+      "files": 8,
+      "lines": {
+        "python": 504
+      },
+      "readme": false,
+      "source_files": 8,
+      "source_lines": 504,
+      "srs_codes": [
+        "SRS-BUILDANDDO-INTEGRITY-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 4
+    },
+    "apps/knowledge_units": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 6,
+      "files": 6,
+      "lines": {
+        "python": 480
+      },
+      "readme": false,
+      "source_files": 6,
+      "source_lines": 480,
+      "srs_codes": [
+        "SRS-BUILDANDDO-KNOWLEDGE-UNIT-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 3
+    },
+    "apps/mission_suite": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 5,
+      "files": 5,
+      "lines": {
+        "python": 1718
+      },
+      "readme": false,
+      "source_files": 5,
+      "source_lines": 1718,
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 3
+    },
+    "apps/pocketbase": {
+      "cgrf_coverage": 0.8722,
+      "cgrf_files": 116,
+      "files": 146,
+      "lines": {
+        "data": 3924,
+        "javascript": 14128,
+        "typescript": 917
+      },
+      "readme": false,
+      "source_files": 133,
+      "source_lines": 15045,
+      "srs_codes": [
+        "SRS-BUILDANDDO-BUDDI-001",
+        "SRS-BUILDANDDO-CAREER-001",
+        "SRS-BUILDANDDO-CLASSROOM-001",
+        "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001",
+        "SRS-BUILDANDDO-COMMUNITY-001",
+        "SRS-BUILDANDDO-DECISION-001",
+        "SRS-BUILDANDDO-LIVE-UTILIZATION-001",
+        "SRS-BUILDANDDO-PRESENCE-001",
+        "SRS-BUILDANDDO-QUIZ-001",
+        "SRS-BUILDANDDO-TRUST-001",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-WORKSPACE-001",
+        "SRS-CN-PERSONA-RUNTIME-001"
+      ],
+      "test_files": 15
+    },
+    "apps/research": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 15,
+      "files": 16,
+      "lines": {
+        "python": 3323
+      },
+      "readme": false,
+      "source_files": 15,
+      "source_lines": 3323,
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 7
+    },
+    "apps/web": {
+      "cgrf_coverage": 0.7527,
+      "cgrf_files": 347,
+      "files": 499,
+      "lines": {
+        "css": 1101,
+        "data": 1449,
+        "html": 22,
+        "javascript": 72822,
+        "markdown": 129
+      },
+      "readme": true,
+      "source_files": 461,
+      "source_lines": 73945,
+      "srs_codes": [
+        "SRS-BUILDANDDO-BUDDI-001",
+        "SRS-BUILDANDDO-BUDDI-003",
+        "SRS-BUILDANDDO-CAREER-001",
+        "SRS-BUILDANDDO-CLASSROOM-001",
+        "SRS-BUILDANDDO-COMMUNITY-001",
+        "SRS-BUILDANDDO-COMMUNITY-WEB-001",
+        "SRS-BUILDANDDO-DAY21-CLOSURE-001",
+        "SRS-BUILDANDDO-JOURNEY-001",
+        "SRS-BUILDANDDO-LIVE-UTILIZATION-001",
+        "SRS-BUILDANDDO-PLATFORM-001",
+        "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
+        "SRS-BUILDANDDO-PURPOSE-001",
+        "SRS-BUILDANDDO-QUIZ-001",
+        "SRS-BUILDANDDO-ROADMAP-001",
+        "SRS-BUILDANDDO-RUM-001",
+        "SRS-BUILDANDDO-RUM-002",
+        "SRS-BUILDANDDO-TEST-001",
+        "SRS-BUILDANDDO-TRUST-001",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-WITNESS-001",
+        "SRS-BUILDANDDO-WORKSPACE-001"
+      ],
+      "test_files": 111
+    },
+    "apps/world_twin": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 8,
+      "files": 8,
+      "lines": {
+        "python": 1510
+      },
+      "readme": false,
+      "source_files": 8,
+      "source_lines": 1510,
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-WORLD-TWIN-001"
+      ],
+      "test_files": 6
+    },
+    "foundry": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 17,
+      "files": 129,
+      "lines": {
+        "data": 4594,
+        "markdown": 3125,
+        "python": 4423
+      },
+      "readme": true,
+      "source_files": 17,
+      "source_lines": 4423,
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 6
+    },
+    "libs/capability_tokens": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 13,
+      "files": 13,
+      "lines": {
+        "python": 3522
+      },
+      "readme": false,
+      "source_files": 13,
+      "source_lines": 3522,
+      "srs_codes": [
+        "SRS-BUILDANDDO-CAPABILITY-TOKEN-001"
+      ],
+      "test_files": 0
+    },
+    "libs/career_passport": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 10,
+      "files": 10,
+      "lines": {
+        "python": 2570
+      },
+      "readme": false,
+      "source_files": 10,
+      "source_lines": 2570,
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 3
+    },
+    "libs/evolution": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 20,
+      "files": 20,
+      "lines": {
+        "python": 7074
+      },
+      "readme": false,
+      "source_files": 20,
+      "source_lines": 7074,
+      "srs_codes": [
+        "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "SRS-BUILDANDDO-EVOLUTION-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 5
+    },
+    "libs/semantic_twin": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 39,
+      "files": 41,
+      "lines": {
+        "markdown": 358,
+        "python": 11377
+      },
+      "readme": true,
+      "source_files": 39,
+      "source_lines": 11377,
+      "srs_codes": [
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+        "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 7
+    },
+    "scripts/ci": {
+      "cgrf_coverage": 0.9608,
+      "cgrf_files": 49,
+      "files": 54,
+      "lines": {
+        "data": 654,
+        "javascript": 50,
+        "python": 19054
+      },
+      "readme": false,
+      "source_files": 51,
+      "source_lines": 19104,
+      "srs_codes": [
+        "SRS-BUILDANDDO-AGENTCTX-001",
+        "SRS-BUILDANDDO-CHANGELOG-001",
+        "SRS-BUILDANDDO-CI-001",
+        "SRS-BUILDANDDO-CLASSROOM-001",
+        "SRS-BUILDANDDO-COMMUNITY-WEB-001",
+        "SRS-BUILDANDDO-EPOCH-001",
+        "SRS-BUILDANDDO-GROWTH-001",
+        "SRS-BUILDANDDO-LIVE-UTILIZATION-001",
+        "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
+        "SRS-BUILDANDDO-ROADMAP-001",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-WORKSPACE-001"
+      ],
+      "test_files": 9
+    },
+    "scripts/deploy": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 4,
+      "files": 4,
+      "lines": {
+        "python": 1274,
+        "shell": 85
+      },
+      "readme": false,
+      "source_files": 4,
+      "source_lines": 1359,
+      "srs_codes": [
+        "SRS-BUILDANDDO-PRODCONFIG-001",
+        "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
+        "SRS-BUILDANDDO-ROADMAP-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 4
+    },
+    "scripts/discordbot": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 9,
+      "files": 10,
+      "lines": {
+        "python": 2490
+      },
+      "readme": false,
+      "source_files": 9,
+      "source_lines": 2490,
+      "srs_codes": [
+        "SRS-BUILDANDDO-QUIZ-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 8
+    },
+    "scripts/publish": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 1,
+      "files": 1,
+      "lines": {
+        "python": 370
+      },
+      "readme": false,
+      "source_files": 1,
+      "source_lines": 370,
+      "srs_codes": [
+        "SRS-BUILDANDDO-BUDDI-001"
+      ],
+      "test_files": 1
+    },
+    "services/praxis_evidence": {
+      "cgrf_coverage": 0.5,
+      "cgrf_files": 13,
+      "files": 26,
+      "lines": {
+        "python": 2064
+      },
+      "readme": false,
+      "source_files": 26,
+      "source_lines": 2064,
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 2
+    },
+    "tools": {
+      "cgrf_coverage": 0.6154,
+      "cgrf_files": 8,
+      "files": 13,
+      "lines": {
+        "python": 5675
+      },
+      "readme": false,
+      "source_files": 13,
+      "source_lines": 5675,
+      "srs_codes": [
+        "SRS-BUILDANDDO-DAY21-CLOSURE-001",
+        "SRS-BUILDANDDO-SUBMISSION-FRESHNESS-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 1
+    }
+  },
+  "totals": {
+    "cgrf_coverage": 0.832,
+    "files": 1072,
+    "source_lines": 169812,
+    "systems": 22,
+    "systems_with_readme": 4,
+    "systems_with_tests": 21,
+    "test_files": 224,
+    "test_files_unattributed": 114
+  }
+}

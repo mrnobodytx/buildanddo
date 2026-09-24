@@ -726,7 +726,7 @@ const jobs = () => ['succeeded', 'hold', 'dispatched', 'failed', 'queued', 'canc
     workspace: 'synthetic-workspace', status, owner: privateText, worker: privateText, created: '2026-09-24T00:00:00Z', result: { description: privateText } }));
 const replayData = () => ({ workspace: 'synthetic-workspace', items: jobs(), page: 1, has_more: false });
 function replay(f, api, demo = false) {
-    return handlers(f, 'pages/workspace/ExecutionReplayPage.jsx', 'Replay', ['data', 'error', 'detail', 'setReload', 'setPage', 'setSelected'], { end: '\n    return <div', props: { api, demo } });
+    return handlers(f, 'pages/workspace/ExecutionReplayPage.jsx', 'Replay', ['data', 'error', 'detail', 'discarded', 'setReload', 'setPage', 'setSelected'], { end: '\n    return <div', props: { api, demo } });
 }
 
 test('execution replay counts the actual successfully loaded snapshot once, never selected details, IDs or independent outcomes', async () => {
@@ -779,6 +779,22 @@ test('execution replay preserves empty snapshots but never fabricates zero count
         if (items) observed(f, f.names.REPLAY_SNAPSHOT, 'observed', 'recorded_snapshot', '/app/replay', { completed: 0, uncertain: 0, failed: 0 });
         else observed(f, 'section.failure', 'failure', 'invalid_response', '/app/replay', { source: 'records', status_class: 'unknown' });
     }
+});
+
+test('discarded replay reads end their loading state without an outage and explicit refresh can recover', async () => {
+    const f = fixture('/app/replay?action=synthetic-private-job');
+    const api = { list: async () => ({ ok: false, stale: true }), read: async () => ({ ok: false, stale: true }) };
+    const h = replay(f, api); h.read(); await tick();
+    assert.equal(h.read().discarded, true);
+    assert.equal(h.read().detail.discarded, true);
+    assert.equal(h.read().data, null); assert.equal(h.read().detail.job, null);
+    assert.equal(f.actions.length, 0);
+    api.list = async () => ({ ok: true, data: replayData() });
+    api.read = async () => ({ ok: true, data: jobs()[0] });
+    h.read().setReload((value) => value + 1); h.read(); await tick();
+    assert.equal(h.read().discarded, false); assert.equal(h.read().detail.discarded, false);
+    observed(f, f.names.REPLAY_SNAPSHOT, 'observed', 'recorded_snapshot', '/app/replay', { completed: 1, uncertain: 2, failed: 1 });
+    h.unmount();
 });
 
 for (const kind of ['list', 'detail']) test(`execution replay discards an older ${kind} response after explicit selection changes`, async () => {
@@ -913,22 +929,28 @@ for (const state of ['MEASURED', 'OBSERVED', 'PARTIAL', 'UNMEASURED', privateTex
     assert.doesNotMatch(JSON.stringify([f.actions, f.events]), /synthetic-private/); h.unmount();
 });
 
-for (const mode of ['http', 'network', 'json', 'foreign', 'oversize', 'abort']) test(`published Rooms ${mode} failure preserves observed status and current UI`, async () => {
+// 'json' is a body that looks like JSON and does not parse. 'html' is the SPA fallback the server
+// answers for a projection that was never published: #109 reads that as absence, so it is reported
+// as unavailable, not as a malformed response.
+for (const mode of ['http', 'network', 'json', 'html', 'foreign', 'oversize', 'abort']) test(`published Rooms ${mode} failure preserves observed status and current UI`, async () => {
     const f = fixture('/app/rooms/organization'), h = rooms(f);
     f.fetch = async () => {
         if (mode === 'network' || mode === 'abort') throw Object.assign(new Error(privateText), { name: mode === 'abort' ? 'AbortError' : 'TypeError' });
         if (mode === 'http') return roomResponse({}, 503);
-        if (mode === 'json' || mode === 'oversize') return { ok: true, status: 200, text: async () => mode === 'json' ? '<html>' : 'x'.repeat(1000001) };
+        if (mode === 'json' || mode === 'html' || mode === 'oversize')
+            return { ok: true, status: 200, text: async () => mode === 'json' ? '{' + privateText : mode === 'html' ? '<html>' : 'x'.repeat(1000001) };
         return roomResponse(roomData('MEASURED', 'foreign'));
     };
     h.read().changeSource('published'); h.read(); await tick();
     assert.ok(h.read().published.error); assert.equal(h.read().published.value, null);
+    if (mode === 'html') assert.equal(h.read().published.error, 'No estate projection is published for this room.');
+    if (mode === 'json') assert.equal(h.read().published.error, 'The published projection for this room is not readable JSON.');
     const failures = f.actions.filter(([name]) => name === 'section.failure');
     if (mode === 'abort') assert.equal(failures.length, 0);
     else {
         assert.equal(failures.length, 1); const context = failures[0][1];
         assert.equal(context.source, 'room_projection');
-        assert.equal(context.reason, mode === 'network' ? 'unavailable' : mode === 'http' ? 'server_error' : 'invalid_response');
+        assert.equal(context.reason, mode === 'network' || mode === 'html' ? 'unavailable' : mode === 'http' ? 'server_error' : 'invalid_response');
         assert.equal(context.status_class, mode === 'network' ? 'unknown' : mode === 'http' ? '5xx' : '2xx');
     }
     assert.doesNotMatch(JSON.stringify([f.actions, f.events]), /synthetic-private/); h.unmount();

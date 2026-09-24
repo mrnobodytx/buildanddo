@@ -70,7 +70,7 @@ WORKSPACE_AREAS = {
 
 OUTCOME_EVENTS = frozenset({
     "discord.command.completed", "discord.command.dispatched", "discord.control.completed",
-    "discord.research.command", "discord.dossier.command",
+    "discord.research.command", "discord.dossier.command", "discord.quiz.graded",
 })
 COMMAND_OUTCOMES = frozenset({
     "success", "denied", "rate_limited", "invalid", "unavailable", "unmeasured", "stale", "error", "cancelled",
@@ -79,6 +79,7 @@ COMMAND_OUTCOMES = frozenset({
 })
 CONTROL_ACTIONS = frozenset({"previous", "next", "close", "lesson_select", "quiz_answer"})
 CONTROL_OUTCOMES = frozenset({"accepted", "rejected", "denied", "expired", "error", "cancelled"})
+QUIZ_OUTCOMES = frozenset({"graded", "unavailable", "error", "cancelled"})
 
 
 def log_outcome(
@@ -90,7 +91,7 @@ def log_outcome(
         return
     control = event == "discord.control.completed"
     names = CONTROL_ACTIONS if control else commands
-    outcomes = CONTROL_OUTCOMES if control else COMMAND_OUTCOMES
+    outcomes = CONTROL_OUTCOMES if control else QUIZ_OUTCOMES if event == "discord.quiz.graded" else COMMAND_OUTCOMES
     fields: dict[str, object] = {
         "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
         "control" if control else "command": operation if isinstance(operation, str) and operation in names else "unknown",
@@ -199,12 +200,11 @@ class CommandService:
             page, graded = await self.grader.grade(quiz, choice, caller)
             outcome = "graded" if graded else "unavailable"
             return page, graded
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
         finally:
-            logger.info("discord.quiz.graded", extra={
-                "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
-                "command": "quiz", "outcome": outcome,
-                "duration_ms": max(0, round((self.clock() - start) * 1000)),
-            })
+            log_outcome("discord.quiz.graded", "quiz", outcome, start, clock=self.clock)
 
     async def _command(self, name: str, query: str, caller: Caller) -> Reply:
         if name == "help":

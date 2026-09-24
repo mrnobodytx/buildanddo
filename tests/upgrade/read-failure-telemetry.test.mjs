@@ -171,6 +171,19 @@ function clientFixture(kind) {
     f.read = () => spec.read(api);
     return f;
 }
+
+test('knowledge 404 stays distinct from denied access while retaining bounded failure metadata', async () => {
+    const f = clientFixture('knowledge');
+    f.reply = () => { throw { status: 404, response: { message: privateText } }; };
+    const result = await f.read();
+    assert.equal(result.reason, 'missing');
+    assert.match(result.error, /no such workspace or mission/);
+    assert.deepEqual(result.readFailure, { reason: 'unavailable', status: 404 });
+    f.readFailed('/app/knowledge', 'knowledge', result.readFailure.reason, result.readFailure.status);
+    assert.equal(f.actions[0][1].reason, 'unavailable');
+    assert.equal(f.actions[0][1].status_class, '4xx');
+    f.private();
+});
 for (const kind of Object.keys(clients)) {
     test(`${kind}: pure read metadata distinguishes empty, failed HTTP, JSON and foreign/malformed 200 without exposing content`, async () => {
         const f = clientFixture(kind);
@@ -233,6 +246,26 @@ function mountShared(f, kind, options = {}) {
         f.mount(useWorkspaceKnowledge, [options]);
     }
 }
+
+test('control read metadata coexists with the settled unavailable explanation and access message', async () => {
+    const f = fixture('/app/integrations');
+    f.transport = async () => { throw { status: 403 }; };
+    const { useWorkspaceControl, describeAccess } = f.load('hooks/useWorkspaceControl.js', ['useWorkspaceControl', 'describeAccess']);
+    f.mount(useWorkspaceControl, ['access']);
+    await f.flush();
+    assert.equal(f.value.loading, false);
+    assert.equal(f.value.unavailableReason, f.value.error);
+    assert.ok(f.value.unavailableReason);
+    assert.equal(f.value.readFailure.status, 403);
+    assert.match(describeAccess(f.value), /controls stay off/);
+    assert.equal(f.actions[0][1].reason, 'forbidden');
+    f.transport = async () => access();
+    await f.value.refresh(); await f.flush();
+    assert.equal(f.value.unavailableReason, '');
+    assert.equal(f.value.readFailure, undefined);
+    assert.equal(describeAccess(f.value), '');
+    f.private(); f.unmount();
+});
 for (const kind of ['records', 'controls', 'knowledge']) {
     test(`${kind} hook: actual client failure emits once per retry, not on unrelated renders, and preserves UI`, async () => {
         const f = fixture('/app/classrooms/synthetic-private-room?query=' + privateText);
@@ -339,7 +372,8 @@ test('rendered-state helper deduplicates messages and rerenders, resets after re
 function page(f, name) {
     const configs = {
         FleetPage: ['pages/workspace/FleetPage.jsx', '\n    const hosts =', ['failed', 'report', 'loading', 'setAttempt'], { REPORT_ROUTE: '/api/buildanddo/estate/fleet-status' }],
-        PlatformHealthPage: ['pages/workspace/PlatformHealthPage.jsx', '\n    const platforms =', ['failed', 'report', 'loading', 'setAttempt'], { REPORT_URL: '/platform-health.json' }],
+        // Served to a master seat through the estate route since #109, as FleetPage is; the public file is gone.
+        PlatformHealthPage: ['pages/workspace/PlatformHealthPage.jsx', '\n    const platforms =', ['failed', 'report', 'loading', 'setAttempt'], { REPORT_ROUTE: '/api/buildanddo/estate/platform-health' }],
         PracticePage: ['pages/PracticePage.jsx', '\n    return (', ['error', 'methods'], {}],
         RoadmapPage: ['pages/RoadmapPage.jsx', '\n    const activityStale =', ['liveError', 'activityError', 'live', 'activity', 'capabilities'],
             { mergeLiveStatus: () => [], STALE_AFTER_MS: 48 * 3600000, SPRINT_DAYS: 21 }],
@@ -389,6 +423,22 @@ test('estate readers report semantic unmeasured 200 and each explicit retry with
         assert.equal(f.value.failed, false); f.value.setAttempt((value) => value + 1); await f.flush(); assert.equal(f.actions.length, 2);
         f.private(); f.unmount();
     }
+});
+
+test('platform health uses the private native route and fences telemetry across account changes', async () => {
+    const f = fixture('/app/platforms');
+    f.http = async () => assert.fail('The full platform report must not be fetched from a public file');
+    f.transport = async () => pageCases.PlatformHealthPage.good;
+    page(f, 'PlatformHealthPage'); await f.flush();
+    assert.equal(f.requests[0].path, '/api/buildanddo/estate/platform-health');
+    assert.equal(f.requests[0].options.method, 'GET');
+    assert.equal(f.actions.length, 0);
+    const held = deferred(); f.transport = () => held.promise;
+    f.value.setAttempt((value) => value + 1); await f.flush();
+    f.account('other'); held.reject({ status: 503, message: privateText });
+    await f.flush();
+    assert.equal(f.actions.length, 0);
+    f.private(); f.unmount();
 });
 
 test('room projection hook separates HTTP, JSON, foreign projection and semantic unavailable from valid empty graphs/episodes', async () => {
@@ -487,12 +537,32 @@ test('assistant feedback and knowledge notices use distinct state sources withou
     f.value.setMessage(privateText); await f.flush(); assert.equal(f.actions.length, 1); f.private(); f.unmount();
     for (const state of ['complete', 'limited', 'unavailable']) {
         const k = fixture('/app/knowledge');
-        const show = k.component('components/workspace/KnowledgeContext.jsx', 'KnowledgeContextResults', '\n    const download =', ['packet']);
+        const show = knowledgeResults(k);
         const context = knowledge({}, { research_submissions: state }).context;
         k.mount(show, [{ context }]); await k.flush(); assert.equal(k.actions.length, state === 'unavailable' ? 1 : 0);
         if (state === 'unavailable') assert.equal(k.actions[0][1].source, 'control_state');
         k.private(); k.unmount();
     }
+});
+
+function knowledgeResults(f) {
+    return f.component('components/workspace/KnowledgeContext.jsx', 'KnowledgeContextResults',
+        '\n    const download =', ['state', 'packet']);
+}
+
+test('context absence remains normal and unreadable packets emit once before safe early returns', async () => {
+    const f = fixture('/app/knowledge');
+    f.mount(knowledgeResults(f), [{ context: undefined }]); await f.flush();
+    assert.equal(f.value.state, 'absent'); assert.equal(f.actions.length, 0);
+    f.render([{ context: { text: '{' + privateText } }]); await f.flush();
+    assert.equal(f.value.state, 'unreadable');
+    assert.equal(f.actions.length, 1); assert.equal(f.actions[0][1].reason, 'invalid_response');
+    assert.equal(f.actions[0][1].status_class, 'unknown');
+    f.render(); f.replayEffects(); await f.flush(); assert.equal(f.actions.length, 1);
+    f.render([{ context: knowledge().context }]); await f.flush();
+    assert.equal(f.value.state, 'ok'); assert.equal(f.actions.length, 1);
+    f.render([{ context: { text: '{' + privateText } }]); await f.flush(); assert.equal(f.actions.length, 2);
+    f.private(); f.unmount();
 });
 
 test('published status, room and roadmap readers discard deferred parse failures on navigation and unmount', async () => {
