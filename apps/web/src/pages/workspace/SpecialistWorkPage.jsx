@@ -23,6 +23,7 @@ import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
+import { describeAccess } from '@/hooks/useWorkspaceControl';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 const DESKS = {
     research: ['Research', '/app/research', 'Capture sources and preserve their provenance.'],
@@ -37,7 +38,11 @@ const DESKS = {
 function WorkDesks() {
     const control = useWorkspaceRecords('specialist_desks'), missions = useWorkspaceRecords('missions');
     const { demo } = useDemoMode();
-    const access = useWorkspaceAccess(), canWrite = !demo && access.data?.can_write === true;
+    // Every desk control below is switched off by an access outcome, and all
+    // three outcomes looked the same on screen: a grey button and no words.
+    // accessNotice is the sentence that separates them, empty when usable.
+    const access = useWorkspaceAccess(), canWrite = !demo && access.data?.can_write === true, accessNotice = describeAccess(access);
+    const attention = missions.records.filter((item) => ['proposed', 'needs_attention', 'failed'].includes(item.status));
     const [editing, setEditing] = useState(''), [scope, setScope] = useState(''), [status, setStatus] = useState('idle'), [error, setError] = useState(''), [busy, setBusy] = useState(false);
     const save = async (event) => {
         event.preventDefault(); if (busy || !canWrite) return; setBusy(true); setError('');
@@ -48,6 +53,7 @@ function WorkDesks() {
     };
     return <div className="space-y-5"><PageHeader title="Specialist desks" description="Assign a scope to each kind of work and open its existing tools. Desk status is an operator record, not a claim of an active agent." />
         <Link to="/app/passport" className="text-sm underline">Capability Passport</Link>
+        {accessNotice && <p role="status" className="text-sm text-muted-foreground">{accessNotice}</p>}
         {control.degraded ? <p role="alert">Desk records are unavailable. <button className="underline" onClick={control.refresh}>Retry</button></p> : control.loading ? <p role="status">Loading desk records…</p> :
             <div className="grid gap-4 md:grid-cols-2">{Object.entries(DESKS).map(([id, [label, href, purpose]]) => {
                 const records = control.records.filter((record) => record.desk === id), record = records[0];
@@ -65,8 +71,12 @@ function WorkDesks() {
         </form>}
         {error && <p role="alert">{error}</p>}
         <Card className="space-y-3 p-4"><h2 className="font-display text-lg">Current work requiring attention</h2>
-            {missions.degraded ? <p role="alert">Mission reads are unavailable.</p> : missions.loading ? <p>Loading missions…</p> : <ul className="space-y-2 text-sm">{
-                missions.records.filter((item) => ['proposed', 'needs_attention', 'failed'].includes(item.status)).map((item) => <li key={item.id}><Link className="underline" to={`/app/missions?mission=${encodeURIComponent(item.id)}`}>{item.title}</Link> · {item.status}</li>)}</ul>}
+            {missions.degraded ? <p role="alert">Mission reads are unavailable.</p> : missions.loading ? <p>Loading missions…</p> : attention.length === 0 ?
+                // A bare heading over an empty list read as "we have nothing to
+                // tell you", which is the unreadable state the degraded branch
+                // above exists to stay out of. Say that the read happened.
+                <p className="text-sm text-muted-foreground">No mission is flagged for attention right now.</p> : <ul className="space-y-2 text-sm">{
+                    attention.map((item) => <li key={item.id}><Link className="underline" to={`/app/missions?mission=${encodeURIComponent(item.id)}`}>{item.title}</Link> · {item.status}</li>)}</ul>}
         </Card>
     </div>;
 }
