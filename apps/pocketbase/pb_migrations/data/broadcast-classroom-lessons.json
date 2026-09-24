@@ -140,7 +140,7 @@
     }
   ],
   "source_evidence": {
-    "source_revision": "7c67347ca092da0db74fdfdd7630324aa3d86cb3",
+    "source_revision": "7301df8cd79a4e9b36a148512dce9fb687323a63",
     "boundary": "source regression evidence; hosted media/native/rendered status require recorded results",
     "validation": [
       {
@@ -179,17 +179,17 @@
     ],
     "artifact": {
       "url": "/broadcast-repairs-source.txt",
-      "sha256": "cbddc114caccd1edaa91c8e5a9fe38eb212a427b70b0464f9f9dcf94f0a0720b"
+      "sha256": "7a41bb347f829454043818970afafadde0a22fe26300ad606d108d3445b75a1a"
     },
     "observation": {
       "kind": "local_source_regression",
-      "observed_at": "2026-09-24T08:46:02.989945+00:00",
+      "observed_at": "2026-09-24T09:04:25.281750+00:00",
       "runtime": "v24.20.0",
       "command": "node --test --test-reporter=tap tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/classroom-*.test.mjs",
       "exit_code": 0,
       "counts": { "tests": 127, "pass": 127, "fail": 0, "skipped": 0 },
-      "output_sha256": "702ed8f02e70f7541d9701dacc93c8e5733beb4128020921c646e3dced0d6810",
-      "source_sha256": "a9f40ce9bc45f635ad753e6334fcfcfe5ecf3cb66d2d0b129686973013d46317",
+      "output_sha256": "294bbe20feb5601ca04c1e2e14da9c263b0e52d172ee22484c1acdd9222858b8",
+      "source_sha256": "f066dec17056199161a509c9150d3382fd19b255eea25ac073476b6d8d7f9953",
       "source_files": [
         "apps/pocketbase/pb_hooks/classroom-media.js",
         "apps/pocketbase/pb_hooks/classroom-presence.pb.js",
