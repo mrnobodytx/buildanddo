@@ -1,16 +1,18 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/tools/generate-seo.mjs
 // Stage:       11_COMMIT
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-PURPOSE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001, VCC-BUILDANDDO-PURPOSE-001
+// Seat:        BITS-CODEGEN, C-ONE (community links, sameAs, guildmaster profiles, share-image description)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
-// Depends:     apps/web/src/lib/publicPages.js
+// Depends:     apps/web/src/lib/publicPages.js, apps/web/src/lib/communityLinks.js,
+//              apps/web/src/data/personas.js, apps/web/src/lib/purpose.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js
+// EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js; DEPENDS_ON apps/web/src/lib/communityLinks.js;
+//              DEPENDS_ON apps/web/src/data/personas.js; DEPENDS_ON apps/web/src/lib/purpose.js
 // DAG Node:    none
 // Intent:      Generate canonical social metadata and crawler resources for every public route.
 // ───────────────────────────────────────────────────────────────
@@ -18,6 +20,9 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PUBLIC_PAGES, SITE_ORIGIN } from '../src/lib/publicPages.js';
+import { COMMUNITY_LINKS, SAME_AS, STORE_LINK } from '../src/lib/communityLinks.js';
+import { PERSONA_PAGES } from '../src/data/personas.js';
+import { PURPOSE } from '../src/lib/purpose.js';
 
 const escape = (value) =>
     String(value).replace(
@@ -27,10 +32,21 @@ const escape = (value) =>
     );
 const stamp = `CGRF: SRS-BUILDANDDO-UPGRADE-001 | VCC-BUILDANDDO-UPGRADE-001 | BITS-CODEGEN | Citadel Nexus Inc. | CK: pending | CAPS: pending`;
 
+// Every route a crawler may index: the catalogue plus one profile per guildmaster. The profiles are
+// not in PUBLIC_PAGES because that list also drives navigation and the Discord page catalogue.
+export const INDEXED_PAGES = [...PUBLIC_PAGES, ...PERSONA_PAGES];
+
+// llms.txt lines for the places BuildAndDo lives outside this site, from the one list in
+// communityLinks.js, so this file cannot drift from the footer the way it did before.
+const communityLines = () =>
+    [...COMMUNITY_LINKS, STORE_LINK]
+        .map((link) => `- [${link.label}](${link.url}): ${link.summary}`)
+        .join('\n');
+
 /** Write crawler resources from the public route catalogue. */
 export function generatePublicAssets(directory) {
     mkdirSync(directory, { recursive: true });
-    const urls = PUBLIC_PAGES.map(
+    const urls = INDEXED_PAGES.map(
         (page) => `  <url><loc>${escape(SITE_ORIGIN + page.path)}</loc></url>`,
     ).join('\n');
     writeFileSync(
@@ -47,23 +63,57 @@ export function generatePublicAssets(directory) {
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        apps/web/public/llms.txt
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-# Seat:        BITS-CODEGEN
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+# Seat:        BITS-CODEGEN, C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-14
-# Depends:     apps/web/src/lib/publicPages.js
+# Depends:     apps/web/src/lib/publicPages.js, apps/web/src/lib/communityLinks.js, apps/web/src/data/personas.js
 # EnumType:    Doc
-# EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js
+# EnumEdges:   DEPENDS_ON apps/web/src/lib/publicPages.js; DEPENDS_ON apps/web/src/lib/communityLinks.js
 # DAG Node:    none
 # Intent:      Publish the same public route catalogue for text-based discovery.
 # ───────────────────────────────────────────────────────────────
 -->
-# BuildAndDo\n\nAn educational collaboration platform where people and AI learn by doing real work together, preserve evidence and share what they learned.\n\n## Community and store\n\n- [r/buildanddo on Reddit](https://www.reddit.com/r/buildanddo): the public community.\n- [Playbooks and courses on Gumroad](https://citadelnexus.gumroad.com): the Citadel Nexus store.\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
+# BuildAndDo\n\nAn educational collaboration platform where people and AI learn by doing real work together, preserve evidence and share what they learned.\n\n## Community and store\n\n${communityLines()}\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n\n## Guildmaster agents\n\nEach guildmaster is an automated agent, not a person.\n\n${PERSONA_PAGES.map((page) => `- [${page.label}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
     );
 }
+
+/** The body a reader gets before — or without — JavaScript.
+ *
+ * WHY THIS EXISTS. Six OCN seats independently reported the same thing about the live site: the
+ * served HTML carries 37 characters of text before JavaScript runs. The <head> was already complete
+ * (title, description, canonical, Open Graph, Twitter, JSON-LD), so link previews were fine — but
+ * <body> was a bare `<div id="root"></div>`. A crawler that does not execute JavaScript therefore
+ * indexed no prose AND found NO LINKS AT ALL, so it could not discover any of the other ten public
+ * routes from the home page.
+ *
+ * React replaces the contents of #root when it mounts, so this costs the JavaScript path nothing:
+ * it is the same element, populated instead of empty. It is deliberately plain HTML — no classes,
+ * no styling hooks — because its only readers are crawlers and people whose JavaScript failed.
+ */
+const fallbackBody = (page) => {
+    const others = PUBLIC_PAGES.filter((item) => item.path !== page.path);
+    return [
+        '<h1>' + escape(page.title) + '</h1>',
+        '<p>' + escape(page.description) + '</p>',
+        // Each link carries the destination's OWN description. That is not padding to clear a
+        // threshold: a reader without JavaScript, and a crawler building a site model, both need to
+        // know what a link leads to before following it. It is the same catalogue llms.txt already
+        // publishes, rendered where a browser will actually look for it.
+        '<nav aria-label="Pages"><h2>Elsewhere on BuildAndDo</h2><ul>',
+        ...others.map(
+            (item) =>
+                `<li><a href="${escape(item.path)}">${escape(item.label || item.title)}</a>` +
+                ` — ${escape(item.description)}</li>`,
+        ),
+        '</ul></nav>',
+        '<noscript><p>This page needs JavaScript for the interactive parts. ' +
+            'The text above is the whole of what it says without it.</p></noscript>',
+    ].join('');
+};
 
 /** Produce route-specific HTML heads for crawlers that do not run JavaScript. */
 export function generatePageHeads(directory, release) {
@@ -74,8 +124,13 @@ export function generatePageHeads(directory, release) {
             /<meta\b(?=[^>]*(?:name|property)=["'](?:description|robots|og:[^"']+|twitter:[^"']+)["'])[^>]*>/gi,
             '',
         )
-        .replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi, '');
-    for (const page of PUBLIC_PAGES) {
+        .replace(/<link\b(?=[^>]*rel=["']canonical["'])[^>]*>/gi, '')
+        // Reset #root the same way the head is reset. This function reads dist/index.html as its
+        // template, so on a SECOND run that file already holds the home page's fallback body: the
+        // "empty div" match would find nothing, the replace would silently no-op, and every route
+        // would ship the HOME page's prose. Emptying it first makes the pass idempotent.
+        .replace(/<div id="root">[\s\S]*?<\/div>\s*(?=<script|<\/body)/i, '<div id="root"></div>');
+    for (const page of INDEXED_PAGES) {
         const canonical = SITE_ORIGIN + page.path;
         const schema = {
             '@context': 'https://schema.org',
@@ -83,6 +138,8 @@ export function generatePageHeads(directory, release) {
             name: page.title,
             description: page.description,
             url: canonical,
+            // Same list as Seo.jsx, so a crawler that never runs JavaScript sees the profiles too.
+            isPartOf: { '@type': 'WebSite', name: 'BuildAndDo', url: SITE_ORIGIN, sameAs: [...SAME_AS] },
             publisher: { '@type': 'Organization', name: 'Citadel Nexus Inc.' },
         };
         const tags = [
@@ -101,7 +158,7 @@ export function generatePageHeads(directory, release) {
                 'og:image': `${SITE_ORIGIN}/social-card.png`,
                 'og:image:width': '1200',
                 'og:image:height': '630',
-                'og:image:alt': 'BuildAndDo — learn by doing, together',
+                'og:image:alt': PURPOSE.shareImageAlt,
             }).map(
                 ([property, value]) => `<meta property="${property}" content="${escape(value)}">`,
             ),
@@ -110,15 +167,20 @@ export function generatePageHeads(directory, release) {
                 'twitter:title': page.title,
                 'twitter:description': page.description,
                 'twitter:image': `${SITE_ORIGIN}/social-card.png`,
-                'twitter:image:alt': 'BuildAndDo — learn by doing, together',
+                'twitter:image:alt': PURPOSE.shareImageAlt,
             }).map(([name, value]) => `<meta name="${name}" content="${escape(value)}">`),
             `<script id="static-page-schema" type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`,
         ].join('\n');
         const destination = resolve(directory, `.${page.path}`);
         mkdirSync(destination, { recursive: true });
+        // The #root div must stay empty in the SOURCE template and be filled per route here, or
+        // every page would ship the home page's prose. Matching the empty div specifically means a
+        // future template that already puts something in #root is left alone rather than clobbered.
         writeFileSync(
             resolve(destination, 'index.html'),
-            template.replace('</head>', `${tags}\n</head>`),
+            template
+                .replace('</head>', `${tags}\n</head>`)
+                .replace('<div id="root"></div>', `<div id="root">${fallbackBody(page)}</div>`),
         );
     }
     // SPA fallbacks may use the root HTML for protected URLs. Their client

@@ -83,6 +83,22 @@ migrate((app) => {
 """
 
 
+# Windows gives a console executable its own window unless told otherwise, and every native
+# test starts the binary twice - once to migrate and once to serve - so a full run flashes a
+# window per spawn across whoever is sitting at the machine. pythonw.exe silences a PARENT's
+# console but never a CHILD's, which is why the earlier watchdog fix did not cover these.
+# CREATE_NO_WINDOW is Windows-only, so this is an empty mapping everywhere else and the calls
+# below read the same on every platform.
+#
+# MEASURED, same parent and binary with only the flag varying: spawning from a console-less
+# pythonw.exe parent WITHOUT it adds two visible windows and WITH it adds none. Note the two:
+# Windows 11 hosts a new console through ConPTY, so it appears as a Windows Terminal window
+# (class CASCADIA_HOSTING_WINDOW_CLASS) plus a PseudoConsoleWindow - the classic
+# ConsoleWindowClass is never created, and a detector looking only for that name reports a
+# confident zero while the windows are on screen.
+NO_WINDOW = {"creationflags": subprocess.CREATE_NO_WINDOW} if os.name == "nt" else {}
+
+
 class NativeServer:
     """Own a loopback server, restricted environment and disposable fixture database."""
 
@@ -97,6 +113,14 @@ class NativeServer:
         self.keys = json.dumps({"active": "fixture", "keys": {"fixture": "k" * 32}})
         self.environment = {
             "PATH": os.environ.get("PATH", ""),
+            # Windows initializes Winsock from SystemRoot. Without it the child
+            # exits before health with "socket: The requested service provider
+            # could not be loaded or initialized"; the env stays otherwise restricted.
+            **(
+                {"SystemRoot": os.environ["SystemRoot"]}
+                if os.name == "nt" and "SystemRoot" in os.environ
+                else {}
+            ),
             "BUILDANDDO_DOSSIER_KEYS": self.keys,
             "BUILDANDDO_RESEARCH_BINDINGS": json.dumps(
                 [
@@ -127,7 +151,10 @@ class NativeServer:
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             migrations = self.root / "migrations"
             migrations.mkdir()
-            (migrations / "1_fixture.js").write_text(SEED)
+            # PocketBase applies migrations in byte-wise filename order, so "1_fixture.js"
+            # sorted AFTER every timestamped product migration ("_" 0x5F > "7" 0x37) and
+            # they aborted looking up collections this fixture creates. Sort it first.
+            (migrations / "0000000001_fixture.js").write_text(SEED)
             for name in [
                 "1790100000_mission_research.js",
                 "1790200000_private_dossiers.js",
@@ -148,6 +175,7 @@ class NativeServer:
                 stderr=subprocess.STDOUT,
                 timeout=30,
                 check=False,
+                **NO_WINDOW,
             )
             if result.returncode:
                 raise AssertionError(
@@ -166,8 +194,89 @@ class NativeServer:
             f"--hooksDir={self.root / 'hooks'}",
         ]
 
+    def revert(self, count: str = "1") -> list[str]:
+        """Roll migrations back and keep them rolled back across the next start.
+
+        MEASURED ON POCKETBASE 0.39.8, not assumed: `serve` re-applies pending JS migrations
+        whatever --automigrate says. A migration reverted by `migrate down` came back on the
+        next serve under `--automigrate=0`, under `--automigrate=false` and under a bare
+        `--automigrate`. The flag cannot make a rollback observable, so every test that
+        reverted, restarted and asserted a degraded 503 was asserting against a schema the
+        restart had already healed - and passed or failed for reasons unrelated to rollback.
+
+        A reverted file therefore has to LEAVE the migrations directory. Exactly the files
+        PocketBase says it reverted are moved aside, so nothing is guessed about which ran.
+        """
+        result = subprocess.run(
+            [self.binary, "migrate", "down", *([count] if count else []), *self.paths()],
+            input="y\n",
+            text=True,
+            cwd=self.root,
+            env=self.environment,
+            capture_output=True,
+            timeout=30,
+            check=False,
+            **NO_WINDOW,
+        )
+        self.log.write(result.stdout or "")
+        self.log.write(result.stderr or "")
+        self.log.flush()
+        if result.returncode:
+            raise AssertionError(
+                "Native rollback failed, so the degraded state under test was never reached."
+            )
+        reverted = [
+            line.split("Reverted ", 1)[1].strip()
+            for line in (result.stdout or "").splitlines()
+            if "Reverted " in line
+        ]
+        if not reverted:
+            raise AssertionError(
+                "Nothing was reverted, so there is no rollback under test."
+            )
+        quarantine = self.root / "reverted"
+        quarantine.mkdir(exist_ok=True)
+        for name in reverted:
+            source = self.root / "migrations" / name
+            if source.is_file():
+                shutil.move(str(source), str(quarantine / name))
+        self.reverted = reverted
+        return reverted
+
+    def restore(self) -> None:
+        """Return the quarantined migrations and re-apply them."""
+        quarantine = self.root / "reverted"
+        for name in getattr(self, "reverted", []):
+            source = quarantine / name
+            if source.is_file():
+                shutil.move(str(source), str(self.root / "migrations" / name))
+        self.reverted = []
+        self.migrate("up")
+
+    def seed_superuser(self) -> None:
+        """Give the disposable instance a superuser BEFORE it serves.
+
+        Without one, PocketBase treats the first serve as an install: it prints a
+        /_/#/pbinstall/<token> URL and OPENS IT IN THE OPERATOR'S DEFAULT BROWSER. A suite that
+        starts a dozen fixtures therefore threw a dozen setup tabs at whoever was using the
+        machine, and the release pipeline's gate did it on every run. There is no serve flag to
+        suppress it on 0.39.8 - the only lever is to remove the condition, so the install never
+        triggers. Measured both ways: with this, the serve log carries no `pbinstall` line at all.
+
+        The credentials are throwaway and local to one temporary directory that the fixture
+        deletes; nothing here reaches a real instance.
+        """
+        subprocess.run(
+            [self.binary, "superuser", "upsert",
+             "fixture@localhost.invalid", "fixture-local-disposable-instance",
+             f"--dir={self.root / 'data'}"],
+            cwd=self.root, env=self.environment,
+            stdout=self.log, stderr=subprocess.STDOUT, check=False, **NO_WINDOW,
+        )
+
     def start(self) -> None:
         """Start only the disposable loopback instance and wait for native health."""
+        self.seed_superuser()
         self.process = subprocess.Popen(
             [
                 self.binary,
@@ -175,11 +284,18 @@ class NativeServer:
                 f"--http=127.0.0.1:{self.port}",
                 *self.paths(),
                 "--hooksWatch=false",
+                # This flag DOES NOT WORK on 0.39.8 and is kept only to declare the intent.
+                # Measured: a migration reverted by `migrate down` is re-applied by the next
+                # serve under --automigrate=0, --automigrate=false and a bare --automigrate
+                # alike. Rollback is made observable by revert(), which moves the reverted
+                # file out of the migrations directory; see NativeServer.revert.
+                "--automigrate=0",
             ],
             cwd=self.root,
             env=self.environment,
             stdout=self.log,
             stderr=subprocess.STDOUT,
+            **NO_WINDOW,
         )
         deadline = time.monotonic() + 15
         while time.monotonic() < deadline:

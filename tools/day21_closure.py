@@ -137,9 +137,18 @@ def declared_value_audit() -> List[Dict[str, Any]]:
 
         if canonical_rel is None:
             verdict = UNRESOLVED if len(values) > 1 else AGREED
-            stale, reason = [], (
-                "no canonical reader is declared for %r, so a disagreement cannot be resolved from "
-                "the repo. %s" % (name, spec["canonical_note"]))
+            stale = []
+            if verdict == UNRESOLVED:
+                reason = ("no canonical reader is declared for %r, so a disagreement cannot be "
+                          "resolved from the repo. %s" % (name, spec["canonical_note"]))
+            else:
+                # AGREEMENT WITHOUT AN ARBITER IS NOT RESOLUTION. Printing the "they disagree"
+                # note here contradicted the verdict the same line reported. They agree TODAY;
+                # nothing prevents the next edit to either file from reopening it silently.
+                reason = ("all %d copies currently read %r, but NO canonical reader is declared, so "
+                          "this is agreement by coincidence rather than by arbitration. Any edit to "
+                          "one copy reopens it with nothing to adjudicate."
+                          % (len(measured), values[0] if values else None))
         elif canon is None:
             verdict, stale = UNMEASURED, []
             reason = "canonical source %s could not be read" % canonical_rel
@@ -349,7 +358,19 @@ def compile_day21(run_tests: bool = False) -> Dict[str, Any]:
         },
         "blockers": [{"name": b["name"], "verdict": b["verdict"], "reason": b["reason"]}
                      for b in blockers],
-        "ready_to_close_day21": (not blockers) and tests.get("state") == MEASURED,
+        # "READY TO CLOSE" MUST MEAN ALL THREE CRITERIA CAN CLOSE, not merely that the declared
+        # values agree and a test run happened. The earlier version reported True while D21-3 was
+        # OPERATOR_BLOCKED and 35 tests were failing -- an overclaim in the one field a reader
+        # would quote. Each criterion is now judged on its own terms.
+        "criteria_closable": {
+            "D21-1": tests.get("state") == MEASURED,
+            "D21-2": items.get("state") == MEASURED,
+            "D21-3": False,  # operator deploy; not closable from this seat at all
+        },
+        "ready_to_close_day21": False,
+        "ready_reason": (
+            "D21-3 is OPERATOR_BLOCKED on a staging/production deploy, so Day 21 cannot close from "
+            "this seat regardless of the other two. Declared-value blockers: %d." % len(blockers)),
     }
 
 
@@ -385,7 +406,9 @@ def render(r: Optional[Dict[str, Any]] = None) -> str:
         out.append("        UNMEASURED - %s" % i["reason"])
     out += ["", "  D21-3  %s" % r["D21_3_roadmap_readback"]["state"],
             "        %s" % r["D21_3_roadmap_readback"]["reason"],
-            "", "  READY TO CLOSE DAY 21: %s" % r["ready_to_close_day21"]]
+            "", "  CLOSABLE PER CRITERION: %s" % r["criteria_closable"],
+            "  READY TO CLOSE DAY 21: %s" % r["ready_to_close_day21"],
+            "    %s" % r["ready_reason"]]
     for b in r["blockers"]:
         out.append("    BLOCKER  %-20s %s" % (b["name"], b["verdict"]))
     return "\n".join(out)
@@ -413,9 +436,16 @@ def _selftest() -> int:
     ck("the canonical sprint_start was actually read", ss["canonical_value"] is not None)
     ck("the canonical value is the code constant, not the ledger",
        ss["canonical_value"] == "2026-09-01")
-    ck("more than one distinct sprint_start exists in the tree",
-       len(ss["distinct_values"]) > 1)
-    ck("...so the verdict is STALE_COPIES", ss["verdict"] == STALE)
+    # STATE-INDEPENDENT. These previously asserted the tree was BROKEN (divergent copies), so they
+    # failed the moment the divergence was repaired -- a test that encodes a defect as an
+    # expectation and then blocks its own fix. THIRD instance of that shape in this file.
+    # Assert the RULE instead: divergence <-> STALE, agreement <-> AGREED, always with a reason.
+    ck("verdict follows divergence, whichever way the tree currently sits",
+       (ss["verdict"] == STALE) == (len(ss["distinct_values"]) > 1))
+    ck("a STALE verdict names its divergent copies and says regenerate",
+       ss["verdict"] != STALE or (ss["stale_copies"] and "regenerate" in ss["reason"]))
+    ck("an AGREED verdict names the canonical value",
+       ss["verdict"] != AGREED or bool(ss["canonical_value"]))
     # Assert the MECHANISM, not a snapshot of today's repo. This previously hard-coded that the
     # ledger was stale and began failing the moment the ledger was corrected -- a test that
     # encoded a defect as an expectation and would have blocked its own fix.
@@ -423,16 +453,25 @@ def _selftest() -> int:
        all(f in ss["reason"] for f in ss["stale_copies"]))
     ck("the ledger now AGREES with the canonical constant (it was corrected this session)",
        "scripts/ci/sprint_ledger.json" not in ss["stale_copies"])
-    ck("...with an instruction to regenerate, not hand-edit", "regenerate" in ss["reason"])
+
 
     # -- site origin: NO canonical, so the module must refuse to pick
     so = by["public_site_origin"]
     ck("the site origin has NO canonical reader", so["canonical"] is None)
-    ck("it really does disagree across files", len(so["distinct_values"]) > 1)
-    ck("...so the verdict is UNRESOLVED, not a winner",
-       so["verdict"] == UNRESOLVED)
-    ck("...and no canonical value is nominated", so["canonical_value"] is None)
+    ck("the origin verdict follows the tree, not a hard-coded expectation",
+       (so["verdict"] == UNRESOLVED) == (len(so["distinct_values"]) > 1))
+    ck("...and no canonical value is ever nominated without an arbiter",
+       so["canonical_value"] is None)
     ck("...the reason says the owner must freeze it", "freeze" in so["canonical_note"].lower())
+    # GUARD: the printed reason must not contradict the verdict it accompanies.
+    if so["verdict"] == AGREED:
+        ck("an AGREED verdict does not print a 'they disagree' reason",
+           "disagree" not in so["reason"])
+        ck("...and names it agreement by coincidence, not resolution",
+           "coincidence" in so["reason"])
+    else:
+        ck("an UNRESOLVED verdict explains the missing arbiter", "canonical reader" in so["reason"])
+        ck("...and points at the owner", "freeze" in so["reason"].lower())
 
     # -- a missing file is UNMEASURED, never a silent agreement
     miss = read_site("__no_such_file__.json", r'"x"\s*:\s*"([^"]+)"', "x")
@@ -480,7 +519,12 @@ def _selftest() -> int:
     ck("compile reports D21-3 as operator-blocked",
        r["D21_3_roadmap_readback"]["state"] == "OPERATOR_BLOCKED")
     ck("...and does not attempt a deploy", "does not attempt" in r["D21_3_roadmap_readback"]["reason"])
-    ck("blockers are surfaced", len(r["blockers"]) > 0)
+    # Also state-independent: blockers exist only when a declared value is STALE/UNRESOLVED.
+    _expected_blockers = [v for v in r["declared_values"] if v["verdict"] in (STALE, UNRESOLVED)]
+    ck("the blocker list matches the declared-value verdicts",
+       len(r["blockers"]) == len(_expected_blockers))
+    ck("every surfaced blocker carries its reason",
+       all(b.get("reason") for b in r["blockers"]))
 
     # -- D21-2 must reach the anchor through its CLI, not a package import that cannot resolve
     oi = r["D21_2_open_items"]
@@ -492,8 +536,12 @@ def _selftest() -> int:
     ck("the blocked detector does NOT fire on every row (it did: 27 of 27)",
        oi["operator_blocked"] < oi["open_total"])
     ck("...and still finds the genuinely blocked one", oi["operator_blocked"] >= 1)
-    ck("Day 21 is NOT ready to close while blockers stand",
+    ck("readiness is per-criterion, not one averaged flag",
+       set(r["criteria_closable"]) == {"D21-1", "D21-2", "D21-3"})
+    ck("D21-3 can never be closed from this seat", r["criteria_closable"]["D21-3"] is False)
+    ck("overall readiness is False while D21-3 is operator-blocked",
        r["ready_to_close_day21"] is False)
+    ck("...and says WHY rather than just False", "OPERATOR_BLOCKED" in r["ready_reason"])
     ck("the Day-20 structural note is carried", "no Day-20 criterion" in r["sprint_day_note"])
 
     passed = sum(1 for _n, ok in checks if ok)

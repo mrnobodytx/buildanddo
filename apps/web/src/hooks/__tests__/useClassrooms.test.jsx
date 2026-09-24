@@ -48,8 +48,19 @@ describe('classroom synchronization', () => {
         // deterministically; native date behavior has its separate acceptance.
         view.unmount();
         const timers = new Map(); let number = 0;
-        vi.spyOn(globalThis, 'setInterval').mockImplementation((fn, delay) => { const id = ++number; timers.set(id, { fn, delay }); return id; });
-        vi.spyOn(globalThis, 'clearInterval').mockImplementation((id) => timers.delete(id));
+        const realSetInterval = globalThis.setInterval;
+        const realClearInterval = globalThis.clearInterval;
+        // Intercept ONLY the hook's own intervals. waitFor polls with setInterval as
+        // well, so replacing it wholesale meant no later assertion was ever re-checked
+        // and every wait after this point failed on its first look. Fake ids are offset
+        // so they cannot collide with a real timer id.
+        vi.spyOn(globalThis, 'setInterval').mockImplementation((fn, delay) => {
+            if (delay !== 5000 && delay !== 20000) return realSetInterval(fn, delay);
+            const id = 1000000 + (++number); timers.set(id, { fn, delay }); return id;
+        });
+        vi.spyOn(globalThis, 'clearInterval').mockImplementation((id) => {
+            if (timers.has(id)) timers.delete(id); else realClearInterval(id);
+        });
         const next = renderHook(() => useClassrooms(room.id), { wrapper: Wrapper });
         await waitFor(() => expect(next.result.current.data?.membership.active).toBe(true));
         backend.command('room.lesson', { id: room.id, tutorial: backend.lessons[0].id, section: 1 });
@@ -75,8 +86,19 @@ describe('classroom synchronization', () => {
     it('does not keep attending after a leave, expiry or failed presence generation', async () => {
         const room = backend.create(); backend.command('room.start', { id: room.id });
         const timers = new Map(); let number = 0;
-        vi.spyOn(globalThis, 'setInterval').mockImplementation((fn, delay) => { const id = ++number; timers.set(id, { fn, delay }); return id; });
-        vi.spyOn(globalThis, 'clearInterval').mockImplementation((id) => timers.delete(id));
+        const realSetInterval = globalThis.setInterval;
+        const realClearInterval = globalThis.clearInterval;
+        // Intercept ONLY the hook's own intervals. waitFor polls with setInterval as
+        // well, so replacing it wholesale meant no later assertion was ever re-checked
+        // and every wait after this point failed on its first look. Fake ids are offset
+        // so they cannot collide with a real timer id.
+        vi.spyOn(globalThis, 'setInterval').mockImplementation((fn, delay) => {
+            if (delay !== 5000 && delay !== 20000) return realSetInterval(fn, delay);
+            const id = 1000000 + (++number); timers.set(id, { fn, delay }); return id;
+        });
+        vi.spyOn(globalThis, 'clearInterval').mockImplementation((id) => {
+            if (timers.has(id)) timers.delete(id); else realClearInterval(id);
+        });
         const view = renderHook(() => useClassrooms(room.id), { wrapper: Wrapper });
         await waitFor(() => expect(view.result.current.data?.membership.active).toBe(true));
         const membership = view.result.current.data.membership;

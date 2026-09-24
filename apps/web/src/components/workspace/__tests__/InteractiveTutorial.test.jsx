@@ -89,7 +89,13 @@ it('saves checkpoints, resumes after remount and returns focus when closed', asy
     await user.click(await reader.findByRole('button', { name: 'Start and save my progress' }));
     await user.click(await reader.findByRole('button', { name: 'Save checkpoint and continue' }));
     expect(await reader.findByRole('heading', { name: lesson.lesson.sections[1].heading })).toHaveFocus();
-    expect(reader.getByRole('progressbar', { name: 'Saved tutorial progress' })).toHaveAttribute('aria-valuenow', '20');
+    // Derived, not pinned. Saved progress is floor((next_section + practiced) * 100 /
+    // (sections + 2)), so one checkpoint into a 3-section lesson reads 20 and into a
+    // 4-section lesson reads 16. The literal 20 broke when the curriculum gained a failure
+    // section - the formula is the contract, the number was an artifact of the old content.
+    const afterOneCheckpoint = String(Math.floor(100 / (lesson.lesson.sections.length + 2)));
+    expect(reader.getByRole('progressbar', { name: 'Saved tutorial progress' }))
+        .toHaveAttribute('aria-valuenow', afterOneCheckpoint);
     await user.click(reader.getByRole('button', { name: 'Close and continue later' }));
     await waitFor(() => expect(opener).toHaveFocus());
     view.unmount(); renderWithProviders(<TutorialCatalog />);
@@ -131,7 +137,12 @@ it('requires practice and the right answer, then displays a persistent certifica
     const reopened = (await openTutorial(user)).reader;
     expect(await reopened.findByRole('heading', { name: 'Certificate of completion' })).toBeVisible();
     expect(backend.list('user_test').points).toBe(100);
-});
+// This one walks a whole lesson - every section, then the practice checklist, then the knowledge
+// check - so its runtime tracks the curriculum's length. Deepening added a failure section to every
+// lesson, which pushed it past the default 5s under full-suite parallel load while it still ran in
+// about 2.2s on its own. The budget is raised because the test legitimately does more work; the
+// assertions are untouched.
+}, 20000);
 
 it('recovers a saved checkpoint after a lost response without awarding or starting twice', async () => {
     const user = setupUser();

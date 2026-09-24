@@ -52,9 +52,45 @@ import zipfile
 VERSION = "1.0.1"
 CAMPAIGN = "citadel-21-day-2026-09"
 SCHEMA = "buildanddo.release-control/v1"
-DEFAULT_ROOT = Path(r"D:\HOSTINGER_COMP")
+def _local_setting(name: str) -> str:
+    """Read one name from the environment, else from the gitignored secrets/deploy.local.env.
+
+    Exists so that machine-specific ABSOLUTE PATHS stop living in a file that is published.
+    The repo is at <this file>/../.. and secrets/ is gitignored with nothing tracked in it,
+    which makes it the correct home for "where does this operator keep their credentials".
+    """
+    value = os.environ.get(name, "").strip()
+    if value:
+        return value
+    try:
+        text = (Path(__file__).resolve().parents[1] / "secrets" / "deploy.local.env").read_text(
+            encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    for line in text.splitlines():
+        key, sep, raw = line.strip().partition("=")
+        if sep and key.strip() == name:
+            return raw.strip().strip('"').strip("'")
+    return ""
+
+
+def _release_secret_path() -> Path | None:
+    """The release credential file, named only by CITADEL_RELEASE_ENV / the local settings."""
+    value = _local_setting("CITADEL_RELEASE_ENV")
+    return Path(value) if value else None
+
+
+# DERIVED AND ENV-SOURCED, NOT HARDCODED. This file ships to the public mirror, which code
+# agents read and act on, and an absolute path on the operator's workstation is reconnaissance:
+# DEFAULT_ROOT named the controller estate and DEFAULT_SECRET named the credential store - the
+# one thing most worth knowing before attempting to read it. Measured 2026-09-22 across five
+# tracked files.
+#
+# This file lives at <estate>/sites/buildanddo/tools/, so the estate is three parents up.
+# CITADEL_ROOT still overrides (see resolve_root), exactly as before.
+DEFAULT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REPO_REL = Path("sites") / "buildanddo"
-DEFAULT_SECRET = Path(r"D:\citadel_secrets\BuildAndDo\release.env")
+DEFAULT_SECRET = _release_secret_path()
 LEGACY_HOME_TITLE = "Your business" + " changed today"
 LEGACY_HOME_DESC = "business newspaper" + " for your own operations"
 LEGACY_ONBOARDING = "Which business" + " should BuildAndDo understand?"
@@ -189,10 +225,12 @@ def load_public_config(repo: Path) -> dict[str, Any]:
 # 500+ credentials for the whole estate; reading all of them into a release tool's environment
 # would hand every subprocess it spawns the keys to everything. A deploy needs two secrets.
 SHIP_SHARED_KEYS = ("BUILDANDDO_VM_HOST", "BUILDANDDO_SSH_KEY")
+# Same reasoning as DEFAULT_SECRET above: the estate credential store is located by NAME
+# (CITADEL_WORKSPACE_ENV, in the environment or the gitignored secrets/deploy.local.env), never
+# by a literal path in a file that is published to the public mirror.
 WORKSPACE_ENV_CANDIDATES = (
-    Path(os.environ["CITADEL_WORKSPACE_ENV"]) if os.environ.get("CITADEL_WORKSPACE_ENV") else None,
-    Path(r"D:\citadel_secrets\CNWB\workspace.env"),
-    Path(r"D:\citadel_websites\Citadel-nexus\projects\guilds\CNWB\tools\workspace.env"),
+    (Path(_local_setting("CITADEL_WORKSPACE_ENV")),)
+    if _local_setting("CITADEL_WORKSPACE_ENV") else ()
 )
 
 
@@ -509,6 +547,28 @@ def _is_product_surface(path: Path, repo: Path) -> bool:
     return bool(rel) and rel[0] in PRODUCT_SURFACE_PARTS
 
 
+# The product keeps its OWN list of retired copy (apps/web/src/lib/purpose.js, RETIRED_PHRASES) so
+# its pages can refuse the old framing at runtime. That list must quote the legacy phrases, and on
+# 2026-09-23 this detector read it as product copy and held identity_pass on
+# 'try a business challenge' -- the sprint-sheet failure above, one level down: a guard that
+# names what it guards against is not the thing it guards against.
+#
+# A hit is reclassified as a guard-list entry ONLY when the whole line is a bare quoted string
+# element (optionally trailing a comma) AND the file declares RETIRED_PHRASES. The same phrase in
+# JSX text, an attribute, a template string or a file with no guard list still gates.
+_GUARD_LIST_ENTRY = re.compile(r"""^['"][^'"]*['"],?$""")
+_GUARD_LIST_MARKER = "RETIRED_PHRASES"
+
+
+def _is_retired_phrase_guard(path: Path, text: str) -> bool:
+    if not _GUARD_LIST_ENTRY.match(str(text).strip()):
+        return False
+    try:
+        return _GUARD_LIST_MARKER in path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+
+
 def p0_state(repo: Path) -> dict[str, Any]:
     files = find_source_files(repo)
     # SPLIT, NOT FILTERED -- and this is the whole point. On 2026-09-20 `identity_pass` and
@@ -527,8 +587,14 @@ def p0_state(repo: Path) -> dict[str, Any]:
     for phrase in LEGACY_PHRASES:
         for hit in source_matches(files, phrase):
             hit["phrase"] = phrase
-            (legacy if _is_product_surface(Path(hit["path"]), repo)
-             else legacy_commentary).append(hit)
+            if not _is_product_surface(Path(hit["path"]), repo):
+                legacy_commentary.append(hit)
+            elif _is_retired_phrase_guard(Path(hit["path"]), hit["text"]):
+                # Reported, never dropped: the hit stays visible with the reason it does not gate.
+                hit["reclassified"] = "retired-phrase guard list"
+                legacy_commentary.append(hit)
+            else:
+                legacy.append(hit)
     values = {
         "learn_by_doing": source_contains(files, "Learn by doing real work"),
         "homepage_support": source_contains(files, "Learn with people and AI") or source_contains(files, "Prove what you can do"),
@@ -756,7 +822,7 @@ def wire_ci(root: Path, repo: Path, source_script: Path, *, ack: str) -> dict[st
 
 
 RELEASE_ENV_EXAMPLE = r"""# BuildAndDo verified release configuration v1
-# Copy to D:\citadel_secrets\BuildAndDo\release.env or another path outside Git.
+# Copy to the path named by CITADEL_RELEASE_ENV or another path outside Git.
 # Do not commit credential values.
 
 # Public readback URLs. Both are required before promotion.
@@ -861,6 +927,11 @@ def build_plan(repo: Path) -> dict[str, Any]:
         candidates.append(p if p.is_absolute() else repo / p)
     candidates.extend(
         [
+            # The layout this repository actually builds into (scripts/deploy/ship.py DIST_DIR):
+            # apps/web writes to <repo>/dist/apps/web. It was missing from this list, so the
+            # repo-level `dist` -- whose only entry is `apps/` -- matched first on 2026-09-23 and a
+            # tree with no root index.html replaced the staging webroot (500 until rollback).
+            repo / "dist" / "apps" / "web",
             repo / "apps" / "web" / "dist",
             repo / "apps" / "web" / "build",
             repo / "apps" / "web" / "out",
@@ -898,6 +969,21 @@ def artifact_manifest(root: Path) -> dict[str, Any]:
             )
     canonical = json.dumps(files, separators=(",", ":"), sort_keys=True).encode("utf-8")
     return {"file_count": len(files), "files": files, "tree_sha256": sha256_bytes(canonical)}
+
+
+def pick_artifact_dir(candidates: Sequence[Path]) -> Path | None:
+    """The first candidate that is a directory with index.html at its ROOT, else None.
+
+    A static site is served from the root of the tree that reaches the webroot. "Any file
+    anywhere below" was the previous test, and it accepted the repo-level `dist` on 2026-09-23:
+    its only entry was `apps/`, the deploy replaced the staging webroot with it, and every page
+    answered 500 until the controller's own rollback. Requiring the root index.html refuses that
+    tree BEFORE a remote write, which is where a release gate belongs.
+    """
+    for candidate in candidates:
+        if candidate.is_dir() and (candidate / "index.html").is_file():
+            return candidate
+    return None
 
 
 def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict[str, Any]:
@@ -946,13 +1032,10 @@ def build_release(repo: Path, root: Path, *, skip_install: bool = False) -> dict
     if build.returncode != 0:
         raise ReleaseError(f"BuildAndDo build failed rc={build.returncode}")
 
-    source_artifact: Path | None = None
-    for candidate in map(Path, plan["artifact_candidates"]):
-        if candidate.is_dir() and any(p.is_file() for p in candidate.rglob("*")):
-            source_artifact = candidate
-            break
+    source_artifact = pick_artifact_dir([Path(x) for x in plan["artifact_candidates"]])
     if source_artifact is None:
-        raise ReleaseError("no static build artifact found; set BUILDANDDO_ARTIFACT_DIR explicitly")
+        raise ReleaseError("no static build artifact with a root index.html found; "
+                           "set BUILDANDDO_ARTIFACT_DIR explicitly")
     copy_tree_clean(source_artifact, artifact)
     # Digest the PAYLOAD before _version exists. Excluding _version is not a detail - both reasons
     # are load-bearing:
@@ -2001,11 +2084,15 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     args = parser().parse_args(argv)
     root = root_path(args.root)
-    secret = Path(args.secret_env) if args.secret_env else Path(os.environ.get("BUILDANDDO_RELEASE_SECRET_ENV") or DEFAULT_SECRET)
-    load_env_file(secret)
-    # Make the chosen external secret path available to GitLab as a reference.
-    # The value is a path only; secret values are never copied into receipts.
-    os.environ.setdefault("BUILDANDDO_RELEASE_SECRET_ENV", str(secret))
+    # No release env NAMED anywhere is a HOLD the doctor must be able to report, not a crash:
+    # DEFAULT_SECRET is None when neither CITADEL_RELEASE_ENV nor the local settings name one.
+    named = os.environ.get("BUILDANDDO_RELEASE_SECRET_ENV", "").strip()
+    secret = Path(args.secret_env) if args.secret_env else (Path(named) if named else DEFAULT_SECRET)
+    if secret is not None:
+        load_env_file(secret)
+        # Make the chosen external secret path available to GitLab as a reference.
+        # The value is a path only; secret values are never copied into receipts.
+        os.environ.setdefault("BUILDANDDO_RELEASE_SECRET_ENV", str(secret))
     try:
         repo = find_repo(root, args.repo or None)
         # Public config is applied AFTER the secrets file, and only fills keys still unset, so the

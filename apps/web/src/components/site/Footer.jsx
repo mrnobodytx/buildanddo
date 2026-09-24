@@ -1,16 +1,45 @@
+// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-PURPOSE-001 | CAPS=B | Seat=C-ONE
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BrandMark from '@/components/brand/BrandMark';
+import Wordmark from '@/components/brand/Wordmark';
 import { PUBLIC_NAV } from '@/lib/publicPages';
-import { Activity, Mail, MessageCircle, BookOpen, Users, Github, Newspaper, ShoppingBag } from 'lucide-react';
+import { PURPOSE } from '@/lib/purpose';
+import {
+    COMMUNITY_LINKS,
+    GUILD_PATH,
+    STATUS_PATH,
+    STORE_LINK,
+    communityLink,
+} from '@/lib/communityLinks';
+import {
+    AudioLines,
+    BookOpen,
+    Bot,
+    Github,
+    Mail,
+    MessageCircle,
+    Newspaper,
+    ShoppingBag,
+    Users,
+    Youtube,
+} from 'lucide-react';
 
-const DISCORD_INVITE_URL = 'https://discord.gg/vTDZxmpHHC';
-const WIKI_URL = 'https://wiki.buildanddo.com';
-const FORUM_URL = 'https://forum.buildanddo.com';
-const GITHUB_URL = 'https://github.com/mrnobodytx/buildanddo';
-const CONTRIBUTING_URL = 'https://github.com/mrnobodytx/buildanddo/blob/main/CONTRIBUTING.md';
-// Community and store surfaces (names from the workspace env: REDDIT_SUBREDDIT, the Gumroad seller profile).
-const REDDIT_URL = 'https://www.reddit.com/r/buildanddo';
-const GUMROAD_URL = 'https://citadelnexus.gumroad.com';
+// Every URL here comes from communityLinks.js; only the icon is chosen in this file.
+const ICONS = {
+    discord: MessageCircle,
+    forum: Users,
+    wiki: BookOpen,
+    reddit: Newspaper,
+    youtube: Youtube,
+    github: Github,
+    'voice-agent': AudioLines,
+};
+// The Discord invite is the footer's call to action, so it keeps its imperative wording.
+const CALL_TO_ACTION = { discord: 'Join our Discord' };
+// The website is this site, so the footer does not link to itself as a community surface.
+const FOOTER_COMMUNITY = COMMUNITY_LINKS.filter((link) => link.id !== 'website');
+const CONTRIBUTING_URL = `${communityLink('github').url}/blob/main/CONTRIBUTING.md`;
 
 const PRODUCT_LINKS = PUBLIC_NAV.map((page) => ({ label: page.label, href: page.path }));
 
@@ -30,17 +59,11 @@ export default function Footer({
                             className="flex items-center gap-2.5"
                             aria-label="BuildAndDo home"
                         >
-                            <span className="flex h-8 w-8 items-center justify-center rounded-md border border-primary/40 bg-primary/10 text-primary">
-                                <Activity className="h-4 w-4" strokeWidth={2.4} />
-                            </span>
-                            <span className="font-display text-base font-semibold tracking-tight">
-                                BuildAndDo
-                            </span>
+                            <BrandMark size={32} decorative />
+                            <Wordmark className="text-base" />
                         </a>
                         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                            An educational collaboration platform where people and AI learn by
-                            doing real work together. Choose an objective, keep the evidence,
-                            and share what you learned.
+                            {PURPOSE.summary}
                         </p>
                     </div>
 
@@ -75,70 +98,44 @@ export default function Footer({
                                     Join early access
                                 </a>
                             </li>
+                            {FOOTER_COMMUNITY.map((link) => {
+                                const Icon = ICONS[link.id];
+                                return (
+                                    <li key={link.id}>
+                                        <a
+                                            href={link.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className={
+                                                link.id === 'discord'
+                                                    ? 'flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:brightness-125'
+                                                    : 'flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground'
+                                            }
+                                        >
+                                            {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />}
+                                            {CALL_TO_ACTION[link.id] || link.label}
+                                        </a>
+                                    </li>
+                                );
+                            })}
                             <li>
-                                <a
-                                    href={DISCORD_INVITE_URL}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:brightness-125"
+                                <Link
+                                    to={GUILD_PATH}
+                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                                 >
-                                    <MessageCircle className="h-4 w-4 shrink-0" />
-                                    Join our Discord
-                                </a>
+                                    <Bot className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                    Meet the guildmasters
+                                </Link>
                             </li>
                             <li>
                                 <a
-                                    href={FORUM_URL}
+                                    href={STORE_LINK.url}
                                     target="_blank"
                                     rel="noreferrer"
                                     className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                                 >
-                                    <Users className="h-4 w-4 shrink-0" />
-                                    Community forum
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href={WIKI_URL}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                    <BookOpen className="h-4 w-4 shrink-0" />
-                                    Wiki
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href={GITHUB_URL}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                    <Github className="h-4 w-4 shrink-0" />
-                                    GitHub
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href={REDDIT_URL}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                    <Newspaper className="h-4 w-4 shrink-0" />
-                                    r/buildanddo on Reddit
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href={GUMROAD_URL}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                    <ShoppingBag className="h-4 w-4 shrink-0" />
-                                    Playbooks and courses on Gumroad
+                                    <ShoppingBag className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                    {STORE_LINK.label}
                                 </a>
                             </li>
                             <li>
@@ -162,7 +159,7 @@ export default function Footer({
                 <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-border/60 pt-6 sm:flex-row sm:items-center">
                     <p className="text-xs text-muted-foreground">
                         © {year} Citadel Nexus Inc. All rights reserved.{' '}
-                        <a href="https://citadel-nexus.com/status" className="underline underline-offset-4">Public status</a>
+                        <Link to={STATUS_PATH} className="underline underline-offset-4">Service status</Link>
                     </p>
                     <div className="flex items-center gap-5 text-xs text-muted-foreground/70">
                         <span aria-disabled="true">Privacy — coming soon</span>

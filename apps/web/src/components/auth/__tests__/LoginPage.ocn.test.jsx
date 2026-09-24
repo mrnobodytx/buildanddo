@@ -82,7 +82,7 @@ describe('LoginPage — Citadel seat sign-in (OCN)', () => {
 
     it('exchanges the header for a session and lands the seat in the app', async () => {
         window.__BND_OCN_HEADER__ = HEADER;
-        const record = { id: 'seat_rig1', email: 'rig1@ocn.buildanddo.invalid', name: 'OCN seat: rig1' };
+        const record = { id: 'seat_scholar', email: 'scholar@ocn.buildanddo.invalid', name: 'OCN seat: scholar' };
         fetchMock.mockResolvedValue({ status: 200, ok: true, json: async () => ({ token: 'tok', record }) });
         const user = setupUser();
         renderLogin('/login?ocn=1');

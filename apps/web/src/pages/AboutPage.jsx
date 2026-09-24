@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/AboutPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PURPOSE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PURPOSE-001
+// Seat:        BITS-CODEGEN, C-ONE (the purpose line)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
-// Depends:     apps/web/src/components/site/PublicPage.jsx
+// Depends:     apps/web/src/components/site/PublicPage.jsx, apps/web/src/lib/purpose.js
 // EnumType:    Widget
-// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx
+// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx; CONSUMES apps/web/src/lib/purpose.js
 // DAG Node:    none
 // Intent:      Introduce the confirmed operator and the evidence standards behind the product.
 // ───────────────────────────────────────────────────────────────
@@ -18,6 +18,7 @@
 import { Link } from 'react-router-dom';
 import PublicPage from '@/components/site/PublicPage';
 import { Card } from '@/components/site/ui';
+import { PURPOSE } from '@/lib/purpose';
 
 export default function AboutPage() {
     return (
@@ -25,7 +26,7 @@ export default function AboutPage() {
             path="/about"
             eyebrow="People & purpose"
             title="Work should leave a record."
-            intro="BuildAndDo is a Citadel Nexus Inc. product for people who run businesses. It turns changes, decisions and outcomes into a record you can inspect."
+            intro={`${PURPOSE.summary} It is a Citadel Nexus Inc. product, and the work done on it leaves a record you can inspect.`}
         >
             <section className="grid gap-8 md:grid-cols-[1fr_2fr]">
                 <h2 className="font-display text-2xl font-semibold">The people behind the work</h2>

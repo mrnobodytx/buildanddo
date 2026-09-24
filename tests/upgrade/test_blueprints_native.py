@@ -31,7 +31,7 @@ from apps.research.processing import Processor
 from apps.research.transport import HttpClient, decode_json, multipart
 from apps.research.worker import Worker
 from tests.upgrade.blueprint_fixture import pdf_bytes
-from tests.upgrade.test_dossier_native import BINARY, NativeServer, ROOT, WORKSPACE
+from tests.upgrade.test_dossier_native import BINARY, NO_WINDOW, NativeServer, ROOT, WORKSPACE  # noqa: E402
 import hashlib
 
 NATIVE_PDF = importlib.util.find_spec('pypdf') is not None
@@ -72,7 +72,9 @@ migrate((app) => {
         """Apply migration commands only to this fixture's temporary database."""
         result = subprocess.run([self.binary, 'migrate', direction, *([count] if count else []), *self.paths()],
                                 input='y\n', text=True, cwd=self.root, env=self.environment,
-                                stdout=self.log, stderr=subprocess.STDOUT, timeout=30, check=False)
+                                stdout=self.log, stderr=subprocess.STDOUT, timeout=30, check=False,
+            **NO_WINDOW,
+        )
         if result.returncode:
             raise AssertionError('The isolated blueprint migration failed.')
 

@@ -21,6 +21,7 @@ import * as __bndUrl from 'node:url';
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import vm from 'node:vm';
 import { spawnSync as __bndSpawn } from 'node:child_process';
 const requireChildProcess = () => ({ spawnSync: __bndSpawn });
@@ -44,7 +45,7 @@ export const root = __bndUrl.pathToFileURL(__bndRootPath + __bndPath.sep);
 // in this module reads a file through it any more. Under the CI runner these tests died 11/11 in
 // 46ms with "The URL must be of scheme file" thrown from `source` - the fixture is imported from
 // jsdom specs that live under apps/web, so Vite transforms it and `root` is not guaranteed to
-// survive as a file: URL. The same specs pass on rig1, which is what made this look like a test
+// survive as a file: URL. The same specs pass on the operator workstation, which is what made this look like a test
 // failure rather than an environment one. A path needs no scheme, so this cannot recur.
 export const repoPath = (path) => __bndPath.resolve(__bndRootPath, path);
 export const source = (path) => readFileSync(repoPath(path), 'utf8');
@@ -62,7 +63,7 @@ export const pythonBin = () => (process.platform === 'win32' ? 'python' : 'pytho
 export function runPython(args, opts = {}) {
     const { spawnSync } = requireChildProcess();
     const run = spawnSync(pythonBin(), args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024,
-                                               cwd: repoPath('.'), ...opts });
+                                               cwd: repoPath('.'), env: { ...process.env, PYTHONPATH: repoPath('.') }, ...opts });
     if (run.error) throw new Error(`python spawn failed (${pythonBin()}): ${run.error.message}`);
     if (run.status !== 0) {
         throw new Error(run.stderr?.trim()
@@ -157,8 +158,26 @@ export function fixture({ migrated = true, runtime = {}, now = () => new Date().
             try { callback(this); } catch (error) { data = before; for (const key of Object.keys(collections)) delete collections[key]; Object.assign(collections, beforeCollections); throw error; }
         },
     };
-    const globals = { Collection, Field, Record, ApiError, BadRequestError, ForbiddenError, NotFoundError,
-        __hooks: '/hooks', $filepath: { join: __bndPath.posix.join }, ...runtime };
+    // PocketBase binds $filepath and routerUse; this fixture did not. Every migration that
+    // resolves its curriculum through $filepath.join(__hooks, '..', ...) therefore threw on an
+    // undefined global and fell through to "Starter data not found", and metrics.pb.js failed to
+    // load at all on routerUse. Measured 2026-09-21: that was 44 of the 46 failures in the node
+    // acceptance check, and not one of them was a product defect - the harness was missing two
+    // globals the runtime has always provided.
+    //
+    // $filepath.join is POSIX, matching the runtime and keeping fixture paths stable on Windows.
+    // Both sit BEFORE ...runtime so a test can still substitute its own.
+    const routerHandlers = [];
+    const globals = {
+        Collection, Field, Record, ApiError, BadRequestError, ForbiddenError, NotFoundError,
+        __hooks: '/hooks',
+        $filepath: {
+            join: (...parts) => path.posix.join(...parts.map(String)),
+            dir: (value) => path.posix.dirname(String(value)),
+        },
+        routerUse: (handler) => { routerHandlers.push(handler); },
+        ...runtime,
+    };
     const cache = {};
     const load = (name) => {
         if (cache[name]) return cache[name]; const module = { exports: {} };

@@ -18,7 +18,7 @@
  * written back to state. Without a layout engine that cycle re-enters through MICROTASKS, so it
  * starves the timer queue while scheduling nothing of its own.
  *
- * MEASURED on rig1, 2026-09-20, with the loop instrumented for one second of wall clock:
+ * MEASURED on the operator workstation, 2026-09-20, with the loop instrumented for one second of wall clock:
  *
  *     popper         waited 33721ms   raf 0   setTimeout 3   getComputedStyle 48 (43ms)
  *     item-aligned   waited  1004ms   raf 2   setTimeout 3   getComputedStyle 10 (10ms)

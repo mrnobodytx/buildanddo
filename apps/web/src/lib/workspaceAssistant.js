@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:         apps/web/src/lib/workspaceAssistant.js
 // Stage:        07_BUILD
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-001
 // CAPS:         pending
 // CK:           pending
 // Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -36,10 +36,10 @@ export function createAssistantClient({ client, workspaceId, accountId, isCurren
         try {
             const data = await client.send(base + suffix, { method, body, query, requestKey: null });
             if (!canSettle()) return { ok: false, stale: true };
-            if (data?.workspace !== workspaceId || data?.owner !== accountId) return { ok: false, error: 'The assistant response does not belong to this account and workspace.' };
+            if (data?.workspace !== workspaceId || data?.owner !== accountId) return { ok: false, error: "Buddi's response does not belong to this account and workspace." };
             return { ok: true, data };
         } catch (error) {
-            return canSettle() ? { ok: false, error: error?.response?.message || 'Could not confirm the assistant response. Reload the session or retry the same message.' } : { ok: false, stale: true };
+            return canSettle() ? { ok: false, error: error?.response?.message || "Could not confirm Buddi's response. Reload the session or retry the same message." } : { ok: false, stale: true };
         }
     };
     return {

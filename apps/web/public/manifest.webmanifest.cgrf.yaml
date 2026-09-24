@@ -1,0 +1,34 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/web/public/manifest.webmanifest.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-BUDDI-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-BUDDI-001
+# Seat:        C-ONE
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     apps/web/public/icon-192.png, apps/web/public/icon-512.png, apps/web/index.html
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES apps/web/public/manifest.webmanifest; CONSUMES apps/web/public/icon-192.png; CONSUMES apps/web/public/icon-512.png
+# DAG Node:    none
+# Intent:      Identify the install manifest without embedding comments in JSON.
+# ───────────────────────────────────────────────────────────────
+file: apps/web/public/manifest.webmanifest
+linked_from: apps/web/index.html (link rel="manifest")
+start_url: /app
+theme_color: "#F4F2EB"
+background_color: "#F4F2EB"
+color_source: brand token "paper", the app's light background
+icons:
+  - src: /icon-192.png
+    purpose: any
+  - src: /icon-512.png
+    purpose: any
+  - src: /icon-512.png
+    purpose: maskable
+maskable_measurement: >-
+  Measured 2026-09-22 on icon-512.png: the red background reaches all four
+  corners, and the pulse line (anti-aliasing included) ends 170.8 px from the
+  centre, 33.4% of the width. The maskable safe zone is a centred circle of
+  radius 40%, so no launcher mask can cut into the mark.

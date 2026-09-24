@@ -2361,3 +2361,21 @@ Verify: classroom node suites, the classroom and broadcast Vitest cases with
 no new failures against the recorded baseline, build, lint, context, public
 boundary and readiness gates. Hosted audio/video, applied migrations and
 deployed behaviour remain unmeasured until run against a configured backend.
+
+## Live classroom on the staging line — 2026-09-23
+
+Staging is built from the integration branch, and the broadcast classroom continuation above was merged
+to main only (PR #80). On 2026-09-23 the operator directed that the live classroom system be on staging.
+This continuation applies that work and its seat-name follow-up to the integration line. It adds no new
+feature.
+
+Acceptance:
+
+1. The live room, attendance history, class record, assistant usage and agent activity behave on this
+   line as they do on main. Where main relies on something this line does not have, the code is adapted
+   and the difference is named in the commit, never dropped silently.
+2. No commit on this line carries a machine name that the seat-name follow-up removed.
+3. A guildmaster the canon knows still links to its public profile from the live room, as PR #77 did
+   for the retired page, and an id the canon does not know is still named.
+4. The web suite, lint, the classroom node suites and the repository gates pass. Deploying to staging
+   is a separate, staging-only step; nothing here promotes to production.

@@ -384,6 +384,40 @@ BLOCKED; Node migration fixtures omitted the PocketBase `$filepath` host API.
 The source checkout was fast-forwarded to locally available merged main before
 this continuation. Do not recycle old evidence as a new candidate's acceptance
 or substitute local producer checks for independent reviewer or owner decisions.
+## Live classroom on the staging line - 2026-09-23
+
+Operator direction (2026-09-23): the live classroom system should be on staging. Staging is built from
+the integration branch; the broadcast classroom below was merged to main only. Seat: C-ONE.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| LS-1 | Apply main's live classroom and its seat-name follow-up as one change; adapt what this line lacks | Classroom flow and broadcast Vitest cases; classroom node suites | done: the class record no longer calls main's government membership helper, which this line does not have |
+| LS-2 | A known guildmaster in the live room links to its public profile | `vitest run src/components/broadcast`, with a control that drops the link | done |
+| LS-3 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`, `verify_public_boundary.py` | done |
+| LS-4 | Staging-only deploy of the merged line | Staging `/_version` names the merged commit; the classroom routes answer | not part of this change |
+
+## Broadcast classroom - 2026-09-23
+
+Owner-authorized continuation of the classroom scope: connect the existing
+Cloudflare Realtime client and hooks to the routed live room, port the
+Broadcast Classroom design, and add the attendance and usage ledgers the
+broadcaster and agent stats need. No provider, secret or deployment change.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| BC-1 | Port stage, chart and amber-text tokens; broadcast components on site/ui primitives | Rendered component tests in both states | source PASS: 12 broadcast Vitest cases; build and lint pass |
+| BC-2 | Live media in the routed room; retire the unrouted page | Media hook and room flow tests with a signalling double | source PASS against a signalling double; real SFU and two-browser audio UNMEASURED (no realtime credentials in this session) |
+| BC-3 | Media availability from realtime configuration | Classroom node suites | source PASS: configured, unconfigured and not-live cases; no value exposed |
+| BC-4 | Append-only attendance history and host class record | Migration up/down, command and stats node tests | source PASS: 48 classroom node cases, 11 classroom flow cases; migration not applied to any hosted backend |
+| BC-5 | Assistant turn model and token usage | Assistant node tests | source PASS: 19 assistant node cases; provider-reported counts only |
+| BC-6 | Agent activity from seat_events | Rendered empty and populated states | source PASS: 3 rendered cases; realtime subscription unobserved |
+| BC-7 | Compose variable names; private-plane handoffs | Boundary scan; handoff file | PASS: boundary scan 1518 files; handoff 2026-09-23-bits-codegen-c-one-broadcast-classroom |
+
+Observed: all 643 Node upgrade cases pass. The full web Vitest run has 27
+failures in 19 files, all present in the 28-failure baseline recorded on the
+unchanged tree in this environment (wait-for timing in unrelated flows), so no
+new failure. Readiness, submission, context and boundary gates pass. Native
+PocketBase profiles, hosted media and deployed behaviour were not run.
 
 ## Workspace assistant continuation authorized 2026-09-20
 

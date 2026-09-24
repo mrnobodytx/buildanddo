@@ -19,3 +19,18 @@ tests/fixtures/sample-blueprint.pdf binary
 
 # BuildAndDo deterministic generated artifact
 apps/web/src/data/policy-demo.json text eol=lf
+
+# The classroom realtime lane declares itself LF-only, and a test enforces it
+# (tests/upgrade/classroom-presence.test.mjs, "the lane owned files are LF only").
+# The committed blobs are already pure LF; core.autocrlf=true was rewriting them to CRLF on
+# checkout, so the test failed on a Windows working tree and passed everywhere else - a gate whose
+# verdict depended on which machine ran it. Pinning eol here makes the guarantee the test asserts
+# an actual property of the checkout, on every machine and for every seat, rather than a hope.
+apps/pocketbase/pb_hooks/classroom-presence.pb.js       text eol=lf
+apps/pocketbase/pb_hooks/classroom-realtime-lib.js      text eol=lf
+apps/pocketbase/pb_migrations/1790600000_classroom_presence.js text eol=lf
+tests/upgrade/classroom-presence.test.mjs               text eol=lf
+apps/web/src/lib/classroomRealtime.js                   text eol=lf
+apps/web/src/hooks/useClassroomMedia.js                 text eol=lf
+apps/web/src/components/broadcast/LiveBroadcast.jsx     text eol=lf
+apps/web/src/lib/__tests__/classroomRealtime.presence.test.js text eol=lf

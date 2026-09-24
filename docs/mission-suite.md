@@ -228,8 +228,14 @@ the existing application pipeline and chosen the box:
   evidence. The worker has no superuser shortcut or alternate authentication.
 - On PocketBase, bind `BUILDANDDO_SUITE_BINDINGS` to a JSON list of records with
   `workspace`, `worker_user`, `binding`, `source_sha256`, `enabled`. Use the exact
-  source fingerprint from the installed archive. Only the named worker may
+  source fingerprint from the installed archive. Only a named worker may
   claim/complete jobs. A binding change invalidates unfinished work.
+- `worker_user` accepts one record id or a list of up to 16, all running that same
+  pinned source. The pin is what makes a result reproducible and attributable, so a
+  pool does not weaken it: every run still records its own `processor`, and a lease
+  that lapses is re-claimed by another worker under a new `attempt`, which the
+  original worker can no longer complete against. Use a list for failover and
+  throughput; keep one entry, and therefore one source fingerprint, per workspace.
 - From the unpacked directory, the operator can run the read-only prerequisite
   diagnostic, then explicitly start the worker. The diagnostic does not call
   the API or prove that the native credential works.

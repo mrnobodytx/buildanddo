@@ -1,0 +1,47 @@
+{
+  "schema_version": "buildanddo.submission/v1",
+  "candidate_sha": "22a3b6587c19a1a0c9fa3adc2ff5e192f7e0b47e",
+  "source_sha256": "672527aa94aaeb92888f5da61c35804d2abc6467faa46c1604334166dcaebebe",
+  "prepared_at": "2026-09-22T13:47:40.327381+00:00",
+  "workspace": "",
+  "mission": "",
+  "dispatch": "VCC-BUILDANDDO-UPGRADE-001",
+  "demo_url": "https://buildanddo.com",
+  "replay": null,
+  "execution_receipts": null,
+  "owner_review": null,
+  "official_review": null,
+  "materials": {
+    "product_summary": {
+      "path": "materials/product_summary.md",
+      "sha256": "81bc3dace1ce579b2b8258a617f0d248a552d2038d66ca6cb1410ba51566d2f6",
+      "observed_at": "2026-09-22T13:48:48+00:00"
+    },
+    "evaluator_journey": {
+      "path": "materials/evaluator_journey.md",
+      "sha256": "ed58d4a38ca6b270cf58ce42364599f9e737aa6b84551458b2312d3fc175d156",
+      "observed_at": "2026-09-22T13:48:48+00:00"
+    },
+    "walkthrough": {
+      "path": "materials/walkthrough.md",
+      "sha256": "b80da9e933ce9d7b482fca0c0af718a3358a5d2686bca38309142e26a0c4f146",
+      "observed_at": "2026-09-22T13:48:48+00:00"
+    },
+    "license_and_attribution": {
+      "path": "materials/license_and_attribution.md",
+      "sha256": "9130b68850d8d7ce2ceffefee97186d580d92d23df146f42689c502fe6ae7c17",
+      "observed_at": "2026-09-22T13:48:48+00:00"
+    },
+    "privacy_and_permissions": {
+      "path": "materials/privacy_and_permissions.md",
+      "sha256": "eb386c7e6c748423424f4423512f1787cbace2777033e2e326eb98f2731c6680",
+      "observed_at": "2026-09-22T13:48:48+00:00"
+    },
+    "rollback_and_support": {
+      "path": "materials/rollback_and_support.md",
+      "sha256": "b424817bac885e76d4e3bab4c94cfa48d2b35c8fb8f9347ecd61142d3c9a3ea4",
+      "observed_at": "2026-09-22T13:48:48+00:00"
+    }
+  },
+  "authority": "internal-preparation-only"
+}

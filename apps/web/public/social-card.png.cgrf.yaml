@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        apps/web/public/social-card.png.cgrf.yaml
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PURPOSE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-# Seat:        BITS-CODEGEN
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PURPOSE-001
+# Seat:        BITS-CODEGEN, C-ONE (render provenance)
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-14
 # Depends:     apps/web/public/social-card.svg
 # EnumType:    ConfigDoc
-# EnumEdges:   DEPENDS_ON apps/web/public/social-card.svg
+# EnumEdges:   DEPENDS_ON apps/web/public/social-card.svg; VALIDATED_BY apps/web/src/lib/__tests__/purpose.test.js
 # DAG Node:    none
 # Intent:      Record the provenance of the rasterized local social preview.
 # ───────────────────────────────────────────────────────────────
@@ -20,3 +20,10 @@ source: apps/web/public/social-card.svg
 width: 1200
 height: 630
 purpose: Public Open Graph and Twitter preview
+# The PNG is what link previews show, and it went stale once: four commits on 2026-09-18 rebranded the SVG
+# and never re-rendered it, so every shared link kept showing the retired "Your business, in evidence." card.
+# src/lib/__tests__/purpose.test.js fails when the SVG's bytes no longer match this hash. After changing the
+# SVG, re-render the PNG (headless Chromium, 1200x630 viewport, scale 1, fonts as the SVG names them) and
+# record the new hash.
+source_sha256: 93cec2fecf414cadf613e5bcc337d3c0f34248833763a5170a94cc0f929d9f37
+rendered_with: headless Chromium (Playwright), 2026-09-23

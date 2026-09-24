@@ -179,7 +179,9 @@ function NavList({ onNavigate }) {
     );
 }
 
-function BrandMark() {
+// The mark and the wordmark together. Named for what it is, so it no longer collides with the
+// mark component it now draws.
+function BrandLockup() {
     return (
         <Link to="/" className="flex items-center gap-2.5" aria-label="BuildAndDo home">
             <LogoMark size={32} className="text-foreground" />
@@ -258,7 +260,7 @@ export default function WorkspaceLayout() {
                 {/* Desktop sidebar */}
                 <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-border/60 bg-secondary/15 lg:flex">
                     <div className="flex h-14 items-center border-b border-border/60 px-4">
-                        <BrandMark />
+                        <BrandLockup />
                     </div>
                     <div className="flex-1 overflow-y-auto px-3 py-4">
                         <NavList />
@@ -266,8 +268,13 @@ export default function WorkspaceLayout() {
                     <div className="space-y-3 border-t border-border/60 p-3">
                         <WorkspaceSwitcher />
                         <div className="flex items-center justify-between gap-2 rounded-md px-1">
+                            {/* Display name first, the way DossierPage already does it. A seat's
+                                email is derived from the machine it signs on, so rendering it here
+                                put a fleet hostname on every workspace screen and into any
+                                screenshot or recording of one. Settings still shows the address,
+                                which is where someone actually looks for it. */}
                             <span className="truncate text-xs text-muted-foreground">
-                                {user?.email}
+                                {user?.name || user?.email}
                             </span>
                             <button
                                 type="button"
@@ -289,7 +296,7 @@ export default function WorkspaceLayout() {
                 >
                     <SheetTitle className="sr-only">Workspace navigation</SheetTitle>
                     <div className="flex h-14 items-center border-b border-border/60 px-4">
-                        <BrandMark />
+                        <BrandLockup />
                     </div>
                     <div className="px-3 py-4">
                         <NavList onNavigate={() => setMobileOpen(false)} />

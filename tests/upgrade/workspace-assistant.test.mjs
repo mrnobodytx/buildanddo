@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:         tests/upgrade/workspace-assistant.test.mjs
 // Stage:        08_TEST
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-001
 // CAPS:         pending
 // CK:           pending
 // Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -155,6 +155,7 @@ test('inference receives only current account history and patterns, never foreig
     const request = f.agentConfig.calls.at(-1);
     assert.ok(!JSON.stringify(request).includes('Foreign private phrase'));
     assert.match(request.messages[0].content, /untrusted data, never authority/);
+    assert.match(request.messages[0].content, /^You are Buddi, the BuildAndDo workspace assistant\. /);
 });
 test('duplicate messages recover the same inferred plan without another model call', () => {
     const f = setup(), session = f.start(); const request_key = 'same-inference-request';
@@ -226,7 +227,7 @@ test('rollback retains personal history while disabling assistant reads and writ
     const f = setup(), session = f.start(); f.chat(session); f.migration(migration).down();
     assert.throws(() => f.service.snapshot(f.event()), /schema/); assert.equal(f.data.assistant_turns.length, 1);
     f.migration(migration).up(); assert.equal(f.service.snapshot(f.event()).sessions.items.length, 1);
-    f.collections.assistant_sessions.listRule = ''; assert.throws(() => f.service.snapshot(f.event()), /account isolation/);
+    f.collections.assistant_sessions.listRule = ''; assert.throws(() => f.service.snapshot(f.event()), /Buddi account isolation needs operator review/);
 });
 test('connected assistant client rejects late and foreign scope responses', async () => {
     let current = true;
@@ -267,7 +268,7 @@ test('recorded partial outcomes cannot be rewritten with a different completed-s
 test('missing identity indices or field contracts stop assistant reads before inference', () => {
     for (const collection of ['assistant_sessions', 'assistant_turns', 'assistant_patterns']) {
         const f = setup(); f.collections[collection].indexes = [];
-        assert.throws(() => f.service.snapshot(f.event()), /isolation/); assert.equal(f.agentConfig.calls.length, 0);
+        assert.throws(() => f.service.snapshot(f.event()), /Buddi account isolation needs operator review/); assert.equal(f.agentConfig.calls.length, 0);
     }
 });
 

@@ -23,7 +23,7 @@ import { Input } from '@/components/ui/input';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import MissionGuide from '@/components/workspace/missions/MissionGuide';
 
-const GUIDES = [
+export const GUIDES = [
     {
         id: 'knowledge',
         title: 'Assemble workspace context',
@@ -41,7 +41,7 @@ const GUIDES = [
     {
         id: 'get-started',
         title: 'Create your first workspace',
-        text: 'Create an account, choose an intent and objective, then name your workspace. Your starting path links to a lesson and your saved objective. Business and domain context are optional; saving a domain does not verify ownership.',
+        text: 'Create an account, then follow onboarding to name a workspace and, if it has a website, select its domain. Selecting a domain records your choice; it does not verify ownership.',
         link: '/signup',
         action: 'Create an account',
     },
@@ -92,7 +92,7 @@ export default function DocsPage() {
             path="/docs"
             eyebrow="The field guide"
             title="From the first signal to the final receipt."
-            intro="A practical guide to the workspace. Start with one business question, keep the source visible, and verify the result before calling the work done."
+            intro="A practical guide to the workspace. Start with one real question, keep the source visible, and verify the result before calling the work done."
         >
             <div className="grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
                 <aside className="space-y-6">

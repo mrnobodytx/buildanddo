@@ -15,6 +15,7 @@
 // Intent:      Show account-attributed reports of agent activity without treating claimed seat labels as authenticated agents or verified work.
 // ───────────────────────────────────────────────────────────────
 
+import { seatName, withoutMachineNames } from '@/lib/seatDisplay';
 import React from 'react';
 import { Bot, Eye } from 'lucide-react';
 import { Card, StatePill } from '@/components/site/ui';
@@ -95,7 +96,7 @@ export default function AgentActivity({ unattended = false, limit = 12 }) {
                 <p className="text-xs text-muted-foreground">Submitting account: {item.owner || 'Not recorded (legacy report)'}. Claimed actor: {item.actorType}.</p>
                 {detail && <p className="whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground">{detail}</p>}
                 {(item.subject || item.prUrl) && <p className="flex flex-wrap gap-3 font-evidence text-[11px] text-muted-foreground">
-                    {item.subject && <span>{item.subjectType ? `${item.subjectType}: ` : ''}{item.subject}</span>}
+                    {item.subject && <span>{item.subjectType ? `${item.subjectType}: ` : ''}{withoutMachineNames(item.subject)}</span>}
                     {/^https:\/\//.test(item.prUrl || '') && <a href={item.prUrl} target="_blank" rel="noreferrer" className="underline underline-offset-4">Evidence link</a>}
                 </p>}
             </li>;

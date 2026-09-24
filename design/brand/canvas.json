@@ -1,0 +1,19 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-09-23T22:24:01Z"},
+  "title": "Buddi & BuildAndDo Brand",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 1440, "h": 1120, "title": "Logo and brand sheet"},
+    "BuddiSheet.dc.html": {"x": 1520, "y": 0, "w": 1440, "h": 1260, "title": "Meet Buddi"},
+    "InProduct.dc.html": {"x": 3040, "y": 0, "w": 1280, "h": 960, "title": "Buddi in the product"},
+    "Buddi.dc.html": {"x": 0, "y": 1380, "w": 220, "h": 240, "title": "Buddi component"},
+    "Mark.dc.html": {"x": 300, "y": 1380, "w": 64, "h": 64, "title": "Mark component"}
+  },
+  "order": ["Main.dc.html", "BuddiSheet.dc.html", "InProduct.dc.html", "Buddi.dc.html", "Mark.dc.html"],
+  "notes": {},
+  "designSystems": [
+    {"title": "Broadcast Classroom", "namespace": "bndclassroom", "artifact": "https://claude.ai/artifact/SKgGFXuUsoBNzXbV8qDrrT", "version": "1790182818-4582", "copiedAt": "2026-09-23T22:24:01Z"}
+  ]
+}

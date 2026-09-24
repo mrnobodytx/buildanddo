@@ -1,14 +1,14 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/ClassroomsPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     apps/web/src/hooks/useClassrooms.js, apps/web/src/lib/classrooms.js, apps/web/src/components/broadcast/LiveBroadcast.jsx
+// Depends:     apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/web/src/lib/classrooms.js, apps/web/src/components/broadcast/LiveBroadcast.jsx
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/lib/classrooms.js; CONSUMES apps/web/src/components/broadcast/LiveBroadcast.jsx
 // DAG Node:    none
@@ -18,6 +18,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { BookOpen, Users } from 'lucide-react';
+import Buddi from '@/components/brand/Buddi';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
@@ -27,7 +28,9 @@ import AgentActivity from '@/components/broadcast/AgentActivity';
 import { PageControls, controlInput, dateLabel } from '@/components/workspace/ControlPrimitives';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useClassrooms } from '@/hooks/useClassrooms';
+import { useOpenClasses } from '@/hooks/useOpenClasses';
 import { classroomHref } from '@/lib/classrooms';
+import { STATUS_PATH } from '@/lib/communityLinks';
 
 const statusLabel = { scheduled: 'Scheduled', live: 'Live lesson', ended: 'Ended' };
 const frozen = (control) => control.saving || control.uncertain || !control.connected;
@@ -84,6 +87,28 @@ function RoomEditor({ control, room, onClose }) {
     </form>;
 }
 
+// A person should not have to know which workspace a class lives in. Measured 2026-09-24: every
+// guildmaster class sat in a workspace the operator had just been seated in, while the desk showed
+// only the active workspace and said "No classes here yet". This lists live and scheduled classes
+// from the account's OTHER readable workspaces; opening one switches the workspace through the same
+// link the desk already uses, so no new access path is created.
+function OpenClasses({ activeId }) {
+    const open = useOpenClasses();
+    const items = open.items.filter((entry) => entry.workspace.id !== activeId);
+    if (!items.length && !open.unavailable.length) return null;
+    return <section aria-labelledby="open-classes-heading" className="space-y-3" data-testid="open-classes">
+        <div><h2 id="open-classes-heading" className="font-display text-xl font-semibold">Classes you can join</h2>
+            <p className="text-sm text-muted-foreground">Live and scheduled classes in your other workspaces. Opening one switches your workspace.</p></div>
+        {items.length > 0 && <ul className="grid gap-4 md:grid-cols-2">{items.map(({ workspace, room }) => <li key={`${workspace.id}:${room.id}`} className="min-w-0"><Card className="flex h-full flex-col gap-2 p-5">
+            <div className="flex flex-wrap justify-between gap-2"><span className="text-xs font-semibold uppercase tracking-wide text-primary">{statusLabel[room.status]}</span><span className="text-xs text-muted-foreground">{workspace.name}</span></div>
+            <h3 className="break-words font-display text-lg font-semibold">{room.title}</h3>
+            <p className="text-xs text-muted-foreground">Hosted by {room.host_name}{room.status === 'scheduled' && room.starts_at ? ` · Planned for ${dateLabel(room.starts_at)}` : ''}</p>
+            <Button href={classroomHref(room.id, workspace.id)} variant="secondary" className="mt-auto self-start" aria-label={`Open ${room.title}`}>Open classroom</Button>
+        </Card></li>)}</ul>}
+        {open.unavailable.length > 0 && <p role="status" className="text-xs text-muted-foreground">Could not read classes in {open.unavailable.map((workspace) => workspace.name || workspace.id).join(', ')}.</p>}
+    </section>;
+}
+
 function ClassroomList({ control, onPage, status, onStatus }) {
     const [creating, setCreating] = useState(false);
     const navigate = useNavigate(); const { data } = control;
@@ -91,6 +116,7 @@ function ClassroomList({ control, onPage, status, onStatus }) {
         if (control.saved?.action === 'room.create') navigate(classroomHref(control.saved.id, data.workspace));
     }, [control.saved, navigate, data.workspace]);
     return <div className="space-y-5">
+        <OpenClasses activeId={data.workspace} />
         <div className="flex flex-wrap items-end justify-between gap-4">
             <div><label htmlFor="class-filter" className="mb-1 block text-sm">Show classes</label><select id="class-filter" className={controlInput} value={status} disabled={frozen(control)} onChange={(event) => onStatus(event.target.value)}>
                 <option value="all">All classes</option><option value="scheduled">Scheduled</option><option value="live">Live now</option><option value="ended">Ended</option></select></div>
@@ -98,7 +124,10 @@ function ClassroomList({ control, onPage, status, onStatus }) {
         </div>
         {!data.can_host && <p className="text-sm text-muted-foreground">Your viewer seat can join and follow lessons. An editor or administrator can host a class.</p>}
         <Feedback control={control} />
-        {!data.items.length && <Card className="space-y-3 p-6"><h2 className="font-display text-xl font-semibold">No classes here yet</h2><p className="text-sm text-muted-foreground">{status === 'all' ? 'Schedule the first class, or ask an editor in your workspace to host one.' : 'There are no classes matching this filter on this page.'}</p><Link className="text-sm underline underline-offset-4" to="/app/tutorials">Read the Field Manual while you wait</Link></Card>}
+        {!data.items.length && <Card className="p-6"><div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+            <Buddi pose="build" size={116} ground decorative className="shrink-0" />
+            <div className="space-y-3"><h2 className="font-display text-xl font-semibold">No classes here yet</h2><p className="text-sm text-muted-foreground">{status === 'all' ? 'Schedule the first class, or ask an editor in your workspace to host one.' : 'There are no classes matching this filter on this page.'}</p><Link className="text-sm underline underline-offset-4" to="/app/tutorials">Read the Field Manual while you wait</Link></div>
+        </div></Card>}
         <ul className="grid gap-4 md:grid-cols-2">{data.items.map((room) => <li key={room.id} className="min-w-0"><Card className="flex h-full flex-col gap-3 p-5">
             <div className="flex flex-wrap justify-between gap-2"><span className="text-xs font-semibold uppercase tracking-wide text-primary">{statusLabel[room.status]}</span><span className="text-xs text-muted-foreground">Hosted by {room.host_name}</span></div>
             <h2 className="break-words font-display text-xl font-semibold">{room.title}</h2><p className="line-clamp-3 whitespace-pre-wrap break-words text-sm text-muted-foreground">{room.description}</p>
@@ -187,7 +216,7 @@ function ClassroomDesk({ roomId }) {
         {control.loading && !control.data && <p role="status" className="text-sm text-muted-foreground">Loading classrooms…</p>}
         {control.error && <Card className="space-y-3 p-5"><p role="alert" className="text-sm">{control.error}</p>{!control.demo && <Button variant="secondary" onClick={control.refresh}>Retry connection</Button>}</Card>}
         {control.data && (roomId ? <Room control={control} onPage={setPage} /> : <ClassroomList control={control} onPage={setPage} status={status} onStatus={(value) => { setPage(1); setStatus(value); }} />)}
-        <p className="text-xs text-muted-foreground">Powered by Citadel Nexus Inc. · <a href="https://citadel-nexus.com/status" className="underline underline-offset-4">Service status</a></p>
+        <p className="text-xs text-muted-foreground">Powered by Citadel Nexus Inc. · <a href={STATUS_PATH} className="underline underline-offset-4">Service status</a></p>
     </div>;
 }
 

@@ -39,6 +39,7 @@ import {
     createMockEvidence,
     createMockMission,
     createMockSignal,
+    isoMinutesAgo,
     createMockWorkflow,
     createMockWorkspace,
     renderWithProviders,
@@ -230,18 +231,30 @@ describe('OverviewPage', () => {
         // Five was the cap when the feed held signals only. It now carries signals, missions,
         // evidence and editions together and keeps the eight most recent of all of them, so the
         // cap has to be exercised with more than eight or it is not being tested at all.
+        // Each signal needs its OWN timestamp. createMockSignal defaults every record to
+        // isoMinutesAgo(15), so ten of them shared one instant and "the newest eight" was
+        // undefined - the test passed or failed on whichever order the loads resolved in,
+        // about half the time each. Signal 1 is newest, so 1..8 survive and 9..10 fall off.
         seed({
             signals: Array.from({ length: 10 }, (_, i) =>
-                createMockSignal({ title: `Signal ${i + 1}` }),
+                createMockSignal({ title: `Signal ${i + 1}`, created: isoMinutesAgo(i + 1) }),
             ),
         });
         renderWithProviders(<OverviewPage />);
 
         await screen.findByRole('heading', { name: 'Recent activity', level: 2 });
         const feed = within(panel('Recent activity'));
-        expect(feed.getByText('Signal 1')).toBeInTheDocument();
+        expect(await feed.findByText('Signal 1')).toBeInTheDocument();
         expect(feed.getByText('Signal 8')).toBeInTheDocument();
         expect(feed.queryByText('Signal 9')).not.toBeInTheDocument();
+        expect(feed.queryByText('Signal 10')).not.toBeInTheDocument();
+        // The name of this test claims an ORDER, so assert it. With every record sharing one
+        // timestamp the old version could not have caught a reversed feed.
+        const shown = feed.getAllByText(/^Signal \d+$/).map((node) => node.textContent);
+        expect(shown).toEqual([
+            'Signal 1', 'Signal 2', 'Signal 3', 'Signal 4',
+            'Signal 5', 'Signal 6', 'Signal 7', 'Signal 8',
+        ]);
     });
 
     it('invites the user to connect a source when no signals exist', async () => {

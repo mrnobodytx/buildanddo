@@ -21,6 +21,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import WorkspaceContext from '@/contexts/WorkspaceContext';
 import AgentActivity from '@/components/broadcast/AgentActivity';
 import * as comms from '@/lib/seatComms';
+import { WITHHELD } from '@/lib/seatDisplay';
 
 vi.mock('@/lib/seatComms', () => ({
     recentSeatEvents: vi.fn(), subscribeSeatEvents: vi.fn(() => () => {}), connectSeatComms: vi.fn(async () => () => {}),
@@ -122,5 +123,23 @@ describe('agent activity', () => {
         expect(screen.getByRole('listitem')).toHaveTextContent('Retain the readable part');
         expect(getter).not.toHaveBeenCalled();
         expect(toJSON).not.toHaveBeenCalled();
+    });
+
+    // Carried from the trunk (SRS-BUILDANDDO-PUBLIC-REDACTION-001): seats are named without logins or machine names.
+    it('names seats without showing a login or a machine, and withholds machine names in what they wrote', async () => {
+        // Names that follow a machine family but that no machine carries, as in tests/upgrade/test_public_redaction.py.
+        comms.recentSeatEvents.mockResolvedValue([
+            event({ id: 'e5', seat: 'ray-xyz0-0@ocn.buildanddo.invalid', summary: 'Signed the lesson record' }),
+            event({ id: 'e6', seat: 'gm-builder-forge', summary: 'Moved the lesson to review', handoffTo: 'member@example.com' }),
+            event({ id: 'e7', seat: 'gm-builder-rig0', summary: 'Rebuilt on rig0', detail: 'Logs from codegen-rig0-build' }),
+        ]);
+        view({});
+        expect(await screen.findByText('Signed the lesson record')).toBeVisible();
+        expect(screen.getByText('Forge')).toBeVisible();
+        expect(screen.getByText('to another seat')).toBeVisible();
+        expect(screen.getAllByText('Agent')).toHaveLength(2);
+        expect(screen.getByText(`Rebuilt on ${WITHHELD}`)).toBeVisible();
+        expect(screen.getByText(`Logs from codegen-${WITHHELD}-build`)).toBeVisible();
+        expect(document.body.textContent).not.toMatch(/ray-xyz0-0|rig0|member@example\.com|buildanddo\.invalid/);
     });
 });

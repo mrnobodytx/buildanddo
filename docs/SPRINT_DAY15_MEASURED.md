@@ -141,7 +141,7 @@ staging      HOLD   missing: BUILDANDDO_STAGING_URL, BUILDANDDO_STAGING_DEPLOY_M
 production   HOLD   missing: BUILDANDDO_PRODUCTION_URL, BUILDANDDO_PRODUCTION_DEPLOY_MODE
 ```
 
-Those come from `D:\citadel_secrets\BuildAndDo\release.env`, which **does not exist**. The tool
+Those come from `the path named by CITADEL_RELEASE_ENV`, which **does not exist**. The tool
 ships its own scaffold at `.citadel/release.env.example`. This is operator credential
 placement, not engineering.
 

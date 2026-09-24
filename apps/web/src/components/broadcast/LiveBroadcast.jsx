@@ -15,11 +15,21 @@
 // Intent:      Put the host's live broadcast inside the routed classroom, with every unavailable or failed state said in words.
 // ───────────────────────────────────────────────────────────────
 
+import { personaForPresence, personaPath } from '@/data/personas';
+import { seatName, withoutMachineNames } from '@/lib/seatDisplay';
 import React from 'react';
 import { Bot, Headphones, Radio } from 'lucide-react';
 import BroadcastStage from '@/components/broadcast/BroadcastStage';
 import MediaControls from '@/components/broadcast/MediaControls';
 import { useClassroomMedia } from '@/hooks/useClassroomMedia';
+
+/** A broadcaster is named by persona, never by login or machine; a guildmaster the canon knows links to its profile. */
+function BroadcasterName({ id }) {
+    const persona = personaForPresence(id);
+    if (!persona) return seatName(id, 'Guildmaster');
+    return <a href={personaPath(persona)} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+        {persona.name}<span className="sr-only"> (opens in a new tab)</span></a>;
+}
 
 function Notice({ tone = 'muted', children, role }) {
     const color = tone === 'alert' ? 'text-destructive' : tone === 'caution' ? 'text-amber-text' : 'text-muted-foreground';
@@ -35,7 +45,7 @@ function Publishers({ media }) {
         return <li key={row.id} className="flex min-w-0 items-center justify-between gap-3 border border-border bg-card p-3 text-sm">
             <span className="flex min-w-0 items-center gap-2">
                 {agent ? <Bot className="h-4 w-4 shrink-0" aria-hidden="true" /> : <Radio className="h-4 w-4 shrink-0" aria-hidden="true" />}
-                <span className="min-w-0"><span className="block truncate font-semibold">{agent ? row.persona_id : row.display_name || 'Workspace member'}</span>
+                <span className="min-w-0"><span className="block truncate font-semibold">{agent ? <BroadcasterName id={row.persona_id} /> : withoutMachineNames(row.display_name) || 'Workspace member'}</span>
                     <span className="block text-xs text-muted-foreground">{agent ? 'Guildmaster agent' : 'Member'}{row.state !== 'LIVE' ? ` · ${String(row.state).toLowerCase()}` : ''}</span></span>
             </span>
             {pulled

@@ -1,0 +1,24 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        apps/web/public/apple-touch-icon.png.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-BUDDI-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-BUDDI-001
+# Seat:        C-ONE
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     apps/web/public/favicon.svg
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON apps/web/public/favicon.svg; CONSUMED_BY apps/web/index.html
+# DAG Node:    none
+# Intent:      Record the provenance of the iOS home-screen icon.
+# ───────────────────────────────────────────────────────────────
+
+file: apps/web/public/apple-touch-icon.png
+source: BuildAndDo community brand kit, brand/mark-180.png (rendered by brand/build_brand.py from the same geometry as favicon.svg)
+width: 180
+height: 180
+color_type: RGB, no alpha
+asset_sha256: e36da0b890496f5269a6589b377ec80c5e0a21b6225dbf688cd2208cc6038c75
+purpose: iOS home-screen icon (link rel="apple-touch-icon")
