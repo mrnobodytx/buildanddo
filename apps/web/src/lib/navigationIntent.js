@@ -48,13 +48,26 @@ export function classroomTelemetryLocation(value) {
     } catch { return value; }
 }
 
-/** @param {object|null} event Analytics event. @returns {object|null} Event with classroom location properties scrubbed. */
+const URL_SHAPED = /^(?:\/(?!\/)|https?:\/\/)/i;
+
+function scrubUrlStrings(value, depth) {
+    if (typeof value === 'string') return URL_SHAPED.test(value) ? classroomTelemetryLocation(value) : value;
+    if (!value || typeof value !== 'object' || depth > 4) return value;
+    for (const key of Object.keys(value)) value[key] = scrubUrlStrings(value[key], depth + 1);
+    return value;
+}
+
+/**
+ * Scrubs every URL- or path-shaped string anywhere in the event, not a fixed list of keys. A key
+ * list missed `$session_entry_url` (on every event of a session that began in a room or on a
+ * reset link), `$prev_pageview_pathname`, and the top-level `$set_once` sent on identify.
+ * Strings that match no private pattern come back unchanged.
+ *
+ * @param {object|null} event Analytics event. @returns {object|null} Event with classroom and reset locations scrubbed.
+ */
 export function scrubClassroomProperties(event) {
-    if (!event?.properties) return event;
-    for (const properties of [event.properties, event.properties.$set, event.properties.$set_once]) {
-        if (!properties || typeof properties !== 'object') continue;
-        for (const key of ['$current_url', '$pathname', '$referrer', '$initial_current_url', '$initial_pathname', '$initial_referrer'])
-            if (key in properties) properties[key] = classroomTelemetryLocation(properties[key]);
-    }
+    if (!event || typeof event !== 'object') return event;
+    for (const key of ['properties', '$set', '$set_once'])
+        if (event[key] && typeof event[key] === 'object') scrubUrlStrings(event[key], 0);
     return event;
 }
