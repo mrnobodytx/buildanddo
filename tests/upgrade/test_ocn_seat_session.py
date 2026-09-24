@@ -1,10 +1,11 @@
+# CGRF: SRS=SRS-BUILDANDDO-OCN-TELEMETRY-001 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_ocn_seat_session.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001
+# SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-OCN-TELEMETRY-001
 # CAPS:        B
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-COMMUNITY-WEB-001
+# Dispatch:    VCC-BUILDANDDO-COMMUNITY-WEB-001, VCC-BUILDANDDO-OCN-TELEMETRY-001
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
@@ -13,7 +14,8 @@
 # EnumEdges:   VALIDATES scripts/ci/ocn_seat_session.py
 # DAG Node:    none
 # Intent:      Prove the seat learns its guildmaster from its own box, refuses before any network call
-#              when it cannot, and that the public script names no fleet machine.
+#              when it cannot, sends nothing to any telemetry vendor, and that the public script names
+#              no fleet machine.
 # ───────────────────────────────────────────────────────────────
 
 """Exercise ocn_seat_session.py identity resolution without a fleet box or a network.
@@ -24,6 +26,7 @@ the change exists to remove.
 """
 from __future__ import annotations
 
+import ast
 import importlib.util
 import io
 import json
@@ -195,6 +198,89 @@ class MainTests(unittest.TestCase):
         self.assertEqual((out["seat"], out["persona"], out["guild"]), ("seat-alpha", "Sterling", "finance"))
         self.assertEqual(out["identity"]["state"], "RESOLVED")
         self.assertEqual(out["login"], "LOGIN_401")
+        self.assertEqual(out["telemetry"], {"accepted": 0, "refused": 0, "note": seat_session.TELEMETRY_NOTE})
+
+
+def ph_key() -> str:
+    """Built at run time: a key-like literal in a public test is what the commit-safety scan flags."""
+    return "_".join(("phc", "seat" * 6))
+
+
+def served(calls):
+    """A fake network that answers every request the session makes, and records where each went."""
+
+    def http(url, data=None, headers=None, method=None, timeout=25):
+        calls.append(url)
+        if "ipify" in url:
+            return {"status": 200, "body": ".".join(("198", "51", "100", "7")).encode(), "ms": 1, "ctype": "text/plain"}
+        if url.endswith((".json", "/_version")):
+            return {"status": 200, "body": b'{"ok": true}', "ms": 2, "ctype": "application/json"}
+        if "/api/collections/" in url:
+            return {"status": 200, "body": b'{"totalItems": 3}', "ms": 3, "ctype": "application/json"}
+        return {"status": 200, "body": b"<html><body>build and deploy</body></html>", "ms": 4, "ctype": "text/html"}
+
+    return http
+
+
+class CaptureRetiredTests(unittest.TestCase):
+    # MainTests' fixture, without inheriting (and so re-running) its tests.
+    setUp = MainTests.setUp
+    run_main = MainTests.run_main
+
+    def resolved(self, guild="finance"):
+        self.node.write_text(json.dumps({"seat_id": "seat-alpha", "persona": {"guild": guild}}), encoding="utf-8")
+
+    def session(self, argv):
+        calls = []
+        with patch.object(seat_session, "http", side_effect=served(calls)), \
+                patch.object(seat_session, "login", return_value=("session-token", "uid", "LOGIN_OK")):
+            buffer = io.StringIO()
+            with patch.object(sys, "argv", ["ocn_seat_session.py", *argv]), \
+                    patch.object(seat_session, "NODE_JSON", str(self.node)), \
+                    patch.object(seat_session, "PLACEMENT", str(self.placement)), \
+                    redirect_stdout(buffer):
+                code = seat_session.main()
+        return code, buffer.getvalue(), calls
+
+    def test_a_ph_key_is_accepted_and_nothing_goes_to_posthog(self):
+        self.resolved()
+        code, stdout, calls = self.session(["--ph-key", ph_key()])
+        self.assertEqual(code, 0)
+        self.assertTrue(calls)
+        self.assertFalse([url for url in calls if "posthog" in url])
+        self.assertNotIn(ph_key(), stdout)
+        self.assertEqual(json.loads(stdout.strip().splitlines()[-1])["telemetry"]["accepted"], 0)
+
+    def test_the_old_flags_still_parse(self):
+        self.resolved()
+        for argv in (["--no-capture"], ["--ph-key", ph_key(), "--no-capture"], []):
+            with self.subTest(argv=len(argv)):
+                self.assertEqual(self.session(argv)[0], 0)
+
+    def test_a_refusal_with_a_ph_key_still_touches_nothing(self):
+        with patch.object(seat_session, "http", side_effect=AssertionError("network call")) as network:
+            code, out = self.run_main(["seat-alpha", "--ph-key", ph_key()])
+        self.assertEqual((code, out["identity"]["state"]), (2, "REFUSED"))
+        network.assert_not_called()
+
+    def test_distinct_id_is_the_persona_never_the_seat(self):
+        for guild, expected in (("finance", "ocn:sterling"), ("entertainment", "ocn:director-nexus")):
+            with self.subTest(guild=guild):
+                self.resolved(guild)
+                _code, stdout, _calls = self.session([])
+                out = json.loads(stdout.strip().splitlines()[-1])
+                self.assertEqual(out["distinct_id"], expected)
+                self.assertNotIn("seat-alpha", out["distinct_id"])
+
+    def test_the_receipt_keeps_every_key_the_estate_aggregate_reads(self):
+        self.resolved()
+        _code, stdout, _calls = self.session([])
+        out = json.loads(stdout.strip().splitlines()[-1])
+        aggregate_reads = {"seat", "persona", "guild", "egress_ip", "session_id", "distinct_id", "login", "replay",
+                           "perception", "telemetry"}
+        self.assertLessEqual(aggregate_reads, set(out))
+        self.assertEqual([step["step"] for step in out["replay"]][:2], ["ocn_login", "pageview"])
+        self.assertEqual(out["telemetry"], {"accepted": 0, "refused": 0, "note": seat_session.TELEMETRY_NOTE})
 
 
 class PublicSourceTests(unittest.TestCase):
@@ -212,6 +298,23 @@ class PublicSourceTests(unittest.TestCase):
         personas = {entry["persona"] for entry in seat_session.GUILDMASTERS.values()}
         self.assertEqual(len(personas), 8)
         self.assertEqual(personas, set(seat_session.LEXICON))
+
+    def test_box_side_capture_is_gone(self):
+        source = SCRIPT.read_text(encoding="utf-8")
+        self.assertFalse(hasattr(seat_session, "Telemetry"))
+        self.assertFalse(hasattr(seat_session, "PH_HOST"))
+        for marker in ("posthog.com", "/i/v0/e/", "$identify", "$pageview", "ocn_box_ip"):
+            self.assertFalse(marker in source, "the seat script still carries %s" % marker)
+
+    def test_the_script_stays_standalone(self):
+        # It is shipped to a box on its own, so it may import nothing but the standard library.
+        tree = ast.parse(SCRIPT.read_text(encoding="utf-8"))
+        imported = {alias.name.split(".")[0] for node in ast.walk(tree) if isinstance(node, ast.Import)
+                    for alias in node.names}
+        imported |= {node.module.split(".")[0] for node in ast.walk(tree)
+                     if isinstance(node, ast.ImportFrom) and node.module}
+        self.assertLessEqual(imported, set(sys.stdlib_module_names) | {"__future__"})
+        self.assertTrue(imported)
 
 
 if __name__ == "__main__":
