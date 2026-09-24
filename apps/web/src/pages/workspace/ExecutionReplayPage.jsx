@@ -23,9 +23,13 @@ import { useBusinessExecution } from '@/hooks/useBusinessExecution';
 import { businessReplay } from '@/lib/businessExecution';
 
 function Replay({ api, demo }) {
-    const [data, setData] = useState(null), [page, setPage] = useState(1), [reload, setReload] = useState(0), [error, setError] = useState(''), [selected, setSelected] = useState('');
-    useEffect(() => { let alive = true; setData(null); setError('');
-        if (!demo) api.list({ page }).then((result) => { if (!alive || result.stale) return; if (result.ok) setData(result.data); else setError(result.error); });
+    const [data, setData] = useState(null), [page, setPage] = useState(1), [reload, setReload] = useState(0), [error, setError] = useState(''), [selected, setSelected] = useState(''), [discarded, setDiscarded] = useState(false);
+    useEffect(() => { let alive = true; setData(null); setError(''); setDiscarded(false);
+        // A stale answer is one the scope guard threw away because the signed-in account or selected
+        // workspace no longer matches the read; nothing further will arrive, so leaving the loading
+        // line up would make the page wait forever on a request that is already over.
+        if (!demo) api.list({ page }).then((result) => { if (!alive) return; if (result.stale) { setDiscarded(true); return; }
+            if (result.ok) setData(result.data); else setError(result.error); });
         return () => { alive = false; }; }, [api, page, reload, demo]);
     const replay = useMemo(() => businessReplay(data?.items || []), [data]);
     const job = data?.items.find((item) => item.id === selected);
@@ -40,7 +44,7 @@ function Replay({ api, demo }) {
         <PageHeader title="Execution replay" description="Trace requested work, dispatch and retained outcomes. Replay reads history and never reruns an action." />
         <div className="flex flex-wrap gap-3"><Button size="sm" variant="secondary" disabled={demo} onClick={() => setReload((value) => value + 1)}>Refresh receipts</Button>
             <Button size="sm" disabled={!data || demo} onClick={download}>Export this receipt page</Button><Link className="self-center text-sm underline" to="/app/workflows">Workflows</Link><Link className="self-center text-sm underline" to="/app/evidence">Evidence Ledger</Link></div>
-        {demo ? <p>No real execution receipts are loaded in demo mode.</p> : error ? <p role="alert">{error}</p> : !data ? <p role="status">Loading retained receipts…</p> : <>
+        {demo ? <p>No real execution receipts are loaded in demo mode.</p> : error ? <p role="alert">{error}</p> : discarded ? <p role="status">Receipts were not loaded: this read was made for an account and workspace that are no longer the ones open here, so the answer was discarded unread. That is not the same as having none. Use Refresh receipts to try again.</p> : !data ? <p role="status">Loading retained receipts…</p> : <>
             <p className="text-sm">This page: {replay.completed} succeeded · {replay.uncertain} uncertain · {replay.failed} failed. Provider success still requires mission review.</p>
             <div className="grid gap-4 lg:grid-cols-2"><Card className="space-y-3 p-4"><h2 className="font-display text-lg">Action receipts</h2>
                 {!data.items.length && <p className="text-sm">No recorded business actions on this page.</p>}

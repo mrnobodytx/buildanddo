@@ -77,7 +77,16 @@ export default function SupportRevenuePage() {
                                 </div>
                                 <p className="mt-2 text-sm text-muted-foreground">{p.note}</p>
                                 <Rule className="my-4" />
+                                {/* connect() writes status 'pending', and nothing in this repository ever
+                                    advances a support_sources row past it - so 'pending' is where a request
+                                    stops until a person acts. The copy here used to promise a "first
+                                    successful sync" no code performs, and the button relabelled itself
+                                    "Re-attempt connection", which reads to a person as "that failed, press it
+                                    again" when in truth the request was recorded and a second press would only
+                                    rewrite the same row. Say what is actually true instead. */}
                                 {connected ? (
+                                    /* Reachable only through that out-of-band step: an operator advancing the
+                                       row is the one thing that fills these fields, so they stay. */
                                     <dl className="font-evidence space-y-1.5 text-[12px] text-muted-foreground">
                                         <div className="flex justify-between"><dt>Gross</dt><dd className="text-foreground">{money(rec.gross, rec.currency)}</dd></div>
                                         <div className="flex justify-between"><dt>Platform fees</dt><dd className="text-foreground">{money(rec.platform_fees, rec.currency)}</dd></div>
@@ -85,18 +94,32 @@ export default function SupportRevenuePage() {
                                         <div className="flex justify-between"><dt>Payout status</dt><dd className="text-foreground">{rec.payout_status || 'Unknown'}</dd></div>
                                         <div className="flex justify-between"><dt>Last sync</dt><dd className="text-foreground">{rec.last_sync ? new Date(rec.last_sync).toLocaleString() : 'Unknown'}</dd></div>
                                     </dl>
+                                ) : rec?.status === 'pending' ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        Connection requested, and the request is recorded. Nothing in the product
+                                        takes it further: the {p.label} connection has to be completed by an
+                                        operator outside BuildAndDo. No gross, fee, refund or payout figures
+                                        appear on this card until that has happened.
+                                    </p>
                                 ) : (
                                     <p className="text-sm text-muted-foreground">
-                                        {rec?.status === 'pending'
-                                            ? 'Connection pending — awaiting authorization and first successful sync. No records shown yet.'
-                                            : 'Not connected. No records are displayed until a real sync returns data.'}
+                                        Not connected. No records are displayed until a real sync returns data.
                                     </p>
                                 )}
                                 <div className="mt-4">
-                                    <Button variant="secondary" size="sm" onClick={() => connect(p.key)} disabled={busy === p.key}>
-                                        {busy === p.key ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plug className="h-4 w-4" />}
-                                        {rec?.status === 'pending' ? 'Re-attempt connection' : 'Connect'}
-                                    </Button>
+                                    {rec?.status === 'pending' ? (
+                                        // Offering a press that can only rewrite the same 'pending' row would be
+                                        // an affordance pretending to a power the product does not have.
+                                        <Button variant="secondary" size="sm" disabled>
+                                            <Plug className="h-4 w-4" />
+                                            Connection requested
+                                        </Button>
+                                    ) : (
+                                        <Button variant="secondary" size="sm" onClick={() => connect(p.key)} disabled={busy === p.key}>
+                                            {busy === p.key ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plug className="h-4 w-4" />}
+                                            Connect
+                                        </Button>
+                                    )}
                                 </div>
                             </Card>
                         );
