@@ -101,8 +101,23 @@ def start_once(binary, data_dir, hooks, migrations, seconds=25):
         cmd += ["--hooksDir", hooks]
     if migrations:
         cmd += ["--migrationsDir", migrations]
+    # Two things this spawn must not do to the operator's desktop, both measured on Windows:
+    # a console window flashes up for every start, and PocketBase treats a data directory with no
+    # superuser as a first install - it prints /_/#/pbinstall/<token> and OPENS IT IN THE DEFAULT
+    # BROWSER. The gate runs this repeatedly, so it threw setup tabs at whoever was using the
+    # machine. 0.39.8 has no serve flag for either; seeding a throwaway superuser into the scratch
+    # copy removes the install condition, and CREATE_NO_WINDOW removes the console.
+    # NO SUPERUSER SEED HERE, deliberately. Seeding one means running `superuser upsert`, which
+    # boots the app and applies migrations BEFORE the serve - so the preflight would no longer be
+    # measuring the pending set it exists to measure. Tried and reverted: it took the planted
+    # control from PASS/FAIL to FAIL/FAIL, i.e. the gate stopped being able to tell a good set from
+    # a broken one, which is far worse than a browser tab. The install page is not a concern on the
+    # real target anyway: this runs against a COPY of a live database, which already has its
+    # superusers. Only CREATE_NO_WINDOW is applied, for the console flash.
+    quiet = {"creationflags": subprocess.CREATE_NO_WINDOW} if os.name == "nt" else {}
     try:
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                                **quiet)
     except Exception as exc:  # noqa: BLE001
         return {"state": "UNMEASURED", "reason": "could not exec: %s" % type(exc).__name__}
 
