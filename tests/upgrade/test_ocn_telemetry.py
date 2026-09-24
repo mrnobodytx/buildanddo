@@ -1653,12 +1653,14 @@ class Vendor:
 class Stored:
     """Both vendors as a store: what they accept, they keep and read back. PostHog keeps a batch sent under
     the capture key (never the invalid-key twin), Datadog each event and log line by its ocn_run tag, and
-    a Datadog key other than the real one is refused. `fail_logs` answers the first logs intake with 500."""
+    a Datadog key other than the real one is refused. `fail_logs` answers the first logs intake with 500;
+    `fail_control` answers the invalid-key twin with 500, so the twin never reaches PostHog."""
 
-    def __init__(self, fail_logs: bool = False):
+    def __init__(self, fail_logs: bool = False, fail_control: bool = False):
         self.posthog: dict[tuple[str, str], set] = {}
         self.datadog: dict[str, list[str]] = {"events": [], "logs": []}
         self.fail_logs = fail_logs
+        self.fail_control = fail_control
 
     @staticmethod
     def run_of(tags: str) -> str:
@@ -1666,6 +1668,8 @@ class Stored:
 
     def __call__(self, method, url, body, headers, timeout):
         if url == t.PH_CAPTURE:
+            if body["api_key"] != capture_key() and self.fail_control:
+                return 500, "", None
             for event in body["batch"] if body["api_key"] == capture_key() else []:
                 self.posthog.setdefault((event["properties"]["ocn_run_id"], event["event"]), set()).add(event["uuid"])
             return 200, "", {"status": "Ok"}
@@ -1740,6 +1744,41 @@ class VerifyTests(Harness):
         self.assertEqual(t.read_ledger(self.ledger, entry["run_id"])["sinks"]["datadog"]["state"], "SENT")
         self.assertEqual(t.block_from_ledger(updated, self.ledger)["state"], "SENT")
         self.assertEqual([item["run_id"] for item in t.pending_entries(self.ledger)], [entry["run_id"]])
+
+    def test_a_delivered_twin_is_recorded_as_sent(self):
+        block = self.publish(receipts()["ocn_journey_report"], transport=Stored())
+        self.assertEqual((block["state"], block["degraded"]), ("SENT", False))
+        self.assertEqual(block["posthog"]["control_state"], "SENT")
+
+    def test_a_twin_that_never_went_out_leaves_the_send_degraded_and_c1_unmeasured(self):
+        vendor = Stored(fail_control=True)
+        block = self.publish(receipts()["ocn_journey_report"], transport=vendor)
+        self.assertEqual((block["state"], block["degraded"]), ("SENT", True))
+        self.assertEqual(block["posthog"]["control_state"], "UNSENT")
+        result = t.verify_entry(t.read_ledger(self.ledger, block["run_id"]), self.read(vendor), 0)
+        # An absent twin proves nothing when the twin was never sent, so C1 cannot hold and nothing verifies.
+        self.assertEqual(result["posthog"]["controls"]["C1_invalid_key_absent"], "UNMEASURED")
+        self.assertEqual(result["posthog"]["state"], "UNMEASURED")
+        self.assertNotEqual(result["state"], "VERIFIED")
+
+    def test_a_ledger_without_control_state_falls_back_to_the_twin_status(self):
+        entry = self.sent()
+        for control_http, expected in ((200, "HELD"), (None, "UNMEASURED")):
+            legacy = copy.deepcopy(entry)
+            legacy["sinks"]["posthog"].pop("control_state", None)
+            legacy["sinks"]["posthog"]["control_http"] = control_http
+            self.assertEqual(self.verify(legacy)["posthog"]["controls"]["C1_invalid_key_absent"], expected)
+
+    def test_a_send_after_a_dry_run_does_not_inherit_its_time(self):
+        receipt = receipts()["ocn_journey_report"]
+        earlier = NOW - dt.timedelta(minutes=5)
+        dry = self.publish(receipt, mode="dry-run", now=earlier)
+        self.assertEqual(t.read_ledger(self.ledger, dry["run_id"])["first_published_at"], t.iso(earlier))
+        sent = self.publish(receipt, transport=Stored())
+        self.assertEqual(t.read_ledger(self.ledger, sent["run_id"])["first_published_at"], t.iso(NOW))
+        # A later send of the same run keeps the first real send's time.
+        self.publish(receipt, transport=Stored(), now=NOW + dt.timedelta(minutes=5))
+        self.assertEqual(t.read_ledger(self.ledger, sent["run_id"])["first_published_at"], t.iso(NOW))
 
     def test_a_control_that_could_not_be_measured_is_never_held(self):
         entry = self.sent()

@@ -1758,10 +1758,13 @@ def _block(mode: str, *, ids: dict[str, str] | None = None, reason: str = "", pr
     if state == "UNSENT" and not reason:
         reason = next((sink.get("reason") for sink in (posthog, datadog)
                        if sink.get("reason") and sink.get("reason") != "NOT_SELECTED"), "")
-    # Partly sent: a selected sink sent nothing, or a Datadog part failed while another was accepted.
+    # Partly sent: a selected sink sent nothing, a Datadog part failed while another was accepted, or
+    # PostHog took the batch but its invalid-key twin never went out.
     degraded = state != "UNSENT" and (
         any(sink["state"] == "UNSENT" and sink.get("reason") != "NOT_SELECTED" for sink in (posthog, datadog))
-        or any(_part_failed(datadog.get(key)) for key in ("event", "logs", "series")))
+        or any(_part_failed(datadog.get(key)) for key in ("event", "logs", "series"))
+        or (posthog["state"] in ("SENT", "VERIFIED")
+            and posthog.get("control_state") not in (None, "SENT", "VERIFIED")))
     return {"contract": CONTRACT, "run_id": (ids or {}).get("run_id", ""),
             "receipt_sha256": (ids or {}).get("sha", ""), "probe": probe, "mode": mode, "state": state,
             "degraded": degraded,
@@ -1820,9 +1823,13 @@ def _sinks_report(plan: Plan, results: dict[str, dict[str, Any]], selected: tupl
     counts = _counts(plan)
     if "posthog" in selected:
         batch = results.get("posthog.batch") or _sink(reason=plan.skipped.get("posthog.batch", ""))
-        control = results.get("posthog.control") or {}
+        # The invalid-key twin is verify's C1. Record whether it went out: if it did not, C1 has nothing
+        # to hold and the send is only partly done.
+        planned = "posthog.control" in plan.bodies
+        control = results.get("posthog.control") or (_sink(reason="NOT_ATTEMPTED") if planned else {})
         posthog = _sink(batch["state"], batch.get("reason", ""), events=counts["posthog.batch"],
-                        http=batch.get("http"), control_http=control.get("http"))
+                        http=batch.get("http"), control_http=control.get("http"),
+                        control_state=control.get("state") if planned else None)
     else:
         posthog = _sink(reason="NOT_SELECTED")
     if "datadog" in selected:
@@ -1850,7 +1857,9 @@ def _ledger_entry(plan: Plan, mode: str, posthog: dict, datadog: dict, provenanc
             "probe": plan.probe.name, "env": plan.view["env"], "persona": plan.view["actor"]["persona"],
             "outcome": plan.view["outcome"], "mode": mode, "publisher_digest": plan.digests["publisher"],
             "probe_digest": plan.digests["probe"], "receipt_at": iso(plan.at),
-            "first_published_at": (previous or {}).get("first_published_at") or iso(now),
+            # A dry run publishes nothing, so a real send never inherits a dry run's time.
+            "first_published_at": ((previous or {}).get("first_published_at")
+                                   if (previous or {}).get("mode") == "send" else None) or iso(now),
             "published_at": iso(now), "expected": plan.expected,
             "body_sha256": {name: body_hash(name) for name in plan.bodies},
             "sinks": {"posthog": posthog, "datadog": datadog}, "credentials": provenance,
@@ -2132,7 +2141,13 @@ def verify_posthog(entry: dict[str, Any], read: Readback, wait: float) -> dict[s
     if counts is None:
         return {"state": "UNMEASURED", "reason": "TRANSPORT:%s" % (status or "no answer"), "expected": expected}
     _never_status, never = _ph_counts(read, key, str(PH_PROJECT), str(uuid.uuid4()), window)
-    controls = {"C1_invalid_key_absent": "HELD" if not counts.get("ocn_telemetry_control", [0])[0] else "FAILED",
+    # C1 can only hold if the twin went out. A ledger written before control_state existed carries only
+    # the twin's HTTP status, and PostHog answers a delivered twin with 200.
+    sink = (entry.get("sinks") or {}).get("posthog") or {}
+    twin_sent = (sink["control_state"] in ("SENT", "VERIFIED") if sink.get("control_state") is not None
+                 else sink.get("control_http") == 200)
+    controls = {"C1_invalid_key_absent": ("UNMEASURED" if not twin_sent
+                                          else "HELD" if not counts.get("ocn_telemetry_control", [0])[0] else "FAILED"),
                 "C2_never_sent_id_empty": ("UNMEASURED" if never is None
                                            else "HELD" if not any(value[0] for value in never.values()) else "FAILED"),
                 "C3_other_project_empty": _canary(read, key, run_id, window)}
@@ -2144,7 +2159,7 @@ def verify_posthog(entry: dict[str, Any], read: Readback, wait: float) -> dict[s
                "agent_persons": _project_count(read, key, Q_PERSONS, since)}
     if "FAILED" in controls.values():
         state = "VOID"
-    elif controls["C2_never_sent_id_empty"] == "UNMEASURED":
+    elif "UNMEASURED" in (controls["C1_invalid_key_absent"], controls["C2_never_sent_id_empty"]):
         state = "UNMEASURED"
     else:
         state = "VERIFIED" if _ph_found(counts, expected) else "NOT_FOUND"

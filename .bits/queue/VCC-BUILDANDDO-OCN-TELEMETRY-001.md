@@ -134,6 +134,19 @@ Evidence, offline, with sockets refused:
 - The locks, gates and sweeps are listed in the pull request. They were run on this tree after the locks
   were regenerated LF.
 
+After the review round (2026-09-24):
+- The staging line after #109 (`82df1fb`) is merged in. #109 gave the feature sweep an `UNMEASURABLE`
+  row state; the adapter already publishes those rows unjudged, and every run state the sweep writes is in
+  its vocabulary. Only the two locks overlapped; they were regenerated over the merged tree.
+- Two defects the fixer found are closed:
+  - A PostHog batch that was accepted while its invalid-key twin never went out read as a clean `SENT`,
+    and verify's C1 then held on nothing. The PostHog sink now records `control_state`. Such a send is
+    degraded and fails `--strict`, and C1 reads `UNMEASURED`, which blocks `VERIFIED`, unless the twin
+    went out. A ledger written before the field existed falls back to the twin's HTTP status.
+  - A real send inherited `first_published_at` from an earlier dry run, which widened verify's window.
+    Only a previous real send's time is kept now.
+- Four tests cover them, and reversing any of the five changes makes one fail. Unit tests: 192 of 192.
+
 Decisions for the operator:
 - `publish` with no `--mode` and the switch unset is still a dry run, as before. It writes the ledger's
   counts and sends nothing. R1's "no file is written" holds for `run`.
