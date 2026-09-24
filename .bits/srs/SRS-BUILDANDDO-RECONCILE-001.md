@@ -105,8 +105,29 @@ Scanning every line the merge adds, with the private fleet map, turned up one mo
     - the handoff both lines carried under two names becomes one file at the staging line's path, with main's
       added section, and main's references point at it.
 
-    One family match stays: a hosting plan's product key in recorded evidence. The staging line's generator
-    already carries the same key, and changing the record would relabel it (R12).
+    Two findings stay, each for a stated reason:
+    - a hosting plan's product key in recorded evidence. The staging line's generator already carries the same
+      key, and changing the record would relabel it (R12);
+    - one real branch whose name contains a machine name, kept verbatim in #105's branch-archive lists and its
+      consolidation table. Deleting that branch needs its exact name, and deleting it removes the name from the
+      public remote.
+
+## Two reconciliations (2026-09-24)
+
+#106 took main into the staging line at 22:31 CDT on 2026-09-23. Two minutes later #105
+(`SRS-BUILDANDDO-RECONCILE-002`, another session) took the staging line into main. The two resolved the same
+conflicts differently, so the lines still differed in 52 files.
+
+14. **R14 - converge on #106's resolutions.** Operator decision, 2026-09-24. main at `4c60b79` is merged into the
+    staging line, and:
+    - where #106 and #105 resolved the same conflict differently, #106's form stays;
+    - everything main gained beyond #105's resolutions stays, meaning #103's career evidence and #105's
+      follow-ups, handoffs and ported tests;
+    - where #105 kept something from either side that #106 had lost, it comes back, because losing it was never
+      a choice;
+    - recorded evidence is re-run on the converged sources (R12), and the locks are regenerated.
+
+    Afterwards main is an ancestor of the staging line, so the pull request into main merges without conflicts.
 
 ## Out of scope
 
@@ -120,4 +141,4 @@ Scanning every line the merge adds, with the private fleet map, turned up one mo
 - The three suites pass on the merged tree.
 - `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check` and
   `verify_public_boundary.py` pass, also in a fresh LF checkout.
-- No line the merge adds carries an address or a machine name, apart from the one R13 names.
+- No line the merge adds carries an address or a machine name, apart from the two R13 names.

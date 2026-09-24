@@ -12,7 +12,7 @@
 // EnumType:    Service
 // EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
-// Intent:      Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer that is never sent before it is earned.
+// Intent:      Keep canonical checkpoints and full grading snapshots private while serving keyless lessons with bounded answer retries.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
@@ -72,7 +72,7 @@ function snapshot(record) {
     return result;
 }
 function lessonFor(app, e, record) {
-    const tutorial = access.find(app, 'tutorials', access.id(e.request.pathValue('id')));
+    const tutorial = access.find(app, 'tutorials', access.id(record ? record.getString('tutorial') : e.request.pathValue('id')));
     if (!government.lesson(app, e.auth, tutorial)) access.readable(app, tutorial, e.requestInfo());
     const body = record ? access.json(record, 'snapshot') : snapshot(tutorial);
     if (body?.category === 'Government submissions') government.requireMember(app, e.auth);
@@ -97,24 +97,19 @@ function output(record) {
         completed_at: record.getString('completed_at'), certificate, points: completed ? POINTS : 0,
         status: completed ? 'completed' : 'in_progress', progress: completed ? 100 : Math.floor((next + (practiced ? 1 : 0)) * 100 / (sections + 2)) };
 }
-function projectProgress(app, record) {
-    const collection = access.schema(app, 'tutorial_progress', ['owner', 'tutorial', 'status', 'progress']);
-    const owner = record.getString('owner'), tutorial = record.getString('tutorial');
-    const rows = app.findRecordsByFilter('tutorial_progress', 'owner = {:owner} && tutorial = {:tutorial}', '-updated,id', 101, 0, { owner, tutorial });
-    if (rows.length > 100) throw new ApiError(503, 'Learning history needs an operator review.');
-    const progress = rows.find((row) => row.getString('status') === 'completed') || rows[0] || new Record(collection);
-    const state = output(record);
-    progress.set('owner', owner); progress.set('tutorial', tutorial);
-    const complete = progress.getString('status') === 'completed' || state.status === 'completed';
-    progress.set('status', complete ? 'completed' : 'in_progress');
-    progress.set('progress', complete ? 100 : Math.max(Number(progress.get('progress') || 0), state.progress));
-    app.save(progress);
+function detailResult(owner, tutorial, record) {
+    const lesson = tutorial.lesson;
+    // Project only at the response boundary; the enrolled snapshot and its digest remain full.
+    return { schema_version: 1, account_id: owner, enrollment: output(record), tutorial: { ...tutorial, lesson: {
+        schema_version: lesson.schema_version, outcomes: lesson.outcomes, why: lesson.why, preparation: lesson.preparation,
+        sections: lesson.sections.map((section) => ({ heading: section.heading,
+            ...(section.paragraphs === undefined ? {} : { paragraphs: section.paragraphs }),
+            ...(section.steps === undefined ? {} : { steps: section.steps }) })),
+        exercise: { prompt: lesson.exercise.prompt, checklist: lesson.exercise.checklist },
+        check: { question: lesson.check.question, choices: lesson.check.choices },
+        references: lesson.references.map(({ label, url }) => ({ label, url })),
+    } } };
 }
-// The digest covers the full stored lesson; the answer and explanation return for review only after this learner earned them.
-function reviewed(tutorial, record) {
-    return record && record.getString('completed_at') ? tutorial : { ...tutorial, lesson: access.publicLesson(tutorial.lesson) };
-}
-function detailResult(owner, tutorial, record) { return { schema_version: 1, account_id: owner, tutorial: reviewed(tutorial, record), enrollment: output(record) }; }
 function retryWait(record) {
     const wait = Math.ceil((Date.parse(record.getString('answer_retry_at').replace(' ', 'T')) - Date.now()) / 1000);
     return wait > 0 && wait <= RETRY_SECONDS ? wait : 0;
@@ -185,15 +180,23 @@ function command(e) {
                     issuer: 'BuildAndDo · Citadel Nexus Inc.', learner: user.getString('name').trim().slice(0, 120) || 'BuildAndDo learner',
                     title: tutorial.title, tutorial: id, curriculum_version: tutorial.curriculum_version, content_digest: tutorial.content_digest,
                     issued_at: issued, learning_points: POINTS,
-                    achievement: 'Completed lesson sections, recorded the practice checklist and passed the knowledge check.',
-                    scope: 'Course completion. No external accreditation or professional qualification.' });
+                    achievement: 'Completed lesson checkpoints, self-reported practice and answered the open-book tutorial question.',
+                    scope: 'open-book tutorial completion; practice self-reported. Not independently verified mastery, external accreditation or professional qualification.' });
                 changed = true;
             }
         }
-        if (changed) { app.save(record); projectProgress(app, record); }
+        if (changed) app.save(record);
         result = { ...detailResult(user.id, tutorial, record), feedback, replayed: !changed };
     });
     return result;
+}
+
+/** @param {object} e Native authenticated request. @returns {object} Bounded canonical states, never legacy reading claims. */
+function states(e) {
+    const user = account(e.app, e), number = access.page(e);
+    const rows = e.app.findRecordsByFilter('tutorial_learning', 'owner = {:owner}', 'tutorial,id', 21, (number - 1) * 20, { owner: user.id });
+    return { schema_version: 1, account_id: user.id, page: number, has_more: rows.length > 20,
+        items: rows.slice(0, 20).map((record) => { lessonFor(e.app, e, record); return output(record); }) };
 }
 
 /** @param {object} e Native authenticated request. @returns {object} Persistent personal growth and paginated completion certificates. */
@@ -213,6 +216,7 @@ function list(e) {
     const number = access.page(e);
     const rows = e.app.findRecordsByFilter('tutorial_learning', filter, '-completed_at,-id', 6, (number - 1) * 5, params);
     const active = e.app.findRecordsByFilter('tutorial_learning', 'owner = {:owner} && completed_at = ""', '-updated,-id', 1, 0, params)[0];
+    for (const record of [...rows.slice(0, 5), ...(active ? [active] : [])]) lessonFor(e.app, e, record);
     const levels = [
         { number: 1, name: 'Explorer', floor: 0, next: 100 },
         { number: 2, name: 'Practitioner', floor: 100, next: 500 },
@@ -253,4 +257,4 @@ function enrich(e) {
     e.record.set('lesson', access.publicLesson(lesson));
 }
 
-module.exports = { detail, command, list, interactive, certified, enrich };
+module.exports = { detail, command, list, states, interactive, certified, enrich };

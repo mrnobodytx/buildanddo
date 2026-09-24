@@ -1,9 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/workHistory.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-COMMUNITY-001
+// SRS:         SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
@@ -59,14 +60,17 @@ function deriveWorkState(events) {
 function summariseSeats(events) {
     const bySeat = new Map();
     for (const event of events) {
-        const existing = bySeat.get(event.seat);
+        const key = JSON.stringify([event.owner, event.seat, event.actorType]);
+        const existing = bySeat.get(key);
         if (existing) {
             existing.eventCount += 1;
             continue;
         }
-        bySeat.set(event.seat, {
+        bySeat.set(key, {
             seat: event.seat,
-            actorType: event.actorType || 'human',
+            owner: event.owner,
+            attribution: 'reported',
+            actorType: event.actorType || 'not recorded',
             lastEvent: event.event,
             lastSummary: event.summary,
             lastAt: event.createdAt,
@@ -92,6 +96,8 @@ function toHistoryEvent(record) {
         event: record.event,
         seat: record.seat,
         actorType: record.actor_type,
+        owner: record.owner || null,
+        attribution: 'reported',
         summary: record.summary,
         prUrl: record.pr_url || null,
         handoffTo: record.handoff_to || null,

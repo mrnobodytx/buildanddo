@@ -83,18 +83,20 @@ coordinate A2/A3 authority before starting.
    internal hostnames, or anything outside the public allowlist
    (`.buildanddo/public/path-policy.json`).
 5. If your change touches the evidence fabric (`services/praxis_evidence/`),
-   run `python services/praxis_evidence/run_all_tests.py` — real tests against
-   a live PocketBase instance, not mocks. Point it at your local stack:
+    use its disposable native runner. It starts a fresh loopback database per
+    suite, applies the public Praxis schema, and discards all fixture records:
 
    ```bash
-   export PB_API_URL=http://localhost:8090
-   export PB_SUPERUSER_EMAIL=admin@buildanddo.local
-   export PB_SUPERUSER_PASSWORD=localdev-change-me   # your .env values
-   python services/praxis_evidence/run_all_tests.py
+    python services/praxis_evidence/run_all_tests.py --profile package --binary /path/to/pocketbase-0.39.8
+    python services/praxis_evidence/run_all_tests.py --profile compose --binary /path/to/pocketbase-0.28.4
    ```
 
-   The suite writes real records, so run it against the container database —
-   never a deployed one. `docker compose down -v` resets it.
+    Recheck declared versions before provisioning. Missing binaries are BLOCKED,
+    not a reason to use a shared server. GitLab can explicitly `--provision` the
+    selected binary using the existing Docker test helper. Shared `PB_API_URL`,
+    deployment files and credentials are not inherited. Direct selftest scripts
+    refuse to run without the runner-owned fixture. For one suite, use `--suite`
+    through the runner; never aim these mutating tests at staging or production.
 5. **Test an authenticated surface as a user, not just as an admin.** Every
    product collection is owner-scoped, and several are additionally scoped by
    `workspace_members` role; a change that works for the record's owner can

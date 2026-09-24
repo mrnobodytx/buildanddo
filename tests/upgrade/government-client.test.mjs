@@ -61,18 +61,25 @@ test('saved premium lesson snapshots cannot be read or advanced after revocation
     const started = f.command('start');
     f.data.government_memberships[0].status = 'revoked';
     assert.throws(() => f.detail(), { status: 403 });
+    assert.throws(() => f.service.states(f.event('owner')), { status: 403 });
     assert.throws(() => f.command('section', { index: 0 }, { digest: started.tutorial.content_digest }), { status: 403 });
     // A saved restricted snapshot remains restricted even if today's category changes.
     row.category = 'General';
     assert.throws(() => f.detail(), { status: 403 });
+    assert.throws(() => f.service.states(f.event('owner')), { status: 403 });
 });
 
-test('premium completion certificates remain personal records without disclosing saved lesson bodies', () => {
+test('premium certificates retain their exact bytes but current learning reads fail closed after revocation', () => {
     const f = installGovernment(learningFixture(), ['owner']);
     f.data.tutorials.find((row) => row.id === f.lessons[0].id).category = 'Government submissions';
-    f.finish(); f.data.government_memberships[0].status = 'revoked';
+    f.finish(); const saved = plain(f.data.tutorial_learning);
     const growth = f.list(); assert.equal(growth.points, 100); assert.equal(growth.certificates.items.length, 1);
     assert.doesNotMatch(JSON.stringify(growth), /"sections"|"checklist"|"lesson":/);
+    f.data.government_memberships[0].status = 'revoked';
+    assert.throws(() => f.list(), { status: 403 });
+    assert.throws(() => f.service.states(f.event('owner')), { status: 403 });
+    assert.deepEqual(f.data.tutorial_learning, saved);
+    assert.equal(f.list('otherowner').points, 0);
 });
 
 test('government classrooms hide lessons and discussion from unpaid participants and cached joins', () => {

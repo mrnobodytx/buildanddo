@@ -28,7 +28,7 @@ vi.mock('@/lib/seatComms', () => ({
     disconnectSeatComms: vi.fn(async () => {}), isSeatCommsConnected: vi.fn(() => false),
 }));
 const view = (props) => render(<WorkspaceContext.Provider value={{ active: { id: 'ws1' } }}><AgentActivity {...props} /></WorkspaceContext.Provider>);
-const event = (overrides) => ({ id: 'e1', name: 'seat.completed', seat: 'kestrel-verify', actorType: 'agent', summary: 'Checked the DNS steps against the provider docs',
+const event = (overrides) => ({ id: 'e1', name: 'seat.completed', seat: 'kestrel-verify', actorType: 'agent', owner: 'account1', attribution: 'reported', summary: 'Checked the DNS steps against the provider docs',
     detail: null, subject: 'lesson-3', subjectType: 'mission', prUrl: null, handoffTo: null, createdAt: '2026-09-23 03:12:00.000Z', ...overrides });
 
 beforeEach(() => { comms.recentSeatEvents.mockReset(); comms.isSeatCommsConnected.mockReturnValue(false); });
@@ -44,6 +44,10 @@ describe('agent activity', () => {
         expect(screen.getByText('History only · live updates not connected')).toBeVisible();
         expect(screen.getAllByText('mission: lesson-3')).toHaveLength(2);
         expect(comms.recentSeatEvents).toHaveBeenCalledWith('ws1', { limit: 12 });
+        expect(screen.queryByText(/^verified$/i)).not.toBeInTheDocument();
+        expect(screen.getAllByText(/^reported$/i)).toHaveLength(2);
+        expect(screen.getByText('Submitting account: account1. Claimed actor: agent.')).toBeVisible();
+        expect(screen.getByText(/Seat labels and actor types do not authenticate an agent/)).toBeVisible();
     });
 
     it('says when no one is in the class, and never presents an empty or failed read as proof of no work', async () => {

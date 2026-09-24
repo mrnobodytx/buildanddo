@@ -53,6 +53,7 @@ MIGRATIONS = (
     "1791300000_classroom_attendance.js",
     "1791400000_classroom_media_sessions.js",
     "1791400001_broadcast_classroom_lessons.js",
+    "1791500002_authority_repair_lessons.js",
 )
 HOOKS = (
     "classrooms.pb.js",
@@ -351,7 +352,7 @@ class ClassroomServer(DiagnosticNativeServer):
                 )
             data_dir = self.root / "pb_migrations/data"
             data_dir.mkdir(parents=True)
-            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json"):
+            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json", "authority-repairs-lessons.json"):
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations/data" / name, data_dir / name
                 )
@@ -711,7 +712,8 @@ class NativeClassroomTests(unittest.TestCase):
                 self.assertIsNone(schema[rule])
         status, listing = self.server.request("GET", self.path, token=self.owner)
         self.assertEqual(status, 200)
-        self.assertEqual(len(listing["lessons"]["items"]), 26)
+        self.assertEqual(len(listing["lessons"]["items"]), 27)
+        self.assertIn("bdoauthority001", {row["id"] for row in listing["lessons"]["items"]})
         self.assertIn(
             "bdobroadcast001", {row["id"] for row in listing["lessons"]["items"]}
         )
@@ -1122,9 +1124,11 @@ class NativeClassroomTests(unittest.TestCase):
         session = self.media_session(room)
         before = self.server.stored("classroom_media_sessions")[0]
         self.server.stop()
-        # The additive lesson is last; the media migration is immediately before it. revert()
-        # moves them aside too, because serve re-applies a pending migration on 0.39.8.
-        self.server.revert("2")
+        # Roll back through the media migration: every migration listed after it goes first. Counted from
+        # the list, because main added the authority lesson after the broadcast one and a fixed "2" then
+        # stopped short of media. revert() moves them aside too, because serve re-applies a pending
+        # migration on 0.39.8.
+        self.server.revert(str(len(MIGRATIONS) - MIGRATIONS.index("1791400000_classroom_media_sessions.js")))
         self.assertNotIn(
             "protocol_version",
             {

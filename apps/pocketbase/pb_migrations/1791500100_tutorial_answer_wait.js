@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -20,7 +20,7 @@ migrate((app) => {
     const field = { name: 'answer_retry_at', type: 'date' };
     const saved = collection.fields.getByName(field.name);
     if (saved) {
-        if ((typeof saved.type === 'function' ? saved.type() : saved.type) !== field.type) throw new Error('Review custom tutorial_learning.answer_retry_at.');
+        if (String(typeof saved.type === 'function' ? saved.type() : saved.type) !== field.type) throw new Error('Review custom tutorial_learning.answer_retry_at.');
         return;
     }
     collection.fields.add(new Field(field));

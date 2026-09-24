@@ -26,16 +26,22 @@ and personal growth display are shared with Docs and the home Field Manual.
    checkpoint and resume it after signing back in, including from another device.
 3. Work through the practice example and check each exercise item. The checklist
    is a recorded learner assertion; it does not run a business operation.
-4. Submit the final knowledge check. Wrong answers return an explanation and can
-   be retried. The server checks the saved lesson's answer before completion.
+4. Submit the final knowledge check. Wrong answers return a generic prompt to
+   review the lesson and a 30-second retry wait, not the authored explanation.
+   The server checks the saved lesson's answer before completion.
 5. Receive a **BuildAndDo certificate of completion** and 100 learning points.
    Download the certificate or find it later under **My certificates**. Its HTML
    opens offline and can be printed or saved as a PDF using the browser.
 
 The certificate records the learner name at completion, tutorial title/version,
 content fingerprint, issue time and stable receipt ID. It certifies completion
-of this educational tutorial. It is not a signed W3C credential, independent
-TEVV result, professional qualification or external accreditation.
+of this open-book educational tutorial with self-reported practice. It is not a
+signed W3C credential, independently verified mastery, TEVV result, professional
+qualification or external accreditation. Guided responses contain only the
+question and choices; feedback follows an answer command. Browser previews,
+catalogue reads and public feeds omit grading keys and pre-answer explanations.
+The authored keys remain in public repository source; removing them from the
+browser does not make these questions a secret or proctored examination.
 
 ## Persistent growth
 
@@ -52,7 +58,14 @@ save or starting it on another device retains the same certificate and points.
 
 Existing manual tutorial completions remain visible in lesson history. They do
 not receive retroactive certificates or points; learners can complete the guided
-version to earn those. Mission learning retains its existing separate progress.
+version to earn those. Catalogue completion uses canonical `tutorial_learning`
+states from `/api/buildanddo/learning/states`, not manual reading rows. Direct
+`tutorial_progress` create/update/delete operations are locked; historical rows
+remain owner-readable. A failed or truncated aggregate read shows unknown
+completion, not zero or an optimistic fallback. An individually readable public
+lesson remains openable even when a restricted enrollment makes the aggregate
+unavailable; its detail and commands recheck access. Mission learning retains its
+separate shared practice/self-report and does not grant personal competence.
 The independently audited contributor reputation and XP/TP ledger are unchanged.
 Learning does not grant permissions, money or verified business outcomes.
 
@@ -71,13 +84,15 @@ enrollment continues to use its original content when the catalogue is edited.
 Current catalogue access is rechecked before detail reads and commands.
 
 Each command is monotonic and naturally idempotent. Lost responses can replay the
-same action without another award. Completion, certificate issuance and projection
-to the existing account-owned `tutorial_progress` run in one database transaction.
-Old duplicate progress rows are retained, not deleted or counted as extra credit.
-A failed write cannot leave a certificate with an unrecorded progress transition.
+same action without another award. Completion and certificate issuance run in
+one database transaction. New writes no longer mirror into legacy reading rows;
+that mixed-authority projection is not the completion source. Old duplicate
+progress rows and all prior certificates are retained unchanged. A failed write
+cannot leave a certificate with an unrecorded checkpoint transition.
 
-Certificate history remains personal even if a current catalogue entry becomes
-unreadable. Export is explicit, contains no email or private workspace evidence,
+Certificate history remains stored and personal if a current catalogue entry
+becomes unreadable; reads still require its current scope and can be denied.
+Export is explicit, contains no email or private workspace evidence,
 escapes all text, and contains no scripts or remote assets. It includes a name;
 the learner controls any later sharing. A digest identifies saved content and
 does not establish third-party authenticity.
@@ -89,6 +104,16 @@ Ship `1790600000_tutorial_learning.js`, `tutorial-learning.js`,
 `workflow-policy.js` dependencies with the matching web build. Existing tutorial
 catalogue migrations must already be installed. This source change does not
 apply migrations or change a shared backend.
+
+The claim-authority continuation also requires
+`1791500000_learning_progress_authority.js` and
+`1791500100_tutorial_answer_wait.js` with the keyless-response backend and matching
+client. The first locks legacy progress writes without awarding or deleting
+anything. Its down path keeps that security lock and all owner-readable history;
+do not restore owner-writable completion as a rollback. The second stores the
+answer wait; removing it disables guided commands until the matching schema is
+restored. Public reading and question previews remain available without saving
+progress or locally grading answers.
 
 The migration is idempotent and rejects incompatible custom definitions. Its
 explicit down path removes the protocol marker to disable new learning commands

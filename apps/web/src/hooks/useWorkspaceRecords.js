@@ -96,18 +96,18 @@ export function useWorkspaceRecords(collection, options = {}) {
     }, [api, key, enabled, workspaceId, accountId, demo, collection, sort, expand, extraFilter]);
     const reload = useRef(load); reload.current = load;
     useEffect(() => { live.current.mounted = true; load(); return () => { live.current.mounted = false; request.current++; }; }, [load]);
-    const perform = useCallback(async (operation, id, data) => {
+    const perform = useCallback(async (operation, id, data, version) => {
         if (live.current.scope !== scope || !live.current.mounted) return { ok: false, stale: true };
         if (demo) { setWrite({ scope, saving: false, error: DEMO_READ_ONLY }); return { ok: false, reason: 'demo_mode_read_only', error: DEMO_READ_ONLY }; }
         if (!enabled || !accountId || !workspaceId) {
             const error = 'Select an available workspace before saving.';
             setWrite({ scope, saving: false, error }); return { ok: false, reason: 'unavailable', error };
         }
-        setWrite({ scope, saving: true, error: '' });
-        const result = await api.write(operation, id, data);
+        setWrite((before) => ({ scope, saving: true, error: '', uncertain: before.scope === scope && before.uncertain === true }));
+        const result = operation === 'retry' ? await api.retry() : await api.write(operation, id, data, version);
         if (live.current.scope !== scope || !live.current.mounted || result.stale) return { ok: false, stale: true };
         if (result.reason === 'busy') return result;
-        setWrite({ scope, saving: false, error: result.error || '' });
+        setWrite({ scope, saving: false, error: result.error || '', uncertain: result.reason === 'uncertain' || result.uncertain === true });
         if (result.ok) await reload.current();
         return result;
     }, [api, scope, demo, enabled, accountId, workspaceId]);
@@ -115,8 +115,9 @@ export function useWorkspaceRecords(collection, options = {}) {
     const writing = write.scope === scope ? write : { saving: false, error: '' };
     return { scope, records: current ? snapshot.records : [], loading: !current || snapshot.loading,
         error: current ? snapshot.error : '', degraded: current && Boolean(snapshot.error), demo,
-        refresh: load, create: (data) => perform('create', '', data), update: (id, data) => perform('update', id, data),
+        refresh: load, create: (data) => perform('create', '', data), update: (id, data, version) => perform('update', id, data, version),
         remove: (id) => perform('delete', id), saving: writing.saving, writeError: writing.error,
+        uncertain: writing.uncertain === true, retry: () => perform('retry'),
         clearWriteError: () => setWrite((before) => ({ ...before, error: '' })) };
 }
 

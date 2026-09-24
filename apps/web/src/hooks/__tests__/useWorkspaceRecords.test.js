@@ -219,6 +219,58 @@ describe('useWorkspaceRecords', () => {
         expect(pb.__collection('missions').getFullList).toHaveBeenCalledTimes(reads);
         expect(result.current.records[0].title).toBe('Current workspace mission');
     });
+
+    it('uses the saved claim revision and native endpoint without a fresh pre-write read or raw update', async () => {
+        const saved = { id: 'edition1', workspace: 'ws_test', owner: 'user_test', title: 'Draft', status: 'draft', claim_revision: 3 };
+        pb.__setRecords('daily_editions', [saved]);
+        pb.send = vi.fn(async (_path, { body }) => ({ id: saved.id, workspace: 'ws_test', action: body.action,
+            revision: 4, replayed: false, record: { ...saved, title: 'Changed', claim_revision: 4 } }));
+        const { result } = renderHook(() => useWorkspaceRecords('daily_editions'), { wrapper: workspaceWrapper() });
+        await waitFor(() => expect(result.current.loading).toBe(false));
+        await act(async () => { expect((await result.current.update(saved.id, { title: 'Changed' }, saved)).ok).toBe(true); });
+        expect(pb.send).toHaveBeenCalledWith('/api/buildanddo/workspaces/ws_test/claims', expect.objectContaining({ body: expect.objectContaining({ revision: 3, action: 'edition.save' }) }));
+        expect(pb.__collection('daily_editions').update).not.toHaveBeenCalled();
+        expect(pb.__collection('daily_editions').getOne).not.toHaveBeenCalled();
+    });
+
+    it('retains an uncertain command for explicit retry rather than issuing a second creation', async () => {
+        const saved = { id: 'edition1', workspace: 'ws_test', owner: 'user_test', title: 'Draft', status: 'draft', claim_revision: 1 };
+        pb.send = vi.fn().mockRejectedValueOnce(mockPocketBaseError('Response lost', 503)).mockResolvedValueOnce({
+            id: saved.id, workspace: 'ws_test', action: 'edition.save', revision: 1, record: saved, replayed: true,
+        });
+        const { result } = renderHook(() => useWorkspaceRecords('daily_editions'), { wrapper: workspaceWrapper() });
+        await waitFor(() => expect(result.current.loading).toBe(false));
+        await act(async () => { expect((await result.current.create({ title: 'Draft' })).reason).toBe('uncertain'); });
+        expect(result.current.uncertain).toBe(true);
+        await act(async () => { expect((await result.current.retry()).replayed).toBe(true); });
+        expect(pb.send.mock.calls[0][1].body).toEqual(pb.send.mock.calls[1][1].body);
+        expect(result.current.uncertain).toBe(false);
+        expect(pb.__collection('daily_editions').create).not.toHaveBeenCalled();
+    });
+
+    it('keeps recovery visible after a denied retry and while the original save is being reconciled', async () => {
+        const saved = { id: 'edition1', workspace: 'ws_test', owner: 'user_test', title: 'Draft', status: 'draft', claim_revision: 1 };
+        let resolve;
+        pb.send = vi.fn().mockRejectedValueOnce(mockPocketBaseError('Response lost', 503))
+            .mockRejectedValueOnce(mockPocketBaseError('Permission revoked', 403))
+            .mockImplementationOnce(() => new Promise((done) => { resolve = done; }));
+        const { result } = renderHook(() => useWorkspaceRecords('daily_editions'), { wrapper: workspaceWrapper() });
+        await waitFor(() => expect(result.current.loading).toBe(false));
+        await act(async () => { await result.current.create({ title: 'Draft' }); });
+        await act(async () => { expect((await result.current.retry()).reason).toBe('forbidden'); });
+        expect(result.current.uncertain).toBe(true);
+        let pending;
+        act(() => { pending = result.current.retry(); });
+        expect(result.current.saving).toBe(true); expect(result.current.uncertain).toBe(true);
+        await waitFor(() => expect(pb.send).toHaveBeenCalledTimes(3));
+        await act(async () => {
+            resolve({ id: saved.id, workspace: 'ws_test', action: 'edition.save', revision: 1, record: saved, replayed: true });
+            expect((await pending).ok).toBe(true);
+        });
+        expect(result.current.uncertain).toBe(false);
+        for (const [, options] of pb.send.mock.calls) expect(options.body).toEqual(pb.send.mock.calls[0][1].body);
+        expect(pb.__collection('daily_editions').create).not.toHaveBeenCalled();
+    });
 });
 
 describe('useRecords', () => {
