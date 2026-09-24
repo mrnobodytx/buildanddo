@@ -39,9 +39,11 @@ const noteShape = (row) => row && id(row.id) && text(row.text, 2000) && safeUrl(
  * @param {object} options Native client, account, demo state and scope guard.
  * @returns {object} Validated reads, mutations and in-memory retry recovery.
  */
-export function createDossierClient({ client, accountId, demo = false, isCurrent, keyFactory = () => globalThis.crypto.randomUUID() }) {
+export function createDossierClient({ client, accountId, demo = false, isCurrent, keyFactory = () => globalThis.crypto.randomUUID(),
+    observe = (_name, _verb, operation) => operation() }) {
     let pending = null; let busy = false; let generation = 0;
     const current = () => !demo && id(accountId) && isCurrent() && client.authStore.record?.id === accountId;
+    const decline = (action, result) => observe('private_dossiers', action, () => result);
     const failure = (error, writing = false) => {
         const reason = [401, 403].includes(error?.status) ? 'forbidden' : error?.status === 409 ? 'conflict' : error?.status === 400 ? 'invalid' :
             writing && (!error?.status || error.status >= 500) ? 'uncertain' : 'unavailable';
@@ -61,16 +63,27 @@ export function createDossierClient({ client, accountId, demo = false, isCurrent
         } catch (error) { return current() && attempt === generation ? failure(error) : stale(); }
     };
     const send = async () => {
-        if (!current()) return stale();
-        if (busy) return { ok: false, reason: 'busy', error: '' };
+        if (!current()) return decline(pending?.action, stale());
+        if (busy) return decline(pending?.action, { ok: false, reason: 'busy', error: '' });
         if (!pending) return { ok: false, reason: 'invalid', error: 'There is no unresolved dossier save.' };
         busy = true; const attempt = generation; const body = pending;
         try {
-            const result = await client.send('/api/buildanddo/dossier', { method: 'POST', body, requestKey: null, cache: 'no-store' });
+            const response = await observe('private_dossiers', body.action, async () => {
+                try {
+                    const result = await client.send('/api/buildanddo/dossier', { method: 'POST', body, requestKey: null, cache: 'no-store' });
+                    if (!current() || attempt !== generation) return stale();
+                    if (result?.owner !== accountId || result.action !== body.action || result.revision !== body.revision + 1 ||
+                        !id(result.id) || !id(result.dossier_id) || typeof result.replayed !== 'boolean')
+                        throw Object.assign(new Error('Incomplete private save receipt.'), { reason: 'invalid_receipt' });
+                    return { ok: true, result };
+                } catch (error) {
+                    if (!current() || attempt !== generation) return stale();
+                    throw error;
+                }
+            });
             if (!current() || attempt !== generation) return stale();
-            if (result?.owner !== accountId || result.action !== body.action || result.revision !== body.revision + 1 ||
-                !id(result.id) || !id(result.dossier_id) || typeof result.replayed !== 'boolean') throw new Error('Incomplete private save receipt.');
-            pending = null; return { ok: true, result };
+            if (!response.ok) return response;
+            pending = null; return response;
         } catch (error) {
             if (!current() || attempt !== generation) return stale();
             const result = failure(error, true); if (result.reason !== 'uncertain') pending = null;
@@ -98,18 +111,18 @@ export function createDossierClient({ client, accountId, demo = false, isCurrent
                     integer(row.revision, 1) && origin(row.origin) && text(row.created, 40)));
         },
         async command(action, payload, revision = 0) {
-            if (!current()) return stale();
-            if (busy) return { ok: false, reason: 'busy', error: '' };
-            if (pending) return failure(null, true);
+            if (!current()) return decline(action, stale());
+            if (busy) return decline(action, { ok: false, reason: 'busy', error: '' });
+            if (pending) return decline(action, failure(null, true));
             if (!Object.hasOwn(DOSSIER_ACTIONS, action) || !payload || typeof payload !== 'object' || Array.isArray(payload) || !integer(revision))
-                return failure({ status: 400 });
+                return decline(action, failure({ status: 400 }));
             try {
                 const requestKey = keyFactory();
-                if (typeof requestKey !== 'string' || !/^[a-zA-Z0-9_-]{16,80}$/.test(requestKey)) return failure({ status: 400 });
+                if (typeof requestKey !== 'string' || !/^[a-zA-Z0-9_-]{16,80}$/.test(requestKey)) return decline(action, failure({ status: 400 }));
                 const serialized = JSON.stringify({ action, payload, revision, request_key: requestKey });
-                if (serialized.length > 12000) return failure({ status: 400 });
+                if (serialized.length > 12000) return decline(action, failure({ status: 400 }));
                 pending = JSON.parse(serialized);
-            } catch { return failure({ status: 400 }); }
+            } catch { return decline(action, failure({ status: 400 })); }
             return send();
         },
         retry: send,

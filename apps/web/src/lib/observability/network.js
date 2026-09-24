@@ -1,16 +1,17 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/observability/network.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-RUM-002
+// SRS:         SRS-BUILDANDDO-RUM-002, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/lib/observability/report.js
+// Depends:     apps/web/src/lib/observability/report.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Adapter
 // EnumEdges:   CONSUMES window.fetch; PRODUCES datadog.rum.action;
-//              VALIDATES apps/web/src/lib/pocketbaseClient.js
+//              VALIDATES apps/web/src/lib/pocketbaseClient.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Measure PocketBase and platform API calls per normalised endpoint
 //              so latency drift, error-class shifts and failure streaks are
 //              visible without reading raw resource timings.
@@ -18,21 +19,13 @@
 
 import { incrementCounter } from './deltas';
 import { reportAction, reportLog, reportMetric } from './report';
+import { telemetryEndpoint } from '../navigationIntent';
 
 const SLOW_REQUEST_MS = 1500;
 
 // Consecutive failures against the same endpoint that suggest the backend, not
 // the individual request, is the problem.
 const OUTAGE_STREAK = 3;
-
-// PocketBase record ids are 15 lowercase alphanumerics; also collapse UUIDs and
-// long opaque segments so one endpoint does not become thousands of labels.
-const ID_PATTERNS = [
-	/^[a-z0-9]{15}$/,
-	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
-	/^[A-Za-z0-9_-]{24,}$/,
-	/^\d+$/,
-];
 
 const INSTRUMENTED = '__buildanddoObservabilityFetch';
 
@@ -43,23 +36,7 @@ const state = {
 	offlineEvents: 0,
 };
 
-let originalFetch = null;
-
-function normalisePath(rawUrl) {
-	let url;
-	try {
-		url = new URL(rawUrl, window.location.origin);
-	} catch {
-		return { path: 'unparseable', origin: 'unknown', crossOrigin: false };
-	}
-
-	const path = url.pathname
-		.split('/')
-		.map((segment) => (ID_PATTERNS.some((pattern) => pattern.test(segment)) ? ':id' : segment))
-		.join('/');
-
-	return { path, origin: url.origin, crossOrigin: url.origin !== window.location.origin };
-}
+let teardown = null;
 
 function statusClass(status) {
 	if (!status) return 'network_error';
@@ -68,15 +45,14 @@ function statusClass(status) {
 
 function requestUrl(input) {
 	if (typeof input === 'string') return input;
-	if (input instanceof Request) return input.url;
+	if (input instanceof URL) return input.href;
 	if (input && typeof input.url === 'string') return input.url;
-	return String(input);
+	return null;
 }
 
 function requestMethod(input, init) {
-	if (init && init.method) return init.method.toUpperCase();
-	if (input instanceof Request) return input.method.toUpperCase();
-	return 'GET';
+	const method = (init?.method || input?.method || 'GET').toUpperCase();
+	return ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'].includes(method) ? method : 'OTHER';
 }
 
 function trackStreak(endpoint, failed) {
@@ -89,17 +65,17 @@ function trackStreak(endpoint, failed) {
 	return next;
 }
 
-function observeRequest({ endpoint, method, status, durationMs, crossOrigin, failed, errorName, bytes }) {
+function observeRequest({ endpoint, method, status, durationMs, failed, errorName, bytes, classification }) {
 	state.total += 1;
 	if (failed) state.failures += 1;
 
-	const streak = trackStreak(endpoint, failed);
+	const streak = classification === 'aborted' ? 0 : trackStreak(endpoint, failed);
 	const tags = {
 		endpoint,
 		method,
 		status: status || 0,
-		status_class: statusClass(status),
-		cross_origin: crossOrigin,
+		status_class: classification || statusClass(status),
+		cross_origin: false,
 		error_name: errorName,
 	};
 
@@ -118,7 +94,7 @@ function observeRequest({ endpoint, method, status, durationMs, crossOrigin, fai
 		});
 	}
 
-	if (streak >= OUTAGE_STREAK) {
+	if (streak === OUTAGE_STREAK) {
 		reportAction('api.outage_suspected', { ...tags, consecutive_failures: streak });
 		reportLog('error', `${endpoint} failed ${streak} times in a row`, { ...tags, consecutive_failures: streak });
 	}
@@ -128,20 +104,8 @@ function observeRequest({ endpoint, method, status, durationMs, crossOrigin, fai
 	}
 }
 
-function trackConnectivity() {
-	window.addEventListener('offline', () => {
-		state.offlineEvents += 1;
-		reportAction('browser.connectivity', { online: false, offline_events: state.offlineEvents });
-		reportLog('warn', 'browser went offline', { offline_events: state.offlineEvents });
-	});
-
-	window.addEventListener('online', () => {
-		reportAction('browser.connectivity', { online: true, offline_events: state.offlineEvents });
-	});
-}
-
 /**
- * Wraps `window.fetch` to time and classify every request.
+ * Wraps `window.fetch` to time only known, same-origin app JSON requests.
  *
  * The wrapper is transparent: the original response or rejection is always
  * returned unchanged, and any instrumentation failure is swallowed. Aborted
@@ -152,33 +116,49 @@ function trackConnectivity() {
  */
 export function startNetworkTelemetry() {
 	if (typeof window === 'undefined' || typeof window.fetch !== 'function') return;
-	if (window.fetch[INSTRUMENTED]) return;
+	if (teardown || window.fetch[INSTRUMENTED]) return;
 
-	originalFetch = window.fetch;
+	const target = window;
+	const originalFetch = target.fetch;
+	let active = true;
 
 	const instrumented = function observedFetch(input, init) {
-		const started = performance.now();
-		const url = requestUrl(input);
-
-		// WebSocket upgrades and data URLs carry no useful request telemetry.
-		if (url.startsWith('ws:') || url.startsWith('wss:') || url.startsWith('data:')) {
+		let endpoint, method, signal, started;
+		try {
+			const rawUrl = requestUrl(input);
+			const url = rawUrl && new URL(rawUrl, target.location.origin);
+			endpoint = active && url && url.origin === target.location.origin && telemetryEndpoint(url.href);
+			if (endpoint) {
+				method = requestMethod(input, init);
+				signal = init?.signal === undefined ? input?.signal : init.signal;
+				started = performance.now();
+			}
+		} catch {
+			// Inspection, including a broken clock or input getter, cannot prevent
+			// the original fetch from deciding its own response or exception.
+			endpoint = null;
+		}
+		if (!endpoint) {
 			return originalFetch.apply(this, arguments);
 		}
-
-		const { path, crossOrigin } = normalisePath(url);
-		const method = requestMethod(input, init);
 
 		return originalFetch.apply(this, arguments).then(
 			(response) => {
 				try {
+					if (!active) return response;
 					const length = Number.parseInt(response.headers.get('content-length') || '', 10);
+					const contentType = (response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+					// Inspect headers only. Reading/cloning the body changes stream and
+					// abort behavior; JSON syntax/receipt validation belongs to callers.
+					const invalid = response.ok && method !== 'HEAD' && ![204, 205].includes(response.status) &&
+						Boolean(contentType) && !/^application\/(?:[\w.+-]+\+)?json$/.test(contentType);
 					observeRequest({
-						endpoint: path,
+						endpoint,
 						method,
 						status: response.status,
-						durationMs: performance.now() - started,
-						crossOrigin,
-						failed: !response.ok,
+						durationMs: Math.max(0, performance.now() - started),
+						failed: !response.ok || invalid,
+						classification: invalid ? 'invalid_response' : undefined,
 						bytes: Number.isFinite(length) ? length : undefined,
 					});
 				} catch {
@@ -188,15 +168,15 @@ export function startNetworkTelemetry() {
 			},
 			(error) => {
 				try {
-					const aborted = error && error.name === 'AbortError';
-					observeRequest({
-						endpoint: path,
+					const aborted = error?.name === 'AbortError' || (signal?.aborted && error === signal.reason);
+					if (active) observeRequest({
+						endpoint,
 						method,
 						status: 0,
-						durationMs: performance.now() - started,
-						crossOrigin,
+						durationMs: Math.max(0, performance.now() - started),
 						failed: !aborted,
-						errorName: error && error.name ? error.name : 'FetchError',
+						classification: aborted ? 'aborted' : 'network_error',
+						errorName: aborted ? 'AbortError' : ['TypeError', 'TimeoutError', 'NetworkError'].includes(error?.name) ? error.name : 'FetchError',
 					});
 				} catch {
 					// See above.
@@ -207,9 +187,27 @@ export function startNetworkTelemetry() {
 	};
 
 	instrumented[INSTRUMENTED] = true;
-	window.fetch = instrumented;
-
-	trackConnectivity();
+	target.fetch = instrumented;
+	const offline = () => {
+		if (!active) return;
+		try {
+			state.offlineEvents += 1;
+			reportAction('browser.connectivity', { online: false, offline_events: state.offlineEvents });
+			reportLog('warn', 'browser went offline', { offline_events: state.offlineEvents });
+		} catch { /* Connectivity cannot depend on telemetry. */ }
+	};
+	const online = () => {
+		if (active) try { reportAction('browser.connectivity', { online: true, offline_events: state.offlineEvents }); } catch { /* Fail soft. */ }
+	};
+	target.addEventListener('offline', offline);
+	target.addEventListener('online', online);
+	teardown = () => {
+		active = false;
+		// A later SDK may have wrapped ours. Do not remove its instrumentation.
+		if (target.fetch === instrumented) target.fetch = originalFetch;
+		target.removeEventListener('offline', offline);
+		target.removeEventListener('online', online);
+	};
 }
 
 /**
@@ -218,8 +216,8 @@ export function startNetworkTelemetry() {
  * @returns {void}
  */
 export function stopNetworkTelemetry() {
-	if (originalFetch) window.fetch = originalFetch;
-	originalFetch = null;
+	teardown?.();
+	teardown = null;
 	state.streaks.clear();
 }
 

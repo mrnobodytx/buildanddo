@@ -5,6 +5,7 @@ import BrandMark from '@/components/brand/BrandMark';
 import Wordmark from '@/components/brand/Wordmark';
 import { PUBLIC_NAV } from '@/lib/publicPages';
 import { PURPOSE } from '@/lib/purpose';
+import { PUBLIC_ACTIONS, publicNavigationTarget, trackPublicAction } from '@/lib/publicActions';
 import {
     COMMUNITY_LINKS,
     GUILD_PATH,
@@ -48,6 +49,10 @@ export default function Footer({
     earlyAccessHref = '/#early-access',
 }) {
     const year = new Date().getFullYear();
+    const clickNavigation = (href) => trackPublicAction(PUBLIC_ACTIONS.NAVIGATION, 'intent', 'navigation', undefined,
+        { placement: 'footer', target: publicNavigationTarget(href) });
+    const clickCta = () => trackPublicAction(PUBLIC_ACTIONS.CTA, 'intent', 'user_requested', undefined,
+        { placement: 'footer', target: publicNavigationTarget(earlyAccessHref) });
 
     return (
         <footer className="border-t border-border/60 bg-background">
@@ -56,6 +61,7 @@ export default function Footer({
                     <div>
                         <a
                             href="/"
+                            onClick={() => clickNavigation('/')}
                             className="flex items-center gap-2.5"
                             aria-label="BuildAndDo home"
                         >
@@ -76,6 +82,7 @@ export default function Footer({
                                 <li key={link.href}>
                                     <Link
                                         to={link.href}
+                                        onClick={() => clickNavigation(link.href)}
                                         className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                                     >
                                         {link.label}
@@ -93,6 +100,7 @@ export default function Footer({
                             <li>
                                 <a
                                     href={earlyAccessHref}
+                                    onClick={clickCta}
                                     className="text-sm font-medium text-primary transition-colors hover:brightness-125"
                                 >
                                     Join early access

@@ -1,3 +1,19 @@
+// --- CGRF Header ------------------------------------------------
+// File:        apps/web/src/pages/ForgotPasswordPage.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-24
+// Depends:     apps/web/src/lib/publicActions.js, apps/web/src/lib/authErrors.js
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/lib/publicActions.js; CONSUMES apps/web/src/lib/authErrors.js
+// Intent:      Preserve non-enumerating recovery behavior while distinguishing request acceptance from unconfirmed mail delivery.
+// ----------------------------------------------------------------
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Loader2, AlertCircle, CheckCircle2, Mail } from 'lucide-react';
@@ -7,6 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import pb from '@/lib/pocketbaseClient';
 import { authFailureKind } from '@/lib/authErrors';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -41,10 +58,16 @@ export default function ForgotPasswordPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (status === 'submitting') return;
-        if (!validate()) return;
+        const section = publicActionSection();
+        if (!validate()) {
+            trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_REQUEST, 'failure', 'validation', undefined, { section });
+            return;
+        }
         setStatus('submitting');
         try {
             await pb.collection('users').requestPasswordReset(email.trim());
+            // Acceptance is not proof that an account exists or any email was delivered.
+            trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_REQUEST, 'accepted', 'request_accepted', undefined, { section });
             setStatus('success');
         } catch (err) {
             // A 400/404 must read like success so the page never reveals which
@@ -52,9 +75,11 @@ export default function ForgotPasswordPage() {
             // email was sent, so saying "check your email" would be false.
             const kind = authFailureKind(err);
             if (kind === 'rejected' || kind === 'not_found') {
+                trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_REQUEST, 'opaque', 'opaque', undefined, { section });
                 setStatus('success');
                 return;
             }
+            trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_REQUEST, 'failure', kind, undefined, { section });
             setFailure(FAILURE_MESSAGE[kind]);
             setStatus('error');
         }

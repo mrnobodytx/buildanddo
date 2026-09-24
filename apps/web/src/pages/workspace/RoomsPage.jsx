@@ -25,6 +25,8 @@ import { useWorkspaceKnowledge } from '@/hooks/useWorkspaceKnowledge';
 import { projectionStats } from '@/lib/roomGraph';
 import { publishedRoom, workspaceRoom } from '@/lib/workspaceRooms';
 import ExecutionReplayPage from '@/pages/workspace/ExecutionReplayPage';
+import { readFailed } from '@/lib/observability/runtime';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 const ROOMS = [
     { id: 'organization', label: 'Organization', icon: Building2, question: 'How is the current workspace knowledge organized?' },
     { id: 'capability', label: 'Capabilities', icon: Network, question: 'What source records support the planned work?' },
@@ -42,30 +44,56 @@ export default function RoomsPage() {
     useEffect(() => {
         if (source !== 'published') return;
         const controller = new AbortController(); let alive = true;
+        const pathname = globalThis.window?.location?.pathname, section = publicActionSection(pathname);
+        let status, reason = 'unavailable';
         setPublished({ key: publishedKey, value: null, error: '' });
         fetch(`/room-projections/${active.id}.json`, { cache: 'no-store', signal: controller.signal })
-            .then(async (response) => { if (!response.ok) throw new Error('No estate projection is published for this room.');
+            .then(async (response) => { status = response.status; if (!response.ok) throw new Error('No estate projection is published for this room.');
+                reason = 'invalid_response';
                 const raw = await response.text(); if (raw.length > 1000000) throw new Error('The published projection exceeds the supported size.');
                 // A single-page app answers 200 with index.html for any path it has no file for,
                 // so an UNPUBLISHED projection never arrives as a 404 - it arrives as a web page.
                 // `response.ok` was therefore always true and JSON.parse put its own SyntaxError,
-                // verbatim, in front of the reader. Absence now reads as absence.
+                // verbatim, in front of the reader. Absence now reads as absence, and is reported as such.
                 const head = raw.trimStart();
-                if (!head.startsWith('{') && !head.startsWith('[')) throw new Error('No estate projection is published for this room.');
+                if (!head.startsWith('{') && !head.startsWith('[')) { reason = 'unavailable'; throw new Error('No estate projection is published for this room.'); }
                 let parsed; // Parsed on its own so a fault inside publishedRoom is not relabelled as bad JSON.
                 try { parsed = JSON.parse(raw); } catch { throw new Error('The published projection for this room is not readable JSON.'); }
                 return publishedRoom(parsed, active.id); })
-            .then((value) => { if (alive) setPublished({ key: publishedKey, value, error: '' }); })
-            .catch((error) => { if (alive) setPublished({ key: publishedKey, value: null, error: error.message || 'The published projection is unavailable.' }); });
+            .then((value) => {
+                if (!alive) return;
+                if (pathname === globalThis.window?.location?.pathname) {
+                    const projection_state = ['MEASURED', 'OBSERVED', 'PARTIAL', 'UNMEASURED'].includes(value.state) ? value.state : 'unknown';
+                    trackPublicAction(PUBLIC_ACTIONS.ROOM_PROJECTION, 'observed', 'published_projection', undefined, { section, projection_state });
+                    if (projection_state === 'UNMEASURED' || projection_state === 'PARTIAL')
+                        readFailed(section, 'room_projection', projection_state === 'UNMEASURED' ? 'unmeasured' : 'degraded', status);
+                }
+                setPublished({ key: publishedKey, value, error: '' });
+            })
+            .catch((error) => {
+                if (!alive) return;
+                if (error?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname) readFailed(section, 'room_projection', reason, status);
+                setPublished({ key: publishedKey, value: null, error: error.message || 'The published projection is unavailable.' });
+            });
         return () => { alive = false; controller.abort(); };
     }, [source, active.id, publishedKey]);
     const liveProjection = useMemo(() => workspaceRoom(knowledge.data, active.id), [knowledge.data, active.id]);
     const projection = source === 'workspace' ? liveProjection : published.key === publishedKey ? published.value : null;
     const error = source === 'workspace' ? knowledge.error : published.key === publishedKey ? published.error : '';
     const selected = projection?.nodes.find((node) => node.id === selectedId), stats = projectionStats(projection || {});
+    const changeMode = (value) => {
+        if (!MODES.includes(value) || value === mode) return;
+        setMode(value);
+        trackPublicAction(PUBLIC_ACTIONS.ROOM_MODE, 'selected', 'user_requested', undefined, { mode: value });
+    };
+    const changeSource = (value) => {
+        if (!['workspace', 'published'].includes(value) || value === source) return;
+        setSource(value);
+        trackPublicAction(PUBLIC_ACTIONS.ROOM_SOURCE, 'selected', 'user_requested', undefined, { projection_source: value });
+    };
     return <div className="space-y-5"><PageHeader title="Living Rooms" description="Inspect readable workspace records, open their work desks, learn the evidence flow and replay retained actions." />
         <div className="flex flex-wrap gap-2">{ROOMS.map((item) => <Button key={item.id} size="sm" variant={item.id === active.id ? 'default' : 'outline'} onClick={() => navigate(`/app/rooms/${item.id}`)}><item.icon className="h-4 w-4" />{item.label}</Button>)}</div>
-        <div className="flex flex-wrap gap-2" aria-label="Room mode">{MODES.map((name) => <Button key={name} size="sm" aria-pressed={mode === name} variant={mode === name ? 'secondary' : 'ghost'} onClick={() => setMode(name)}>{name}</Button>)}</div>
+        <div className="flex flex-wrap gap-2" aria-label="Room mode">{MODES.map((name) => <Button key={name} size="sm" aria-pressed={mode === name} variant={mode === name ? 'secondary' : 'ghost'} onClick={() => changeMode(name)}>{name}</Button>)}</div>
         {mode === 'operate' ? <Card className="space-y-3 p-5"><h2 className="font-display text-xl">Operate through the native desks</h2>
             <p className="text-sm">Each desk keeps its own membership, approval and evidence checks. Opening a tool performs no action.</p>
             <nav className="flex flex-wrap gap-4 text-sm">{[['/app/desks', 'Assign work scope'], ['/app/signals', 'Capture a signal'], ['/app/missions', 'Review a mission'], ['/app/workflows', 'Execute approved work'], ['/app/erp', 'Inspect business outcomes']].map(([to, label]) => <Link key={to} className="underline" to={to}>{label}</Link>)}</nav></Card> :
@@ -74,7 +102,7 @@ export default function RoomsPage() {
             <li>Open the mission plan, examine its bounds and compare its frozen review evidence.</li><li>Replay the action receipt, then locate the separate verifier and the operator readback.</li></ol>
             <Link className="inline-block text-sm underline" to="/app/tutorials">Practice in the Field Manual</Link></Card> :
         mode === 'replay' ? <ExecutionReplayPage /> : <>
-            <div className="flex flex-wrap items-center gap-3"><label className="text-sm">Projection source<select className="ml-2 border border-border bg-background p-2" value={source} onChange={(event) => setSource(event.target.value)}><option value="workspace">Current readable workspace</option><option value="published">Published estate projection</option></select></label>
+            <div className="flex flex-wrap items-center gap-3"><label className="text-sm">Projection source<select className="ml-2 border border-border bg-background p-2" value={source} onChange={(event) => changeSource(event.target.value)}><option value="workspace">Current readable workspace</option><option value="published">Published estate projection</option></select></label>
                 <Button size="sm" variant="ghost" onClick={() => source === 'workspace' ? knowledge.refresh() : setRefreshKey((value) => value + 1)}><RefreshCw className="h-4 w-4" />Refresh</Button></div>
             <p className="text-sm text-muted-foreground">{active.question} Workspace views show source records and categories; estate ownership and deployed capabilities need a separate published projection.</p>
             {error ? <Card className="p-5" role="alert">{error} Missing observations remain unavailable.</Card> : !projection ? <p role="status">Reading the selected source…</p> : <>

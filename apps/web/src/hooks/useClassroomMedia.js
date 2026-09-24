@@ -8,9 +8,10 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/web/src/lib/classroomRealtime.js, apps/web/src/lib/pocketbaseClient.js, apps/web/src/hooks/classroomMediaLifetime.js, apps/web/src/contexts/AuthContext.jsx, apps/web/src/contexts/WorkspaceContext.jsx
+// Depends:     apps/web/src/lib/classroomRealtime.js, apps/web/src/lib/classroomTelemetry.js, apps/web/src/lib/observability/runtime.js, apps/web/src/lib/telemetry.js, apps/web/src/lib/pocketbaseClient.js, apps/web/src/hooks/classroomMediaLifetime.js, apps/web/src/contexts/AuthContext.jsx, apps/web/src/contexts/WorkspaceContext.jsx
 // EnumType:    Hook
-// EnumEdges:   CONSUMES apps/web/src/lib/classroomRealtime.js; CONSUMES apps/web/src/hooks/classroomMediaLifetime.js; CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/contexts/WorkspaceContext.jsx
+// EnumEdges:   CONSUMES apps/web/src/lib/classroomRealtime.js; CONSUMES apps/web/src/hooks/classroomMediaLifetime.js; CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/contexts/WorkspaceContext.jsx;
+//              CONSUMES apps/web/src/lib/classroomTelemetry.js; CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/telemetry.js
 // DAG Node:    none
 // Intent:      Carry the live-classroom media behaviour of the retired ClassroomPage into the routed room.
 // ───────────────────────────────────────────────────────────────
@@ -30,6 +31,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import pocketbaseClient from '@/lib/pocketbaseClient';
 import { createMediaLifetime } from './classroomMediaLifetime.js';
+import { createClassroomTelemetry } from '@/lib/classroomTelemetry';
+import { readFailed, reportAction } from '@/lib/observability/runtime';
+import { trackEvent } from '@/lib/telemetry';
 import {
     joinClassroom,
     classroomHealth,
@@ -112,15 +116,26 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
         if (!currentScope()) return undefined;
         const generation = ++healthGeneration.current;
         const current = () => currentScope() && generation === healthGeneration.current;
+        const failed = (reason, status) => {
+            if (!current()) return;
+            try { Promise.resolve(readFailed('/app/classrooms/:room', 'classroom_media', reason, status)).catch(() => {}); } catch { /* Configuration still renders. */ }
+        };
         classroomHealth()
-            .then((result) => update({ health: result }, current))
-            .catch((err) => update({ health: { ok: false, reason: err?.message || 'health route unreachable' } }, current));
+            .then((result) => {
+                if (result?.ok !== true) failed('unavailable');
+                update({ health: result }, current);
+            })
+            .catch((err) => {
+                failed(['NOT_JSON', 'UNREADABLE_BODY'].includes(err?.code) ? 'invalid_response' : 'unavailable', err?.status);
+                update({ health: { ok: false, reason: err?.message || 'health route unreachable' } }, current);
+            });
         return () => { if (generation === healthGeneration.current) healthGeneration.current++; };
     }, [currentScope, update]);
 
     const leave = useCallback(() => {
         if (!mounted.current || scopeRef.current !== scope) return;
         healthGeneration.current++;
+        if (lifetime.active?.current()) lifetime.active.telemetry?.leave('left');
         lifetime.cancel();
         setSnapshot((old) => ({ ...IDLE, scope, health: old.scope === scope ? old.health : null }));
     }, [scope, lifetime]);
@@ -136,7 +151,11 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
                 presence: live, unreadable: broken || [], presenceError: '',
                 pulled: Array.from(new Set(previous.pulled.concat(fresh.map((row) => row.id)))),
             }), current),
-            onError: (err) => update({ presenceError: err?.message || String(err) }, current),
+            onError: (err) => {
+                if (!current()) return;
+                attempt.telemetry.failure('presence_failed', err);
+                update({ presenceError: err?.message || String(err) }, current);
+            },
         });
         const entry = { tracker, current }; trackerRef.current = entry;
         const stop = attempt.addCleanup(() => {
@@ -157,7 +176,11 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
         const current = () => alive && attempt.current();
         const beat = startPresenceHeartbeat({
             room: roomId, sessionId: handle.sessionId, tracks: handle.published, getAuthToken: () => pocketbaseClient.authStore.token,
-            onError: (err) => update({ presenceError: err?.message || String(err) }, current),
+            onError: (err) => {
+                if (!current()) return;
+                attempt.telemetry.failure('heartbeat_failed', err);
+                update({ presenceError: err?.message || String(err) }, current);
+            },
         });
         return attempt.addCleanup(() => { alive = false; beat.stop(); });
     }, [handle, roomId, lifetime, update]);
@@ -170,7 +193,12 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
         const read = async () => {
             if (busy || !current()) return;
             busy = true;
-            try { update({ audio: await inboundAudioStats(handle.pc) }, current); } catch { /* No new measurement. */ }
+            try {
+                const audio = await inboundAudioStats(handle.pc);
+                if (!current()) return;
+                attempt.telemetry.stats(audio);
+                update({ audio }, current);
+            } catch { /* No new measurement. */ }
             finally { busy = false; }
         };
         read();
@@ -186,13 +214,18 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
         const current = () => attempt.current() && generation === playbackGeneration.current &&
             audioRef.current === element && element.srcObject === stream;
         if (!current()) return;
+        const blocked = () => {
+            if (!current()) return;
+            attempt.telemetry.failure('autoplay_blocked');
+            update({ audioBlocked: true }, current);
+        };
         try {
             const started = element.play();
             if (started && typeof started.then === 'function') return started.then(
-                () => update({ audioBlocked: false }, current), () => update({ audioBlocked: true }, current),
+                () => update({ audioBlocked: false }, current), blocked,
             );
             update({ audioBlocked: false }, current);
-        } catch { update({ audioBlocked: true }, current); }
+        } catch { blocked(); }
     }, [lifetime, currentScope, update]);
 
     // One inbound stream carries every pulled track; bind it once per session.
@@ -211,12 +244,17 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
     const join = useCallback(async (role) => {
         const attempt = lifetime.begin(currentScope);
         if (!attempt) return;
+        const telemetry = createClassroomTelemetry({ reportAction, trackEvent, readFailed, isCurrent: attempt.current, role });
+        attempt.telemetry = telemetry;
+        attempt.addCleanup(() => telemetry.leave());
         update((previous) => ({ ...IDLE, health: previous.health, status: 'connecting' }), attempt.current);
         try {
             const next = await joinClassroom({
                 room: roomId,
                 isCurrent: attempt.current,
                 onCleanup: attempt.addCleanup,
+                onConnectionState: telemetry.connection,
+                onDeviceError: telemetry.deviceError,
                 role: role === 'teach' ? 'teach' : 'watch',
                 onState: (detail) => update({ detail }, attempt.current),
                 authToken: pocketbaseClient.authStore.token,
@@ -226,11 +264,20 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
                         try { event.track?.stop(); } catch { /* A late track belongs to the cancelled join. */ }
                     }
                 },
-                onRemoteTrackError: (err) => update({ presenceError: `An incoming track was rejected: ${err?.message || err}` }, attempt.current),
+                onRemoteTrackError: (err) => {
+                    if (!attempt.current()) return;
+                    telemetry.failure('remote_track_failed', err);
+                    update({ presenceError: `An incoming track was rejected: ${err?.message || err}` }, attempt.current);
+                },
             });
-            if (attempt.accept(next)) update({ handle: next, status: 'connected' }, attempt.current);
+            if (attempt.accept(next)) {
+                telemetry.accepted();
+                if (next.role === 'teach' && !next.mayPublish) telemetry.failure('publish_forbidden');
+                update({ handle: next, status: 'connected' }, attempt.current);
+            }
         } catch (err) {
             const current = attempt.current();
+            if (current) telemetry.failure('join_failed', err);
             attempt.cancel();
             if (current) update({ status: 'failed', detail: '', error: err?.message || String(err) });
         }
@@ -239,6 +286,7 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
     const listen = useCallback(async (row) => {
         const entry = trackerRef.current;
         if (!currentScope() || !entry?.current()) return;
+        const telemetry = lifetime.active?.telemetry;
         const current = () => trackerRef.current === entry && entry.current();
         update({ presenceError: '' }, current);
         try {
@@ -247,9 +295,10 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
             update((previous) => ({ pulled: Array.from(new Set(previous.pulled.concat([row.id]))) }), current);
             playAudio();
         } catch (err) {
+            if (current()) telemetry?.failure('listen_failed', err);
             update({ presenceError: err?.message || String(err) }, current);
         }
-    }, [currentScope, playAudio, update]);
+    }, [lifetime, currentScope, playAudio, update]);
 
     // Local track switches act on the real MediaStreamTracks, so "muted" is true on the wire.
     const toggle = useCallback((kind) => {

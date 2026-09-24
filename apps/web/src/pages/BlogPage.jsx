@@ -15,8 +15,10 @@
 // Intent:      Publish substantive editorial notes about evidence and scoped work without invented release claims.
 // ───────────────────────────────────────────────────────────────
 
+import { useRef } from 'react';
 import PublicPage from '@/components/site/PublicPage';
 import { SITE_ORIGIN } from '@/lib/publicPages';
+import { PUBLIC_ACTIONS, trackPublicAction } from '@/lib/publicActions';
 
 const NOTES = [
     {
@@ -44,6 +46,14 @@ const NOTES = [
 ];
 
 export default function BlogPage() {
+    const opened = useRef(new WeakSet());
+    const toggleArticle = (event) => {
+        const details = event.currentTarget;
+        if (!details.open) { opened.current.delete(details); return; }
+        if (opened.current.has(details)) return;
+        opened.current.add(details);
+        trackPublicAction(PUBLIC_ACTIONS.ARTICLE_OPEN, 'opened', 'user_requested');
+    };
     const structuredData = NOTES.map((note) => ({
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
@@ -73,7 +83,7 @@ export default function BlogPage() {
                         </p>
                         <h2 className="mt-3 font-display text-3xl font-semibold">{note.title}</h2>
                         <p className="mt-4 leading-relaxed text-muted-foreground">{note.intro}</p>
-                        <details className="mt-6">
+                        <details className="mt-6" onToggle={toggleArticle}>
                             <summary className="cursor-pointer py-2 text-sm font-semibold text-primary">
                                 Read “{note.title}”
                             </summary>

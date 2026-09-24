@@ -1,16 +1,17 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/observability/vitals.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-RUM-002
+// SRS:         SRS-BUILDANDDO-RUM-002, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     apps/web/src/lib/observability/report.js,
-//              apps/web/src/lib/observability/context.js
+//              apps/web/src/lib/observability/context.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES PerformanceObserver; PRODUCES datadog.rum.vital
+// EnumEdges:   CONSUMES PerformanceObserver; PRODUCES datadog.rum.vital; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Collect page-load, responsiveness, stability, resource and heap
 //              measurements from the platform performance APIs and emit each one
 //              with its deltas.
@@ -19,6 +20,7 @@
 import { navigationType } from './context';
 import { metricSnapshot } from './deltas';
 import { reportAction, reportLog, reportMetric } from './report';
+import { classroomTelemetryLocation, telemetrySection } from '../navigationIntent';
 
 const MS = 'millisecond';
 const BYTES = 'byte';
@@ -32,8 +34,12 @@ const INTERACTION_THRESHOLD_MS = 40;
 const FLUSH_INTERVAL_MS = 60_000;
 
 const observers = [];
+const pending = new Set();
 let flushTimer = null;
 let started = false;
+let buffered = true;
+let collection = 0;
+let navigationReported = false;
 
 const state = {
 	cls: 0,
@@ -60,17 +66,20 @@ function supports(entryType) {
 function observe(entryType, handler, extraOptions = {}) {
 	if (!supports(entryType)) return;
 	try {
-		const observer = new PerformanceObserver((list) => {
-			for (const entry of list.getEntries()) {
+		const lifetime = collection;
+		const consume = (entries) => {
+			if (!started || lifetime !== collection) return;
+			for (const entry of entries) {
 				try {
 					handler(entry);
 				} catch {
 					// One malformed entry must not tear down the observer.
 				}
 			}
-		});
-		observer.observe({ type: entryType, buffered: true, ...extraOptions });
-		observers.push(observer);
+		};
+		const observer = new PerformanceObserver((list) => consume(list.getEntries()));
+		observer.observe({ type: entryType, buffered, ...extraOptions });
+		observers.push({ observer, consume });
 	} catch {
 		// Unsupported option combinations reject on some engines.
 	}
@@ -78,7 +87,10 @@ function observe(entryType, handler, extraOptions = {}) {
 
 function pathOf(url) {
 	try {
-		return new URL(url, window.location.origin).pathname;
+		const parsed = new URL(url, window.location.origin);
+		if (parsed.origin !== window.location.origin) return null;
+		const path = classroomTelemetryLocation(parsed.pathname);
+		return path === '/unknown' ? null : path;
 	} catch {
 		return null;
 	}
@@ -88,6 +100,7 @@ function observePaint() {
 	observe('paint', (entry) => {
 		if (entry.name !== 'first-contentful-paint') return;
 		reportMetric('web.vital.fcp', entry.startTime, { unit: MS, tags: { nav_type: navigationType() } });
+		pending.add('sample');
 	});
 }
 
@@ -103,14 +116,16 @@ function observeLcp() {
 				nav_type: navigationType(),
 			},
 		});
+		pending.add('sample');
 	});
 }
 
 function observeLayoutShift() {
 	observe('layout-shift', (entry) => {
-		if (entry.hadRecentInput) return;
+		if (entry.hadRecentInput || !Number.isFinite(entry.value) || entry.value <= 0) return;
 		state.cls += entry.value;
 		state.clsEntries += 1;
+		pending.add('cls');
 	});
 }
 
@@ -121,9 +136,10 @@ function observeInteractions() {
 	observe(
 		'event',
 		(entry) => {
-			if (!entry.interactionId || entry.duration <= state.worstInteractionMs) return;
+			if (!entry.interactionId || !Number.isFinite(entry.duration) || entry.duration <= state.worstInteractionMs) return;
 			state.worstInteractionMs = entry.duration;
 			state.worstInteractionTarget = entry.name;
+			pending.add('interaction');
 		},
 		{ durationThreshold: INTERACTION_THRESHOLD_MS },
 	);
@@ -131,8 +147,10 @@ function observeInteractions() {
 
 function observeLongTasks() {
 	observe('longtask', (entry) => {
+		if (!Number.isFinite(entry.duration) || entry.duration <= 0) return;
 		state.longTasks += 1;
 		state.longTaskMs += entry.duration;
+		pending.add('longtask');
 
 		if (entry.duration >= LONG_TASK_ALERT_MS) {
 			const attribution = Array.isArray(entry.attribution) ? entry.attribution[0] : null;
@@ -140,8 +158,7 @@ function observeLongTasks() {
 				unit: MS,
 				tags: {
 					container_type: attribution ? attribution.containerType : undefined,
-					container_name: attribution ? attribution.containerName : undefined,
-					route: window.location.pathname,
+					route: telemetrySection(window.location.pathname),
 				},
 			});
 		}
@@ -150,44 +167,51 @@ function observeLongTasks() {
 
 function observeResources() {
 	observe('resource', (entry) => {
+		const path = pathOf(entry.name);
+		if (!path) return;
 		state.resources += 1;
 		state.resourceBytes += entry.transferSize || 0;
+		pending.add('resource');
 
 		if (entry.transferSize === 0 && entry.decodedBodySize > 0) state.resourceCached += 1;
 
 		if (entry.duration > state.slowestResourceMs) {
 			state.slowestResourceMs = entry.duration;
-			state.slowestResourceUrl = pathOf(entry.name);
+			state.slowestResourceUrl = path;
 		}
 	});
 }
 
 function reportNavigationTiming() {
-	if (typeof performance === 'undefined' || !performance.getEntriesByType) return;
-	const [nav] = performance.getEntriesByType('navigation');
-	if (!nav) return;
+	if (!started || navigationReported || typeof performance === 'undefined' || !performance.getEntriesByType) return;
+	try {
+		const [nav] = performance.getEntriesByType('navigation');
+		if (!nav) return;
+		navigationReported = true;
 
-	reportMetric('web.vital.ttfb', nav.responseStart, { unit: MS, tags: { nav_type: nav.type } });
-	reportMetric('browser.page_load', nav.loadEventEnd || nav.duration, { unit: MS, tags: { nav_type: nav.type } });
+		reportMetric('web.vital.ttfb', nav.responseStart, { unit: MS, tags: { nav_type: nav.type } });
+		reportMetric('browser.page_load', nav.loadEventEnd || nav.duration, { unit: MS, tags: { nav_type: nav.type } });
 
-	reportAction('browser.navigation', {
-		nav_type: nav.type,
-		protocol: nav.nextHopProtocol,
-		redirect_count: nav.redirectCount,
-		redirect_ms: round(nav.redirectEnd - nav.redirectStart),
-		dns_ms: round(nav.domainLookupEnd - nav.domainLookupStart),
-		tcp_ms: round(nav.connectEnd - nav.connectStart),
-		tls_ms: nav.secureConnectionStart ? round(nav.connectEnd - nav.secureConnectionStart) : 0,
-		request_ms: round(nav.responseStart - nav.requestStart),
-		response_ms: round(nav.responseEnd - nav.responseStart),
-		dom_interactive_ms: round(nav.domInteractive),
-		dom_content_loaded_ms: round(nav.domContentLoadedEventEnd),
-		load_event_ms: round(nav.loadEventEnd),
-		transfer_bytes: nav.transferSize,
-		decoded_bytes: nav.decodedBodySize,
-		compression_ratio:
-			nav.decodedBodySize && nav.transferSize ? round(nav.decodedBodySize / nav.transferSize, 2) : null,
-	});
+		reportAction('browser.navigation', {
+			nav_type: nav.type,
+			protocol: nav.nextHopProtocol,
+			redirect_count: nav.redirectCount,
+			redirect_ms: round(nav.redirectEnd - nav.redirectStart),
+			dns_ms: round(nav.domainLookupEnd - nav.domainLookupStart),
+			tcp_ms: round(nav.connectEnd - nav.connectStart),
+			tls_ms: nav.secureConnectionStart ? round(nav.connectEnd - nav.secureConnectionStart) : 0,
+			request_ms: round(nav.responseStart - nav.requestStart),
+			response_ms: round(nav.responseEnd - nav.responseStart),
+			dom_interactive_ms: round(nav.domInteractive),
+			dom_content_loaded_ms: round(nav.domContentLoadedEventEnd),
+			load_event_ms: round(nav.loadEventEnd),
+			transfer_bytes: nav.transferSize,
+			decoded_bytes: nav.decodedBodySize,
+			compression_ratio:
+				nav.decodedBodySize && nav.transferSize ? round(nav.decodedBodySize / nav.transferSize, 2) : null,
+		});
+		pending.add('sample');
+	} catch { /* A platform or collector failure cannot block page startup. */ }
 }
 
 function sampleHeap() {
@@ -216,52 +240,85 @@ function round(value, places = 2) {
 /**
  * Emits the accumulated stability, responsiveness and resource aggregates.
  *
- * Called periodically and once more when the page is hidden, so a session that
- * never unloads cleanly still reports.
+ * Emits only fresh data while visible and on visibility/pagehide final flushes.
  *
  * @param {string} reason Why the flush happened, for example `interval` or `hidden`.
  * @returns {void}
  */
 export function flushVitals(reason) {
-	if (state.clsEntries > 0) {
-		reportMetric('web.vital.cls', state.cls, {
-			unit: 'score',
-			noiseFloor: 0.01,
-			tags: { shift_count: state.clsEntries, reason },
-		});
+	if (!started || (reason === 'interval' && document.visibilityState !== 'visible')) return;
+	// visibilitychange can precede the observer callback for the final entries.
+	for (const { observer, consume } of observers) {
+		try { consume(observer.takeRecords()); } catch { /* An observer may already be disconnected. */ }
 	}
+	if (!pending.size) return;
+	const fresh = new Set(pending);
+	pending.clear();
+	reason = ['interval', 'hidden', 'pagehide', 'manual'].includes(reason) ? reason : 'manual';
+	try {
+		if (fresh.has('cls')) {
+			reportMetric('web.vital.cls', state.cls, {
+				unit: 'score',
+				noiseFloor: 0.01,
+				tags: { shift_count: state.clsEntries, reason },
+			});
+		}
 
-	if (state.worstInteractionMs > 0) {
-		reportMetric('web.interaction.worst', state.worstInteractionMs, {
-			unit: MS,
-			tags: { interaction: state.worstInteractionTarget, reason },
-		});
+		if (fresh.has('interaction')) {
+			reportMetric('web.interaction.worst', state.worstInteractionMs, {
+				unit: MS,
+				tags: { interaction: state.worstInteractionTarget, reason },
+			});
+		}
+
+		if (fresh.has('longtask')) {
+			reportMetric('browser.long_task.total_time', state.longTaskMs, {
+				unit: MS,
+				tags: { long_task_count: state.longTasks, reason },
+			});
+		}
+
+		if (fresh.has('resource')) {
+			reportMetric('browser.resource.transfer_bytes', state.resourceBytes, {
+				unit: BYTES,
+				noiseFloor: 1024,
+				tags: {
+					resource_count: state.resources,
+					cache_hit_pct: round((state.resourceCached / state.resources) * 100, 1),
+					slowest_ms: round(state.slowestResourceMs),
+					slowest_path: state.slowestResourceUrl,
+					reason,
+				},
+			});
+		}
+
+		sampleHeap();
+
+		reportLog('info', 'session telemetry flush', { reason, metrics: metricSnapshot() });
+	} catch { /* Failed telemetry is not retried as idle work. */ }
+}
+
+function pauseFlushes() {
+	if (flushTimer !== null) window.clearInterval(flushTimer);
+	flushTimer = null;
+}
+
+function resumeFlushes() {
+	if (started && document.visibilityState === 'visible' && flushTimer === null) {
+		flushTimer = window.setInterval(() => flushVitals('interval'), FLUSH_INTERVAL_MS);
 	}
+}
 
-	if (state.longTasks > 0) {
-		reportMetric('browser.long_task.total_time', state.longTaskMs, {
-			unit: MS,
-			tags: { long_task_count: state.longTasks, reason },
-		});
-	}
+function visibilityChanged() {
+	if (document.visibilityState === 'hidden') {
+		pauseFlushes();
+		flushVitals('hidden');
+	} else resumeFlushes();
+}
 
-	if (state.resources > 0) {
-		reportMetric('browser.resource.transfer_bytes', state.resourceBytes, {
-			unit: BYTES,
-			noiseFloor: 1024,
-			tags: {
-				resource_count: state.resources,
-				cache_hit_pct: round((state.resourceCached / state.resources) * 100, 1),
-				slowest_ms: round(state.slowestResourceMs),
-				slowest_path: state.slowestResourceUrl,
-				reason,
-			},
-		});
-	}
-
-	sampleHeap();
-
-	reportLog('info', 'session telemetry flush', { reason, metrics: metricSnapshot() });
+function pageHidden() {
+	pauseFlushes();
+	flushVitals('pagehide');
 }
 
 /**
@@ -272,8 +329,9 @@ export function flushVitals(reason) {
  * @returns {void}
  */
 export function startVitals() {
-	if (started || typeof window === 'undefined') return;
+	if (started || typeof window === 'undefined' || typeof document === 'undefined') return;
 	started = true;
+	collection += 1;
 
 	observePaint();
 	observeLcp();
@@ -281,20 +339,18 @@ export function startVitals() {
 	observeInteractions();
 	observeLongTasks();
 	observeResources();
+	buffered = false;
 
 	if (document.readyState === 'complete') {
 		reportNavigationTiming();
 	} else {
-		window.addEventListener('load', () => reportNavigationTiming(), { once: true });
+		window.addEventListener('load', reportNavigationTiming, { once: true });
 	}
 
-	flushTimer = window.setInterval(() => flushVitals('interval'), FLUSH_INTERVAL_MS);
-
-	document.addEventListener('visibilitychange', () => {
-		if (document.visibilityState === 'hidden') flushVitals('hidden');
-	});
-
-	window.addEventListener('pagehide', () => flushVitals('pagehide'));
+	resumeFlushes();
+	document.addEventListener('visibilitychange', visibilityChanged);
+	window.addEventListener('pagehide', pageHidden);
+	window.addEventListener('pageshow', resumeFlushes);
 }
 
 /**
@@ -303,7 +359,9 @@ export function startVitals() {
  * @returns {void}
  */
 export function stopVitals() {
-	for (const observer of observers) {
+	if (!started) return;
+	started = false;
+	for (const { observer } of observers) {
 		try {
 			observer.disconnect();
 		} catch {
@@ -311,7 +369,10 @@ export function stopVitals() {
 		}
 	}
 	observers.length = 0;
-	if (flushTimer !== null) window.clearInterval(flushTimer);
-	flushTimer = null;
-	started = false;
+	pauseFlushes();
+	pending.clear();
+	window.removeEventListener('load', reportNavigationTiming);
+	document.removeEventListener('visibilitychange', visibilityChanged);
+	window.removeEventListener('pagehide', pageHidden);
+	window.removeEventListener('pageshow', resumeFlushes);
 }

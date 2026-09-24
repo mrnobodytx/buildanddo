@@ -27,6 +27,8 @@ import { WITHHELD } from '@/lib/seatDisplay';
 vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: { id: 'seat1' }, isAuthed: true, sessionEpoch: 1, isSessionCurrent: (epoch) => epoch === 1 }) }));
 vi.mock('@/contexts/WorkspaceContext', () => ({ useWorkspace: () => ({ active: { id: 'ws1' } }) }));
 vi.mock('@/lib/pocketbaseClient', () => ({ default: { authStore: { token: 'tok', record: { id: 'seat1' } } } }));
+vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), readFailed: vi.fn() }));
+vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 vi.mock('@/lib/classroomRealtime', () => ({
     PRESENCE_POLL_MS: 5000,
     classroomHealth: vi.fn(),
