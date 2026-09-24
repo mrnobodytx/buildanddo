@@ -36,7 +36,10 @@ import re
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 import unittest
+import urllib.error
 from pathlib import Path
 from unittest import mock
 
@@ -356,9 +359,11 @@ class Harness(unittest.TestCase):
             BOX_TWO: {"guildmaster": "oracle", "guild": "intelligence", "public_ip": EGRESS},
             BOX_UNPLACED: {"public_ip": ADDRESS}}}), encoding="utf-8")
         # Only what a child interpreter needs to start survives, and the store and the fleet map point
-        # into this directory, so no test can read the workstation's real ones.
+        # into this directory, so no test can read the workstation's real ones. The PostHog precondition
+        # reads as landed here; PostHogPreconditionTests take it away.
         kept = {name: os.environ[name] for name in KEEP if os.environ.get(name)}
-        kept.update({"CITADEL_WORKSPACE_ENV": str(self.dir / "no-store.env"), "CITADEL_FLEET_MAP": str(self.fleet)})
+        kept.update({"CITADEL_WORKSPACE_ENV": str(self.dir / "no-store.env"), "CITADEL_FLEET_MAP": str(self.fleet),
+                     "BUILDANDDO_OCN_TELEMETRY_POSTHOG": "1"})
         patcher = mock.patch.dict(os.environ, kept, clear=True)
         patcher.start()
         self.addCleanup(patcher.stop)
@@ -1041,6 +1046,50 @@ class GateTests(Harness):
         clean = self.plan(receipts()["ocn_feature_sweep"], dd_metrics=True)
         self.assertEqual(t.tag_gate(clean.bodies, clean.cat), [])
 
+    def test_every_tag_gate_rule_refuses_its_shape(self):
+        clean = self.plan(receipts()["ocn_feature_sweep"], dd_metrics=True)
+        self.assertEqual(t.tag_gate(clean.bodies, clean.cat), [])
+        alive = next(index for index, item in enumerate(clean.bodies["datadog.series"])
+                     if item["metric"] == t.METRIC_ALIVE)
+        other = next(index for index, item in enumerate(clean.bodies["datadog.series"])
+                     if item["metric"] != t.METRIC_ALIVE)
+
+        # (the problem the gate must report, where the shape goes, the key it sets or the tag it adds, value)
+        cases = [
+            ("datadog.event: ocn_run is not a run id", ("datadog.event",), "tags", ["ocn_run:not-a-run"]),
+            ("datadog.event: carries a host", ("datadog.event",), "host", "x"),
+            ("datadog.event: tag key outside the allowed set", ("datadog.event",), "tags", ["untagged"]),
+            ("datadog.logs: carries a hostname", ("datadog.logs", 0), "hostname", "x"),
+            ("datadog.logs: carries a hostname", ("datadog.logs", 1), "host", "x"),
+            ("datadog.series: carries a resource or host", ("datadog.series", 0), "resources", [{"type": "host"}]),
+            ("datadog.series: carries a resource or host", ("datadog.series", 0), "host", "x"),
+            ("datadog.series: metric outside the catalogue", ("datadog.series", 0), "metric", "buildanddo.ocn.x"),
+            ("datadog.series: tag key outside the allowed set", ("datadog.series", other), "tags",
+             ["ocn_feature:" + clean.cat.features[0]]),
+            ("datadog.series: ocn_feature value outside its enum", ("datadog.series", alive), "tags",
+             ["ocn_feature:not-a-feature"]),
+        ]
+        for problem, where, key, value in cases:
+            with self.subTest(problem=problem, key=key):
+                bodies = copy.deepcopy(clean.bodies)
+                target = bodies[where[0]] if len(where) == 1 else bodies[where[0]][where[1]]
+                if key == "tags" and where[0] == "datadog.event" and value[0].startswith("ocn_run:"):
+                    target["tags"] = [tag for tag in target["tags"] if not tag.startswith("ocn_run:")] + value
+                elif key == "tags":
+                    target["tags"] = target["tags"] + value
+                else:
+                    target[key] = value
+                self.assertIn(problem, t.tag_gate(bodies, clean.cat))
+        with mock.patch.object(t, "SERIES_CEILING", 100):
+            self.assertIn("datadog.series: the catalogue exceeds 100 series", t.tag_gate(clean.bodies, clean.cat))
+
+    def test_an_env_outside_the_two_is_refused_even_for_posthog_alone(self):
+        # No Datadog tag carries the env on a PostHog-only send, so the tag gate would never see it.
+        recorder = Recorder()
+        block = self.publish(dict(receipts()["ocn_journey_report"], env="staging-2"), sinks=("posthog",),
+                             transport=recorder)
+        self.assertEqual((block["reason"], recorder.calls), ("TAG_GATE", []))
+
     def test_send_refuses_without_the_private_map_and_dry_run_says_families_only(self):
         missing = self.dir / "absent.json"
         recorder = Recorder()
@@ -1061,6 +1110,76 @@ class SwitchTests(Harness):
         self.assertFalse(self.ledger.exists())
         with mock.patch.dict(os.environ, {"BUILDANDDO_OCN_TELEMETRY": "loud"}):
             self.assertEqual(t.switch_mode(None), "off")
+
+    def test_the_switch_set_to_off_vetoes_every_flag(self):
+        with mock.patch.dict(os.environ, {"BUILDANDDO_OCN_TELEMETRY": "off"}):
+            self.assertEqual([t.switch_mode(mode) for mode in ("send", "dry-run", None)], ["off"] * 3)
+            self.assertEqual(t.switch_mode(None, default="dry-run"), "off")
+            recorder = Recorder()
+            block = self.publish(receipts()["ocn_journey_report"], mode="send", transport=recorder)
+        self.assertEqual((block["state"], block["reason"], recorder.calls), ("UNSENT", "DISABLED", []))
+        self.assertFalse(self.ledger.exists())
+        # The control: the same flag sends once the switch no longer says off.
+        self.assertEqual(self.publish(receipts()["ocn_journey_report"], mode="send", transport=Recorder())["state"],
+                         "SENT")
+
+    def test_publish_without_a_mode_follows_the_switch(self):
+        path = self.dir / "receipt.json"
+        path.write_text(json.dumps(receipts()["ocn_journey_report"]), encoding="utf-8")
+
+        def publish(switch: str | None) -> dict:
+            environment = {"BUILDANDDO_OCN_TELEMETRY": switch} if switch else {}
+            out = io.StringIO()
+            with mock.patch.dict(os.environ, environment), contextlib.redirect_stdout(out), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                t.main(["publish", "--receipt", str(path), "--fleet-map", str(self.fleet),
+                        "--ledger-dir", str(self.ledger)])
+            return json.loads(out.getvalue())
+
+        off = publish("off")
+        self.assertEqual((off["mode"], off["reason"]), ("off", "DISABLED"))
+        self.assertFalse(self.ledger.exists())
+        # With the switch unset, publish is a dry run; with it set, the switch decides. No key is in this
+        # environment, so a send stops at NO_KEY before any request.
+        self.assertEqual((publish(None)["mode"], publish("dry-run")["reason"]), ("dry-run", "DRY_RUN"))
+        sent = publish("send")
+        self.assertEqual((sent["mode"], sent["posthog"]["reason"]), ("send", "NO_KEY:BUILDANDDO_PH"))
+
+    def test_posthog_waits_for_the_operators_acknowledgement(self):
+        store = self.dir / "workspace.env"
+        store.write_text("BUILDANDDO_PH=%s\nDD_API_KEY=%s\n" % (capture_key(), datadog_key()), encoding="utf-8")
+        recorder = Recorder()
+        with mock.patch.dict(os.environ, {"CITADEL_WORKSPACE_ENV": str(store)}):
+            del os.environ["BUILDANDDO_OCN_TELEMETRY_POSTHOG"]
+            block = self.publish(receipts()["ocn_journey_report"], credentials=None, transport=recorder)
+            self.assertFalse([url for url in recorder.urls() if "posthog" in url])
+            self.assertEqual((block["state"], block["degraded"]), ("SENT", True))
+            self.assertEqual(block["posthog"]["reason"], "POSTHOG_PRECONDITION")
+            self.assertNotIn("BUILDANDDO_PH", block["credentials"])
+            os.environ["BUILDANDDO_OCN_TELEMETRY_POSTHOG"] = "1"
+            later = Recorder()
+            block = self.publish(receipts()["ocn_journey_report"], credentials=None, transport=later)
+        # Once acknowledged, a plain re-publish sends only what PostHog never got.
+        self.assertEqual(later.urls(), [t.PH_CAPTURE, t.PH_CAPTURE])
+        self.assertEqual((block["state"], block["degraded"], block["posthog"]["state"]), ("SENT", False, "SENT"))
+
+    def test_a_datadog_only_send_never_touches_posthog(self):
+        recorder = Recorder()
+        block = self.publish(receipts()["ocn_journey_report"], sinks=("datadog",), transport=recorder)
+        self.assertEqual(recorder.urls(), [t.DD_EVENTS, t.DD_LOGS])
+        self.assertEqual((block["state"], block["degraded"], block["posthog"]["reason"]),
+                         ("SENT", False, "NOT_SELECTED"))
+
+    def test_the_store_is_found_through_the_deploy_file(self):
+        store = self.dir / "elsewhere.env"
+        (self.dir / "secrets").mkdir()
+        (self.dir / "secrets" / "deploy.local.env").write_text(
+            "# deploy settings\nOTHER=1\nCITADEL_WORKSPACE_ENV = \"%s\"\n" % store, encoding="utf-8")
+        with mock.patch.dict(os.environ):
+            del os.environ["CITADEL_WORKSPACE_ENV"]
+            self.assertEqual(t.store_path(root=self.dir), store)
+            self.assertIsNone(t.store_path(root=self.dir / "nowhere"))
+        self.assertEqual(t.store_path(root=self.dir), self.dir / "no-store.env")
 
     def test_dry_run_writes_payloads_to_stderr_only(self):
         recorder, err, out = Recorder(), io.StringIO(), io.StringIO()
@@ -1186,6 +1305,88 @@ class FailureTests(Harness):
         self.assertEqual(block["datadog"]["logs"]["reason"], "BUDGET")
         self.assertIs(block["degraded"], True)
 
+    def test_the_budget_is_a_wall_clock(self):
+        # A request that never answers: a resolver or a connect that hangs, which no socket timeout bounds.
+        release = threading.Event()
+        self.addCleanup(release.set)
+
+        def hang(method, url, body, headers, timeout):
+            release.wait(30)
+            return 200, "", {}
+
+        started = time.monotonic()
+        block = self.publish(receipts()["ocn_journey_report"], transport=hang, budget_s=0.5)
+        self.assertLess(time.monotonic() - started, 2.5)
+        self.assertEqual(block["posthog"]["reason"], "TRANSPORT:BUDGET")
+        self.assertEqual((block["datadog"]["event"]["reason"], block["datadog"]["logs"]["reason"]),
+                         ("BUDGET", "BUDGET"))
+
+    def test_a_hanging_connect_cannot_hold_the_real_transport(self):
+        release = threading.Event()
+        self.addCleanup(release.set)
+
+        def hang(*_args, **_kwargs):
+            release.wait(30)
+            raise OSError("never connected")
+
+        started = time.monotonic()
+        with mock.patch("socket.create_connection", side_effect=hang):
+            block = self.publish(receipts()["ocn_journey_report"], transport=t._send, budget_s=0.5)
+        self.assertLess(time.monotonic() - started, 2.5)
+        self.assertEqual(block["posthog"]["reason"], "TRANSPORT:BUDGET")
+
+    def test_a_failed_datadog_part_is_degraded_and_retried_alone(self):
+        for failure in ((500, "server error", None), TimeoutError("slow")):
+            with self.subTest(failure=type(failure).__name__):
+                ledger = self.dir / ("ledger-" + type(failure).__name__)
+
+                def send(method, url, body, headers, timeout, calls=[], failed=[]):
+                    calls.append(url)
+                    if url == t.DD_LOGS and not failed:
+                        failed.append(url)
+                        if isinstance(failure, BaseException):
+                            raise failure
+                        return failure
+                    return (202 if "datadoghq" in url else 200), "", {}
+
+                first = self.publish(receipts()["ocn_journey_report"], transport=send, ledger_dir=ledger)
+                reason = "TRANSPORT:500" if isinstance(failure, tuple) else "TRANSPORT:TimeoutError"
+                self.assertEqual((first["state"], first["degraded"], first["datadog"]["logs"]["reason"]),
+                                 ("SENT", True, reason))
+                self.assertFalse(t._strict_ok(first))
+                # A plain re-publish posts only the logs: a second Datadog event would never verify.
+                retry = Recorder()
+                second = self.publish(receipts()["ocn_journey_report"], transport=retry, ledger_dir=ledger)
+                self.assertEqual(retry.urls(), [t.DD_LOGS])
+                self.assertEqual((second["state"], second["degraded"]), ("SENT", False))
+                self.assertTrue(t._strict_ok(second))
+                self.assertEqual(self.publish(receipts()["ocn_journey_report"], transport=Recorder(),
+                                              ledger_dir=ledger)["reason"], "LEDGER_DUPLICATE")
+                forced = Recorder()
+                self.publish(receipts()["ocn_journey_report"], transport=forced, ledger_dir=ledger, force=True)
+                self.assertEqual(forced.urls(), [t.PH_CAPTURE, t.PH_CAPTURE])
+
+    def test_a_dry_run_never_overwrites_a_send(self):
+        sent = self.publish(receipts()["ocn_journey_report"], transport=Recorder())
+        self.publish(receipts()["ocn_journey_report"], mode="dry-run")
+        entry = t.read_ledger(self.ledger, sent["run_id"])
+        self.assertEqual((entry["mode"], entry["sinks"]["datadog"]["state"]), ("send", "SENT"))
+        self.assertEqual(self.publish(receipts()["ocn_journey_report"], transport=Recorder())["reason"],
+                         "LEDGER_DUPLICATE")
+
+    def test_an_interrupt_mid_publish_is_recorded_before_it_carries_on(self):
+        recorder = Recorder([(200, "", {}), KeyboardInterrupt()])
+        with self.assertRaises(KeyboardInterrupt):
+            self.publish(receipts()["ocn_journey_report"], transport=recorder)
+        run_id = t.receipt_ids(receipts()["ocn_journey_report"])["run_id"]
+        entry = t.read_ledger(self.ledger, run_id)
+        self.assertEqual(entry["sinks"]["posthog"]["state"], "SENT")
+        self.assertEqual(entry["sinks"]["datadog"]["event"]["reason"], "INTERRUPTED")
+        self.assertEqual([item["run_id"] for item in t.pending_entries(self.ledger)], [run_id])
+        rest = Recorder()
+        self.publish(receipts()["ocn_journey_report"], transport=rest)
+        self.assertEqual(rest.urls(), [t.DD_EVENTS, t.DD_LOGS])
+
     def test_each_request_waits_at_most_three_seconds(self):
         recorder = Recorder()
         self.publish(receipts()["ocn_journey_report"], transport=recorder)
@@ -1215,6 +1416,9 @@ class FailureTests(Harness):
         plan = self.plan(two_hours, dd_metrics=True)
         self.assertEqual(plan.skipped["datadog.series"], "WINDOW")
         self.assertIn("datadog.logs", plan.bodies)
+        ahead = self.plan(dict(receipts()["ocn_journey_report"], at="2026-09-24T12:31:00+00:00"), dd_metrics=True)
+        self.assertEqual(ahead.skipped["datadog.series"], "WINDOW")
+        self.assertIn("datadog.series", self.plan(receipts()["ocn_journey_report"], dd_metrics=True).bodies)
         stale = dict(receipts()["ocn_journey_report"], at="2026-09-23T17:00:00+00:00")
         recorder = Recorder()
         block = self.publish(stale, transport=recorder)
@@ -1231,6 +1435,52 @@ class FailureTests(Harness):
         self.assertEqual((block["state"], block["reason"]), ("UNSENT", "IDENTITY_REFUSED"))
         self.assertEqual(recorder.calls, [])
         self.assertFalse(self.ledger.exists())
+
+
+class TransportTests(Harness):
+    """_send, the module's one network function, with its opener faked: nothing leaves the process."""
+
+    class Opener:
+        def __init__(self, answer):
+            self.answer, self.seen = answer, []
+
+        def open(self, request, timeout=None):
+            self.seen.append((request.full_url, request.get_method(), timeout, request.get_header("User-agent")))
+            if isinstance(self.answer, BaseException):
+                raise self.answer
+            return self.answer
+
+    class Response(io.BytesIO):
+        status = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_exc):
+            return False
+
+    def test_the_opener_never_follows_a_redirect(self):
+        self.assertTrue(any(isinstance(handler, t._NoRedirect) for handler in t._OPENER.handlers))
+        self.assertIsNone(t._NoRedirect().redirect_request(None, None, 302, "Found", {}, "https://example.org/"))
+
+    def test_a_dead_hop_is_status_zero_and_keeps_its_timeout(self):
+        opener = self.Opener(urllib.error.URLError("unreachable"))
+        with mock.patch.object(t, "_OPENER", opener):
+            self.assertEqual(t._send("POST", t.PH_CAPTURE, {"batch": []}, {}, 1.5), (0, "URLError", None))
+        self.assertEqual(opener.seen, [(t.PH_CAPTURE, "POST", 1.5, t.USER_AGENT)])
+
+    def test_an_answer_is_read_and_every_key_scrubbed(self):
+        key = datadog_key()
+        with mock.patch.object(t, "_OPENER", self.Opener(self.Response(b'{"status": "ok"}'))):
+            self.assertEqual(t._send("POST", t.DD_EVENTS, {"x": 1}, {"DD-API-KEY": key}, 2.0),
+                             (200, '{"status": "ok"}', {"status": "ok"}))
+        refusal = urllib.error.HTTPError(t.DD_LOGS, 403, "Forbidden", {},
+                                         io.BytesIO(('{"errors": ["bad key %s"]}' % key).encode()))
+        with mock.patch.object(t, "_OPENER", self.Opener(refusal)):
+            status, detail, _document = t._send("POST", t.DD_LOGS, [], {"DD-API-KEY": key}, 2.0)
+        self.assertEqual(status, 403)
+        self.assertNotIn(key, detail)
+        self.assertIn("[key]", detail)
 
 
 class ReceiptParsingTests(Harness):
@@ -1349,6 +1599,48 @@ class Vendor:
         raise AssertionError("an unexpected request")
 
 
+class Stored:
+    """Both vendors as a store: what they accept, they keep and read back. PostHog keeps a batch sent under
+    the capture key (never the invalid-key twin), Datadog each event and log line by its ocn_run tag, and
+    a Datadog key other than the real one is refused. `fail_logs` answers the first logs intake with 500."""
+
+    def __init__(self, fail_logs: bool = False):
+        self.posthog: dict[tuple[str, str], set] = {}
+        self.datadog: dict[str, list[str]] = {"events": [], "logs": []}
+        self.fail_logs = fail_logs
+
+    @staticmethod
+    def run_of(tags: str) -> str:
+        return re.search(r"ocn_run:([0-9a-f-]{36})", tags).group(1)
+
+    def __call__(self, method, url, body, headers, timeout):
+        if url == t.PH_CAPTURE:
+            for event in body["batch"] if body["api_key"] == capture_key() else []:
+                self.posthog.setdefault((event["properties"]["ocn_run_id"], event["event"]), set()).add(event["uuid"])
+            return 200, "", {"status": "Ok"}
+        if url in (t.DD_EVENTS, t.DD_LOGS):
+            if headers.get("DD-API-KEY") != datadog_key():
+                return 403, "", {}
+            if url == t.DD_LOGS and self.fail_logs:
+                self.fail_logs = False
+                return 500, "", None
+            if url == t.DD_EVENTS:
+                self.datadog["events"].append(self.run_of(",".join(body["tags"])))
+            else:
+                self.datadog["logs"] += [self.run_of(record["ddtags"]) for record in body]
+            return 202, "", {}
+        if url.startswith(t.PH_QUERY_BASE):
+            values = body["query"]["values"]
+            if "run_id" not in values or not url.startswith(t.PH_QUERY):
+                return 200, "", {"results": [[0]] if "run_id" not in values else []}
+            return 200, "", {"results": [[event, len(uuids), 0, 0] for (run, event), uuids in self.posthog.items()
+                                         if run == values["run_id"]]}
+        if url in (t.DD_EVENTS_SEARCH, t.DD_LOGS_SEARCH):
+            found = self.datadog["events" if url == t.DD_EVENTS_SEARCH else "logs"]
+            return 200, "", {"data": [{}] * found.count(self.run_of(body["filter"]["query"]))}
+        raise AssertionError("an unexpected request")
+
+
 class VerifyTests(Harness):
     def sent(self, receipt: dict | None = None) -> dict:
         block = self.publish(receipt or receipts()["ocn_journey_report"], transport=Recorder(), force=True)
@@ -1375,6 +1667,17 @@ class VerifyTests(Harness):
         updated = t.record_verification(self.ledger, entry, result)
         self.assertEqual(t.block_from_ledger(updated, self.ledger)["state"], "VERIFIED")
         self.assertEqual(t.read_ledger(self.ledger, entry["run_id"])["sinks"]["posthog"]["state"], "VERIFIED")
+
+    def test_a_run_whose_logs_were_retried_verifies(self):
+        vendor = Stored(fail_logs=True)
+        first = self.publish(receipts()["ocn_journey_report"], transport=vendor)
+        self.assertEqual((first["state"], first["degraded"]), ("SENT", True))
+        before = t.verify_entry(t.read_ledger(self.ledger, first["run_id"]), self.read(vendor), 0)
+        self.assertEqual((before["state"], before["datadog"]["reason"]), ("NOT_FOUND", "LOGS_NOT_FOUND"))
+        # The retry posts the logs alone, so Datadog holds the one event verify expects.
+        self.publish(receipts()["ocn_journey_report"], transport=vendor)
+        after = t.verify_entry(t.read_ledger(self.ledger, first["run_id"]), self.read(vendor), 0)
+        self.assertEqual((after["state"], after["datadog"]["counts"]["events"]), ("VERIFIED", 1))
 
     def test_nothing_found_is_not_found(self):
         result = self.verify(self.sent(), run=0, checks=0, events=0, logs=0)
@@ -1622,6 +1925,22 @@ class WrapperTests(Harness):
         self.assertEqual((code, seen), (3, [True]))
         self.assertIn("ocn_telemetry: UNSENT (DRY_RUN)", err)
 
+    def test_the_switch_set_to_off_vetoes_a_send_flag(self):
+        publisher = mock.Mock()
+        with mock.patch.dict(os.environ, {"BUILDANDDO_OCN_TELEMETRY": "off"}):
+            code, _, err = self.wrapped(self.options("send"), "sweep", "--json", publisher=publisher)
+        self.assertEqual(code, 3)
+        publisher.assert_not_called()
+        self.assertIn("ocn_telemetry: UNSENT (DISABLED)", err)
+
+    def test_an_interrupt_while_publishing_says_it_may_be_partial(self):
+        publisher = functools.partial(t.publish, transport=Recorder([(200, "", {}), KeyboardInterrupt()]),
+                                      credentials=keys(), now=NOW)
+        code, _, err = self.wrapped(self.options("send"), "sweep", "--json", publisher=publisher)
+        self.assertEqual(code, 3)
+        self.assertIn("interrupted while publishing; it may be partial", err)
+        self.assertEqual(len(list((self.ledger / "runs").glob("*.json"))), 1)
+
     def test_a_selftest_is_never_published(self):
         publisher = mock.Mock()
         code, _, err = self.wrapped(self.options("send"), "selftest", publisher=publisher)
@@ -1674,9 +1993,13 @@ class SelftestTests(Harness):
         self.assertIn("a send carrying a planted name is withheld before any request", failed)
 
     def test_the_selftest_runs_under_ci_and_puts_the_environment_back(self):
-        with mock.patch.dict(os.environ, {"GITLAB_CI": "true"}):
+        with mock.patch.dict(os.environ, {"GITLAB_CI": "true", "BUILDANDDO_OCN_TELEMETRY": "off"}):
+            del os.environ["BUILDANDDO_OCN_TELEMETRY_POSTHOG"]
+            # The workstation's own switch and acknowledgement change nothing in the selftest.
             self.assertEqual(t.selftest()["state"], "PASS")
             self.assertNotIn("BUILDANDDO_OCN_TELEMETRY_ALLOW_CI", os.environ)
+            self.assertNotIn("BUILDANDDO_OCN_TELEMETRY_POSTHOG", os.environ)
+            self.assertEqual(os.environ["BUILDANDDO_OCN_TELEMETRY"], "off")
 
     def test_the_selftest_is_a_source_check(self):
         from scripts.ci import hostinger_checks

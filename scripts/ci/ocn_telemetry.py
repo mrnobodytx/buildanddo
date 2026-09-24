@@ -37,9 +37,12 @@ holds a key for it, and no probe script imports it.
     ocn_telemetry.py probes
     ocn_telemetry.py selftest       offline, sockets refused; hostinger_checks CHECKS['ocn_telemetry']
 
-OFF BY DEFAULT. Nothing is sent unless BUILDANDDO_OCN_TELEMETRY or --telemetry says `send`. `dry-run`
-prints what WOULD be sent to stderr, runs both gates and sends nothing. Turning the switch off is the
-whole rollback.
+OFF BY DEFAULT. Nothing is sent unless --telemetry, --mode or BUILDANDDO_OCN_TELEMETRY says `send`, and
+BUILDANDDO_OCN_TELEMETRY=off vetoes all of them: turning the switch off stops every publish whatever a
+prepared command line says, and that is the rollback. `publish` without --mode follows the switch and is a
+dry run while the switch is unset. `dry-run` prints what WOULD be sent to stderr, runs both gates and
+sends nothing. PostHog also waits for BUILDANDDO_OCN_TELEMETRY_POSTHOG=1, which the operator sets once
+agent events are out of the public activity figure.
 
 TELEMETRY NEVER CHANGES A PROBE. `run` starts the probe, streams its stdout through byte for byte,
 exits with the probe's own exit code, and only publishes after the probe has exited. Every publisher
@@ -73,6 +76,7 @@ import socket
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -137,6 +141,9 @@ SWITCH = "BUILDANDDO_OCN_TELEMETRY"
 BUDGET_ENV = "BUILDANDDO_OCN_TELEMETRY_BUDGET_S"
 METRICS_ENV = "BUILDANDDO_OCN_TELEMETRY_DD_METRICS"
 ALLOW_CI_ENV = "BUILDANDDO_OCN_TELEMETRY_ALLOW_CI"
+# Set to 1 by the operator once the estate precondition has landed: the public activity figure excludes
+# agent events and the test-account filter excludes is_ocn_agent. Until then nothing is sent to PostHog.
+POSTHOG_ACK_ENV = "BUILDANDDO_OCN_TELEMETRY_POSTHOG"
 STORE_ENV = "CITADEL_WORKSPACE_ENV"
 FLEET_ENV = "CITADEL_FLEET_MAP"
 CAPTURE_KEY = "BUILDANDDO_PH"
@@ -1577,9 +1584,30 @@ def write_ledger(ledger_dir: Path, entry: dict[str, Any]) -> Path:
     return path
 
 
-def _delivered(entry: dict[str, Any] | None) -> bool:
+def _accepted_bodies(entry: dict[str, Any] | None) -> set[str]:
+    """The bodies a ledger entry records as accepted: PostHog's request pair as one, Datadog part by part."""
     sinks = (entry or {}).get("sinks") or {}
-    return any(isinstance(sink, dict) and sink.get("state") in ("SENT", "VERIFIED") for sink in sinks.values())
+    done: set[str] = set()
+    posthog = sinks.get("posthog")
+    if isinstance(posthog, dict) and posthog.get("state") in ("SENT", "VERIFIED"):
+        done |= {"posthog.batch", "posthog.control"}
+    datadog = sinks.get("datadog") if isinstance(sinks.get("datadog"), dict) else {}
+    for key in ("event", "logs", "series"):
+        part = datadog.get(key)
+        if isinstance(part, dict) and part.get("state") in ("SENT", "VERIFIED"):
+            done.add("datadog." + key)
+    return done
+
+
+def _carried(entry: dict[str, Any], name: str) -> dict[str, Any]:
+    """An accepted body's result as the ledger recorded it, for a publish that does not post it again."""
+    sinks = entry.get("sinks") or {}
+    if name.startswith("posthog"):
+        posthog = sinks.get("posthog") or {}
+        return _sink(posthog.get("state", "SENT"),
+                     http=posthog.get("http") if name == "posthog.batch" else posthog.get("control_http"))
+    part = (sinks.get("datadog") or {}).get(name.split(".", 1)[1]) or {}
+    return _sink(part.get("state", "SENT"), part.get("reason", ""), http=part.get("http"))
 
 
 # ── publish: prepare, then deliver ───────────────────────────────────────────────────────────
@@ -1676,6 +1704,16 @@ def _sink(state: str = "UNSENT", reason: str = "", **extra: Any) -> dict[str, An
     return {"state": state, "reason": reason, **extra}
 
 
+# The reasons a Datadog part carries when the plan never built it. Any other unsent part was a request
+# that failed, and leaves the receipt degraded.
+PART_SKIPS = frozenset({"", "DISABLED", "NOT_JUDGED", "WINDOW"})
+
+
+def _part_failed(part: object) -> bool:
+    return (isinstance(part, dict) and part.get("state") not in ("SENT", "VERIFIED")
+            and part.get("reason", "") not in PART_SKIPS)
+
+
 def _block(mode: str, *, ids: dict[str, str] | None = None, reason: str = "", probe: str = "",
            posthog: dict[str, Any] | None = None, datadog: dict[str, Any] | None = None,
            gates: dict[str, Any] | None = None, credentials: dict[str, str] | None = None,
@@ -1695,10 +1733,13 @@ def _block(mode: str, *, ids: dict[str, str] | None = None, reason: str = "", pr
     if state == "UNSENT" and not reason:
         reason = next((sink.get("reason") for sink in (posthog, datadog)
                        if sink.get("reason") and sink.get("reason") != "NOT_SELECTED"), "")
+    # Partly sent: a selected sink sent nothing, or a Datadog part failed while another was accepted.
+    degraded = state != "UNSENT" and (
+        any(sink["state"] == "UNSENT" and sink.get("reason") != "NOT_SELECTED" for sink in (posthog, datadog))
+        or any(_part_failed(datadog.get(key)) for key in ("event", "logs", "series")))
     return {"contract": CONTRACT, "run_id": (ids or {}).get("run_id", ""),
             "receipt_sha256": (ids or {}).get("sha", ""), "probe": probe, "mode": mode, "state": state,
-            "degraded": state != "UNSENT" and any(sink["state"] == "UNSENT" and sink.get("reason") != "NOT_SELECTED"
-                                                   for sink in (posthog, datadog)),
+            "degraded": degraded,
             "reason": reason if state == "UNSENT" else "", "posthog": posthog, "datadog": datadog,
             "gates": gates or {}, "credentials": credentials or {}, "ledger": ledger}
 
@@ -1709,13 +1750,34 @@ def _accepted(name: str, status: int) -> bool:
 
 def _call(name: str, method: str, url: str, body: Any, headers: dict[str, str], budget: Budget,
           transport: Callable[..., Any]) -> dict[str, Any]:
+    """One request, held to its slice of the budget by the wall clock.
+
+    A socket timeout bounds each blocking operation, not the request: name resolution has none, and a
+    connect is retried with the full timeout on every address a host resolves to. So the request runs in a
+    daemon thread that is abandoned once its slice has passed, and is recorded as TRANSPORT:BUDGET.
+    """
     timeout = budget.timeout()
     if timeout <= 0:
         return _sink(reason="BUDGET")
-    try:
-        status, detail, _document = transport(method, url, body, headers, timeout)
-    except Exception as error:  # noqa: BLE001 - a transport that raises is a failed request, not a crash
-        return _sink(reason="TRANSPORT:" + type(error).__name__)
+    answers: list[Any] = []
+
+    def attempt() -> None:
+        try:
+            answers.append(transport(method, url, body, headers, timeout))
+        except BaseException as error:  # noqa: BLE001 - handed back to the publishing thread below
+            answers.append(error)
+
+    worker = threading.Thread(target=attempt, name="ocn-telemetry-" + name, daemon=True)
+    worker.start()
+    worker.join(timeout)
+    if not answers:
+        return _sink(reason="TRANSPORT:BUDGET")
+    if isinstance(answers[0], BaseException):
+        if not isinstance(answers[0], Exception):
+            raise answers[0]    # an interrupt belongs to the caller
+        # A transport that raises is a failed request, not a crash.
+        return _sink(reason="TRANSPORT:" + type(answers[0]).__name__)
+    status, detail, _document = answers[0]
     status = int(status or 0)
     if _accepted(name, status):
         return _sink("SENT", http=status)
@@ -1793,6 +1855,7 @@ def deliver(plan: Plan, *, mode: str, sinks: Iterable[str] = SINKS, force: bool 
         return _block(mode, reason="TAG_GATE", gates=gates, **kwargs)
     if leak["state"] != "PASS":
         return _block(mode, reason="LEAK_GATE", gates=gates, **kwargs)
+    previous = read_ledger(ledger_dir, plan.ids["run_id"])
     if mode == "dry-run":
         print("ocn_telemetry dry-run: %d request(s) would be sent, keys and the $ip marker attached only on "
               "send; leak gate %s (%s)" % (len(bodies), leak["state"], leak["rule"]), file=stream)
@@ -1801,64 +1864,93 @@ def deliver(plan: Plan, *, mode: str, sinks: Iterable[str] = SINKS, force: bool 
             print(json.dumps(bodies[name], indent=2, sort_keys=True), file=stream)
         results = {name: _sink(reason="DRY_RUN") for name in names}
         posthog, datadog = _sinks_report(plan, results, selected)
-        previous = read_ledger(ledger_dir, plan.ids["run_id"])
-        path = write_ledger(ledger_dir, _ledger_entry(plan, mode, posthog, datadog, {}, now, previous))
+        path = ledger_file(ledger_dir, plan.ids["run_id"])
+        if (previous or {}).get("mode") != "send":
+            # A dry run never overwrites the record of a real send: pending, retry and verify read it.
+            path = write_ledger(ledger_dir, _ledger_entry(plan, mode, posthog, datadog, {}, now, previous))
         return _block(mode, posthog=posthog, datadog=datadog, gates=gates, ledger=_relative(path), **kwargs)
     if ci_guard():
         return _block(mode, reason="CI_GUARD", gates=gates, **kwargs)
-    previous = read_ledger(ledger_dir, plan.ids["run_id"])
-    if _delivered(previous) and not force:
+    # Datadog keeps every copy it accepts and verify counts exactly, so an accepted Datadog body is never
+    # posted again. PostHog de-duplicates on the event uuid, so --force may post its pair again.
+    done = _accepted_bodies(previous)
+    pending = [name for name in names if name not in done or (force and name.startswith("posthog"))]
+    if not pending:
         return _block(mode, reason="LEDGER_DUPLICATE", gates=gates,
                       ledger=_relative(ledger_file(ledger_dir, plan.ids["run_id"])), **kwargs)
-    wanted = (([CAPTURE_KEY] if "posthog" in selected else [])
-              + ([DD_KEY, DD_SITE_NAME] if "datadog" in selected else []))
+    live = {name.split(".")[0] for name in pending}
+    refused: dict[str, str] = {}
+    if "posthog" in live and os.environ.get(POSTHOG_ACK_ENV, "").strip() != "1":
+        refused["posthog"] = "POSTHOG_PRECONDITION"
+    wanted = (([CAPTURE_KEY] if "posthog" in live and not refused.get("posthog") else [])
+              + ([DD_KEY, DD_SITE_NAME] if "datadog" in live else []))
     if credentials is None:
-        values, provenance = resolve_credentials(wanted)
+        values, provenance = resolve_credentials(wanted) if wanted else ({}, {})
     else:
         values = {name: credentials[name] for name in wanted if credentials.get(name)}
         provenance = {name: "argument" if name in values else "absent" for name in wanted}
-    refused: dict[str, str] = {}
-    if "posthog" in selected:
+    if "posthog" in live and not refused.get("posthog"):
         key = values.get(CAPTURE_KEY, "")
         refused["posthog"] = "NO_KEY:" + CAPTURE_KEY if not key else "" if key.startswith("phc_") else "KEY_SHAPE"
-    if "datadog" in selected:
+    if "datadog" in live:
         refused["datadog"] = ("NO_KEY:" + DD_KEY if not values.get(DD_KEY)
                               else "" if dd_site(values.get(DD_SITE_NAME, "")) in DD_SITES_ALLOWED
                               else "SITE_NOT_ALLOWED")
     send = transport or _send
     budget = Budget(budget_seconds(budget_s), monotonic or time.monotonic)
-    results: dict[str, dict[str, Any]] = {}
-    for name in names:
-        sink = name.split(".")[0]
-        if refused.get(sink):
-            results[name] = _sink(reason=refused[sink])
-            continue
-        body = bodies[name]
-        if name == "posthog.batch":
-            events = [{**event, "properties": {**event["properties"], "$ip": UNSPECIFIED_IP}} for event in body]
-            results[name] = _call(name, "POST", PH_CAPTURE, {"api_key": values[CAPTURE_KEY],
-                                                            "historical_migration": False, "batch": events},
-                                  {}, budget, send)
-        elif name == "posthog.control":
-            twin = {**body, "properties": {**body["properties"], "$ip": UNSPECIFIED_IP}}
-            results[name] = _call(name, "POST", PH_CAPTURE, {"api_key": invalid_capture_key(),
-                                                            "historical_migration": False, "batch": [twin]},
-                                  {}, budget, send)
-        else:
-            url = {"datadog.event": DD_EVENTS, "datadog.logs": DD_LOGS,
-                   "datadog.series": DD_SERIES}[name]
-            payload = {"series": body} if name == "datadog.series" else body
-            results[name] = _call(name, "POST", url, payload, {"DD-API-KEY": values[DD_KEY]}, budget, send)
+    results = {name: _carried(previous or {}, name) for name in names if name not in pending}
+    in_flight = ""
+    try:
+        for name in pending:
+            in_flight = name
+            sink = name.split(".")[0]
+            results[name] = (_sink(reason=refused[sink]) if refused.get(sink)
+                             else _post(name, bodies[name], values, budget, send))
+    except BaseException:
+        # Ctrl+C mid-publish. What already went out is recorded before the interrupt carries on, so
+        # verify --pending finds it and a re-run posts only the rest.
+        if in_flight and in_flight not in results:
+            results[in_flight] = _sink(reason="TRANSPORT:INTERRUPTED")
+        for name in pending:
+            results.setdefault(name, _sink(reason="INTERRUPTED"))
+        posthog, datadog = _sinks_report(plan, results, selected)
+        write_ledger(ledger_dir, _ledger_entry(plan, mode, posthog, datadog, provenance, now, previous))
+        raise
     posthog, datadog = _sinks_report(plan, results, selected)
     path = write_ledger(ledger_dir, _ledger_entry(plan, mode, posthog, datadog, provenance, now, previous))
     return _block(mode, posthog=posthog, datadog=datadog, gates=gates, credentials=provenance,
                   ledger=_relative(path), **kwargs)
 
 
-def switch_mode(value: object = None) -> str:
-    """--telemetry / --mode, else BUILDANDDO_OCN_TELEMETRY; unset or unknown means off."""
-    text = str(value if value is not None else os.environ.get(SWITCH, "")).strip().lower()
-    return text if text in MODES else "off"
+def _post(name: str, body: Any, values: dict[str, str], budget: Budget,
+          send: Callable[..., Any]) -> dict[str, Any]:
+    """One body to its pinned endpoint. Keys and the $ip marker are attached here, after both gates."""
+    if name == "posthog.batch":
+        events = [{**event, "properties": {**event["properties"], "$ip": UNSPECIFIED_IP}} for event in body]
+        return _call(name, "POST", PH_CAPTURE, {"api_key": values[CAPTURE_KEY], "historical_migration": False,
+                                                "batch": events}, {}, budget, send)
+    if name == "posthog.control":
+        twin = {**body, "properties": {**body["properties"], "$ip": UNSPECIFIED_IP}}
+        return _call(name, "POST", PH_CAPTURE, {"api_key": invalid_capture_key(), "historical_migration": False,
+                                                "batch": [twin]}, {}, budget, send)
+    url = {"datadog.event": DD_EVENTS, "datadog.logs": DD_LOGS, "datadog.series": DD_SERIES}[name]
+    payload = {"series": body} if name == "datadog.series" else body
+    return _call(name, "POST", url, payload, {"DD-API-KEY": values[DD_KEY]}, budget, send)
+
+
+def switch_mode(value: object = None, default: str = "off") -> str:
+    """The telemetry mode. BUILDANDDO_OCN_TELEMETRY=off vetoes every flag, so turning the switch off stops
+    every publish whatever its command line says. Otherwise --telemetry or --mode, else the switch, else
+    `default` when the switch is unset. An unknown value is off."""
+    ambient = os.environ.get(SWITCH, "").strip().lower()
+    if ambient == "off":
+        return "off"
+    if value is not None:
+        text = str(value).strip().lower()
+        return text if text in MODES else "off"
+    if not ambient:
+        return default if default in MODES else "off"
+    return ambient if ambient in MODES else "off"
 
 
 def metrics_enabled(flag: bool | None = None) -> bool:
@@ -2372,7 +2464,8 @@ def run_command(options: argparse.Namespace, command: list[str], *, stdout: Any 
             block["verification"] = _verify_after_run(block, options)
         print(summary_line(block), file=err)
     except KeyboardInterrupt:
-        print("ocn_telemetry: interrupted; nothing was published", file=err)
+        print("ocn_telemetry: interrupted while publishing; it may be partial, and the ledger records what went "
+              "out (verify --pending reads it back)", file=err)
     except Exception as error:  # noqa: BLE001 - the probe's exit code is returned whatever happens here
         print("ocn_telemetry: UNSENT (PUBLISHER_ERROR:%s)" % type(error).__name__, file=err)
     return code
@@ -2430,17 +2523,25 @@ def _socket_guard(attempts: list[str]) -> Iterator[None]:
 
 
 @contextlib.contextmanager
-def _allow_ci() -> Iterator[None]:
-    """The selftest's own sends go to a recorder behind the socket guard, so CI may run them."""
-    before = os.environ.get(ALLOW_CI_ENV)
-    os.environ[ALLOW_CI_ENV] = "1"
+def _selftest_environment() -> Iterator[None]:
+    """The selftest's own sends go to a recorder behind the socket guard, so CI may run them, PostHog's
+    precondition reads as landed, and the switch is unset, so the workstation's own settings change
+    nothing. Every variable comes back afterwards."""
+    wanted = {ALLOW_CI_ENV: "1", POSTHOG_ACK_ENV: "1", SWITCH: None}
+    before = {name: os.environ.get(name) for name in wanted}
     try:
+        for name, value in wanted.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
         yield None
     finally:
-        if before is None:
-            os.environ.pop(ALLOW_CI_ENV, None)
-        else:
-            os.environ[ALLOW_CI_ENV] = before
+        for name, value in before.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
 
 
 def _selftest_receipt(box: str, address: str) -> dict[str, Any]:
@@ -2475,7 +2576,8 @@ def selftest() -> dict[str, Any]:
     address = ".".join(("192", "0", "2", "10"))
     now = dt.datetime(2026, 9, 24, 12, 1, tzinfo=dt.timezone.utc)
     fake = {CAPTURE_KEY: "_".join(("phc", "selftest" * 3)), DD_KEY: "0" * 32, DD_SITE_NAME: DD_SITE}
-    with tempfile.TemporaryDirectory(prefix="ocn-telemetry-selftest-") as folder, _socket_guard(attempts):
+    with tempfile.TemporaryDirectory(prefix="ocn-telemetry-selftest-") as folder, _socket_guard(attempts), \
+            _selftest_environment():
         fleet = Path(folder) / "fleet.json"
         fleet.write_text(json.dumps({"boxes": {box: {"guildmaster": "forge", "guild": "builder"}}}), encoding="utf-8")
         ledger = Path(folder) / "ledger"
@@ -2500,22 +2602,27 @@ def selftest() -> dict[str, Any]:
                bool(tag_gate(tagged, plan.cat)) and not tag_gate(plan.bodies, plan.cat))
         record("the metric catalogue stays within %d series" % SERIES_CEILING,
                series_ceiling(plan.cat.features) <= SERIES_CEILING)
-        with _allow_ci():
-            withheld = prepare(receipt, fleet_map=fleet, now=now)
-            withheld.bodies["datadog.logs"][0]["message"] += " " + box
-            block = deliver(withheld, mode="send", ledger_dir=ledger, credentials=fake, transport=recorder, now=now)
-            record("a send carrying a planted name is withheld before any request",
-                   block["reason"] == "LEAK_GATE" and not calls)
-            block = deliver(plan, mode="send", ledger_dir=ledger, credentials=fake, transport=recorder, now=now)
-            record("a clean send goes out in order, to the pinned hosts only",
-                   block["state"] == "SENT" and calls == [PH_CAPTURE, PH_CAPTURE, DD_EVENTS, DD_LOGS])
-            sent = [event for body in batches for event in body["batch"]]
-            record("the $ip marker is attached to every sent event, and only after the gates",
-                   bool(sent) and all(event["properties"].get("$ip") == UNSPECIFIED_IP for event in sent)
-                   and "$ip" not in json.dumps(plan.bodies))
+        withheld = prepare(receipt, fleet_map=fleet, now=now)
+        withheld.bodies["datadog.logs"][0]["message"] += " " + box
+        block = deliver(withheld, mode="send", ledger_dir=ledger, credentials=fake, transport=recorder, now=now)
+        record("a send carrying a planted name is withheld before any request",
+               block["reason"] == "LEAK_GATE" and not calls)
+        block = deliver(plan, mode="send", ledger_dir=ledger, credentials=fake, transport=recorder, now=now)
+        record("a clean send goes out in order, to the pinned hosts only",
+               block["state"] == "SENT" and calls == [PH_CAPTURE, PH_CAPTURE, DD_EVENTS, DD_LOGS])
+        sent = [event for body in batches for event in body["batch"]]
+        record("the $ip marker is attached to every sent event, and only after the gates",
+               bool(sent) and all(event["properties"].get("$ip") == UNSPECIFIED_IP for event in sent)
+               and "$ip" not in json.dumps(plan.bodies))
         off = publish(receipt, mode="off", fleet_map=fleet, ledger_dir=Path(folder) / "off", transport=recorder)
         record("off sends nothing and writes nothing",
                off["reason"] == "DISABLED" and len(calls) == 4 and not (Path(folder) / "off").exists())
+        os.environ[SWITCH] = "off"
+        vetoed = publish(receipt, mode="send", fleet_map=fleet, ledger_dir=Path(folder) / "vetoed", credentials=fake,
+                         transport=recorder, now=now)
+        os.environ.pop(SWITCH, None)
+        record("the switch set to off vetoes a send flag",
+               vetoed["reason"] == "DISABLED" and len(calls) == 4 and not (Path(folder) / "vetoed").exists())
         refused = {"schema": PROBES["ocn_seat_session"].schema, "seat": box, "env": "staging",
                    "identity": {"state": "REFUSED", "code": "IDENTITY_CONFLICT"}, "login": "NOT_ATTEMPTED"}
         record("a seat identity refusal is sent nowhere",
@@ -2547,7 +2654,8 @@ def run_main(argv: list[str], *, stdout: Any = None, stderr: Any = None) -> int:
     split = argv.index("--") if "--" in argv else len(argv)
     parser = argparse.ArgumentParser(prog="ocn_telemetry.py run",
                                      description="Run one probe, then publish its receipt.")
-    parser.add_argument("--telemetry", choices=MODES, default=None)
+    parser.add_argument("--telemetry", choices=MODES, default=None,
+                        help="default: BUILDANDDO_OCN_TELEMETRY, else off; the switch set to off vetoes it")
     parser.add_argument("--sinks", type=_sinks_arg, default=SINKS)
     parser.add_argument("--probe", default="")
     parser.add_argument("--expect", choices=("allow", "deny"), default=None)
@@ -2578,7 +2686,9 @@ def publish_main(args: argparse.Namespace) -> int:
     except OSError:
         raw = b""
     receipt = extract_receipt(decode_bytes(raw))
-    block = publish(receipt, probe=args.probe or None, mode=args.mode, sinks=args.sinks, force=args.force,
+    # Without --mode the switch decides, and an unset switch makes this a dry run.
+    block = publish(receipt, probe=args.probe or None, mode=switch_mode(args.mode, default="dry-run"),
+                    sinks=args.sinks, force=args.force,
                     expect=args.expect, env=args.env, fleet_map=args.fleet_map, probe_digest=args.probe_digest,
                     dd_metrics=args.dd_metrics or None,
                     ledger_dir=Path(args.ledger_dir) if args.ledger_dir else None)
@@ -2658,7 +2768,8 @@ def build_parser() -> argparse.ArgumentParser:
     pub = sub.add_parser("publish", help="publish one receipt read from a file or stdin")
     pub.add_argument("--receipt", required=True, help="a receipt file, or - for stdin")
     pub.add_argument("--probe", default="")
-    pub.add_argument("--mode", choices=MODES, default="dry-run")
+    pub.add_argument("--mode", choices=MODES, default=None,
+                     help="default: BUILDANDDO_OCN_TELEMETRY, else dry-run; the switch set to off vetoes it")
     pub.add_argument("--sinks", type=_sinks_arg, default=SINKS)
     pub.add_argument("--tee", action="store_true", help="print the receipt with its block, not the block alone")
     pub.add_argument("--force", action="store_true", help="send again a run the ledger records as sent")

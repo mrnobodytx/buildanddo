@@ -35,13 +35,20 @@ Telemetry is **off by default**. Sending is an A3 action and waits for the opera
 | Mode | What happens |
 |------|--------------|
 | `off` (default) | The block reads `UNSENT` / `DISABLED`. No network, no file, no credential store. |
-| `dry-run` | Both gates run, the exact payloads go to stderr, and the ledger records counts. Nothing is sent and the store is not opened. |
+| `dry-run` | Both gates run, the exact payloads go to stderr, and the ledger records counts. Nothing is sent and the store is not opened. A dry run never overwrites the ledger's record of a real send. |
 | `send` | The gates run, then keys and the `$ip` marker are attached and each request is sent once. |
 
-The mode comes from `--telemetry` (for `run`) or `--mode` (for `publish`, which defaults to `dry-run`),
-else from `BUILDANDDO_OCN_TELEMETRY`. An unset or unknown value is `off`. **Rollback is turning the
-switch off.** Nothing else needs to change, and data already sent is isolated by `is_ocn_agent` and
-`$lib` in PostHog and by `service:buildanddo-ocn` in Datadog.
+`BUILDANDDO_OCN_TELEMETRY=off` vetoes every flag. Otherwise the mode comes from `--telemetry` (for
+`run`) or `--mode` (for `publish`), else from `BUILDANDDO_OCN_TELEMETRY`. With neither, `run` is `off`
+and `publish` is a dry run. An unknown value is `off`. **Rollback is setting
+`BUILDANDDO_OCN_TELEMETRY=off`**: every publish stops, whatever a prepared command or driver passes, and
+nothing else needs to change. The switch governs publishing only; `verify` is a separate, explicitly
+invoked readback. Data already sent is isolated by `is_ocn_agent` and `$lib` in PostHog and by
+`service:buildanddo-ocn` in Datadog.
+
+PostHog also waits for the operator: until `BUILDANDDO_OCN_TELEMETRY_POSTHOG=1` records that the
+[preconditions](#operator-preconditions) have landed, a send leaves the PostHog sink `UNSENT` with
+`POSTHOG_PRECONDITION` and never reads its key. Datadog goes ahead.
 
 ## Commands
 
@@ -59,8 +66,10 @@ python scripts/ci/ocn_telemetry.py selftest
   same interpreter, with `PYTHONIOENCODING=utf-8`, so a non-ASCII table cannot raise under a pipe. The
   probe's stdout passes through byte for byte, its stderr is inherited, and `run` exits with the probe's
   own exit code. Only after the probe has exited does it read the receipt and publish, then print one
-  summary line on stderr. After a KeyboardInterrupt it waits for the probe and publishes nothing.
-  `selftest`, `routes`, `legs` and `seats` are never published. The receipt is found in this order:
+  summary line on stderr. After a KeyboardInterrupt it waits for the probe and publishes nothing. An
+  interrupt while publishing may leave the publish partial: what already went out is in the ledger, and
+  `verify --pending` reads it back. `selftest`, `routes`, `legs` and `seats` are never published. The
+  receipt is found in this order:
   - the whole stdout as one JSON document;
   - else the last line that starts with `{`, or an indented document that starts on such a line;
   - else the file the probe wrote with `--write`.
@@ -76,9 +85,13 @@ python scripts/ci/ocn_telemetry.py selftest
     their receipts need `--env` here; without it they are refused (`NO_ENV`), never guessed. Under `run`,
     the probe command's own `--env` is read. `ocn_rbac_probe` and `ocn_box_exercise` only ever reach
     staging.
-  - `--force` sends again a run the ledger already records as sent, with the same PostHog uuids.
+  - Publishing a run again posts only what the ledger does not record as accepted, so a failed part is
+    retried alone. When everything was accepted the answer is `LEDGER_DUPLICATE`. `--force` also posts
+    the PostHog pair again, with the same uuids. A Datadog body that was accepted is never posted twice,
+    because Datadog keeps every copy and `verify` counts exactly.
   - `--probe-digest` names the digest of the script that actually ran.
-  - `--strict` exits non-zero on anything short of a clean send, or on a failed gate in a dry run.
+  - `--strict` exits non-zero on anything short of a clean send (any selected sink, or any Datadog part,
+    left unsent), or on a failed gate in a dry run.
 - **`verify`** is described in [Verify](#verify-runbook).
 - **`selftest`** runs offline with every socket refused, and is the CI gate `CHECKS['ocn_telemetry']`.
 
@@ -250,21 +263,27 @@ withholds the whole receipt.
   | `NO_FLEET_MAP`, `LEAK_GATE`, `TAG_GATE` | a gate withheld the receipt |
   | `NO_KEY:<name>`, `KEY_SHAPE`, `SITE_NOT_ALLOWED` | a credential is missing or wrong |
   | `WINDOW` | the receipt is too old for a Datadog signal |
-  | `LEDGER_DUPLICATE` | this run was already sent; `--force` re-sends |
+  | `LEDGER_DUPLICATE` | every selected body of this run was already accepted; `--force` re-sends the PostHog pair |
   | `UNKNOWN_SCHEMA`, `NO_RECEIPT`, `NOT_PUBLISHABLE` | nothing publishable was found |
   | `NO_ENV` | a receipt that does not record its environment was published without `--env` |
+  | `POSTHOG_PRECONDITION` | `BUILDANDDO_OCN_TELEMETRY_POSTHOG=1` is not set, so nothing goes to PostHog |
   | `IDENTITY_REFUSED`, `IDENTITY_UNRESOLVED` | a seat refusal, or a box the map does not know (PostHog only) |
-  | `TRANSPORT:<status or class>`, `BUDGET` | the request failed, or did not start within the budget |
+  | `TRANSPORT:<status>` | the vendor answered and refused: never delivered |
+  | `TRANSPORT:<class>`, `TRANSPORT:BUDGET`, `TRANSPORT:INTERRUPTED` | no status came back: the request failed, overran its share of the budget, or was cut off by an interrupt. It may have been delivered |
+  | `BUDGET`, `INTERRUPTED` | the request never started: the budget was spent, or an interrupt came first |
   | `PUBLISHER_ERROR:<class>` | the publisher failed; this never raises into the probe |
 
 - **SENT:** the vendor accepted the request (PostHog 200, Datadog 2xx). This is not proof of storage.
 - **VERIFIED:** written only by `verify`.
 
 The overall state is VERIFIED only when every sink that was sent is VERIFIED, SENT when any sink is SENT,
-and otherwise UNSENT. `degraded: true` marks a partly sent receipt.
+and otherwise UNSENT. `degraded: true` marks a partly sent receipt: a selected sink sent nothing, or a
+Datadog part failed while another was accepted.
 
 All requests share one budget of 10 seconds (`BUILDANDDO_OCN_TELEMETRY_BUDGET_S`), at most 3 seconds
-each. They go in a fixed order: the PostHog batch, the PostHog control, the Datadog event, the logs, then
+each, and both are wall-clock limits: each request runs in a thread that is abandoned when its share runs
+out, so neither a slow name lookup nor a host whose every address drops packets can hold the probe's exit
+code. They go in a fixed order: the PostHog batch, the PostHog control, the Datadog event, the logs, then
 the series. There is one attempt, no retry, and no redirect.
 
 ## Receipts and the ledger
@@ -343,10 +362,13 @@ Before the first send:
 1. **The public activity figure excludes agents.** The estate's `tools/citadel_activity_projection.py`
    (`sink_posthog`) counts every event in 597897 into the public `activity-status.json`. It must exclude
    `is_ocn_agent` events, or `$lib` starting `bnd-ocn`. That change is in the estate, outside this
-   repository. Until it lands, any live send uses `--sinks datadog` only. The public number will drop by
-   the share agents make up today; that drop is expected.
+   repository. The public number will drop by the share agents make up today; that drop is expected.
 2. **The project's test-account filter excludes `is_ocn_agent`.** This is a PostHog setting only the
    operator changes.
+
+   The publisher enforces these two: until the operator sets `BUILDANDDO_OCN_TELEMETRY_POSTHOG=1` on the
+   release workstation, recording that both have landed, a send posts nothing to PostHog
+   (`POSTHOG_PRECONDITION`) whatever `--sinks` says, and only Datadog is sent.
 3. **Datadog Plan & Usage is checked before `--dd-metrics` is ever turned on.** The operator's decision is
    events and logs only for now.
 4. **The legacy OCN data stays** until the new stream is VERIFIED: six persons named after boxes, and
