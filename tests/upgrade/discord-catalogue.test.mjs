@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/discord-catalogue.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -22,6 +22,7 @@ import { join } from 'node:path';
 import test from 'node:test';
 import { buildCommunityCatalogue, generateCommunityCatalogue } from '../../apps/web/tools/generate-community.mjs';
 import { PUBLIC_PAGES, SITE_ORIGIN } from '../../apps/web/src/lib/publicPages.js';
+import { publicLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 
 const release = { version: '38+abc1234', commit_sha: 'abc1234' + '0'.repeat(33) };
 const starter = JSON.parse(readFileSync(
@@ -37,16 +38,11 @@ test('community projection shares all 33 lessons and the exact public page/relea
     assert.equal(result.curriculum_version, curriculum.version);
     assert.equal(result.lessons.length, 33);
     assert.deepEqual(result.pages.map((page) => page.path), PUBLIC_PAGES.map((page) => page.path));
+    assert.equal(result.schema_version, 2);
     for (const [index, lesson] of result.lessons.entries()) {
-        // Authored parity everywhere except the knowledge check, which now withholds the
-        // graded answer and its explanation - community-catalog.json is served with no
-        // session, and publishing them made every lesson check self-answering. The contract
-        // lives in tests/upgrade/community-catalogue-check-projection.test.mjs.
-        const authored = curriculum.lessons[index].lesson;
-        assert.deepEqual(lesson.lesson, {
-            ...authored,
-            check: { question: authored.check.question, choices: authored.check.choices },
-        });
+        // Everything authored except the answer and the explanation that gives it away.
+        assert.deepEqual(lesson.lesson, publicLesson(curriculum.lessons[index].lesson));
+        assert.deepEqual(Object.keys(lesson.lesson.check), ['question', 'choices']);
         assert.equal(lesson.slug, curriculum.lessons[index].slug);
         assert.ok(!('id' in lesson));
         assert.ok(!('legacy_summary' in lesson));

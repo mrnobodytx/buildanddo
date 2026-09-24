@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/discordbot/catalogue.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
@@ -172,17 +172,11 @@ def _lesson(value: object) -> Lesson:
         parts.append(("References", "\n\n".join(references)))
     check = mapping(body.get("check"))
     question = text(check.get("question"), 500)
-    # community-catalog.json is fetched by anyone with no session, so the generator withholds the
-    # graded answer and its explanation - publishing them made every knowledge check
-    # self-answering. Requiring an answer index here raised out of the lessons comprehension and
-    # took the WHOLE catalogue down with it, so /docs, /lesson, search and autocomplete all failed
-    # closed over a field none of them use. A check is now complete with a question and at least
-    # two choices; every other bound stays, including the six-choice cap and the 200-character
-    # choice width that strings() enforces.
     choices = strings(check.get("choices"), 6, 200)
-    if len(choices) < 2:
+    # The published feed asks; the server grades. A feed carrying answers is not the published contract.
+    if len(choices) < 2 or set(check) != {"question", "choices"}:
         raise DataUnavailable(DataFault.INVALID)
-    return Lesson(slug, title, summary, category, minutes, tuple(parts), question, Quiz(choices))
+    return Lesson(slug, title, summary, category, minutes, tuple(parts), question, Quiz(slug, choices))
 
 
 @dataclass(frozen=True)
@@ -199,7 +193,7 @@ class Catalogue:
         """Reject malformed or private-origin feed content before rendering it."""
         source = mapping(value)
         if (
-            type(source.get("schema_version")) is not int or source["schema_version"] != 1
+            type(source.get("schema_version")) is not int or source["schema_version"] != 2
             or source.get("site_origin") != SITE_ORIGIN
         ):
             raise DataUnavailable(DataFault.INVALID)

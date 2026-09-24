@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/discordbot/service.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     scripts/discordbot/catalogue.py, scripts/discordbot/public_data.py
+# Depends:     scripts/discordbot/catalogue.py, scripts/discordbot/public_data.py, scripts/discordbot/grading.py
 # EnumType:    Service
-# EnumEdges:   DEPENDS_ON scripts/discordbot/catalogue.py; DEPENDS_ON scripts/discordbot/public_data.py
+# EnumEdges:   DEPENDS_ON scripts/discordbot/catalogue.py; DEPENDS_ON scripts/discordbot/public_data.py; DEPENDS_ON scripts/discordbot/grading.py
 # DAG Node:    none
 # Intent:      Connect useful community commands to dated public evidence and the site's authored teaching content.
 # ───────────────────────────────────────────────────────────────
@@ -26,9 +26,10 @@ import time
 
 from .catalogue import Catalogue, mapping, release_identity, text
 from .contracts import (
-    Caller, DataFault, DataUnavailable, DISPATCH, Limiter, Option, Page, Reply,
+    Caller, DataFault, DataUnavailable, DISPATCH, Limiter, Option, Page, Quiz, Reply,
     Settings, SITE_ORIGIN, SRS, paginate,
 )
+from .grading import Grader
 from .public_data import Observation, PublicClient
 
 logger = logging.getLogger("buildanddo.discord")
@@ -43,11 +44,13 @@ COMMANDS = {
     "docs": "Search the site's public documentation and product pages.",
     "learn": "Search authored lessons, including government submissions, by topic or category.",
     "lesson": "Read a complete starter lesson in private pages.",
-    "quiz": "Practice a lesson's knowledge check; the lesson marks it, not the bot.",
+    "quiz": "Practice a lesson's knowledge check, graded by the site.",
     "workspace": "Open a workspace desk using your existing website permissions.",
     "support": "Find the product support and bug-reporting entry points.",
     "diagnostics": "Inspect bot scope and public-read counters as a server manager.",
 }
+# Members-only on the website; the bot shows the question and never grades these.
+GOVERNMENT = "Government submissions"
 WORKSPACE_AREAS = {
     "overview": ("Overview", "/app"),
     "missions": ("Missions", "/app/missions"),
@@ -89,9 +92,11 @@ class CommandService:
         self, settings: Settings, client: PublicClient,
         clock: Callable[[], float] = time.monotonic,
         utcnow: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
+        grader: Grader | None = None,
     ) -> None:
         self.settings, self.client = settings, client
         self.clock, self.utcnow = clock, utcnow
+        self.grader = grader or Grader(None)
         self.limiter = Limiter()
         self._catalogue: Catalogue | None = None
 
@@ -144,6 +149,21 @@ class CommandService:
             logger.info("discord.command.completed", extra={
                 "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
                 "command": name, "outcome": outcome,
+                "duration_ms": max(0, round((self.clock() - start) * 1000)),
+            })
+
+    async def grade(self, quiz: Quiz, choice: int, caller: Caller) -> tuple[Page, bool]:
+        """Have the server grade one answer; log only the outcome, never the choice or the answer."""
+        start = self.clock()
+        outcome = "error"
+        try:
+            page, graded = await self.grader.grade(quiz, choice, caller)
+            outcome = "graded" if graded else "unavailable"
+            return page, graded
+        finally:
+            logger.info("discord.quiz.graded", extra={
+                "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
+                "command": "quiz", "outcome": outcome,
                 "duration_ms": max(0, round((self.clock() - start) * 1000)),
             })
 
@@ -276,6 +296,9 @@ class CommandService:
             body = lesson.question + "\n\n" + "\n".join(
                 f"{index + 1}. {choice}" for index, choice in enumerate(lesson.quiz.choices)
             )
+            if lesson.category == GOVERNMENT:
+                body += "\n\nGovernment lessons are graded on the website for current members."
+                return Reply((Page(lesson.title, body, SITE_ORIGIN + "/app/tutorials", note),))
             return Reply((Page(lesson.title, body, note=note),), quiz=lesson.quiz)
         if not found:
             return Reply((Page("No matching lesson", "Search a topic such as missions, evidence, content or business.", note=note),))

@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/discordbot/doctor.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
@@ -29,6 +29,7 @@ import sys
 from apps.research.contracts import Endpoint, ProcessorSettings, ResearchError, identifier
 from scripts.discordbot.contracts import ConfigurationError, Settings
 from scripts.discordbot.dossier import DOSSIER_COMMANDS
+from scripts.discordbot.grading import MINIMUM_TOKEN, TOKEN_VARIABLE
 from scripts.discordbot.research import RESEARCH_COMMANDS, bindings_from_env
 from scripts.discordbot.service import COMMANDS
 
@@ -55,7 +56,7 @@ def inspect_startup(component: str, env: Mapping[str, str], *, root: Path = ROOT
     check("python", version >= (3, 11), "Python 3.11 or later is required; CI uses Python 3.12.")
     files = ["apps/research/contracts.py", "apps/research/transport.py"]
     if component == "bot":
-        files += [f"scripts/discordbot/{name}.py" for name in ("bot", "contracts", "catalogue", "public_data", "service", "research", "dossier")]
+        files += [f"scripts/discordbot/{name}.py" for name in ("bot", "contracts", "catalogue", "public_data", "service", "research", "dossier", "grading")]
     elif component == "worker":
         files += [f"apps/research/{name}.py" for name in ("worker", "documents", "processing")]
     else:
@@ -65,6 +66,17 @@ def inspect_startup(component: str, env: Mapping[str, str], *, root: Path = ROOT
     if component == "bot":
         check("discord_sdk", available("discord"), "The declared Discord.py runtime must be installed in the service's Python environment.")
         check("bot_token_binding", bool(env.get("BAD_DISCORD", "").strip()), "The existing BAD_DISCORD binding must be present in this process; its value is never reported.")
+        grading = env.get(TOKEN_VARIABLE, "").strip()
+        if not grading:
+            checks.append({"check": "quiz_grading", "state": "DISABLED", "detail":
+                           "No community bot token is configured; the quiz asks questions and reports grading as unavailable."})
+        else:
+            try:
+                Endpoint(env.get("BUILDANDDO_POCKETBASE_URL", ""))
+                usable = len(grading) >= MINIMUM_TOKEN
+            except ResearchError:
+                usable = False
+            check("quiz_grading", usable, f"Quiz grading needs BUILDANDDO_POCKETBASE_URL and a {TOKEN_VARIABLE} of at least {MINIMUM_TOKEN} characters; values are never reported.")
         try:
             settings = Settings.from_env(env)
             bindings = bindings_from_env(env)

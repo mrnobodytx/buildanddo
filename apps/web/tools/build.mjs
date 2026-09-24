@@ -50,11 +50,12 @@ const vite = spawnSync('vite', ['build', '--outDir', '../../dist/apps/web', '--e
 });
 if (vite.error) console.error('Unable to start Vite:', vite.error.message);
 if (vite.status !== 0) process.exit(vite.status ?? 1);
-// Interactive lessons are graded on the server; a shipped explanation would give the answer away.
-const leaks = findLessonAnswers(output);
-if (leaks.length) {
-    for (const leak of leaks) console.error(`Lesson ${leak.slug} explanation is in assets/${leak.file}; import curricula with ?public-lessons.`);
-    process.exit(1);
-}
 generatePageHeads(output, release);
 generateCommunityCatalogue(output, release);
+// Interactive lessons are graded on the server; a shipped answer or explanation would give it away.
+// Scanned last so generated feeds such as community-catalog.json are covered too.
+const leaks = findLessonAnswers(output);
+if (leaks.length) {
+    for (const leak of leaks) console.error(`Lesson ${leak.slug} answer is in ${leak.file}; import curricula with ?public-lessons and keep checks answer-free.`);
+    process.exit(1);
+}
