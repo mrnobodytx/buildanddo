@@ -643,7 +643,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T11:45:58.909872+00:00",
+  "generated_at": "2026-09-24T17:39:54.373922+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -959,6 +959,13 @@
         "title": "Complete and integrate Phase 1 with the version-two contracts"
       },
       {
+        "code": "SRS-BUILDANDDO-SITE-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SITE-001.md",
+        "status": "in_progress",
+        "title": "Website ownership proof by DNS TXT (front door, part 1)"
+      },
+      {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-SUPPLY-001.md",
@@ -1256,13 +1263,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 75,
-    "python_files": 439,
+    "migrations": 76,
+    "python_files": 440,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1790,
-    "web_source_files": 416
+    "tracked_files": 1799,
+    "web_source_files": 418
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1341,15 +1348,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "1deddd9c74adc199c410ea44dd618d919db40d0b23c67243ee54f1bd030e6b03",
+    "source_sha256": "75f1b13ee8c9b719f205f98212677e6e409732bc54ddc2900543e42b04043dc9",
     "state": "PASS"
   },
   "summary": {
     "findings": 35,
     "findings_high": 35,
     "pipelines": 10,
-    "srs_open": 45,
-    "srs_total": 49,
+    "srs_open": 46,
+    "srs_total": 50,
     "unwired_gates": 32
   },
   "tests": {
