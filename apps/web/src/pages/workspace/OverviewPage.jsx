@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/OverviewPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-SITE-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -195,7 +195,8 @@ export default function OverviewPage() {
     }, [signals.records, missions.records, evidence.records, editions.records]);
 
     const domainRecord = active && active.expand && active.expand.domain;
-    const domainVerified = domainRecord && domainRecord.status === 'verified';
+    // Status is server-owned (SRS-BUILDANDDO-SITE-001); a verified status always carries its DNS check time.
+    const domainVerified = Boolean(domainRecord && domainRecord.status === 'verified' && domainRecord.verified_at);
     const startingPath = recommendedPath(active);
 
     const go = (to, label) => {
@@ -253,17 +254,16 @@ export default function OverviewPage() {
                                 </p>
                                 <p className="mt-0.5 text-muted-foreground">
                                     {!domainRecord ? 'You can work toward your objective without a website.' : domainVerified
-                                        ? 'Domain verified — deeper analysis is authorized.'
-                                        : 'Domain selected for analysis only. Confirm ownership or authorization before deeper analysis or actions.'}
+                                        ? 'Domain ownership verified by DNS.'
+                                        : 'Ownership of this domain is not verified. It is context only; the label unlocks nothing.'}
                                 </p>
                             </div>
                         </div>
-                        {domainRecord && (
+                        {domainRecord && !domainVerified && (
                             <Button
                                 variant="secondary"
-                                size="sm"
                                 className="shrink-0"
-                                onClick={() => go('/app/settings', 'verify-domain')}
+                                onClick={() => go('/app/settings#website-domain', 'verify-domain')}
                             >
                                 Verify domain
                                 <ArrowRight className="h-4 w-4" />

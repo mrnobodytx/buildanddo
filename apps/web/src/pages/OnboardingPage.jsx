@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:         apps/web/src/pages/OnboardingPage.jsx
 // Stage:        07_BUILD
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-SITE-001
 // CAPS:         pending
 // CK:           pending
 // Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -169,7 +169,7 @@ function OnboardingDesk() {
                                         <Label htmlFor="ob-domain" className="text-paper-fg">Website domain (optional)</Label>
                                         <Input id="ob-domain" value={domain} onChange={(event) => setDomain(event.target.value)} maxLength={253}
                                             placeholder="example.com" aria-describedby="ob-domain-help" className={INPUT_STYLE} />
-                                        <p id="ob-domain-help" className="text-xs leading-5 text-paper-muted">Context only. No DNS, website, traffic or SEO lookup is performed. Saving a domain does not verify ownership or grant access.</p>
+                                        <p id="ob-domain-help" className="text-xs leading-5 text-paper-muted">Context only. No DNS, website, traffic or SEO lookup is performed. Saving a domain does not verify ownership or grant access. You can verify ownership later in Settings.</p>
                                     </div>
                                 </div>
                             </details>

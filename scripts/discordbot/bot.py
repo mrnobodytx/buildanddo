@@ -57,6 +57,7 @@ LOG_EVENTS = OUTCOME_EVENTS | {
     # every graded answer into discord.event.unknown/error, a false failure on each correct use.
     "discord.quiz.graded",
 }
+QUIZ_GRADED_OUTCOMES = frozenset({"graded", "unavailable", "error"})
 
 
 def caller_from(interaction: discord.Interaction) -> Caller:

@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/workspace-access.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-SITE-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -43,6 +43,15 @@ function id(value, empty = false) {
 function bounded(value, max, required = true) {
     if (!base.text(value, max, required)) base.invalid(`Keep text within ${max} characters${required ? ' and provide a value' : ''}.`);
     return value.trim();
+}
+/** Validate a bare lowercase host name: no scheme, path, port, credentials or IP address. */
+function domainName(value, required = true) {
+    const name = bounded(value, 253, required).toLowerCase();
+    const labels = name.split('.');
+    if (name && (labels.length < 2 || labels.some((label) => !/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label)) ||
+        !/[a-z]/.test(labels[labels.length - 1]) || labels[labels.length - 1].length < 2))
+        base.invalid('Enter a domain name without a scheme, path or credentials.');
+    return name;
 }
 function revision(value) {
     if (!Number.isSafeInteger(value) || value < 0) base.invalid('Supply the saved revision.');
@@ -125,5 +134,5 @@ function audit(app, auth, workspace, body, operation) {
     return { ...result, replayed: false };
 }
 
-module.exports = { ...base, DEFAULTS, CONTROL_FIELDS, PROVIDERS, conflict, exact, id, bounded, revision,
+module.exports = { ...base, DEFAULTS, CONTROL_FIELDS, PROVIDERS, conflict, exact, id, bounded, domainName, revision,
     canonical, requireRole, controls, settings, workspaceId, access, envelope, page, list, audit };

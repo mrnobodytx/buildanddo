@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/workspace-record-policy.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-SITE-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -12,7 +12,7 @@
 // EnumType:    Service
 // EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js
 // DAG Node:    none
-// Intent:      Reject stale membership, reassigned records, foreign relations and browser-asserted review, revenue or seat identity at the native workspace write boundary.
+// Intent:      Reject stale membership, reassigned records, foreign relations and browser-asserted review, revenue, seat identity or domain ownership at the native workspace write boundary.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
@@ -25,6 +25,8 @@ const AUTHORED = ['corrections', 'specialist_desks', 'social_content', 'daily_ed
 const LOCKED = { corrections: 'verified', daily_editions: 'published' };
 // Written only by the server-side sync (app.save bypasses request hooks).
 const SYNCED = ['provider', 'gross', 'platform_fees', 'refunds', 'currency', 'payout_status', 'last_sync', 'date_range_start', 'date_range_end'];
+// Ownership proof is written only by the DNS verification commands.
+const PROOF = ['verification_token', 'verification_requested_at', 'verification_checked_at', 'verification_result', 'verified_at'];
 
 /** Enforce the same account/workspace boundary for native CRUD and custom commands. */
 function enforce(e, operation) {
@@ -110,4 +112,25 @@ function workspaceCreate(e) {
     return e.next();
 }
 
-module.exports = { enforce, workspaceCreate };
+/** A browser may record a domain as unverified context; only the server marks it verified or renames it. */
+function domainWrite(e, operation) {
+    access.authenticated(e);
+    const record = e.record;
+    if (operation === 'delete') {
+        if (record.getString('owner') !== e.auth.id) throw new ForbiddenError('Only the account that holds this domain may remove it.');
+        // workspaces.domain cascades, so removing a linked domain would delete its workspace.
+        if (e.app.findRecordsByFilter('workspaces', 'domain = {:domain}', '', 1, 0, { domain: record.id }).length)
+            access.invalid('This domain is linked to a workspace. Change the workspace domain in Settings; a linked domain cannot be removed.');
+    } else if (operation === 'create') {
+        if (record.getString('owner') !== e.auth.id) throw new ForbiddenError('Create records under your own account.');
+        if (record.getString('status') !== 'selected' || PROOF.some((field) => record.getString(field)))
+            access.invalid('A new domain starts unverified. Verify ownership from Settings.');
+    } else {
+        const old = record.original();
+        if (['domain', 'owner', 'status', ...PROOF].some((field) => record.getString(field) !== old.getString(field)))
+            access.invalid('Domain names, owners and verification are changed only through Settings.');
+    }
+    return e.next();
+}
+
+module.exports = { enforce, workspaceCreate, domainWrite };
